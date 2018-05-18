@@ -1,0 +1,42 @@
+Description:    PVP Inverter, 30/75/100 kW systems.  (Map version 1, firmware 2.5)
+
+$Id: deviceclass41_PVP.txt,v 1.1 2009/02/06 23:06:34 herzogs Exp $
+
+This device has a number of floating point values, and several 16 bit 
+integer values for inverter flags.
+
+The Inverter Fault and OperatingStatus data points are stored in hex
+format in the AcquiSuite log file.  When zero, "0" is present in the log.
+When non-zero, "0x1234" notation is used.   Data import systems should be
+aware of "0x" prefix on numbers to indicate the value is in hex format. 
+This is used because the fields are status bitmaps, and makes for ease 
+of viewing.  
+
+SQL table structure:
+
++------------------------------------+---------------------+------+-----+---------------------+-------+
+| Field                              | Type                | Null | Key | Default             | Extra |
++------------------------------------+---------------------+------+-----+---------------------+-------+
+| time                               | datetime            |      | PRI | 0000-00-00 00:00:00 |       |
+| error                              | int(11)             | YES  |     | 0                   |       |
+| lowrange                           | int(11) unsigned    | YES  |     | 0                   |       |
+| highrange                          | int(11) unsigned    | YES  |     | 0                   |       |
+| Total kWh Delivered (kWh)          | double              | YES  |     | NULL                |       |
+| Volts A L-N (Volts)                | float               | YES  |     | NULL                |       |
+| Volts B L-N (Volts)                | float               | YES  |     | NULL                |       |
+| Volts C L-N (Volts)                | float               | YES  |     | NULL                |       |
+| Current A (Amps)                   | float               | YES  |     | NULL                |       |
+| Current B (Amps)                   | float               | YES  |     | NULL                |       |
+| Current C (Amps)                   | float               | YES  |     | NULL                |       |
+| DC Input Voltage (Volts)           | float               | YES  |     | NULL                |       |
+| DC Input Current (Amps)            | float               | YES  |     | NULL                |       |
+| Line Frequency (Hz)                | float               | YES  |     | NULL                |       |
+| Line kW (kW)                       | float               | YES  |     | NULL                |       |
+| Inverter Operating Status (State)  | int(5) unsigned     | YES  |     | NULL                |       |
+| Inverter Fault Word 0              | int(5) unsigned     | YES  |     | NULL                |       |
+| Inverter Fault Word 1              | int(5) unsigned     | YES  |     | NULL                |       |
+| Inverter Fault Word 2              | int(5) unsigned     | YES  |     | NULL                |       |
+| Data Comm Status                   | int(5) unsigned     | YES  |     | NULL                |       |
++------------------------------------+---------------------+------+-----+---------------------+-------+
+
+

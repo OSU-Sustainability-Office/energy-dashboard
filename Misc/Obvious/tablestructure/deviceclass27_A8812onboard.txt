@@ -1,0 +1,78 @@
+Description:    Obvius A8812 Onboard IO.
+
+$Id: deviceclass27_A8812onboard.txt,v 1.3 2010/10/21 16:45:32 herzogs Exp $
+
+Note: this table structure handles both A8812 onboard io 
+as well as the A8332-8F2D io module data table structure. 
+The driver in the AcquiSuite handles both devices.
+
+Each input in the A8812 io module has 5 corresponding 
+data columns.  Depending on the configured input mode, 
+each of the 5 columns have different values. 
+
+The following is a table showing the different modes
+(pulse, status, resistance, voltage, and current)
+
+
+        Pulse             Status              Ohms             mA              Volts
+        ----------        ----------          ----------       ----------      ----------
+A       count             count               ave              ave             ave
+B       Demand            duty-cycle          inst             inst            inst
+C       rate-inst         on-time             min              min             min
+D       rate-min          on/off st.          max              max             max
+E       rate-max          null                null             null            null                 
+
+
+
+SQL table structure:
+
++---------------+---------------------+------+-----+---------------------+-------+
+| Field         | Type                | Null | Key | Default             | Extra |
++---------------+---------------------+------+-----+---------------------+-------+
+| time          | datetime            |      | PRI | 0000-00-00 00:00:00 |       |
+| error         | int(11)             | YES  |     | 0                   |       |
+| lowrange      | int(11) unsigned    | YES  |     | 0                   |       |
+| highrange     | int(11) unsigned    | YES  |     | 0                   |       |
+| input1A       | float               | YES  |     | NULL                |       |
+| input1B       | float               | YES  |     | NULL                |       |
+| input1C       | float               | YES  |     | NULL                |       |
+| input1D       | float               | YES  |     | NULL                |       |
+| input1E       | float               | YES  |     | NULL                |       |
+| input2A       | float               | YES  |     | NULL                |       |
+| input2B       | float               | YES  |     | NULL                |       |
+| input2C       | float               | YES  |     | NULL                |       |
+| input2D       | float               | YES  |     | NULL                |       |
+| input2E       | float               | YES  |     | NULL                |       |
+| input3A       | float               | YES  |     | NULL                |       |
+| input3B       | float               | YES  |     | NULL                |       |
+| input3C       | float               | YES  |     | NULL                |       |
+| input3D       | float               | YES  |     | NULL                |       |
+| input3E       | float               | YES  |     | NULL                |       |
+| input4A       | float               | YES  |     | NULL                |       |
+| input4B       | float               | YES  |     | NULL                |       |
+| input4C       | float               | YES  |     | NULL                |       |
+| input4D       | float               | YES  |     | NULL                |       |
+| input4E       | float               | YES  |     | NULL                |       |
+| input5A       | float               | YES  |     | NULL                |       |
+| input5B       | float               | YES  |     | NULL                |       |
+| input5C       | float               | YES  |     | NULL                |       |
+| input5D       | float               | YES  |     | NULL                |       |
+| input5E       | float               | YES  |     | NULL                |       |
+| input6A       | float               | YES  |     | NULL                |       |
+| input6B       | float               | YES  |     | NULL                |       |
+| input6C       | float               | YES  |     | NULL                |       |
+| input6D       | float               | YES  |     | NULL                |       |
+| input6E       | float               | YES  |     | NULL                |       |
+| input7A       | float               | YES  |     | NULL                |       |
+| input7B       | float               | YES  |     | NULL                |       |
+| input7C       | float               | YES  |     | NULL                |       |
+| input7D       | float               | YES  |     | NULL                |       |
+| input7E       | float               | YES  |     | NULL                |       |
+| input8A       | float               | YES  |     | NULL                |       |
+| input8B       | float               | YES  |     | NULL                |       |
+| input8C       | float               | YES  |     | NULL                |       |
+| input8D       | float               | YES  |     | NULL                |       |
+| input8E       | float               | YES  |     | NULL                |       |
+| output1       | int                 | YES  |     | NULL                |       |
+| output2       | int                 | YES  |     | NULL                |       |
++---------------+---------------------+------+-----+---------------------+-------+

@@ -1,0 +1,93 @@
+Description:	Power Measurement ION 7500 power meter
+                (also covers 7600, 8500 meters)
+
+$Id: deviceclass12_ion7500.txt,v 1.1 2005/07/27 05:29:01 herzogs Exp $
+
+Note, the last 16 fields are doubles because the modbus slave register block
+number 4 allows the ion meter to generate 64bit nubmers after the multipler
+is applied for this range of data points.   All blocks (of 16 points) may 
+use this type of multiplier however none are set this way by default.  For 
+further information on this issue, review the ion meter modbus documentaiton. 
+
+It is important to note that the installer may use the ion configuration 
+software to re-map any or all of the 64 points to other values or purposes.
+Care should be taken when creating a database with the fix point names as
+the column names.  Better to create a table listing points 0-63 and then 
+display the point names and engineering units from the AcquiSuite 
+configuration ini file. 
+
+SQL table structure:
+
++------------------+------------------+------+-----+---------------------+-------+
+| Field            | Type             | Null | Key | Default             | Extra |
++------------------+------------------+------+-----+---------------------+-------+
+| time             | datetime         |      | PRI | 0000-00-00 00:00:00 |       |
+| error            | int(11)          | YES  |     | 0                   |       |
+| lowrange         | int(11) unsigned | YES  |     | 0                   |       |
+| highrange        | int(11) unsigned | YES  |     | 0                   |       |
+| Vln_a            | float            | YES  |     | NULL                |       |
+| Vln_b            | float            | YES  |     | NULL                |       |
+| Vln_c            | float            | YES  |     | NULL                |       |
+| VIn_ave          | float            | YES  |     | NULL                |       |
+| Vll_ab           | float            | YES  |     | NULL                |       |
+| Vll_bc           | float            | YES  |     | NULL                |       |
+| Vll_ca           | float            | YES  |     | NULL                |       |
+| Vll_ave          | float            | YES  |     | NULL                |       |
+| I_a              | float            | YES  |     | NULL                |       |
+| I_b              | float            | YES  |     | NULL                |       |
+| I_c              | float            | YES  |     | NULL                |       |
+| I_ave            | float            | YES  |     | NULL                |       |
+| V_unbal          | float            | YES  |     | NULL                |       |
+| I_unbal          | float            | YES  |     | NULL                |       |
+| Frequency        | float            | YES  |     | NULL                |       |
+| I_4              | float            | YES  |     | NULL                |       |
+| kW_a             | float            | YES  |     | NULL                |       |
+| kW_b             | float            | YES  |     | NULL                |       |
+| kW_c             | float            | YES  |     | NULL                |       |
+| kW_total         | float            | YES  |     | NULL                |       |
+| kVAR_a           | float            | YES  |     | NULL                |       |
+| kVAR_b           | float            | YES  |     | NULL                |       |
+| kVAR_c           | float            | YES  |     | NULL                |       |
+| kVAR_total       | float            | YES  |     | NULL                |       |
+| kVA_a            | float            | YES  |     | NULL                |       |
+| kVA_b            | float            | YES  |     | NULL                |       |
+| kVA_c            | float            | YES  |     | NULL                |       |
+| kVA_total        | float            | YES  |     | NULL                |       |
+| PF_sign_a        | float            | YES  |     | NULL                |       |
+| PF_sign_b        | float            | YES  |     | NULL                |       |
+| PF_sign_c        | float            | YES  |     | NULL                |       |
+| PF_sign_total    | float            | YES  |     | NULL                |       |
+| Vll_ave_mx       | float            | YES  |     | NULL                |       |
+| I_ave_mx         | float            | YES  |     | NULL                |       |
+| kW_tot_mx        | float            | YES  |     | NULL                |       |
+| kVAR_tot_mx      | float            | YES  |     | NULL                |       |
+| kVA_tot_mx       | float            | YES  |     | NULL                |       |
+| freq_mx          | float            | YES  |     | NULL                |       |
+| Vll_ave_mn       | float            | YES  |     | NULL                |       |
+| I_ave_mn         | float            | YES  |     | NULL                |       |
+| freq_mn          | float            | YES  |     | NULL                |       |
+| kW_sd_del-rec    | float            | YES  |     | NULL                |       |
+| kVA_sd_del+rec   | float            | YES  |     | NULL                |       |
+| kVAR_sd_del-rec  | float            | YES  |     | NULL                |       |
+| kW_sd_mx_d-r     | float            | YES  |     | NULL                |       |
+| kVA_sd_mx_d+r    | float            | YES  |     | NULL                |       |
+| kVAR_sd_mx_d-r   | float            | YES  |     | NULL                |       |
+| phase_rev        | float            | YES  |     | NULL                |       |
+| kWh_del          | double           | YES  |     | NULL                |       |
+| kWh_rec          | double           | YES  |     | NULL                |       |
+| kWh_del+rec      | double           | YES  |     | NULL                |       |
+| kWh_del-rec      | double           | YES  |     | NULL                |       |
+| kVARh_del        | double           | YES  |     | NULL                |       |
+| kVARh_rec        | double           | YES  |     | NULL                |       |
+| kVARh_del+rec    | double           | YES  |     | NULL                |       |
+| kVARh_del-rec    | double           | YES  |     | NULL                |       |
+| kVA_del+rec      | double           | YES  |     | NULL                |       |
+| V1_THD_mx        | double           | YES  |     | NULL                |       |
+| V2_THD_mx        | double           | YES  |     | NULL                |       |
+| V3_THD_mx        | double           | YES  |     | NULL                |       |
+| I1_THD_mx        | double           | YES  |     | NULL                |       |
+| I2_THD_mx        | double           | YES  |     | NULL                |       |
+| I3_THD_mx        | double           | YES  |     | NULL                |       |
+| unused2          | double           | YES  |     | NULL                |       |
++------------------+------------------+------+-----+---------------------+-------+
+

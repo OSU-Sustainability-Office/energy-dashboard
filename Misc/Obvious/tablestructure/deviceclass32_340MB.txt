@@ -1,0 +1,24 @@
+Description:  Data structure for the 340MB Badger BTU meter.
+
+$Id: deviceclass32_340MB.txt,v 1.1 2008/03/29 00:11:10 herzogs Exp $
+
+
+
+SQL table structure:
+
++------------------+---------------------+------+-----+---------------------+-------+
+| Field            | Type                | Null | Key | Default             | Extra |
++------------------+---------------------+------+-----+---------------------+-------+
+| time             | datetime            |      | PRI | 0000-00-00 00:00:00 |       |
+| error            | int(11)             | YES  |     | 0                   |       |
+| lowrange         | int(11) unsigned    | YES  |     | 0                   |       |
+| highrange        | int(11) unsigned    | YES  |     | 0                   |       |
+| Temp1            | double              | YES  |     | NULL                |       |
+| Temp2            | double              | YES  |     | NULL                |       |
+| Flow frequency   | double              | YES  |     | NULL                |       |
+| Total volume     | double              | YES  |     | NULL                |       |
+| Total energy     | double              | YES  |     | NULL                |       |
+| Volume flow rate | double              | YES  |     | NULL                |       |
+| Energy flow rate | double              | YES  |     | NULL                |       |
++------------------+---------------------+------+-----+---------------------+-------+
+

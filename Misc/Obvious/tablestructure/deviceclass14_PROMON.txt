@@ -1,0 +1,53 @@
+Description:	Emon ProMon meter, also known as the MeterSmart 5000 or MS5K 
+
+$Id: deviceclass14_PROMON.txt,v 1.1 2005/07/27 05:29:01 herzogs Exp $
+
+
+SQL table structure:
+
++----------------------------+------------------+------+-----+---------------------+-------+
+| Field                      | Type             | Null | Key | Default             | Extra |
++----------------------------+------------------+------+-----+---------------------+-------+
+| time                       | datetime         |      | PRI | 0000-00-00 00:00:00 |       |
+| error                      | int(11)          | YES  |     | 0                   |       |
+| lowrange                   | int(11) unsigned | YES  |     | 0                   |       |
+| highrange                  | int(11) unsigned | YES  |     | 0                   |       |
+| Energy Delivered           | double           | YES  |     | NULL                |       |
+| Energy Received            | double           | YES  |     | NULL                |       |
+| Reactive Energy Delivered  | double           | YES  |     | NULL                |       |
+| Reactive Energy Received   | double           | YES  |     | NULL                |       |
+| Real Power                 | float            | YES  |     | NULL                |       |
+| Reactive Power             | float            | YES  |     | NULL                |       |
+| Apparent Power             | float            | YES  |     | NULL                |       |
+| Power Factor               | float            | YES  |     | NULL                |       |
+| Current Total              | float            | YES  |     | NULL                |       |
+| Current Average            | float            | YES  |     | NULL                |       |
+| Voltage Line-Neutral       | float            | YES  |     | NULL                |       |
+| Voltage Line-Line          | float            | YES  |     | NULL                |       |
+| Frequency                  | float            | YES  |     | NULL                |       |
+| Phase angle                | float            | YES  |     | NULL                |       |
+| Real power Phase A         | float            | YES  |     | NULL                |       |
+| Real Power Phase B         | float            | YES  |     | NULL                |       |
+| Real Power Phase C         | float            | YES  |     | NULL                |       |
+| Reactive Power Phase A     | float            | YES  |     | NULL                |       |
+| Reactive Power Phase B     | float            | YES  |     | NULL                |       |
+| Reactive Power Phase C     | float            | YES  |     | NULL                |       |
+| Apparent Power Phase A     | float            | YES  |     | NULL                |       |
+| Apparent Power Phase B     | float            | YES  |     | NULL                |       |
+| Apparent Power Phase C     | float            | YES  |     | NULL                |       |
+| Power Factor Phase A       | float            | YES  |     | NULL                |       |
+| Power Factor Phase B       | float            | YES  |     | NULL                |       |
+| Power Factor Phase C       | float            | YES  |     | NULL                |       |
+| Current Phase A            | float            | YES  |     | NULL                |       |
+| Current Phase B            | float            | YES  |     | NULL                |       |
+| Current Phase C            | float            | YES  |     | NULL                |       |
+| Voltage L-N Phase A        | float            | YES  |     | NULL                |       |
+| Voltage L-N Phase B        | float            | YES  |     | NULL                |       |
+| Voltage L-N Phase C        | float            | YES  |     | NULL                |       |
+| Voltage L-L Phase A        | float            | YES  |     | NULL                |       |
+| Voltage L-L Phase B        | float            | YES  |     | NULL                |       |
+| Voltage L-L Phase C        | float            | YES  |     | NULL                |       |
+| Phase Angle A              | float            | YES  |     | NULL                |       |
+| Phase Angle B              | float            | YES  |     | NULL                |       |
+| Phase Angle C              | float            | YES  |     | NULL                |       |
++----------------------------+------------------+------+-----+---------------------+-------+

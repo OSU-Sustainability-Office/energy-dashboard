@@ -1,0 +1,27 @@
+$Id: IIS_Notes.txt,v 1.1 2004/11/03 15:37:26 herzogs Exp $
+
+Notes on Microsoft Webserver (IIS).
+
+The problem: the AcquiSuite sends username/password information 
+in the upload session as "Basic HTTP Authentication" method.   
+IIS will allow Basic HTTP authentication only if there is a 
+corresponding user account in the Windows domain space.  
+ie, the administrator must create a windows domain login 
+for every AcquiSuite.
+
+ - in windows iis setup, the checkbox "Userspace Authentication"
+   Allows anonymous access,  or requires an NT domain space 
+   login for each AcquiSuite.
+
+Other notes: (client is using VB script.)
+use GetHeaderCollection to get http header values.
+authentication header information is aparently stripped 
+if anonymous access is allowed. This makes it hard/impossible
+to use IIS in anonymous mode (allow all connections) and then 
+check the password later in the vb/asp script.
+
+
+Solution: v01.04.0618 and later versions of the AcquiSuite 
+firmware provide login/password information in the form 
+variable area to allow IIS with Anonymous access to check 
+the password values

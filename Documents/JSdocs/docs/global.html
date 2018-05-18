@@ -1,0 +1,3394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Global - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/prism.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prism.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addEntry">addEntry</a></li><li><a href="global.html#addMeter">addMeter</a></li><li><a href="global.html#checkMeterTimestamps">checkMeterTimestamps</a></li><li><a href="global.html#checkUsage">checkUsage</a></li><li><a href="global.html#emailAlert">emailAlert</a></li><li><a href="global.html#receiveXML">receiveXML</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Global</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="receiveXML"><span class="type-signature"></span>receiveXML<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Handles POST requests received in XML formatReceives POST requests, converts from XML to JSON
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Source_dataServer.js.html">Source/dataServer.js</a>, <a href="Source_dataServer.js.html#line45">line 45</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="addEntry"><span class="type-signature"></span>addEntry<span class="signature">(meter, body, serialAddress)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Function to add a data entry to a database. Checks for duplicate first.Conditions:     - Called whenever POST request comes in
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>meter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains elements of the source meter
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the ID of the meter as it is in the database</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the public facing name of the meter as it is in the database</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>building</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the building that the meter is associated with as it is in the database</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>body</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the POST request body with all extraneous pieces cut</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>serialAddress</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the POST request body that can access the serial and address information</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Source_dataServer.js.html">Source/dataServer.js</a>, <a href="Source_dataServer.js.html#line293">line 293</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addMeter"><span class="type-signature"></span>addMeter<span class="signature">(meter)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="global.html#Meter">Meter</a>>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Function that is called when the server gets a POST request from a meterthat is not in our database already.Only called when a matching meter cannot be located in the database
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>meter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains a POST request body that is slightly trimmed</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Source_dataServer.js.html">Source/dataServer.js</a>, <a href="Source_dataServer.js.html#line266">line 266</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    newmeter
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="global.html#Meter">Meter</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="checkMeterTimestamps"><span class="type-signature"></span>checkMeterTimestamps<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Helper function to see when the last time a meter posted Called once per day and Sends email if meter hasn't checked in for over a day but under two
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Source_dataServer.js.html">Source/dataServer.js</a>, <a href="Source_dataServer.js.html#line156">line 156</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="checkUsage"><span class="type-signature"></span>checkUsage<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Function used to find and alert during high usage spikesConditions - Only sends email if Average for day is greater than the average for week plus a standard deviation andthe meter has more than 100 entries
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Source_dataServer.js.html">Source/dataServer.js</a>, <a href="Source_dataServer.js.html#line197">line 197</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="emailAlert"><span class="type-signature"></span>emailAlert<span class="signature">(email)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Sends out alert to users (admins).Specifically when A meter hasn't checked in over a day. Also when a meter reports unusually high usage.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>email</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains email contents to be sent.
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>subject</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the email's subject.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>body</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the email's body.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Source_dataServer.js.html">Source/dataServer.js</a>, <a href="Source_dataServer.js.html#line106">line 106</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+<h4 class="name" id="Array">Array</h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Block">Block</h4>
+
+
+
+
+<div class="description">
+    An object which holds customized combinations of Building as set by the User. Can be set to display on the public Dashboards or not.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the Block as set by the User when created.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>created_by</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#ObjectId">ObjectId</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The ObjectId of the User responsible for creating the Block.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>building</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Array">Array</a>.&lt;<a href="global.html#ObjectId">ObjectId</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array of ObjectId references to Building that the Block contains.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>chart</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The type of chart used by this Block.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>is_public</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Boolean">Boolean</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The flag to determine if the Block should appear in the public Dashboard interface.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>variable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The string to determine unit being measured (e.g. Killowatts/Hr).</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line66">line 66</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Boolean">Boolean</h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line6">line 6</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Building">Building</h4>
+
+
+
+
+<div class="description">
+    An object which aggregates DataEntry as gathered by Meter
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the Building as set by the User when created.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>building_type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The type of Building as set by the User when created.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>meters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Array">Array</a>.&lt;<a href="global.html#ObjectId">ObjectId</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array of ObjectId references to Meter that are connected to the Building.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data_entries</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Array">Array</a>.&lt;<a href="global.html#ObjectId">ObjectId</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array of ObjectId references to DataEntry that are connected to the Building.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line77">line 77</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Chart">Chart</h4>
+
+
+
+
+<div class="description">
+    An object that contains the properties of Chart.js
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line42">line 42</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://www.chartjs.org/docs/latest/">https://www.chartjs.org/docs/latest/</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Dashboard">Dashboard</h4>
+
+
+
+
+<div class="description">
+    An object which contains Blocks and all the aggregated data of each, as set by User.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the Dashboard as set by the User when created.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>description</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The brief description of the Dashboard pertaining to what is contained as set by the User when created.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>is_public</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Boolean">Boolean</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The flag to determine if the Dashboard should appear in the public Dashboard interface.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>created_by</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#ObjectId">ObjectId</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The ObjectId of the User responsible for creating the Dashboard.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>blocks</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Array">Array</a>.&lt;<a href="global.html#ObjectId">ObjectId</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array of ObjectId references to Block as set by the User when created.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line86">line 86</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="DataEntry">DataEntry</h4>
+
+
+
+
+<div class="description">
+    An object which contains all the AcquiSuite POST data as well as relevant relationships.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>building</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#ObjectId">ObjectId</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The ObjectId reference to Building that contains this DataEntry.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>meter_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#ObjectId">ObjectId</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The ObjectId reference to Meter that reported this DataEntry.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>timestamp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The timestamp of the AcquiSuite POST data when it was collected.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>point</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Array">Array</a>.&lt;<a href="global.html#Point">Point</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array of Point as reported by the AcquiSuite POST data.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line96">line 96</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Google">Google</h4>
+
+
+
+
+<div class="description">
+    An Object that contains details about a User's Google account
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the id of the Google acocunt.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>token</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the auth token of the Google account.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>email</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the email address of the Google account.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the name of the user as it appears in their Google acocunt.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line57">line 57</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Meter">Meter</h4>
+
+
+
+
+<div class="description">
+    An object which assists in determining where each DataEntry should go.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the Meter. Typically contains an easily readable English string.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>meter_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The serial of the AcquiSuite with the address of the meter concatenated at the end.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>building</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#ObjectId">ObjectId</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The ObjectId reference to Building that the Meter connected to.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line105">line 105</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="null">null</h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line27">line 27</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Number">Number</h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#String">String</a></span>
+|
+
+<span class="param-type"><a href="global.html#Number">Number</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line21">line 21</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number</a></li>
+        
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Object">Object</h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line11">line 11</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="ObjectId">ObjectId</h4>
+
+
+
+
+<div class="description">
+    A 24-character hash string that references objects in a database. Assigned to each object entered into the database.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line32">line 32</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="http://docs.mongodb.org/manual/reference/object-id/">http://docs.mongodb.org/manual/reference/object-id/</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var id = user._id;var id = new ObjectID(); // => such as '51b96d2a845cca7213000002'</code></pre>
+
+
+
+            
+                
+<h4 class="name" id="Point">Point</h4>
+
+
+
+
+<div class="description">
+    An Object that contains the formatted AcquiSuite POST data.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>number</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Number">Number</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the index of itself in the containing array.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the name of the value being measured.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>units</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the units of the value being measured.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Number">Number</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Contains the consumption value.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line48">line 48</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Story">Story</h4>
+
+
+
+
+<div class="description">
+    An object which contains Blocks as and all the aggregated data of each.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the Story as set by the User when created.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>is_public</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Boolean">Boolean</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The flag to determine if the Story should appear in the public Story interface.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>created_by</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#ObjectId">ObjectId</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The ObjectId of the User responsible for creating the Story.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>dashboards</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Array">Array</a>.&lt;<a href="global.html#ObjectId">ObjectId</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array of ObjectId references to Dashboard as set by the User when created.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line113">line 113</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="String">String</h4>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="User">User</h4>
+
+
+
+
+<div class="description">
+    An object which contains the login token and customizable settings of any given person using the interface.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="global.html#Object">Object</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>google</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Google">Google</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The token and email information of the User's Google account.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>blocks</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Array">Array</a>.&lt;<a href="global.html#ObjectId">ObjectId</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array of ObjectId references to Block that belong to this User.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>dashboards</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Array">Array</a>.&lt;<a href="global.html#ObjectId">ObjectId</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array of ObjectId references to Dashboard that belong to this User.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stories</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Array">Array</a>.&lt;<a href="global.html#ObjectId">ObjectId</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array of ObjectId references to Story that belong to this User.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>accountAccess</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#String">String</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The permission level of this account.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Documents_JSdocs_types.js.html">Documents/JSdocs/types.js</a>, <a href="Documents_JSdocs_types.js.html#line122">line 122</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 04 2018 02:24:58 GMT-0700 (Pacific Daylight Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

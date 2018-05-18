@@ -1,0 +1,69 @@
+$Id: AS_uploaddebug.txt,v 1.2 2005/05/04 21:20:13 herzogs Exp $
+
+AcquiSuite upload process debugging feature.
+
+The AcquiSuite upload process (senddata process) is responsible
+for sending log and config files to a webserver.  This process
+manages the storage space, compresses the raw files, and 
+initiates communications with the webserver.  If configured
+the process will issue dialout commands to the modem, and 
+sync time with a time server. 
+
+An upload session begins when the senddata scheduler finds
+that the appropriate time to upload has passed, or if the
+user clicks the "upload now" button.  Once started, the 
+session runs until completed or until 70 minutes has elapsed. 
+If complete, the senddata scheduler will review the number of
+successful and failed log file uploads.  If any log file upload
+failures were detected, and the upload retry count has not been 
+exceeded, the scheduler will select a time for a re-send. 
+(usually 15 minutes).  If all log files were successful, 
+(regardless of config file success/failures) the scheduler will
+select a time tomorrow for the next upload. (unless the A.S. is 
+configured for hourly uploads.)
+
+In the system log section of the AcquiSuite web configuration 
+pages, the upload log will be presented.  This log file contains
+information about the last upload session.   When a new upload
+session is started, the last upload log file is overwritten 
+with the new information.
+
+
+Extended debugging information can be provided by the AcquiSuite.
+This is most helpful when designing a website interface for the
+AcquiSuite to upload data to. 
+
+To enable this feature:
+
+1) telnet to the AcquiSuite.  login name "root" and your admin password.
+
+2) cd /etc/sysconfig
+
+3) vi loggerconfig.ini
+("vi" is the only text editor available.  If you are not
+familiar with vi, stop here.  call Obvius tech support for 
+assistance.)
+
+4) add or modify the following two lines.
+
+	SENDDATADEBUG=YES
+	SENDDATATRACE=YES
+
+If these lines are not present, add them to the end of the file.
+
+Note: setting SENDDATADEBUG turns on some further transactional
+information and SENDDATATRACE logs all data transmitted and 
+received on the connection. 
+
+5) save and exit vi.
+
+6) In the setup/upload configuration page, click the "apply changes"
+button once to reload the preferences file.
+
+7) turn on the system debug log (system/log-files page).
+
+8) click the "upload now" button to start the upload
+
+9) open the system debug log webpage.  to filter this, change the 
+URL ending to "section=senddata" rather than "section=" to limit 
+the log report to the upload session information.

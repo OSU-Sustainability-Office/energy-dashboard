@@ -1,0 +1,10 @@
+# Config Files
+.env
+.vscode/
+
+# Runtime data
+node_modules/
+package-lock.json
+
+# Temporary Acquisuite data folder
+public/acquisuite-data

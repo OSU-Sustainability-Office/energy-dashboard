@@ -1,0 +1,76 @@
+Description:	Power Measurement ION 6200 power meter
+
+$Id: deviceclass10_ion6200.txt,v 1.1 2005/07/27 05:29:01 herzogs Exp $
+
+
+SQL table structure:
+
++------------------+------------------+------+-----+---------------------+-------+
+| Field            | Type             | Null | Key | Default             | Extra |
++------------------+------------------+------+-----+---------------------+-------+
+| time             | datetime         |      | PRI | 0000-00-00 00:00:00 |       |
+| error            | int(11)          | YES  |     | 0                   |       |
+| lowrange         | int(11) unsigned | YES  |     | 0                   |       |
+| highrange        | int(11) unsigned | YES  |     | 0                   |       |
+| Vln_a            | float            | YES  |     | NULL                |       |
+| Vln_b            | float            | YES  |     | NULL                |       |
+| Vln_c            | float            | YES  |     | NULL                |       |
+| VIn_ave          | float            | YES  |     | NULL                |       |
+| Vll_ab           | float            | YES  |     | NULL                |       |
+| Vll_bc           | float            | YES  |     | NULL                |       |
+| Vll_ca           | float            | YES  |     | NULL                |       |
+| Vll_ave          | float            | YES  |     | NULL                |       |
+| I_a              | float            | YES  |     | NULL                |       |
+| I_b              | float            | YES  |     | NULL                |       |
+| I_c              | float            | YES  |     | NULL                |       |
+| I_ave            | float            | YES  |     | NULL                |       |
+| I_demand         | float            | YES  |     | NULL                |       |
+| I_peak_demand    | float            | YES  |     | NULL                |       |
+| I4               | float            | YES  |     | NULL                |       |
+| Frequency        | float            | YES  |     | NULL                |       |
+| PF_sign_total    | float            | YES  |     | NULL                |       |
+| PF_sign_a        | float            | YES  |     | NULL                |       |
+| PF_sign_b        | float            | YES  |     | NULL                |       |
+| PF_sign_c        | float            | YES  |     | NULL                |       |
+| kW_total         | float            | YES  |     | NULL                |       |
+| kVAR_total       | float            | YES  |     | NULL                |       |
+| kVA_total        | float            | YES  |     | NULL                |       |
+| kW_a             | float            | YES  |     | NULL                |       |
+| kW_b             | float            | YES  |     | NULL                |       |
+| kW_c             | float            | YES  |     | NULL                |       |
+| kVAR_a           | float            | YES  |     | NULL                |       |
+| kVAR_b           | float            | YES  |     | NULL                |       |
+| kVAR_c           | float            | YES  |     | NULL                |       |
+| kVA_a            | float            | YES  |     | NULL                |       |
+| kVA_b            | float            | YES  |     | NULL                |       |
+| kVA_c            | float            | YES  |     | NULL                |       |
+| kW_demand        | float            | YES  |     | NULL                |       |
+| kW_peak_demand   | float            | YES  |     | NULL                |       |
+| kVAR_demand      | float            | YES  |     | NULL                |       |
+| kVA_demand       | float            | YES  |     | NULL                |       |
+| kVAR_peak_demand | float            | YES  |     | NULL                |       |
+| kVA_peak_demand  | float            | YES  |     | NULL                |       |
+| kWh_del          | double           | YES  |     | NULL                |       |
+| kWh_rec          | double           | YES  |     | NULL                |       |
+| kVARh_del        | double           | YES  |     | NULL                |       |
+| kVARh_rec        | double           | YES  |     | NULL                |       |
+| kVAh_del_rec     | double           | YES  |     | NULL                |       |
+| V1_THD           | float            | YES  |     | NULL                |       |
+| V2_THD           | float            | YES  |     | NULL                |       |
+| V3_THD           | float            | YES  |     | NULL                |       |
+| I1_THD           | float            | YES  |     | NULL                |       |
+| I2_THD           | float            | YES  |     | NULL                |       |
+| I3_THD           | float            | YES  |     | NULL                |       |
+| I_a_demand       | float            | YES  |     | NULL                |       |
+| I_b_demand       | float            | YES  |     | NULL                |       |
+| I_c_demand       | float            | YES  |     | NULL                |       |
+| I_a_peak_demand  | float            | YES  |     | NULL                |       |
+| I_b_peak_demand  | float            | YES  |     | NULL                |       |
+| I_c_peak_demand  | float            | YES  |     | NULL                |       |
+| kWh_a_del        | double           | YES  |     | NULL                |       |
+| kWh_b_del        | double           | YES  |     | NULL                |       |
+| kWh_c_del        | double           | YES  |     | NULL                |       |
+| kWh_a_rec        | double           | YES  |     | NULL                |       |
+| kWh_b_rec        | double           | YES  |     | NULL                |       |
+| kWh_c_rec        | double           | YES  |     | NULL                |       |
++------------------+------------------+------+-----+---------------------+-------+

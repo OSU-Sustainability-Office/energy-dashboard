@@ -1,0 +1,42 @@
+<h3>{{buildingFormTitle}}</h3>
+<div class="row mt-4">
+    <div class="col-sm-6 col-md-6">
+        <h4>Edit Information</h4>
+        <div class="form-group row mt-4">
+            <label for="inputBuildingName" class="ml-3">Building Name</label>
+            <div class="col-sm-12">
+                <input type="text" class="form-control" maxlength="30" id="inputBuildingName" ng-model="buildingNameForm">
+            </div>
+        </div>
+        <div class="form-group row mt-4">
+            <label for="inputSerial" class="ml-3">Building Type </label>
+            <div class="col-sm-12">
+                <input type="text" class="form-control" maxlength="30" id="inputSerial" ng-model="buildingType">
+            </div>
+        </div>
+        <table class="table border-black Stratum2-Thin font-weight-bold">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Meter Name</th>
+                    <th scope="col">Meter Serial</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-bottom-orange background-white" ng-repeat="meter in buildingMeters track by meter._id">
+                    <th scope="row">{{ $index + 1 }}</th>
+                    <td>{{meter.name}}</td>
+                    <td>{{meter.meter_id}}</td>
+                    <td>{{meter.building.name}}</td>
+                    <td>
+                        <button class="float-right fa fa-remove border-orange-thin border-curve-button" style="font-size:24px; color:red"></button>
+                    </td> 
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-6 col-md-6"></div>
+    <button type="submit" class="btn btn-success" ng-click="submit()">{{buttonText}}</button>
+</div>

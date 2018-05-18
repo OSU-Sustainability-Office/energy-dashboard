@@ -1,0 +1,108 @@
+\documentclass[onecolumn, draftclsnofoot,10pt, compsoc]{IEEEtran}
+    \usepackage{graphicx}
+    \usepackage{url}
+    \usepackage{setspace}
+    
+    \usepackage[margin=0.75in]{geometry}
+    \geometry{textheight=9.5in, textwidth=7in}
+    
+    % 1. Fill in these details
+    \def \CapstoneTeamName{		The Dream Team}
+    \def \CapstoneTeamNumber{		57}
+    \def \GroupMemberOne{			Daniel Schroeder}
+    \def \GroupMemberTwo{			Aubrey Thenell}
+    \def \GroupMemberThree{			Parker Bruni}
+    \def \CapstoneProjectName{		A Scalable Web Application Framework for Monitoring Energy Usage on Campus  }
+    \def \CapstoneSponsorCompany{	Oregon State Office of Sustainability}
+    \def \CapstoneSponsorPerson{		Jack Woods}
+    
+    % 2. Uncomment the appropriate line below so that the document type works
+    \def \DocType{		Problem Statement
+            %Requirements Document
+            %Technology Review
+            %Design Document
+            %Progress Report
+            }
+          
+    \newcommand{\NameSigPair}[1]{\par
+    \makebox[2.75in][r]{#1} \hfil 	\makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill		\makebox[.75in]{\hrulefill}}
+    \par\vspace{-12pt} \textit{\tiny\noindent
+    \makebox[2.75in]{} \hfil		\makebox[3.25in]{\makebox[2.25in][r]{Signature} \hfill	\makebox[.75in][r]{Date}}}}
+    % 3. If the document is not to be signed, uncomment the RENEWcommand below
+    %\renewcommand{\NameSigPair}[1]{#1}
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \begin{document}
+    \begin{titlepage}
+        \pagenumbering{gobble}
+        \begin{singlespace}
+          \includegraphics[height=4cm]{coe_v_spot1.eps}
+            \hfill 
+            % 4. If you have a logo, use this includegraphics command to put it on the coversheet.
+            %\includegraphics[height=4cm]{CompanyLogo}   
+            \par\vspace{.2in}
+            \centering
+            \scshape{
+                \huge CS Capstone \DocType \par
+                {\large\today}\par
+                \vspace{.5in}
+                \textbf{\Huge\CapstoneProjectName}\par
+                \vfill
+                {\large Prepared for}\par
+                \Huge \CapstoneSponsorCompany\par
+                \vspace{5pt}
+                {\Large\NameSigPair{\CapstoneSponsorPerson}\par}
+                {\large Prepared by }\par
+                Group\CapstoneTeamNumber\par
+                % 5. comment out the line below this one if you do not wish to name your team
+                \CapstoneTeamName\par 
+                \vspace{5pt}
+                {\Large
+                    \NameSigPair{\GroupMemberOne}\par
+                    \NameSigPair{\GroupMemberTwo}\par
+                    \NameSigPair{\GroupMemberThree}\par
+                }
+                \vspace{20pt}
+            }
+            \begin{abstract}
+            % 6. Fill in your abstract  
+            This document outlines the problem presented to us by Oregon State University’s Office of Sustainability, for whom we will be creating a web application that visualizes energy use on campus. This is a generic overview of the problem at hand, and the scheduled course of action.  
+            \end{abstract}     
+        \end{singlespace}
+    \end{titlepage}
+    \newpage
+    \pagenumbering{arabic}
+    \tableofcontents
+    % 7. uncomment this (if applicable). Consider adding a page break.
+    %\listoffigures
+    %\listoftables
+    \clearpage
+    
+    % 8. now you write!
+    \section{Problem Definition}
+    As the population of the world grows exponentially, the demand for energy grows with it. Unfortunately, a massive source of energy for humans comes from non-sustainable fuel burning. This burning releases greenhouse gasses into the earth's atmosphere, which results in the heating of our planet and many consequences that come as a result. To combat this, communities have decided that it is time to get our energy from more sustainable sources, as well as use it in more sustainable ways. In order to be more sustainable and conscious of our energy consumption, we need to implement modern tools to monitor energy usage data and use that data to make informed decisions on future infrastructure projects. This is necessary to reduce our carbon footprint, reduce costs, and move society to a more sustainable (and eventually fully sustainable) future in regards to energy consumption.\\
+    \indent Oregon State University is revered for its energy efficiency and sustainability and is committed to reducing its carbon footprint through renovations and sustainable consideration with new projects. In this era of technology it is necessary to utilize the tools that are available to us when designing and implementing systems that will increase energy efficiency. Oregon State focuses on reducing its overall costs while supporting a more sustainable environment through less consumption and emissions. With this in mind, OSU has installed energy meters in campus buildings to monitor and record energy data so that it may be analysed by members of Oregon State University's Sustainability Office.  The data that is gathered from these systems can be used to make educated decisions about the current energy usage systems in place, such as monitoring strange fluctuations or anomalies in energy usage in any given building. OSU can address and correct any potential waste from occurring as well as provide a foundation of knowledge to reference when planning future infrastructure projects by utilizing these systems.\\ 
+    \indent The Sustainability Office has contracted the company “Lucid” to create a web application that displays all the data from these meters in an intuitive way. Lucid takes the raw data from the meters and provides an interface for the Sustainability Office to analyze. However, as Oregon State University Sustainability Office scales up its operations and automated reporting, the price of Lucid’s contract becomes exponentially expensive to maintain.  In order for this data analysis to continue the Oregon State Sustainability office has recognized an opportunity for OSU engineering students to create and plan a project that can take the place of the current system which will also serve as their senior capstone project. By allowing the computer science department to take over this project, the Office of Sustainability will be able to have an internally sourced web application that can be modified to whichever specifications they desire. It will also allow the hundreds of thousands of dollars that was previously spent on Lucid’s services to be spent on more sustainable projects for the entire University and help Oregon State reach its carbon neutrality goal of 2025.
+    \newpage
+    \section{Proposed Solution}
+    This project will include building a full stack web application capable of utilizing the AcquiSuite API to retrieve and store energy data. With access to the building data, we will have to build up a smooth UI that can dynamically (and hopefully RESTfully) create graphs and visualizations to display building energy use.\\
+    \indent The current application will need to be replaced by a clean, attractive, and intuitive user interface to access the data as well as to view the data in meaningful ways such as average energy usage over various time-frames, graphs that demonstrate trend lines based on desired trends, energy usage per building, energy usage per meter, average energy usage by building per season, and more. The application will also need to have a solid backend framework to accurately utilize the hard data gathered from the energy meters of each building. Our group proposes to design, build, and implement a scalable MEAN stack web application that incorporates multiple visualization tools and data manipulation capability. To do this, we plan to utilize a lightweight graphics framework like d3.js or vis.js to create charts and graphs within our web application.\\
+    \indent Communication between the team members as well as communication between the team and the client will be very important to this project. The project is more open ended, which means the team will have a lot of freedom with how we decide to implement the project. Furthermore, each team member will probably focus more on one aspect of the project to ensure conflict in implementation is as limited as possible.  Therefore, it’s crucial to ensure all team members are on the same page with the direction of the project, as well as ensure our project vision matches our client's vision throughout development.\\    
+    \indent The application will need to be accessible to members of the Sustainability Office as well as those among the Oregon State University general population who will need access to energy usage information. By using this application, members of the Oregon State Sustainability Office will be able to easily interpret the data gathered by the energy meters within the building and make decisions based on those interpretations that will make planning future infrastructure projects much easier, cost effective, and sustainable.\\
+    \indent The team, given enough time, would also like to implement preferences for each user. Specifically, we want to implement the ability for users to enable/disable any extraneous features and metrics. This would allow each user to customize exactly what they want/need.
+    \newpage
+    \section{Performance Metrics}
+    When this web application is complete, it should have three areas of focus and deliverability: functionality, scalability, and the user interface. This web application will be able to gather data from Acquisuite sensors all over campus and graphically display that information in different subsets based on user preference and filters. The data will be displayed on an accepted graphic interface and have a general user platform, as well as an administrative platform.
+    This web application will require a framework that can provide the following features:
+    \begin{itemize}
+        \item An interface where users and administrators can create custom dashboards from a series of pre-established graphs and charts.
+        \item An interface where users can create new “blocks” of content (i.e. graphs and charts).
+        \item An interface where users can customize the layout of their dashboard and change the positions of the different display blocks.
+        \item The ability for blocks to receive data and update in real time.
+        \item An interface where dashboards can display interactive building maps where users can view data associated to specific buildings in real time.
+        \item A page with data for each building on campus.
+        \item An interface for scalability that will allow administrators to add new buildings, meters, and subspaces.
+    \end{itemize}
+    
+    
+    \end{document}

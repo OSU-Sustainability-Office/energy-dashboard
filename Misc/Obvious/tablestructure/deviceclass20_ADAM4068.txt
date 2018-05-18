@@ -1,0 +1,25 @@
+Description:	Output log format for the ADAM 4068 and 4069 relay control module.  .
+
+$Id: deviceclass20_ADAM4068.txt,v 1.3 2010/03/19 16:33:01 herzogs Exp $
+
+ADAM-4068, 8 channel relay output module
+ADAM-4069, 8 channel power relay output module
+
+SQL table structure:
+
++-----------+------------------+------+-----+---------------------+-------+
+| Field     | Type             | Null | Key | Default             | Extra |
++-----------+------------------+------+-----+---------------------+-------+
+| time      | datetime         |      | PRI | 0000-00-00 00:00:00 |       |
+| error     | int(11)          | YES  |     | 0                   |       |
+| lowrange  | int(11) unsigned | YES  |     | 0                   |       |
+| highrange | int(11) unsigned | YES  |     | 0                   |       |
+| output 0  | int(2)           | YES  |     | NULL                |       |
+| output 1  | int(2)           | YES  |     | NULL                |       |
+| output 2  | int(2)           | YES  |     | NULL                |       |
+| output 3  | int(2)           | YES  |     | NULL                |       |
+| output 4  | int(2)           | YES  |     | NULL                |       |
+| output 5  | int(2)           | YES  |     | NULL                |       |
+| output 6  | int(2)           | YES  |     | NULL                |       |
+| output 7  | int(2)           | YES  |     | NULL                |       |
++-----------+------------------+------+-----+---------------------+-------+

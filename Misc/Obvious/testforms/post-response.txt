@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Date: Sat, 14 Jan 2006 00:39:45 GMT
+Server: Apache/1.3.29 (Unix) PHP/4.3.5
+X-Powered-By: PHP/4.3.5
+Connection: close
+Content-Type: text/html
+
+REPORT: Uploaded data file contained 4 vaild records, 0 duplicate records, and 0 rejected records for modbus device 1
+
+SUCCESS
+
+

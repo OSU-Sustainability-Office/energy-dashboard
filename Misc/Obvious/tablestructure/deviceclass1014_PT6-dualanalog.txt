@@ -1,0 +1,18 @@
+Description: Point Six, Dual Analog
+
+$Id: deviceclass1014_PT6-dualanalog.txt,v 1.1 2009/09/04 19:35:59 herzogs Exp $
+
+
+SQL table structure:
+
++-------------------+------------------+------+-----+---------------------+-------+
+| Field             | Type             | Null | Key | Default             | Extra |
++-------------------+------------------+------+-----+---------------------+-------+
+| time              | datetime         |      | PRI | 0000-00-00 00:00:00 |       |
+| error             | int(11)          | YES  |     | 0                   |       |
+| lowrange          | int(11) unsigned | YES  |     | 0                   |       |
+| highrange         | int(11) unsigned | YES  |     | 0                   |       |
+| Analog 1          | float            | YES  |     | NULL                |       |
+| Analog 2          | float            | YES  |     | NULL                |       |
++-------------------+------------------+------+-----+---------------------+-------+
+

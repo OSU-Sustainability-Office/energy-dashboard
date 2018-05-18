@@ -1,0 +1,62 @@
+$Id: HowToParseIniFileInPhp.txt,v 1.1 2004/12/15 19:27:48 herzogs Exp $
+
+
+/* ---------------------------------------------------------------------------------------*/
+/*      This function takes an acquisuite configuration ini file (in blob format)
+      and converts it into an array of ini set file parameters.
+
+
+*/
+function BMO_BlobIniToArray($blob)
+{
+        $lines = explode("\n", $blob);                   // convert blob into an array of line items    
+        foreach ($lines as $theline)                    // loop through the lines
+        {   $parts = explode("=", $theline);    // split each line into a parameter and value
+                if (strlen($parts[0]) > 0) $result_array[$parts[0]]=$parts[1];  
+			// add the parameter and value to our result array. (the parameter is used as the index.)
+        }
+        
+        return $result_array;
+}
+/* ---------------------------------------------------------------------------------------*/
+/*    This function takes an acquisuite configuration ini file (in blob format)
+      and converts it into an array of ini set file parameters.
+*/
+function BMO_BlobIniChecksum($blob)
+{
+        return md5($blob);
+}
+/* ---------------------------------------------------------------------------------------*/
+
+To use this function, get a blob from a database record
+then use the resulting array to call out ini file parameters.
+In the following example, 
+
+
+   $strQuery= "select * from tblDeviceList  where SerialNumber='$AS' and modbusdevicenumber='$MB'"; // first build the sql string 
+  
+   $SQLresult = mysql_query($strQuery,$MYSQL); // get the entry in the tblDeviceList to match our meter. 
+
+   if ($SQLrow = mysql_fetch_array($SQLresult)) // place all found recordset values into variables...
+   {   
+      $strTableName = $SQLrow["datatablename"]; 
+      $strModbusDeviceName = $SQLrow["devicename"];
+      $strDeviceType = $SQLrow["devicetype"];
+      $strModbusDeviceNumber = $SQLrow["modbusdevicenumber"];
+      $blobConfiguration = $SQLrow["configuration"];
+   }
+
+   $configArray =  BMO_BlobIniToArray($blobConfiguration);    // convert acquisuite ini file into an array of point config values.
+
+    // Then loop through the columns to call out the name, and units. 
+
+    for ($nRow = 4; $nRow < $nTotalFields; $nRow++)  // loop through column titles, skip first 4 (date, error, etc)
+    {   $strColumnTitle   = $configArray[sprintf("POINT%02dNAME", $nRow-4)]) ;  // point name which may be user specified.      
+        $strEngrUnits  = $configArray[sprintf("POINT%02dUNITS", $nRow-4)]);   // unit of measurement (kwh, gallons, etc) 
+   	
+	printf("%s (%s)", $strColumnTitle, $strEngrUnits); 
+    }
+
+For more information on tblDeviceList, see the corresponding table structure file description.
+
+

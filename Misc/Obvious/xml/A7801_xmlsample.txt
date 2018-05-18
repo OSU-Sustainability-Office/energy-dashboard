@@ -1,0 +1,57 @@
+$Id: A7801_xmlsample.txt,v 1.1 2005/08/12 19:38:43 herzogs Exp $
+
+Sample XML dump for an A7801 AcquiLite. 
+
+Note, points 10-13 and 24-27 are the kva/powerfactor points 
+and are only present when the A7801 is configured to group 
+a kwh and kvarh pulse meter together.  Please read the 
+A7801 documentation for more information on this feature.
+
+<?xml version="1.0" ?> 
+<DAS>
+  <name>Test AcquiLite</name> 
+  <serial>0050C230E057</serial> 
+    <devices>
+      <device>
+      <name>Test AcquiLite</name> 
+      <address>1</address> 
+      <type>Obvius, AcquiLite, pulse energy logger, A7801</type> 
+      <class>15</class> 
+      <numpoints>28</numpoints> 
+        <records>
+          <record>
+          <time zone="UTC">2005-08-12 18:36:16</time> 
+          <error>0</error> 
+          <point number="0" name="Pulse #1" units="kWh" value="5" /> 
+          <point number="1" name="Pulse #1 rate" units="kW" value="0 per hour" /> 
+          <point number="2" name="Pulse #1 rate (instantaneous)" units="kW" value="0" /> 
+          <point number="3" name="Pulse #1 rate min" units="kW" value="0" /> 
+          <point number="4" name="Pulse #1 rate max" units="kW" value="0" /> 
+          <point number="5" name="Pulse #2" units="" value="0" /> 
+          <point number="6" name="Pulse #2 rate" units="per minute" value="0 per minute" /> 
+          <point number="7" name="Pulse #2 rate (instantaneous)" units="per minute" value="0" /> 
+          <point number="8" name="Pulse #2 rate min" units="per minute" value="0" /> 
+          <point number="9" name="Pulse #2 rate max" units="per minute" value="0" /> 
+          <point number="10" name="-" units="" value="invalid" /> 
+          <point number="11" name="-" units="" value="invalid" /> 
+          <point number="12" name="-" units="" value="invalid" /> 
+          <point number="13" name="-" units="" value="invalid" /> 
+          <point number="14" name="Pulse #3" units="" value="0" /> 
+          <point number="15" name="Pulse #3 rate" units="per minute" value="0 per minute" /> 
+          <point number="16" name="Pulse #3 rate (instantaneous)" units="per minute" value="invalid" /> 
+          <point number="17" name="Pulse #3 rate min" units="per minute" value="invalid" /> 
+          <point number="18" name="Pulse #3 rate max" units="per minute" value="invalid" /> 
+          <point number="19" name="Pulse #4" units="" value="0" /> 
+          <point number="20" name="Pulse #4 rate" units="per minute" value="0 per minute" /> 
+          <point number="21" name="Pulse #4 rate (instantaneous)" units="per minute" value="invalid" /> 
+          <point number="22" name="Pulse #4 rate min" units="per minute" value="invalid" /> 
+          <point number="23" name="Pulse #4 rate max" units="per minute" value="invalid" /> 
+          <point number="24" name="-" units="" value="invalid" /> 
+          <point number="25" name="-" units="" value="invalid" /> 
+          <point number="26" name="-" units="" value="invalid" /> 
+          <point number="27" name="-" units="" value="invalid" /> 
+          </record>
+        </records>
+      </device>
+    </devices>
+</DAS>

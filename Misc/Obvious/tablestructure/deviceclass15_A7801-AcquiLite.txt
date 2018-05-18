@@ -1,0 +1,49 @@
+Description:	Obvius A7801 AcquiLite
+
+$Id: deviceclass15_A7801-AcquiLite.txt,v 1.2 2005/03/17 18:26:28 herzogs Exp $
+
+
+SQL table structure:
+
++-------------------------+---------------------+------+-----+---------------------+-------+
+| Field                   | Type                | Null | Key | Default             | Extra |
++-------------------------+---------------------+------+-----+---------------------+-------+
+| time                    | datetime            |      | PRI | 0000-00-00 00:00:00 |       |
+| error                   | int(11)             | YES  |     | 0                   |       |
+| lowrange                | int(11) unsigned    | YES  |     | 0                   |       |
+| highrange               | int(11) unsigned    | YES  |     | 0                   |       |
+| Pulse1Consumption       | double              | YES  |     | NULL                |       |
+| Pulse1Rate              | float               | YES  |     | NULL                |       |
+| Pulse1RateInst          | float               | YES  |     | NULL                |       |
+| Pulse1RateMin           | float               | YES  |     | NULL                |       |
+| Pulse1RateMax           | float               | YES  |     | NULL                |       |
+| Pulse2Consumption       | double              | YES  |     | NULL                |       |
+| Pulse2Rate              | float               | YES  |     | NULL                |       |
+| Pulse2RateInst          | float               | YES  |     | NULL                |       |
+| Pulse2RateMin           | float               | YES  |     | NULL                |       |
+| Pulse2RateMax           | float               | YES  |     | NULL                |       |
+| ApparentPowerDemand1    | float               | YES  |     | NULL                |       |
+| ApparentPowerInst1      | float               | YES  |     | NULL                |       |
+| PowerFactorDemand1      | float               | YES  |     | NULL                |       |
+| PowerFactorInst1        | float               | YES  |     | NULL                |       |
+| Pulse3Consumption       | double              | YES  |     | NULL                |       |
+| Pulse3Rate              | float               | YES  |     | NULL                |       |
+| Pulse3RateInst          | float               | YES  |     | NULL                |       |
+| Pulse3RateMin           | float               | YES  |     | NULL                |       |
+| Pulse3RateMax           | float               | YES  |     | NULL                |       |
+| Pulse4Consumption       | double              | YES  |     | NULL                |       |
+| Pulse4Rate              | float               | YES  |     | NULL                |       |
+| Pulse4RateInst          | float               | YES  |     | NULL                |       |
+| Pulse4RateMin           | float               | YES  |     | NULL                |       |
+| Pulse4RateMax           | float               | YES  |     | NULL                |       |
+| ApparentPowerDemand3    | float               | YES  |     | NULL                |       |
+| ApparentPowerInst3      | float               | YES  |     | NULL                |       |
+| PowerFactorDemand3      | float               | YES  |     | NULL                |       |
+| PowerFactorInst3        | float               | YES  |     | NULL                |       |
++-------------------------+---------------------+------+-----+---------------------+-------+
+
+
+Note: AparentPower 1,3 and PowerFactor 1,3 are only present when the AcquiLite has the 
+"group" feature.  This feature allows inputs 1+2 or 3+4 with KWH and KVARH pulse 
+inputs to be groupded and provides kva and pf calculations.  When the feature is disabled, 
+the columns are empty but are present to keep all columns aligned. 

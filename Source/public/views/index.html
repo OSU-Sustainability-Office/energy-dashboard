@@ -1,0 +1,89 @@
+<!-- views/profile.ejs -->
+<!doctype html>
+<html ng-app="myApp">
+
+<head>
+    <title>OSU Energy Dashboard</title>
+    <link rel="shortcut icon" href="../assets/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Cog edit icon -->
+    <style>
+        body {
+            word-wrap: break-word;
+        }
+    </style>
+    <!-- SPELLS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="//cdn.jsdelivr.net/d3js/3.5.17/d3.min.js" charset="utf-8"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+   
+    <!-- load angular and angular route via CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
+    <script src="js/controllers/main-controller.js"></script>
+    <!-- load up our controller -->
+    <script src="js/controllers/side-nav-controller.js"></script>
+    <!-- load up our controller -->
+    <script src="js/controllers/block-controller.js"></script>
+    <!-- load up our controller -->
+    <script src="js/controllers/building-controller.js"></script>
+    <!-- load up our controller -->
+    <script src="js/controllers/dashboard-controller.js"></script>
+    <!-- load up our controller -->
+    <script src="js/controllers/map-controller.js"></script>
+    <!-- load up our controller -->
+    <script src="js/controllers/story-controller.js"></script>
+    <!-- load up our controller -->
+    <script src="js/controllers/meter-controller.js"></script>
+    <!-- load up our controller -->
+    <script src="js/controllers/chart-controller.js"></script>
+    <!-- load up our controller -->
+    <script src="js/services/meter-service.js"></script>
+    <!--  load our user service -->
+    <script src="js/services/story-service.js"></script>
+    <!--  load our user service -->
+    <script src="js/services/user-service.js"></script>
+    <!--  load our user service -->
+    <script src="js/services/building-service.js"></script>
+    <!--  load our building service -->
+    <script src="js/services/block-service.js"></script>
+    <!--  load our block service -->
+    <script src="js/services/dashboard-service.js"></script>
+    <!--  load our dashboard service -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBnwhbP1SCZAauiBQv5TRi2JbODrBQ5hqE"></script>
+    <script src="js/core.js"></script>
+    <!-- load our main application -->
+    <link rel="stylesheet" type="text/css" href="../custom-style.css">
+</head>
+<body class="body container-fluid p-0" ng-controller="mainController">
+    <div id="nav" class="w-100 p-3 " style="height: 56px;">
+        <top-nav model="$parent"></top-nav>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div ng-hide="accountAccess < 0" class="custom-side-nav navbar-fixed-side navbar-fixed-side-left pl-0 pr-0 col-sm-2 col-md-2 Stratum2-Light card-shadow"
+                style="width: 162px; height: 100vh;">
+                <side-nav model="$parent"></side-nav>
+            </div>
+            <div ng-hide="accountAccess < 0" id="dashboardSelector" class="navbar-fixed-side navbar-fixed-side-left bg-dark" ng-include="'/storyNav'"
+                ng-class="dashboardClass">
+            </div>
+            <main ng-class="mainContent" role="main" class="container-fluid pt-3">
+                <div class="p-0 ml-4 mr-4" ng-view>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

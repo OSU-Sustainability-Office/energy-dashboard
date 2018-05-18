@@ -1,0 +1,48 @@
+<div ng-init="getViewBuilding()" class="row mt-4 Stratum2-Light font-weight-bold" ng-model="buildingModel" ng-controller="buildingController">
+        <div class="col-sm-4">
+            <h3 class="ml-3">{{buildingModel.name}}</h3>
+            <div class="rounded ml-3" style="height: 200px; width: 200px;">
+                <img class="rounded text-white bg-primary w-100 h-100" ng-src="{{getImageAddress(buildingModel)}}" alt="">
+            </div>
+            <p class="mt-3">
+                <b>Type:</b>{{buildingModel.building_type}}</p>
+        </div>
+        <div class="col-sm-8 pb-4" ng-controller="chartController">
+            <canvas ng-init="createChart({building: [buildingModel], var : 'Accumulated Real Energy Net', type : 'line', vals : 'none'})"
+                    class="myChart d-inline-block w-100"></canvas>
+            <div class="row p-1 m-3">
+                <div class="col-2"></div>
+                <div class="col-3">
+                    <button class="btn btn-success" ng-click="filterResults({building: [buildingModel], var : 'Accumulated Real Energy Net', range : 'lastweek', index : 0, type : 'line', vals : 'none'})">
+                        Last Week</button>
+                </div>
+                <div class="col-3">
+                    <button class="btn btn-success" ng-click="filterResults({building: [buildingModel], var : 'Accumulated Real Energy Net', range : 'thisweek', index : 0, type : 'line', vals : 'none'})">
+                        This Week</button>
+                </div>
+                <div class="col-3">
+                    <button class="btn btn-success" ng-click="filterResults({building: [buildingModel], var : 'Accumulated Real Energy Net', range : 'month', index : 0, type : 'line', vals : 'none'})">
+                        This Month</button>
+                </div>
+            </div>
+        </div>
+        <h4>Meters</h4>
+        <table ng-init="getBuildingData(buildingModel)" class="table border-black Stratum2-Thin font-weight-bold">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Meter Name</th>
+                    <th scope="col">Meter Serial</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-bottom-orange background-white" ng-repeat="meter in buildingMeters track by meter._id">
+                    <th scope="row">{{ $index + 1 }}</th>
+                    <td>{{meter.name}}</td>
+                    <td>{{meter.meter_id}}</td>
+                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    

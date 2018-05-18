@@ -1,0 +1,17 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}
+\contentsline {section}{\numberline {2}Visualization Frameworks}{3}{section.2}
+\contentsline {subsection}{\numberline {2.1}D3.js}{3}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Vis.js}{4}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Chart.js}{4}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Conclusion}{4}{subsection.2.4}
+\contentsline {section}{\numberline {3}Means of Incorporating Authentication}{5}{section.3}
+\contentsline {subsection}{\numberline {3.1}Building Our Own Authentication Layer}{5}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Outsourcing Authentication to Google}{6}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Use CAS (Central Authentication Service)}{7}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Conclusion}{8}{subsection.3.4}
+\contentsline {section}{\numberline {4}Front-end Framework}{8}{section.4}
+\contentsline {subsection}{\numberline {4.1}CSS Bootstrap}{8}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Pure CSS}{10}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Foundation}{10}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Conclusion}{11}{subsection.4.4}
+\contentsline {section}{References}{12}{section*.2}

@@ -1,0 +1,612 @@
+\documentclass[journal,10pt,onecolumn,compsoc]{IEEEtran} 
+    \usepackage[margin=0.75in]{geometry} 
+    \usepackage{pdfpages} 
+    \usepackage{graphicx}  
+    \graphicspath{/images}
+
+    \usepackage{tikz}
+    \usetikzlibrary{shapes,arrows}
+    \tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=5.5em, text centered, rounded corners, minimum height=4em]
+    \tikzstyle{subblock} = [rectangle, draw, fill=blue!20, 
+    text width=7em, text centered, rounded corners, minimum height=2em]
+    \tikzstyle{datablock} = [rectangle, draw, fill=red!20, 
+    text width=7em, text centered, rounded corners, minimum height=2em]
+    \tikzstyle{line} = [draw, -latex']  
+   
+    \newenvironment{paddedtikzpicture}{\vspace*{0.5cm}
+    \begin{center}\begin{tikzpicture}}
+    {\
+    \end{tikzpicture}\end{center}
+    } 
+    \usepackage[english]{babel} 
+    \setlength{\parskip}{\baselineskip} \setlength\parindent{24pt}
+    \usepackage{url}
+    \usepackage{setspace}
+    \usepackage{geometry}
+    \usepackage{hyperref}
+    \usepackage{caption} 
+    \usepackage{float}
+    \usepackage{rotating} 
+    \usepackage{ragged2e} % provides \RaggedLeft
+    \hypersetup{
+        colorlinks,
+        citecolor=black,
+        filecolor=black,
+        linkcolor=black,
+        urlcolor=black
+    }
+    \geometry{textheight=9.5in, textwidth=7in}
+    
+    % 1. Fill in these details
+    \def \CapstoneTeamName{		The Dream Team}
+    \def \CapstoneTeamNumber{		57}
+    \def \GroupMemberOne{			Daniel Schroeder}
+    \def \GroupMemberTwo{			Aubrey Thenell}
+    \def \GroupMemberThree{			Parker Bruni}
+    \def \CapstoneProjectName{		A Scalable Web Application Framework for Monitoring Energy Usage on Campus  }
+    \def \CapstoneSponsorCompany{	Oregon State Office of Sustainability}
+    \def \CapstoneSponsorPerson{		Jack Woods}
+    
+    % 2. Uncomment the appropriate line below so that the document type works
+    \def \DocType{		%Problem Statement
+            %Requirements Document
+            %Technology Review
+            Design Document
+            %Progress Report
+            }
+          
+    \newcommand{\NameSigPair}[1]{\par
+    \makebox[2.75in][r]{#1} \hfil 	\makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill		\makebox[.75in]{\hrulefill}}
+    \par\vspace{-12pt} \textit{\tiny\noindent
+    \makebox[2.75in]{} \hfil		\makebox[3.25in]{\makebox[2.25in][r]{Signature} \hfill	\makebox[.75in][r]{Date}}}}
+    % 3. If the document is not to be signed, uncomment the RENEWcommand below
+    %\renewcommand{\NameSigPair}[1]{#1}
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \title{Design Document for: \linebreak Scalable Web Application Framework for Monitoring Energy Usage on Campus}
+    \author{Daniel Schroeder, Aubrey Thenell, Parker Bruni}
+    \date{\today}
+    
+    \begin{document}
+    \maketitle
+    \vspace{2cm}
+    \begin{center}
+    \noindent \textbf{Abstract} \\
+                \indent The purpose of this document is to outline the architecture and component design for a Scalable Web Application Framework for Monitoring Energy Usage on Campus. The designs for each modular component are discussed in detail, outlining the data residing in each object and the functionality it holds in the application. Additionally, this document aims to discuss the rationale for each design decision and the interactions between individual components. 
+    \end{center}         
+    
+    \newpage
+    \pagenumbering{arabic}
+    \tableofcontents
+    \newpage
+       \noindent\textbf{Division of work:}
+       \noindent This is a list of tasks and content completed by each team member in order to compose the final document.
+       
+       \noindent\textbf{Daniel Schroeder} contributed to: 
+       \begin{itemize}
+           \item Introduction: Definitions and Acronyms
+           \item Document Outline 
+           \item Decomposition Description of Subsystems
+           \item Subsystem Flowcharts
+           \item System Overview Section
+           \item System Architecture Section
+           \item Decomposition Rationale
+           \item Component Design: Block, Graph, Navigation Bar, Dashboard
+           \item UML diagram
+           \item Abstract
+           \item Design Viewpoints
+           \item Stakeholders and Concerns
+       \end{itemize}
+       \noindent\textbf{Parker Bruni} contributed to:
+       \begin{itemize}
+       	   \item Overview of User Interface and subsections
+           \item UI Design and mock-up screenshot generation
+           \item UI Screenshot Descriptions
+           \item Introduction: Purpose, Scope
+	   \item Proof reading and edit suggestions
+	   \item Key terms clarifications
+       \end{itemize}
+       \noindent\textbf{Aubrey Thenell} contributed to:
+       \begin{itemize} 
+			\item Introduction: References, Definitions and Acronyms
+			\item System Architecture: Decomposition Description
+			\item Component Design: Block, Login, Navigation Bar, Stories, Content View
+			\item General formatting
+			\item Document review and preparation
+       \end{itemize}
+       
+       \newpage
+    % 7. uncomment this (if applicable). Consider adding a page break.
+    %\listoffigures
+    %\listoftables
+    \clearpage
+    
+    % 8. now you write!
+    \section{Introduction}
+    \subsection{Purpose}
+	
+    The purpose of this Software Design Document (SDD) is to provide details about the architecture of the web application as well
+	as details about each component. It will describe the underlying design of each component and their purpose within the context
+	of the application that will allow Oregon State affiliates to effectively monitor energy usage on campus.
+	
+    \subsection{Scope}
+    
+	The software outlined in this document will function as an interface by which Oregon State students, faculty, and affiliates
+	may monitor energy usage of various buildings located on the Oregon State Campus. It will act as a tool for users to 
+	make informed infrastructure decisions and adjustments or act as a display piece to be presented within buildings on campus.
+	It will serve the OSU Office of Sustainability as a replacement to an outdated and costly implementation. 
+	
+    \subsection{Overview}
+    Oregon State University is constantly making strides to reduce its carbon footprint and reduce its energy consumption. There is a carbon neutrality goal for 2025 where the university is trying to generate as much energy as it uses and have a net carbon footprint of zero. Our web application aims to monitor the energy use of buildings on campus in order to create a visual representation of each building's consumption and incentivize people to monitor their consumption habits and reduce the campus's overall consumption.
+
+    \noindent Our web application will resemble an administrative dashboard with charts and graphs of energy use over time for individual buildings and subgroups of buildings on Oregon State's campus. 
+    Our application will have a series of public facing pages that will show energy usage for all the buildings on campus that have AcquiSuite meters as well as display user generated stories of personalized dashboards. Each page will be a grid-based dashboard with personalized blocks for displaying data through time-series charts or graphs. A user will be able to add different blocks to create unique dashboards for their own unique interests and subsets of buildings. An example of this would be a dashboard designated to only residence halls where each block shows a usage over time graph for energy consumption of each residence hall. Users will be able to apply date filters to their blocks to generate different data sets and more explicit visualizations.
+
+    \noindent Our web application will be constructed using a MEAN Stack framework hosted on AWS. Our application will have a MongoDB database server and a Node.js application server hosted on a single virtual EC2 instance to make deployment easy and reliable.
+   
+	\subsection{Reference Material}
+	{[1]} ``Dashboard'', v4-alpha.getbootstrap.com, 2017. [Online]. Available: https://v4-alpha.getbootstrap.com/examples/dashboard/. [Accessed 30- Nov- 2017]. \\
+	{[2]} ``Using OAuth 2.0 to Access Google APIs'', developers.google.com, 2017. [Online]. Available: 		https://developers.google.com/identity/protocols/OAuth2. [Accessed 30- Nov- 2017]. \\
+	{[3]} ``Data-Driven Documents'', d3js.org, 2017. [Online]. Available: https://d3js.org/. [Accessed 30- Nov- 2017]. \\
+	{[4]} ``ng'', angularjs.org, 2017. [Online]. Available: https://docs.angularjs.org/api/ng. [Accessed 30- Nov- 2017]. \\
+	{[5]} ``AcquiSuite'', obvius.com, 2017. [Online]. Available: http://www.obvius.com/Products/A8812. [Accessed 30- Nov- 2017]. \\
+	
+    \subsection{Definitions and Acronyms}
+    This section will define terms and acronyms that are specific to the application that may otherwise be misunderstood or poorly interpreted.
+    \begin{itemize}
+        \item \textbf{Dashboard:}
+            A grid-based information management tool for visually tracking and displaying metrics and data through graphs and charts.
+        \item \textbf{Block:} 
+            An individual graph or chart depicting time-series data. More specifically, it is an HTML element containing one or more buildings, with filter buttons, informative text, and graphs.
+        \item \textbf{Story:} 
+            A user generated collection of dashboards. What each story displays is based solely on user preferences. With multiple stories, the user can select between ``presets'' that can show different dashboards.
+        \item \textbf{MEAN Stack:} 
+            An acronym used to define a full stack application engineered from the MongoDB, Express.js, Angular.js, and Node.js frameworks. 
+        \item \textbf{Bootstrap:} 
+            Bootstrap CSS is a front-end framework that uses component templates to easily generate different HTML elements like buttons, navigation, or forms. 
+        \item \textbf{OAuth 2.0:} 
+            OAuth 2.0 is an authorization protocol that grants authentication through tokens rather than credentials. 
+        \item \textbf{Filter:} 
+            Filters are essentially parameters for fetching data from that constrain the subset of data being received to the specifications of the filter parameters (i.e. a date range). 
+        \item \textbf{D3:} 
+            D3.js is a visualization framework that appends charts and graphs to DOM elements on a webpage. 
+        \item \textbf{AcquiSuite:} 
+            AcquiSuites are data acquisition servers made by a company called Obvius that post building meter data to a designated IP address.
+        \item \textbf{AWS:} 
+            AWS is an acronym for Amazon Web Services which offers reliable cloud computing services for building and hosting web applications.
+	   \item \textbf{Passport:} 
+			Passport is authentication middleware for Node.js. Extremely flexible and modular, Passport can be unobtrusively dropped in to any Express-based web application. A comprehensive set of strategies support authentication using a username and password, Facebook, Twitter, etc.
+   \end{itemize}
+    \section{System Overview} 
+    Our web application will provide users with the functionality to create unique dashboard-style collections of charts and graphs to analyze energy use from Oregon State's campus buildings. Our system will be highly modular, containing multiple smaller components that provide their own individual functionality while sharing information across other components. Designing a modular architecture will simplify the code base and allow the developers to encapsulate specific data models as their own entities and keep abstractions in the system differentiable.
+    
+    \noindent Our design also stems from the main constructs behind AngularJS and data injection. Most of our components and subsystems are, at large, data models and objects that hold all the necessary information to create graph and charts. With this design, AngularJS services will extract data from the session user and rendered components and generate render the desired graphs and views to the content container. This allows the application to break up back-end services as well as UI components to simplify how data is gathered and processed.
+    \section{Design Viewpoints and Concerns}
+    \subsection{Stakeholders and Concerns}
+    Developers concerns consist of simplifying complex model functions, replicable components, modular subsystems, and simple data access functionality. Addressing and capitalizing on these concerns will create an application design that will enhanced understanding, simplify implementation, and produce a high-end product. From a developer's standpoint, it is also essential to design an application that is ideal for both implementation and usability.
+
+    \noindent Client concerns revolve around satisfying the requirements of the application and providing all the necessary user functionality. The implementation should adhere to the client's requests and specifications while creating a user-friendly interface to perform all the necessary actions.
+    \subsection{Design Viewpoints}
+    \subsubsection{Context Viewpoint}
+    The design of this web application will greatly depend upon satisfying the user actions outlined in the requirements document. With that in mind, all components and subsystems should cater towards simplifying the user's experience while performing actions and navigating through the application. This viewpoint provides design constraints for individual component functionality, as well as the overall layout and structure of the application as a whole. Our design implementations should cater to a wide range of users while creating an elegant way for the user to create, edit, and remove content.
+    \subsubsection{Composition Viewpoint}
+    This application contains a number of components that are recurrently used throughout the application and across users. These include the basic data blocks, dashboards, and stories that a user can create. The design of this application should embrace the modularity of these components and provide a consistent model for individual functionality while maintaining the ability to communicate and pass data across different components or objects. 
+    
+    \subsubsection{Dependency Viewpoint}
+    With a design focused around modularity and individualized components, there needs to be designs for services and dependencies so each component can interact. Some examples of these are: how a block component depends on multiple entities contained inside the block object like the building objects stored within the block, the filter's current values, the graph template, and the graphing service. The design of this application should encapsulate the relationships between different modular components and provide intuitive means for inter-component communication.
+
+    \subsubsection{Information Viewpoint}
+    Our applications design should provide logical ways of storing data and receiving data from building meters. This involves an explicit declaration of individual data models and how how data is created and stored. Our design will attempt to create a modular data structure where data specific to certain entities reside in the entity objects themselves. This allows the application to access data from an individual component as it gets created or moved throughout the application.
+    
+    \subsubsection{Logical Viewpoint}  
+    The application should maintain a consistent model for each component which can be used in different ways for different purposes. An entity should contain and provide the necessary information as it is needed throughout various areas of the application. The design of the application as a whole should consider where certain data is needed, and what data models must be present to satisfy the system's requests.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=14cm]{images/CapstoneUML.eps}
+        \caption{A UML diagram to show component relationships.}
+    \end{figure}
+    \subsubsection{Interface Viewpoint}  
+    Users will require a front end interface to interact with the application and utilize its functionality. The design of these interfaces should focus on satisfying all user actions in a simple and appealing manner. Users should be able to intuitively navigate the application and perform essential tasks without confusion or error.
+    \subsubsection{Structure Viewpoint} 
+    The design of this application describes the structure of independent modular components and their relationships to other entities. From a developer's standpoint, organizing the structure and interdependence of different components is essential when implementing a complex system. This application's design highlights key individual components along with their individual functionality and relationships with other entities. 
+    \subsubsection{Interaction Viewpoint}  
+    Each object component in the application should not need any logic to handle its interactions with other components. This functionality should be performed by services and model functions implemented in the back-end of the application. The design of this application aims to keep data and entities separate from the logical functionality required to extract and share data across different components.
+    \section{System Architecture}
+    \subsection{Architectural Design}
+    
+    \begin{figure}[H] 
+    \begin{paddedtikzpicture}[node distance = 2cm, auto]
+        % Place nodes
+        \node (ui)[block] {User Interface}; 
+        \path (ui.east)+(2,5) node (nav) [block] {Navigation}; 
+        \path [line] (ui)+(-0.3,0.7) -- (nav);
+        \path (ui.east)+(2,3) node (block) [block] {Create Block}; 
+        \path [line] (ui) -- (block);
+        \path (ui.east)+(2,1) node (dash) [block] {Create Dashboard}; 
+        \path [line] (ui) -- (dash);
+        \path (ui.east)+(2,-1) node (story) [block] {Create Story}; 
+        \path [line] (ui) -- (story);
+        \path (ui.east)+(2.35,-3) node (add) [block,  text width=7.5em] {Add Building/Meter};
+        \path [line] (ui) -- (add);
+        \path (ui.east)+(2,-5) node (log) [block] {Log In}; 
+        \path [line] (ui)+(-0.3,-0.7) -- (log);
+        
+        %Create Dashboard
+        \path (nav.east)+(2,0) node (select) [subblock] {Get User Selection};
+        \path [line] (nav) -- (select);
+        \path (select.east)+(2,0) node (route)[datablock] {Pass Selected Route to View};
+        \path [line] (select) -- (route); 
+         
+        %Create Block
+        \path (block.east)+(2,0.5) node (ctype) [subblock] {Get Chart Type};
+        \path [line] (block) -- (ctype);
+        \path (block.east)+(2,-0.5) node (bdata)[subblock] {Get Building Data};
+        \path [line] (block) -- (bdata); 
+        \path (block.east)+(5,0) node (template)[subblock] {Retrieve Graph Template}; 
+        \path [line] (bdata) -- (template); 
+        \path [line] (ctype) -- (template); 
+        \path (template.east)+(2,0) node (d3)[subblock] {Build D3}; 
+        \path [line] (template) -- (d3); 
+        %Create Dashboard
+        \path (dash.east)+(2,0) node (getblocks) [datablock] {Get Blocks};
+        \path [line] (dash) -- (getblocks);
+        \path (getblocks.east)+(2,0) node (saveblock)[datablock] {Add Blocks to Dashboards};
+        \path [line] (getblocks) -- (saveblock); 
+        %Create Story
+        \path (story.east)+(2,0) node (createdash)[datablock] {Get Dashboards};
+        \path [line] (story) -- (createdash); 
+        \path (createdash.east)+(2,0) node (adddash)[datablock] {Add Dashboards to Story};
+        \path [line] (createdash) -- (adddash); 
+        
+        %Add Building
+        \path (add.east)+(2,0) node (input)[subblock] {Get Input Data};
+        \path [line] (add) -- (input); 
+        \path (input.east)+(2,0) node (storeinput)[subblock] {Store Input Data};
+        \path [line] (input) -- (storeinput); 
+
+        %Log In
+        \path (log.east)+(2,0) node (auth) [subblock]  {Google oAuth 2.0};
+        \path [line] (log) -- (auth);
+        \path (auth.east)+(2,0.5) node (store) [subblock] {Store User};
+        \path [line] (auth) -- (store);
+        \path (auth.east)+(2,-0.5) node (retrieve)[subblock] {Retrieve User}; 
+        \path [line] (auth) -- (retrieve);
+    \end{paddedtikzpicture}
+    \caption{An overview of the major application systems.} 
+    \end{figure}
+    \subsection{Decomposition Description}
+    
+    All database operations (retrieving data and storing data) are denoted with red fill and will be carried out by an AngularJS ``Service'' within the component's controller. 
+    \subsubsection{Log In}
+    \begin{figure}[H] 
+    \begin{paddedtikzpicture}[node distance = 2cm, auto]
+        % Place nodes
+        \node (login)[block] {Log In}; 
+        \path (login.east)+(2,0) node (googleauth) [block] {Contact Google oAuth API}; 
+        \path [line] (login) -- (googleauth);
+        \path (googleauth.east)+(2,0.5) node (store) [datablock] {Store User in Database}; 
+        \path [line] (googleauth) -- (store);
+        \path (googleauth.east)+(2,-0.5) node (retrieve) [datablock] {Retrieve User From Database}; 
+        \path [line] (googleauth) -- (retrieve);
+    \end{paddedtikzpicture} 
+    \caption{A functional representation of the log in subsystem.} 
+    \end{figure}
+    \subsubsection{Navigation} 
+    \begin{figure}[H] 
+    \begin{paddedtikzpicture}[node distance = 2cm, auto]
+        % Place nodes
+        \node (nav)[block] {Navigation Bar}; 
+        \path (nav.east)+(2,0) node (route) [block] {Get Route from Nav Item}; 
+        \path [line] (nav) -- (route);
+        \path (route.east)+(2,0.5) node (pass) [subblock] {Pass Route to Parent Scope}; 
+        \path [line] (route) -- (pass);
+        \path (route.east)+(2,-0.5) node (view) [datablock] {Call Route's Get Function}; 
+        \path [line] (route) -- (view);
+        \path (route.east)+(5.5,0) node (render) [subblock, text width=8em] {Render New View HTML}; 
+        \path [line] (pass) -- (render);
+        \path [line] (view) -- (render);
+    \end{paddedtikzpicture} 
+    \caption{A functional representation of the navigation subsystem.} 
+    \end{figure}
+    \subsubsection{Create Block} 
+    \begin{figure}[H] 
+    \begin{paddedtikzpicture}[node distance = 2cm]
+        % Place nodes
+        \node (create)[block] {Create Block}; 
+        \path (create.east)+(2,0) node (view) [block] {Serve Web Form in View};
+        \path [line] (create) -- (view);
+        \path (view.east)+(2,0.5) node (charts) [datablock] {Pull Charts from Database}; 
+        \path [line] (view) -- (charts);
+        \path (view.east)+(2,-0.5) node (buildings) [datablock] {Pull Buildings from Database}; 
+        \path [line] (view) -- (buildings);
+        \path (view.east)+(5.5,0) node (submit) [subblock, text width=8em] {Get User from Data}; 
+        \path [line] (charts) -- (submit);
+        \path [line] (buildings) -- (submit);
+        \path (submit.east)+(2,0) node (store) [datablock, text width=8em] {Store Block in User Object}; 
+        \path [line] (submit) -- (store);
+    \end{paddedtikzpicture} 
+    \caption{A functional representation of the block creation subsystem.} 
+    \end{figure}
+    \subsubsection{View Blocks}
+    \begin{figure}[H] 
+    \begin{paddedtikzpicture}[node distance = 2cm]
+        % Place nodes
+        \node (view)[block] {View Blocks}; 
+        \path (view.east)+(2,0) node (retrieve) [datablock] {Retrieve Blocks from User Object};
+        \path [line] (view) -- (retrieve);
+        \path (retrieve.east)+(2,0) node (render) [subblock] {Render Blocks to Content View}; 
+        \path [line] (retrieve) -- (render);
+        \path (render.east)+(2,0.5) node (edit) [datablock, text width=8em] {Edit Block Fields}; 
+        \path (render.east)+(2,-0.5) node (delete) [datablock, text width=8em] {Delete Block};
+        \path [line] (render) -- (edit);
+        \path [line] (render) -- (delete); 
+    \end{paddedtikzpicture}  
+    \caption{A functional representation of the block view subsystem.} 
+    \end{figure}
+   User created blocks will be stored in their respective ``Blocks'' array This allows a user to keep track of the specific blocks they create and reuse them to create stories.
+    \subsubsection{Create Dashboard}
+    \begin{figure}[H] 
+    \begin{paddedtikzpicture}[node distance = 2cm]
+        % Place nodes
+        \node (view)[block] {Create Dashboard}; 
+        \path (view.east)+(2,0) node (retrieve) [datablock] {Retrieve Blocks from User Object};
+        \path [line] (view) -- (retrieve);
+        \path (retrieve.east)+(2,0) node (render) [datablock] {Store Selected Blocks in Dashboard Object}; 
+        \path [line] (retrieve) -- (render);
+        \path (render.east)+(2,0) node (edit) [datablock, text width=8em] {Store Dashboard in User Object};  
+        \path [line] (render) -- (edit); 
+    \end{paddedtikzpicture}  
+    \caption{A functional representation of creating a dashboard object from user created block.} 
+    \end{figure}
+    A dashboard is a collection of blocks. The dashboard component provides a way to group blocks together based on user preference and display them in the content view by simply rendering each block stored.
+    \subsubsection{Create Story}
+    \begin{figure}[H] 
+    \begin{paddedtikzpicture}[node distance = 2cm]
+        % Place nodes
+        \node (story)[block] {Create Story}; 
+        \path (story.east)+(2,0) node (retrieve) [datablock] {Retrieve User Dashboards};
+        \path [line] (story) -- (retrieve);
+        \path (retrieve.east)+(2,0) node (add) [datablock, text width=8em] {Save Selected Dashboards to Story};
+        \path [line] (retrieve) -- (add);
+        \path (add.east)+(2,0) node (store) [datablock, text width=8em] {Store Block in Story Object};
+        \path [line] (add) -- (store); 
+    \end{paddedtikzpicture}   
+    \caption{A functional representation of the story creation subsystem.} 
+    \end{figure}
+    Stories are stored in the User object who created them in an array ``Stories.'' This allows the application to render stories created by the session user easily and will eliminate the use of SQL style querying to retrieve stories based on a user key.
+    \subsubsection{Add Building/Meter}
+    \begin{figure}[H] 
+        \begin{paddedtikzpicture}[node distance = 2cm]
+            % Place nodes
+            \node (add)[block, text width=8em] {Add Building/Meter}; 
+            \path (add.east)+(2,0) node (render) [subblock] {Render Input Form};
+            \path [line] (add) -- (render);
+            \path (render.east)+(2,0) node (store) [datablock, text width=8em] {Store Form Values As New Object};
+            \path [line] (render) -- (store);
+        \end{paddedtikzpicture}   
+        \caption{A functional representation for storing new building and meter objects to the database.} 
+    \end{figure}
+    
+    \subsubsection{Create Graph}
+    \begin{figure}[H] 
+        \begin{paddedtikzpicture}[node distance = 2cm]
+            % Place nodes
+            \node (graph)[block] {Create Graph}; 
+            \path (graph.east)+(2,0) node (get) [datablock] {Get Data from Parent Block};
+            \path [line] (graph) -- (get);
+            \path (get.east)+(2,0) node (fetch) [datablock, text width=8em] {Fetch Graph Template};
+            \path [line] (get) -- (fetch);
+            \path (fetch.east)+(2,0) node (render) [subblock, text width=8em] {Serve Graph to HTML};
+            \path [line] (fetch) -- (render);
+        \end{paddedtikzpicture}   
+        \caption{A functional representation for building a graph in a block.} 
+    \end{figure}
+    To render a chart or graph to the webpage, our application will gather all the parameters from the block component that contains the graph (the building(s), the chart type, and the date range). The the graph component will then fetch a D3 template for its specific chart type, input the data from the block, and serve it to the dashboard. 
+
+    \subsubsection{Get AcquiSuite Data}
+    \begin{figure}[H] 
+        \begin{paddedtikzpicture}[node distance = 2cm]
+            % Place nodes
+            \node (data)[datablock] {Receive AcquiSuite Data}; 
+            \path (data.east)+(2,0) node (parse) [subblock] {Parse Data to JSON Object};
+            \path [line] (data) -- (parse);
+            \path (parse.east)+(2,0) node (store) [datablock, text width=8em] {Store Data in Building Object};
+            \path [line] (parse) -- (store);
+        \end{paddedtikzpicture}   
+        \caption{A functional representation for storing AcquiSuite data to a building object.} 
+    \end{figure}
+    Timestamped data entries from AcquiSuite Servers will be contained in their respective building objects from which the data was sent. Similar to the rational behind storing blocks in the user object that created them, each building will have an array of meter data sorted by timestamp. This will allow our application to use a service to retrieve the data for any graphs or charts directly from the buildings objects in the relative block. A graph service can then fetch the building data, apply filters (like date ranges), and pass it to a D3 graph to render. This minimizes the amount of total data to be parsed and collected by narrowing the data to the relative block.
+
+    \noindent [\textbf{Note:} Subject to change in later revisions. The methodology of how to receive data from  AcquiSuite data acquisition servers is still being designed.]
+
+    \subsection{Design Rationale}
+    The system's architecture revolves around a heavily modular system where individual components have their own functionality and are able to work cohesively with other components. The modular architecture also breaks up the back-end components into smaller services which simplifies functionality across the entire application.
+    
+    \section{Component Design}
+    This section is designated to describing individual components in greater detail, including the type of element, designated functionality, and the reasoning behind their design. 
+	Overall, this section aims to provide an in-depth view of the application components and describe their individual roles in the application as a whole.
+		\subsection{Block}
+			A Block is a component in our application that will act as a container for a graph, filter options, and provide information about the data in the graph.
+			\subsubsection{Element} 
+				A Block is an HTML element that uses the Bootstrap 4 ``card'' component for its design. It will have a title bar with the Block's name, then a content container split into a grid. 
+				On the left, the Block will display the building(s) being graphed, contain a column of filter buttons, and display the D3 graph in the right column. 
+			\subsubsection{Functionality}
+				The Block component neatly organizes data for the user by encapsulating the data, filters, and graph components into one container. 
+				A Block needs to pull data from the ``building'' objects that it contains, gather data from any filters, and pass all this data into the correct graph template to generate a D3 graph. 
+				There will be a service within the Block's AngularJS controller that will gather this data and pass the desired output to the dashboard.
+			\subsubsection{Rationale} 
+				The Block component is an efficient way to create a reusable HTML template that can be reproduced throughout the application. 
+				This provides a simple and consistent process for displaying graphs and data. Additionally, the block component yields a compact solution for organizing data from multiple sources. 
+		
+		\subsection{Dashboard}
+			The dashboard component acts a way to store collections of block objects based on user preference.
+			\subsubsection{Element} 
+				A dashboard is an object in the database that holds a collection of block objects.
+			\subsubsection{Functionality}
+				The dashboard object is a way to conveniently package blocks together into groups so users can reuse the same groups or create unique collections of different blocks. 
+				When ``viewing'' a dashboard, the application will simply iterate through the block objects and render them to the view container in a vertical list.
+			\subsubsection{Rationale} 
+				The dashboard components provides a simple way to organize data keep track of user generated collections. 
+				The dashboard component will work nicely with AngularJS to render an HTML element for every object in an array, which in this case are the blocks in the dashboard.
+	
+		\subsection{Login}
+			The Login component is an HTML button that will allow users to login with a Gmail account by redirecting the user to Google's oAuth 2.0 API.
+			\subsubsection{Element}
+				The Login function will be a button in the corner of the screen or somewhere in the navbar. The button will change to ``logout'' if the user is already logged in.
+			\subsubsection{Functionality}
+				Clicking the Login component will redirect the user to our authentication service. 
+				The application will use ``PassportJS'' as an authentication middleware which authenticates the user with Google oAuth 2.0 tokens and sets the req.user variable upon redirecting to the specified route. 
+				Once a user is logged in, they will have access to additional application functionality and navigation items based on role.
+			\subsubsection{Rationale}
+				From a developer standpoint, requiring users to login for certain features will make separation of privileges much easier. With authentication, users will also be able to have the convenience of Google SSO.
+	
+		\subsection{Navigation Bar}
+			The Navigation bar is a commonly used UI feature that provides users the ability to navigate through different webpages of the application.
+			\subsubsection{Element}
+				The navigation bar will be an HTML element with differentiable ``nav-items'' that render different views to the content view space. There will be a fixed-top navigation bar for generic item and a side bar navigation for more explicit functionalities such as admin controls. 
+			\subsubsection{Functionality}
+				Clicking on a nav-item has one of two functionalities: 
+				\begin{itemize}
+					\item Redirects the user to a new webpage by having the route's get function perform a redirect.
+					\item Renders a new view to the webpage by having the route's get function render a new HTML view.
+				\end{itemize}
+				The navigation bar shows which item is currently being served by changing the style of the active nav-item to be different than the rest.
+			\subsubsection{Rationale}
+				From a user perspective, having a navigation bar to navigate around the main features is an extremely useful UI design decision. 
+				From a design perspective, having a dedicated area to insert useful links is much more streamline than listing them. 
+				The navigation bar is a very useful tool for serving different content to the view space statically.
+		
+		\subsection{Graph Component}
+			Our application will contain a graph component that accepts a graph type and data as input and constructs a graph using the D3 visualization framework.
+			\subsubsection{Element}
+				A graph component will be an SVG element, created with D3, that is served to the webpage inside of a block. 
+			\subsubsection{Functionality}
+				The graph component's functionality involves gathering different input parameters from the parent block component, fetching a template based on the graph type, and creating a unique graph. 
+				The graph component should have its own service to handle all the data organization and create a list of uniform parameters than can be passed to a D3 graph template.
+			\subsubsection{Rationale}
+				Having a structure like this simplifies the act of generating graphs by having a series of templates that can be fed data in a specific format. 
+				The graph service can take all the data and different filter parameters from the block object and format it into the right structure. 
+				All the computationally heavy functionality is black-boxed in the graph service and keeps the functionality handled by the user and front-end at a minimal. 
+				Another benefit provided by the graph component is that it can change the graph dynamically. 
+				Our application may include filters in the block component like a date range or a filter to change the graphed variable, which can trigger the graph service to reconstruct the data and create a new graph to serve based on the applied filters.
+		
+			\subsection{Story}
+			A story is a container for user dashboards to be stored and retrieved. A story is an abstract object that allows the user to create unique collections of dashboards with general theme or purpose.
+			\subsubsection{Element}
+				A story will be an database object that contains collections of dashboards.
+			\subsubsection{Functionality}
+				Each story will have a collections of dashboards. The number of dashboards in the collection will vary from story to story based on user preference.
+		
+		\subsection{Content View}
+			The content view is a portion of the webpage where different views can be rendered to provide different content.
+			\subsubsection{Element} 
+				The content view will be an HTML container that resides within the context of the webpage. The user will be able to change the content of the container by selecting different navigation items.
+			\subsubsection{Functionality}
+				When the user clicks on a button or list on the side bar, it will pass a route to the scope variable in the view container. Once that route is called, the Angular function ``ng-include'' will inject the rendered HTML into the context of the webpage.
+			\subsubsection{Rationale} 
+				From a developer standpoint, having a content view will dramatically reduce clutter both in the code and in the UI. The content view allows the application to serve dynamic content without reloading the webpage and creates a simple way to perform navigation services.
+
+	
+	
+	\section{Human Interface Design}
+    \subsection{Overview of User Interface}
+    
+	\subsubsection{Public User}
+	A public user is a user without a registered account or a user that is not logged in to their registered account. The authentication of a user is based on if 
+	they have a registered Oregon State Gmail domain. Public users will have limited access to features and data on the website. For example, the left side navigation
+	bar will be hidden from a public user. Public users will not be able to create personalized dashboards or stories. Public users will be allowed to view public 
+	user generated dashboards as well as general building dashboards. Essentially, public users will not be able to create personalized data sets or modify elements of the site but will be 
+	allowed to view general public data. 
+	\subsubsection{Authorized User}
+	An authorized user is a user with a registered Oregon State Gmail account but does not have administrative privileges. When an authorized user is logged into their account, 
+	they have greater privileges than a public user as well as all privileges granted to a public user. They are allowed access to a left side navigation 
+	bar that has special functionality. Unique functionality granted by the vertical navigation bar include: viewing of personal and public dashboards, viewing of personal and public
+	stories, and access to personal settings. Authorized users may create personalized dashboards and stories for unique purposes.
+	
+	\subsubsection{Administrative User}
+	Administrative users will have the highest privileges and control of the website. They have all privileges as a public or authorized user. Administrative users
+	will be able to add or remove buildings, meters, public dashboards, and public stories as well as perform general administration tasks.
+	
+	
+    \subsection{Screen Images}
+    
+	\subsubsection{Home Webpage (Public Access)}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=14cm]{images/Home_NOT_Logged_In.eps}
+        \caption{A mock-up of a home page from a general public user access perspective (not logged in to an account).}
+    \end{figure}
+	If a general public user does not have an account but wishes to access energy monitoring data, they will
+	have a unique experience with the site that is different than those who are logged in to authorized accounts. 
+	For instance, they will not have the ability to create personal dashboards or stories, but will be allowed to view
+	public stories, public dashboards, and general building dashboards. They will not have access to the same navigation 
+	bar on the left side of the screen as a logged in user. 
+	
+	\subsubsection{Home Webpage (Logged in Access)}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=14cm]{images/Home_Logged_In.eps}
+        \caption{A mock-up of a home page from an authorized user access perspective (logged in to an account).}
+    \end{figure}
+	If an authorized user wishes to access energy monitoring data, they will be able to have special privileges.
+	For instance, they will have the ability to create personal dashboards or stories which they may specify as private or public.
+	They will have access to a navigation bar on the left side of the screen which allows for unique data viewing and privileges. 
+	
+	
+    \subsubsection{Buildings Webpage} 
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=14cm]{images/buildings.eps}
+        \caption{A mock-up of the webpage that shows all buildings.}
+    \end{figure}
+	Users may select the ``Buildings'' tab in the navigation bar to bring up an array of building cards to choose from.
+	Every building on campus that is gathering metering data associated with this application will have a card in this array.
+	A user may select a building card to bring up a generalized dashboard of information for each specific building. 
+	The user will be able to search for buildings by name in a search bar. Administrators will be able to add buildings as the metering system expands to new buildings.
+	
+    \subsubsection{Selected Building Page}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=14cm]{images/Building_Select.eps}
+        \caption{A mock-up of a selected building page.}
+    \end{figure}
+	Once a user has selected a building card, a generalized dashboard will be displayed to them.
+	All buildings associated with this application will contain the same generalized dashboard to be viewed.
+	These dashboards will display various cards of data detailing the most general information about their respective buildings.
+	A user may full screen the application to remove menu clutter and allow for a more presentable display of the data. 
+	Users will have the option to modify personal dashboards or public dashboards by adding a card, adjusting the organization of cards, or editing the information on the cards.
+	
+	\subsubsection{Dashboards Page}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=14cm]{images/Dashboards.eps}
+        \caption{A mock-up page of a list of user generated dashboards.}
+    \end{figure}
+	Users may select the ``Dashboards'' tab in the navigation bar to bring up a list of user-generated dashboards.
+	The dashboards will contain user specified arrangements of data cards. 
+	The list of dashboards will detail the name of each dashboard, the user that created each dashboard, and the date and time of when each was created.
+	The user will be able to search for dashboards by name in a search bar. 
+	A user may select a dashboard from the list to view or use the options menu for more specific tasks.
+	
+    \subsubsection{Selected Dashboard Webpage}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=14cm]{images/Dashboard_Select.eps}
+        \caption{A mock-up of a selected dashboard webpage.}
+    \end{figure}
+	Once a user has selected a dashboard, a user-generated dashboard will be displayed to them.
+	The dashboard will display various cards of data presenting information about various buildings energy usage.
+	A user may full screen the application to remove menu clutter and allow for a more presentable display of the data.
+	
+    \subsubsection{Story Webage}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=14cm]{images/Stories.eps}
+        \caption{A mock-up of a list of user generated story Webpages.}
+    \end{figure}
+	Users may select the ``My Stories'' tab in the navigation bar to bring up a drop down list of their personal stories in the left side navigation bar.
+	Each story will contain a list of dashboards that was generated by the current user to their preference. 
+	The list of stories will include both their private and public stories.
+	A user may select a story from the list to view or use the options menu for more specific tasks.
+\end{document}

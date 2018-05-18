@@ -1,0 +1,54 @@
+<nav id="sidenav" class="d-none d-sm-block bg-light sidebar" ng-controller="sideNavController">
+    <ul id="sideNavList" class="nav nav-pills flex-column">
+        <li class="custom-nav-item">
+            <div class="nav-item-container container">
+                <a class="custom-nav-link" href="#allBuildings">Buildings</a>
+            </div>
+        </li>
+        <li class="custom-nav-item">
+            <div class="nav-item-container container">
+                <a class="custom-nav-link" href="#dashboards">Dashboards</a>
+            </div>
+        </li>
+        <li class="custom-nav-item ">
+            <div class="nav-item-container container">
+                <a class="custom-nav-link" href="#blocks">My Blocks</a>
+            </div>
+        </li>
+        <li class="custom-nav-item ">
+            <div class="nav-item-container container">
+                <a id="storiesItem" class="custom-nav-link" href="">My Stories
+                    <i class="arrow right"></i>
+                </a>
+            </div>
+        </li>
+        <li class="custom-nav-item ">
+            <div class="nav-item-container container">
+                <a class="custom-nav-link" href="#meters">Meters</a>
+            </div>
+        </li>
+        <li class="custom-nav-item ">
+            <div class="nav-item-container container">
+                <a class="custom-nav-link" href="#settings">Settings</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+<script>
+    $('#sideNavList a').on('click', function () {
+        if (this.id != 'storiesItem') {
+            $('#dashboardSelector').removeClass('showDash');
+            $('#dashboardSelector').addClass('hideDash');
+        } else {
+            if ($('#dashboardSelector').hasClass('showDash')) {
+                $('#dashboardSelector').removeClass('showDash');
+                $('#dashboardSelector').addClass('hideDash');
+            } else {
+                $('#dashboardSelector').removeClass('hideDash');
+                $('#dashboardSelector').addClass('showDash');
+            }
+        }
+        $('#sideNavList').find('li.active-nav-item').removeClass('active-nav-item');
+        $(this).parent().parent().addClass('active-nav-item');
+    });
+</script>

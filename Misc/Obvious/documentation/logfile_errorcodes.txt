@@ -1,0 +1,159 @@
+/*    AcquiSuite and AcquiLite error code messages
+
+        $Id: logfile_errorcodes.txt,v 1.3 2009/06/29 16:31:11 herzogs Exp $
+*/
+
+// System Error codes   (0=no error)
+        
+    case 1: return "Operation not permitted";
+    case 2: return "No such file or directory";
+    case 3: return "No such process";
+    case 4: return "Interrupted system call";
+    case 5: return "Input/output error";
+    case 6: return "No such device or address";
+    case 7: return "Argument list too long";
+    case 8: return "Exec format error";
+    case 9: return "Bad file descriptor";
+    case 10: return "No child processes";
+    case 11: return "Resource temporarily unavailable";
+    case 12: return "Cannot allocate memory";
+    case 13: return "Permission denied";
+    case 14: return "Bad address";
+    case 15: return "Block device required";
+    case 16: return "Device or resource busy";
+    case 17: return "File exists";
+    case 18: return "Invalid cross-device link";
+    case 19: return "No such device";
+    case 20: return "Not a directory";
+    case 21: return "Is a directory";
+    case 22: return "Invalid argument";
+    case 23: return "Too many open files in system";
+    case 24: return "Too many open files";
+    case 25: return "Inappropriate ioctl for device";
+    case 26: return "Text file busy";
+    case 27: return "File too large";
+    case 28: return "No space left on device";
+    case 29: return "Illegal seek";
+    case 30: return "Read-only file system";
+    case 31: return "Too many links";
+    case 32: return "Broken pipe";
+    case 33: return "Numerical argument out of domain";
+    case 34: return "Numerical result out of range";
+    case 35: return "Resource deadlock avoided";
+    case 36: return "File name too long";
+    case 37: return "No locks available";
+    case 38: return "Function not implemented";
+    case 39: return "Directory not empty";
+    case 40: return "Too many levels of symbolic links";
+    case 41: return "Operation would block";
+    case 42: return "No message of desired type";
+    case 43: return "Identifier removed";
+    case 44: return "Channel number out of range";
+    case 45: return "Level 2 not synchronized";
+    case 46: return "Level 3 halted";
+    case 47: return "Level 3 reset";
+    case 48: return "Link number out of range";
+    case 49: return "Protocol driver not attached";
+    case 50: return "No CSI structure available";
+    case 51: return "Level 2 halted";
+    case 52: return "Invalid exchange";
+    case 53: return "Invalid request descriptor";
+    case 54: return "Exchange full";
+    case 55: return "No anode";
+    case 56: return "Invalid request code";
+    case 57: return "Invalid slot";
+    case 58: return "File locking deadlock error";
+    case 59: return "Bad font file format";
+    case 60: return "Device not a stream";
+    case 61: return "No data available";
+    case 62: return "Timer expired";
+    case 63: return "Out of streams resources";
+    case 64: return "Machine is not on the network";
+    case 65: return "Package not installed";
+    case 66: return "Object is remote";
+    case 67: return "Link has been severed";
+    case 68: return "Advertise error";
+    case 69: return "Srmount error";
+    case 70: return "Communication error on send";
+    case 71: return "Protocol error";
+    case 72: return "Multihop attempted";
+    case 73: return "RFS specific error";
+    case 74: return "Bad message";
+    case 75: return "Value too large for defined data type";
+    case 76: return "Name not unique on network";
+    case 77: return "File descriptor in bad state";
+    case 78: return "Remote address changed";
+    case 79: return "Can not access a needed shared library";
+    case 80: return "Accessing a corrupted shared library";
+    case 81: return ".lib section in a.out corrupted";
+    case 82: return "Attempting to link in too many shared libraries";
+    case 83: return "Cannot exec a shared library directly";
+    case 84: return "Invalid or incomplete multibyte or wide character";
+    case 85: return "Interrupted system call should be restarted";
+    case 86: return "Streams pipe error";    
+    case 87: return "Too many users";
+    case 88: return "Socket operation on non-socket";
+    case 89: return "Destination address required";
+    case 90: return "Message too long";
+    case 91: return "Protocol wrong type for socket";
+    case 92: return "Protocol not available";
+    case 93: return "Protocol not supported";
+    case 94: return "Socket type not supported";
+    case 95: return "Operation not supported";
+    case 96: return "Protocol family not supported";
+    case 97: return "Address family not supported by protocol";
+    case 98: return "Address already in use";
+    case 99: return "Cannot assign requested address";
+    case 100: return "Network is down";
+    case 101: return "Network is unreachable";
+    case 102: return "Network dropped connection on reset";
+    case 103: return "Software caused connection abort";
+    case 104: return "Connection reset by peer";
+    case 105: return "No buffer space available";
+    case 106: return "Transport endpoint is already connected";
+    case 107: return "Transport endpoint is not connected";
+    case 108: return "Cannot send after transport endpoint shutdown";
+    case 109: return "Too many references: cannot splice";
+    case 110: return "Connection timed out";
+    case 111: return "Connection refused";
+    case 112: return "Host is down";
+    case 113: return "No route to host";
+    case 114: return "Operation already in progress";
+    case 115: return "Operation now in progress";
+    case 116: return "Stale NFS file handle";
+    case 117: return "Structure needs cleaning";
+    case 118: return "Not a XENIX named type file";
+    case 119: return "No XENIX semaphores available";
+    case 120: return "Is a named type file";
+    case 121: return "Remote I/O error";
+    case 122: return "Disk quota exceeded";
+    case 123: return "No medium found";
+    case 124: return "Wrong medium type";
+
+                                             // -- modbustcp errors 129 to 139 ---      
+    case 129: return "Illegal Function (function was not allowed by the slave device)";
+    case 130: return "Illegal Data Address (the data address is not allowed by the slave device)";
+    case 131: return "Illegal Data Value";
+    case 132: return "Illegal Response Length";
+    case 133: return "Acknowledge";
+    case 134: return "Slave Device Busy";
+    case 135: return "Negative Acknowledge";
+    case 136: return "Memory Parity Error";
+    case 137: return "Error undefined";
+    case 138: return "Gateway Path Unavailable (the Modbus/TCP gateway may be misconfigured)";
+    case 139: return "Device Failed to Respond (the modbus device may be off or disconnected)";        
+    case 140: return "received invalid data checksum (check for address conflicts)";                 // 0x8C
+    case 141: return "received response from unexpected device";                                     // 0x8D
+    
+                                             // -- AcquiSuite/AcquiLite specific error messages ---
+    case 160: return "Start log";
+    case 161: return "Stop log";             // message 0xA1 ASLOGSTOP
+    case 162: return "System time change";   // message 0xA2 ASLOGTIMECHANGE - when our clock shifted by too much.
+    case 163: return "System autorestart";   // message 0xA3 ASLOGAUTORESTART
+    case 164: return "Log entry corrupt";    // message 0xA4 ASLOGRECORDCORRUPT
+    case 165: return "Device restart";       // message 0xA5 ASLOGDEVICERESTART -  modbus slave device restarted.
+    
+    case 192: return "Device Class Mismatch";  // message 0xC0 ASERR_DEVICECLASSMISMATCH - modbus device class does not match value in ini file.
+    case 193: return "Serial Number Change";   // message 0xC1 ASERR_DEVICESERIALCHANGE - modbus device appears to have changed the serial number
+
+

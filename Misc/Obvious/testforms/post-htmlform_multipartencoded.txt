@@ -1,0 +1,75 @@
+POST /upload.php HTTP/1.1
+Accept: */*
+Accept-Language: en-us
+Content-Type: multipart/form-data; boundary=---------------------------7d62da2758c
+Accept-Encoding: gzip, deflate
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows 98; .NET CLR 1.1.4322)
+Host: www.obvius.com
+Authorization: Basic dGVzdDo=
+Content-Length: 1767
+Connection: Keep-Alive
+Cache-Control: no-cache
+
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="MODE"
+
+LOGFILEUPLOAD
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="SERIALNUMBER"
+
+0090960EC17E
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="PASSWORD"
+
+password
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="MODBUSIP"
+
+127.0.0.1
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="MODBUSPORT"
+
+502
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="LOOPNAME"
+
+myacquisuite
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="MODBUSDEVICE"
+
+249
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="MODBUSDEVICENAME"
+
+The main meter
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="MODBUSDEVICETYPE"
+
+Obvius 4A4P-M2
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="MODBUSDEVICETYPENUMBER"
+
+50
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="MODBUSDEVICECLASS"
+
+9
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="FILETIME"
+
+2004-03-30 12:04:03
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="MD5CHECKSUM"
+
+9d12f67db8ffea3e03c7ffeec1bcca62
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="LOGFILE"; filename="C:\Projects\pushupload\testforms\test.txt"
+Content-Type: text/plain
+
+-test file-
+
+-----------------------------7d62da2758c
+Content-Disposition: form-data; name="ignore-this-button"
+
+Submit
+-----------------------------7d62da2758c--

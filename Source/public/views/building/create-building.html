@@ -1,0 +1,55 @@
+<div class="Stratum2-Light font-weight-bold" ng-controller="buildingController">
+    <br>
+    <h1 ng-init="getTitle()" class="Stratum2-Light font-weight-bold">{{title}}</h1>
+    <br>
+    <div class="row">
+        <div class="col-sm-6 col-md-6">
+            <div class="form-group row mt-4">
+                <label for="inputSerialName" class="ml-3">Building Name</label>
+                <div class="col-sm-12">
+                    <input type="text" ng-init="getName()" class="form-control" maxlength="30" id="inputSerialName" ng-model="nameForm" placeholder="Name">
+                </div>
+            </div>
+            <div class="form-group row mt-4">
+                <label for="dropdownTypes" class="ml-3">Select Building Type:</label>
+                <div class="col-sm-12">
+                    <select ng-init="getBuildingType()" id="dropdownTypes" class="form-control " ng-model="buildingSelection">
+                        <option>Residence Hall/Dormitory</option>
+                        <option>Academic</option>
+                        <option>Data Center</option>
+                        <option>Dining Facility</option>
+                        <option>Library</option>
+                        <option>Recreation Center</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row mt-4">
+                <label for="dropdownMeters" class="ml-3">Select Meter:</label>
+                <div class="col-sm-12">
+                    <select ng-init="getBuildingMeters()" id="dropdownMeters" class="form-control " ng-model="meterSelection" required ng-options="meter.name for meter in meters"
+                        ng-change="selection(meterSelection)">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-1 col-md-1">
+        </div>
+        <div class="col-sm-5 col-md-5">
+            <h4>Current Meters</h4>
+            <ul class="list-group mt-4 mb-4">
+                <div ng-repeat="meters in selectedMeters track by meters._id">
+                    <li class="list-group-item">
+                        {{meters.name}}
+                        <button ng-model="meters" type="button" style="" class="btn-sml btn-danger float-right" ng-click="removeMeter(meters)">
+                            <span class="" aria-hidden="false">&times;</span>
+                        </button>
+                    </li>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <div class="col-sm-5 col-md-5">
+        <button type="submit" class="btn border-orange-thin background-orange text-white" ng-click="submit()">{{buttontext}}</button>
+    </div>
+</div>

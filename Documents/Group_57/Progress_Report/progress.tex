@@ -1,0 +1,212 @@
+\documentclass[journal,10pt,onecolumn,compsoc]{IEEEtran} \usepackage[margin=1.0in]{geometry} \usepackage{pdfpages} 
+    \usepackage{caption,graphicx,float} 
+    \usepackage{listings}
+    \usepackage{verbatim}
+    \usepackage{url}
+    \usepackage{nameref} 
+    \usepackage{setspace}
+    \usepackage{geometry}
+    \usepackage{hyperref}
+    \usepackage{caption} 
+    \usepackage{float}
+    \graphicspath{/graphics} \setlength{\parskip}{\baselineskip} \setlength\parindent{24pt}
+    \usepackage[english]{babel}
+     % 1. Fill in these details
+     \def \CapstoneTeamName{		The Dream Team}
+     \def \CapstoneTeamNumber{		57}
+     \def \GroupMemberOne{			Daniel Schroeder}
+     \def \GroupMemberTwo{			Aubrey Thenell}
+     \def \GroupMemberThree{			Parker Bruni}
+     \def \CapstoneProjectName{		A Scalable Web Application Framework for Monitoring Energy Usage on Campus  }
+     \def \CapstoneSponsorCompany{	Oregon State Office of Sustainability}
+     \def \CapstoneSponsorPerson{		Jack Woods}
+     
+     % 2. Uncomment the appropriate line below so that the document type works
+     \def \DocType{		%Problem Statement
+             %Requirements Document
+             %Technology Review
+             %Design Document
+             Progress Report
+             }
+           
+     \newcommand{\NameSigPair}[1]{\par
+     \makebox[2.75in][r]{#1} \hfil 	\makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill		\makebox[.75in]{\hrulefill}}
+     \par\vspace{-12pt} \textit{\tiny\noindent
+     \makebox[2.75in]{} \hfil		\makebox[3.25in]{\makebox[2.25in][r]{Signature} \hfill	\makebox[.75in][r]{Date}}}}
+     % 3. If the document is not to be signed, uncomment the RENEWcommand below
+     %\renewcommand{\NameSigPair}[1]{#1}
+     
+     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+     \title{Progress Report for: \linebreak Scalable Web Application Framework for Monitoring Energy Usage on Campus}
+     \author{Daniel Schroeder, Aubrey Thenell, Parker Bruni}
+     \date{\today}
+     
+     \begin{document}
+     \maketitle
+     \vspace{2cm}
+     \begin{center}
+     \noindent \textbf{Abstract} \\
+                 \indent The purpose of this progress report document is to outline the progress made on the Scalable Web Application Framework for Monitoring Energy Usage on Campus project over the past ten weeks. Provided in this outline are chronological digests of the accomplishments and problems presented each week, our project's goals and purpose, the current status of our project, and a retrospective of the term. 
+     \end{center}         
+     
+     \newpage
+     \pagenumbering{arabic}
+    \tableofcontents
+    \newpage
+    \section{Purpose and Goals:}
+    \subsection{Purpose} 
+    Our project is to create a web application to monitor energy use on Oregon State University's campus. The application should serve all the requirements outlined by the client and be easy to use for users of all experience levels.
+    \noindent Some specific functionalities that our application should contain are:
+    \begin{itemize}
+        \item Receive data from Obvius AcquiSuite data acquisition servers and process this data into interpretable graphs.
+        \item Allow administrative users to add buildings and meters to the database as monitoring efforts expand to more buildings on campus.
+        \item Allow users to create unique dashboards and dashboard collections in an effort to organize data into related subsets.
+        \item Have a public facing interface where administrators can produce content for anyone to see.
+        \item Contain modular components with individualized functionality and the ability to share data across components.
+        \item Update graphs being displayed as new data is received.
+        \item Undergo usability testing and produce an interface that is user friendly and easily navigable.
+        \item Embrace AngularJS concepts to inject content to the page as new requests are made.
+    \end{itemize}
+    
+    \subsection{Goals}
+    The goals of this term were to research and document the different technologies and methods needed to implement the required functionality of our application. This included researching specific technologies and frameworks as well as designing the architecture of our application's subsystems and data models. Our designs revolve around highly modular components that split up the applications overall functionality into smaller components and services. We would like to begin implementing our designs and applications over winter break and start winter term with a good code base already constructed.
+    
+    \section{Past Weekly Events:}
+	%------------------------------------------------------------------------------
+    \subsection{Week 2}
+    \subsubsection{Activities} 
+    This week involved forming our team and setting up a Slack channel for group communication. We also got in contact with our client and briefly went over general project information and shared personal schedules. We set up a meeting for week 3 to discuss the project in more detail. Finally, we got access to the current implementation of the energy monitoring software and familiarized ourselves with its functionality.
+    \subsubsection{Problems and Solutions} 
+	At this point, we only had a very vague understanding of the project as a whole, as well what would be requried as a deliverable. To figure this out, we scheduled a meeting with our Client to discuss expectations.
+    %------------------------------------------------------------------------------
+    \subsection{Week 3}
+    \subsubsection{Activities} 
+    This week involved a general setup of resources for the rest of the term including our Github repository and our OneNote Notebooks. We also met with our client, Jack Woods, at his office in the Office of Sustainability on campus to discuss details about the project and their visions for the web application.
+    \subsubsection{Problems and Solutions} 
+	After our client meeting, we had a general sense of what would be delivered as a final product. However, we still had no idea how or what we were going to do to implement it. One of the main problems that arose from the meeting was the discussion of hardware for our project. We had no idea where we were going to store our database and website. As a solution, Jack told us he would talk to his supervisors and IT group to figure it out.
+    %------------------------------------------------------------------------------
+    \subsection{Week 4}
+    \subsubsection{Activities} 
+    In week four, our team finished the Problem Statement final draft and submitted on Github and OneNote. We also emailed our client requesting a list of requirements he and his team want to see in the final application to begin working on the Requirements Document assignment. Daniel met with Professor McGrath to look over the requirements list, which Kevin approved with no need for consultation or negotiation.
+    \noindent This was the first week we were required to meet with our TA, Ben, where we discussed the structure and organization of directories in our group repository and how to create a logical labelling system. We also made a plan of action to begin researching the MEAN stack and its different frameworks.
+    
+    \subsubsection{Problems and Solutions} 
+	There were a few issues getting our LaTeX files to compile initially, mainly due to formatting errors, but we collaborated to sort out the issues.
+	
+    %------------------------------------------------------------------------------
+    \subsection{Week 5}    
+    \subsubsection{Activities} 
+    This week, our team got a rough draft of the Requirements Document completed and submitted on Github and OneNote. We also met with our client to discuss further details about the components listed in his requirements list. Our client also said he mailed his IT group about potential databases and servers that could be used for our application, but they had not responded yet.
+	
+    \subsubsection{Problems and Solutions} 
+    We had to create a Gantt chart in excel and insert an image into our Requirements Document because we could not get the Gantt Latex package to work correctly.
+	A few github merge conflicts also arose while we were trying to complete the document, but were resolved after careful review.
+    %------------------------------------------------------------------------------
+    \subsection{Week 6}
+    \subsubsection{Activities} 
+    This week we got a Latex Gantt package to work in our Requirements Document and submitted final draft to Github and OneNote. We also contacted our client to review and approve our Requirements Document and send a confirmation email to Kirsten Winters and Kevin McGrath. We were very content with the communication and rate of response from our client; it simplified our workflow and made accomplishing our tasks very trivial. Later in the week, our group assigned three components to each member to research for our individual Technology Review documents.
+    \noindent Our TA meeting revolved around clearing up the final questions about the Requirements Document and discussing our current actions required model. Included actions included splitting up components for the Technology Review, getting a Gantt package to work in Latex, and finishing final draft of the Requirements Document, which were all satisfied.
+    
+    \subsubsection{Problems and Solutions} 
+	No problems to report. % nothing went wrong
+    %------------------------------------------------------------------------------
+    \subsection{Week 7}
+    \subsubsection{Activities}
+    This week, Daniel made a simple web socket MEAN stack application to receive a DATE object from the application server every second and render the new data to the page (effectively creating a clock). Daniel wanted to start small scale MEAN stack applications to begin implementing some of the strategies being reviewed in the Technology Document which will eventually be implemented in our final application. Daniel also began looking at dynamic D3 graphs which will be used as the visualization framework in our final application and added dynamic D3 bar graph template to the web socket application.
+    \noindent Aubrey did heavy research into web-hosting and database options for the project. This was all preliminary research done ahead of time to present to our client for a meeting next week. Aubrey specifically focused on finding information on Amazon AWS.
+	\noindent Our group also split up the components for our Technology Review documents. The apportioning of technologies for the tech review were: \\\\ %small line break to separate list
+    \noindent Daniel:
+    \begin{itemize}
+    \item Visualization frameworks
+    \item Means of Authentication
+    \item Front-end Frameworks
+    \end{itemize}
+    
+    \noindent Parker:
+    \begin{itemize}
+    \item Database Framework
+    \item Database Host
+    \item Back-End Framework
+    \end{itemize}
+    
+    \noindent Aubrey:
+    \begin{itemize}
+    \item Structural Frameworks
+    \item Server-side Web Application Framework
+    \item Web Hosting
+    \end{itemize}
+    
+    \subsubsection{Problems and Solutions} 
+    We have had trouble getting our client and his office to set up an AWS account to host our application. He ensured us that he would get it taken care of, but we are currently stuck with only local development strategies in the meantime.
+    %------------------------------------------------------------------------------
+    \subsection{Week 8}
+    \subsubsection{Activities}  
+    This week our group finished the individual Technology Review rough drafts and began working on the final drafts for next week. We underwent extensive research on specific technologies that would be incorporated in our application and generated good documentation of examples and resources to help drive future development.
+    \subsubsection{Problems and Solutions} 
+    In the tech reviews, we were originally going to write about password hashing algorithms with the assumption that we were going to create our own authentication system. After discussing this issue with Kevin McGrath and our TA, Ben, we were guided towards outsourcing our authentication and researching different ways of implementing an authentication system rather than hashing algorithms.
+    %------------------------------------------------------------------------------
+    \subsection{Week 9}
+    \subsubsection{Activities} 
+    This week was short-lived due to the Thanksgiving holiday, but activities included submitting the final drafts of the Technology Reviews and beginning work on the Design Document. After the holiday, we created a template Latex file for the design document and began reading the IEEEtran standard for the SDD. We created a general outline for the sections we needed to cover in our design document based off the content from the IEEEtran description.
+    \subsubsection{Problems and Solutions} 
+    The IEEEtran document was extremely verbose and complicated to understand upon initial review. After discussing this issue with Kirsten Winters, she advised interpreting the IEEEtran document as an expansive example of everything that could be included in a design document and to focus on parts that best correlate to our project. Composing the design document also posed significant concerns regarding how we are going to design all the subsystems of our application efficiently.
+    %------------------------------------------------------------------------------
+    \subsection{Week 10}
+    \subsubsection{Activities} 
+    This week was extremely helpful in understanding all the different components that our application will have and designing modular components and services that will provide the necessary functionality for our application. While designing the application's architecture, our group considered the different subsystems, data models, and elements that are going to be needed in the final product. After designing the architecture, we met with our client to discuss our ideas and gather feedback. This discussion proved to be extremely helpful and we included his recommendations in our final draft of the Design Document.
+    \noindent Daniel created a high-scale MEAN stack application to begin implementing a lot of the features from the Design Document and Technology Reviews like:
+    \begin{itemize}
+        \item Using Google's authentication API with Passport.js to store users into a database and create user sessions with passport's authentication services
+        \item Serving content to the view container by injecting routes to a parent scope variable in the master page by triggering an AngularJS injection to render a new view
+        \item Creating a template for our “block” objects using Bootstrap 4 “cards”
+        \item Creating modular controllers and services for different components and functionality
+        \item Dynamically changing the contents of components when new data is added to the database
+    \end{itemize}
+    
+    \subsubsection{Problems and Solutions} 
+    We had some troubles with explicit definitions of terms in our requirements from our client. We had multiple conversation and messages from our client where he used the terms ``dashboard'' and ``page'' interchangeably. After meeting with him, we cleared up the confusion and were able to establish a finalized dictionary of terms. Another issue we faced was the design of data models that presented themselves in the Design Document and determining how we were going to efficiently store and manage our different data and entities. 
+    %------------------------------------------------------------------------------
+    \section{Retrospective:}
+    
+    \begin{table}[H]
+    \begin{center}
+     \begin{tabular}{ |p{0.3\textwidth-2\tabcolsep}|p{0.3\textwidth-2\tabcolsep}|p{0.3\textwidth-2\tabcolsep}|} 
+     \hline
+     \multicolumn{1}{|c|}{\textbf{Positives}} 
+     & 
+    \multicolumn{1}{|c|}{\textbf{Deltas}}  & 
+    \multicolumn{1}{|c|}{\textbf{Actions}}\\
+     \hline
+     
+    Our team is very responsive to group communication via our Slack channel & Need to establish more in-person meetings to discuss abstract ideas in greater detail & As winter term begins, we will be meeting more in person during the development of our application \\
+     \hline
+     
+    Client was very easy to communicate with and was quick to accomplish tasks we needed & We would like to meet at least once a week over the development process to share progress and acquire feedback & Get client on board with meeting next term and find a time that satisfies every member's schedule\\
+     \hline
+     
+    Attained a high level understanding of our application throughout the course of this term & We could do better at discussing abstract ideas about our application's architecture so all members are in agreement & Meeting in person more to discuss, in detail, the abstractions of our application\\
+     \hline
+     
+    Got small-scale applications working locally to begin working with concepts and frameworks that will be used in our final application & Could have more group members up to speed on MEAN stack development & Meet in person to discuss techniques that team members produce individually to ensure understanding across all members\\
+     \hline
+    \end{tabular}
+    \caption{A retrospective of the past ten weeks.}
+    \label{table:1}
+    \end{center}
+    \end{table}
+    \newpage
+    %------------------------------------------------------------------------------
+    \section{Current State of the Project:}
+    We have began developing local, small-scaled test applications to begin implementing some of the frameworks we will encounter in the final product. These include MEAN stack applications that:
+        \begin{itemize}
+            \item Authenticate users with Google's oAuth 2.0 API and keep track of user sessions
+            \item Use websockets to send intermittent time data from the server to the page
+            \item Statically render different views to the content container with Angular 1 ng-include and passing routes from navigation items
+            \item Share data across different modular components
+            \item Dynamically change content as users submit forms and insert data into the databases
+        \end{itemize}
+
+    \noindent These small scale implementations have guided the construction of our different documents this term, like the technology review and design document, by providing hands-on experience of the actual construction of different system components. These test applications required more explicit research than what was required for the written documents in order to produce a functional application rather than an abstraction of a working product. We will begin to compile and transpose these smaller solutions into the main source code of the application once we begin development over winter break.
+    
+    \end{document}
+    

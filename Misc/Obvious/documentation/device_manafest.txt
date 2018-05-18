@@ -1,0 +1,19 @@
+$Id: device_manafest.txt,v 1.1 2006/01/19 01:39:27 herzogs Exp $
+
+The AcquiSuite can provide a text based list of attached modbus devices. 
+the following URL can be used to obtain this list:
+
+	http://192.168.40.45/setup/logexport.cgi?MB=0
+
+The resulting data will be in plain text format, witht he following columns:
+
+	Modbus ID,DeviceName,DeviceType,DeviceClass,Log File URL
+
+The following is an example:
+
+Modbus ID,DeviceName,DeviceType,DeviceClass,Log File URL
+002,"Loading Dock Temp","Veris HXO/T-485-M, Outdoor Humidity/Temperature",1,logexport.cgi/444D5000060A_2.txt?MB=2 
+037,"Veris H8036","Veris H8036-0100-2, Full-Data, Modbus, 100 Amp",2,logexport.cgi/444D5000060A_37.txt?MB=37
+
+
+This is primarily a CSV version of the modbus device list page, and is used by EnertraxDL.

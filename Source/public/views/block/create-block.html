@@ -1,0 +1,68 @@
+<div class="Stratum2-Light font-weight-bold" ng-controller="blockController">
+    <br>
+    <h1 ng-init="getTitle()" class="Stratum2-Light font-weight-bold">{{title}}</h1>
+    <br>
+    <div class="row">
+        <div class="col-sm-5 col-md-5">
+            <h4>Edit Information</h4>
+            <div class="form-group row mt-4">
+                <label for="inputName" class="ml-3">Name</label>
+                <div class="col-sm-12">
+                    <input ng-init="getName()" type="text" class="form-control" id="inputName" ng-model="nameForm" placeholder="Name">
+                </div>
+            </div>
+            <div ng-init="getChartType()" class="form-group row mt-4">
+                <label class="ml-3">Chart Type</label>
+                <div class="col-sm-12">
+                    <div class="form-check ml-4">
+                        <input class="form-check-input" type="radio" name="exampleRadios"
+                               id="lineChartRadio" value="line" ng-model="chart.type" ng-checked="true">
+                        <label class="form-check-label pl-1" for="lineChartRadio">
+                            Line Chart
+                        </label>
+                    </div>
+                    <!--
+                    <div class="form-check ml-4">
+                        <input class="form-check-input" type="radio" name="exampleRadios"
+                               id="heatChartRadio" value="heat"  ng-model="chart.type" ng-checked="heatcheck">
+                        <label class="form-check-label pl-1" for="heatChartRadio">
+                            Heat Map
+                        </label>
+                    </div>
+                     -->
+                </div>
+            </div>
+            <div class="form-check ml-4" ng-hide="accountAccess < 2">
+                <input ng-init="getPublicFlag()" class="form-check-input" type="checkbox"
+                       ng-model="publicCheck" id="defaultCheck1">
+                <label class="form-check-label pl-1" for="defaultCheck1">
+                    Make Public
+                </label> 
+            </div>
+            <div class="form-group row mt-4">
+                <label for="dropdownBuildings" class="ml-3">Select Buildings:</label>
+                <div class="col-sm-12">
+                    <select ng-init="getBlockBuildings()" id="dropdownBuildings" class="form-control" ng-model="buildingSelection" required 
+                        ng-options="building.name for building in buildings track by building._id" ng-change="selection(buildingSelection)">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5 col-md-5">
+            <h4>Current Buildings</h4>
+            <ul class="list-group mt-4 mb-4">
+                <div ng-repeat="buildings in selectedBuildings track by buildings._id">
+                    <li class="list-group-item">
+                        {{buildings.name}}
+                        <button ng-model="buildings" type="button" style="" class="btn-sml btn-danger float-right" ng-click="removeBuilding(buildings)">
+                            <span class="" aria-hidden="false">&times;</span>
+                        </button>
+                    </li>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <div class="col-sm-5 col-md-5 p-0">
+        <button type="submit" class="btn border-orange-thin background-orange text-white" ng-click="submit()">{{buttontext}}</button>
+    </div>
+</div>

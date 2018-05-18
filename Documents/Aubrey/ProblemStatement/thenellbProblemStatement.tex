@@ -1,0 +1,153 @@
+\documentclass[draftclsnofoot,onecolumn,10pt]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{enumitem}
+
+\usepackage[letterpaper, margin=.75in]{geometry}
+
+\newcommand{\toc}{\tableofcontents}
+
+\usepackage{hyperref}
+\usepackage{listings}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\renewcommand{\lstlistingname}{Code Example} % a listing caption title.
+%\renewcommand{\lstlistlistingname}{List of \lstlistingname s} % list of lists -> list of Thread Program
+\lstset{
+    frame=single,
+    language=C,
+    columns=flexible,
+    numbers=left,
+    numbersep=5pt,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{dkgreen},
+    stringstyle=\color{mauve},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=4,
+    captionpos=b
+}
+
+\def\name{Aubrey Thenell}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = false,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {},
+  pdftitle = {},
+  pdfsubject = {},
+  pdfpagemode = UseNone
+}
+
+\parindent = 0.0 in
+\parskip = 0.1 in
+
+%Title page downloaded from latextemplates.com
+\begin{document}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for horizontal lines, change thickness here
+	
+	\center % Centre everything on the page
+	
+	%------------------------------------------------
+	%	Headings
+	%------------------------------------------------
+	
+	\textsc{\LARGE Oregon State University}\\[1.5cm] % Main heading such as the name of your university/college
+	
+	\textsc{\Large CS 361 - Senior Capstone Project}\\[0.5cm] % Major heading such as course name
+	
+	\textsc{\large Fall 2017}\\[0.5cm] % Minor heading such as course title
+	
+	%------------------------------------------------
+	%	Title
+	%------------------------------------------------
+	
+	\HRule\\[0.4cm]
+	
+	{\huge\bfseries A SCALABLE WEB APPLICATION FRAMEWORK FOR MONITORING ENERGY USAGE ON CAMPUS}\\[0.4cm] % Title of your document
+	
+	\HRule\\[1.5cm]
+	\thispagestyle{empty} % gets rid of the "0" page number.
+	
+	%------------------------------------------------
+	%	Author(s)
+	%------------------------------------------------
+	
+	\begin{minipage}{0.4\textwidth}
+		\begin{flushleft}
+			\large
+			\textit{Author}\\
+			\textsc{\name} % Your name
+		\end{flushleft}
+	\end{minipage}
+	~
+	\begin{minipage}{0.4\textwidth}
+		\begin{flushright}
+			\large
+			\textit{Client}\\
+			Jack \textsc{Woods} % Supervisor's name
+		\end{flushright}
+	\end{minipage}
+	
+	% If you don't want a supervisor, uncomment the two lines below and comment the code above
+	%{\large\textit{Author}}\\
+	%John \textsc{Smith} % Your name
+	
+	%------------------------------------------------
+	%	Date
+	%------------------------------------------------
+	\begin{abstract}
+	This document outlines the problem statement for developing a scalable full-stack web application that will be used to monitor the energy usage of every building on the Oregon State University campus. Currently, Oregon State University has up to 5 sensors that are installed in each of 28 buildings which collect metering data. This data is then reported to the current Lucid dashboard and shows real time electricity and steam usage. The data is shown in a user-friendly manner with graphs and meters, rather than just logs of raw data. The goal is to replace the current system, Lucid with something more reliable and less costly. This is especially important as campus adds more buildings to campus, the contract with Lucid becomes increasingly expensive to maintain.
+	
+	\end{abstract}
+	
+	\vfill\vfill\vfill % Position the date 3/4 down the remaining page
+	
+	{\large\today} % Date, change the \today to a set date if you want to be precise
+	
+	%------------------------------------------------
+	%	Logo
+	%------------------------------------------------
+	
+	%\vfill\vfill
+	%\includegraphics[width=0.2\textwidth]{placeholder.jpg}\\[1cm] % Include a department/university logo - this will require the graphicx package
+	 
+	%----------------------------------------------------------------------------------------
+	
+	\vfill % Push the date up 1/4 of the remaining page
+	
+
+
+
+
+\newpage
+
+\section{Definition and Description of Problem}
+Oregon State University strives to constantly find ways to increase sustainability and decrease its carbon footprint. When starting new infrastructure projects, they ensure the new building will be as sustainable as possible. This is why Oregon State University's Sustainability Office decided to install energy meters in each and every building on campus. This way, they can monitor the energy usage on campus. This data is especially useful because it allows the university to make educated decisions in the future about sustainability efforts. It is also useful because it allows them to notice any strange fluctuations or anomalies in energy usage in any given building. This would allow them to address and correct any potential waste from occurring.\ \smallbreak
+Over the past decade, Oregon State University has been a university that prides itself on its energy sustainability. It received Gold ratings from the Sustainability Tracking, Assessment \& Rating System (STARS) for the years of 2010, 2012, 2013, 2014, and 2015. Oregon State University was also recognized by the Princeton Review for its Honor Roll for the 16 Most Environmentally Responsible Colleges. These are two of many awards, honors, and recognitions Oregon State University has received from various green energy and sustainability groups.\ \smallbreak
+However, having energy meters logs by itself isn't particularly useful without anything to process and parse the data into something more readable. Therefore, the Sustainability Office contracted with Lucid to create a web interface that displays all the data in an easy to read place. Lucid takes the raw data from the meters and provides an interface for the Sustainability Office to view. However, as Oregon State University Sustainability Office scales up its operations and automated reporting, the price of Lucid's contract becomes exponentially expensive to maintain.\ \smallbreak
+In order to maintain its current usability without spending a large sum of the budget, the Sustainability Office has recognized that they could make a proposal to Oregon State University engineering seniors to come up with an alternative. This project will remove most maintenance costs associated with keeping the front-end meter monitors up and running through Lucid. This is especially important because this will allow the Sustainability Office to divert these funds to other sustainability projects, thereby potentially increasing Oregon State's sustainability rating. This project also provides the senior engineering students with a fun and challenging project that will benefit the university and the community as a whole.\
+
+
+
+
+\newpage
+\section{Proposed Solution}
+In order to replace the current system in place, our team will have to spend a lot of time in the design phase. We will need to learn all the quirks that Lucid has put into place. We need to learn the dashboard as it is now to insure we don’t miss any critical piece of information when we go to implement our solution. We also want to add additional features and navigability to the web application that will increase productivity for those using the application. To do this, we will need to find a perfect balance between usability and usefulness. We want to create a clean, modern, and intuitive interface for the user. Ensuring they can navigate to the data they need without extensive training on the application is key. However, we must also make sure the website provides the necessary data, which can contradict the clean look of the website.\ \smallbreak
+The project will require us to create a robust backend framework that will allow us to accurately process and use the raw data collected from the meters. Communication between the team members as well as communication between the team and the client will be very important to this project. The project is more open ended, which means the team will have a lot of freedom with how we want to implement the project. Furthermore, each team member will probably focus more on one aspect of the project to ensure conflict in implementation is as limited as possible.  This is why it’s crucial to ensure all team members are on the same page with the direction of the project, as well as ensure our project vision matches our client's vision throughout development.  \ \smallbreak
+The application will need to be accessible to members of the Sustainability Office as well as those among the Oregon State University general population who will need access to energy usage information. Depending on the desires of the client, we could even make it accessible to the public so anyone could access, or limit it to those with an affiliation to Oregon State University. This would simply be done by implementing the OSU CAS system for the application, which would prevent the public from accessing it.\ \smallbreak
+The team, given enough time, would also like to implement preferences for each user. Specifically, we want to implement the ability for users to enable/disable any extraneous features and metrics. This would allow each user to customize exactly what they want.\\
+\newpage
+\section{Performance metrics}
+We will know when the project is complete when we have a full functioning application that does at least as much as the current system in place. It would by fully complete when we can verify that it can import live data and give appropriate metrics with no downtime. Additionally, we will know our stretch goals are complete if the user can change preferences on what they want to see.
+\bibliographystyle{IEEEtran}
+
+\end{document}

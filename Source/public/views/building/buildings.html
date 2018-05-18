@@ -1,0 +1,101 @@
+<div ng-controller="buildingController" ng-init="initBuildings()">
+    <br>
+    <h1 class="Stratum2-Light font-weight-bold">Buildings
+        <a href="#addBuilding" ng-hide="accountAccess < 2" ng-click="create()" class="btn border-orange-thin background-orange text-white float-right">Add Building+</a>
+    </h1>
+    <div class="row mt-4" ng-controller="chartController" ng-init="initCharts()">
+        <div class="col-sm-3 pb-4 Stratum2-Light" ng-repeat="building in buildings track by building._id">
+            <div class="card card-shadow border-orange-thin pointer building-card-highlight" style="max-height: 400px; min-width: 200px;"
+                ng-click="viewBuilding(building)">
+                <div class="card-body">
+                    <h5 class="card-title ml-3 mb-0" style="height: 65px;">{{building.name}}</h5>
+                    <div class="rounded mx-auto mt-3" style="height: 200px; width: 90%;">
+                        <img class="rounded border-orange text-white bg-primary w-100 h-100" ng-src="{{getImageAddress(building)}}" alt="">
+                    </div>
+                    <p class="mt-3 ml-3" style="height: 30px;">
+                        <b>Type: </b>{{building.building_type}}</p>
+                    <div ng-hide="accountAccess < 2" class="float-right pr-3 dropdown" style="font-size:18px">
+                        <button class="fa fa-gear border-orange-thin border-curve-button" style="font-size:24px"></button>
+                        <div class="dropdown-content border-orange font-weight-normal">
+                            <a class="" ng-click="EditBuilding(building)">Edit</a>
+                            <a class="" ng-click="DeleteBuilding(building)">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+<!-- 
+    <h1 class="Stratum2-Light font-weight-bold">KILOWATT CRACKDOWN </h1>
+    <hr>
+    <div class="row mt-4 Stratum2-Light">
+
+        <div class="col-sm-6">
+            <h3>Date Range</h3>
+            <div>
+            <input id="reportrange" class="pull-right" style="width: 100%" ng-model="dateRange" >
+                
+                <span></span>
+                <b class="caret"></b>
+            </div> <br><br>
+            <button class="btn border-orange-thin background-orange text-white float-left" ng-click="getRankings()"> Update Results
+            </button>
+        </div>
+        <div class="col-sm-6">
+            <h3>Building Results</h3>
+            <table class="table border-black Stratum2-Thin font-weight-bold">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Building Name</th>
+                        <th scope="col">Total Average Consumption</th>
+                        <th scope="col">Range Average Consumption</th>
+                        <th scope="col">% difference</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-bottom-orange background-white" ng-repeat="building in buildingRanks track by building.id">
+                        <td>{{building.name}}</td>
+                        <td>{{building.total}}</td>
+                        <td>{{building.range}}</td>
+                        <td>{{building.percent}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+
+        var start = moment().subtract(6, 'days');
+        var end = moment();
+
+        function cb(start, end) {
+            $('#reportrange span').html(start.format('YYYY-MM-DD hh:mm:ss') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+
+        $('#reportrange').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                    'month').endOf('month')]
+
+            }
+
+
+        }, cb);
+
+        cb(start, end);
+
+    });
+</script>
+-->

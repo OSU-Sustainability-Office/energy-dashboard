@@ -1,0 +1,280 @@
+\documentclass[journal,10pt,onecolumn,compsoc]{IEEEtran} 
+    \usepackage[margin=0.75in]{geometry} 
+    \usepackage{pdfpages} 
+    \usepackage{graphicx} 
+    \setlength{\parskip}{\baselineskip} \setlength\parindent{24pt} 
+    
+    \usepackage[english]{babel}
+    \usepackage{graphicx}
+    \usepackage{url}
+    \usepackage{setspace}
+    \usepackage{geometry}
+    \usepackage{hyperref}
+    \usepackage{float}
+    \usepackage{pgfgantt}
+    \usepackage{rotating} 
+    \usepackage{ragged2e} % provides \RaggedLeft
+    \hypersetup{
+        colorlinks,
+        citecolor=black,
+        filecolor=black,
+        linkcolor=black,
+        urlcolor=black
+    }
+    \geometry{textheight=9.5in, textwidth=7in}
+    
+    % 1. Fill in these details
+    \def \CapstoneTeamName{		The Dream Team}
+    \def \CapstoneTeamNumber{		57}
+    \def \GroupMemberOne{			Daniel Schroeder}
+    \def \GroupMemberTwo{			Aubrey Thenell}
+    \def \GroupMemberThree{			Parker Bruni}
+    \def \CapstoneProjectName{		A Scalable Web Application Framework for Monitoring Energy Usage on Campus  }
+    \def \CapstoneSponsorCompany{	Oregon State Office of Sustainability}
+    \def \CapstoneSponsorPerson{		Jack Woods}
+    
+    % 2. Uncomment the appropriate line below so that the document type works
+    \def \DocType{		%Problem Statement
+            Requirements Document
+            %Technology Review
+            %Design Document
+            %Progress Report
+            }
+          
+    \newcommand{\NameSigPair}[1]{\par
+    \makebox[2.75in][r]{#1} \hfil 	\makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill		\makebox[.75in]{\hrulefill}}
+    \par\vspace{-12pt} \textit{\tiny\noindent
+    \makebox[2.75in]{} \hfil		\makebox[3.25in]{\makebox[2.25in][r]{Signature} \hfill	\makebox[.75in][r]{Date}}}}
+    % 3. If the document is not to be signed, uncomment the RENEWcommand below
+    %\renewcommand{\NameSigPair}[1]{#1}
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \title{Requirements Document for: \linebreak Scalable Web Application Framework for Monitoring Energy Usage on Campus}
+    \author{Daniel Schroeder, Aubrey Thenell, Parker Bruni}
+    \date{\today}
+    
+    \begin{document}
+    \maketitle
+    \vspace{2cm}
+    \noindent \textbf{Abstract} \\
+                \indent 
+                Data visualization is an important technique for analyzing data trends and identifying problems that may not have been apparent. This document outlines our plan to create a web application which will gather energy data from data aquisition servers and create information management dashboards. Our application will allow users to generate charts and graphs to see energy use over time, compare energy usage across multiple buildings, and create collections of different visualizations.
+                
+                
+    
+    \newpage
+    \pagenumbering{arabic}
+    \tableofcontents
+    % 7. uncomment this (if applicable). Consider adding a page break.
+    %\listoffigures
+    %\listoftables
+    \clearpage
+    
+    % 8. now you write!
+    \section{Introduction}
+    \subsection{Purpose}
+	The purpose of this document is to outline the project and all associated information. Furthermore, it will outline how the end product will be used, how it was developed, and all resources and documentation referenced and used during development. This document will also describe the application’s target audience, user interface, and any hardware/software requirements. Finally, it will define how our client, team, and users will see the final product and related functionality.
+     \subsection{Scope}
+	This project will provide a web application that displays different collections of energy use reports for campus buildings. Each of these collections will be customizable, with the ability to add, remove, and filter building data according to user preference. The web application will allow users to visually comprehend energy data in a way that can raise awareness about consumption and reduce the campus-wide carbon footprint. The web application will also have three different permission levels: Guest, Registered Users, and Admin Users. Each one will provide permissions to what can be viewed and edited.
+
+\subsection{Definitions, acronyms, and abbreviations} \label{definition}
+	\begin{table}[h]
+	\centering
+	
+	\begin{tabular}{ll}
+	\textbf{Term} & \textbf{Definition} \\
+	OSU & Oregon State University \\
+	MEAN stack & MongoDB, Express, AngularJS, Node.js \\
+	JSON & JavaScript Object Notation \\
+	AcquiSuite & Data Acquisition Servers responsible for metering energy usage \\
+	Collections & User Interface dashboard that displays assortment of blocks \\
+    Blocks & Charts/graphs of building data \\
+    Stories & Collections of dashboards 
+	\end{tabular}
+	\end{table}
+    \subsection{References} 
+	The references are: \\
+    
+    [1] ``AcquiSuite-A8812'', AcquiSuite | English, 2017. [Online]. Available: \url{http://www.obvius.com/Products/A8812}. [Accessed: 02\-Nov\-2017].
+    
+    [2] ``Data-Driven Documents'', D3 | English, 2017. [Online]. Available:  \url{https://d3js.org}. [Accessed: 02\-Nov\-2017].
+    
+    [3] ``Vis.js'',Vis.js | English, 2017. [Online]. Available: http://visjs.org/. [Accessed: 02- Nov- 2017].
+    
+    [4] ``MongoDB, Express, AngularJS, Node.js'', MEAN.IO | English, 2017. [Online]. Available: http://mean.io. [Accessed: 02- Nov- 2017].
+    
+    [5] ``Introducing JSON'', JSON. | English, 2017. [Online]. Available: http://json.org [Accessed: 02- Nov- 2017].
+    
+    [6] ``BuildingOS'', BuildingOS | English, 2017. [Online]. Available: https://buildingos.com/. [Accessed: 02- Nov- 2017].
+    
+    [7] ``Modbus │How Does Modbus work │Modbus Tutorial│'', Learning Engineering | English, 2016. [Online]. Available: https://www.youtube.com/watch?v=jfKY928Ozrw/. [Accessed: 02- Nov- 2017].
+    
+    [8] ``AcquiSuite EMB'', AcquiSuite | English, 2017. [Online]. Available: http://www.obvius.com/Products/A8810-0/. [Accessed: 02- Nov- 2017].
+    
+    [9] ``Modbus Addressing \& Wiring Best Practices'', obviusenergy | English, 2017. [Online]. Available: https://www.youtube.com/watch?v=7x0tQf1OsDY. [Accessed: 02- Nov- 2017].
+    
+    [10] ``Mocha'', Mocha | English, 2017. [Online]. Available: https://mochajs.org/. [Accessed: 02- Nov- 2017].
+
+
+    \subsection{Overview}
+	The remaining sections of this document provide a more elaborate description of product functionality, assumptions, and specific requirements. Section 2 provides information about functional requirements, data requirements, and assumptions made for designing the \textit{Scalable Web Application Framework for Monitoring Energy Usage on Campus}. Section 3 outlines the specific requirements for the final product, the external interfaces that communicate with the software, and the functional requirements of the system.
+	
+    \section{Overall description}
+    This section will provide an overview of the web application as a whole, including:
+        \begin{enumerate} 
+            \setlength\itemsep{1mm}
+            \item Details about the user interface and expected user interactions.
+            \item An outline of specific constraints and dependences included in development. 
+            \item Background information about the specific software requirements.
+        \end{enumerate}
+    \subsection{Product perspective}
+    %A block diagram showing the major components of the larger system, interconnections, and external interfaces can be helpful.
+    %5.2.1.1 System interfaces
+    %This should list each system interface and identify the functionality of the software to accomplish the system
+    %requirement and the interface description to match the system.
+
+    This product will replace the current web application that is used by The Oregon State Sustainability Office. The product will display energy usage information about Oregon State University buildings through an intuitive user interface. The application will gather data from energy meters by connecting to AcquiSuite\texttrademark data acquisition servers. The energy data from the meters will be transferred to a database that the product will access directly. Users will interact with the application interface from an internet browser application. 
+    
+    \subsection{Product functions}
+    The product will allow users to create accounts that may be given either administrative or user permissions. Users have the ability to personalize their accounts. Administrators accounts will have special capabilities that user accounts will not. \\
+    The application will allow users to create customizable dashboards that will contain easily adjustable “blocks” of campus building data that will contain the campus building energy usage data. These “blocks” of data will be the basic building blocks for the dashboard and will provide an intuitive view of the data. They will feature various graph types, building energy efficiency rankings, and data trends.\\
+    Each OSU building that contains the energy monitoring meter(s) will have a specific, non-customizable page that will display general information. The product will also have a public interface and a private administrative interface.\\
+    Administrators of the application will have the ability to add, remove, or edit entire buildings profiles, building subspaces, or individual meters.
+    
+    \subsection{User characteristics}
+    A user that will be using the general public UI will not need to know any specific information about the application to navigate the various energy data presentations. A public user will be able to intuitively navigate the UI at their discretion. \\ 
+    An administrative level user will need a basic understanding of the tools of the application because they will be allowed the freedom to control parts of the website as well as have access to more specific energy data within the application. An administrator will likely not need extensive training to use this application for more specific purposes as the administrator UI will be designed to be intuitive to navigate.
+    \subsection{Constraints}
+    Data updates will be limited to a granularity of 15 minute intervals. The data acquisition server is capable of providing a granularity of up to 15 second intervals but it is not necessary for the purposes of the application. Any other constraints on the product are subject to the internet browsing interface that is accessing our product. The UI will be intuitive and able to navigate data presentations, but will not allow manipulation of the data or underlying structure of the application.
+    
+    \subsection{Assumptions and Dependencies}
+    The application will be dependant on the data acquisition server. If the data acquisition server is drastically changed or removed, the application will not be functional. Meter data within the application will also be limited by the functionality of the meters themselves. Should a meter malfunction, the energy data will not be gathered which may cause some of the data presentations to deviate from expected data. The use of the application will require a compatible web browsing interface, which may be limited to browsers such as Firefox, Chrome, and Internet Explorer. The functionality of the product will depend on those internet browsers performing as expected with regards to their intended functionality and internet access. 
+
+    \subsection{Apportioning of Requirements}
+    Future versions of the application may include features such as cost tables, automated electronic invoice generation, energy billing analysis capabilities, budget analysis capabilities, and mobile energy data entry.
+    
+    \section{Specific Requirements}
+    
+    \subsection{External Interfaces}
+    AcquiSuite data acquisition servers [meters] made by Obvious
+    \begin{itemize}
+        \setlength\itemsep{1mm}
+        \item Used for collecting electric, water, gas, steam, and other energy parameters over the web.
+        \item Data is received through IP-based connection.
+        \item Data can be reached anywhere with an internet connection, as long as the AcquiSuite is online.
+        \item Data will be collected every 15 minutes.
+        \item Data from the AcquiSuite servers will be stored into a database.
+    \end{itemize}
+
+    \subsection{Functions}
+    This section defines how the software system should behave with regards to input and output.
+    \begin{itemize}
+        \setlength\itemsep{1mm}
+        \item The system shall receive and store data from AcquiSuite data acquisition servers into the database. 
+        \item The system shall have input validation measures in place to monitor incoming data and protect from malicious injections.
+        \item The system shall retrieve data from the database and populate webpages with filtered datasets when prompted.
+        \item The system shall have permission based restrictions for accessing certain data.
+        \item The system shall generate alerts for offline buildings and high energy usage.
+        \item The system shall generate emails for users to access a sign-up form and create an account.
+        \item The system shall be able to create arbitrary combinations of datasets given user filters.
+        \item The system shall be able to calculate rankings for all the buildings based on certain metrics like ``kilowatt-hour consumption''.
+    \end{itemize}
+
+    \subsection{Performance Requirements}
+    This section describes the functionality requirements for the software as well as what a user should be able to accomplish when using the web application.
+
+    \subsubsection{Users}
+    The system will have 3 types of users: admin level users, registered users, and generic users. An administrative user will be able to add new meters, buildings, and other objects into the database. A registered user, for example the head of a department, can create their own stories with information and collections that are unique to their own interests or departments. Lastly, a generic user can simply view the publically facing web application and see public dashboards and browse public stories. 
+    \begin{itemize}
+        \setlength\itemsep{1mm}
+        \item A registered user should be able to customize dashboard layouts in a grid-based orientation. A \hyperref[definition]{\textit{story}} page should have a customizable layout where a user can add different \hyperref[definition]{\textit{blocks}} with information relevant to their personal needs.
+        \item An administrative user should be able to add buildings to the database through a web form.
+        \item An administrative user should be able to add data aquisitions servers.
+        \item An administrative user should be able to download specific datasets as a .csv file.
+        \item An administrative user should be able to customize public stories.
+    \end{itemize}
+
+    \subsubsection{Data Management}
+    \begin{itemize}
+        \setlength\itemsep{1mm}
+        \item The web application should update data blocks every 15 minutes as new data is received into the database.
+        \item The web application should allow users to create  which are collections of dashboards. These 
+        \hyperref[definition]{\textit{stories}} are meant to bring related buildings and datasets together into intuitive groups, for instance ``Residence Halls'' or ``Engineering Buildings.''
+        \item The application should be able to filter building data by date range specifications.
+        \item The web application should be able to scale up to as many buildings are on campus.
+        \item The web application should properly create and store new entities (buildings, users, meters) into the database.
+        
+    \end{itemize}    
+
+    \subsubsection{Visualization}
+    \begin{itemize}
+        \setlength\itemsep{1mm}
+        \item The web application should be able to generate different types of graphs for different \hyperref[definition]{\textit{blocks}}. For example load-profile charts, comparative line charts, and heat maps.
+        \item The web application should have generic pages for each building in the database. This page will display a series of graphs and charts that outline energy usage for a particular building.
+        \item The \hyperref[definition]{\textit{blocks}} on each page should automatically update as new data is received by the database.
+    \end{itemize}
+    \subsubsection{Objects}
+        The system should have three main entities: 
+        \begin{itemize}
+            \setlength\itemsep{1mm}
+            \item \textbf{Building} - A building on campus that is connected to a data acquisition server.
+            \item \textbf{Meter} - A specific data acquisition server.
+            \item \textbf{User} - A user with a specific role.
+        \end{itemize}
+        
+    \subsection{Logical Database Requirements}
+    Most of the calls to the database will be requests for meter data from a specific building or group of buildings. Access to the database should be hidden from the user and only accessed from the back-end of the application itself. Any input into the database should be validated and encrypted, if applicable. 
+    
+    \subsection{Design Constraints}
+    Design constraints may include server availability which could harm scalability.
+    \subsubsection{Standards Compliance}
+    There may be standards when storing energy data based on The Office of Sustainability Standards.
+    [Check with Client]
+
+    \subsection{Software System Attributes}
+    
+    \subsubsection{Reliability}
+    The system will be reliable at the time of deployment if all data displayed in graphs and charts is correct.
+    \subsubsection{Availability}
+    The system should be consistently available as long as the servers are up and running. As a web application, the system will be available via URL.
+    \subsubsection{Security}
+    The system will validate input for duplicate and malicious content.
+    The system will also have back-end functionality to protect user passwords through proper hashing.
+    The web application will restrict access to certain pages and content based on user roles and permissions.
+
+    \subsubsection{Maintainability}
+    Maintainability for this application should be simple for anyone with web development experience. The application code will be organized into logical directories and sub directories that should mimic a full stack web application. There will be documentation that explains how to connect to the AcquiSuite servers and how to use our API for data collection.
+    \subsubsection{Portability}
+    Our web application should be visible and accessible from most web browsers. There are not any host-dependent constraints since it will be hosted from a central server and available to the public via the internet. The source code should stay on Github so modifications can be made easily.
+    
+    \newpage
+    Gantt Chart (Months)\\
+    
+    
+        %\section{Development Schedule}
+        %http://texdoc.net/texmf-dist/doc/latex/pgfgantt/pgfgantt.pdf
+        \begin{ganttchart}[
+            x unit=0.65mm, 
+            y unit chart=11mm,
+            hgrid,
+            bar label font=\normalsize, 
+            title label font=\normalsize,
+            bar label node/.style={text width=2cm,align=right,font=\scriptsize\RaggedLeft,anchor=east},
+            time slot format=isodate
+            ]{2017-11-01}{2018-05-31}
+            \gantttitlecalendar{year, month=name}\\
+            \ganttbar{Design}{2017-11-01}{2017-11-30}\\
+            \ganttbar{Configure Database and Back-end}{2017-11-20}{2017-12-30}\\
+            \ganttbar{Connect to AcquiSuite servers}{2017-11-20}{2017-12-30}\\
+            \ganttlinkedbar{Bind Data to Front-end}{2017-12-20}{2018-01-31}\\
+            \ganttbar{Design UI}{2017-12-01}{2017-12-31}\\
+            \ganttlinkedbar{Build UI}{2017-12-15}{2018-02-31}\\
+            \ganttbar{Test}{2018-02-15}{2018-03-31}\\
+            \ganttbar{Prepare for Expo}{2018-04-01}{2018-05-15}\\ 
+        \end{ganttchart}
+    \newpage
+ 
+    %\section{Appendixes}
+    %\section{Index}
+    
+    \end{document}

@@ -1,0 +1,29 @@
+<br>
+<div ng-controller="storyController">
+    <h1 class="Stratum2-Light font-weight-bold">Public Stories</h1>
+    <ul ng-init="getPublicStories()" class="list-group mt-4 mb-4 Stratum2-Light">
+        <li class="list-group-item border-orange-thin p-2 building-card-highlight pointer"
+            ng-click="viewStory(story)" href="#viewStory" ng-repeat="story in publicStories">
+            <div class="row px-2 mb-2">
+                <div class="col-sm-12">
+                    <h4 class="m-0 ">{{story.name}}
+                        <div ng-hide="accountAccess < 2" class="float-right pr-3 dropdown" style="font-size:18px">
+                            <button class="fa fa-gear border-orange-thin border-curve-button" style="font-size:24px"></button>
+                            <div class="dropdown-content border-orange font-weight-normal">
+                                <a class="" ng-click="EditDashboard(dashboard)">Edit</a>
+                                <a class="" ng-click="DeleteDashboard(dashboard)">Delete</a>
+                            </div>
+                        </div>
+                    </h4>
+                    <h5 class="m-0 mt-2 text-orange">Dashboards:</h5>
+                    <div>
+                        <div class="row" ng-repeat="d in story.dashboards">
+                            <span class="ml-3">{{d.name}}</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
