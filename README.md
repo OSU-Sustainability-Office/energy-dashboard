@@ -1,17 +1,40 @@
 # OSU Energy Dashboard
 ## Table of Contents
 - [DataBase Schema](#database-schema)
+  - [Tables](#tables)
+    - [Buildings](#buildings)
+    - [Meters](#meters)
+    - [Temporary Data](#temp_data)
+    - [Data](#data)
+    - [Blocks](#blocks)
+    - [Block Buildings](#block_buildings)
+    - [Dashboards](#dashboards)
+    - [Stories](#stories)
+- [API Reference](#api-reference)
 - [Python Scripts](#python-scripts)
   - [Import Data](#import-data)
   - [Tempory Data to Permanent Data](#temporary-to-permanent)
 ## DataBase Schema
 ### Tables
+| Table Name     | Description                                                |
+|----------------|:-----------------------------------------------------------|
+| buildings      | Stores info. of building on campus.                        |
+| meters         | Specifies existence and relation to building of a meter.   |
+| temp_data      | Temp. data storage. Relation to meter not building.        |
+| data           | Data storage, relation to building.                        |
+| blocks         | Unit for graph information.                                |
+| block_buildings| Relates buildings to blocks.                               |
+| dashboards     | Unit of blocks.                                            |
+| stories        | Unit of dashboards.                                        |
+
 #### buildings
+  
 | Field       | Type     | NULL   | Key   | Default   | Extra      |
 |-------------|:--------:|:------:|:-----:|:---------:|:----------:|
 | id          |int(11)   | NO     | PRI   | NULL      | auto_incr  |
 | Name        |char(64)  | YES    |       | NULL      |            |
 | sus_map_id  |char(64)  | YES    |       | NULL      |            |
+
 
 #### meters
 | Field       | Type     | NULL   | Key   | Default   | Extra      |
