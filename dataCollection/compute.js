@@ -219,12 +219,9 @@ function computeData() {
                 });
               }
             });
-
         });
       });
-
     });
-
   });
 }
 
