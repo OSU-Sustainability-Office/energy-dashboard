@@ -25,6 +25,7 @@ function computeData() {
   connection.query('SELECT * FROM temp_data', function(err, dataPoints) {
     if (err) throw err;
     dataPoints.forEach(function(point) {
+        var used = false;
       // Find all associated meter objects
       connection.query('SELECT building_id, operation FROM meters WHERE address = ' + point.meter_address, function(err, meters) {
         if (err) throw err;
@@ -46,6 +47,7 @@ function computeData() {
 
             // If a data point doesn't exist, create a new one
             if (data.length == 0) {
+              used = true;
               console.log("Inserting data entry for " + meter.building_id + " at time " + timestamp + ".");
               var ac_r = op * Math.abs(point.accumulated_real);
               var r_p = op * Math.abs(point.real_power);
@@ -108,6 +110,7 @@ function computeData() {
                 c_c + ')'
               );
             } else {
+              used = true;
               // Otherwise, update the current one
               console.log("Updating data entry for " + meter.building_id + " at time " + timestamp + ".");
               var ac_r = data[0].accumulated_real + op * Math.abs(point.accumulated_real);
@@ -168,7 +171,7 @@ function computeData() {
         });
       });
       // Delete this temporary data point
-      connection.query('DELETE FROM temp_data WHERE id = ' + point.id);
+      if (used) connection.query('DELETE FROM temp_data WHERE id = ' + point.id);
     });
   });
 }
