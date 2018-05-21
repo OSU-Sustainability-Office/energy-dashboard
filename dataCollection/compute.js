@@ -25,7 +25,7 @@ function computeData() {
   connection.query('SELECT * FROM temp_data', function(err, dataPoints) {
     if (err) throw err;
     dataPoints.forEach(function(point) {
-        var used = false;
+      var used = false;
       // Find all associated meter objects
       connection.query('SELECT building_id, operation FROM meters WHERE address = ' + point.meter_address, function(err, meters) {
         if (err) throw err;
