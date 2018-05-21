@@ -80,7 +80,7 @@ var insertData = function insertData(device, serial) {
 
 // Receives acquisuite log file uploads in XML format. Converts to JSON, then
 // inserts into the temporary table on our MySQL database.
-app.post('/receiveXML', xmlparser({
+app.post('/devices/upload', xmlparser({
     trim: false,
     explicitArray: false
 }), function (req, res) {
