@@ -159,7 +159,7 @@ An open source data collection and visualization web application for Oregon Stat
   - range: special formatted string, integer followed by specifier (d = day, m = month, h = hour, i = minute, y = year)
     - EX: 30d -> 30 Day range
   - name: The name of the building
-  - mpoint: the specified column to retrieve (metering point)
+  - mpoints: array of specified metering points
   
   A name or id must be used with this call. If a range is specified without a start or end date the current date time is used as the end date and the start date is determined by the range. Start dates and end dates are always specified as the start and end. This means if the start, end and range are all specified the range is ignored. This function also automatically omits results based on the requested date range, limiting the transfer of data.
   
