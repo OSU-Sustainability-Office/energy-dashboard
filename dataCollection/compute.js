@@ -235,9 +235,9 @@ connection.connect(function(err) {
   }
   console.log('Connected to database.');
 
-  // Every fifteen minutes, iterate over every building and compute data
+  // Every five minutes, iterate over every building and compute data
   setInterval(function() {
     computeData();
-  }, 15 * 60 * 1000); // 15 * 60 * 1000 = 15 minutes in milliseconds
+  }, 5 * 60 * 1000); // 15 * 60 * 1000 = 5 minutes in milliseconds
   computeData();
 });
