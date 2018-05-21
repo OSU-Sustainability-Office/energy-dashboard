@@ -55,7 +55,7 @@ An open source data collection and visualization web application for Oregon Stat
 |------------------|:---------:|:----:|:---:|:-----------------:|:---------------------------:|
 | id               | int(11)   | NO   | PRI | NULL              | auto_increment              |
 | meter_address    | char(16)  | YES  | MUL | NULL              |                             |
-| time             | timestamp | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+| time             | timestamp | YES  |     | CURRENT_TIMESTAMP |                             |
 | accumulated_real | int(11)   | YES  |     | NULL              |                             |
 | real_power       | float     | YES  |     | NULL              |                             |
 | reactive_power   | float     | YES  |     | NULL              |                             |
@@ -87,7 +87,7 @@ An open source data collection and visualization web application for Oregon Stat
 |------------------|:---------:|:----:|:---:|:-----------------:|:---------------------------:|
 | id               | int(11)   | NO   | PRI | NULL              | auto_increment              |
 | building_id      | int(11)   | YES  | MUL | NULL              |                             |
-| time             | timestamp | NO   | MUL | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+| time             | timestamp | YES  | MUL | CURRENT_TIMESTAMP |                             |
 | accumulated_real | int(11)   | YES  |     | NULL              |                             |
 | real_power       | float     | YES  |     | NULL              |                             |
 | reactive_power   | float     | YES  |     | NULL              |                             |
@@ -124,8 +124,8 @@ An open source data collection and visualization web application for Oregon Stat
 | media        |varchar(255)| YES    |       | NULL              |            |
 | text         |varchar(255)| YES    |       | NULL              |            |
 | dashboard_id |varchar(255)| YES    | MUL   | NULL              |            |
-| d_start      | timestamp  | NO     |       | CURRENT_TIMESTAMP |            |
-| d_end        | timestamp  | NO     |       | CURRENT_TIMESTAMP |            |
+| d_start      | timestamp  | YES    |       | CURRENT_TIMESTAMP |            |
+| d_end        | timestamp  | YES    |       | CURRENT_TIMESTAMP |            |
 | d_range      | int(11)    | YES    |       | NULL              |            |
 #### block_buildings
 | Field       | Type     | NULL   | Key   | Default   | Extra      |
