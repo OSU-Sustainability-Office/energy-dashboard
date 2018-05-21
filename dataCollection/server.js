@@ -21,7 +21,7 @@ function insertPoint(record, res) {
 }
 
 // Inserts a record if it is a 15 minute interval point
-function insertRecord(record, res) {
+function insertRecord(record, res, meter_id) {
   // Check to see if the point is 15 minute data
   if (record.time._.substring(14, 16) % 15 == 0) {
     // Now, add temp data.
@@ -62,11 +62,11 @@ var insertData = function insertData(device, serial) {
     if (device.records.record.length != null) {
       // Iterate over each record, and insert it
       for (var i = 0; i < device.records.record.length; i++) {
-        insertRecord(device.records.record[i], res);
+        insertRecord(device.records.record[i], res, meter_id);
       }
     } else {
       // Insert the only record
-      insertRecord(device.records.record, res);
+      insertRecord(device.records.record, res, meter_id);
     }
   });
 };
