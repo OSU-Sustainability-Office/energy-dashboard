@@ -1,0 +1,23 @@
+{
+  "name": "energy-dashboard-frontend",
+  "version": "1.0.0",
+  "description": "The web application.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OSU-Sustainability-Office/energy-dashboard.git"
+  },
+  "author": "Jack Woods, Brogan Miner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OSU-Sustainability-Office/energy-dashboard/issues"
+  },
+  "homepage": "https://github.com/OSU-Sustainability-Office/energy-dashboard#readme",
+  "dependencies": {
+    "vue": "^2.5.16",
+    "vue-cli": "^2.9.3"
+  }
+}
