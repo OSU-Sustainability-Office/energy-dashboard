@@ -1,10 +1,11 @@
 {
-  "name": "energy-dashboard-frontend",
+  "name": "energy-dashboard",
   "version": "1.0.0",
-  "description": "The web application.",
-  "main": "index.js",
+  "description": "OSU Energy Dashboard",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,10 @@
   },
   "homepage": "https://github.com/OSU-Sustainability-Office/energy-dashboard#readme",
   "dependencies": {
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "mysql": "^2.15.0",
+    "nodemon": "^1.17.4",
     "vue": "^2.5.16",
     "vue-cli": "^2.9.3"
   }
