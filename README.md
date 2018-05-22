@@ -19,8 +19,8 @@ An open source data collection and visualization web application for Oregon Stat
 - [Python Scripts](#python-scripts)
   - [Import Data](#import-data)
   - [Tempory Data to Permanent Data](#temporary-to-permanent)
-- [Development Environment](#dev-environment)
-  - [Running a VueJS Dev Server](#vue-dev-server)
+- [Development Environment](#development-environment)
+  - [Running a VueJS Dev Server](#running-a-vuejs-dev-server)
 ## DataBase Schema
 ### Tables
 | Table Name     | Description                                                |
