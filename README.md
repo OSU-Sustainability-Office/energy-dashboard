@@ -19,6 +19,8 @@ An open source data collection and visualization web application for Oregon Stat
 - [Python Scripts](#python-scripts)
   - [Import Data](#import-data)
   - [Tempory Data to Permanent Data](#temporary-to-permanent)
+- [Development Environment](#dev-environment)
+  - [Running a VueJS Dev Server](#vue-dev-server)
 ## DataBase Schema
 ### Tables
 | Table Name     | Description                                                |
@@ -33,7 +35,7 @@ An open source data collection and visualization web application for Oregon Stat
 | stories        | Unit of dashboards.                                        |
 
 #### buildings
-  
+
 | Field       | Type     | NULL   | Key   | Default   | Extra      |
 |-------------|:--------:|:------:|:-----:|:---------:|:----------:|
 | id          |int(11)   | NO     | PRI   | NULL      | auto_incr  |
@@ -152,7 +154,7 @@ An open source data collection and visualization web application for Oregon Stat
 ### Buildings
 ```/api/getBuildingData```
 - Method: GET
-- Parameters: 
+- Parameters:
   - id: Integer id of the building
   - endDate: string in ISO8601 DateTime format, specifies the end of the data retrieval
   - startDate: string in ISO8601 DateTime format, specifies the start of the data retrieval
@@ -160,9 +162,9 @@ An open source data collection and visualization web application for Oregon Stat
     - EX: 30d -> 30 Day range
   - name: The name of the building
   - mpoint: the specified column to retrieve (metering point)
-  
+
   A name or id must be used with this call. If a range is specified without a start or end date the current date time is used as the end date and the start date is determined by the range. Start dates and end dates are always specified as the start and end. This means if the start, end and range are all specified the range is ignored. This function also automatically omits results based on the requested date range, limiting the transfer of data.
-  
+
 ```/api/updateBuilding```
 - Method: POST
 - Parameters:
@@ -170,7 +172,7 @@ An open source data collection and visualization web application for Oregon Stat
   - name: the name of the building
   - meters: an array of meter objects the building uses
     - meter object: has the structure of {id, bool}, the bool specifies the operation to the buildings total (TRUE = add, FALSE = subtract)
-  
+
 ### Blocks
 ```/api/getBlockData```
 - Method: GET
@@ -191,14 +193,14 @@ Returns all the block data associated with the block id
   - dend: date end of data display
   - drange: date range, follows same format as range specified in the update building api
   - buildings: array of building ids
-  
+
 
 ### Dashboards
 ```/api/getDashboard```
 - Method: GET
 - Parameters:
   - id: the id of the dashboard object
-  
+
 ```/api/updateDashboard```
 - Method: POST
 - Parameters:
@@ -212,7 +214,7 @@ Returns all the block data associated with the block id
 - Method: GET
 - Parameters:
   - id: the id of the story to get data for
-  
+
 ```/api/updateStory```
 - Method: POST
 - Parameters:
@@ -247,3 +249,9 @@ This method should only be called by the data collection script when it can not 
 6. Add the values from the meters to the new dictionary object, be careful to follow the operation scheme laid out by the meters table. Also, use the time (w/truncated seconds) as a key for the dictionary.
 7. Iterate through the dictionary you created
 8. If the current key has the same amount of entries as were found in the meters table query, delete all the data points from that entry. Then insert the combined total into the data table.
+
+- [Development Environment](#dev-environment)
+  - [Running a VueJS Dev Server](#vue-dev-server)
+## Development Environment
+### Running a VueJS Dev Server
+To run the VueJS server, navigate to /energy-dashboard-frontend. In your bash terminal, run ```npm install -g vue``` and then run ```npm run dev```.
