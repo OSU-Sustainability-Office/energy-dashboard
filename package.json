@@ -1,0 +1,26 @@
+{
+  "name": "energy-dashboard",
+  "version": "1.0.0",
+  "description": "OSU Energy Dashboard",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OSU-Sustainability-Office/energy-dashboard.git"
+  },
+  "author": "Brogan Miner, Jack Woods",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OSU-Sustainability-Office/energy-dashboard/issues"
+  },
+  "homepage": "https://github.com/OSU-Sustainability-Office/energy-dashboard#readme",
+  "dependencies": {
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "mysql": "^2.15.0",
+    "nodemon": "^1.17.4"
+  }
+}
