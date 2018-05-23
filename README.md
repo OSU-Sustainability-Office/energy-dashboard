@@ -161,7 +161,7 @@ An open source data collection and visualization web application for Oregon Stat
   - range: special formatted string, integer followed by specifier (d = day, m = month, h = hour, i = minute, y = year)
     - EX: 30d -> 30 Day range
   - name: The name of the building
-  - mpoints: array of specified metering points
+  - mpoints: array of specified metering points, comman deliminated
 
   A name or id must be used with this call. If a range is specified without a start or end date the current date time is used as the end date and the start date is determined by the range. Start dates and end dates are always specified as the start and end. This means if the start, end and range are all specified the range is ignored. This function also automatically omits results based on the requested date range, limiting the transfer of data.
 
@@ -180,6 +180,13 @@ An open source data collection and visualization web application for Oregon Stat
   - id: the id of the block object
 Returns all the block data associated with the block id
 
+```/api/getBlockDataForStory```
+- Method: GET
+- Parameters:
+  - story: story id
+returns all blocks from the story with the specified id 
+ 
+
 ```/api/updateBlock```
 - Method: POST
 - Parameters:
@@ -194,26 +201,20 @@ Returns all the block data associated with the block id
   - drange: date range, follows same format as range specified in the update building api
   - buildings: array of building ids
 
-
-### Dashboards
-```/api/getDashboard```
-- Method: GET
-- Parameters:
-  - id: the id of the dashboard object
-
-```/api/updateDashboard```
-- Method: POST
-- Parameters:
-  - id: if specified updates the dashboard instead of creating a new one
-  - name: name of the dashboard
-  - blocks: array of block ids
-  - description: text that describes the dashboard
-
 ### Stories
 ```/api/getStory```
 - Method: GET
 - Parameters:
   - id: the id of the story to get data for
+  
+ returns all rows of the story table for that stories id
+
+```/api/getStoriesDataForUser```
+- Method: GET
+- Parameters: 
+  -user: the user name that is associated with the stories
+  
+ returns the story ids for the user
 
 ```/api/updateStory```
 - Method: POST
@@ -223,12 +224,11 @@ Returns all the block data associated with the block id
   - description: quick description of the story
   - dashboards: array of dashboard ids
 ### Meters
-```/api/addMeter```
-- Method: POST
+```/api/getDefaultMeters```
+- Method: GET
 - Parameters:
-  - address: address of the meter
-  - name: name of the meter
-This method should only be called by the data collection script when it can not establish that a meter exists in the meters database
+  - None
+This method returns the meters that have no specified building id. These are the unique meters.
 
 ## Python Scripts
 ### Import Data
@@ -250,8 +250,6 @@ This method should only be called by the data collection script when it can not 
 7. Iterate through the dictionary you created
 8. If the current key has the same amount of entries as were found in the meters table query, delete all the data points from that entry. Then insert the combined total into the data table.
 
-- [Development Environment](#dev-environment)
-  - [Running a VueJS Dev Server](#vue-dev-server)
 ## Development Environment
 ### Running a VueJS Dev Server
 To run the VueJS server, navigate to /energy-dashboard-frontend. In your bash terminal, run ```npm install -g vue``` and then run ```npm run dev```.
