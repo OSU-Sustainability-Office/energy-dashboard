@@ -1,23 +1,36 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <navBar />
     <router-view/>
   </div>
 </template>
 
 <script>
+import navBar from '@/components/navBar';
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    navBar
+  }
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@font-face {
+    font-family: 'StratumNo2';
+    src: url('/static/fonts/StratumNo2-Bold.woff2') format('woff2'),
+        url('/static/fonts/StratumNo2-Bold.woff') format('woff'),
+        url('/static/fonts/StratumNo2-Bold.ttf') format('truetype'),
+        url('/static/fonts/StratumNo2-Bold.svg#StratumNo2-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+body {
+  margin: 0px;
+  font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
