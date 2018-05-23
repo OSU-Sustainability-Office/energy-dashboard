@@ -11,8 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/OSU-Sustainability-Office/energy-dashboard.git"
   },
-  "author": "Brogan Miner, Jack Woods",
-  "license": "ISC",
+  "author": "Jack Woods, Brogan Miner",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/OSU-Sustainability-Office/energy-dashboard/issues"
   },
@@ -22,6 +22,11 @@
     "express": "^4.16.3",
     "mysql": "^2.15.0",
     "nodemon": "^1.17.4",
+<<<<<<< HEAD
     "sanitize": "^2.1.0"
+=======
+    "vue": "^2.5.16",
+    "vue-cli": "^2.9.3"
+>>>>>>> ef1119a90f18798ae93279e689d49e8cd81cd0b5
   }
 }
