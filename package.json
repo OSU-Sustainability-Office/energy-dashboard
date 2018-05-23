@@ -4,7 +4,7 @@
   "description": "OSU Energy Dashboard",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/bin/mocha tests",
     "start": "nodemon server.js"
   },
   "repository": {
@@ -20,13 +20,12 @@
   "dependencies": {
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
+    "mocha": "^5.2.0",
     "mysql": "^2.15.0",
     "nodemon": "^1.17.4",
-<<<<<<< HEAD
+    "request": "^2.87.0",
     "sanitize": "^2.1.0"
-=======
-    "vue": "^2.5.16",
-    "vue-cli": "^2.9.3"
->>>>>>> ef1119a90f18798ae93279e689d49e8cd81cd0b5
   }
 }
+
+

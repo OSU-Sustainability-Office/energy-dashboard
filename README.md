@@ -1,6 +1,14 @@
 # OSU Energy Dashboard
 An open source data collection and visualization web application for Oregon State Universities power consumption.
 ## Table of Contents
+- [Dependencies](#dependencies)
+  - [DotEnv](#dotenv)
+  - [Express](#express)
+  - [Mocha](#mocha)
+  - [MySQL](#mysql)
+  - [NoDemon](#nodemon)
+  - [Request](#request)
+  - [Sanitizee](#sanitize)
 - [DataBase Schema](#database-schema)
   - [Tables](#tables)
     - [Buildings](#buildings)
@@ -21,6 +29,21 @@ An open source data collection and visualization web application for Oregon Stat
   - [Tempory Data to Permanent Data](#temporary-to-permanent)
 - [Development Environment](#development-environment)
   - [Running a VueJS Dev Server](#running-a-vuejs-dev-server)
+## Dependencies
+### DotEnv
+  Used for loading environment files into the application. Needed to specify the database users, passwords and hosts.
+### Express
+  Used for URL routing.
+### Mocha
+  Used for writing functional tests.
+### MySQL
+  Used to communicate with database.
+### NoDemon
+  Used to automatically restart the server with file changes for development purposes.
+### Request
+  Used in conjunction with Mocha to test different routes.
+### Sanitize
+  Used to ensure security on server request parameters.
 ## DataBase Schema
 ### Tables
 | Table Name     | Description                                                |
