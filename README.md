@@ -23,33 +23,29 @@ An open source data collection and visualization web application for Oregon Stat
   - [Running a VueJS Dev Server](#running-a-vuejs-dev-server)
 ## DataBase Schema
 ### Tables
-+-----------------------+
-| Tables_in_energy_data |
-+-----------------------+
-| block_groups          |
-| blocks                |
-| data                  |
-| meter_group_relation  |
-| meter_groups          |
-| meters                |
-| stories               |
-| users                 |
-+-----------------------+
+| Table Name              | Description                                                |
+|-------------------------|:-----------------------------------------------------------|
+| block_groups            | Relates blocks to meter groups.                            |
+| blocks                  | Contains information about a collection of data points.    |
+| data                    | Stores data points.                                        |
+| meter_group_relation    | Relates meters to meter groups.                            |
+| meter_groups            | Meter groups can be buildings, or any collection of meters.|
+| meters                  | Contains meta information about each meter.                |
+| stories                 | Collections of blocks.                                     |
+| users                   | Contains user privileges.                                  |
 
 ### Block Groups
-+----------+------------+------+-----+---------+-------+
 | Field    | Type       | Null | Key | Default | Extra |
-+----------+------------+------+-----+---------+-------+
+|----------|:-----------|:-----|:----|:--------|:------|
 | id       | int(11)    | NO   | PRI | NULL    |       |
 | block_id | int(11)    | YES  | MUL | NULL    |       |
 | group_id | int(11)    | YES  | MUL | NULL    |       |
 | point    | tinyint(4) | YES  |     | NULL    |       |
-+----------+------------+------+-----+---------+-------+
+
 
 ### Blocks
-+------------+------------+------+-----+---------+-------+
 | Field      | Type       | Null | Key | Default | Extra |
-+------------+------------+------+-----+---------+-------+
+|------------|:-----------|:-----|:----|:--------|:------|
 | id         | int(11)    | NO   | PRI | NULL    |       |
 | date_start | datetime   | YES  |     | NULL    |       |
 | date_end   | datetime   | YES  |     | NULL    |       |
@@ -58,12 +54,10 @@ An open source data collection and visualization web application for Oregon Stat
 | media      | char(255)  | YES  |     | NULL    |       |
 | descr      | text       | YES  |     | NULL    |       |
 | story_id   | int(11)    | YES  | MUL | NULL    |       |
-+------------+------------+------+-----+---------+-------+
 
 ### Data
-+------------------+----------+------+-----+---------+-------+
 | Field            | Type     | Null | Key | Default | Extra |
-+------------------+----------+------+-----+---------+-------+
+|------------------|:---------|:-----|:----|:--------|:------|
 | id               | int(11)  | NO   | PRI | NULL    |       |
 | time             | datetime | NO   |     | NULL    |       |
 | meter_id         | int(11)  | NO   | MUL | NULL    |       |
@@ -92,56 +86,45 @@ An open source data collection and visualization web application for Oregon Stat
 | cphase_a         | float    | YES  |     | NULL    |       |
 | cphase_b         | float    | YES  |     | NULL    |       |
 | cphase_c         | float    | YES  |     | NULL    |       |
-+------------------+----------+------+-----+---------+-------+
 
 ### Meter Group Relation
-+-----------+---------+------+-----+---------+-------+
 | Field     | Type    | Null | Key | Default | Extra |
-+-----------+---------+------+-----+---------+-------+
+|-----------|:--------|:-----|:----|:--------|:------|
 | id        | int(11) | NO   | PRI | NULL    |       |
 | meter_id  | int(11) | YES  | MUL | NULL    |       |
 | group_id  | int(11) | YES  | MUL | NULL    |       |
 | operation | bit(1)  | YES  |     | NULL    |       |
-+-----------+---------+------+-----+---------+-------+
 
 ### Meter Groups
-+-------------+----------+------+-----+---------+-------+
 | Field       | Type     | Null | Key | Default | Extra |
-+-------------+----------+------+-----+---------+-------+
+|-------------|:---------|:-----|:----|:--------|:------|
 | id          | int(11)  | NO   | PRI | NULL    |       |
 | name        | char(64) | YES  |     | NULL    |       |
 | is_building | bit(1)   | YES  |     | NULL    |       |
 | user_id     | int(11)  | YES  | MUL | NULL    |       |
-+-------------+----------+------+-----+---------+-------+
 
 ### Meters
-+---------+----------+------+-----+---------+-------+
 | Field   | Type     | Null | Key | Default | Extra |
-+---------+----------+------+-----+---------+-------+
+|---------|:---------|:-----|:----|:--------|:------|
 | id      | int(11)  | NO   | PRI | NULL    |       |
 | name    | char(64) | YES  |     | NULL    |       |
 | address | char(16) | YES  |     | NULL    |       |
-+---------+----------+------+-----+---------+-------+
 
 ### Stories
-+-------------+----------+------+-----+---------+-------+
 | Field       | Type     | Null | Key | Default | Extra |
-+-------------+----------+------+-----+---------+-------+
+|-------------|:---------|:-----|:----|:--------|:------|
 | id          | int(11)  | NO   | PRI | NULL    |       |
 | user_id     | int(11)  | YES  | MUL | NULL    |       |
 | name        | char(64) | YES  |     | NULL    |       |
 | description | text     | YES  |     | NULL    |       |
 | public      | bit(1)   | YES  |     | NULL    |       |
-+-------------+----------+------+-----+---------+-------+
 
 ### Users
-+-----------+-----------+------+-----+---------+-------+
 | Field     | Type      | Null | Key | Default | Extra |
-+-----------+-----------+------+-----+---------+-------+
+|-----------|:----------|:-----|:----|:--------|:------|
 | id        | int(11)   | NO   | PRI | NULL    |       |
 | name      | char(255) | YES  |     | NULL    |       |
 | privilege | int(11)   | YES  |     | NULL    |       |
-+-----------+-----------+------+-----+---------+-------+
 
 ## API Reference
 ### Buildings
