@@ -25,11 +25,25 @@ exports.connect = function(done){
   done();
 }
 
+exports.query = function(sql,args) {
+  return new Promise((resolve, reject) => {
+    state.db.query(sql, args, (err, rows) => {
+      if (err)
+          return reject(err);
+      resolve(rows);
+    });
+  });
+}
 exports.get = function() {
   return state.db;
 }
 
-exports.close = function(done) {
-  state.db.end();
-  done();
+exports.close = function() {
+  return new Promise ((resolve, reject) => {
+    state.db.end(err => {
+      if (err)
+          return reject(err);
+      resolve();
+    });
+  });
 }

@@ -2,13 +2,15 @@ var express = require('express');
 var router = express.Router();
 var db = require('../db');
 
+router.use(require('sanitize').middleware);
+
 //BUILDINGS
 
 router.get('/getBuildingData',function (req,res) {
 
-	var start = req.query.startDate;
-	var end = req.query.endDate;
-	var range = req.query.range;
+	var start = req.queryString('startDate');
+	var end = req.queryString('endDate');
+	var range = req.queryString('range');
 
 	//date selection as specified by the docs.
 	if (range) {
@@ -101,40 +103,46 @@ router.get('/getBuildingData',function (req,res) {
 
 
 
-	function idCallback(id) {
+	if (!req.query.mpoints) {
+		res.send("ERROR: NO METERING POINT(S) SPECIFIED");
+		return;
+	}
+	var id = req.queryInt('id');
+	//check for id first
+	if (id) {
 		var queryString = "SELECT time, ";
-		var mPoints = req.query.mpoints.split(',');
+		var mPoints = req.queryString('mpoints').split(',');
 		for (var i = 0; i < mPoints.length; i++) {
 			queryString = queryString + mPoints[i];
 			if (i+1 !== mPoints.length) {
 				queryString = queryString + ", "
 			}
 		}
-		queryString = queryString + " FROM data WHERE building_id=?";
-		db.get().query(queryString,[id],function(err,result){
-			if (err) {
-				console.log(err);
-			}
-			res.send(JSON.stringify(result));
+		queryString = queryString + " FROM data WHERE building_id=? AND ? < time AND ? > time";
+		
+		db.query(queryString,[id,start,end]).then(rows => {
+			res.send(JSON.stringify(rows));
 		});
 	}
-	if (!req.query.mpoints) {
-		res.send("ERROR: NO METERING POINT(S) SPECIFIED");
-		return;
-	}
-	var id = req.query.id;
-	//check for id first
-	if (id) {
-		idCallback(id);
-	}
-	else if (!id && !req.query.name) {
+	else if (!id && !req.queryString('name')) {
 		res.send("ERROR: NO NAME OR ID SPECIFIED");
 		return;
 	}
 	else if (req.query.name){
-		db.get().query("SELECT id FROM buildings WHERE NAME=?",[req.query.name],function(err,result){
-			idCallback(result[0].id);
-			console.log(result[0].id);
+		db.query("SELECT id FROM buildings WHERE NAME=?",[req.queryString('name')]).then(rows => {
+			var queryString = "SELECT time, ";
+			var mPoints = req.queryString('mpoints').split(',');
+			for (var i = 0; i < mPoints.length; i++) {
+				queryString = queryString + mPoints[i];
+				if (i+1 !== mPoints.length) {
+					queryString = queryString + ", "
+				}
+			}
+			queryString = queryString + " FROM data WHERE building_id=? AND ? < time AND ? > time";
+			
+			db.query(queryString,[rows[0].id, start, end]).then(rows => {
+				res.send(JSON.stringify(rows));
+			});
 		});
 	}
 
@@ -142,12 +150,50 @@ router.get('/getBuildingData',function (req,res) {
 
 router.post('/updateBuilding',function (req,res) {
 	//update building
-	if (req.query.id) {
-
+	if (req.bodyInt('id')) {
+		if (req.bodyString('name')) {
+			//first change building name but only if needed
+			db.query("UPDATE buildings SET Name=? WHERE id=?",[req.bodyString('name'), req.bodyInt('id')]).then(rows => {
+				res.send("SUCCESS: UPDATED BUILDING NAMES");
+			});
+		}
+		if (req.body.meters) {
+			//first delete all meters associated with the building, this should be okay because the update
+			//request will contain all meters with that building including those that stay the same
+			db.query("DELETE FROM meters WHERE building_id=?",[req.bodyInt('id')]).then(rows => {
+				for (meter in req.body.meters) {
+					if (meter.name && meter.address && meter.building_id && meter.operation)
+						//for each meter add them into the meters database
+						db.query("INSERT INTO meters (Name, address, building_id, operation VALUES (?, ?, ?, ?)",[meter.name, meter.address, meter.building_id, meter.operation]).then(rows => {
+							res.send("SUCCESS: ADDED METER TO BUILDING")
+						});
+				}
+			});
+		}
 	}
 	//Create new building
 	else {
-
+		//check that we have name to give the building
+		if (req.bodyString('name')) {
+			//first make sure name is unique
+			dq.query("SELECT id FROM buildings WHERE Name=?",[req.bodyString('name')]).then(rows => {
+				//Array is not length 0, or only null, or not an array
+				if (!Array.isArray(rows) || !rows.length) {
+					//put that dude in the database
+					dq.query("INSERT INTO buildings (Name) VALUES (?)",[req.bodyString('name')]).then(rows => {
+						//associate meters with building if specified 
+						if (req.body.meters) {
+							for (meter in req.body.meters) {
+								//for each meter add them into the meters database
+								db.query("INSERT INTO meters (Name, address, building_id, operation VALUES (?, ?, ?, ?)",[meter.name, meter.address, meter.building_id, meter.operation]).then(rows => {
+									res.send("SUCCESS: ADDED METER TO BUILDING")
+								});
+							}
+						}
+					});
+				}
+			});
+		}
 	}
 });
 
@@ -155,31 +201,75 @@ router.post('/updateBuilding',function (req,res) {
 //BLOCKS
 
 router.get('/getBlockData',function (req,res) {
+	//blocks need the id to display information, the Name is not unique
+	if (req.queryString('id')) {
+		//send back block information, controller needs to send
+		//client should receive information and request needed building data
+		db.query("SELECT * FROM blocks WHERE id=?",[req.queryString('id')]).then(rows => {
+			res.send(JSON.stringify(rows));
+		});
+	}
 
 });
+router.get('/getBlockDataForStory',function (req,res) {
+	//for a story names need to be unique so we can find the block this way
+	if (req.queryString('story') && req.queryString('name')) {
+		db.query("SELECT * FROM blocks WHERE story_id=? AND Name=?",[req.queryString('story'),req.queryString('name')]).then(rows => {
+			res.send(JSON.stringify(rows));
+		});
+	}
+
+});
+
 
 router.post('/updateBlock',function (req,res) {
 
 });
 
-//DASHBOARDS
-
-router.get('/getDashboard',function (req,res) {
-
-});
-
-router.post('/updateDashboard',function (req,res) {
-
-});
-
 //STORIES
 
-router.get('/getStory',function (req,res) {
+router.get('/getStoryData',function (req,res) {
+	//get a story by its id
+	if (req.queryInt('id')) {
+		db.query('SELECT * FROM stories WHERE id=?',[req.queryInt('id')]).then(rows => {
+			res.send(JSON.stringify(rows));
+		});
+	}
+	else {
+		res.send('ERROR: ID NOT SPECIFIED');
+	}
+
+});
+router.get('/getPublicStories',function (req,res){
+	db.query('SELECT * FROM stories WHERE public=1').then(rows => {
+		res.send(JSON.stringify(rows));
+	});
+
+});
+router.get('/getStoriesDataForUser',function (req,res) {
+	if (req.queryString('user')) {
+		db.query('SELECT id FROM users WHERE Name=?',[req.queryString('Name')]).then(rows => {
+			//I need a join in this query
+			db.query('SELECT story_id FROM user_stories WHERE user_id=?',[rows[0].id]).then(rows = {
+
+			});
+		})
+		
+	}
+	else {
+		res.send('ERROR: COULD NOT RETRIEVE STORIES');
+	}
+
+});
+router.post('/updateStory',function (req,res) {
 
 });
 
-router.post('/updateStory',function (req,res) {
-
+//METERS
+router.get('/getDefaultMeters',function (req,res) {
+	db.query('SELECT * FROM meters WHERE building_id=NULL').then(rows => {
+		res.send(JSON.stringify(rows));
+	})
 });
 
 
