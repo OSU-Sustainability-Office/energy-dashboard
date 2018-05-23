@@ -1,8 +1,15 @@
 <template>
-  <div class="background">
-    <homeContent />
+  <div class="container-fluid">
+    <!-- <div id="background"><div id="shadow"></div></div> -->
+    <div class="row">
+      <homeContent />
+    </div>
+    <div class="row">
     <homeSide />
+    </div>
+    <div class="row">
     <exploreBtn />
+    </div>
   </div>
 </template>
 
@@ -23,13 +30,24 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.background {
+.container-fluid {
+  padding: 0px;
+}
+#background {
   background: url('/static/images/solar.jpg');
-  box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
   background-size: cover;
   top: 4em;
   bottom: 0px;
-  position: absolute;
   width: 100%;
+  position: absolute;
+  z-index: 0;
+}
+#shadow {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
+  background: linear-gradient( rgba(0,0,0,1), rgba(0,0,0,0));
+  z-index: 0;
 }
 </style>

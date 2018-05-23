@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div class="app">
     <navBar />
     <router-view/>
   </div>
@@ -28,7 +28,6 @@ export default {
     font-style: normal;
 }
 body {
-  margin: 0px;
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

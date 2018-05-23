@@ -1,6 +1,8 @@
 <template>
   <div class="background">
+    <span class="main-heading">Stories</span>
     <carousel />
+    <span class="main-heading">Featured Blocks</span>
     <featured />
   </div>
 </template>
@@ -26,5 +28,9 @@ export default {
   bottom: 0px;
   position: absolute;
   width: 100%;
+}
+.main-heading {
+  font-size: 3em;
+  margin-left: .3em;
 }
 </style>

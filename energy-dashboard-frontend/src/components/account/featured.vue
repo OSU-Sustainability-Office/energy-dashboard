@@ -62,6 +62,7 @@ export default {
   margin-left: 1em;
   padding-top: 1em;
   padding-bottom: 1em;
+  
 }
 
 .minimized {}

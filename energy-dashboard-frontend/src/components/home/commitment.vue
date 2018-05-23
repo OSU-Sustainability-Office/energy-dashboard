@@ -1,6 +1,6 @@
 <template>
   <transition name='fade'>
-    <span v-if="seen"> {{ c }} </span>
+    <span>{{ commitments[i] }}</span>
   </transition>
 </template>
 
@@ -9,25 +9,32 @@ export default {
   name: 'commitment',
   data () {
     return {
-      c: 'Education'
-    }
-  },
-  methods: {
-    updateC: function () {
-      var commitments = [
+      i: 0,
+      commitments: [
         'Education',
+        'Community Engagement',
+        'Carbon Planning',
+        'Outreach',
         'Research',
+        'Alternative Fuels',
+        'Emissions Reduction',
+        'Smart Metering',
         'Assessment',
         'Renewable Energy',
         'Carbon Neutrality'
       ]
-      for (var c in commitments) {
-        this.c = commitments[c]
-      }
     }
   },
   mounted () {
-    this.updateC()
+    var timeout = 150;
+    var i = 0
+    while (i < this.commitments.length - 1) {
+      setTimeout (() => {
+        this.i++
+      }, timeout)
+      timeout += (100 + 25 * i)
+      i++
+    }
   }
 }
 </script>

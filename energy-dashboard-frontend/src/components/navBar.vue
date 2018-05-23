@@ -1,6 +1,6 @@
 <template>
   <div class="nav">
-    <img src="/static/images/logo.png" height="100%">
+    <a href="/"><img src="/static/images/logo.svg"></a>
   </div>
 </template>
 
@@ -12,7 +12,11 @@ export default {
 
 <style >
 .nav {
-  height: 4em;
+  height: 5em;
   background: #D73F09;
+}
+img{
+  padding: .25em;
+  height: 3.5em;
 }
 </style>

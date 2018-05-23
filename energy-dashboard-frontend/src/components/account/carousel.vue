@@ -1,6 +1,10 @@
 <template>
-  <div class="flex" v-bind:class="{ minimized : isMinimized }">
-    <card v-for="card in cards" :featured=false :title=card.title :desc=card.desc />
+  <div>
+    <div class="flex" v-bind:class="{ maximized : isMaximized }">
+      <card v-for="card in cards" :featured=false :title=card.title :desc=card.desc />
+    </div>
+    <center><div id="expand" v-on:click="isMaximized = !isMaximized"><i class="fas" v-bind:class="{ 'fa-chevron-circle-down' : !isMaximized, 'fa-chevron-circle-up' : isMaximized }"></i></div></center>
+
   </div>
 </template>
 
@@ -14,7 +18,7 @@ export default {
   },
   data () {
     return {
-      isMinimized: false,
+      isMaximized: false,
       cards: [
         {
           title: 'card1',
@@ -63,8 +67,32 @@ export default {
   margin-left: 1em;
   padding-top: 1em;
   padding-bottom: 1em;
-}
-.minimized {
+  height: auto;
+  -webkit-transition: height 2s;
+  transition: flex-wrap 2s ease-in-out;
 
+}
+.maximized {
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+#expand {
+  font-size: 2em;
+  z-index: 1000;
+  top: 11em;
+  left: 49%;
+  margin: 0;
+  padding: 0;
+}
+#expand:hover {
+  cursor: pointer;
+  color: #D73F09;
+}
+.slide-enter, .slide-leave-to{
+  transform: scaleY(0)
+}
+.slide-enter-active, .slide-leave-active{
+  transition: transform 0.5s ease-in-out;
 }
 </style>

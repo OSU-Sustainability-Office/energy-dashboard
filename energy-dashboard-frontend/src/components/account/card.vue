@@ -23,11 +23,15 @@ export default {
 <style scoped>
 .card {
   margin-right: 1em;
-  border: 3px solid #000;
+  margin-top: 1em;
+  border: 2px solid #000;
+  border-radius: 5px;
   height: 15em;
   min-width: 15em;
 }
 .feature {
   background: #000;
+  height: 23em;
+  min-width: 23em;
 }
 </style>
