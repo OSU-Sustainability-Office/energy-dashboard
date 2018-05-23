@@ -213,8 +213,8 @@ router.get('/getBlockData',function (req,res) {
 });
 router.get('/getBlockDataForStory',function (req,res) {
 	//for a story names need to be unique so we can find the block this way
-	if (req.queryString('story') && req.queryString('name')) {
-		db.query("SELECT * FROM blocks WHERE story_id=? AND Name=?",[req.queryString('story'),req.queryString('name')]).then(rows => {
+	if (req.queryString('story')) {
+		db.query("SELECT * FROM blocks WHERE story_id=?",[req.queryString('story'),req.queryString('name')]).then(rows => {
 			res.send(JSON.stringify(rows));
 		});
 	}
@@ -249,9 +249,8 @@ router.get('/getPublicStories',function (req,res){
 router.get('/getStoriesDataForUser',function (req,res) {
 	if (req.queryString('user')) {
 		db.query('SELECT id FROM users WHERE Name=?',[req.queryString('Name')]).then(rows => {
-			//I need a join in this query
 			db.query('SELECT story_id FROM user_stories WHERE user_id=?',[rows[0].id]).then(rows = {
-
+				res.send(JSON.stringify(rows));
 			});
 		})
 		
