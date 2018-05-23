@@ -1,16 +1,18 @@
 <template>
-  <div class="nav">NavBar</div>
+  <div class="nav">
+    <img src="/static/images/logo.png" height="100%">
+  </div>
 </template>
 
 <script>
 export default {
-  name: "navBar"
-};
+  name: 'navBar'
+}
 </script>
 
 <style >
 .nav {
-  box-shadow: 5px 5px #000;
-  height: 3em;
+  height: 4em;
+  background: #D73F09;
 }
 </style>

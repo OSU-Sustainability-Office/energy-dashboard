@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import homeContent from '@/components/homeContent'
-import homeSide from '@/components/homeSide'
-import exploreBtn from '@/components/exploreBtn'
+import homeContent from '@/components/home/homeContent'
+import homeSide from '@/components/home/homeSide'
+import exploreBtn from '@/components/home/exploreBtn'
 
 export default {
   name: 'index',
@@ -17,13 +17,8 @@ export default {
     homeContent,
     homeSide,
     exploreBtn
-  },
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
-    }
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -32,7 +27,7 @@ export default {
   background: url('/static/images/solar.jpg');
   box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
   background-size: cover;
-  top: 3em;
+  top: 4em;
   bottom: 0px;
   position: absolute;
   width: 100%;
