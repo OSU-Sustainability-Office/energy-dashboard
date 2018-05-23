@@ -254,4 +254,4 @@ This method should only be called by the data collection script when it can not 
   - [Running a VueJS Dev Server](#vue-dev-server)
 ## Development Environment
 ### Running a VueJS Dev Server
-To run the VueJS server, navigate to /energy-dashboard-frontend. In your bash terminal, run ```npm install -g vue``` and then run ```npm run dev```.
+To run the VueJS server, navigate to /energy-dashboard-frontend. In your bash terminal, run ```npm install -g vue```, ```npm install```, and then run ```npm run dev```.
