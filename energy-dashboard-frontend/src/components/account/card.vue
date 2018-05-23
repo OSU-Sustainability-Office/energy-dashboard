@@ -1,6 +1,6 @@
 <template>
-  <div class="card">
-    {{this.title}}, {{this.desc}}
+  <div class="card" v-bind:class="{ feature : isFeatured }">
+    {{this.title}}, {{this.desc}} {{this.isFeatured}}
   </div>
 </template>
 
@@ -8,11 +8,12 @@
 
 export default {
   name: 'card',
-  props: ['title', 'desc'],
+  props: ['title', 'desc', 'featured'],
   data () {
     return {
-      title: this.cardData.title,
-      desc: this.cardData.desc
+      title: this.title,
+      desc: this.desc,
+      isFeatured: this.featured
     }
   }
 }
@@ -25,5 +26,8 @@ export default {
   border: 3px solid #000;
   height: 15em;
   min-width: 15em;
+}
+.feature {
+  background: #000;
 }
 </style>

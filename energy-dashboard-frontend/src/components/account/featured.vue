@@ -1,7 +1,7 @@
 <template>
-  <div class="flex" v-bind:class="{ minimized : isMinimized }">
-    <card v-for="card in cards" :title=card.title :desc=card.desc />
-  </div>
+<div class="flex" v-bind:class="{ minimized : isMinimized }">
+  <card v-for="card in cards" :featured=true :title=card.title :desc=card.desc />
+</div>
 </template>
 
 <script>
@@ -12,36 +12,35 @@ export default {
   components: {
     card
   },
-  data () {
+  data() {
     return {
       isMinimized: false,
-      cards: [
-        {
-          title: 'card1',
+      cards: [{
+          title: 'card0',
           desc: 'This is a description.'
         },
         {
-          title: 'card2',
+          title: 'card0code',
           desc: 'This is a description.'
         },
         {
-          title: 'card3',
+          title: 'card0',
           desc: 'This is a description.'
         },
         {
-          title: 'card4',
+          title: 'card0',
           desc: 'This is a description.'
         },
         {
-          title: 'card5',
+          title: 'card0',
           desc: 'This is a description.'
         },
         {
-          title: 'card3',
+          title: 'card0',
           desc: 'This is a description.'
         },
         {
-          title: 'card3',
+          title: 'card0',
           desc: 'This is a description.'
         }
       ]
@@ -64,13 +63,6 @@ export default {
   padding-top: 1em;
   padding-bottom: 1em;
 }
-.minimized {
 
-}
-.card {
-  margin-right: 1em;
-  border: 3px solid #000;
-  height: 15em;
-  min-width: 15em;
-}
+.minimized {}
 </style>
