@@ -9,8 +9,9 @@ An open source data collection and visualization web application for Oregon Stat
     - [Data](#data)
     - [Blocks](#blocks)
     - [Block Buildings](#block_buildings)
-    - [Dashboards](#dashboards)
     - [Stories](#stories)
+    - [User Stories](#user_stories)
+    - [Users](#users)
 - [API Reference](#api-reference)
   - [Buildings](#buildings)
   - [Blocks](#blocks)
@@ -31,8 +32,9 @@ An open source data collection and visualization web application for Oregon Stat
 | data           | Data storage, relation to building.                        |
 | blocks         | Unit for graph information.                                |
 | block_buildings| Relates buildings to blocks.                               |
-| dashboards     | Unit of blocks.                                            |
 | stories        | Unit of dashboards.                                        |
+| user_stories   | Relates users to stories.                                  |
+| users          | Holds user priviliges.                                     |
 
 #### buildings
 
@@ -120,15 +122,15 @@ An open source data collection and visualization web application for Oregon Stat
 | Field        | Type       | NULL   | Key   | Default           | Extra      |
 |--------------|:----------:|:------:|:-----:|:-----------------:|:----------:|
 | id           |int(11)     | NO     | PRI   | NULL              | auto_incr  |
-| m_point      |int(11)     | YES    |       | NULL              |            |
 | Name         |char(64)    | YES    |       | NULL              |            |
 | g_type       |int(11)     | YES    |       | NULL              |            |
 | media        |varchar(255)| YES    |       | NULL              |            |
 | text         |varchar(255)| YES    |       | NULL              |            |
-| dashboard_id |varchar(255)| YES    | MUL   | NULL              |            |
+| story_id     |varchar(255)| YES    | MUL   | NULL              |            |
 | d_start      | timestamp  | YES    |       | CURRENT_TIMESTAMP |            |
 | d_end        | timestamp  | YES    |       | CURRENT_TIMESTAMP |            |
 | d_range      | int(11)    | YES    |       | NULL              |            |
+| d_range      | char(1)    | YES    |       | NULL              |            |
 #### block_buildings
 | Field       | Type     | NULL   | Key   | Default   | Extra      |
 |-------------|:--------:|:------:|:-----:|:---------:|:----------:|
@@ -136,20 +138,27 @@ An open source data collection and visualization web application for Oregon Stat
 | Name        |char(64)  | YES    |       | NULL      |            |
 | block_id    |int(11)   | YES    | MUL   | NULL      |            |
 | building_id |int(11)   | YES    | MUL   | NULL      |            |
-
-#### dashboards
-| Field       | Type         | NULL | Key | Default | Extra          |
-|-------------|:------------:|:----:|:---:|:-------:|:--------------:|
-| id          | int(11)      | NO   | PRI | NULL    | auto_increment |
-| Name        | char(64)     | YES  |     | NULL    |                |
-| story_id    | int(11)      | YES  | MUL | NULL    |                |
-| description | varchar(255) | YES  |     | NULL    |                |
+| m_point     |int(11)   | YES    | MUL   | NULL      |            |
 #### stories
 | Field       | Type         | NULL | Key | Default | Extra          |
 |-------------|:------------:|:----:|:---:|:-------:|:--------------:|
 | id          | int(11)      | NO   | PRI | NULL    | auto_increment |
 | Name        | char(64)     | YES  |     | NULL    |                |
 | description | varchar(255) | YES  |     | NULL    |                |
+| public      | int          | YES  |     | NULL    |                |
+#### user_ stories
+| Field       | Type         | NULL | Key | Default | Extra          |
+|-------------|:------------:|:----:|:---:|:-------:|:--------------:|
+| id          | int(11)      | NO   | PRI | NULL    | auto_increment |
+| user_id     | int(11)      | YES  | MUL | NULL    |                |
+| story_id    | int(11)      | YES  | MUL | NULL    |                |
+#### users
+| Field       | Type         | NULL | Key | Default | Extra          |
+|-------------|:------------:|:----:|:---:|:-------:|:--------------:|
+| id          | int(11)      | NO   | PRI | NULL    | auto_increment |
+| Name        | char(255)    | YES  |     | NULL    |                |
+| privilige   | int(11)      | YES  |     | NULL    |                |
+
 ## API Reference
 ### Buildings
 ```/api/getBuildingData```
