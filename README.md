@@ -23,7 +23,8 @@ An open source data collection and visualization web application for Oregon Stat
 - [API Reference](#api-reference)
   - [Buildings](#buildings)
   - [Blocks](#blocks)
-  - [Dashboards](#dashboards)
+  - [Meters](#meters)
+  - [Meter Groups](#meter-groups)
   - [Stories](#stories)
 - [Python Scripts](#python-scripts)
   - [Import Data](#import-data)
@@ -184,6 +185,13 @@ An open source data collection and visualization web application for Oregon Stat
 
 ## API Reference
 ### Buildings
+```/api/getAllBuildings```
+- Method: GET
+- Parameters: None
+- Returns: JSON ```[{id, name}]```
+
+Gets all the meter groups labeled as a building.
+
 ```/api/getBuildingData```
 - Method: GET
 - Parameters:
@@ -206,18 +214,29 @@ An open source data collection and visualization web application for Oregon Stat
     - meter object: has the structure of {id, bool}, the bool specifies the operation to the buildings total (TRUE = add, FALSE = subtract)
 
 ### Blocks
-```/api/getBlockData```
+```/api/getBlock```
 - Method: GET
 - Parameters:
   - id: the id of the block object
-Returns all the block data associated with the block id
+- Returns: JSON ```{d_start, d_end, d_range, name, g_type, media, descr, story_id, current}```
 
+```/api/getBlockMeters```
+- Method: GET
+- Parameters: 
+  - id: the id of the block object
+- Returns: Array of 
 ```/api/getBlockDataForStory```
 - Method: GET
 - Parameters:
   - story: story id
 returns all blocks from the story with the specified id 
  
+ ### Meters
+```/api/getDefaultMeters```
+- Method: GET
+- Parameters:
+  - None
+This method returns the meters that have no specified building id. These are the unique meters.
 
 ```/api/updateBlock```
 - Method: POST
@@ -232,6 +251,16 @@ returns all blocks from the story with the specified id
   - dend: date end of data display
   - drange: date range, follows same format as range specified in the update building api
   - buildings: array of building ids
+
+### Meter Groups
+```/api/updateMeterGroup```
+- Method: POST
+- Parameters: 
+  - id: id of the meter group specified for updating the meter groups name, building status or meters
+  - name: name to change the group to
+  - user_id: user linked to the group, needed to create a group
+  - building: specifies if the group represents a meter or not
+  - meters: array of meter ids with operation ```[{id,operation},...]```
 
 ### Stories
 ```/api/getStory```
@@ -255,12 +284,7 @@ returns all blocks from the story with the specified id
   - name: name of the story
   - description: quick description of the story
   - dashboards: array of dashboard ids
-### Meters
-```/api/getDefaultMeters```
-- Method: GET
-- Parameters:
-  - None
-This method returns the meters that have no specified building id. These are the unique meters.
+
 
 ## Python Scripts
 ### Import Data
