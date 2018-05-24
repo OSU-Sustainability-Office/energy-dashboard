@@ -5,7 +5,9 @@ var db = require('../db');
 router.use(require('sanitize').middleware);
 
 //BUILDINGS
-
+router.get('/getBuildingNames',function (req,res) {
+	res.send("yeet");
+});
 router.get('/getBuildingData',function (req,res) {
 
 	var start = req.queryString('startDate');
@@ -249,10 +251,10 @@ router.get('/getPublicStories',function (req,res){
 router.get('/getStoriesDataForUser',function (req,res) {
 	if (req.queryString('user')) {
 		db.query('SELECT id FROM users WHERE Name=?',[req.queryString('Name')]).then(rows => {
-			db.query('SELECT story_id FROM user_stories WHERE user_id=?',[rows[0].id]).then(rows = {
+			db.query('SELECT story_id FROM user_stories WHERE user_id=?',[rows[0].id]).then(rows => {
 				res.send(JSON.stringify(rows));
 			});
-		})
+		});
 		
 	}
 	else {

@@ -192,19 +192,6 @@ An open source data collection and visualization web application for Oregon Stat
 
 Gets all the meter groups labeled as a building.
 
-```/api/getBuildingData```
-- Method: GET
-- Parameters:
-  - id: Integer id of the building
-  - endDate: string in ISO8601 DateTime format, specifies the end of the data retrieval
-  - startDate: string in ISO8601 DateTime format, specifies the start of the data retrieval
-  - range: special formatted string, integer followed by specifier (d = day, m = month, h = hour, i = minute, y = year)
-    - EX: 30d -> 30 Day range
-  - name: The name of the building
-  - mpoints: array of specified metering points, comman deliminated
-
-  A name or id must be used with this call. If a range is specified without a start or end date the current date time is used as the end date and the start date is determined by the range. Start dates and end dates are always specified as the start and end. This means if the start, end and range are all specified the range is ignored. This function also automatically omits results based on the requested date range, limiting the transfer of data.
-
 ```/api/updateBuilding```
 - Method: POST
 - Parameters:
@@ -218,13 +205,32 @@ Gets all the meter groups labeled as a building.
 - Method: GET
 - Parameters:
   - id: the id of the block object
-- Returns: JSON ```{d_start, d_end, d_range, name, g_type, media, descr, story_id, current}```
+- Returns: JSON ```{d_start, d_end, d_range, name, g_type, media, descr, story_id, current, meter_groups}```
 
 ```/api/getBlockMeters```
 - Method: GET
 - Parameters: 
   - id: the id of the block object
-- Returns: Array of 
+- Returns: Array of meter ids
+
+```/api/updateBlock```
+- Method: POST
+- Parameters: 
+  - name: name of the block (specify for creation along with user_id)
+  - id: leave null for creation, needed for update
+  - user_id: only needed for creation of block
+  - date_range: range to display the data, information about the format of this is shown in the getMeterData section of the api
+  - graph_type: type of graph the block displays, int value (0-255)
+  - meter_group_id: specified to change the meter point of the group
+  - meter_point: specified in conjunction with meter_group_id to change the metering point
+  - description: description text
+  - link: external link to more information
+  - start_date: start date of the graph
+  - end_date: end date of the graph
+  - meter_groups: an array of ids that specifies what meter groups are in the graph
+  - current: specifies if the graph should display current (day, month or year), single char (d, m, y)
+- Returns: Success or Failure
+
 ```/api/getBlockDataForStory```
 - Method: GET
 - Parameters:
@@ -234,23 +240,20 @@ returns all blocks from the story with the specified id
  ### Meters
 ```/api/getDefaultMeters```
 - Method: GET
-- Parameters:
-  - None
-This method returns the meters that have no specified building id. These are the unique meters.
+- Parameters: None
+- Returns: JSON format of meters table
 
-```/api/updateBlock```
-- Method: POST
+```/api/getMeterData```
+- Method: GET
 - Parameters:
-  - id: if specified updates the block instead of creating a new one
-  - name: Name of the block
-  - mpoint: Metering point
-  - gtype: Graph type to display
-  - media: A URL to media
-  - text: text that describes or relates to the graphs shown on the block
-  - dstart: date start of data display
-  - dend: date end of data display
-  - drange: date range, follows same format as range specified in the update building api
-  - buildings: array of building ids
+  - id: Integer id of the meter
+  - endDate: string in ISO8601 DateTime format, specifies the end of the data retrieval
+  - startDate: string in ISO8601 DateTime format, specifies the start of the data retrieval
+  - range: special formatted string, integer followed by specifier (d = day, m = month, h = hour, i = minute, y = year)
+    - EX: 30d -> 30 Day range
+  - mpoints: array of specified metering points, comma deliminated
+
+  If a range is specified without a start or end date the current date time is used as the end date and the start date is determined by the range. Start dates and end dates are always specified as the start and end. This means if the start, end and range are all specified the range is ignored. This function also automatically omits results based on the requested date range, limiting the transfer of data.
 
 ### Meter Groups
 ```/api/updateMeterGroup```
@@ -262,28 +265,43 @@ This method returns the meters that have no specified building id. These are the
   - building: specifies if the group represents a meter or not
   - meters: array of meter ids with operation ```[{id,operation},...]```
 
+```/api/getMetersForBuildings```
+- Method: GET
+- Parameters: None
+- Returns: Array of JSON {name, meters(array of JSON {meter id, operation})}
+
+```/api/getMeterGroupsForUser```
+- Method: GET
+- Parameters: 
+  - id: id of the user
+- Returns: Array of JSON {name, meters(array of JSON {meter id, operation})}
+
 ### Stories
-```/api/getStory```
+```/api/getBlocksForStory```
 - Method: GET
 - Parameters:
   - id: the id of the story to get data for
-  
- returns all rows of the story table for that stories id
+- Returns: Array of block ids
 
-```/api/getStoriesDataForUser```
+```/api/getPublicStories```
+- Method: GET
+- Parameters: None
+- Returns: JSON {name, id, description}
+  
+```/api/getStoriesForUser```
 - Method: GET
 - Parameters: 
-  -user: the user name that is associated with the stories
+  - user: the user name that is associated with the stories
+- Returns: JSON {name, id, description}
   
- returns the story ids for the user
-
 ```/api/updateStory```
 - Method: POST
 - Parameters:
   - id: specified if an update
   - name: name of the story
   - description: quick description of the story
-  - dashboards: array of dashboard ids
+  - blocks: array of block ids
+  - public: bitm, if should be a public story
 
 
 ## Python Scripts

@@ -21,8 +21,8 @@ exports.connect = function(done){
       return;
     }
     console.log('Connected to Database');
+    done();
   });
-  done();
 }
 
 exports.query = function(sql,args) {
