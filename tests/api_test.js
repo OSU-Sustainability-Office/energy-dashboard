@@ -41,7 +41,7 @@ describe("API Calls", () => {
 			});
 		});
 		it('Can make the group a building', done => {
-			request.post('http://localhost:3000/api/updateMeterGroup', {form :{id : 0, building: 1}, (err,res,body) => {
+			request.post('http://localhost:3000/api/updateMeterGroup', {form :{id : 0, building: 1}}, (err,res,body) => {
 				Assert.strictEqual(body.substr(0,1), "S");
 				done();
 			});
@@ -85,49 +85,49 @@ describe("API Calls", () => {
 			});
 		});
 		it('Can change the graph type', done => {
-			request.post('http://localhost:3000/api/updateBlock',{form:{id: 0, graph_type: 1},(err,res,body) => {
+			request.post('http://localhost:3000/api/updateBlock',{form:{id: 0, graph_type: 1}},(err,res,body) => {
 					Assert.strictEqual(body.substr(0,1), "S");
 					done();
 			});
 		});
 		it('Can change the metering points for each meter group', done => {
-			request.post('http://localhost:3000/api/updateBlock',{form:{meter_group_id : 0, meter_point: 0},(err,res,body) => {
+			request.post('http://localhost:3000/api/updateBlock',{form:{meter_group_id : 0, meter_point: 0}},(err,res,body) => {
 					Assert.strictEqual(body.substr(0,1), "S");
 					done();
 			});
 		});
 		it('Can change the description', done => {
-			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, description : "Test"},(err,res,body) => {
+			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, description : "Test"}},(err,res,body) => {
 					Assert.strictEqual(body.substr(0,1), "S");
 					done();
 			});
 		});
 		it('Can change the media link', done => {
-			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, link : "Test"},(err,res,body) => {
+			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, link : "Test"}},(err,res,body) => {
 					Assert.strictEqual(body.substr(0,1), "S");
 					done();
 			});
 		});
 		it('Can change the range', done => {
-			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, date_range : "1m"},(err,res,body) => {
+			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, date_range : "1m"}},(err,res,body) => {
 					Assert.strictEqual(body.substr(0,1), "S");
 					done();
 			});
 		});
 		it('Can change the start date', done => {
-			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, start_date : "5/10/18"},(err,res,body) => {
+			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, start_date : "5/10/18"}},(err,res,body) => {
 					Assert.strictEqual(body.substr(0,1), "S");
 					done();
 			});
 		});
 		it('Can change the end date', done => {
-			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, end_date : "5/30/18"},(err,res,body) => {
+			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, end_date : "5/30/18"}},(err,res,body) => {
 					Assert.strictEqual(body.substr(0,1), "S");
 					done();
 			});
 		});
 		it('Can change the meter groups', done => {
-			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, meter_groups : [0]},(err,res,body) => {
+			request.post('http://localhost:3000/api/updateBlock',{form:{ id: 0, meter_groups : [0]}},(err,res,body) => {
 					Assert.strictEqual(body.substr(0,1), "S");
 					done();
 			});
@@ -155,19 +155,19 @@ describe("API Calls", () => {
 	})
 	describe("Update Story", () => {
 		it('Can change the name of the story', done => {
-			request.post('http://localhost:3000/api/updateStory',{form:{ id: 0, name : "Test"},(err,res,body) => {
+			request.post('http://localhost:3000/api/updateStory',{form:{ id: 0, name : "Test"}},(err,res,body) => {
 					Assert.strictEqual(body.substr(0,1), "S");
 					done();
 			});
 		});
 		it('Can change the blocks included in the story', done => {
-			request.post('http://localhost:3000/api/updateStory',{form:{ id: 0, blocks : [0]},(err,res,body) => {
+			request.post('http://localhost:3000/api/updateStory',{form:{ id: 0, blocks : [0]}},(err,res,body) => {
 					Assert.strictEqual(body.substr(0,1), "S");
 					done();
 			});
 		});
 		it('Can change the description of the story', done => {
-			request.post('http://localhost:3000/api/updateStory',{form:{ id: 0, description : "Test"},(err,res,body) => {
+			request.post('http://localhost:3000/api/updateStory',{form:{ id: 0, description : "Test"}},(err,res,body) => {
 					Assert.strictEqual(body.substr(0,1), "S");
 					done();
 			});

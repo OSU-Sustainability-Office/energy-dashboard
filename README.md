@@ -219,7 +219,8 @@ Gets all the meter groups labeled as a building.
   - name: name of the block (specify for creation along with user_id)
   - id: leave null for creation, needed for update
   - user_id: only needed for creation of block
-  - date_range: range to display the data, information about the format of this is shown in the getMeterData section of the api
+  - date_range: range to display the data, special formatted string, integer followed by specifier (d = day, m = month, h = hour, i = minute, y = year)
+    - EX: 30d -> 30 Day range
   - graph_type: type of graph the block displays, int value (0-255)
   - meter_group_id: specified to change the meter point of the group
   - meter_point: specified in conjunction with meter_group_id to change the metering point
@@ -249,8 +250,6 @@ returns all blocks from the story with the specified id
   - id: Integer id of the meter
   - endDate: string in ISO8601 DateTime format, specifies the end of the data retrieval
   - startDate: string in ISO8601 DateTime format, specifies the start of the data retrieval
-  - range: special formatted string, integer followed by specifier (d = day, m = month, h = hour, i = minute, y = year)
-    - EX: 30d -> 30 Day range
   - mpoints: array of specified metering points, comma deliminated
 
   If a range is specified without a start or end date the current date time is used as the end date and the start date is determined by the range. Start dates and end dates are always specified as the start and end. This means if the start, end and range are all specified the range is ignored. This function also automatically omits results based on the requested date range, limiting the transfer of data.
