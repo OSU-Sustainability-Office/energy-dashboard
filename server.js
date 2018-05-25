@@ -5,6 +5,7 @@ var db = require('./db');
 var server = null;
 
 exports.start = function(cb) {
+	app.use(express.json());
   	app.use('/api', require('./controllers/api.js'));
 
 	db.connect(function(err) {

@@ -192,14 +192,6 @@ An open source data collection and visualization web application for Oregon Stat
 
 Gets all the meter groups labeled as a building.
 
-```/api/updateBuilding```
-- Method: POST
-- Parameters:
-  - id: Integer id of the building, if none is specified the building is created in the database
-  - name: the name of the building
-  - meters: an array of meter objects the building uses
-    - meter object: has the structure of {id, bool}, the bool specifies the operation to the buildings total (TRUE = add, FALSE = subtract)
-
 ### Blocks
 ```/api/getBlock```
 - Method: GET
