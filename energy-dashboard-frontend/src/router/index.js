@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import Block from '@/components/Block'
+import index from '@/components/home/index'
+import account from '@/components/account/account'
+import story from '@/components/story/story'
 
 Vue.use(Router)
 
@@ -9,13 +10,19 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'index',
+      component: index
     },
     {
-    	path: '/block',
-    	name: 'Block',
-    	component: Block
+      path: '/account',
+      name: 'account',
+      component: account
+    },
+    {
+      path: '/story/:name',
+      name: 'story',
+      props: true,
+      component: story
     }
   ]
 })
