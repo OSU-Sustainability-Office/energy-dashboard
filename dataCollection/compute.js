@@ -36,18 +36,18 @@ function addPoint(bid, meter, point) {
     if (data.length == 0) {
       console.log("Inserting data entry for " + bid + " at time " + timestamp + ".");
       var ac_r = op * Math.abs(point.accumulated_real);
-      var r_p = op * Math.abs(point.real_power);
-      var re_p = op * Math.abs(point.reactive_power);
-      var a_p = op * Math.abs(point.apparent_power);
-      var r_a = op * Math.abs(point.real_a);
-      var r_b = op * Math.abs(point.real_b);
-      var r_c = op * Math.abs(point.real_c);
-      var re_a = op * Math.abs(point.reactive_a);
-      var re_b = op * Math.abs(point.reactive_b);
-      var re_c = op * Math.abs(point.reactive_c);
-      var ap_a = op * Math.abs(point.apparent_a);
-      var ap_b = op * Math.abs(point.apparent_b);
-      var ap_c = op * Math.abs(point.apparent_c);
+      var r_p = Math.abs(point.real_power);
+      var re_p = Math.abs(point.reactive_power);
+      var a_p = Math.abs(point.apparent_power);
+      var r_a = Math.abs(point.real_a);
+      var r_b = Math.abs(point.real_b);
+      var r_c = Math.abs(point.real_c);
+      var re_a = Math.abs(point.reactive_a);
+      var re_b = Math.abs(point.reactive_b);
+      var re_c = Math.abs(point.reactive_c);
+      var ap_a = Math.abs(point.apparent_a);
+      var ap_b = Math.abs(point.apparent_b);
+      var ap_c = Math.abs(point.apparent_c);
       var p_a = Math.abs(point.pf_a);
       var p_b = Math.abs(point.pf_b);
       var p_c = Math.abs(point.pf_c);
@@ -57,9 +57,9 @@ function addPoint(bid, meter, point) {
       var v_an = Math.abs(point.vphase_an);
       var v_bn = Math.abs(point.vphase_bn);
       var v_cn = Math.abs(point.vphase_cn);
-      var c_a = op * Math.abs(point.cphase_a);
-      var c_b = op * Math.abs(point.cphase_b);
-      var c_c = op * Math.abs(point.cphase_c);
+      var c_a = Math.abs(point.cphase_a);
+      var c_b = Math.abs(point.cphase_b);
+      var c_c = Math.abs(point.cphase_c);
       connection.query(
         'INSERT INTO data (building_id, time, accumulated_real,' +
         ' real_power, reactive_power, apparent_power, real_a, real_b,' +

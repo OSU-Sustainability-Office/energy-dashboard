@@ -284,4 +284,4 @@ returns all blocks from the story with the specified id
 
 ## Development Environment
 ### Running a VueJS Dev Server
-To run the VueJS server, navigate to /energy-dashboard-frontend. In your bash terminal, run ```npm install -g vue``` and then run ```npm run dev```.
+To run the VueJS server, navigate to /energy-dashboard-frontend. In your bash terminal, run ```npm install -g vue```, ```npm install```, and then run ```npm run dev```.
