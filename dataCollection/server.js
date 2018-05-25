@@ -14,9 +14,12 @@ app.use(bodyParser.json({limit: '50mb'}));
 
 // Insert one point
 function insertPoint(record, res, meter_id) {
-  console.log("Inserting meter data into temp table from: " + record.time._);
+  console.log("Inserting meter data into table from: " + record.time._);
   var point = record.point;
-  var query = 'INSERT INTO temp_data (meter_address, time, accumulated_real, real_power, reactive_power, apparent_power, real_a, real_b, real_c, reactive_a, reactive_b, reactive_c, apparent_a, apparent_b, apparent_c, pf_a, pf_b, pf_c, vphase_ab, vphase_bc, vphase_ac, vphase_an, vphase_bn, vphase_cn, cphase_a, cphase_b, cphase_c) VALUES ("' + meter_id + '","' + record.time._ + '",' + point[0].$.value + ',' + point[21].$.value + ',' + point[22].$.value + ',' + point[23].$.value + ',' + point[51].$.value + ',' + point[52].$.value + ',' + point[53].$.value + ',' + point[54].$.value + ',' + point[55].$.value + ',' + point[56].$.value + ',' + point[57].$.value + ',' + point[58].$.value + ',' + point[59].$.value + ',' + point[60].$.value + ',' + point[61].$.value + ',' + point[62].$.value + ',' + point[63].$.value + ',' + point[64].$.value + ',' + point[65].$.value + ',' + point[66].$.value + ',' + point[67].$.value + ',' + point[68].$.value + ',' + point[69].$.value + ',' + point[70].$.value + ',' + point[71].$.value + ')';
+  record.point.forEach(function(p) {
+    p = Math.abs(p);
+  })
+  var query = 'INSERT INTO data (meter_id, time, accumulated_real, real_power, reactive_power, apparent_power, real_a, real_b, real_c, reactive_a, reactive_b, reactive_c, apparent_a, apparent_b, apparent_c, pf_a, pf_b, pf_c, vphase_ab, vphase_bc, vphase_ac, vphase_an, vphase_bn, vphase_cn, cphase_a, cphase_b, cphase_c) VALUES ("' + res[0].id + '","' + record.time._ + '",' + point[0].$.value + ',' + point[21].$.value + ',' + point[22].$.value + ',' + point[23].$.value + ',' + point[51].$.value + ',' + point[52].$.value + ',' + point[53].$.value + ',' + point[54].$.value + ',' + point[55].$.value + ',' + point[56].$.value + ',' + point[57].$.value + ',' + point[58].$.value + ',' + point[59].$.value + ',' + point[60].$.value + ',' + point[61].$.value + ',' + point[62].$.value + ',' + point[63].$.value + ',' + point[64].$.value + ',' + point[65].$.value + ',' + point[66].$.value + ',' + point[67].$.value + ',' + point[68].$.value + ',' + point[69].$.value + ',' + point[70].$.value + ',' + point[71].$.value + ')';
   connection.query(query);
 }
 
@@ -64,11 +67,10 @@ var insertData = function insertData(device, serial) {
   // temp data.
   connection.query('SELECT id FROM meters WHERE address = "' + meter_id + '"', function(err, res) {
     if (err) throw err;
-
     // if none found, insert
     if (res.length == 0) {
       console.log("Creating new meter: " + meter_id);
-      connection.query('INSERT INTO meters (Name, address, building_id, operation) VALUES ("' + device.name + '","' + meter_id + '", NULL, 1)', function (err, res) {
+      connection.query('INSERT INTO meters (name, address) VALUES ("' + device.name + '","' + meter_id + '")', function (err, res) {
         if (err) throw err;
         iterateRecords(device, res, meter_id);
       });
