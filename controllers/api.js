@@ -259,7 +259,7 @@ router.get('/getDefaultMeters',function (req,res) {
 });
 router.get('/getMeterData',function (req,res) {
 	if (req.queryString('date_end') && req.queryString('date_start') && req.queryInt('id') && req.queryString('mpoints')) {
-		var queryString = "SELECT ";
+		var queryString = "SELECT time, ";
 		req.queryString('mpoints').split(',').forEach(point => {
 			queryString += point + ", ";
 		});

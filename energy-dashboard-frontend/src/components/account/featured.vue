@@ -1,6 +1,6 @@
 <template>
 <div class="flex" v-bind:class="{ minimized : isMinimized }">
-  <card v-for="card in cards" :featured=true :title=card.title :desc=card.desc />
+  <card v-for="card in cards" :isFeatured=true :name=card.name :description=card.description />
 </div>
 </template>
 
@@ -16,32 +16,14 @@ export default {
     return {
       isMinimized: false,
       cards: [{
-          title: 'card0',
-          desc: 'This is a description.'
+          name: 'card0',
+          description: 'This is a description.',
+          isFeatured: true
         },
         {
-          title: 'card0code',
-          desc: 'This is a description.'
-        },
-        {
-          title: 'card0',
-          desc: 'This is a description.'
-        },
-        {
-          title: 'card0',
-          desc: 'This is a description.'
-        },
-        {
-          title: 'card0',
-          desc: 'This is a description.'
-        },
-        {
-          title: 'card0',
-          desc: 'This is a description.'
-        },
-        {
-          title: 'card0',
-          desc: 'This is a description.'
+          name: 'card0code',
+          description: 'This is a description.',
+          isFeatured: true
         }
       ]
     }
@@ -56,9 +38,8 @@ export default {
   flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-start;
-  overflow: scroll;
   overflow-y: hidden;
-  margin-right: 1em;
+  margin-right: 5em;
   margin-left: 1em;
   padding-top: 1em;
   padding-bottom: 1em;

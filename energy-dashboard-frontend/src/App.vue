@@ -12,8 +12,12 @@ export default {
   name: 'App',
   components: {
     navBar
+  },
+  created() {
+
   }
 }
+
 </script>
 
 <style>
@@ -27,6 +31,7 @@ export default {
     font-weight: bold;
     font-style: normal;
 }
+@import url('/static/css/c3.min.css');
 body {
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;

@@ -1,8 +1,8 @@
 <template>
   <div class="background">
-    <span class="main-heading">Stories</span>
-    <carousel />
-    <span class="main-heading">Featured Blocks</span>
+    <!-- <span class="main-heading">Stories</span> -->
+    <carousel v-bind:cards="cards" />
+    <!-- <span class="main-heading">Featured Blocks</span> -->
     <featured />
   </div>
 </template>
@@ -10,12 +10,21 @@
 <script>
 import carousel from '@/components/account/carousel'
 import featured from '@/components/account/featured'
+import axios from 'axios';
 
 export default {
   name: 'account',
   components: {
     carousel,
     featured
+  },
+  props: ["cards"],
+  created() {
+     axios.get('http://localhost:3000/api/getPublicStories').then (res => {
+       this.cards = res.data;
+     }).catch (e => {
+      this.errors.push(e);
+     });
   }
 }
 </script>
