@@ -259,7 +259,7 @@ router.get('/getDefaultMeters',function (req,res) {
 });
 router.get('/getMeterData',function (req,res) {
 	if (req.queryString('date_end') && req.queryString('date_start') && req.queryInt('id') && req.queryString('mpoints')) {
-		var queryString = "SELECT ";
+		var queryString = "SELECT time, meter_id, ";
 		req.queryString('mpoints').split(',').forEach(point => {
 			queryString += point + ", ";
 		});
@@ -355,7 +355,7 @@ router.get("/getMeterGroupsForUser", function (req,res) {
 
 router.get("/getMetersForGroup", function (req,res) {
 	if (req.queryString('id')) {
-		db.query('SELECT meters.id, meters.name FROM meters LEFT JOIN meter_group_relation ON meters.id=meter_group_relation.meter_id WHERE group_id=?',[req.queryString('id')]).then( rows => {
+		db.query('SELECT meters.id, meters.name, meter_group_relation.operation FROM meters LEFT JOIN meter_group_relation ON meters.id=meter_group_relation.meter_id WHERE group_id=?',[req.queryString('id')]).then( rows => {
 			res.send(JSON.stringify(rows));
 		}).catch( err => {
 			res.send('ERROR: COULD NOT GET METERS');

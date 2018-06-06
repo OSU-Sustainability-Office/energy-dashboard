@@ -1,10 +1,12 @@
 var express = require('express')
 var app = express();
 var db = require('./db');
+var cors = require('cors');
 
 var server = null;
 
 exports.start = function(cb) {
+	app.use(cors());
 	app.use(express.json());
   	app.use('/api', require('./controllers/api.js'));
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex" v-bind:class="{ maximized : isMaximized }">
-      <card v-for="card in cards" :featured=false :title=card.title :desc=card.desc />
+      <card v-for="card in cards" v-if="!card.featured" :featured=false :name=card.name :description=card.description />
     </div>
     <center><div id="expand" v-on:click="isMaximized = !isMaximized"><i class="fas" v-bind:class="{ 'fa-chevron-circle-down' : !isMaximized, 'fa-chevron-circle-up' : isMaximized }"></i></div></center>
 
@@ -10,46 +10,22 @@
 
 <script>
 import card from '@/components/account/card'
-
+import axios from 'axios';
 export default {
   name: 'carousel',
+  props: ['cards'],
   components: {
     card
   },
   data () {
+
+
     return {
       isMaximized: false,
-      cards: [
-        {
-          title: 'card1',
-          desc: 'This is a description.'
-        },
-        {
-          title: 'card2',
-          desc: 'This is a description.'
-        },
-        {
-          title: 'card3',
-          desc: 'This is a description.'
-        },
-        {
-          title: 'card4',
-          desc: 'This is a description.'
-        },
-        {
-          title: 'card5',
-          desc: 'This is a description.'
-        },
-        {
-          title: 'card3',
-          desc: 'This is a description.'
-        },
-        {
-          title: 'card3',
-          desc: 'This is a description.'
-        }
-      ]
     }
+  },
+  created () {
+   
   }
 }
 </script>
@@ -63,7 +39,7 @@ export default {
   justify-content: flex-start;
   overflow: scroll;
   overflow-y: hidden;
-  margin-right: 1em;
+  margin-right: 5em;
   margin-left: 1em;
   padding-top: 1em;
   padding-bottom: 1em;
