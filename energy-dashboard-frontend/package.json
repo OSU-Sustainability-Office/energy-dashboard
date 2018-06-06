@@ -12,7 +12,12 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "bootstrap": "^3.3.7",
     "chart.js": "^2.7.2",
+    "e": "0.0.4",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.3",
+    "uiv": "^0.23.0",
     "vue": "^2.5.2",
     "vue-chartjs": "^3.3.1",
     "vue-router": "^3.0.1"

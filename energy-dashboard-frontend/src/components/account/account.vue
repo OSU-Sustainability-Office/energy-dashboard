@@ -3,7 +3,7 @@
     <!-- <span class="main-heading">Stories</span> -->
     <carousel v-bind:cards="cards" />
     <!-- <span class="main-heading">Featured Blocks</span> -->
-    <featured />
+    <featured v-bind:cards="cards"/>
   </div>
 </template>
 
@@ -18,9 +18,15 @@ export default {
     carousel,
     featured
   },
-  props: ["cards"],
+  props: [],
+  data() {
+    return {
+      cards: {},
+      cardsFeatured: {}
+    }
+  },
   created() {
-     axios.get('http://localhost:3000/api/getPublicStories').then (res => {
+     axios.get('http://localhost:3000/api/getStoriesForUser?id=1').then (res => {
        this.cards = res.data;
      }).catch (e => {
       this.errors.push(e);

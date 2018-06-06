@@ -1,7 +1,9 @@
 <template>
-  <div class="card" v-bind:class="{ feature : isFeatured }">
-    {{this.name}}, {{this.description}} {{this.isFeatured}}
-    <linechart v-bind:chartData="data" />
+  <div class="card" v-bind:class="{ feature : featured }">
+    {{this.name}}, {{this.description}} {{this.featured}}
+    <linechart v-if="featured && loaded" ref="chart" v-bind:chartData="chartDataComplete" :style="{ display: 'inline-block', width: '100%' }"/>
+    <!-- <linechart v-else ref="chart" v-bind:chartData="data" /> -->
+    <featureController v-if="featured" />
   </div>
 </template>
 
@@ -9,59 +11,83 @@
 
 import linechart from '@/components/charts/linechart.js'
 import axios from 'axios';
+import featureController from '@/components/account/featureController'
+
 
 export default {
   name: 'card',
-  props: ['name', 'description', 'isFeatured', 'id', 'data'],
+  props: ['name', 'description', 'featured', 'id'],
   components: {
-    linechart
+    linechart, featureController
   },
-  created () {
-      axios.get('http://localhost:3000/api/getMeterData?id=3&date_start=2018-1-1&date_end=2018-6-1&mpoints=accumulated_real').then (res => {
-       this.data = this.parseData(res.data);
-     }).catch (e => {
-      this.errors.push(e);
-     });
-     this.chartOptions = {
-      width: '100',
-      height: '100',
-      layout: {
-        padding: {
-          left: 10,
-          right: 10,
-          bottom: 10,
-          top: 10
-        }
-      },
-      scales: {
-        xAxes: [{
-          type: 'time',
-          time: {
-            unit: 'day',
-            unitStepSize: 1,
-            displayFormats: {
-              'day': 'MMM DD'
-            }
-          }
-        }]
-      }
-     }
-     this.$refs.linechart.setOptions(this.chartOptions);
+  mounted () {
+    this.getData('accumulated_real',8,"2018-6-1","2018-6-30");
+  },
+  data() {
+    return {chartData:{},
+            chartDataComplete:{},
+            loaded: true}
+  },
+  created() {
+    
   },
   methods: {
-    parseData: function (data) {
-      var r = {
-        labels: [],
-        datasets: []
-      };
-      if (!data)
-        return;
-      Object.keys(data[0]).forEach((key,index) => {
-        if (key === "time") {
-          return;
-        }
+    getData: function (mpoint,groupId,startDate,endDate) {
+      var promises = [];
+      var meterRelation = {};
+      this.chartData = {};
+      axios.get('http://localhost:3000/api/getMetersForGroup?id='+groupId).then (meters => {
+        meters.data.forEach(meter => {
+          meterRelation[meter.id.toString()] = meter.operation;
+          promises.push(axios.get('http://localhost:3000/api/getMeterData?id='+meter.id+'&date_start='+startDate+'&date_end='+endDate+'&mpoints='+mpoint));
+        });
+        Promise.all(promises).then(values => {
+          //combine all returned data
+          var combinedData = {};
+          values.forEach(value => {
+            value.data.forEach(obj => {
+              //do the combination operation
+              if (obj.time in combinedData) {
+                var time = obj.time;
+                if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0) {
+                  obj.accumulated_real *= -1;
+                }
+                if ("accumulated_real" in combinedData[time])
+                  combinedData[time].accumulated_real = obj.accumulated_real;
+              }
+              else {
+                var time = obj.time;
+                if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0) {
+                  obj.accumulated_real *= -1;
+                }
+                delete obj.time;
+                delete obj.meter_id;
+                combinedData[time] = obj;
+              }
+            });
+          });
+
+          //parse and create the datasets
+          this.createDataSets(groupId,combinedData);
+          this.parseData(groupId, combinedData);
+          this.chartDataComplete = this.chartData;
+        }).catch (e => {
+          console.log(e);
+          this.errors.push(e);
+        });
+      }).catch (e => {
+        console.log(e);
+        this.errors.push(e);
+      });
+    },
+    createDataSets: function (name,obj) {
+      if (!("datasets" in this.chartData))
+        this.chartData["datasets"] = [];
+      if (!("labels" in this.chartData))
+        this.chartData["labels"] = [];
+      Object.keys(obj[Object.keys(obj)[0]]).forEach((key,index) => {
         var o = {
-          label: key,
+          label: (key + " " + name),
           backgroundColor: 'rgba(215,63,9,0.3)',
           borderColor:'#D73F09',
           fill: true,
@@ -69,27 +95,31 @@ export default {
           spanGaps: true,
           data: []
         };
-        r.datasets.push(o);
+        this.chartData["datasets"].push(o);
       });
-      data.forEach( obj => {
-        Object.keys(obj).forEach((key,index) => {
-          if (key === "time") {
-            r.labels.push(obj[key]);
-          }
-          r.datasets.forEach(set => {
-            if (set.label === key)
-              set.data.push(obj[key]);
+    },
+    parseData: function (groupId, data) {
+      if (!data || !groupId)
+        return;
+      Object.keys(data).forEach( (key,index) => { //iterate through incoming data object has keys for time, and mpoints, mpoint keys go to
+                                                  //data sets time goes to labels
+        this.chartData.labels.push(key);
+        Object.keys(data[key]).forEach ( (innerKey, innerIndex) => {
+          this.chartData.datasets.forEach(dataSet => {
+            if (dataSet.label === (innerKey + " " + groupId))
+              dataSet.data.push(data[key][innerKey]);
           });
         });
       });
-      r.datasets.forEach(set => {
+      //shows change per 15 minute interval, this could be added as another function to show a different thing
+      //maybe like average change of one month vs another month would be pretty cool to look at
+      this.chartData.datasets.forEach(set => {
         var dataCopy = set.data.slice();
         for (var i = 1; i < set.data.length; i++) {
           set.data[i] -= dataCopy[i-1];
         }
         set.data.shift();
-      })
-      return r;
+      });
     }
   }
 }
@@ -108,6 +138,8 @@ export default {
 .feature {
   background: #000;
   height: 30em;
-  width: 50%;
+  padding-right: 2em;
+  padding-left: 2em;
+  width: 100%;
 }
 </style>

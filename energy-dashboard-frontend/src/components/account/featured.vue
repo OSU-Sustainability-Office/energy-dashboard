@@ -1,6 +1,6 @@
 <template>
-<div class="flex" v-bind:class="{ minimized : isMinimized }">
-  <card v-for="card in cards" :isFeatured=true :name=card.name :description=card.description />
+<div class="flexFeature" v-bind:class="{ minimized : isMinimized }">
+  <card v-for="card in cards" :featured=card.featured v-if="card.featured" :name=card.name :description=card.description />
 </div>
 </template>
 
@@ -12,20 +12,10 @@ export default {
   components: {
     card
   },
+  props: ["cards"],
   data() {
     return {
-      isMinimized: false,
-      cards: [{
-          name: 'card0',
-          description: 'This is a description.',
-          isFeatured: true
-        },
-        {
-          name: 'card0code',
-          description: 'This is a description.',
-          isFeatured: true
-        }
-      ]
+      isMinimized: false
     }
   }
 }
@@ -33,17 +23,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.flex {
+.flexFeature {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-start;
-  overflow-y: hidden;
   margin-right: 5em;
   margin-left: 1em;
   padding-top: 1em;
   padding-bottom: 1em;
-  
 }
 
 .minimized {}
