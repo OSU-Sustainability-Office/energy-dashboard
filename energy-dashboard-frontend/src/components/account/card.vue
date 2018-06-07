@@ -1,7 +1,7 @@
 <template>
   <div class="card" v-bind:class="{ feature : featured }">
     {{this.name}}, {{this.description}} {{this.featured}}
-    <linechart v-if="featured && loaded" ref="chart" v-bind:chartData="chartDataComplete" :style="{ display: 'inline-block', width: '100%' }"/>
+    <linechart v-if="featured" ref="chart" v-bind:chartData="chartDataComplete" :style="{ display: 'inline-block', width: '100%' }"/>
     <!-- <linechart v-else ref="chart" v-bind:chartData="data" /> -->
     <featureController v-if="featured" />
   </div>
@@ -21,64 +21,72 @@ export default {
     linechart, featureController
   },
   mounted () {
-    this.getData('accumulated_real',8,"2018-6-1","2018-6-30");
+    this.getData('accumulated_real',8,"2018-06-01T00:00:000","2018-06-30T01:00:000",15,"minute");
   },
   data() {
     return {chartData:{},
             chartDataComplete:{},
-            loaded: true}
+            updatingChart: false}
   },
   created() {
     
   },
   methods: {
-    getData: function (mpoint,groupId,startDate,endDate) {
-      var promises = [];
-      var meterRelation = {};
-      this.chartData = {};
-      axios.get('http://localhost:3000/api/getMetersForGroup?id='+groupId).then (meters => {
-        meters.data.forEach(meter => {
-          meterRelation[meter.id.toString()] = meter.operation;
-          promises.push(axios.get('http://localhost:3000/api/getMeterData?id='+meter.id+'&date_start='+startDate+'&date_end='+endDate+'&mpoints='+mpoint));
-        });
-        Promise.all(promises).then(values => {
-          //combine all returned data
-          var combinedData = {};
-          values.forEach(value => {
-            value.data.forEach(obj => {
-              //do the combination operation
-              if (obj.time in combinedData) {
-                var time = obj.time;
-                if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0) {
-                  obj.accumulated_real *= -1;
-                }
-                if ("accumulated_real" in combinedData[time])
-                  combinedData[time].accumulated_real = obj.accumulated_real;
-              }
-              else {
-                var time = obj.time;
-                if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0) {
-                  obj.accumulated_real *= -1;
-                }
-                delete obj.time;
-                delete obj.meter_id;
-                combinedData[time] = obj;
-              }
-            });
+    getData: function (mpoint,groupId,startDate,endDate,interval,unit) {
+      if (!this.updatingChart) {
+        this.updatingChart = true;
+        var promises = [];
+        var meterRelation = {};
+        this.chartData = {};
+        axios.get('http://localhost:3000/api/getMetersForGroup?id='+groupId).then (meters => {
+          meters.data.forEach(meter => {
+            meterRelation[meter.id.toString()] = meter.operation;
+            promises.push(axios.get('http://localhost:3000/api/getMeterData?id='+meter.id+'&date_start='+startDate+'&date_end='+endDate+'&mpoints='+mpoint+'&int='+interval+'&unit='+unit));
           });
+          Promise.all(promises).then(values => {
+            //combine all returned data
+            var combinedData = {};
+            values.forEach(value => {
+              if (value.data.length === 0) {
+                this.updatingChart = false;
+                return;
+              }
+              value.data.forEach(obj => {
+                //do the combination operation
+                if (obj.time in combinedData) {
+                  var time = obj.time;
+                  if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0) {
+                    obj.accumulated_real *= -1;
+                  }
+                  if ("accumulated_real" in combinedData[time])
+                    combinedData[time].accumulated_real += obj.accumulated_real;
+                }
+                else {
+                  var time = obj.time;
+                  if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0) {
+                    obj.accumulated_real *= -1;
+                  }
+                  delete obj.time;
+                  delete obj.meter_id;
+                  combinedData[time] = obj;
+                }
+              });
+            });
 
-          //parse and create the datasets
-          this.createDataSets(groupId,combinedData);
-          this.parseData(groupId, combinedData);
-          this.chartDataComplete = this.chartData;
+            //parse and create the datasets
+            this.createDataSets(groupId,combinedData);
+            this.parseData(groupId, combinedData);
+            this.chartDataComplete = this.chartData;
+            this.updatingChart = false;
+          }).catch (e => {
+            console.log(e);
+            //this.errors.push(e);
+          });
         }).catch (e => {
           console.log(e);
-          this.errors.push(e);
+          //this.errors.push(e);
         });
-      }).catch (e => {
-        console.log(e);
-        this.errors.push(e);
-      });
+      }
     },
     createDataSets: function (name,obj) {
       if (!("datasets" in this.chartData))

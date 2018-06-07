@@ -264,10 +264,37 @@ router.get('/getMeterData',function (req,res) {
 			queryString += point + ", ";
 		});
 		queryString = queryString.substr(0,queryString.length-2);
-		queryString += " FROM data WHERE meter_id=? AND time > ? AND time < ?";
+
+		//Custom time interval fetching using the extract function and the modulus function
+		var extUnit = "MINUTE";
+		var extInt = "15";
+		var remainder = "0";
+		if (req.queryString('unit'))
+			extUnit = req.queryString('unit').toUpperCase();
+		if (req.queryString('int'))
+			extInt = req.queryString('int').toUpperCase();
+
+		if (extUnit !== "MINUTE" && parseInt(extInt) > 1 && parseInt(extInt)%2 === 1)
+			remainder = "1";
+
+		//this kind of sucks but then we return values we should not include that fall within the months
+		//Ex: when selecting 2 hour intervals it would report 15 minute intervals every 2 hours
+		var extraTimeConditions = " ";
+		if (extUnit !== "MINUTE") {
+			extraTimeConditions += "AND EXTRACT(MINUTE FROM time) = 0 ";
+			if (extUnit !== "HOUR") {
+				extraTimeConditions += "AND EXTRACT(HOUR FROM time) = 0 ";
+				if (extUnit !== "DAY") {
+					extraTimeConditions += "AND EXTRACT(DAY FROM time) = 0 ";
+				}
+			}
+		}
+
+		queryString += " FROM data WHERE meter_id=? AND MOD(EXTRACT("+extUnit+" FROM time), "+extInt+") = "+remainder+extraTimeConditions+"AND time >= ? AND time <= ?";
 		db.query(queryString,[req.queryInt('id'),req.queryString('date_start'),req.queryString('date_end')]).then( rows => {
 			res.send(JSON.stringify(rows));
 		}).catch ( err => {
+			console.log(err);
 			res.send("ERROR: COULD NOT SEND DATA");
 		});
 	}
