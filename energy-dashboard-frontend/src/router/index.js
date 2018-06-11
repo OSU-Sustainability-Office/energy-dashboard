@@ -19,7 +19,7 @@ export default new Router({
       component: account
     },
     {
-      path: '/story/:name',
+      path: '/story/:id',
       name: 'story',
       props: true,
       component: story

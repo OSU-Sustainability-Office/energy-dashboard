@@ -43,10 +43,13 @@ router.get('/getBlockMeterGroups',function (req,res) {
 });
 router.get('/getBlockDataForStory',function (req,res) {
 	//for a story names need to be unique so we can find the block this way
-	if (req.queryString('story')) {
-		db.query("SELECT * FROM blocks WHERE story_id=?",[req.queryString('story'),req.queryString('name')]).then(rows => {
+	if (req.queryString('id')) {
+		db.query("SELECT * FROM blocks WHERE story_id=?",[req.queryString('id')]).then(rows => {
 			res.send(JSON.stringify(rows));
 		});
+	}
+	else {
+		res.status(400);
 	}
 
 });
@@ -201,7 +204,7 @@ router.post('/updateStory',function (req,res) {
 				res.send("ERROR: COULD NOT UPDATE STORY BLOCKS")
 			});
 		});
-		
+
 	}
 	else if (req.bodyInt('id')) {
 		var queryString = "UPDATE stories SET ";
@@ -335,10 +338,10 @@ router.post('/updateMeterGroup', function (req,res) {
 			db.query(queryString+" WHERE id=?",[req.bodyInt('id')]).then(rows => {
 				res.send("SUCCESS: UPDATED NAME AND/OR BUILDING STATUS");
 			});
-		
+
 	}
-	
-	//create stuff 
+
+	//create stuff
 	else if (req.bodyString('user_id') && req.bodyString('name')) {
 		db.query("SELECT * FROM meter_groups WHERE user_id=? AND name=?",[req.bodyString('user_id') ,req.bodyString('name')]).then( rows => {
 			if (rows.length === 0)

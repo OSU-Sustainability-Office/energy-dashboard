@@ -108,7 +108,7 @@
           <option value="month">Months</option>
         </select>
         <input type="number" step="15" class="form-control sharedLine" v-model="interval"/>
-        
+
       </div>
     </div>
   </div>
@@ -125,7 +125,7 @@ export default {
   props: [],
   data() {
     return {
-      point: "accumulated_real", 
+      point: "accumulated_real",
       groupid: 8,
       dateFrom: "2018-06-01",//new Date(2018,5,1, 0, 0, 0, 0),
       dateTo: "2018-06-30", //new Date(2018,5,30, 0, 0, 0, 0)
@@ -141,7 +141,8 @@ export default {
   methods: {
     updateGraph: function () {
       //this.$parent.loaded = false;
-      this.$parent.getData(this.point,this.groupid,this.dateFrom+this.parseDateTime(this.timeFrom), this.dateTo+this.parseDateTime(this.timeTo),this.interval.toString(),this.unit);
+      //console.log(this.$parent);
+      this.$parent.$refs.chartController.getData(this.point,this.groupid,this.dateFrom+this.parseDateTime(this.timeFrom), this.dateTo+this.parseDateTime(this.timeTo),this.interval.toString(),this.unit);
     },
     parseDateTime: function(dateTime) {
       var hours = dateTime.getHours();
