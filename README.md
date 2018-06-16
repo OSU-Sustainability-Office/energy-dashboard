@@ -168,13 +168,13 @@ Gets all the meter groups labeled as a building.
 
 ```/api/getBlockMeters```
 - Method: GET
-- Parameters: 
+- Parameters:
   - id: the id of the block object
 - Returns: Array of meter ids
 
 ```/api/updateBlock```
 - Method: POST
-- Parameters: 
+- Parameters:
   - name: name of the block (specify for creation along with user_id)
   - id: leave null for creation, needed for update
   - user_id: only needed for creation of block
@@ -195,8 +195,8 @@ Gets all the meter groups labeled as a building.
 - Method: GET
 - Parameters:
   - story: story id
-returns all blocks from the story with the specified id 
- 
+returns all blocks from the story with the specified id
+
  ### Meters
 ```/api/getDefaultMeters```
 - Method: GET
@@ -211,12 +211,15 @@ returns all blocks from the story with the specified id
   - startDate: string in ISO8601 DateTime format, specifies the start of the data retrieval
   - mpoints: array of specified metering points, comma deliminated
 
-  If a range is specified without a start or end date the current date time is used as the end date and the start date is determined by the range. Start dates and end dates are always specified as the start and end. This means if the start, end and range are all specified the range is ignored. This function also automatically omits results based on the requested date range, limiting the transfer of data.
+  - unit: minute, hour, day or month specifying the delimiter of the intervals
+  - int: the count of the unit to get data from
+    - ex: (minute, 30) would return data points for every 30 minutes
+- Returns: array of {meter_id, time, mpoints...}
 
 ### Meter Groups
 ```/api/updateMeterGroup```
 - Method: POST
-- Parameters: 
+- Parameters:
   - id: id of the meter group specified for updating the meter groups name, building status or meters
   - name: name to change the group to
   - user_id: user linked to the group, needed to create a group
@@ -230,7 +233,7 @@ returns all blocks from the story with the specified id
 
 ```/api/getMeterGroupsForUser```
 - Method: GET
-- Parameters: 
+- Parameters:
   - id: id of the user
 - Returns: Array of JSON {name, meters(array of JSON {meter id, operation})}
 
@@ -245,13 +248,13 @@ returns all blocks from the story with the specified id
 - Method: GET
 - Parameters: None
 - Returns: JSON {name, id, description}
-  
+
 ```/api/getStoriesForUser```
 - Method: GET
-- Parameters: 
+- Parameters:
   - user: the user name that is associated with the stories
 - Returns: JSON {name, id, description}
-  
+
 ```/api/updateStory```
 - Method: POST
 - Parameters:
@@ -260,27 +263,6 @@ returns all blocks from the story with the specified id
   - description: quick description of the story
   - blocks: array of block ids
   - public: bitm, if should be a public story
-
-
-## Python Scripts
-### Import Data
-#### Process
-1. Connect to old mongo db and new sql service w/config file
-2. Check if table exists
-3. Create table to specifications highlighted in table section
-4. Populate table from old mongo db
-5. Repeat steps 3 and 4 for all tables
-6. Add indexes as highlighted in chart diagram
-### Temporary To Permanent
-#### Process
-1. Connect to SQL server
-2. Query all buildings in the buildings table
-3. For each building query the meters table for that building id
-4. Create a new dictionary object
-5. Loop through the meters returned from the query
-6. Add the values from the meters to the new dictionary object, be careful to follow the operation scheme laid out by the meters table. Also, use the time (w/truncated seconds) as a key for the dictionary.
-7. Iterate through the dictionary you created
-8. If the current key has the same amount of entries as were found in the meters table query, delete all the data points from that entry. Then insert the combined total into the data table.
 
 ## Development Environment
 ### Running a VueJS Dev Server

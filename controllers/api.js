@@ -4,6 +4,24 @@ var db = require('../db');
 
 router.use(require('sanitize').middleware);
 
+//High privilige
+router.get('/getAllUsers', function(req,res){
+	db.query("SELECT * FROM users").then (rows => {
+		res.send(rows);
+	}).catch(err => {
+		res.send("error");
+	});
+});
+router.get('/getAllMeterGroups', function(req,res){
+	db.query("SELECT * FROM meter_groups").then (rows => {
+		res.send(rows);
+	}).catch(err => {
+		res.send("error");
+	});
+});
+//router.delete('/deleteMeterGroup')
+
+
 //BUILDINGS
 router.get('/getAllBuildings',function (req,res) {
 	db.query("SELECT id, name FROM meter_groups WHERE is_building=1").then( rows => {
@@ -325,20 +343,19 @@ router.post('/updateMeterGroup', function (req,res) {
 		});
 	}
 	//Update stuff
-	else if (req.bodyInt('id')) {
+	if (req.bodyInt('id')) {
 		var queryString = "UPDATE meter_groups SET ";
 		if (req.bodyString('name')) {
 			queryString += "name='" + req.bodyString("name") + "', ";
 		}
-		if (req.bodyInt('building')) {
-			queryString += "is_building=" + req.bodyInt('building').toString() + ", ";
+		if (req.bodyInt('is_building')) {
+			queryString += "is_building=" + req.bodyInt('is_building').toString() + ", ";
 		}
 		queryString = queryString.substr(0, queryString.length -2 );
-		if (req.bodyInt('building') || req.bodyString('name'))
+		if (req.bodyInt('is_building') || req.bodyString('name'))
 			db.query(queryString+" WHERE id=?",[req.bodyInt('id')]).then(rows => {
 				res.send("SUCCESS: UPDATED NAME AND/OR BUILDING STATUS");
 			});
-
 	}
 
 	//create stuff

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex" v-bind:class="{ maximized : isMaximized }">
-      <card v-for="card in cards" v-if="!card.featured" :featured=false :name=card.name :description=card.description />
+      <card v-for="card in cards" v-if="!card.featured" :featured=false :name="card.name" :description="card.description" />
     </div>
     <center><div id="expand" v-on:click="isMaximized = !isMaximized"><i class="fas" v-bind:class="{ 'fa-chevron-circle-down' : !isMaximized, 'fa-chevron-circle-up' : isMaximized }"></i></div></center>
 
@@ -25,7 +25,7 @@ export default {
     }
   },
   created () {
-   
+
   }
 }
 </script>

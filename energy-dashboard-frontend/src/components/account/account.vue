@@ -3,7 +3,10 @@
     <!-- <span class="main-heading">Stories</span> -->
     <carousel v-bind:cards="cards" />
     <!-- <span class="main-heading">Featured Blocks</span> -->
-    <featured v-bind:cards="cards"/>
+    <featured v-bind:cards="cardsFeatured" ref='featureBox' />
+    <div class="multitools">
+      <btn @click='$emit("requestDownload")'>Download Data</btn>
+    </div>
   </div>
 </template>
 
@@ -22,16 +25,67 @@ export default {
   data() {
     return {
       cards: {},
-      cardsFeatured: {}
+      cardsFeatured: {},
     }
   },
   created() {
      axios.get('http://localhost:3000/api/getStoriesForUser?id=1').then (res => {
        this.cards = res.data;
+       console.log(res.data);
      }).catch (e => {
       this.errors.push(e);
      });
-  }
+
+
+     this.$on('aqquiredData',e=>{this.addToRaw(e)});
+  },
+  watch: {
+    cards: function(value) {
+      for (var i = 0; i < this.cards.length; i++) {
+        if (this.cards[i].featured) {
+          axios.get('http://localhost:3000/api/getBlocksForStory?id=1').then (res => {
+            console.log(res.data);
+            this.cardsFeatured = res.data;
+          });
+          return;
+        }
+      }
+    }
+  },
+  methods: {
+    addToRaw: function(data) {
+      var r = [];
+      for (var i = 0; i < data.datasets; i++) {
+
+      }
+      downloadRaw(r);
+    },
+    downloadRaw: function(data) {
+      // var data = [];
+      // for (var i = 0; i < this.$refs.featureBox.$refs.displayedCards.length; i++) {
+      //   console.log(this.$refs.featureBox.$refs.displayedCards.$refs);
+      //   var cardData = this.$refs.featureBox.$refs.displayedCards.$refs.chartController.chartDataComplete.datasets;
+      //
+      //   for (var o = 0; o < cardData.length; o++) {
+      //     data.push([cardData[o].label]);
+      //     data.concat(cardData[o].data);
+      //   }
+      //
+      // }
+      var blob = new Blob(data);
+      if (window.navigator.msSaveOrOpenBlob)
+          window.navigator.msSaveBlob(blob, "filename.csv");
+      else
+      {
+          var a = window.document.createElement("a");
+          a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+          a.download = "filename.csv";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+      }
+    }
+  },
 }
 </script>
 
@@ -43,6 +97,7 @@ export default {
   bottom: 0px;
   position: absolute;
   width: 100%;
+  padding: 1em;
 }
 .main-heading {
   font-size: 3em;
