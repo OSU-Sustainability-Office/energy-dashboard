@@ -44,9 +44,11 @@ export default {
 
           this.$refs.chartController.points.push(res.data[i].point);
           this.$refs.chartController.groups.push(res.data[i].group_id);
+          this.$refs.chartController.names.push(res.data[i].name);
 
           //Need to update the graph right here
         }
+        this.$refs.featureController.updateGraph()
       });
     }
   }

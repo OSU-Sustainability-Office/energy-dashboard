@@ -4,12 +4,15 @@
       <i class="fas" v-on:click="isMaximized = !isMaximized" v-bind:class="{ 'fa-chevron-circle-left' : !isMaximized, 'fa-chevron-circle-right' : isMaximized }"></i>
 
       <div class="controls">
-
+        <div class="indexSelect" ref="indexChooser">
+          <btn v-for="(point, index) in points" @click="currentIndex = index" > {{ index+1 }}</btn>
+          <btn @click="addGroup()">+</btn>
+        </div>
         <div class="form-group">
         <label>Name:</label>
         <input class="form-control" type="text" v-model="names[currentIndex]">
         <label>Point: </label>
-        <select v-on:change="updateGraph()" v-model="points[currentIndex]" class="form-control">
+        <select v-model="points[currentIndex]" class="form-control">
           <option value="accumulated_real">Accumulated Real</option>
           <option value="real_power">Total Real Power</option>
           <option value="reactive_power">Total Reactive Power</option>
@@ -37,20 +40,20 @@
           <option value="cphase_c">Current Phase, Phase C</option>
         </select>
       <label>Group: </label>
-      <select ref="groups" v-on:change="updateGraph()" class="form-control" v-model="groupids[currentIndex]">
+      <select ref="groups" class="form-control" v-model="groupids[currentIndex]">
       </select>
       <label>From Date: </label>
       <form class="form-inline">
         <dropdown class="form-group">
           <div class="input-group">
-            <input class="form-control" type="text" v-model="dateFrom" v-on:change="updateGraph()">
+            <input class="form-control" type="text" v-model="dateFrom">
             <div class="input-group-btn">
               <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
             </div>
           </div>
           <template slot="dropdown">
             <li>
-              <date-picker v-model="dateFrom" v-on:change="updateGraph()"/>
+              <date-picker v-model="dateFrom"/>
             </li>
           </template>
         </dropdown>
@@ -69,17 +72,17 @@
         </dropdown>
       </form>
       <label>To Date: </label>
-      <form class="form-inline" v-on:submit="updateGraph()">
-        <dropdown class="form-group" v-on:change="updateGraph()">
+      <form class="form-inline">
+        <dropdown class="form-group">
           <div class="input-group">
-            <input class="form-control" type="text" v-model="dateTo" v-on:change="updateGraph()">
+            <input class="form-control" type="text" v-model="dateTo">
             <div class="input-group-btn">
               <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
             </div>
           </div>
           <template slot="dropdown">
             <li>
-              <date-picker v-model="dateTo" v-on:change="updateGraph()"/>
+              <date-picker v-model="dateTo"/>
             </li>
           </template>
         </dropdown>
@@ -156,10 +159,23 @@ export default {
     }
   },
   methods: {
-    updateGraph: function () {
+    addGroup: function() {
+      this.points.push('accumulated_real');
+      this.groupids.push(8);
+      this.names.push('New Graph')
+      //this.currentIndex = this.points.length -1;
+    },
+    updateGraph: function (partial) {
       //this.$parent.loaded = false;
       //console.log(this.$parent);
-      this.$parent.$refs.chartController.getData(this.points[this.currentIndex],this.groupids[this.currentIndex],this.dateFrom+this.parseDateTime(this.timeFrom), this.dateTo+this.parseDateTime(this.timeTo),this.interval.toString(),this.unit);
+      //console.log(this.points);
+      //console.log(this.groupids);
+      if (this.points.length > this.currentIndex && this.groupids.length > this.currentIndex && !partial)
+        this.$parent.$refs.chartController.getData(this.currentIndex,this.points[this.currentIndex],this.groupids[this.currentIndex],this.dateFrom+this.parseDateTime(this.timeFrom), this.dateTo+this.parseDateTime(this.timeTo),this.interval.toString(),this.unit);
+      else
+        for (var i = 0; i < this.points.length; i++)
+          this.$parent.$refs.chartController.getData(i,this.points[i],this.groupids[i],this.dateFrom+this.parseDateTime(this.timeFrom), this.dateTo+this.parseDateTime(this.timeTo),this.interval.toString(),this.unit);
+
     },
     parseDateTime: function(dateTime) {
       var hours = dateTime.getHours();
@@ -173,25 +189,39 @@ export default {
   },
   watch: {
     dateFrom: function(value) {
-      this.updateGraph();
+      this.updateGraph(true);
     },
     dateTo: function(value) {
-      this.updateGraph();
+      this.updateGraph(true);
     },
-    groupid: function(value) {
-      this.updateGraph();
+    groupids: function(value) {
+      this.updateGraph(false);
     },
     timeTo: function(value) {
-      this.updateGraph();
+      this.updateGraph(true);
+    },
+    timeFrom: function(value) {
+      this.updateGraph(true);
     },
     graphType: function(value) {
-      this.updateGraph();
+      this.updateGraph(true);
     },
     interval: function(value) {
-      this.updateGraph();
+      this.updateGraph(true);
     },
     unit: function(value) {
-      this.updateGraph();
+      this.updateGraph(true);
+    },
+    points: function(value) {
+      this.updateGraph(false);
+    },
+    names: function(value) {
+      this.$parent.$refs.chartController.names = value;
+    },
+    currentIndex: function(value) {
+      // /console.log(this.$refs.indexChooser.children);
+      Array.from(this.$refs.indexChooser.children).forEach(e => {e.style.borderColor = "#FFFFFF"});
+      this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)';
     },
     isMaximized: function(value) {
       if (value) {
@@ -210,6 +240,7 @@ export default {
      }).catch (e => {
       this.errors.push(e);
      });
+     //this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)';
   }
 }
 </script>
@@ -228,6 +259,17 @@ export default {
   transition: right 1s;
   overflow: hidden;
 }
+.indexSelect {
+  height: 50px;
+  margin-bottom: 1em;
+}
+.indexSelect .btn {
+  background-color: black;
+  color: white;
+  height: 100%;
+  width: 50px;
+}
+
 .sharedLine {
   width: 40%;
   display: inline-block;

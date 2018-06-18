@@ -10,7 +10,7 @@ import axios from 'axios';
 
 export default {
   name: 'card',
-  props: ['id','graphType',"start","end","interval","unit"],
+  props: ['id','graphType'],
   components: {
     linechart
   },
@@ -22,11 +22,20 @@ export default {
   },
   data() {
     return {
-						chartData:{},
+						chartData:{
+							datasets: [],
+							labels: []
+						},
             chartDataComplete:{},
             updatingChart: false,
 						groups: [],
-						points: []
+						points: [],
+						names: [],
+						start: null,
+						end: null,
+						interval: 15,
+						unit: "minute",
+						colors: ["#4A773C","#00859B","#FFB500","#006A8E","#C4D6A4","#B8DDE1","#FDD26E","#C6DAE7","AA9D2E","#0D5257","#D3832B","#003B5C","#B7A99A","#A7ACA2","#7A6855","#8E9089"]
 					}
   },
   created() {
@@ -38,8 +47,6 @@ export default {
         this.updatingChart = true;
         var promises = [];
         var meterRelation = {};
-        this.chartData = {};
-
 				//we need to average the values over intervals for everything but accumulated real
 				var intervalCopy = interval;
 				var unitCopy = unit;
@@ -47,13 +54,15 @@ export default {
 					interval = '15';
 					unit = 'minute';
 				}
-
         axios.get('http://localhost:3000/api/getMetersForGroup?id='+groupId).then (meters => {
+					//console.log(meters);
           meters.data.forEach(meter => {
             meterRelation[meter.id.toString()] = meter.operation;
             promises.push(axios.get('http://localhost:3000/api/getMeterData?id='+meter.id+'&date_start='+startDate+'&date_end='+endDate+'&mpoints='+mpoint+'&int='+interval+'&unit='+unit));
-          });
+					//	console.log(meter.id + " " + startDate + " " + endDate + " " + mpoint + " " + interval + " " + unit);
+					});
           Promise.all(promises).then(values => {
+						//console.log(values);
             //combine all returned data
             var combinedData = {};
             values.forEach(value => {
@@ -84,10 +93,16 @@ export default {
             });
 
             //parse and create the datasets
-            this.createDataSets(groupId,combinedData,intervalCopy,unitCopy,startDate);
-            this.parseData(groupId, combinedData);
+
+            this.createDataSet(index,this.names[index],mpoint,intervalCopy,unitCopy,startDate);
+						//console.log(this.chartData);
+            this.parseData(index, groupId, combinedData);
+						this.chartDataComplete = {};
             this.chartDataComplete = this.chartData;
             this.updatingChart = false;
+						//this.$refs.chart.destroy();
+						this.$refs.chart.update();
+						console.log(this.chartDataComplete);
           }).catch (e => {
             console.log(e);
             //this.errors.push(e);
@@ -98,87 +113,90 @@ export default {
         });
       }
     },
-    createDataSets: function (name,obj,interval, unit, start) {
-      if (!("datasets" in this.chartData))
-        this.chartData["datasets"] = [];
-      if (!("labels" in this.chartData))
-        this.chartData["labels"] = [];
-      Object.keys(obj[Object.keys(obj)[0]]).forEach((key,index) => {
-        var o = {
-          label: (key + " " + name),
-          backgroundColor: 'rgba(215,63,9,0.3)',
-          borderColor:'#D73F09',
-          fill: true,
-					mpoint: key,
+    createDataSet: function (index,name,mpoint,interval, unit, start) {
+
+			var o = {
+          label: name,
+          //backgroundColor: this.colors[index]+"44",
+          borderColor: this.colors[index],
+          fill: false,
+					mpoint: mpoint,
 					interval: interval,
 					startDate: start,
 					unit: unit,
           showLine: true,
           spanGaps: true,
           data: []
-        };
-        this.chartData["datasets"].push(o);
-      });
+      };
+			if (index < this.chartData.datasets.length)
+				this.chartData["datasets"][index] = o;
+			else
+				this.chartData.datasets.push(o);
+      this.chartData["labels"] = [];
     },
-    parseData: function (groupId, data) {
+    parseData: function (indexM, groupId, data) {
+			//console.log(data);
       if (!data || !groupId)
         return;
       Object.keys(data).forEach( (key,index) => { //iterate through incoming data object has keys for time, and mpoints, mpoint keys go to
                                                   //data sets time goes to labels
         this.chartData.labels.push(key);
+				//console.log(key);
         Object.keys(data[key]).forEach ( (innerKey, innerIndex) => {
-          this.chartData.datasets.forEach(dataSet => {
-            if (dataSet.label === (innerKey + " " + groupId))
-              dataSet.data.push(data[key][innerKey]);
-          });
+          // this.chartData.datasets.forEach(dataSet => {
+          //   if (dataSet.label === (innerKey + " " + groupId))
+          //     dataSet.data.push(data[key][innerKey]);
+          // });
+					this.chartData.datasets[indexM].data.push(data[key][innerKey]);
         });
       });
       //calculates change per interval (accumulated_real) or average over the interval (every other metering point)
-      this.chartData.datasets.forEach(set => {
-				if (set.mpoint === "accumulated_real") {
-	        var dataCopy = set.data.slice();
-	        for (var i = 1; i < set.data.length; i++) {
-	          set.data[i] -= dataCopy[i-1];
-	        }
-	        set.data.shift();
+			var set = this.chartData.datasets[indexM];
+      //this.chartData.datasets.forEach(set => {
+			if (set.mpoint === "accumulated_real") {
+        var dataCopy = set.data.slice();
+        for (var i = 1; i < set.data.length; i++) {
+          set.data[i] -= dataCopy[i-1];
+        }
+        set.data.shift();
+			}
+			else {
+				var dataCopy = set.data.slice();
+				set.data = [];
+				var interval = set.interval;
+				if (set.unit === "hour") {
+					interval *= 60;
 				}
-				else {
-					var dataCopy = set.data.slice();
-					set.data = [];
-					var interval = set.interval;
-					if (set.unit === "hour") {
-						interval *= 60;
-					}
-					else if (set.unit === "day") {
-						interval *= 1440;
-					}
-					else if (set.unit === "month") {
-						interval *= 43800;
-					}
-					interval /= 15;
-					var addingVariable = 0;
-					var d = new Date();
-					//Format of set.startDate - year-month-dayT:hour:minute:second
-					d.setYear(set.startDate.substr(0,4));
-					//console.log(set.startDate.substr(5,2));
-					d.setMonth(set.startDate.substr(5,2)-1);
-					d.setDate(set.startDate.substr(8,2));
-					d.setHours(set.startDate.substr(11,2));
-					d.setMinutes(set.startDate.substr(14,2));
-					d.setSeconds(0);
-	        for (var i = 1; i < dataCopy.length; i++) {
-	          if (i % interval === 0 || i === dataCopy.length - 1) {
-							addingVariable += dataCopy[i];
-							d.setMinutes(d.getMinutes() + interval*15);
-							set.data.push({x:d.toString(),y:addingVariable/interval});
-							addingVariable = 0;
-						}
-						else {
-							addingVariable += dataCopy[i];
-						}
-	        }
+				else if (set.unit === "day") {
+					interval *= 1440;
 				}
-	    });
+				else if (set.unit === "month") {
+					interval *= 43800;
+				}
+				interval /= 15;
+				var addingVariable = 0;
+				var d = new Date();
+				//Format of set.startDate - year-month-dayT:hour:minute:second
+				d.setYear(set.startDate.substr(0,4));
+				//console.log(set.startDate.substr(5,2));
+				d.setMonth(set.startDate.substr(5,2)-1);
+				d.setDate(set.startDate.substr(8,2));
+				d.setHours(set.startDate.substr(11,2));
+				d.setMinutes(set.startDate.substr(14,2));
+				d.setSeconds(0);
+        for (var i = 1; i < dataCopy.length; i++) {
+          if (i % interval === 0 || i === dataCopy.length - 1) {
+						addingVariable += dataCopy[i];
+						d.setMinutes(d.getMinutes() + interval*15);
+						set.data.push({x:d.toString(),y:addingVariable/interval});
+						addingVariable = 0;
+					}
+					else {
+						addingVariable += dataCopy[i];
+					}
+        }
+			}
+	    //});
     }
   }
 }

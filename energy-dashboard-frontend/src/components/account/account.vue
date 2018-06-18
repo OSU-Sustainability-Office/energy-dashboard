@@ -31,7 +31,6 @@ export default {
   created() {
      axios.get('http://localhost:3000/api/getStoriesForUser?id=1').then (res => {
        this.cards = res.data;
-       console.log(res.data);
      }).catch (e => {
       this.errors.push(e);
      });
@@ -44,7 +43,6 @@ export default {
       for (var i = 0; i < this.cards.length; i++) {
         if (this.cards[i].featured) {
           axios.get('http://localhost:3000/api/getBlocksForStory?id=1').then (res => {
-            console.log(res.data);
             this.cardsFeatured = res.data;
           });
           return;
