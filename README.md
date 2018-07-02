@@ -159,7 +159,7 @@ An open source data collection and visualization web application for Oregon Stat
 ```/api/getAllBuildings```
 - Method: GET
 - Parameters: None
-- Returns: JSON ```[{id, name}]```
+- Returns: id, name
 
 Gets all the meter groups labeled as a building.
 
@@ -168,13 +168,15 @@ Gets all the meter groups labeled as a building.
 - Method: GET
 - Parameters:
   - id: the id of the block object
-- Returns: JSON ```{d_start, d_end, d_range, name, g_type, media, descr, story_id, current, meter_groups}```
+- Returns: all information from the block (see blocks table)
 
-```/api/getBlockMeters```
+```/api/getBlockMeterGroups```
 - Method: GET
 - Parameters:
   - id: the id of the block object
-- Returns: Array of meter ids
+- Returns: meter_groupid, block_id, id
+
+Gets all t
 
 ```/api/updateBlock```
 - Method: POST
