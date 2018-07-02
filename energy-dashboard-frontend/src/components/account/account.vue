@@ -4,9 +4,6 @@
     <carousel v-bind:cards="cards" />
     <!-- <span class="main-heading">Featured Blocks</span> -->
     <featured v-bind:cards="cardsFeatured" ref='featureBox' />
-    <div class="multitools">
-      <btn @click='$emit("requestDownload")'>Download Data</btn>
-    </div>
   </div>
 </template>
 
@@ -70,18 +67,7 @@ export default {
       //   }
       //
       // }
-      var blob = new Blob(data);
-      if (window.navigator.msSaveOrOpenBlob)
-          window.navigator.msSaveBlob(blob, "filename.csv");
-      else
-      {
-          var a = window.document.createElement("a");
-          a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
-          a.download = "filename.csv";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-      }
+      
     }
   },
 }

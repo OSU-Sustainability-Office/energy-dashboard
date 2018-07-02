@@ -1,6 +1,6 @@
 <template>
 <div class="flexFeature" v-bind:class="{ minimized : isMinimized }">
-  <card v-for="card in cards" :featured="true" :name='card.name' :description='card.descr' :id='card.id' :start='card.date_start' :end='card.date_end' :type='card.graph_type' :unit='card.interval_unit' :int='card.date_interval' ref="displayedCards"/>
+  <card v-for="card in cards" :featured="true" :name='card.name' :description='card.descr' :id='card.id' :start='card.date_start' :end='card.date_end' :type='card.graph_type' :unit='card.interval_unit' :int='card.date_interval' :media='card.media' ref="displayedCards"/>
   <div class="addFeatured" v-if="numberOfCards() < 2" @click="addFeature()" >
     +
   </div>

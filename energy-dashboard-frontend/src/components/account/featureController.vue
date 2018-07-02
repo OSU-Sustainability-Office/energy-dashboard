@@ -170,11 +170,22 @@ export default {
       //console.log(this.$parent);
       //console.log(this.points);
       //console.log(this.groupids);
-      if (this.points.length > this.currentIndex && this.groupids.length > this.currentIndex && !partial)
-        this.$parent.$refs.chartController.getData(this.currentIndex,this.points[this.currentIndex],this.groupids[this.currentIndex],this.dateFrom+this.parseDateTime(this.timeFrom), this.dateTo+this.parseDateTime(this.timeTo),this.interval.toString(),this.unit);
-      else
-        for (var i = 0; i < this.points.length; i++)
-          this.$parent.$refs.chartController.getData(i,this.points[i],this.groupids[i],this.dateFrom+this.parseDateTime(this.timeFrom), this.dateTo+this.parseDateTime(this.timeTo),this.interval.toString(),this.unit);
+      if (this.points.length > this.currentIndex && this.groupids.length > this.currentIndex && !partial) {
+        this.$parent.$refs.chartController.getData(this.currentIndex,this.points[this.currentIndex],this.groupids[this.currentIndex],this.dateFrom+this.parseDateTime(this.timeFrom), this.dateTo+this.parseDateTime(this.timeTo),this.interval.toString(),this.unit).then(() => {
+          this.$parent.$refs.chartController.updateChart();
+        });
+      }
+      else {
+        var promises = [];
+        for (var i = 0; i < this.points.length; i++) {
+
+          promises.push(this.$parent.$refs.chartController.getData(i,this.points[i],this.groupids[i],this.dateFrom+this.parseDateTime(this.timeFrom), this.dateTo+this.parseDateTime(this.timeTo),this.interval.toString(),this.unit));
+          //console.log("update");
+        }
+        Promise.all(promises).then(values => {
+          this.$parent.$refs.chartController.updateChart();
+        });
+      }
 
     },
     parseDateTime: function(dateTime) {

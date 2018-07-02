@@ -1,10 +1,18 @@
 <template>
-  <div class="card" v-bind:class="{ feature : featured }">
-    {{this.name}}, {{this.description}} {{this.featured}}
+  <div class="card" v-bind:class="{ feature : featured }" ref='card' >
+    <div v-bind:class="{ 'titleText' : !featured, 'titleTextFeatured' : featured}">
+      {{this.name}}
+    </div>
+    <!-- <img :src="media" /> -->
     <!-- <linechart v-if="featured" ref="chart" v-bind:chartData="chartDataComplete" :style="{ display: 'inline-block', width: '100%' }"/> -->
     <!-- <linechart v-else ref="chart" v-bind:chartData="data" /> -->
     <chartController v-if="featured" ref="chartController" :graphType='1' class="chart"/>
     <featureController v-if="featured" ref="featureController" />
+
+    <div v-bind:class="{ 'descriptionText' : !featured, 'descriptionTextFeatured' : featured}">
+      {{this.description}}
+    </div>
+    <btn @click="download()" v-if="featured" ref="downloadBtn">Download Data</btn>
   </div>
 </template>
 
@@ -17,11 +25,121 @@ import featureController from '@/components/account/featureController'
 
 export default {
   name: 'card',
-  props: ['name', 'description', 'featured', 'id','start','end','int','unit','type'],
+  props: ['name', 'description', 'featured', 'id','start','end','int','unit','type','media'],
   components: {
     chartController, featureController
   },
+  methods: {
+    download: function() {
+      var points = this.$refs.featureController.points;
+      var groups = this.$refs.featureController.groupids;
+      var names = this.$refs.featureController.names;
+      var data = [];
+      var promises = [];
+      var relation = [];
+      for (var i = 0; i < groups.length; i++) {
+         promises.push(axios.get('http://localhost:3000/api/getMetersForGroup?id='+groups[i]));
+      }
+
+      Promise.all(promises).then(results => {
+        var promisesRoundTwo = [];
+        results.forEach((row, index) => {
+          relation.push({});
+          row.data.forEach((meter, meterIndex) => {
+            relation[index][meter.id] = meter.operation;
+            promisesRoundTwo.push(axios.get('http://localhost:3000/api/getMeterData?id='+meter.id+'&date_start='+this.$refs.featureController.dateFrom+'&date_end='+this.$refs.featureController.dateTo+'&mpoints='+points[index]));
+          });
+        });
+        Promise.all(promisesRoundTwo).then(results => {
+          data.push(["Time"]);
+          points.forEach((point,index) => {
+            data[0].push(names[index]);
+          });
+          var resultEnumerator = 0;
+          relation.forEach((group,index) => {
+            if (points[index] === 'accumulated_real') {
+              var dataIndex = 1;
+              Object.keys(group).forEach((key) => {
+                dataIndex = 1;
+                results[resultEnumerator].data.forEach( (row, rowIndex) => {
+                  var a = row[points[index]];
+                  if (group[key] === 0)
+                    a *= -1;
+                  if(!data[dataIndex])
+                    data.push([row.time]);
+                  if(!data[dataIndex][index+1])
+                    data[dataIndex].push(a);
+                  else
+                    data[dataIndex][index+1] += a;
+                  dataIndex++;
+                });
+                resultEnumerator++;
+              });
+            }
+            else {
+              results[resultEnumerator].data.forEach( (row, rowIndex) => {
+                if (!data[rowIndex+1])
+                  data.push([row.time]);
+                data[rowIndex+1].push(row[points[index]]);
+              });
+              resultEnumerator += Object.keys(group).length;
+            }
+
+          });
+          // var dataCopy =
+          // for (var i = 0; i < data.length; i++) {
+          //   data[i] = data[i].join(',');
+          // }
+          // data = data.join('\n');
+          //console.log(data);
+          var blob = new Blob([data.join('\n')]);
+          if (window.navigator.msSaveOrOpenBlob)
+              window.navigator.msSaveBlob(blob, "data.csv");
+          else
+          {
+              var a = window.document.createElement("a");
+              a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+              a.download = "data.csv";
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+          }
+        });
+      });
+
+
+
+
+      // .then (meters => {
+      //      var promises = [];
+      //      var meterRelation = {}
+      //      meters.data.forEach(meter => {
+      //        meterRelation[meter.id.toString()] = meter.operation;
+      //        promises.push(axios.get('http://localhost:3000/api/getMeterData?id='+meter.id+'&date_start='+this.$refs.featureController.dateFrom+'&date_end='+this.$refs.featureController.dateFrom+'&mpoints='+points[i]));
+      //      });
+      //      Promise.all(promises).then(results => {
+      //        if (points[i] === "accumulated_real") {
+      //
+      //        }
+      //        else {
+      //          results.forEach(row => {
+      //            if (!data[row.data.time]) {
+      //              data[row.data.time] = {};
+      //            }
+      //            data[row.data.time][names[i]] = row.data[points[i]];
+      //          });
+      //        }
+      //      });
+      //    });
+      // }
+
+
+
+    },
+  },
   mounted() {
+    this.$refs.card.style.background = "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),url('"+this.media+"')";
+    this.$refs.card.style.backgroundSize = "cover";
     if (this.featured) {
       this.$refs.featureController.dateFrom = this.start;
       this.$refs.featureController.dateTo = this.end;
@@ -68,12 +186,23 @@ export default {
   height: 10em;
   min-width: 15em;
   overflow: hidden;
+  background: url
 }
 .feature {
   background: #000;
-  height: 30em;
+  height: 40em;
   padding-right: 2em;
   padding-left: 2em;
   width: 100%;
+}
+.titleTextFeatured {
+  color: rgb(215,63,9);
+  font-size: 2em;
+  font-family: 'StratumNo2';
+  padding: 0.3em;
+}
+.descriptionTextFeatured {
+  color: rgb(255,255,255);
+
 }
 </style>
