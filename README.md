@@ -26,9 +26,6 @@ An open source data collection and visualization web application for Oregon Stat
   - [Meters](#meters)
   - [Meter Groups](#meter-groups)
   - [Stories](#stories)
-- [Python Scripts](#python-scripts)
-  - [Import Data](#import-data)
-  - [Tempory Data to Permanent Data](#temporary-to-permanent)
 - [Development Environment](#development-environment)
   - [Running a VueJS Dev Server](#running-a-vuejs-dev-server)
 ## Dependencies
@@ -47,6 +44,10 @@ An open source data collection and visualization web application for Oregon Stat
 ### Sanitize
   Used to ensure security on server request parameters.
 ## DataBase Schema
+
+### Dataflow Diagram
+(https://www.lucidchart.com/publicSegments/view/96b6dca8-4e9a-491a-a9bd-fbbcc02358a8/image.png)
+
 ### Tables
 | Table Name              | Description                                                |
 |-------------------------|:-----------------------------------------------------------|
@@ -60,95 +61,99 @@ An open source data collection and visualization web application for Oregon Stat
 | users                   | Contains user privileges.                                  |
 
 ### Block Groups
-| Field    | Type       | Null | Key | Default | Extra |
-|----------|:-----------|:-----|:----|:--------|:------|
-| id       | int(11)    | NO   | PRI | NULL    |       |
-| block_id | int(11)    | YES  | MUL | NULL    |       |
-| group_id | int(11)    | YES  | MUL | NULL    |       |
-| point    | tinyint(4) | YES  |     | NULL    |       |
-
+| Field    | Type       | Null | Key | Default | Extra               |
+|----------|:-----------|:-----|:----|:--------|:--------------------|
+| id       | int(11)    | NO   | PRI | NULL    |  auto_increment     |
+| block_id | int(11)    | YES  | MUL | NULL    |                     |
+| group_id | int(11)    | YES  | MUL | NULL    |                     |
+| name     | char(64)   | YES  |     | NULL    |                     |
+| point    | char(64)   | YES  |     | NULL    |                     |
 
 ### Blocks
-| Field      | Type       | Null | Key | Default | Extra |
-|------------|:-----------|:-----|:----|:--------|:------|
-| id         | int(11)    | NO   | PRI | NULL    |       |
-| date_start | datetime   | YES  |     | NULL    |       |
-| date_end   | datetime   | YES  |     | NULL    |       |
-| date_range | char(64)   | YES  |     | NULL    |       |
-| graph_type | tinyint(4) | YES  |     | NULL    |       |
-| media      | char(255)  | YES  |     | NULL    |       |
-| descr      | text       | YES  |     | NULL    |       |
-| story_id   | int(11)    | YES  | MUL | NULL    |       |
+| Field         | Type       | Null | Key | Default | Extra               |
+|---------------|:-----------|:-----|:----|:--------|:--------------------|
+| id            | int(11)    | NO   | PRI | NULL    |  auto_increment     |
+| date_start    | datetime   | YES  |     | NULL    |                     |
+| date_end      | datetime   | YES  |     | NULL    |                     |
+| date_range    | char(64)   | YES  |     | NULL    |                     |
+| graph_type    | tinyint(4) | YES  |     | NULL    |                     |
+| media         | char(255)  | YES  |     | NULL    |                     |
+| descr         | text       | YES  |     | NULL    |                     |
+| name          | char(64)   | YES  |     | NULL    |                     |
+| story_id      | int(11)    | YES  | MUL | NULL    |                     |
+| date_interval | int(11)    | YES  |     | 15      |                     |
+| interval_unit | char(64)   | YES  |     | minute  |                     |
 
 ### Data
-| Field            | Type     | Null | Key | Default | Extra |
-|------------------|:---------|:-----|:----|:--------|:------|
-| id               | int(11)  | NO   | PRI | NULL    |       |
-| time             | datetime | NO   |     | NULL    |       |
-| meter_id         | int(11)  | NO   | MUL | NULL    |       |
-| accumulated_real | int(32)  | YES  |     | NULL    |       |
-| real_power       | float    | YES  |     | NULL    |       |
-| reactive_power   | float    | YES  |     | NULL    |       |
-| apparent_power   | float    | YES  |     | NULL    |       |
-| real_a           | float    | YES  |     | NULL    |       |
-| real_b           | float    | YES  |     | NULL    |       |
-| real_c           | float    | YES  |     | NULL    |       |
-| reactive_a       | float    | YES  |     | NULL    |       |
-| reactive_b       | float    | YES  |     | NULL    |       |
-| reactive_c       | float    | YES  |     | NULL    |       |
-| apparent_a       | float    | YES  |     | NULL    |       |
-| apparent_b       | float    | YES  |     | NULL    |       |
-| apparent_c       | float    | YES  |     | NULL    |       |
-| pf_a             | float    | YES  |     | NULL    |       |
-| pf_b             | float    | YES  |     | NULL    |       |
-| pf_c             | float    | YES  |     | NULL    |       |
-| vphase_ab        | float    | YES  |     | NULL    |       |
-| vphase_bc        | float    | YES  |     | NULL    |       |
-| vphase_ac        | float    | YES  |     | NULL    |       |
-| vphase_an        | float    | YES  |     | NULL    |       |
-| vphase_bn        | float    | YES  |     | NULL    |       |
-| vphase_cn        | float    | YES  |     | NULL    |       |
-| cphase_a         | float    | YES  |     | NULL    |       |
-| cphase_b         | float    | YES  |     | NULL    |       |
-| cphase_c         | float    | YES  |     | NULL    |       |
+| Field            | Type     | Null | Key | Default | Extra          |
+|------------------|:---------|:-----|:----|:--------|:---------------|
+| id               | int(11)  | NO   | PRI | NULL    | auto_increment |
+| time             | datetime | NO   |     | NULL    |                |
+| meter_id         | int(11)  | NO   | MUL | NULL    |                |
+| accumulated_real | int(32)  | YES  |     | NULL    |                |
+| real_power       | float    | YES  |     | NULL    |                |
+| reactive_power   | float    | YES  |     | NULL    |                |
+| apparent_power   | float    | YES  |     | NULL    |                |
+| real_a           | float    | YES  |     | NULL    |                |
+| real_b           | float    | YES  |     | NULL    |                |
+| real_c           | float    | YES  |     | NULL    |                |
+| reactive_a       | float    | YES  |     | NULL    |                |
+| reactive_b       | float    | YES  |     | NULL    |                |
+| reactive_c       | float    | YES  |     | NULL    |                |
+| apparent_a       | float    | YES  |     | NULL    |                |
+| apparent_b       | float    | YES  |     | NULL    |                |
+| apparent_c       | float    | YES  |     | NULL    |                |
+| pf_a             | float    | YES  |     | NULL    |                |
+| pf_b             | float    | YES  |     | NULL    |                |
+| pf_c             | float    | YES  |     | NULL    |                |
+| vphase_ab        | float    | YES  |     | NULL    |                |
+| vphase_bc        | float    | YES  |     | NULL    |                |
+| vphase_ac        | float    | YES  |     | NULL    |                |
+| vphase_an        | float    | YES  |     | NULL    |                |
+| vphase_bn        | float    | YES  |     | NULL    |                |
+| vphase_cn        | float    | YES  |     | NULL    |                |
+| cphase_a         | float    | YES  |     | NULL    |                |
+| cphase_b         | float    | YES  |     | NULL    |                |
+| cphase_c         | float    | YES  |     | NULL    |                |
 
 ### Meter Group Relation
-| Field     | Type    | Null | Key | Default | Extra |
-|-----------|:--------|:-----|:----|:--------|:------|
-| id        | int(11) | NO   | PRI | NULL    |       |
-| meter_id  | int(11) | YES  | MUL | NULL    |       |
-| group_id  | int(11) | YES  | MUL | NULL    |       |
-| operation | bit(1)  | YES  |     | NULL    |       |
+| Field     | Type        | Null | Key | Default | Extra          |
+|-----------|:------------|:-----|:----|:--------|:---------------|
+| id        | int(11)     | NO   | PRI | NULL    | auto_increment |
+| meter_id  | int(11)     | YES  | MUL | NULL    |                |
+| group_id  | int(11)     | YES  | MUL | NULL    |                |
+| operation | tinyint(1)  | YES  |     | NULL    |                |
 
 ### Meter Groups
-| Field       | Type     | Null | Key | Default | Extra |
-|-------------|:---------|:-----|:----|:--------|:------|
-| id          | int(11)  | NO   | PRI | NULL    |       |
-| name        | char(64) | YES  |     | NULL    |       |
-| is_building | bit(1)   | YES  |     | NULL    |       |
-| user_id     | int(11)  | YES  | MUL | NULL    |       |
+| Field       | Type         | Null | Key | Default | Extra          |
+|-------------|:-------------|:-----|:----|:--------|:---------------|
+| id          | int(11)      | NO   | PRI | NULL    | auto_increment |
+| name        | char(64)     | YES  |     | NULL    |                |
+| is_building | tinyint(1)   | YES  |     | NULL    |                |
+| user_id     | int(11)      | YES  | MUL | NULL    |                |
 
 ### Meters
-| Field   | Type     | Null | Key | Default | Extra |
-|---------|:---------|:-----|:----|:--------|:------|
-| id      | int(11)  | NO   | PRI | NULL    |       |
-| name    | char(64) | YES  |     | NULL    |       |
-| address | char(16) | YES  |     | NULL    |       |
+| Field   | Type     | Null | Key | Default | Extra           |
+|---------|:---------|:-----|:----|:--------|:----------------|
+| id      | int(11)  | NO   | PRI | NULL    | auto_increment  |
+| name    | char(64) | YES  |     | NULL    |                 |
+| address | char(16) | YES  |     | NULL    |                 |
+
 ### Stories
-| Field       | Type     | Null | Key | Default | Extra |
-|-------------|:---------|:-----|:----|:--------|:------|
-| id          | int(11)  | NO   | PRI | NULL    |       |
-| user_id     | int(11)  | YES  | MUL | NULL    |       |
-| name        | char(64) | YES  |     | NULL    |       |
-| description | text     | YES  |     | NULL    |       |
-| public      | bit(1)   | YES  |     | NULL    |       |
+| Field       | Type         | Null | Key | Default | Extra           |
+|-------------|:-------------|:-----|:----|:--------|:----------------|
+| id          | int(11)      | NO   | PRI | NULL    | auto_increment  |
+| user_id     | int(11)      | YES  | MUL | NULL    |                 |
+| name        | char(64)     | YES  |     | NULL    |                 |
+| description | text         | YES  |     | NULL    |                 |
+| public      | tinyint(1)   | YES  |     | NULL    |                 |
 
 ### Users
-| Field     | Type      | Null | Key | Default | Extra |
-|-----------|:----------|:-----|:----|:--------|:------|
-| id        | int(11)   | NO   | PRI | NULL    |       |
-| name      | char(255) | YES  |     | NULL    |       |
-| privilege | int(11)   | YES  |     | NULL    |       |
+| Field     | Type      | Null | Key | Default | Extra               |
+|-----------|:----------|:-----|:----|:--------|:--------------------|
+| id        | int(11)   | NO   | PRI | NULL    |  auto_increment     |
+| name      | char(255) | YES  |     | NULL    |                     |
+| privilege | int(11)   | YES  |     | NULL    |                     |
 
 ## API Reference
 ### Buildings
