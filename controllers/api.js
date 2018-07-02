@@ -4,6 +4,24 @@ var db = require('../db');
 
 router.use(require('sanitize').middleware);
 
+//High privilige
+router.get('/getAllUsers', function(req,res){
+	db.query("SELECT * FROM users").then (rows => {
+		res.send(rows);
+	}).catch(err => {
+		res.send("error");
+	});
+});
+router.get('/getAllMeterGroups', function(req,res){
+	db.query("SELECT * FROM meter_groups").then (rows => {
+		res.send(rows);
+	}).catch(err => {
+		res.send("error");
+	});
+});
+//router.delete('/deleteMeterGroup')
+
+
 //BUILDINGS
 router.get('/getAllBuildings',function (req,res) {
 	db.query("SELECT id, name FROM meter_groups WHERE is_building=1").then( rows => {
@@ -43,10 +61,13 @@ router.get('/getBlockMeterGroups',function (req,res) {
 });
 router.get('/getBlockDataForStory',function (req,res) {
 	//for a story names need to be unique so we can find the block this way
-	if (req.queryString('story')) {
-		db.query("SELECT * FROM blocks WHERE story_id=?",[req.queryString('story'),req.queryString('name')]).then(rows => {
+	if (req.queryString('id')) {
+		db.query("SELECT * FROM blocks WHERE story_id=?",[req.queryString('id')]).then(rows => {
 			res.send(JSON.stringify(rows));
 		});
+	}
+	else {
+		res.status(400);
 	}
 
 });
@@ -201,7 +222,7 @@ router.post('/updateStory',function (req,res) {
 				res.send("ERROR: COULD NOT UPDATE STORY BLOCKS")
 			});
 		});
-		
+
 	}
 	else if (req.bodyInt('id')) {
 		var queryString = "UPDATE stories SET ";
@@ -264,10 +285,37 @@ router.get('/getMeterData',function (req,res) {
 			queryString += point + ", ";
 		});
 		queryString = queryString.substr(0,queryString.length-2);
-		queryString += " FROM data WHERE meter_id=? AND time > ? AND time < ?";
+
+		//Custom time interval fetching using the extract function and the modulus function
+		var extUnit = "MINUTE";
+		var extInt = "15";
+		var remainder = "0";
+		if (req.queryString('unit'))
+			extUnit = req.queryString('unit').toUpperCase();
+		if (req.queryString('int'))
+			extInt = req.queryString('int').toUpperCase();
+
+		if (extUnit !== "MINUTE" && parseInt(extInt) > 1 && parseInt(extInt)%2 === 1)
+			remainder = "1";
+
+		//this kind of sucks but then we return values we should not include that fall within the months
+		//Ex: when selecting 2 hour intervals it would report 15 minute intervals every 2 hours
+		var extraTimeConditions = " ";
+		if (extUnit !== "MINUTE") {
+			extraTimeConditions += "AND EXTRACT(MINUTE FROM time) = 0 ";
+			if (extUnit !== "HOUR") {
+				extraTimeConditions += "AND EXTRACT(HOUR FROM time) = 0 ";
+				if (extUnit !== "DAY") {
+					extraTimeConditions += "AND EXTRACT(DAY FROM time) = 0 ";
+				}
+			}
+		}
+
+		queryString += " FROM data WHERE meter_id=? AND MOD(EXTRACT("+extUnit+" FROM time), "+extInt+") = "+remainder+extraTimeConditions+"AND time >= ? AND time <= ?";
 		db.query(queryString,[req.queryInt('id'),req.queryString('date_start'),req.queryString('date_end')]).then( rows => {
 			res.send(JSON.stringify(rows));
 		}).catch ( err => {
+			console.log(err);
 			res.send("ERROR: COULD NOT SEND DATA");
 		});
 	}
@@ -295,23 +343,22 @@ router.post('/updateMeterGroup', function (req,res) {
 		});
 	}
 	//Update stuff
-	else if (req.bodyInt('id')) {
+	if (req.bodyInt('id')) {
 		var queryString = "UPDATE meter_groups SET ";
 		if (req.bodyString('name')) {
 			queryString += "name='" + req.bodyString("name") + "', ";
 		}
-		if (req.bodyInt('building')) {
-			queryString += "is_building=" + req.bodyInt('building').toString() + ", ";
+		if (req.bodyInt('is_building')) {
+			queryString += "is_building=" + req.bodyInt('is_building').toString() + ", ";
 		}
 		queryString = queryString.substr(0, queryString.length -2 );
-		if (req.bodyInt('building') || req.bodyString('name'))
+		if (req.bodyInt('is_building') || req.bodyString('name'))
 			db.query(queryString+" WHERE id=?",[req.bodyInt('id')]).then(rows => {
 				res.send("SUCCESS: UPDATED NAME AND/OR BUILDING STATUS");
 			});
-		
 	}
-	
-	//create stuff 
+
+	//create stuff
 	else if (req.bodyString('user_id') && req.bodyString('name')) {
 		db.query("SELECT * FROM meter_groups WHERE user_id=? AND name=?",[req.bodyString('user_id') ,req.bodyString('name')]).then( rows => {
 			if (rows.length === 0)

@@ -41,16 +41,24 @@ export default {
 	            }
 	          }]
 	        }
-	      }	    
+	      }
 	  }
 	},
 	mounted () {
 		this.renderChart(this.chartData, this.options);
 	},
+	watch: {
+		// chartData: function(value) {
+		// 	this.renderChart(value);
+		// }
+	},
 	methods: {
 		setOptions: function(opts) {
 			this.options = opts;
 			this.renderChart(this.chartData, this.options);
+		},
+		update: function() {
+			this.$data._chart.update();
 		}
 	}
 }
