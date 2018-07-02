@@ -10,6 +10,7 @@ An open source data collection and visualization web application for Oregon Stat
   - [Request](#request)
   - [Sanitizee](#sanitize)
 - [DataBase Schema](#database-schema)
+  - [Dataflow Diagram](#dataflow-diagram)
   - [Tables](#tables)
     - [Buildings](#buildings)
     - [Meters](#meters)
@@ -46,6 +47,7 @@ An open source data collection and visualization web application for Oregon Stat
 ## DataBase Schema
 
 ### Dataflow Diagram
+![Flow Diagram]
 (https://www.lucidchart.com/publicSegments/view/96b6dca8-4e9a-491a-a9bd-fbbcc02358a8/image.png)
 
 ### Tables
