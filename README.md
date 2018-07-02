@@ -14,12 +14,9 @@ An open source data collection and visualization web application for Oregon Stat
   - [Tables](#tables)
     - [Buildings](#buildings)
     - [Meters](#meters)
-    - [Temporary Data](#temp_data)
     - [Data](#data)
     - [Blocks](#blocks)
-    - [Block Buildings](#block_buildings)
     - [Stories](#stories)
-    - [User Stories](#user_stories)
     - [Users](#users)
 - [API Reference](#api-reference)
   - [Buildings](#buildings)
@@ -47,8 +44,8 @@ An open source data collection and visualization web application for Oregon Stat
 ## DataBase Schema
 
 ### Dataflow Diagram
-![Flow Diagram]
-(https://www.lucidchart.com/publicSegments/view/96b6dca8-4e9a-491a-a9bd-fbbcc02358a8/image.png)
+
+![Flow Diagram](https://www.lucidchart.com/publicSegments/view/96b6dca8-4e9a-491a-a9bd-fbbcc02358a8/image.png)
 
 ### Tables
 | Table Name              | Description                                                |
