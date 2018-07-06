@@ -176,7 +176,7 @@ Gets all the meter groups labeled as a building.
   - id: the id of the block object
 - Returns: meter_groupid, block_id, id
 
-Gets all t
+Gets relation between blocks and groups
 
 ```/api/updateBlock```
 - Method: POST
@@ -220,7 +220,7 @@ returns all blocks from the story with the specified id
   - unit: minute, hour, day or month specifying the delimiter of the intervals
   - int: the count of the unit to get data from
     - ex: (minute, 30) would return data points for every 30 minutes
-- Returns: array of {meter_id, time, mpoints...}
+- Returns: array of each specified point on the interval
 
 ### Meter Groups
 ```/api/updateMeterGroup```

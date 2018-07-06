@@ -1,14 +1,19 @@
 <template>
-  <div class="container-fluid">
+  <div id="background" class="container-fluid">
     <!-- <div id="background"><div id="shadow"></div></div> -->
     <div class="row">
       <homeContent />
     </div>
     <div class="row">
-    <homeSide />
+      <homeSide />
     </div>
-    <div class="row">
-    <exploreBtn />
+    <div class="row justify-content-center buttonBox">
+      <div class="col-sm-2">
+        <btn @click="explore()">Explore</btn>
+      </div>
+      <div class="col-sm-2">
+        <btn @click="login()">Login</btn>
+      </div>
     </div>
   </div>
 </template>
@@ -24,6 +29,15 @@ export default {
     homeContent,
     homeSide,
     exploreBtn
+  },
+  methods: {
+    login: function() {
+      //window.location.href="http://localhost:3000/api/login";
+      this.$router.push("account")
+    },
+    explore: function() {
+      this.$router.push("story/1")
+    }
   }
 }
 </script>
@@ -33,9 +47,22 @@ export default {
 .container-fluid {
   padding: 0px;
 }
+.buttonBox {
+  padding-top: 10px;
+}
+.row {
+  margin: 10px;
+}
+.btn {
+  background-color: #D73F09;
+  color: #FFFFFF;
+  top: 0px;
+  width: 100%;
+}
 #background {
   background: url('/static/images/solar.jpg');
   background-size: cover;
+  background-position: center center;
   top: 4em;
   bottom: 0px;
   width: 100%;

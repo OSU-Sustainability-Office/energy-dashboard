@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<linechart v-if="graphType === 1" ref="chart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%', 'padding-right': '1em' }"/>
+		<linechart v-if="graphType === 1" ref="chart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'20%','padding-top':'5em' }"/>
 
 	</div>
 </template>

@@ -16,25 +16,38 @@ export default {
 	            top: 0
 	          }
 	        },
+					legend: {
+						labels: {
+							fontColor: 'white'
+						}
+					},
+					title: {
+						fontColor: 'white'
+					},
 	        responsive: true, // my new default options
 	        maintainAspectRatio: false, // my new default options
 	        scales: {
 	          yAxes: [{
 	            ticks: {
-	              beginAtZero: false
+	              beginAtZero: false,
+								fontColor: 'white'
 	            },
+
 	            gridLines: {
 	              display: true // my new default options
 	            }
 	          }],
 	          xAxes: [{
 	            gridLines: {
-	              display: false
+	              display: false,
 	            },
+							ticks: {
+								fontColor: 'white'
+							},
 	            type: 'time',
 	            time: {
 	              unit: 'hour',
-	              unitStepSize: 4,
+	              unitStepSize: 12,
 	              displayFormats: {
 	                'hour': 'M/DD h:00 a'
 	              }

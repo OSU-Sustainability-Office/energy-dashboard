@@ -1,6 +1,6 @@
 <template>
   <transition name='fade'>
-    <span>{{ commitments[i] }}</span>
+    <span class="message" :key="keyValue">{{ commitments[i] | capatilize }}</span>
   </transition>
 </template>
 
@@ -10,6 +10,7 @@ export default {
   data () {
     return {
       i: 0,
+      keyValue: false,
       commitments: [
         'Education',
         'Community Engagement',
@@ -31,19 +32,35 @@ export default {
     while (i < this.commitments.length - 1) {
       setTimeout (() => {
         this.i++
+        this.keyValue = !this.keyValue;
       }, timeout)
-      timeout += (100 + 25 * i)
+      timeout += (100 + 50 * i)
       i++
+    }
+  },
+  filters: {
+    capatilize: function(value) {
+      return value.toUpperCase();
     }
   }
 }
+
 </script>
 
 <style>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+.message {
+  position: absolute;
+  transition: all 0.5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+.fade-leave-active {
+  position: absolute;
+}
+.fade-enter/* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+  transform: translateY(60px);
+}
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-60px);
 }
 </style>
