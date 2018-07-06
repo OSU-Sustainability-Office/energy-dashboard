@@ -1,18 +1,25 @@
 <template>
   <div class="card" v-bind:class="{ feature : featured }" ref='card' >
-    <div v-bind:class="{ 'titleText' : !featured, 'titleTextFeatured' : featured}">
+    <!-- <div v-bind:class="{ 'titleText' : !featured, 'titleTextFeatured' : featured}">
       {{this.name}}
-    </div>
+    </div> -->
     <!-- <img :src="media" /> -->
     <!-- <linechart v-if="featured" ref="chart" v-bind:chartData="chartDataComplete" :style="{ display: 'inline-block', width: '100%' }"/> -->
     <!-- <linechart v-else ref="chart" v-bind:chartData="data" /> -->
     <chartController v-if="featured" ref="chartController" :graphType='1' class="chart"/>
     <featureController v-if="featured" ref="featureController" />
 
-    <div v-bind:class="{ 'descriptionText' : !featured, 'descriptionTextFeatured' : featured}">
-      {{this.description}}
+    <div class="container descriptionContainer" v-if='featured'>
+      <div class='titleTextFeatured row'>
+        {{this.name}}
+      </div>
+      <div class='descriptionTextFeatured row'>
+        {{this.description}}
+      </div>
+      <div class="row">
+        <btn @click="download()" v-if="featured" ref="downloadBtn">Download Data</btn>
+      </div>
     </div>
-    <btn @click="download()" v-if="featured" ref="downloadBtn">Download Data</btn>
   </div>
 </template>
 
@@ -138,7 +145,7 @@ export default {
     },
   },
   mounted() {
-    this.$refs.card.style.background = "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),url('"+this.media+"')";
+    this.$refs.card.style.background = "linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),url('"+this.media+"')";
     this.$refs.card.style.backgroundSize = "cover";
     if (this.featured) {
       this.$refs.featureController.dateFrom = this.start;
@@ -178,6 +185,20 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.descriptionContainer {
+  position: absolute;
+  left: 0px;
+  height: 100%;
+  width: 20%;
+  background-color: rgba(0,0,0,0.7);
+}
+.descriptionContainer .btn {
+  background-color: #000;
+  color: #fff;
+}
+.descriptionContainer .row {
+  padding: 1em;
+}
 .card {
   margin-right: 1em;
   margin-top: 1em;
@@ -199,7 +220,6 @@ export default {
   color: rgb(215,63,9);
   font-size: 2em;
   font-family: 'StratumNo2';
-  padding: 0.3em;
 }
 .descriptionTextFeatured {
   color: rgb(255,255,255);

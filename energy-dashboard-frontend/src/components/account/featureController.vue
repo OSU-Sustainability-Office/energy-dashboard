@@ -1,16 +1,21 @@
 <template>
-  <div class="controlSection" ref="expandableBox">
-    <div class="expand">
-      <i class="fas" v-on:click="isMaximized = !isMaximized" v-bind:class="{ 'fa-chevron-circle-left' : !isMaximized, 'fa-chevron-circle-right' : isMaximized }"></i>
+  <div class="controlArea container" ref="movingArea">
+    <div class="expandingSection" v-on:click="isMaximized = !isMaximized">
+      <i class="fas" v-bind:class="{ 'fa-chevron-circle-left' : !isMaximized, 'fa-chevron-circle-right' : isMaximized }"></i>
+    </div>
 
-      <div class="controls">
-        <div class="indexSelect" ref="indexChooser">
-          <btn v-for="(point, index) in points" @click="currentIndex = index" > {{ index+1 }}</btn>
-          <btn @click="addGroup()">+</btn>
-        </div>
-        <div class="form-group">
+    <div class="container-fluid controlSection" ref="controlArea">
+      <div class="row indexChooser" ref="indexChooser">
+        <btn class="indexButton" v-for="(point, index) in points" @click="currentIndex = index">{{ index + 1 }}</btn>
+        <btn class="indexButton" @click="addGroup()">+</btn>
+      </div>
+
+      <div class="row nameChooser form-group">
         <label>Name:</label>
         <input class="form-control" type="text" v-model="names[currentIndex]">
+      </div>
+
+      <div class="row pointChooser form-group">
         <label>Point: </label>
         <select v-model="points[currentIndex]" class="form-control">
           <option value="accumulated_real">Accumulated Real</option>
@@ -39,86 +44,97 @@
           <option value="cphase_b">Current Phase, Phase B</option>
           <option value="cphase_c">Current Phase, Phase C</option>
         </select>
-      <label>Group: </label>
-      <select ref="groups" class="form-control" v-model="groupids[currentIndex]">
-      </select>
-      <label>From Date: </label>
-      <form class="form-inline">
-        <dropdown class="form-group">
-          <div class="input-group">
-            <input class="form-control" type="text" v-model="dateFrom">
-            <div class="input-group-btn">
-              <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
-            </div>
-          </div>
-          <template slot="dropdown">
-            <li>
-              <date-picker v-model="dateFrom"/>
-            </li>
-          </template>
-        </dropdown>
-        <dropdown class="form-group">
-          <div class="input-group">
-            <input class="form-control" type="text" v-model="timeFrom.toTimeString()" readonly="readonly">
-            <div class="input-group-btn">
-              <btn class="dropdown-toggle"><i class="glyphicon glyphicon-time"></i></btn>
-            </div>
-          </div>
-          <template slot="dropdown">
-            <li style="padding: 10px">
-              <time-picker v-model="timeFrom"/>
-            </li>
-          </template>
-        </dropdown>
-      </form>
-      <label>To Date: </label>
-      <form class="form-inline">
-        <dropdown class="form-group">
-          <div class="input-group">
-            <input class="form-control" type="text" v-model="dateTo">
-            <div class="input-group-btn">
-              <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
-            </div>
-          </div>
-          <template slot="dropdown">
-            <li>
-              <date-picker v-model="dateTo"/>
-            </li>
-          </template>
-        </dropdown>
-        <dropdown class="form-group">
-          <div class="input-group">
-            <input class="form-control" type="text" v-model="timeTo.toTimeString()" readonly="readonly">
-            <div class="input-group-btn">
-              <btn class="dropdown-toggle"><i class="glyphicon glyphicon-time"></i></btn>
-            </div>
-          </div>
-          <template slot="dropdown">
-            <li style="padding: 10px">
-              <time-picker v-model="timeTo"/>
-            </li>
-          </template>
-        </dropdown>
-      </form>
-        <div class="form-group">
-          <label>Graph Type: </label>
-          <select class="form-control" v-model="graphType" >
-            <option value=1>Line Chart</option>
-          </select>
-          <label>Interval: </label>
-          <br />
-          <select class="form-control sharedLine" v-model="unit" >
-            <option value="minute">Minutes</option>
-            <option value="hour">Hours</option>
-            <option value="day">Days</option>
-            <option value="month">Months</option>
-          </select>
-          <input type="number" step="15" class="form-control sharedLine" v-model="interval"/>
-
-        </div>
       </div>
+
+      <div class="row groupChooser form-group">
+        <label>Group: </label>
+        <select ref="groups" class="form-control" v-model="groupids[currentIndex]">
+        </select>
+      </div>
+
+      <div class="row fromDateChooser form-group">
+        <label>From Date: </label>
+        <form class="form-inline">
+          <dropdown class="form-group">
+            <div class="input-group">
+              <input class="form-control" type="text" v-model="dateFrom">
+              <div class="input-group-btn">
+                <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
+              </div>
+            </div>
+            <template slot="dropdown">
+              <li>
+                <date-picker v-model="dateFrom"/>
+              </li>
+            </template>
+          </dropdown>
+          <dropdown class="form-group">
+            <div class="input-group">
+              <input class="form-control" type="text" v-model="timeFrom.toTimeString()" readonly="readonly">
+              <div class="input-group-btn">
+                <btn class="dropdown-toggle"><i class="glyphicon glyphicon-time"></i></btn>
+              </div>
+            </div>
+            <template slot="dropdown">
+              <li style="padding: 10px">
+                <time-picker v-model="timeFrom"/>
+              </li>
+            </template>
+          </dropdown>
+        </form>
+      </div>
+
+      <div class="row toDateChooser form-group">
+        <label>To Date: </label>
+        <form class="form-inline">
+          <dropdown class="form-group">
+            <div class="input-group">
+              <input class="form-control" type="text" v-model="dateTo">
+              <div class="input-group-btn">
+                <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
+              </div>
+            </div>
+            <template slot="dropdown">
+              <li>
+                <date-picker v-model="dateTo"/>
+              </li>
+            </template>
+          </dropdown>
+          <dropdown class="form-group">
+            <div class="input-group">
+              <input class="form-control" type="text" v-model="timeTo.toTimeString()" readonly="readonly">
+              <div class="input-group-btn">
+                <btn class="dropdown-toggle"><i class="glyphicon glyphicon-time"></i></btn>
+              </div>
+            </div>
+            <template slot="dropdown">
+              <li style="padding: 10px">
+                <time-picker v-model="timeTo"/>
+              </li>
+            </template>
+          </dropdown>
+        </form>
+      </div>
+
+      <div class="row graphTypeChooser form-group">
+        <label>Graph Type: </label>
+        <select class="form-control" v-model="graphType" >
+          <option value=1>Line Chart</option>
+        </select>
+      </div>
+
+      <div class="row intervalUnitChooser form-group">
+        <label>Interval: </label>
+        <select class="form-control sharedLine" v-model="unit" >
+          <option value="minute">Minutes</option>
+          <option value="hour">Hours</option>
+          <option value="day">Days</option>
+          <option value="month">Months</option>
+        </select>
+        <input type="number" step="15" class="form-control sharedLine" v-model="interval"/>
+      </div>
+
     </div>
-  </div>
   </div>
 </template>
 
@@ -225,9 +241,12 @@ export default {
     },
     points: function(value) {
       this.updateGraph(false);
+      Array.from(this.$refs.indexChooser.children).forEach(e => {e.style.borderColor = "#FFFFFF"});
+      this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)';
     },
     names: function(value) {
       this.$parent.$refs.chartController.names = value;
+      this.$parent.$refs.chartController.updateChart();
     },
     currentIndex: function(value) {
       // /console.log(this.$refs.indexChooser.children);
@@ -236,12 +255,15 @@ export default {
     },
     isMaximized: function(value) {
       if (value) {
-        this.$refs.expandableBox.style.right = "0.4em";
+        this.$refs.movingArea.style.right = "0px";
       }
       else {
-        this.$refs.expandableBox.style.right = "calc(2.7em - 340px)";
+        this.$refs.movingArea.style.right = "-260px";
       }
     }
+  },
+  created() {
+
   },
   mounted () {
     axios.get('http://localhost:3000/api/getAllBuildings').then (res => {
@@ -251,66 +273,90 @@ export default {
      }).catch (e => {
       this.errors.push(e);
      });
-     //this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)';
+
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.controlSection {
-  display: inline-block;
-  width: 340px;
-  height: 100%;
+.expandingSection {
+  height:100%;
   position: absolute;
-  right: calc(2.7em - 340px);
-  top: 0px;
-  padding: 10px;
-  color: white;
-  transition: right 1s;
-  overflow: hidden;
-}
-.indexSelect {
-  height: 50px;
-  margin-bottom: 1em;
-}
-.indexSelect .btn {
-  background-color: black;
-  color: white;
-  height: 100%;
-  width: 50px;
-}
-
-.sharedLine {
-  width: 40%;
-  display: inline-block;
-}
-.expand {
-  position: relative;
-  right: 0.4em;
-  background-color: rgba(0,0,0,0.8);
-
-  height: 100%;
-}
-.expand .fas {
-  height: 100%;
+  left:0px;
   width: 40px;
   display: inline-block;
-  padding-left: 5px;
-  font-size: 2em;
-  padding-top: 55%;
 }
-.controls {
+.fas {
+  color: #fff;
+  font-size: 2em;
+  display: block;
+  text-align: center;
+  position: relative;
+  top: calc(50% - 1em);
+}
+
+
+.controlSection {
   position: absolute;
-  display: inline-block;
-  height: 100%;
+  right: 0px;
+  width: 260px;
+  display: inline;
+  height:100%;
+  padding: 1em;
+  padding-left: 0.5em;
   overflow-y: scroll;
 }
-/*.input-group {
-  width: 50%;
-}
-.input-group input {
-  font-size: 10px;
+.indexChooser{
   width: 100%;
-}*/
+  height: 50px;
+  margin: 0px;
+  overflow-x: scroll;
+  flex-wrap: nowrap;
+}
+.indexButton {
+  position: static;
+  color: #fff;
+  background-color: #000;
+  margin: 0.2em;
+  width: 50px;
+  height: 40px;
+  display: inline-block;
+}
+
+.form-group.row {
+  width: 100%;
+  padding-left: 0.8em;
+  color: #fff;
+}
+.dropdown-toggle {
+  position: relative;
+  top:-4px;
+  left: -25px;
+  height: 30px;
+}
+
+.form-group.row input {
+  height: 30px;
+  position: relative;
+  left: 0px;
+  margin-bottom: 0.5em;
+}
+
+.form-group.row select {
+  height: 30px;
+}
+
+.intervalUnitChooser input {
+  margin-top: 0.5em;
+}
+
+.controlArea {
+  position: absolute;
+  width: 300px;
+  right: -260px;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  transition: right 1s;
+}
 </style>

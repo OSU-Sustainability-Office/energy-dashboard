@@ -1,7 +1,9 @@
 <template>
   <div class="app">
     <navBar />
-    <router-view/>
+    <transition name="page">
+      <router-view/>
+    </transition>
   </div>
 </template>
 
@@ -37,4 +39,25 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.page-enter-active, .page-leave-active {
+  transition-property: opacity, transform;
+  transition-duration: 1s;
+}
+
+/* .page-enter-active {
+  transition-delay: 1s;
+} */
+.page-enter {
+  transform: scale(0.5);
+}
+.page-leave-active {
+  transform: scale(2);
+}
+.page-enter, .page-leave-active {
+  opacity: 0;
+
+}
+/* .pageTransition-leave-actiev {
+
+} */
 </style>

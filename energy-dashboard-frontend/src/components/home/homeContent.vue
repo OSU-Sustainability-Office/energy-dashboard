@@ -1,6 +1,6 @@
 <template>
   <div id="center">
-    <h2>Commited to:</h2>
+    <h2 class="highlight">COMMITED TO:</h2>
     <commitment />
   </div>
 
@@ -18,10 +18,17 @@ export default {
 </script>
 
 <style>
+.highlight {
+  /* color: #D73F09;
+  background-color: rgba(255,255,255,0.8); */
+}
 #center {
   color: #fff;
   font-family: 'StratumNo2';
   font-size: 6em;
   align-content: center;
+  height: 2.5em;
+  /* background-color: rgba(0,0,0,0.8); */
+  width: 100%;
 }
 </style>

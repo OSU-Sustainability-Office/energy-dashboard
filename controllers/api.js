@@ -19,6 +19,11 @@ router.get('/getAllMeterGroups', function(req,res){
 		res.send("error");
 	});
 });
+
+
+router.get('/login',function(req,res){
+	res.send("Hello");
+});
 //router.delete('/deleteMeterGroup')
 
 
@@ -32,7 +37,6 @@ router.get('/getAllBuildings',function (req,res) {
 });
 
 //BLOCKS
-
 router.get('/getBlock',function (req,res) {
 	if (req.queryString('id')) {
 		db.query("SELECT * FROM blocks WHERE id=?",[req.queryString('id')]).then(rows => {

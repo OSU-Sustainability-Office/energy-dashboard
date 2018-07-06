@@ -14,11 +14,11 @@ export default {
 .nav {
   height: 5em;
   background: #D73F09;
-  
+
   width: 100%;
 }
 img{
   padding: .25em;
-  height: 4.5em;
+  height: 4em;
 }
 </style>
