@@ -120,6 +120,9 @@
         <label>Graph Type: </label>
         <select class="form-control" v-model="graphType" >
           <option value=1>Line Chart</option>
+          <option value=2>Bar Chart</option>
+          <option value=3>Doughnut Chart</option>
+          <option value=4>Pie Chart</option>
         </select>
       </div>
 
@@ -216,35 +219,64 @@ export default {
   },
   watch: {
     dateFrom: function(value) {
+      if(!value)
+        return;
+      this.$parent.$refs.chartController.start = value.toString() + this.parseDateTime(this.timeFrom);
       this.updateGraph(true);
     },
     dateTo: function(value) {
+      if (!value)
+        return;
+      this.$parent.$refs.chartController.end = value.toString() + this.parseDateTime(this.timeTo);
       this.updateGraph(true);
     },
     groupids: function(value) {
+      if (!value)
+        return;
+      this.$parent.$refs.chartController.groups = value;
       this.updateGraph(false);
     },
     timeTo: function(value) {
+      if (!value)
+        return;
+      this.$parent.$refs.chartController.end = this.dateTo.toString() + this.parseDateTime(value);
       this.updateGraph(true);
     },
     timeFrom: function(value) {
+      if (!value)
+        return;
+      this.$parent.$refs.chartController.start = this.dateFrom.toString() + this.parseDateTime(value);
       this.updateGraph(true);
     },
     graphType: function(value) {
-      this.updateGraph(true);
+      if (!value)
+        return;
+      this.$parent.$refs.chartController.graphType = value;
+      //this.updateGraph(true);
     },
     interval: function(value) {
+      if (!value)
+        return;
+      this.$parent.$refs.chartController.interval = value;
       this.updateGraph(true);
     },
     unit: function(value) {
+      if (!value)
+        return;
+      this.$parent.$refs.chartController.unit = value;
       this.updateGraph(true);
     },
     points: function(value) {
+      if (!value)
+        return;
       this.updateGraph(false);
+      this.$parent.$refs.chartController.points = value;
       Array.from(this.$refs.indexChooser.children).forEach(e => {e.style.borderColor = "#FFFFFF"});
       this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)';
     },
     names: function(value) {
+      if (!value)
+        return;
       this.$parent.$refs.chartController.names = value;
       this.$parent.$refs.chartController.updateChart();
     },

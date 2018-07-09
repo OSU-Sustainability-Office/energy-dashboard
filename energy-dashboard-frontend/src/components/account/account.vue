@@ -21,8 +21,8 @@ export default {
   props: [],
   data() {
     return {
-      cards: {},
-      cardsFeatured: {},
+      cards: [],
+      cardsFeatured: [],
     }
   },
   created() {
@@ -33,7 +33,6 @@ export default {
      });
 
 
-     this.$on('aqquiredData',e=>{this.addToRaw(e)});
   },
   watch: {
     cards: function(value) {
@@ -48,27 +47,6 @@ export default {
     }
   },
   methods: {
-    addToRaw: function(data) {
-      var r = [];
-      for (var i = 0; i < data.datasets; i++) {
-
-      }
-      downloadRaw(r);
-    },
-    downloadRaw: function(data) {
-      // var data = [];
-      // for (var i = 0; i < this.$refs.featureBox.$refs.displayedCards.length; i++) {
-      //   console.log(this.$refs.featureBox.$refs.displayedCards.$refs);
-      //   var cardData = this.$refs.featureBox.$refs.displayedCards.$refs.chartController.chartDataComplete.datasets;
-      //
-      //   for (var o = 0; o < cardData.length; o++) {
-      //     data.push([cardData[o].label]);
-      //     data.concat(cardData[o].data);
-      //   }
-      //
-      // }
-      
-    }
   },
 }
 </script>

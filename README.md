@@ -8,7 +8,7 @@ An open source data collection and visualization web application for Oregon Stat
   - [MySQL](#mysql)
   - [NoDemon](#nodemon)
   - [Request](#request)
-  - [Sanitizee](#sanitize)
+  - [Sanitize](#sanitize)
 - [DataBase Schema](#database-schema)
   - [Dataflow Diagram](#dataflow-diagram)
   - [Tables](#tables)
@@ -18,6 +18,26 @@ An open source data collection and visualization web application for Oregon Stat
     - [Blocks](#blocks)
     - [Stories](#stories)
     - [Users](#users)
+- [Front End](#front-end)
+  - [VueJS](#vuejs)
+  - [Components](#components)
+    - [Account](#account)
+      - [Card](#card)
+      - [Carousel](#carousel)
+      - [Feature Controller](#feature-controller)
+      - [Featured](#featured)
+    - [Admin](#admin)
+    - [Charts](#charts)
+      - [Chart Controller](#chart-controller)
+      - [Line Chart](#line-chart)
+    - [Home](#home)
+      - [Commitment](#commitment)
+      - [Home Content](#home-content)
+      - [Home Side](#home-side)
+      - [Index](#index)
+    - [Story](#story)
+      - [Card](#card)
+    - [Navbar](#Navbar)
 - [API Reference](#api-reference)
   - [Buildings](#buildings)
   - [Blocks](#blocks)
@@ -153,7 +173,117 @@ An open source data collection and visualization web application for Oregon Stat
 | id        | int(11)   | NO   | PRI | NULL    |  auto_increment     |
 | name      | char(255) | YES  |     | NULL    |                     |
 | privilege | int(11)   | YES  |     | NULL    |                     |
+## Front End
+### VueJS
+Vue is used as the applications rendering framework. It provides data binding and smart rendering of elements (only those that are necessary are rendered). This framework was chosen over similar frameworks due to its ease of use and its light weight nature.
 
+### Components
+#### Account
+Child Components
+- Carousel
+- Featured
+
+Data
+- Cards
+  - Object, Contains data on stories
+- cardsFeatured
+  - Object, Contains data on blocks in current story
+
+Methods
+  - None
+
+On creation this component retrieves all stories for the logged in user. Then the blocks for the users featured story are loaded. Child component rendering is bound to the cardsFeatured and cars data attributes.
+##### Card
+Child Components
+- chartController
+- featureController
+
+Data
+ - name
+  - String, block name
+ - description
+  - String, block description
+ - featured
+  - Bool, this needs to change (Story cards and block card should be different components)
+ - id
+  - Integer, Block id
+ - start
+  - String, Start date of the data collection
+ - end
+  - String, End date of the data collection
+ - int
+  - Integer, Interval between data points
+ - unit
+  - String, Unit to be used with the Interval
+ - type
+  - Integer, Graph type to be displayed
+ - media
+  - String, URL to an image
+
+Methods
+- download
+  This function is used to download raw data. It is tied to the button also contained in the card component. It requests new data from the API (15 minute interval only), ties it into a csv then downloads the file. It uses the cards start, end, group and point to retrieve the appropriate data.
+
+##### Carousel
+Child Components
+- card
+
+Data
+- isMaximized
+  - Bool
+- cards
+  - Array containing story cards
+
+Used to select a story and view it within the featured area.
+
+##### Feature Controller
+Data
+- dateFrom
+  - Date data is collected from
+- dateTo
+  - Date data is collected to
+- timeTo
+  - time data is collected to
+- timeFrom
+  - time data is collected from
+- interval
+  - interval between data points
+- unit
+  - unit used in interval between data points
+- graphType
+  - graph type used in display
+- isMaximized
+  - Bool
+- points
+  - Array of metering points the graph displays
+- groups
+  - Array of groups that the graph displays
+- names
+  - Names associated with each data set on the graph
+- colors
+  - Colors used in for each graph
+- currentIndex
+ - Specifies what index the feature control is currently on
+
+Methods
+- addGroup
+- updateGraph
+- parseDateTime
+
+
+##### Featured
+#### Admin
+#### Charts
+##### Chart Controller
+##### Line Chart
+#### Home
+##### Commitment
+##### Home Content
+##### Home Side
+##### Index
+#### Story
+##### Card
+#### Navbar
 ## API Reference
 ### Buildings
 ```/api/getAllBuildings```

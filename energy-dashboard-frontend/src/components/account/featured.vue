@@ -1,7 +1,7 @@
 <template>
 <div class="flexFeature" v-bind:class="{ minimized : isMinimized }">
   <card v-for="card in cards" :featured="true" :name='card.name' :description='card.descr' :id='card.id' :start='card.date_start' :end='card.date_end' :type='card.graph_type' :unit='card.interval_unit' :int='card.date_interval' :media='card.media' ref="displayedCards"/>
-  <div class="addFeatured" v-if="numberOfCards() < 2" @click="addFeature()" >
+  <div class="addFeatured" @click="addFeature()" >
     +
   </div>
 </div>
@@ -31,9 +31,15 @@ export default {
       return this.cards.length;
     },
     addFeature() {
-      var componentClass = Vue.extend(card);
-      var card = new componentClass();
+      var card = {};
       card.featured = true;
+      card.name = "New Chart";
+      card.date_start = "2018-06-01T00:00:00.000Z";
+      card.date_end = "2018-06-30T23:59:00.000Z";
+      card.date_interval = 15;
+      card.interval_unit = "minute";
+      card.graph_type = 1;
+
       this.cards.push(card);
     }
   }
@@ -45,18 +51,22 @@ export default {
 <style scoped>
 .flexFeature {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
-  margin-left: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
   padding-top: 1em;
   padding-bottom: 1em;
+  width: 100%;
 }
+
 .addFeatured {
   font-size: 4em;
   color: rgb(215,63,9);
-  height: 100%;
-  width: 100px;
+  height: 10em;
+  flex: 0 60px;
+  line-height: 10em;
 }
 .minimized {}
 </style>

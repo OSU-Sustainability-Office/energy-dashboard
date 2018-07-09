@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <navBar />
-    <transition name="page">
+    <transition v-bind:name="transitionName">
       <router-view/>
     </transition>
   </div>
@@ -15,8 +15,26 @@ export default {
   components: {
     navBar
   },
+  data () {
+    return {
+      transitionName : "pageTo"
+    }
+  },
   created() {
-
+  },
+  beforeDestroy () {
+  },
+  watch: {
+    $route: function(to, from) {
+      //transition in
+      if (to.path.length > from.path.length) {
+        this.transitionName = "pageTo";
+      }
+      //transition out
+      else {
+        this.transitionName = "pageFrom";
+      }
+    }
   }
 }
 
@@ -39,7 +57,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.page-enter-active, .page-leave-active {
+.pageTo-enter-active, .pageTo-leave-active {
   transition-property: opacity, transform;
   transition-duration: 1s;
 }
@@ -47,13 +65,31 @@ body {
 /* .page-enter-active {
   transition-delay: 1s;
 } */
-.page-enter {
+.pageTo-enter {
   transform: scale(0.5);
 }
-.page-leave-active {
+.pageTo-leave-active {
   transform: scale(2);
 }
-.page-enter, .page-leave-active {
+.pageTo-enter, .pageTo-leave-active {
+  opacity: 0;
+
+}
+.pageFrom-enter-active, .pageFrom-leave-active {
+  transition-property: opacity, transform;
+  transition-duration: 1s;
+}
+
+/* .page-enter-active {
+  transition-delay: 1s;
+} */
+.pageFrom-enter {
+  transform: scale(2);
+}
+.pageFrom-leave-active {
+  transform: scale(0.5);
+}
+.pageFrom-enter, .pageFrom-leave-active {
   opacity: 0;
 
 }
