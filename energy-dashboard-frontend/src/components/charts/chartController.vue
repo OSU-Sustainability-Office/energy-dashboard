@@ -1,20 +1,27 @@
 <template>
 	<div>
-		<linechart v-if="graphType === 1" ref="chart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'20%','padding-top':'5em' }"/>
-
+		<linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }"/>
+		<barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }" />
+		<doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }" />
+		<piechart v-if="graphType == 4" ref="piechart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }" />
 	</div>
 </template>
 <script>
 import linechart from '@/components/charts/linechart.js';
+import barchart from '@/components/charts/barchart.js';
+import doughnutchart from '@/components/charts/doughnutchart.js';
+import piechart from '@/components/charts/piechart.js';
+
 import axios from 'axios';
 
 export default {
   name: 'card',
-  props: ['id','graphType'],
+  props: ['id'],
   components: {
-    linechart
+    linechart, barchart, doughnutchart, piechart
   },
   mounted () {
+		this.chart = this.$refs.barchart;
     //this.getData('accumulated_real',8,"2018-06-01T00:00:000","2018-06-30T01:00:000",15,"minute");
 		// console.log(this.start);
 		// for (var i = 0; i < this.groups.length; i++)
@@ -22,10 +29,12 @@ export default {
   },
   data() {
     return {
+						graphType: 1,
 						chartData:{
 							datasets: [],
 							labels: []
 						},
+						chart: null,
             chartDataComplete:{},
             updatingChart: false,
 						groups: [],
@@ -39,13 +48,34 @@ export default {
 					}
   },
   created() {
-		this.$on('requestDownload',e=>{v.$emit('aqquiredData',this.chartDataComplete)});
   },
+	watch: {
+		graphType: function (value) {
+			if (value == 1) {
+				this.chart = this.$refs.linechart;
+			}
+			else if (value == 2) {
+				this.chart = this.$refs.barchart;
+			}
+			else if (value == 3) {
+				this.chart = this.$refs.doughnutchart;
+			}
+			else if (value == 4) {
+				this.chart = this.$refs.piechart;
+			}
+			var promises = [];
+
+			for (var i = 0; i < this.groups.length; i++) {
+				promises.push(this.getData(i,this.points[i],this.groups[i],this.start,this.end, this.interval, this.unit));
+			}
+			Promise.all(promises).then(() => {
+				this.updateChart();
+			});
+		}
+	},
   methods: {
     getData: function (index,mpoint,groupId,startDate,endDate,interval,unit) {
 			return new Promise((fulfill, reject) => {
-	      //if (!this.updatingChart) {
-	        //this.updatingChart = true;
 	        var promises = [];
 	        var meterRelation = {};
 					//we need to average the values over intervals for everything but accumulated real
@@ -55,16 +85,12 @@ export default {
 						interval = '15';
 						unit = 'minute';
 					}
-					console.log
 	        axios.get('http://localhost:3000/api/getMetersForGroup?id='+groupId).then (meters => {
-						//console.log(meters);
 	          meters.data.forEach(meter => {
 	            meterRelation[meter.id.toString()] = meter.operation;
 	            promises.push(axios.get('http://localhost:3000/api/getMeterData?id='+meter.id+'&date_start='+startDate+'&date_end='+endDate+'&mpoints='+mpoint+'&int='+interval+'&unit='+unit));
-						//	console.log(meter.id + " " + startDate + " " + endDate + " " + mpoint + " " + interval + " " + unit);
 						});
 	          Promise.all(promises).then(values => {
-							//console.log(values);
 	            //combine all returned data
 	            var combinedData = {};
 	            values.forEach(value => {
@@ -95,38 +121,41 @@ export default {
 	            });
 
 	            //parse and create the datasets
+							if (this.graphType == 1 || this.graphType == 2) {
+								this.createDataSet(index,this.names[index],mpoint,intervalCopy,unitCopy,startDate);
+	            	this.parseDataBarLine(index, groupId, combinedData);
+							}
+							else if(this.graphType == 3 || this.graphType == 4)
+								this.parseDataPieDoughnut(index, groupId, combinedData);
 
-	            this.createDataSet(index,this.names[index],mpoint,intervalCopy,unitCopy,startDate);
-							//console.log(this.chartData);
-	            this.parseData(index, groupId, combinedData);
-							this.chartDataComplete = {};
-	            this.chartDataComplete = this.chartData;
-	            //this.updatingChart = false;
-							//this.$refs.chart.destroy();
-							console.log(groupId);
+	            this.chartDataComplete = JSON.parse(JSON.stringify(this.chartData));
+
 							fulfill();
-							//console.log(this.chartDataComplete);
 	          }).catch (e => {
 	            console.log(e);
 							reject(e);
-	            //this.errors.push(e);
 	          });
 	        }).catch (e => {
 	          console.log(e);
 						reject(e);
-	          //this.errors.push(e);
 	        });
-	     // }
 			});
     },
 		updateChart: function() {
-			this.$refs.chart.update();
+			if (this.chart)
+				this.chart.update();
 		},
     createDataSet: function (index,name,mpoint,interval, unit, start) {
+			if (this.chartData.datasets[0] && !this.chartData.datasets[0].mpoint) {
+				this.chartData = {
+					datasets: [],
+					labels: []
+				};
+			}
 
 			var o = {
           label: name,
-          //backgroundColor: this.colors[index]+"44",
+          backgroundColor: this.colors[index],
           borderColor: this.colors[index],
           fill: false,
 					mpoint: mpoint,
@@ -141,28 +170,46 @@ export default {
 				this.chartData["datasets"][index] = o;
 			else
 				this.chartData.datasets.push(o);
-      this.chartData["labels"] = [];
+			//console.log(JSON.parse(JSON.stringify(this.chartData)));
     },
-    parseData: function (indexM, groupId, data) {
+		parseDataPieDoughnut: function (indexM, groupId, data) {
+			if (!data || !groupId)
+				return;
+			if (!this.chartData.datasets[0].data || this.chartData.datasets[0].mpoint) {
+				this.chartData = {
+					labels : [],
+					datasets: [{
+						data: []
+					}]
+				};
+				this.chartData.datasets[0].backgroundColor = this.colors;
+			}
+
+			this.chartData.datasets[0].data[indexM] = 0;
+
+			this.chartData.labels[indexM] = this.names[indexM];
+			var kArray = Object.keys(data);
+			if (kArray.length === 0)
+				return;
+
+			var innerKey = Object.keys(data[kArray[0]])[0];
+			this.chartData.datasets[0].data[indexM] = data[kArray[kArray.length-1]][innerKey] - data[kArray[0]][innerKey];
+
+		},
+    parseDataBarLine: function (indexM, groupId, data) {
 			//console.log(data);
       if (!data || !groupId)
         return;
 			//Eventually this should be changed to assume that only one mpoint is called from the api
       Object.keys(data).forEach( (key,index) => { //iterate through incoming data object has keys for time, and mpoints, mpoint keys go to
                                                   //data sets time goes to labels
-        //this.chartData.labels.push(key);
-				//console.log(key);
+
         Object.keys(data[key]).forEach ( (innerKey, innerIndex) => {
-          // this.chartData.datasets.forEach(dataSet => {
-          //   if (dataSet.label === (innerKey + " " + groupId))
-          //     dataSet.data.push(data[key][innerKey]);
-          // });
 					this.chartData.datasets[indexM].data.push({x:key,y:data[key][innerKey]});
         });
       });
       //calculates change per interval (accumulated_real) or average over the interval (every other metering point)
 			var set = this.chartData.datasets[indexM];
-      //this.chartData.datasets.forEach(set => {
 			if (set.mpoint === "accumulated_real") {
 
 				//deep copy object array
@@ -176,7 +223,6 @@ export default {
 					if(dataCopy[i].y) {
 						set.data[i].y -= lastCounted;
 						var d = new Date(set.data[i].x);
-						//d.setMinutes(set.data[i].x.substr(14,2)-d.getTimezoneOffset());
 						set.data[i].x = d;
 					}
 
@@ -199,9 +245,7 @@ export default {
 				interval /= 15;
 				var addingVariable = 0;
 				var d = new Date();
-				//Format of set.startDate - year-month-dayT:hour:minute:second
 				d.setYear(set.startDate.substr(0,4));
-				//console.log(set.startDate.substr(5,2));
 				d.setMonth(set.startDate.substr(5,2)-1);
 				d.setDate(set.startDate.substr(8,2));
 				d.setHours(set.startDate.substr(11,2));
