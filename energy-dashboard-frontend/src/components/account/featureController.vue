@@ -50,6 +50,10 @@
         <label>Group: </label>
         <select ref="groups" class="form-control" v-model="groupids[currentIndex]">
         </select>
+        <!-- <label>Sub-Meter: </label>
+        <select ref="submeters" class="form-control" v-model="submeters[currentIndex]">
+          <option value=0>All</option>
+        </select> -->
       </div>
 
       <div class="row fromDateChooser form-group">
@@ -164,6 +168,7 @@ export default {
       // name: ""
       points: [],
       groupids: [],
+      submeters: [],
       //dateFroms: [],
       //dateTos: [],
       //timeTos: [],
@@ -305,7 +310,6 @@ export default {
      }).catch (e => {
       this.errors.push(e);
      });
-
   }
 }
 </script>

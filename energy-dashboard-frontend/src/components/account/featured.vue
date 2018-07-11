@@ -1,6 +1,8 @@
 <template>
 <div class="flexFeature" v-bind:class="{ minimized : isMinimized }">
-  <card v-for="card in cards" :featured="true" :name='card.name' :description='card.descr' :id='card.id' :start='card.date_start' :end='card.date_end' :type='card.graph_type' :unit='card.interval_unit' :int='card.date_interval' :media='card.media' ref="displayedCards"/>
+  <!-- <transition-group name="cardEntry"> -->
+    <card v-for="(card, index) in cards" v-bind:key="index" :featured="true" :name='card.name' :description='card.descr' :id='card.id' :start='card.date_start' :end='card.date_end' :type='card.graph_type' :unit='card.interval_unit' :int='card.date_interval' :media='card.media' ref="displayedCards"/>
+  <!-- </transition-group> -->
   <div class="addFeatured" @click="addFeature()" >
     +
   </div>
@@ -30,7 +32,7 @@ export default {
       //     r++;
       return this.cards.length;
     },
-    addFeature() {
+    addFeature: function() {
       var card = {};
       card.featured = true;
       card.name = "New Chart";
@@ -41,6 +43,11 @@ export default {
       card.graph_type = 1;
 
       this.cards.push(card);
+    },
+    reload: function() {
+      this.$refs.displayedCards.forEach(card => {
+        card.reload();
+      });
     }
   }
 
@@ -67,6 +74,24 @@ export default {
   height: 10em;
   flex: 0 60px;
   line-height: 10em;
+}
+.cardEntry-enter-active, .cardEntry-leave-active {
+  transition-property: opacity, transform;
+  transition-duration: 1s;
+}
+
+/* .page-enter-active {
+  transition-delay: 1s;
+} */
+.cardEntry-enter {
+  transform: translateX(1000px);
+}
+.cardEntry-leave-active {
+  transform: translateX(-1000px);
+}
+.cardEntry-enter, .cardEntry-leave-active {
+  opacity: 0;
+
 }
 .minimized {}
 </style>

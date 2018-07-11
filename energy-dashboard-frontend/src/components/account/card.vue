@@ -1,9 +1,5 @@
 <template>
-  <div class="card" v-bind:class="{ feature : featured}" ref='card' >
-    <div class="storyCard" v-if='!featured'>
-      <span class="storyName" v-if='!featured'>{{this.name}}</span>
-      <span class="storyDescription" v-if='!featured'>{{this.description}}</span>
-    </div>
+  <div class="card featured" v-bind:class="{ feature : featured}" ref='card' >
 
     <chartController v-if="featured" ref="chartController" :graphType='1' class="chart"/>
     <featureController v-if="featured" ref="featureController" />
@@ -127,49 +123,63 @@ export default {
       });
 
     },
+    reload: function() {
+      this.$refs.card.style.backgroundColor = 'rgb(26,26,26)';
+      if (this.featured) {
+        this.$refs.descriptionContainer.style.bottom = "calc(3.5em - " + this.$refs.descriptionContainer.clientHeight.toString() + "px)";
+      }
+
+      //this.$refs.card.style.backgroundSize = "cover";
+      if (this.featured) {
+        this.$refs.featureController.dateFrom = this.start;
+        this.$refs.featureController.dateTo = this.end;
+        this.$refs.featureController.interval = this.int;
+        this.$refs.featureController.graphType = this.type;
+        this.$refs.featureController.unit = this.unit;
+
+        this.$refs.chartController.start = this.start;
+        this.$refs.chartController.end = this.end;
+        this.$refs.chartController.interval = this.int;
+        this.$refs.chartController.graphType = this.type;
+        this.$refs.chartController.unit = this.unit;
+        if (this.id){
+          console.log(this.id);
+          axios.get('http://localhost:3000/api/getBlockMeterGroups?id='+this.id).then (res => {
+            //this.$refs.chartController = res.data;
+            this.$refs.featureController.points = [];
+            this.$refs.featureController.groupids = [];
+            this.$refs.featureController.names = [];
+
+            this.$refs.chartController.points = [];
+            this.$refs.chartController.groupids = [];
+            this.$refs.chartController.names = [];
+            for (var i = 0; i < res.data.length; i++) {
+              this.$refs.featureController.points.push(res.data[i].point);
+              this.$refs.featureController.groupids.push(res.data[i].group_id);
+              this.$refs.featureController.names.push(res.data[i].name);
+
+              this.$refs.chartController.points.push(res.data[i].point);
+              this.$refs.chartController.groups.push(res.data[i].group_id);
+              this.$refs.chartController.names.push(res.data[i].name);
+
+              //Need to update the graph right here
+            }
+            this.$refs.featureController.updateGraph();
+            console.log(JSON.parse(JSON.stringify(this.id)));
+            console.log(res);
+          });
+        }
+        else {
+          this.$refs.featureController.points.push("accumulated_real");
+          this.$refs.featureController.groupids.push(8);
+          this.$refs.featureController.names.push("New Graph");
+        }
+      }
+    }
   },
   mounted() {
     //this.$refs.card.style.background = "linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),url('"+this.media+"')";
-    this.$refs.card.style.backgroundColor = 'rgb(26,26,26)';
-    if (this.featured) {
-      this.$refs.descriptionContainer.style.bottom = "calc(3.5em - " + this.$refs.descriptionContainer.clientHeight.toString() + "px)";
-    }
-
-    //this.$refs.card.style.backgroundSize = "cover";
-    if (this.featured) {
-      this.$refs.featureController.dateFrom = this.start;
-      this.$refs.featureController.dateTo = this.end;
-      this.$refs.featureController.interval = this.int;
-      this.$refs.featureController.graphType = this.type;
-      this.$refs.featureController.unit = this.unit;
-
-      this.$refs.chartController.start = this.start;
-      this.$refs.chartController.end = this.end;
-      this.$refs.chartController.interval = this.int;
-      this.$refs.chartController.graphType = this.type;
-      this.$refs.chartController.unit = this.unit;
-      if (this.id)
-        axios.get('http://localhost:3000/api/getBlockMeterGroups?id='+this.id).then (res => {
-          //this.$refs.chartController = res.data;
-          for (var i = 0; i < res.data.length; i++) {
-            this.$refs.featureController.points.push(res.data[i].point);
-            this.$refs.featureController.groupids.push(res.data[i].group_id);
-            this.$refs.featureController.names.push(res.data[i].name);
-
-            this.$refs.chartController.points.push(res.data[i].point);
-            this.$refs.chartController.groups.push(res.data[i].group_id);
-            this.$refs.chartController.names.push(res.data[i].name);
-
-            //Need to update the graph right here
-          }
-          this.$refs.featureController.updateGraph()
-        });
-      else {
-        this.$refs.featureController.points.push("accumulated_real");
-        this.$refs.featureController.groupids.push(8);
-        this.$refs.featureController.names.push("New Graph");
-      }
-    }
+    this.reload();
   },
   watch: {
     isMaximized : function(value) {
@@ -211,8 +221,9 @@ export default {
   border: 2px solid #000;
   border-radius: 5px;
   height: 10em;
-  flex: 1 1 49%;
+
   overflow: hidden;
+  width: 250px;
 }
 .col {
   margin: 0.5em;
@@ -223,6 +234,7 @@ export default {
   padding-right: 2em;
   padding-left: 2em;
   width: 100%;
+  flex: 1 1 49%;
 }
 .titleTextFeatured {
   color: rgb(215,63,9);
@@ -245,6 +257,7 @@ export default {
   color:rgb(215,63,9);
   font-family: 'StratumNo2';
   font-size: 1.8em;
+  display: block;
 }
 .storyCard {
   padding: 1em;
@@ -256,5 +269,7 @@ export default {
   color: #FFF;
   font-family: 'StratumNo2';
   font-size: 1.2em;
+  display: block;
+  padding-left: 0.3em;
 }
 </style>

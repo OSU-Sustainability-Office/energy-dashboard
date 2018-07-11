@@ -42,12 +42,13 @@ export default {
 	              display: false,
 	            },
 							ticks: {
-								fontColor: 'white'
+								fontColor: 'white',
+								autoSkip: true,
+								maxTicksLimit: 30
 							},
 	            type: 'time',
 	            time: {
 	              unit: 'hour',
-	              unitStepSize: 12,
 	              displayFormats: {
 	                'hour': 'M/DD h:00 a'
 	              }

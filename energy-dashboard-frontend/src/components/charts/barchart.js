@@ -42,7 +42,9 @@ export default {
 	              display: false,
 	            },
 							ticks: {
-								fontColor: 'white'
+								fontColor: 'white',
+								autoSkip: true,
+								maxTicksLimit: 30
 							},
 	            type: 'time',
 	            time: {

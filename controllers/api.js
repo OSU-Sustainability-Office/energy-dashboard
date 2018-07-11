@@ -181,6 +181,10 @@ router.get('/getStoryData',function (req,res) {
 router.get('/getBlocksForStory',function (req,res) {
 	if (req.queryString('id')) {
 		db.query('SELECT * FROM blocks WHERE story_id=?',[req.queryString('id')]).then( rows => {
+			rows.forEach(val=> {
+				val.date_start.setTime(val.date_start.getTime() - val.date_start.getTimezoneOffset()*60*1000);
+				val.date_end.setTime(val.date_end.getTime() - val.date_end.getTimezoneOffset()*60*1000);
+			});
 			res.send(JSON.stringify(rows));
 		}).catch(err => {
 			res.send("ERROR: COULD NOT RETRIEVE BLOCKS");
@@ -317,6 +321,9 @@ router.get('/getMeterData',function (req,res) {
 
 		queryString += " FROM data WHERE meter_id=? AND MOD(EXTRACT("+extUnit+" FROM time), "+extInt+") = "+remainder+extraTimeConditions+"AND time >= ? AND time <= ?";
 		db.query(queryString,[req.queryInt('id'),req.queryString('date_start'),req.queryString('date_end')]).then( rows => {
+			rows.forEach(val=> {
+				val.time.setTime(val.time.getTime() - val.time.getTimezoneOffset()*60*1000);
+			});
 			res.send(JSON.stringify(rows));
 		}).catch ( err => {
 			console.log(err);

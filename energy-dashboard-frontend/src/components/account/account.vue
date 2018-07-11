@@ -1,7 +1,7 @@
 <template>
   <div class="background">
     <!-- <span class="main-heading">Stories</span> -->
-    <carousel v-bind:cards="cards" />
+    <carousel v-bind:cards="cards" @caro-click='changeStory($event)'/>
     <!-- <span class="main-heading">Featured Blocks</span> -->
     <featured v-bind:cards="cardsFeatured" ref='featureBox' />
   </div>
@@ -32,13 +32,13 @@ export default {
       this.errors.push(e);
      });
 
-
   },
   watch: {
     cards: function(value) {
       for (var i = 0; i < this.cards.length; i++) {
         if (this.cards[i].featured) {
-          axios.get('http://localhost:3000/api/getBlocksForStory?id=1').then (res => {
+          axios.get('http://localhost:3000/api/getBlocksForStory?id='+this.cards[i].id).then (res => {
+
             this.cardsFeatured = res.data;
           });
           return;
@@ -47,6 +47,14 @@ export default {
     }
   },
   methods: {
+    changeStory: function(event) {
+      axios.get('http://localhost:3000/api/getBlocksForStory?id='+event[0]).then (res => {
+
+        this.cardsFeatured = res.data;
+        console.log(JSON.stringify(this.cardsFeatured));
+        this.$refs.featureBox.reload();
+      });
+    }
   },
 }
 </script>

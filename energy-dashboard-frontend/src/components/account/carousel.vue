@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex" v-bind:class="{ maximized : isMaximized }">
-      <card v-for="card in cards" v-if="!card.featured" :featured=false :name="card.name" :description="card.description" />
+      <storyCard v-for="card in cards" @caro-click="clickedStory(card.id)" :name="card.name" :description="card.description" :media="card.media" :story_id="card.id" :selected="card.featured" ref="cardsvue"/>
     </div>
     <center><div id="expand" v-on:click="isMaximized = !isMaximized"><i class="fas" v-bind:class="{ 'fa-chevron-circle-down' : !isMaximized, 'fa-chevron-circle-up' : isMaximized }"></i></div></center>
 
@@ -9,13 +9,13 @@
 </template>
 
 <script>
-import card from '@/components/account/card'
+import storyCard from '@/components/account/storyCard'
 import axios from 'axios';
 export default {
   name: 'carousel',
   props: ['cards'],
   components: {
-    card
+    storyCard
   },
   data () {
 
@@ -26,6 +26,19 @@ export default {
   },
   created () {
 
+  },
+  methods: {
+    clickedStory: function(id) {
+      this.$refs.cardsvue.forEach(card => {
+        if (card.story_id === id) {
+          card.selected = true;
+        }
+        else {
+          card.selected = false;
+        }
+      });
+      this.$emit('caro-click',[id]);
+    }
   }
 }
 </script>
