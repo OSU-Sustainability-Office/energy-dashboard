@@ -62,6 +62,7 @@ export default {
   border-radius: 5px;
   overflow: hidden;
   width: 250px;
+  
 }
 .image {
   position: absolute;

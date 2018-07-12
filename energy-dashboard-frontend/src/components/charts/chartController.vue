@@ -171,7 +171,7 @@ export default {
 		parseDataPieDoughnut: function (indexM, groupId, data) {
 			if (!data || !groupId)
 				return;
-			if (!this.chartData.datasets[0].data || this.chartData.datasets[0].mpoint) {
+			if ( !this.chartData.datasets[0] || !this.chartData.datasets[0].data || this.chartData.datasets[0].mpoint) {
 				this.chartData = {
 					labels : [],
 					datasets: [{

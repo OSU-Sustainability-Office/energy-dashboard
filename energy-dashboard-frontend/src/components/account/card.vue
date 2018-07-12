@@ -1,21 +1,23 @@
 <template>
-  <div class="card featured" v-bind:class="{ feature : featured}" ref='card' >
+  <div class="card featured" v-bind:class="{ feature : featured}" ref='card' v-on:click='unclickText'>
 
     <chartController v-if="featured" ref="chartController" :graphType='1' class="chart"/>
     <featureController v-if="featured" ref="featureController" />
-    <div class='titleTextFeatured' v-if="featured">
+    <div class='titleTextFeatured' v-if="featured" v-on:click='clickText' ref='title'>
       {{this.name}}
     </div>
     <div class="container descriptionContainer" v-if='featured' ref='descriptionContainer'>
       <div class="row" v-on:click='isMaximized = !isMaximized'>
         <i class="fas" v-bind:class="{ 'fa-chevron-circle-up' : !isMaximized, 'fa-chevron-circle-down' : isMaximized }"></i>
       </div>
-      <div class='descriptionTextFeatured row' v-if='this.description'>
+      <div class='descriptionTextFeatured row' ref="description" v-on:click='clickText'>
         {{this.description}}
       </div>
       <div class="row">
-        <btn class="col" @click="download()" v-if="featured" ref="downloadBtn">Download Data</btn>
-        <btn class="col" @click="save()" v-if="featured" ref="downloadBtn">Save Chart</btn>
+        <btn class="col" @click="download()" ref="downloadBtn">Download Data</btn>
+        <btn class="col" @click="save()" ref="downloadBtn">Save Chart</btn>
+        <btn class="col" @click="reload()" ref="reloadBtn">Clear Chart</btn>
+        <btn class="col" @click="del()" ref="deleteBtn">Delete Chart</btn>
       </div>
     </div>
   </div>
@@ -30,7 +32,7 @@ import featureController from '@/components/account/featureController'
 
 export default {
   name: 'card',
-  props: ['name', 'description', 'featured', 'id','start','end','int','unit','type','media'],
+  props: ['story_id','name', 'description', 'featured', 'id','start','end','int','unit','type','media'],
   components: {
     chartController, featureController
   },
@@ -40,6 +42,56 @@ export default {
     }
   },
   methods: {
+    del: function() {
+      this.$parent.del(this);
+    },
+    clickText: function(event) {
+      event.target.contentEditable = true;
+    },
+    unclickText: function(event) {
+      if (event.target !== this.$refs.title)
+        this.$refs.title.contentEditable = false;
+      if (event.target !== this.$refs.description)
+        this.$refs.description.contentEditable = false;
+      this.name = this.$refs.title.innerText;
+      this.description = this.$refs.description.innerText;
+    },
+    save: function() {
+
+      var groupPoints = [];
+      for (var i = 0; i < this.$refs.featureController.groupids.length; i++) {
+        groupPoints.push({'id':this.$refs.featureController.groupids[i],'point':this.$refs.featureController.points[i],'name':this.$refs.featureController.names[i]});
+      }
+      var data = {};
+      if (this.id)
+        data = {
+          id: this.id,
+          meter_groups: groupPoints,
+          date_end: this.end,
+          date_start: this.start,
+          graph_type: this.type,
+          media: this.media,
+          descr: this.description,
+          name: this.name
+        };
+      else
+        data = {
+          story_id: this.story_id,
+          meter_groups: groupPoints,
+          date_end: this.end,
+          date_start: this.start,
+          graph_type: this.type,
+          media: this.media,
+          descr: this.description,
+          name: this.name
+        };
+      axios('http://localhost:3000/api/updateBlock',{method: "post",data:data, withCredentials:true}).then(rid => {
+        if (!this.id)
+          this.id = rid.data;
+      }).catch(err => {
+        console.log(err);
+      });
+    },
     download: function() {
       //Get all information contained for current data on the graph
       var points = this.$refs.featureController.points;
@@ -143,7 +195,6 @@ export default {
         this.$refs.chartController.graphType = this.type;
         this.$refs.chartController.unit = this.unit;
         if (this.id){
-          console.log(this.id);
           axios.get('http://localhost:3000/api/getBlockMeterGroups?id='+this.id).then (res => {
             //this.$refs.chartController = res.data;
             this.$refs.featureController.points = [];
@@ -164,9 +215,7 @@ export default {
 
               //Need to update the graph right here
             }
-            this.$refs.featureController.updateGraph();
-            console.log(JSON.parse(JSON.stringify(this.id)));
-            console.log(res);
+            this.$refs.featureController.updateGraph(true);
           });
         }
         else {

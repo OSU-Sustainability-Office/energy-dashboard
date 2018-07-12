@@ -1,9 +1,19 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../db');
+var cas = null;
 
 router.use(require('sanitize').middleware);
 
+router.get('/currentUser',function(req,res){
+	res.send(req.session[cas.session_name]);
+});
+router.get('/currentUserID',function(req,res){
+	res.send(req.session.id);
+});
+router.get('/currentUsers',function(req,res){
+	res.send(req.session[cas.session_name]);
+});
 //High privilige
 router.get('/getAllUsers', function(req,res){
 	db.query("SELECT * FROM users").then (rows => {
@@ -20,10 +30,6 @@ router.get('/getAllMeterGroups', function(req,res){
 	});
 });
 
-
-router.get('/login',function(req,res){
-	res.send("Hello");
-});
 //router.delete('/deleteMeterGroup')
 
 
@@ -71,95 +77,138 @@ router.get('/getBlockDataForStory',function (req,res) {
 		});
 	}
 	else {
-		res.status(400);
+		res.status(400).send("400: NO STORY ID");
 	}
 
 });
 
+router.post('/deleteBlock', function(req, res) {
+	if (req.bodyInt('id')) {
+		db.query("SELECT stories.user_id, blocks.id FROM blocks LEFT JOIN stories ON blocks.story_id = stories.id WHERE blocks.id = ?",[req.bodyInt('id')]).then(rows => {
+				if(rows[0].user_id === req.session.user.id) {
+					var promises = [];
+					promises.push(db.query("DELETE FROM blocks WHERE id=?",[req.bodyInt('id')]));
+					promises.push(db.query("DELETE FROM block_groups WHERE block_id=?",[req.bodyInt('id')]));
+					Promise.all(promises).then(() => {
+						res.status(200).send("DELETED BLOCK");
+					}).catch(err => {
+						throw err;
+					})
+				}
+		}).catch(err => {
+			res.status(400).send("400: "+err);
+		});
+	}
+	else {
+		res.status(401).send("401: NOT AUTHORIZED");
+	}
+});
 
 router.post('/updateBlock',function (req,res) {
 	//update
-	if (req.bodyInt('id') && req.bodyJson().meter_groups) {
-		db.query("DELETE FROM block_groups WHERE block_id=?",[req.bodyInt('id')]).then(rows => {
-			var promises = [];
-			for (meter_group in req.bodyJson().meter_groups)
-				promises.push(db.query("INSERT INTO block_groups (block_id, group_id, point) VALUES (?,?,?)",[req.bodyInt('id'),meter_group.id, meter_group.point]));
-			Promise.all(promises).then(values => {
-				res.send("SUCCESS: UPDATED ALL METER ENTRIES");
-			}).catch( err => {
-				throw "error";
-			});
+	console.log(req.session.id);
+	if (req.bodyInt('id')) {
+		var promises = [];
+		var e = null;
+		db.query("SELECT stories.user_id, blocks.id FROM blocks LEFT JOIN stories ON blocks.story_id = stories.id WHERE blocks.id = ?",[req.bodyInt('id')]).then(rows => {
+				if(rows[0].user_id === req.session.user.id) {
+					if (req.bodyJson().meter_groups.length > 0) {
+						db.query("DELETE FROM block_groups WHERE block_id=?",[req.bodyInt('id')]).then(rows => {
+							for (meter_group of req.bodyJson().meter_groups) {
+								promises.push(db.query("INSERT INTO block_groups (block_id, group_id, point, name) VALUES (?,?,?,?)",[req.bodyInt('id'),meter_group.id, meter_group.point, meter_group.name]));
+							}
+						}).catch(err => {
+							throw err;
+						});
+					}
+					var queryString = 'UPDATE blocks SET ';
+					if (req.bodyString('date_end')) {
+						queryString += 'date_end="'+req.bodyString('date_end')+'", ';
+					}
+					if (req.bodyString('date_start')) {
+						queryString += 'date_start="'+req.bodyString('date_start')+'", ';
+					}
+					if (req.bodyString('date_range')) {
+						queryString += 'date_range="'+req.bodyString('date_range')+'", ';
+					}
+					if (req.bodyInt('graph_type')) {
+						queryString += 'graph_type="'+req.bodyInt('graph_type')+'", ';
+					}
+					if (req.bodyString('media')) {
+						queryString += 'media="'+req.bodyString('media')+'", ';
+					}
+					if (req.bodyString('descr')) {
+						queryString += 'descr="'+req.bodyString('descr')+'", ';
+					}
+					if (req.bodyString('name')) {
+						queryString += 'name="'+req.bodyString('name')+'", ';
+					}
+					queryString = queryString.substr(0, queryString.length -2);
+					queryString += " WHERE id="+req.bodyInt('id');
+					promises.push(db.query(queryString));
+					Promise.all(promises).then(() =>{
+						res.status(200).send("200: UPDATED BLOCK");
+					}).catch(err => {
+						console.log(err);
+						res.status(400).send("400: " + err);
+					});
+				}
+				else
+					res.status(401).send("401: NOT AUTHORIZED");
 		}).catch(err => {
-			res.send("ERROR: COULD NOT UPDATE METER GROUPS");
+			console.log(err);
+			res.status(400).send("400: " + err);
 		});
-	}
-	else if (req.bodyInt('id')) {
-		var queryString = 'UPDATE blocks SET ';
-		if (req.bodyString('date_end')) {
-			queryString += 'date_end="'+req.bodyString('date_end')+'", ';
-		}
-		if (req.bodyString('date_start')) {
-			queryString += 'date_start="'+req.bodyString('date_start')+'", ';
-		}
-		if (req.bodyString('date_range')) {
-			queryString += 'date_range="'+req.bodyString('date_range')+'", ';
-		}
-		if (req.bodyInt('graph_type')) {
-			queryString += 'graph_type="'+req.bodyInt('graph_type')+'", ';
-		}
-		if (req.bodyString('media')) {
-			queryString += 'media="'+req.bodyString('media')+'", ';
-		}
-		if (req.bodyString('descr')) {
-			queryString += 'descr="'+req.bodyString('descr')+'", ';
-		}
-		if (req.bodyString('name')) {
-			queryString += 'name="'+req.bodyString('name')+'", ';
-		}
-		queryString = queryString.substr(0, queryString.length -2);
-		queryString += " WHERE id="+req.bodyInt('id');
-		db.query(queryString).then(rows => {
-			res.send("SUCCESS: UPDATED BLOCK");
-		}).catch(err => {
-			res.send("ERROR: FAILED TO UPDATE BLOCK");
-		});
-
 	}
 	//create
 	else if (req.bodyInt('story_id')) {
-		var queryString = 'INSERT INTO blocks (story_id';
-		var valuesString = "("+req.bodyInt('story_id');
-		if (req.bodyString('date_start')) {
-			queryString += ",date_start";
-			valuesString += ",'" + req.bodyString('date_start')+"'";
-		}
-		if (req.bodyString('date_end')) {
-			queryString += ",date_end";
-			valuesString += ",'" + req.bodyString('date_end')+"'";
-		}
-		if (req.bodyString('date_range')) {
-			queryString += ",date_range";
-			valuesString += ",'" + req.bodyString('date_range')+"'";
-		}
-		if (req.bodyInt('graph_type')) {
-			queryString += ",graph_type";
-			valuesString += "," + req.bodyInt('graph_type');
-		}
-		if (req.bodyString('media')) {
-			queryString += ",media";
-			valuesString += ",'" + req.bodyString('media')+"'";
-		}
-		if (req.bodyString('descr')) {
-			queryString += ",descr";
-			valuesString += ",'" + req.bodyString('descr')+"'";
-		}
-		if (req.bodyString('name')) {
-			queryString += ",name";
-			valuesString += ",'" + req.bodyString('name')+"'";
-		}
-		db.query(queryString+") VALUES "+valuesString+")").then(
-		rows => {
-			res.send("SUCCESS: CREATED BLOCK");
+		var promises = [];
+		db.query("SELECT * FROM stories where id=?",[req.bodyInt('story_id')]).then(val => {
+			if (val === null || val[0].user_id !== req.session.user.id)
+				res.status(400).send("400: BAD STORY ID")
+			else {
+				var queryString = 'INSERT INTO blocks (story_id';
+				var valuesString = "("+req.bodyInt('story_id');
+				if (req.bodyString('date_start')) {
+					queryString += ",date_start";
+					valuesString += ",'" + req.bodyString('date_start')+"'";
+				}
+				if (req.bodyString('date_end')) {
+					queryString += ",date_end";
+					valuesString += ",'" + req.bodyString('date_end')+"'";
+				}
+				if (req.bodyString('date_range')) {
+					queryString += ",date_range";
+					valuesString += ",'" + req.bodyString('date_range')+"'";
+				}
+				if (req.bodyInt('graph_type')) {
+					queryString += ",graph_type";
+					valuesString += "," + req.bodyInt('graph_type');
+				}
+				if (req.bodyString('media')) {
+					queryString += ",media";
+					valuesString += ",'" + req.bodyString('media')+"'";
+				}
+				if (req.bodyString('descr')) {
+					queryString += ",descr";
+					valuesString += ",'" + req.bodyString('descr')+"'";
+				}
+				if (req.bodyString('name')) {
+					queryString += ",name";
+					valuesString += ",'" + req.bodyString('name')+"'";
+				}
+
+				db.query(queryString+") VALUES "+valuesString+")").then(rows => {
+					for (meter_group of req.bodyJson().meter_groups) {
+						promises.push(db.query("INSERT INTO block_groups (block_id, group_id, point, name) VALUES (?,?,?,?)",[rows.insertId,meter_group.id, meter_group.point, meter_group.name]));
+					}
+					Promise.all(promises).then(() => {
+						res.status(201).send(rows.insertId);
+					}).catch(err => {
+						res.status(400).send("400: "+ err);
+					});
+				});
+			}
 		});
 	}
 });
@@ -424,4 +473,4 @@ router.get("/getMetersForGroup", function (req,res) {
 	}
 });
 
-module.exports = router;
+module.exports = (c)=> { cas = c; return router};

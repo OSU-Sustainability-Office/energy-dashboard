@@ -1,7 +1,7 @@
 <template>
-<div class="flexFeature" v-bind:class="{ minimized : isMinimized }">
+<div class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature">
   <!-- <transition-group name="cardEntry"> -->
-    <card v-for="(card, index) in cards" v-bind:key="index" :featured="true" :name='card.name' :description='card.descr' :id='card.id' :start='card.date_start' :end='card.date_end' :type='card.graph_type' :unit='card.interval_unit' :int='card.date_interval' :media='card.media' ref="displayedCards"/>
+    <card v-for="(card, index) in cards" v-bind:key="index" :featured="true" :name='card.name' :description='card.descr' :id='card.id' :start='card.date_start' :end='card.date_end' :type='card.graph_type' :unit='card.interval_unit' :int='card.date_interval' :media='card.media' :story_id='card.story_id' ref="displayedCards"/>
   <!-- </transition-group> -->
   <div class="addFeatured" @click="addFeature()" >
     +
@@ -12,6 +12,7 @@
 <script>
 import card from '@/components/account/card'
 import Vue from 'vue'
+import axios from 'axios';
 
 export default {
   name: 'featured',
@@ -25,6 +26,21 @@ export default {
     }
   },
   methods: {
+    del: function(comp) {
+//      this.$el.removeChild(comp.$el);
+
+      for (var c in this.cards) {
+        if (comp.id === this.cards[c].id) {
+          var data = {'id':comp.id};
+          axios('http://localhost:3000/api/deleteBlock',{method: "post",data:data, withCredentials:true}).catch(err=>{
+            console.log(err);
+          });
+
+          this.cards.splice(c-1,1);
+
+        }
+      }
+    },
     numberOfCards: function() {
       // var r = 0;
       // for (var i = 0; i < this.cards.length; i++)
@@ -41,6 +57,7 @@ export default {
       card.date_interval = 15;
       card.interval_unit = "minute";
       card.graph_type = 1;
+      card.story_id = this.$parent.currentStory;
 
       this.cards.push(card);
     },
@@ -57,6 +74,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .flexFeature {
+  position: absolute;
+  top: 250px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
