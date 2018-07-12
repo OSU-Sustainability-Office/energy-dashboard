@@ -11,6 +11,8 @@ Vue.config.productionTip = false
 Vue.use(uiv)
 
 /* eslint-disable no-new */
+Vue.prototype.$eventHub = new Vue();
+
 var v = new Vue({
   el: '#app',
   router,

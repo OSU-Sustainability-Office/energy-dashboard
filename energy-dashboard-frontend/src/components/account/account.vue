@@ -1,29 +1,33 @@
 <template>
   <div class="background">
     <!-- <span class="main-heading">Stories</span> -->
-    <carousel v-bind:cards="cards" @caro-click='changeStory($event)' class="scrollyBox"/>
+    <carousel v-bind:cards="cards" @edit="editStory($event)" @caro-click='changeStory($event)' class="scrollyBox"/>
     <!-- <span class="main-heading">Featured Blocks</span> -->
-    <featured v-bind:cards="cardsFeatured" ref='featureBox' />
+    <featured v-bind:cards="cardsFeatured" ref='featureBox' v-if='!editingStory'/>
+    <storyEdit v-if='editingStory' ref='storyEdit'/>
   </div>
 </template>
 
 <script>
 import carousel from '@/components/account/carousel'
 import featured from '@/components/account/featured'
+import storyEdit from '@/components/account/storyEdit'
 import axios from 'axios';
 
 export default {
   name: 'account',
   components: {
     carousel,
-    featured
+    featured,
+    storyEdit
   },
   props: [],
   data() {
     return {
       cards: [],
       cardsFeatured: [],
-      currentStory: 0
+      currentStory: 0,
+      editingStory: false
     }
   },
   created() {
@@ -32,7 +36,13 @@ export default {
      }).catch (e => {
       this.errors.push(e);
      });
-
+     this.$eventHub.$on('deleteStory', val => {
+       for (var c in this.cards)
+        if (this.cards[c].id === val[0]){
+          this.cards.splice(c,1);
+          return;
+        }
+     });
   },
   watch: {
     cards: function(value) {
@@ -49,11 +59,28 @@ export default {
     }
   },
   methods: {
+    editStory: function(event) {
+      this.editingStory = true;
+      this.$nextTick(function() {
+        this.$refs.storyEdit.storyid = event[0];
+        for (var i = 0; i < this.cards.length; i++) {
+          if (this.cards[i].id === event[0]) {
+            this.$refs.storyEdit.name = this.cards[i].name;
+            this.$refs.storyEdit.descr = this.cards[i].description;
+            this.$refs.storyEdit.media = this.cards[i].media;
+            return;
+          }
+        }
+      });
+
+    },
     changeStory: function(event) {
+      this.cardsFeatured = null;
+      this.editingStory = false;
       axios.get('http://localhost:3000/api/getBlocksForStory?id='+event[0]).then (res => {
 
         this.cardsFeatured = res.data;
-        this.$refs.featureBox.reload();
+        //this.$refs.featureBox.reload();
       });
     }
   },

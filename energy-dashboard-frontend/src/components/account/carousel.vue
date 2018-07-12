@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid caro">
     <div class="flex" v-bind:class="{ maximized : isMaximized }">
-      <storyCard v-for="card in cards" @caro-click="clickedStory(card.id)" :name="card.name" :description="card.description" :media="card.media" :story_id="card.id" :selected="card.featured" ref="cardsvue"/>
+      <storyCard  v-for="card in cards" @edit="edit(card.id)" @caro-click="clickedStory(card.id)" v-bind:name="card.name" v-bind:description="card.description" v-bind:media="card.media" v-bind:story_id="card.id" v-bind:selected="card.featured" ref="cardsvue"/>
       <div class="addStory" @click="addStory()" >
         +
       </div>
@@ -38,8 +38,21 @@ export default {
         media: "",
         featured: false
       }
-      this.cards.push(card);
+      var data = {
+        name : card.name,
+        descr : card.description
+      }
+      axios('http://localhost:3000/api/updateStory',{method: "post",data:data, withCredentials:true}).then(rid => {
+        if (!card.id)
+          card.id = rid.data.insertId;
+        this.cards.push(card);
+      }).catch(err => {
+        console.log(err);
+      });
 
+    },
+    edit: function(id) {
+      this.$emit('edit',[id]);
     },
     clickedStory: function(id) {
       this.$refs.cardsvue.forEach(card => {
@@ -60,8 +73,11 @@ export default {
 <style scoped>
 .caro {
   position: absolute;
-  z-index: 2;
-  background-color: #FFF
+  top:0px;
+  right:0px;
+  z-index: 1;
+  background-color: #FFF;
+  box-shadow: 0px 1px 4px rgba(0,0,0,0.5);
 }
 .flex {
   display: flex;
@@ -76,7 +92,6 @@ export default {
   height: auto;
   -webkit-transition: height 2s;
   transition: flex-wrap 2s ease-in-out;
-
 }
 .flex > * {
   flex-shrink: 0;

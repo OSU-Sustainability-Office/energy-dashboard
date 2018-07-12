@@ -1,5 +1,9 @@
 <template>
-  <div class="storyCard" ref='card' v-on:click="clicked">
+  <div class="storyCard" ref='card' v-on:click="clicked" @mouseover="hover(true)" @mouseleave="hover(false)">
+    <div class="toolbox" ref="toolbox">
+      <i class="fas fa-pencil-alt" @click="$emit('edit')"></i>
+      <i class="fas fa-times" @click="deleteStory()"></i>
+    </div>
     <span class="storyName">{{this.name}}</span>
     <span class="storyDescription">{{this.description}}</span>
   </div>
@@ -8,18 +12,29 @@
 <script>
 export default {
   name: 'storyCard',
-  props: ['name', 'description', 'selected','media','story_id'],
+  props: ['name','description','selected','media','story_id'],
+  data() {
+    return{}
+  },
+  created() {
+
+  },
   mounted() {
+
+
     if (this.media)
-      this.$refs.card.style.background = "linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url('"+this.media+"') center/cover no-repeat";
+      this.$refs.card.style.background = "linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url('http://localhost:3000/block-media/thumbs/"+this.media+"') center/cover no-repeat";
     else
       this.$refs.card.style.backgroundColor = 'rgb(26,26,26)';
       if (this.selected)
         this.$refs.card.style.borderColor = 'rgb(215,63,9)';
-  },
-  data() {
-    return {
-    }
+    this.$eventHub.$on('storyCardChange', data => {
+      if (this.story_id === data[0]) {
+        this.name = data[1];
+        this.description = data[2];
+        this.media = data[3];
+      }
+    });
   },
   watch: {
     selected: function(value) {
@@ -27,17 +42,28 @@ export default {
         this.$refs.card.style.borderColor = 'rgb(215,63,9)';
       else
         this.$refs.card.style.borderColor = 'rgb(0,0,0)';
+    },
+    media: function(value) {
+      if (value)
+        this.$refs.card.style.background = "linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url('http://localhost:3000/block-media/thumbs/"+value+"') center/cover no-repeat";
+      else
+        this.$refs.card.style.background = "rgb(26,26,26)";
     }
   },
   methods: {
-    clicked: function() {
-      // this.$parent.cards.forEach(val =>{
-      //   val.selected = false;
-      // });
-
-      //this.selected = true;
-      //console.log(this.$parent.cards);
-      this.$emit('caro-click');
+    hover: function(enter) {
+      if (enter) {
+        this.$refs.toolbox.style.display = 'block';
+      }
+      else
+        this.$refs.toolbox.style.display = 'none';
+    },
+    clicked: function(event) {
+      if (event.target === this.$el)
+        this.$emit('caro-click');
+    },
+    deleteStory: function() {
+      this.$eventHub.$emit('deleteStory',[this.story_id]);
     }
   }
 }
@@ -45,6 +71,21 @@ export default {
 </script>
 
 <style scoped>
+.toolbox {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  display: none;
+}
+.fas {
+  color: #FFFFFF88;
+  font-size: 1.5em;
+  padding-left: 0.2em;
+
+}
+.fas.fa-times {
+  font-size: 1.8em;
+}
 .storyName {
   color:rgb(215,63,9);
   font-family: 'StratumNo2';
@@ -53,6 +94,7 @@ export default {
   z-index: 1;
 }
 .storyCard {
+  position: relative;
   border: 2.5px solid rgb(0,0,0);
   padding: 1em;
   height: 150px;
@@ -62,7 +104,7 @@ export default {
   border-radius: 5px;
   overflow: hidden;
   width: 250px;
-  
+
 }
 .image {
   position: absolute;

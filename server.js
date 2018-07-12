@@ -24,6 +24,7 @@ exports.start = function(cb) {
 			session_name : 'cas_user',
 			session_info : 'cas_userinfo'
 	});
+	app.use('/block-media',express.static('block-media'));
 	app.use(cookieparser());
 	app.use( session({
 	    secret            : 'super secret key',

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('../db');
 var cas = null;
+var fs = require('fs');
 
 router.use(require('sanitize').middleware);
 
@@ -203,7 +204,7 @@ router.post('/updateBlock',function (req,res) {
 						promises.push(db.query("INSERT INTO block_groups (block_id, group_id, point, name) VALUES (?,?,?,?)",[rows.insertId,meter_group.id, meter_group.point, meter_group.name]));
 					}
 					Promise.all(promises).then(() => {
-						res.status(201).send(rows.insertId);
+						res.status(201).send(JSON.stringify(rows.insertId));
 					}).catch(err => {
 						res.status(400).send("400: "+ err);
 					});
@@ -262,52 +263,44 @@ router.get('/getPublicStories',function (req,res){
 
 });
 router.post('/updateStory',function (req,res) {
-	if (req.bodyInt('id') && req.bodyJson().blocks) {
-		var promises = [];
-		req.bodyJson().blocks.forEach( block => {
-			db.query("SELECT story_id FROM blocks WHERE id=?",[block]).then(rows => {
-					if (rows[0].story_id === req.bodyInt('id') || rows[0].story_id === null) {
-						promises.push(db.query("UPDATE blocks SET story_id=? WHERE id=?",[req.bodyInt('id'),block]));
-					}
-					else {
-						throw "error";
-					}
-			});
-			Promise.all(promises).then( values => {
-				res.send("SUCCESS: UPDATED STORY BLOCKS");
-			}).catch( err=> {
-				res.send("ERROR: COULD NOT UPDATE STORY BLOCKS")
-			});
-		});
-
-	}
-	else if (req.bodyInt('id')) {
-		var queryString = "UPDATE stories SET ";
-		if (req.bodyString('name')) {
-			queryString += 'name="'+req.bodyString('name')+'", ';
-		}
-		if (req.bodyString('descr')) {
-			queryString += 'description="'+req.bodyString('descr')+'", ';
-		}
-		if (req.bodyInt('public')) {
-			queryString += 'public='+req.bodyInt('public')+", ";
-		}
-		queryString = queryString.substr(0, queryString.length -2);
-		db.query(queryString).then( rows => {
-			res.send("SUCCESS: UPDATED STORY");
+ if (req.bodyInt('id')) {
+	 db.query("SELECT user_id FROM stories where id=?",[req.bodyInt('id')]).then(val => {
+		 if (val[0].user_id === req.session.user.id) {
+				var queryString = "UPDATE stories SET ";
+				if (req.bodyString('name')) {
+					queryString += 'name="'+req.bodyString('name')+'", ';
+				}
+				if (req.bodyString('descr')) {
+					queryString += 'description="'+req.bodyString('descr')+'", ';
+				}
+				if (req.bodyString('media')) {
+					queryString += 'media="'+req.bodyString('media')+'", ';
+				}
+				if (req.bodyInt('public')  && req.session.user.privilige >= 3) {
+					queryString += 'public='+req.bodyInt('public')+", ";
+				}
+				queryString = queryString.substr(0, queryString.length -2);
+				queryString += 'WHERE id=' + req.bodyInt('id');
+				db.query(queryString).then( rows => {
+					res.status(200).send("200: UPDATED STORY");
+				}).catch(err => {
+					res.status(400).send("400: "+ err);
+				});
+			}
+			else
+				res.status(401).send("401: INVALID USER")
 		}).catch(err => {
-			console.log(err);
-			res.send("ERROR: COULD NOT UPDATE STORY");
+			res.status(400).send("400: "+err);
 		});
 	}
-	else if (req.bodyInt('user_id') && req.bodyString('name')) {
+	else if (req.bodyString('name')) {
 		var queryString = "INSERT INTO stories (user_id, name,";
-		var answers = [req.bodyInt('user_id'),req.bodyString('name')];
+		var answers = [req.session.user.id,req.bodyString('name')];
 		if (req.bodyString('descr')) {
 			queryString += 'description,';
 			answers.push(req.bodyString('descr'));
 		}
-		if (req.bodyInt('public')) {
+		if (req.bodyInt('public') && req.session.user.privilige >= 3) {
 			queryString += 'public,';
 			answers.push(req.bodyInt('public'));
 		}
@@ -320,10 +313,11 @@ router.post('/updateStory',function (req,res) {
 		}
 		queryString += ")";
 		db.query(queryString,answers).then(rows => {
-			res.send("SUCCES: CREATED STORY");
+			res.status(201).send(JSON.stringify(rows.insertId));
 		}).catch( err => {
-			res.send("ERROR: COULD NOT CREATE STORY");
-		})
+			console.log(err);
+			res.status(400).send("400: "+err);
+		});
 	}
 });
 
@@ -471,6 +465,18 @@ router.get("/getMetersForGroup", function (req,res) {
 	else {
 		res.send('ERROR: COULD NOT GET METERS');
 	}
+});
+
+//Photos
+router.get("/listAvailableMedia",function (req,res){
+	fs.readdir('./block-media', (e, files)=> {
+		if (!e)
+			res.send(JSON.stringify(files.filter(file => {
+				return file.toLowerCase().indexOf('.png') !== -1 || file.toLowerCase().indexOf('.jpg') !== -1;
+			})));
+		else
+			res.status(400).send("400: "+e);
+	});
 });
 
 module.exports = (c)=> { cas = c; return router};

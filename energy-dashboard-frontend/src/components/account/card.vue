@@ -32,14 +32,39 @@ import featureController from '@/components/account/featureController'
 
 export default {
   name: 'card',
-  props: ['story_id','name', 'description', 'featured', 'id','start','end','int','unit','type','media'],
+  props: ['story_id_m','name_m', 'description_m', 'featured_m', 'id_m','start_m','end_m','int_m','unit_m','type_m','media_m'],
   components: {
     chartController, featureController
   },
   data() {
     return {
-      isMaximized : false
+      isMaximized : false,
+      story_id : null,
+      name: "",
+      description: "",
+      featured: false,
+      id: null,
+      start: "",
+      end: "",
+      type: "",
+      media: "",
+      int: 15,
+      unit: 'minute',
+      type: 1
     }
+  },
+  created() {
+    this.story_id = this.story_id_m;
+    this.name = this.name_m;
+    this.description = this.description_m;
+    this.featured = this.featured_m;
+    this.id = this.id_m;
+    this.start = this.start_m;
+    this.end = this.end_m;
+    this.type = this.type_m;
+    this.int = this.int_m;
+    this.unit = this.unit_m;
+    this.media = this.media_m;
   },
   methods: {
     del: function() {

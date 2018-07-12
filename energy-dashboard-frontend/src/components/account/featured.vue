@@ -1,7 +1,7 @@
 <template>
 <div class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature">
   <!-- <transition-group name="cardEntry"> -->
-    <card v-for="(card, index) in cards" v-bind:key="index" :featured="true" :name='card.name' :description='card.descr' :id='card.id' :start='card.date_start' :end='card.date_end' :type='card.graph_type' :unit='card.interval_unit' :int='card.date_interval' :media='card.media' :story_id='card.story_id' ref="displayedCards"/>
+    <card v-for="(card, index) in cards" v-bind:key="index" :featured_m="true" :name_m='card.name' :description_m='card.descr' :id_m='card.id' :start_m='card.date_start' :end_m='card.date_end' :type_m='card.graph_type' :unit_m='card.interval_unit' :int_m='card.date_interval' :media_m='card.media' :story_id_m='card.story_id' ref="displayedCards"/>
   <!-- </transition-group> -->
   <div class="addFeatured" @click="addFeature()" >
     +
@@ -84,7 +84,7 @@ export default {
   padding-right: 1em;
   padding-top: 1em;
   padding-bottom: 1em;
-  width: 100%;
+  width: calc(100% - 2em);
 }
 
 .addFeatured {
