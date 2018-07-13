@@ -2,7 +2,9 @@
   <div class="app">
     <navBar />
     <transition v-bind:name="transitionName">
-      <router-view/>
+      <div class="router">
+        <router-view />
+      </div>
     </transition>
   </div>
 </template>
@@ -56,6 +58,13 @@ body {
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+.router {
+  position: absolute;
+  top: 1em;
+  right:0px;
+  width: 100%;
+  height: 100%;
 }
 .pageTo-enter-active, .pageTo-leave-active {
   transition-property: opacity, transform;

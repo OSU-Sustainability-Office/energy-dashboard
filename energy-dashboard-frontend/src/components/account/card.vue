@@ -1,25 +1,23 @@
 <template>
-  <div class="card" v-bind:class="{ feature : featured}" ref='card' >
-    <div class="storyCard" v-if='!featured'>
-      <span class="storyName" v-if='!featured'>{{this.name}}</span>
-      <span class="storyDescription" v-if='!featured'>{{this.description}}</span>
-    </div>
+  <div class="card featured" v-bind:class="{ feature : featured}" ref='card' v-on:click='unclickText'>
 
     <chartController v-if="featured" ref="chartController" :graphType='1' class="chart"/>
     <featureController v-if="featured" ref="featureController" />
-    <div class='titleTextFeatured' v-if="featured">
+    <div class='titleTextFeatured' v-if="featured" v-on:click='clickText' ref='title'>
       {{this.name}}
     </div>
     <div class="container descriptionContainer" v-if='featured' ref='descriptionContainer'>
       <div class="row" v-on:click='isMaximized = !isMaximized'>
         <i class="fas" v-bind:class="{ 'fa-chevron-circle-up' : !isMaximized, 'fa-chevron-circle-down' : isMaximized }"></i>
       </div>
-      <div class='descriptionTextFeatured row' v-if='this.description'>
+      <div class='descriptionTextFeatured row' ref="description" v-on:click='clickText'>
         {{this.description}}
       </div>
       <div class="row">
-        <btn class="col" @click="download()" v-if="featured" ref="downloadBtn">Download Data</btn>
-        <btn class="col" @click="save()" v-if="featured" ref="downloadBtn">Save Chart</btn>
+        <btn class="col" @click="download()" ref="downloadBtn">Download Data</btn>
+        <btn class="col" @click="save()" ref="downloadBtn">Save Chart</btn>
+        <btn class="col" @click="reload()" ref="reloadBtn">Clear Chart</btn>
+        <btn class="col" @click="del()" ref="deleteBtn">Delete Chart</btn>
       </div>
     </div>
   </div>
@@ -34,16 +32,91 @@ import featureController from '@/components/account/featureController'
 
 export default {
   name: 'card',
-  props: ['name', 'description', 'featured', 'id','start','end','int','unit','type','media'],
+  props: ['story_id_m','name_m', 'description_m', 'featured_m', 'id_m','start_m','end_m','int_m','unit_m','type_m','media_m'],
   components: {
     chartController, featureController
   },
   data() {
     return {
-      isMaximized : false
+      isMaximized : false,
+      story_id : null,
+      name: "",
+      description: "",
+      featured: false,
+      id: null,
+      start: "",
+      end: "",
+      type: "",
+      media: "",
+      int: 15,
+      unit: 'minute',
+      type: 1
     }
   },
+  created() {
+    this.story_id = this.story_id_m;
+    this.name = this.name_m;
+    this.description = this.description_m;
+    this.featured = this.featured_m;
+    this.id = this.id_m;
+    this.start = this.start_m;
+    this.end = this.end_m;
+    this.type = this.type_m;
+    this.int = this.int_m;
+    this.unit = this.unit_m;
+    this.media = this.media_m;
+  },
   methods: {
+    del: function() {
+      this.$parent.del(this);
+    },
+    clickText: function(event) {
+      event.target.contentEditable = true;
+    },
+    unclickText: function(event) {
+      if (event.target !== this.$refs.title)
+        this.$refs.title.contentEditable = false;
+      if (event.target !== this.$refs.description)
+        this.$refs.description.contentEditable = false;
+      this.name = this.$refs.title.innerText;
+      this.description = this.$refs.description.innerText;
+    },
+    save: function() {
+
+      var groupPoints = [];
+      for (var i = 0; i < this.$refs.featureController.groupids.length; i++) {
+        groupPoints.push({'id':this.$refs.featureController.groupids[i],'point':this.$refs.featureController.points[i],'name':this.$refs.featureController.names[i]});
+      }
+      var data = {};
+      if (this.id)
+        data = {
+          id: this.id,
+          meter_groups: groupPoints,
+          date_end: this.end,
+          date_start: this.start,
+          graph_type: this.type,
+          media: this.media,
+          descr: this.description,
+          name: this.name
+        };
+      else
+        data = {
+          story_id: this.story_id,
+          meter_groups: groupPoints,
+          date_end: this.end,
+          date_start: this.start,
+          graph_type: this.type,
+          media: this.media,
+          descr: this.description,
+          name: this.name
+        };
+      axios('http://localhost:3000/api/updateBlock',{method: "post",data:data, withCredentials:true}).then(rid => {
+        if (!this.id)
+          this.id = rid.data;
+      }).catch(err => {
+        console.log(err);
+      });
+    },
     download: function() {
       //Get all information contained for current data on the graph
       var points = this.$refs.featureController.points;
@@ -127,49 +200,60 @@ export default {
       });
 
     },
+    reload: function() {
+      this.$refs.card.style.backgroundColor = 'rgb(26,26,26)';
+      if (this.featured) {
+        this.$refs.descriptionContainer.style.bottom = "calc(3.5em - " + this.$refs.descriptionContainer.clientHeight.toString() + "px)";
+      }
+
+      //this.$refs.card.style.backgroundSize = "cover";
+      if (this.featured) {
+        this.$refs.featureController.dateFrom = this.start;
+        this.$refs.featureController.dateTo = this.end;
+        this.$refs.featureController.interval = this.int;
+        this.$refs.featureController.graphType = this.type;
+        this.$refs.featureController.unit = this.unit;
+
+        this.$refs.chartController.start = this.start;
+        this.$refs.chartController.end = this.end;
+        this.$refs.chartController.interval = this.int;
+        this.$refs.chartController.graphType = this.type;
+        this.$refs.chartController.unit = this.unit;
+        if (this.id){
+          axios.get('http://localhost:3000/api/getBlockMeterGroups?id='+this.id).then (res => {
+            //this.$refs.chartController = res.data;
+            this.$refs.featureController.points = [];
+            this.$refs.featureController.groupids = [];
+            this.$refs.featureController.names = [];
+
+            this.$refs.chartController.points = [];
+            this.$refs.chartController.groupids = [];
+            this.$refs.chartController.names = [];
+            for (var i = 0; i < res.data.length; i++) {
+              this.$refs.featureController.points.push(res.data[i].point);
+              this.$refs.featureController.groupids.push(res.data[i].group_id);
+              this.$refs.featureController.names.push(res.data[i].name);
+
+              this.$refs.chartController.points.push(res.data[i].point);
+              this.$refs.chartController.groups.push(res.data[i].group_id);
+              this.$refs.chartController.names.push(res.data[i].name);
+
+              //Need to update the graph right here
+            }
+            this.$refs.featureController.updateGraph(true);
+          });
+        }
+        else {
+          this.$refs.featureController.points.push("accumulated_real");
+          this.$refs.featureController.groupids.push(8);
+          this.$refs.featureController.names.push("New Graph");
+        }
+      }
+    }
   },
   mounted() {
     //this.$refs.card.style.background = "linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),url('"+this.media+"')";
-    this.$refs.card.style.backgroundColor = 'rgb(26,26,26)';
-    if (this.featured) {
-      this.$refs.descriptionContainer.style.bottom = "calc(3.5em - " + this.$refs.descriptionContainer.clientHeight.toString() + "px)";
-    }
-
-    //this.$refs.card.style.backgroundSize = "cover";
-    if (this.featured) {
-      this.$refs.featureController.dateFrom = this.start;
-      this.$refs.featureController.dateTo = this.end;
-      this.$refs.featureController.interval = this.int;
-      this.$refs.featureController.graphType = this.type;
-      this.$refs.featureController.unit = this.unit;
-
-      this.$refs.chartController.start = this.start;
-      this.$refs.chartController.end = this.end;
-      this.$refs.chartController.interval = this.int;
-      this.$refs.chartController.graphType = this.type;
-      this.$refs.chartController.unit = this.unit;
-      if (this.id)
-        axios.get('http://localhost:3000/api/getBlockMeterGroups?id='+this.id).then (res => {
-          //this.$refs.chartController = res.data;
-          for (var i = 0; i < res.data.length; i++) {
-            this.$refs.featureController.points.push(res.data[i].point);
-            this.$refs.featureController.groupids.push(res.data[i].group_id);
-            this.$refs.featureController.names.push(res.data[i].name);
-
-            this.$refs.chartController.points.push(res.data[i].point);
-            this.$refs.chartController.groups.push(res.data[i].group_id);
-            this.$refs.chartController.names.push(res.data[i].name);
-
-            //Need to update the graph right here
-          }
-          this.$refs.featureController.updateGraph()
-        });
-      else {
-        this.$refs.featureController.points.push("accumulated_real");
-        this.$refs.featureController.groupids.push(8);
-        this.$refs.featureController.names.push("New Graph");
-      }
-    }
+    this.reload();
   },
   watch: {
     isMaximized : function(value) {
@@ -211,8 +295,9 @@ export default {
   border: 2px solid #000;
   border-radius: 5px;
   height: 10em;
-  flex: 1 1 49%;
+
   overflow: hidden;
+  width: 250px;
 }
 .col {
   margin: 0.5em;
@@ -223,6 +308,7 @@ export default {
   padding-right: 2em;
   padding-left: 2em;
   width: 100%;
+  flex: 1 1 49%;
 }
 .titleTextFeatured {
   color: rgb(215,63,9);
@@ -245,6 +331,7 @@ export default {
   color:rgb(215,63,9);
   font-family: 'StratumNo2';
   font-size: 1.8em;
+  display: block;
 }
 .storyCard {
   padding: 1em;
@@ -256,5 +343,7 @@ export default {
   color: #FFF;
   font-family: 'StratumNo2';
   font-size: 1.2em;
+  display: block;
+  padding-left: 0.3em;
 }
 </style>

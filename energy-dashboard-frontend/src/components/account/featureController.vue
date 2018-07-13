@@ -50,6 +50,10 @@
         <label>Group: </label>
         <select ref="groups" class="form-control" v-model="groupids[currentIndex]">
         </select>
+        <!-- <label>Sub-Meter: </label>
+        <select ref="submeters" class="form-control" v-model="submeters[currentIndex]">
+          <option value=0>All</option>
+        </select> -->
       </div>
 
       <div class="row fromDateChooser form-group">
@@ -164,6 +168,7 @@ export default {
       // name: ""
       points: [],
       groupids: [],
+      submeters: [],
       //dateFroms: [],
       //dateTos: [],
       //timeTos: [],
@@ -221,12 +226,14 @@ export default {
     dateFrom: function(value) {
       if(!value)
         return;
+      this.$parent.start = value.toString() + this.parseDateTime(this.timeFrom);
       this.$parent.$refs.chartController.start = value.toString() + this.parseDateTime(this.timeFrom);
       this.updateGraph(true);
     },
     dateTo: function(value) {
       if (!value)
         return;
+      this.$parent.end = value.toString() + this.parseDateTime(this.timeTo);
       this.$parent.$refs.chartController.end = value.toString() + this.parseDateTime(this.timeTo);
       this.updateGraph(true);
     },
@@ -239,30 +246,35 @@ export default {
     timeTo: function(value) {
       if (!value)
         return;
+      this.$parent.end = this.dateTo.toString() + this.parseDateTime(value);
       this.$parent.$refs.chartController.end = this.dateTo.toString() + this.parseDateTime(value);
       this.updateGraph(true);
     },
     timeFrom: function(value) {
       if (!value)
         return;
+      this.$parent.start = this.dateFrom.toString() + this.parseDateTime(value);
       this.$parent.$refs.chartController.start = this.dateFrom.toString() + this.parseDateTime(value);
       this.updateGraph(true);
     },
     graphType: function(value) {
       if (!value)
         return;
+      this.$parent.type = value;
       this.$parent.$refs.chartController.graphType = value;
       //this.updateGraph(true);
     },
     interval: function(value) {
       if (!value)
         return;
+      this.$parent.int = value;
       this.$parent.$refs.chartController.interval = value;
       this.updateGraph(true);
     },
     unit: function(value) {
       if (!value)
         return;
+      this.$parent.unit = value;
       this.$parent.$refs.chartController.unit = value;
       this.updateGraph(true);
     },
@@ -305,7 +317,6 @@ export default {
      }).catch (e => {
       this.errors.push(e);
      });
-
   }
 }
 </script>

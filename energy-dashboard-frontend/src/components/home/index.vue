@@ -32,8 +32,8 @@ export default {
   },
   methods: {
     login: function() {
-      //window.location.href="http://localhost:3000/api/login";
-      this.$router.push("account")
+      window.location.href="http://localhost:3000/energy";
+      //this.$router.push("account")
     },
     explore: function() {
       this.$router.push("story/1")

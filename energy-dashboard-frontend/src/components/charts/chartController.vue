@@ -22,10 +22,6 @@ export default {
   },
   mounted () {
 		this.chart = this.$refs.barchart;
-    //this.getData('accumulated_real',8,"2018-06-01T00:00:000","2018-06-30T01:00:000",15,"minute");
-		// console.log(this.start);
-		// for (var i = 0; i < this.groups.length; i++)
-		// 	this.getData(i,this.points[i],this.groups[i],this.start,this.end,this.interval,this.unit);
   },
   data() {
     return {
@@ -175,7 +171,7 @@ export default {
 		parseDataPieDoughnut: function (indexM, groupId, data) {
 			if (!data || !groupId)
 				return;
-			if (!this.chartData.datasets[0].data || this.chartData.datasets[0].mpoint) {
+			if ( !this.chartData.datasets[0] || !this.chartData.datasets[0].data || this.chartData.datasets[0].mpoint) {
 				this.chartData = {
 					labels : [],
 					datasets: [{
