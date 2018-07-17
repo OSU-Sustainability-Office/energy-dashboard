@@ -1,6 +1,6 @@
 <template>
   <div class="controlArea container" ref="movingArea">
-    <div class="expandingSection" v-on:click="isMaximized = !isMaximized">
+    <div class="expandingSection" @click="isMaximized = !isMaximized">
       <i class="fas" v-bind:class="{ 'fa-chevron-circle-left' : !isMaximized, 'fa-chevron-circle-right' : isMaximized }"></i>
     </div>
 
@@ -59,9 +59,9 @@
       <div class="row fromDateChooser form-group">
         <label>From Date: </label>
         <form class="form-inline">
-          <dropdown class="form-group">
+          <dropdown class="form-group" append-to-body>
             <div class="input-group">
-              <input class="form-control" type="text" v-model="dateFrom">
+              <input class="form-control" type="text" v-model="dateFrom" >
               <div class="input-group-btn">
                 <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
               </div>
@@ -72,7 +72,7 @@
               </li>
             </template>
           </dropdown>
-          <dropdown class="form-group">
+          <dropdown class="form-group" append-to-body>
             <div class="input-group">
               <input class="form-control" type="text" v-model="timeFrom.toTimeString()" readonly="readonly">
               <div class="input-group-btn">
@@ -91,7 +91,7 @@
       <div class="row toDateChooser form-group">
         <label>To Date: </label>
         <form class="form-inline">
-          <dropdown class="form-group">
+          <dropdown class="form-group" append-to-body>
             <div class="input-group">
               <input class="form-control" type="text" v-model="dateTo">
               <div class="input-group-btn">
@@ -104,7 +104,7 @@
               </li>
             </template>
           </dropdown>
-          <dropdown class="form-group">
+          <dropdown class="form-group" append-to-body>
             <div class="input-group">
               <input class="form-control" type="text" v-model="timeTo.toTimeString()" readonly="readonly">
               <div class="input-group-btn">
@@ -178,7 +178,9 @@ export default {
       //units: [],
       names: [],
       colors: [],
-      currentIndex: 0
+      currentIndex: 0,
+      keyPressTimeOut: null,
+      dontUpdate: false
 
     }
   },
@@ -190,7 +192,8 @@ export default {
       //this.currentIndex = this.points.length -1;
     },
     updateGraph: function (partial) {
-      //this.$parent.loaded = false;
+      if (!this.dontUpdate) {
+       //this.$parent.loaded = false;
       //console.log(this.$parent);
       //console.log(this.points);
       //console.log(this.groupids);
@@ -210,7 +213,7 @@ export default {
           this.$parent.$refs.chartController.updateChart();
         });
       }
-
+}
     },
     parseDateTime: function(dateTime) {
       var hours = dateTime.getHours();
@@ -226,16 +229,16 @@ export default {
     dateFrom: function(value) {
       if(!value)
         return;
-      this.$parent.start = value.toString() + this.parseDateTime(this.timeFrom);
+      this.$parent.setStart(value.toString() + this.parseDateTime(this.timeFrom));
       this.$parent.$refs.chartController.start = value.toString() + this.parseDateTime(this.timeFrom);
-      this.updateGraph(true);
+      this.updateGraph(false);
     },
     dateTo: function(value) {
       if (!value)
         return;
-      this.$parent.end = value.toString() + this.parseDateTime(this.timeTo);
+      this.$parent.setEnd(value.toString() + this.parseDateTime(this.timeTo));
       this.$parent.$refs.chartController.end = value.toString() + this.parseDateTime(this.timeTo);
-      this.updateGraph(true);
+      this.updateGraph(false);
     },
     groupids: function(value) {
       if (!value)
@@ -246,35 +249,35 @@ export default {
     timeTo: function(value) {
       if (!value)
         return;
-      this.$parent.end = this.dateTo.toString() + this.parseDateTime(value);
+      this.$parent.setEnd(this.dateTo.toString() + this.parseDateTime(value));
       this.$parent.$refs.chartController.end = this.dateTo.toString() + this.parseDateTime(value);
       this.updateGraph(true);
     },
     timeFrom: function(value) {
       if (!value)
         return;
-      this.$parent.start = this.dateFrom.toString() + this.parseDateTime(value);
+      this.$parent.setStart(this.dateFrom.toString() + this.parseDateTime(value));
       this.$parent.$refs.chartController.start = this.dateFrom.toString() + this.parseDateTime(value);
       this.updateGraph(true);
     },
     graphType: function(value) {
       if (!value)
         return;
-      this.$parent.type = value;
+      this.$parent.setType(value);
       this.$parent.$refs.chartController.graphType = value;
       //this.updateGraph(true);
     },
     interval: function(value) {
       if (!value)
         return;
-      this.$parent.int = value;
+      this.$parent.setInt(value);
       this.$parent.$refs.chartController.interval = value;
       this.updateGraph(true);
     },
     unit: function(value) {
       if (!value)
         return;
-      this.$parent.unit = value;
+      this.$parent.setUnit(value);
       this.$parent.$refs.chartController.unit = value;
       this.updateGraph(true);
     },
@@ -283,14 +286,20 @@ export default {
         return;
       this.updateGraph(false);
       this.$parent.$refs.chartController.points = value;
-      Array.from(this.$refs.indexChooser.children).forEach(e => {e.style.borderColor = "#FFFFFF"});
-      this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)';
+      this.$nextTick(() => {
+        Array.from(this.$refs.indexChooser.children).forEach(e => {e.style.borderColor = "#FFFFFF"});
+        this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)';
+      });
     },
     names: function(value) {
       if (!value)
         return;
       this.$parent.$refs.chartController.names = value;
-      this.$parent.$refs.chartController.updateChart();
+      clearTimeout(this.keyPressTimeOut);
+      this.keyPressTimeOut = setTimeout(() => {
+        this.updateGraph(false);
+      }, 800);
+
     },
     currentIndex: function(value) {
       // /console.log(this.$refs.indexChooser.children);
@@ -307,7 +316,8 @@ export default {
     }
   },
   created() {
-
+    this.$eventHub.$on('reloadChart',() => {
+		});
   },
   mounted () {
     axios.get('http://localhost:3000/api/getAllBuildings').then (res => {
@@ -322,7 +332,23 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+.btn-primary {
+  background-color: rgb(215,63,9) !important;
+}
+.btn-info {
+  background-color: rgb(215,63,9) !important;
+  border: none;
+}
+ .btn-block.btn-info {
+  background-color: rgb(26,26,26) !important;
+}
+.glyphicon {
+  color: rgb(215,63,9) !important;
+}
+</style>
 <style scoped>
+
 .expandingSection {
   height:100%;
   position: absolute;

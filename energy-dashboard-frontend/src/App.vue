@@ -1,21 +1,19 @@
 <template>
   <div class="app">
-    <navBar />
+    <navigbar />
     <transition v-bind:name="transitionName">
-      <div class="router">
-        <router-view />
-      </div>
+      <router-view />
     </transition>
   </div>
 </template>
 
 <script>
-import navBar from '@/components/navBar'
+import navigbar from '@/components/navBar'
 
 export default {
   name: 'App',
   components: {
-    navBar
+    navigbar
   },
   data () {
     return {
@@ -53,18 +51,11 @@ export default {
     font-weight: bold;
     font-style: normal;
 }
-@import url('/static/css/c3.min.css');
+/* @import url('/static/css/c3.min.css'); */
 body {
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-.router {
-  position: absolute;
-  top: 1em;
-  right:0px;
-  width: 100%;
-  height: 100%;
 }
 .pageTo-enter-active, .pageTo-leave-active {
   transition-property: opacity, transform;

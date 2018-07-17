@@ -1,11 +1,12 @@
 <template>
 <div class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature">
-  <!-- <transition-group name="cardEntry"> -->
-    <card v-for="(card, index) in cards" v-bind:key="index" :featured_m="true" :name_m='card.name' :description_m='card.descr' :id_m='card.id' :start_m='card.date_start' :end_m='card.date_end' :type_m='card.graph_type' :unit_m='card.interval_unit' :int_m='card.date_interval' :media_m='card.media' :story_id_m='card.story_id' ref="displayedCards"/>
+  <!-- <transition-group name="cardEntry" tag="div" class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature"> -->
+    <card v-for="(card, index) in cards" v-bind:key="index+card.id" v-bind:index="index" :featured="true" v-bind:name='card.name' v-bind:description='card.descr' v-bind:id='card.id' v-bind:start='card.date_start' v-bind:end='card.date_end' v-bind:type='card.graph_type' v-bind:unit='card.interval_unit' v-bind:int='card.date_interval' v-bind:media='card.media' v-bind:story_id='card.story_id' ref="displayedCards"/>
+
+    <div class="addFeatured" key="add" @click="addFeature()" v-bind:class="[isFull() ? 'fullAdd' : 'smallAdd']">
+      +
+    </div>
   <!-- </transition-group> -->
-  <div class="addFeatured" @click="addFeature()" >
-    +
-  </div>
 </div>
 </template>
 
@@ -28,18 +29,13 @@ export default {
   methods: {
     del: function(comp) {
 //      this.$el.removeChild(comp.$el);
+        var data = {'id':this.cards[comp].id};
+        axios('http://localhost:3000/api/deleteBlock',{method: "post",data:data, withCredentials:true}).then(() => {
+          this.cards.splice(comp,1);
+        }).catch(err=>{
+          console.log(err);
+        });
 
-      for (var c in this.cards) {
-        if (comp.id === this.cards[c].id) {
-          var data = {'id':comp.id};
-          axios('http://localhost:3000/api/deleteBlock',{method: "post",data:data, withCredentials:true}).catch(err=>{
-            console.log(err);
-          });
-
-          this.cards.splice(c-1,1);
-
-        }
-      }
     },
     numberOfCards: function() {
       // var r = 0;
@@ -47,6 +43,9 @@ export default {
       //   if (this.cards[i].featured)
       //     r++;
       return this.cards.length;
+    },
+    isFull: function() {
+      return (this.cards.length % 2 === 0);
     },
     addFeature: function() {
       var card = {};
@@ -60,11 +59,14 @@ export default {
       card.story_id = this.$parent.currentStory;
 
       this.cards.push(card);
+      // this.$nextTick(() => {
+      //   this.$refs.displayedCards[this.cards.length-1].save();
+      // });
     },
     reload: function() {
-      this.$refs.displayedCards.forEach(card => {
-        card.reload();
-      });
+      // this.$refs.displayedCards.forEach(card => {
+      //   card.reload();
+      // });
     }
   }
 
@@ -92,11 +94,29 @@ export default {
   color: rgb(215,63,9);
   height: 10em;
   flex: 0 60px;
-  line-height: 10em;
+  line-height: 9.8em;
+  margin-top: 0.2em;
+  margin-right: 0.2em;
+  margin-left: 0.2em;
+  border: solid 2px #000;
+  border-radius: 7px;
+}
+.fullAdd {
+  border-left: none;
+  border-radius: 0px 7px 7px 0px;
+}
+.smallAdd {
+
+  border-right: none;
+  border-radius: 7px 0px 0px 7px;
 }
 .cardEntry-enter-active, .cardEntry-leave-active {
-  transition-property: opacity, transform;
+  transition-property: opacity, transform, width;
   transition-duration: 1s;
+  backface-visibility: hidden;
+}
+.cardEntry-leave-active {
+  position: relative;
 }
 
 /* .page-enter-active {
@@ -104,13 +124,11 @@ export default {
 } */
 .cardEntry-enter {
   transform: translateX(1000px);
+  opacity: 1;
 }
-.cardEntry-leave-active {
+.cardEntry-leave-to {
   transform: translateX(-1000px);
-}
-.cardEntry-enter, .cardEntry-leave-active {
   opacity: 0;
-
 }
 .minimized {}
 </style>

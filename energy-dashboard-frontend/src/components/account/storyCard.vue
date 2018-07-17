@@ -1,8 +1,8 @@
 <template>
   <div class="storyCard" ref='card' v-on:click="clicked" @mouseover="hover(true)" @mouseleave="hover(false)">
     <div class="toolbox" ref="toolbox">
-      <i class="fas fa-pencil-alt" @click="$emit('edit')"></i>
-      <i class="fas fa-times" @click="deleteStory()"></i>
+      <i class="fas fa-pencil-alt" @click="$emit('edit')" v-tooltip="'Edit Story Card'"></i>
+      <i class="fas fa-times" @click="deleteStory()" v-tooltip="'Delete Story'"></i>
     </div>
     <span class="storyName">{{this.name}}</span>
     <span class="storyDescription">{{this.description}}</span>
@@ -12,7 +12,7 @@
 <script>
 export default {
   name: 'storyCard',
-  props: ['name','description','selected','media','story_id'],
+  props: ['name','description','selected','media','story_id', 'index'],
   data() {
     return{}
   },
@@ -28,13 +28,13 @@ export default {
       this.$refs.card.style.backgroundColor = 'rgb(26,26,26)';
       if (this.selected)
         this.$refs.card.style.borderColor = 'rgb(215,63,9)';
-    this.$eventHub.$on('storyCardChange', data => {
-      if (this.story_id === data[0]) {
-        this.name = data[1];
-        this.description = data[2];
-        this.media = data[3];
-      }
-    });
+    // this.$eventHub.$on('storyCardChange', data => {
+    //   if (this.story_id === data[0]) {
+    //     this.name = data[1];
+    //     this.description = data[2];
+    //     this.media = data[3];
+    //   }
+    // });
   },
   watch: {
     selected: function(value) {
@@ -76,11 +76,13 @@ export default {
   right: 10px;
   top: 5px;
   display: none;
+  cursor: pointer;
 }
 .fas {
   color: #FFFFFF88;
   font-size: 1.5em;
   padding-left: 0.2em;
+
 
 }
 .fas.fa-times {
@@ -98,8 +100,8 @@ export default {
   border: 2.5px solid rgb(0,0,0);
   padding: 1em;
   height: 150px;
-  margin-left: 0.5%;
-  margin-right: 0.5%;
+  /* margin-left: 0.5%;
+  margin-right: 0.5%; */
   margin-top: 1em;
   border-radius: 5px;
   overflow: hidden;

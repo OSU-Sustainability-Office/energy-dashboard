@@ -8,6 +8,11 @@ export default {
 	data() {
 	    return {
 	      options: {
+					elements: {
+						point: {
+							radius: 3
+						}
+					},
 	      	layout: {
 	          padding: {
 	            left: 0,

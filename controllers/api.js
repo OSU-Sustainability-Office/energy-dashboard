@@ -87,16 +87,20 @@ router.post('/deleteBlock', function(req, res) {
 	if (req.bodyInt('id')) {
 		db.query("SELECT stories.user_id, blocks.id FROM blocks LEFT JOIN stories ON blocks.story_id = stories.id WHERE blocks.id = ?",[req.bodyInt('id')]).then(rows => {
 				if(rows[0].user_id === req.session.user.id) {
-					var promises = [];
-					promises.push(db.query("DELETE FROM blocks WHERE id=?",[req.bodyInt('id')]));
-					promises.push(db.query("DELETE FROM block_groups WHERE block_id=?",[req.bodyInt('id')]));
-					Promise.all(promises).then(() => {
-						res.status(200).send("DELETED BLOCK");
+					db.query("DELETE FROM block_groups WHERE block_id=?",[req.bodyInt('id')]).then(val => {
+						db.query("DELETE FROM blocks WHERE id=?",[req.bodyInt('id')]).then(val => {
+							res.send("DELETED BLOCK");
+						}).catch(err => {
+							throw err;
+						});
 					}).catch(err => {
 						throw err;
-					})
+					});
 				}
+				else
+					throw "error";
 		}).catch(err => {
+			console.log(err);
 			res.status(400).send("400: "+err);
 		});
 	}
@@ -107,7 +111,6 @@ router.post('/deleteBlock', function(req, res) {
 
 router.post('/updateBlock',function (req,res) {
 	//update
-	console.log(req.session.id);
 	if (req.bodyInt('id')) {
 		var promises = [];
 		var e = null;
@@ -143,6 +146,12 @@ router.post('/updateBlock',function (req,res) {
 					}
 					if (req.bodyString('name')) {
 						queryString += 'name="'+req.bodyString('name')+'", ';
+					}
+					if (req.bodyString('interval')) {
+						queryString += 'date_interval='+req.bodyInt('interval')+', ';
+					}
+					if (req.bodyString('unit')) {
+						queryString += 'interval_unit="'+req.bodyString('unit')+'", ';
 					}
 					queryString = queryString.substr(0, queryString.length -2);
 					queryString += " WHERE id="+req.bodyInt('id');
@@ -244,21 +253,46 @@ router.get('/getBlocksForStory',function (req,res) {
 		res.send("ERROR: COULD NOT RETRIEVE BLOCKS");
 	}
 });
-router.get('/getStoriesForUser',function (req,res) {
-	if (req.queryString('id')) {
-		db.query('SELECT * FROM stories WHERE user_id=?',[req.queryString('id')]).then( rows => {
+router.get('/getStoriesForCurrentUser',function (req,res) {
+	if (req.session.user.id) {
+		db.query('SELECT * FROM stories WHERE user_id=?',req.session.user.id).then( rows => {
 			res.send(JSON.stringify(rows));
 		}).catch(err => {
 			res.send("ERROR: COULD NOT RETRIEVE BLOCKS");
 		});
 	}
 	else {
-		res.send("ERROR: COULD NOT RETRIEVE BLOCKS");
+		res.status(400).send("400: COULD NOT RETRIEVE BLOCKS");
 	}
 });
 router.get('/getPublicStories',function (req,res){
 	db.query('SELECT * FROM stories WHERE public=1').then(rows => {
 		res.send(JSON.stringify(rows));
+	});
+
+});
+router.post('/deleteStory',function (req,res){
+	db.query('SELECT user_id FROM stories WHERE id=?',[req.bodyInt('id')]).then(rows => {
+		if (rows[0].user_id === req.session.user.id) {
+			db.query('DELETE block_groups FROM block_groups JOIN blocks ON blocks.id=block_groups.block_id WHERE blocks.story_id = ?',[req.bodyInt('id')]).then(val => {
+				db.query('DELETE FROM blocks WHERE story_id=?',[req.bodyInt('id')]).then(v => {
+					db.query('DELETE FROM stories WHERE id=?',[req.bodyInt('id')]).then(va => {
+						res.send("DELETED STORY");
+					}).catch(err => {
+						throw err;
+					});
+				}).catch(err => {
+						throw err;
+				});
+			}).catch(err => {
+				res.status(400).send("400: "+err);
+			});
+		}
+		else {
+			throw "error";
+		}
+	}).catch(err => {
+		res.status(400).send("400: "+err);
 	});
 
 });

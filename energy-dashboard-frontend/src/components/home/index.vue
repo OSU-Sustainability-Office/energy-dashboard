@@ -8,9 +8,9 @@
       <homeSide />
     </div>
     <div class="row justify-content-center buttonBox">
-      <div class="col-sm-2">
+      <!-- <div class="col-sm-2">
         <btn @click="explore()">Explore</btn>
-      </div>
+      </div> -->
       <div class="col-sm-2">
         <btn @click="login()">Login</btn>
       </div>
