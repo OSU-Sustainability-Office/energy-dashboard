@@ -44,6 +44,7 @@ export default {
 					}
   },
   created() {
+
   },
 	watch: {
 		graphType: function (value) {
@@ -162,6 +163,10 @@ export default {
           spanGaps: true,
           data: []
       };
+			if (this.graphType === 1) {
+				o.backgroundColor = this.colors[index]+"44";
+				o.borderColor = this.colors[index];
+			}
 			if (index < this.chartData.datasets.length)
 				this.chartData["datasets"][index] = o;
 			else

@@ -30,13 +30,22 @@ export default {
       editingStory: false
     }
   },
+  mounted () {
+    this.$eventHub.$emit('loggedIn',[]);
+  },
   created() {
-     axios.get('http://localhost:3000/api/getStoriesForUser?id=1').then (res => {
+     axios('http://localhost:3000/api/getStoriesForCurrentUser',{method: "get", withCredentials:true}).then (res => {
        this.cards = res.data;
      }).catch (e => {
       this.errors.push(e);
      });
      this.$eventHub.$on('deleteStory', val => {
+       var data = {
+         id : val[0]
+       }
+       axios('http://localhost:3000/api/deleteStory',{method: "post",data:data, withCredentials:true}).catch(err => {
+         console.log(err);
+       });
        for (var c in this.cards)
         if (this.cards[c].id === val[0]){
           this.cards.splice(c,1);
@@ -68,19 +77,24 @@ export default {
             this.$refs.storyEdit.name = this.cards[i].name;
             this.$refs.storyEdit.descr = this.cards[i].description;
             this.$refs.storyEdit.media = this.cards[i].media;
-            return;
+
+            break;
           }
         }
       });
 
     },
     changeStory: function(event) {
-      this.cardsFeatured = null;
+      //this.cardsFeatured = null;
       this.editingStory = false;
+      this.currentStory = event[0];
       axios.get('http://localhost:3000/api/getBlocksForStory?id='+event[0]).then (res => {
 
         this.cardsFeatured = res.data;
-        //this.$refs.featureBox.reload();
+        this.$nextTick(() => {
+          this.$eventHub.$emit('reloadChart');
+        });
+
       });
     }
   },

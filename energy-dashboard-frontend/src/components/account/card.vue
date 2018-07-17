@@ -3,21 +3,21 @@
 
     <chartController v-if="featured" ref="chartController" :graphType='1' class="chart"/>
     <featureController v-if="featured" ref="featureController" />
-    <div class='titleTextFeatured' v-if="featured" v-on:click='clickText' ref='title'>
+    <div class='titleTextFeatured' v-if="featured" v-on:click='clickText' ref='title' v-tooltip="'Click to edit name'">
       {{this.name}}
+
     </div>
     <div class="container descriptionContainer" v-if='featured' ref='descriptionContainer'>
-      <div class="row" v-on:click='isMaximized = !isMaximized'>
-        <i class="fas" v-bind:class="{ 'fa-chevron-circle-up' : !isMaximized, 'fa-chevron-circle-down' : isMaximized }"></i>
+      <!-- <div class="row" v-on:click='isMaximized = !isMaximized'>
+       <i class="fas" v-bind:class="{ 'fa-chevron-circle-up' : !isMaximized, 'fa-chevron-circle-down' : isMaximized }"></i>
       </div>
       <div class='descriptionTextFeatured row' ref="description" v-on:click='clickText'>
         {{this.description}}
-      </div>
+      </div> -->
       <div class="row">
-        <btn class="col" @click="download()" ref="downloadBtn">Download Data</btn>
-        <btn class="col" @click="save()" ref="downloadBtn">Save Chart</btn>
-        <btn class="col" @click="reload()" ref="reloadBtn">Clear Chart</btn>
-        <btn class="col" @click="del()" ref="deleteBtn">Delete Chart</btn>
+        <i class="col fas fa-save" v-tooltip="'Save Graph'" @click="save()"></i>
+        <i class="col fas fa-download" v-tooltip="'Download Graph Data'" @click="download()"></i>
+        <i class="col fas fa-times" @click="del()" v-tooltip="'Delete Graph'"></i>
       </div>
     </div>
   </div>
@@ -32,43 +32,46 @@ import featureController from '@/components/account/featureController'
 
 export default {
   name: 'card',
-  props: ['story_id_m','name_m', 'description_m', 'featured_m', 'id_m','start_m','end_m','int_m','unit_m','type_m','media_m'],
+  props: ['story_id','name', 'description', 'featured', 'id','start','end','int','unit','type','media','index'],
   components: {
     chartController, featureController
   },
   data() {
     return {
-      isMaximized : false,
-      story_id : null,
-      name: "",
-      description: "",
-      featured: false,
-      id: null,
-      start: "",
-      end: "",
-      type: "",
-      media: "",
-      int: 15,
-      unit: 'minute',
-      type: 1
+      showPencil : false,
+      // isMaximized : false,
+      // story_id : null,
+      // name: "",
+      // description: "",
+      // featured: false,
+      // id: null,
+      // start: "",
+      // end: "",
+      // type: "",
+      // media: "",
+      // int: 15,
+      // unit: 'minute',
+      // type: 1
     }
   },
-  created() {
-    this.story_id = this.story_id_m;
-    this.name = this.name_m;
-    this.description = this.description_m;
-    this.featured = this.featured_m;
-    this.id = this.id_m;
-    this.start = this.start_m;
-    this.end = this.end_m;
-    this.type = this.type_m;
-    this.int = this.int_m;
-    this.unit = this.unit_m;
-    this.media = this.media_m;
-  },
   methods: {
+    setStart: function(val) {
+      this.$parent.cards[this.index].start = val;
+    },
+    setEnd: function(val) {
+      this.$parent.cards[this.index].end = val;
+    },
+    setType: function(val) {
+      this.$parent.cards[this.index].type = val;
+    },
+    setInt: function(val) {
+      this.$parent.cards[this.index].int = val;
+    },
+    setUnit: function(val) {
+      this.$parent.cards[this.index].unit = val;
+    },
     del: function() {
-      this.$parent.del(this);
+      this.$parent.del(this.index);
     },
     clickText: function(event) {
       event.target.contentEditable = true;
@@ -76,43 +79,47 @@ export default {
     unclickText: function(event) {
       if (event.target !== this.$refs.title)
         this.$refs.title.contentEditable = false;
-      if (event.target !== this.$refs.description)
-        this.$refs.description.contentEditable = false;
-      this.name = this.$refs.title.innerText;
-      this.description = this.$refs.description.innerText;
+      // if (event.target !== this.$refs.description)
+      //   this.$refs.description.contentEditable = false;
+      this.$parent.cards[this.index].name = this.$refs.title.innerText;
+      //this.description = this.$refs.description.innerText;
     },
     save: function() {
-
+      var card = this.$parent.cards[this.index];
       var groupPoints = [];
       for (var i = 0; i < this.$refs.featureController.groupids.length; i++) {
         groupPoints.push({'id':this.$refs.featureController.groupids[i],'point':this.$refs.featureController.points[i],'name':this.$refs.featureController.names[i]});
       }
       var data = {};
-      if (this.id)
+      if (card.id)
         data = {
-          id: this.id,
+          id: card.id,
           meter_groups: groupPoints,
-          date_end: this.end,
-          date_start: this.start,
-          graph_type: this.type,
-          media: this.media,
-          descr: this.description,
-          name: this.name
+          date_end: card.end,
+          date_start: card.start,
+          graph_type: card.type,
+          media: card.media,
+          descr: card.description,
+          name: this.name,
+          interval: card.int,
+          unit: card.unit
         };
       else
         data = {
-          story_id: this.story_id,
+          story_id: card.story_id,
           meter_groups: groupPoints,
           date_end: this.end,
           date_start: this.start,
           graph_type: this.type,
           media: this.media,
           descr: this.description,
-          name: this.name
+          name: this.name,
+          interval: this.int,
+          unit: this.unit
         };
       axios('http://localhost:3000/api/updateBlock',{method: "post",data:data, withCredentials:true}).then(rid => {
-        if (!this.id)
-          this.id = rid.data;
+        if (rid.status === 201)
+          this.$parent.cards[this.index].id = rid.data;
       }).catch(err => {
         console.log(err);
       });
@@ -186,12 +193,12 @@ export default {
 
           var blob = new Blob([data.join('\n')]);
           if (window.navigator.msSaveOrOpenBlob)
-              window.navigator.msSaveBlob(blob, "data.csv");
+              window.navigator.msSaveBlob(blob, this.name+".csv");
           else
           {
               var a = window.document.createElement("a");
               a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
-              a.download = "data.csv";
+              a.download = this.name+".csv";
               document.body.appendChild(a);
               a.click();
               document.body.removeChild(a);
@@ -203,7 +210,7 @@ export default {
     reload: function() {
       this.$refs.card.style.backgroundColor = 'rgb(26,26,26)';
       if (this.featured) {
-        this.$refs.descriptionContainer.style.bottom = "calc(3.5em - " + this.$refs.descriptionContainer.clientHeight.toString() + "px)";
+        //this.$refs.descriptionContainer.style.bottom = "calc(3.5em - " + this.$refs.descriptionContainer.clientHeight.toString() + "px)";
       }
 
       //this.$refs.card.style.backgroundSize = "cover";
@@ -219,28 +226,43 @@ export default {
         this.$refs.chartController.interval = this.int;
         this.$refs.chartController.graphType = this.type;
         this.$refs.chartController.unit = this.unit;
-        if (this.id){
-          axios.get('http://localhost:3000/api/getBlockMeterGroups?id='+this.id).then (res => {
+        if (this.$parent.cards[this.index].id){
+          axios.get('http://localhost:3000/api/getBlockMeterGroups?id='+this.$parent.cards[this.index].id).then (res => {
             //this.$refs.chartController = res.data;
-            this.$refs.featureController.points = [];
-            this.$refs.featureController.groupids = [];
-            this.$refs.featureController.names = [];
+            // this.$refs.featureController.points = [];
+            // this.$refs.featureController.groupids = [];
+            // this.$refs.featureController.names = [];
+            //
+            // this.$refs.chartController.points = [];
+            // this.$refs.chartController.groupids = [];
+            // this.$refs.chartController.names = [];
+            var points = [];
+            var names = [];
+            var groups = [];
 
-            this.$refs.chartController.points = [];
-            this.$refs.chartController.groupids = [];
-            this.$refs.chartController.names = [];
             for (var i = 0; i < res.data.length; i++) {
-              this.$refs.featureController.points.push(res.data[i].point);
-              this.$refs.featureController.groupids.push(res.data[i].group_id);
-              this.$refs.featureController.names.push(res.data[i].name);
-
-              this.$refs.chartController.points.push(res.data[i].point);
-              this.$refs.chartController.groups.push(res.data[i].group_id);
-              this.$refs.chartController.names.push(res.data[i].name);
+              points.push(res.data[i].point);
+              groups.push(res.data[i].group_id);
+              names.push(res.data[i].name);
+              //
+              // this.$refs.chartController.points.push(res.data[i].point);
+              // this.$refs.chartController.groups.push(res.data[i].group_id);
+              // this.$refs.chartController.names.push(res.data[i].name);
 
               //Need to update the graph right here
             }
-            this.$refs.featureController.updateGraph(true);
+
+            this.$refs.featureController.points = JSON.parse(JSON.stringify(points));
+            this.$refs.featureController.groupids = JSON.parse(JSON.stringify(groups));
+            this.$refs.featureController.names = JSON.parse(JSON.stringify(names));
+
+            this.$refs.chartController.points = JSON.parse(JSON.stringify(points));
+            this.$refs.chartController.groupids = JSON.parse(JSON.stringify(groups));
+            this.$refs.chartController.names = JSON.parse(JSON.stringify(names));
+            this.$nextTick(() => {
+              this.$refs.featureController.updateGraph(true);
+            });
+
           });
         }
         else {
@@ -254,16 +276,18 @@ export default {
   mounted() {
     //this.$refs.card.style.background = "linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),url('"+this.media+"')";
     this.reload();
+    if (!this.id)
+      this.save();
   },
   watch: {
-    isMaximized : function(value) {
-      if (value) {
-        this.$refs.descriptionContainer.style.bottom = "0px";
-      }
-      else {
-        this.$refs.descriptionContainer.style.bottom = "calc(3.5em - " + this.$refs.descriptionContainer.clientHeight.toString() + "px)";
-      }
-    }
+    // isMaximized : function(value) {
+    //   if (value) {
+    //     this.$refs.descriptionContainer.style.bottom = "0px";
+    //   }
+    //   else {
+    //     this.$refs.descriptionContainer.style.bottom = "calc(3.5em - " + this.$refs.descriptionContainer.clientHeight.toString() + "px)";
+    //   }
+    // }
   }
 }
 </script>
@@ -272,21 +296,24 @@ export default {
 <style scoped>
 .descriptionContainer {
   position: absolute;
-  left: 0px;
-  width: 80%;
+  width: 150px;
   position: absolute;
+  left:0px;
   bottom: 0px;
-  left: 10%;
-  border-radius: 10px 10px 0px 0px;
+
+  /* border-radius: 10px 10px 0px 0px;
   transition: bottom 1s;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0,0,0,0.7); */
 }
 .descriptionContainer .btn {
   background-color: #000;
   color: #fff;
 }
 .descriptionContainer .row {
-  padding: 1em;
+  padding: 0.5em;
+}
+.descriptionContainer .row .col{
+  width: 30px;
 }
 .card {
   margin-left: 0.5%;
@@ -300,7 +327,7 @@ export default {
   width: 250px;
 }
 .col {
-  margin: 0.5em;
+  margin: 0em;
 }
 .feature {
   background: #000;
@@ -322,10 +349,12 @@ export default {
 
 }
 .fas {
-  color: #FFF;
+  color: #FFFFFF99;
   font-size: 2em;
   width: 100%;
   text-align: center;
+  display: inline-block;
+  cursor: pointer;
 }
 .storyName {
   color:rgb(215,63,9);

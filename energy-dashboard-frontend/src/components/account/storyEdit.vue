@@ -22,11 +22,11 @@
 			</div>
 		</div>
 		<div class="row">
-			<mediapicker ref="imagePicker"/>
+			<mediapicker ref="imagePicker"  />
 		</div>
     <div class="row">
       <div class="col" align="right">
-        <btn @click="discard()">Discard Changes</btn>
+        <btn @click="discard()">Exit</btn>
       </div>
       <div class='col' align="left">
         <btn @click="save()">Save Changes</btn>
@@ -53,6 +53,19 @@
 	  },
     mounted() {
 
+    },
+    watch: {
+      media: function(v) {
+        var index = 0;
+        for (var x of this.$refs.imagePicker.images) {
+          if (x === "http://localhost:3000/block-media/thumbs/"+v) {
+            this.$refs.imagePicker.selected = index+1;
+            return;
+          }
+          index++;
+        }
+        this.$refs.imagePicker.selected = 0;
+      }
     },
 		methods: {
 			save: function() {

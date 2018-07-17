@@ -15,7 +15,8 @@ export default {
   data() {
     return {
       images : [],
-      selected : 0
+      selected : 0,
+      selectedString: ""
     }
   },
   mounted() {
@@ -25,7 +26,7 @@ export default {
       for (var i of val.data) {
         this.images.push("http://localhost:3000/block-media/thumbs/"+i);
         if (i === this.$parent.media)
-          this.selected = index;
+          this.selected = index+1;
         index++;
       }
       this.$nextTick(()=> {
@@ -42,6 +43,9 @@ export default {
     });
   },
   watch: {
+    selectedString: function(v) {
+
+    },
     selected: function(value) {
       var index = 0;
       for (var node of this.$refs.imageNodes.children) {
@@ -94,5 +98,6 @@ label {
   margin: 0.5em;
   border-radius: 5px;
   align-self: flex-start;
+  float: left;
 }
 </style>
