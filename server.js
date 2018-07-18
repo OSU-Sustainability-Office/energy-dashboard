@@ -53,8 +53,21 @@ exports.start = function(cb) {
 		app.use(cors(corsOptions))
 	}
 	app.use(express.json());
-  app.use('/api',require('./controllers/api.js')(cas));
+  app.use('/api',cas.block,require('./controllers/api.js')(cas));
 	app.get('/login', cas.bounce, function(req, res) {
+
+
+	});
+
+	// app.get('/home', function(req, res) {
+	// 	res.sendFile(path.join(__dirname,'/public', 'index.html'));
+	// 	//res.send("Test");
+	// });
+	// app.get('/account', cas.bounce, function(req, res) {
+	// 	res.send(JSON.stringify(req.session[cas.session_name]));
+	// });
+
+	app.get('/undefined', function(req, res) {
 		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
 			req.session.user = JSON.parse(JSON.stringify(val))[0];
 			if (process.env.CAS_DEV === "true")
@@ -68,19 +81,6 @@ exports.start = function(cb) {
 		}).catch(e => {
 			res.status(403).send("ERROR 403: " + e);
 		});
-
-	});
-
-	// app.get('/home', function(req, res) {
-	// 	res.sendFile(path.join(__dirname,'/public', 'index.html'));
-	// 	//res.send("Test");
-	// });
-	// app.get('/account', cas.bounce, function(req, res) {
-	// 	res.send(JSON.stringify(req.session[cas.session_name]));
-	// });
-
-	app.get('/undefined', function(req, res) {
-		res.send("yo");
 	});
 
 	app.use(express.static(__dirname + "/public"))
