@@ -9,6 +9,7 @@ var CASAuthentication = require('r-cas-authentication');
 var dotenv = require('dotenv').config();
 var server = null;
 
+var path = require('path');
 
 
 
@@ -58,8 +59,8 @@ exports.start = function(cb) {
 
 	});
 	app.get('/home', function(req, res) {
-		//res.sendFile(path.join(public, 'index.html'));
-		res.send("Test");
+		res.sendFile(path.join('/public', 'index.html'));
+		//res.send("Test");
 	});
 
 
