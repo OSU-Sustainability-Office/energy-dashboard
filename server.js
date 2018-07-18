@@ -64,8 +64,10 @@ exports.start = function(cb) {
 	// 	//res.send("Test");
 	// });
 	app.get('/', cas.bounce_redirect);
-	app.get('/account', cas.bounce);
-	app.use(serveStatic(__dirname + "/public"))
+	app.get('/account', cas.bounce, function(req, res) {
+		res.send("yo");
+	});
+	//app.use(serveStatic(__dirname + "/public"))
 
 
 	// app.get('/', function (req,res) {
