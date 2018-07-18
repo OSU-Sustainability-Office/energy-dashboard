@@ -63,7 +63,7 @@ exports.start = function(cb) {
 	// 	res.sendFile(path.join(__dirname,'/public', 'index.html'));
 	// 	//res.send("Test");
 	// });
-	app.get('/login', cas.bounce_redirect);
+	app.get('/', cas.bounce_redirect);
 	app.use(serveStatic(__dirname + "/public"))
 
 
