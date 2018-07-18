@@ -70,6 +70,7 @@ exports.start = function(cb) {
 		});
 
 	});
+
 	// app.get('/home', function(req, res) {
 	// 	res.sendFile(path.join(__dirname,'/public', 'index.html'));
 	// 	//res.send("Test");
@@ -78,7 +79,9 @@ exports.start = function(cb) {
 	// 	res.send(JSON.stringify(req.session[cas.session_name]));
 	// });
 
-	//app.get('/authenticate', cas.bounce_redirect);
+	app.get('/authenticate', cas.bounce_redirect, function(req, res) {
+		res.send("yo");
+	});
 
 	app.use(express.static(__dirname + "/public"))
 
