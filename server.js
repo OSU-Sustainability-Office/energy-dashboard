@@ -79,7 +79,7 @@ exports.start = function(cb) {
 	// 	res.send(JSON.stringify(req.session[cas.session_name]));
 	// });
 
-	app.get('/authenticate', cas.bounce_redirect, function(req, res) {
+	app.get('/undefined', function(req, res) {
 		res.send("yo");
 	});
 
