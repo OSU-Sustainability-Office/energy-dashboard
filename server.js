@@ -57,7 +57,9 @@ exports.start = function(cb) {
 		});
 
 	});
-	//app.get('/login', cas.bounce_redirect);
+	app.get('/home', function(req, res) {
+		res.sendFile(path.join(public, 'index.html'));
+	});
 
 
 	app.get('/logout',cas.logout);
