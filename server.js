@@ -11,6 +11,7 @@ var server = null;
 
 var path = require('path');
 var serveStatic = require('serve-static');
+var request = require('request');
 
 
 
@@ -62,8 +63,21 @@ exports.start = function(cb) {
 	// 	res.sendFile(path.join(__dirname,'/public', 'index.html'));
 	// 	//res.send("Test");
 	// });
-	app.use(serveStatic(__dirname + "/public"))
+	//app.use(serveStatic(__dirname + "/public"))
 
+
+	app.get('/', function (req,res) {
+		if (req.query.ticket) {
+			request("https://login.oregonstate.edu/cas-dev/serviceValidate?ticket"+req.query.ticket+"service=http://54.186.223.223:3478/",function(e,r,b) {
+				res.send(b);
+			});
+		}
+		else {
+			request("https://login.oregonstate.edu/cas-dev/login?service=http://54.186.223.223:3478/", function(e,r,b) {
+
+			});
+		}
+	});
 
 	app.get('/logout',cas.logout);
 	db.connect(function(err) {
