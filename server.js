@@ -46,7 +46,7 @@ exports.start = function(cb) {
 	}
 	app.use(express.json());
   app.use('/api', cas.block,require('./controllers/api.js')(cas));
-	app.get('/', cas.bounce_redirect, function(req, res) {
+	app.get('/', cas.bounce, function(req, res) {
 		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
 			req.session.user = JSON.parse(JSON.stringify(val))[0];
 			if (process.env.CAS_DEV === "true")
