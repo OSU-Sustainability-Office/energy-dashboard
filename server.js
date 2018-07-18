@@ -47,37 +47,38 @@ exports.start = function(cb) {
 	}
 	app.use(express.json());
   app.use('/api', cas.block,require('./controllers/api.js')(cas));
-	app.get('/login', cas.bounce, function(req, res) {
-		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
-			req.session.user = JSON.parse(JSON.stringify(val))[0];
-			if (process.env.CAS_DEV === "true")
-				res.status(301).redirect('http://localhost:8080/#/account');
-			else
-				res.status(301).redirect('http://54.186.223.223:3478/#/account');
-		}).catch(e => {
-			res.status(403).send("ERROR 403: " + e);
-		});
-
-	});
+	// app.get('/login', cas.bounce, function(req, res) {
+	// 	db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
+	// 		req.session.user = JSON.parse(JSON.stringify(val))[0];
+	// 		if (process.env.CAS_DEV === "true")
+	// 			res.status(301).redirect('http://localhost:8080/#/account');
+	// 		else
+	// 			res.status(301).redirect('http://54.186.223.223:3478/#/account');
+	// 	}).catch(e => {
+	// 		res.status(403).send("ERROR 403: " + e);
+	// 	});
+	//
+	// });
 	// app.get('/home', function(req, res) {
 	// 	res.sendFile(path.join(__dirname,'/public', 'index.html'));
 	// 	//res.send("Test");
 	// });
-	//app.use(serveStatic(__dirname + "/public"))
+	app.get('/login', cas.bounce_redirect);
+	app.use(serveStatic(__dirname + "/public"))
 
 
-	app.get('/', function (req,res) {
-		if (req.query.ticket) {
-			request("https://login.oregonstate.edu/cas-dev/serviceValidate?ticket="+req.query.ticket+"&service=http://54.186.223.223:3478/",function(e,r,b) {
-				res.send(b);
-			});
-		}
-		else {
-			//request("https://login.oregonstate.edu/cas-dev/login?service=http://54.186.223.223:3478/", function(e,r,b) {
-				res.status(301).redirect("https://login.oregonstate.edu/cas-dev/login?service=http://54.186.223.223:3478/");
-		//	});
-		}
-	});
+	// app.get('/', function (req,res) {
+	// 	if (req.query.ticket) {
+	// 		request("https://login.oregonstate.edu/cas-dev/serviceValidate?ticket="+req.query.ticket+"&service=http://54.186.223.223:3478/",function(e,r,b) {
+	// 			res.send(b);
+	// 		});
+	// 	}
+	// 	else {
+	// 		//request("https://login.oregonstate.edu/cas-dev/login?service=http://54.186.223.223:3478/", function(e,r,b) {
+	// 			res.status(301).redirect("https://login.oregonstate.edu/cas-dev/login?service=http://54.186.223.223:3478/");
+	// 	//	});
+	// 	}
+	// });
 
 	app.get('/logout',cas.logout);
 	db.connect(function(err) {
