@@ -16,7 +16,7 @@ var serveStatic = require('serve-static');
 
 exports.start = function(cb) {
 	var cas = new CASAuthentication({
-	    cas_url     : 'https://login.oregonstate.edu/idp/profile/cas/login',
+	    cas_url     : 'https://login.oregonstate.edu/idp/profile/cas-dev/login',
 	    service_url : process.env.CAS_SERVICE,
 			is_dev_mode     : process.env.CAS_DEV,
 	    dev_mode_user   : process.env.CAS_DEV_USER,
