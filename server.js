@@ -53,7 +53,7 @@ exports.start = function(cb) {
 		app.use(cors(corsOptions))
 	}
 	app.use(express.json());
-  app.use('/api', cas.block,require('./controllers/api.js')(cas));
+  app.use('/api',require('./controllers/api.js')(cas));
 	app.get('/login', cas.bounce, function(req, res) {
 		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
 			req.session.user = JSON.parse(JSON.stringify(val))[0];
