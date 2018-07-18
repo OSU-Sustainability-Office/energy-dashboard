@@ -7,7 +7,6 @@ var cookieparser = require('cookie-parser');
 var session = require('express-session');
 var CASAuthentication = require('r-cas-authentication');
 var dotenv = require('dotenv').config();
-
 var server = null;
 
 
