@@ -58,7 +58,8 @@ exports.start = function(cb) {
 
 	});
 	app.get('/home', function(req, res) {
-		res.sendFile(path.join(public, 'index.html'));
+		//res.sendFile(path.join(public, 'index.html'));
+		res.send("Test");
 	});
 
 
