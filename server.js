@@ -64,10 +64,10 @@ exports.start = function(cb) {
 	// 	//res.send("Test");
 	// });
 	app.get('/account', cas.bounce, function(req, res) {
-		res.send("yo");
+		res.send(JSON.stringify(req.session[cas.session_name]));
 	});
-	
-	app.get('/authenticate', cas.bounce_redirect);
+
+	//app.get('/authenticate', cas.bounce_redirect);
 
 	//app.use(serveStatic(__dirname + "/public"))
 
