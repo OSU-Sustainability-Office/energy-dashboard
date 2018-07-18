@@ -285,6 +285,7 @@ router.get('/getBlocksForStory',function (req,res) {
 	}
 });
 router.get('/getStoriesForCurrentUser',function (req,res) {
+	console.log(req.session.id)
 	if (req.session.user.id) {
 		db.query('SELECT * FROM stories WHERE user_id=?',req.session.user.id).then( rows => {
 			res.send(JSON.stringify(rows));

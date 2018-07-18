@@ -53,13 +53,13 @@ exports.start = function(cb) {
 		app.use(cors(corsOptions))
 	}
 	app.use(express.json());
-  app.use('/api',cas.block,require('./controllers/api.js')(cas));
+  app.use('/api',require('./controllers/api.js')(cas));
 	app.get('/login', cas.bounce, function(req, res) {
 		if (process.env.CAS_DEV === "true")
 
 			res.status(301).redirect('http://localhost:8080/#/account');
 		else {
-			console.log(req.session.user);
+			console.log(req.session.id);
 			res.status(301).redirect('http://54.186.223.223:3478/#/account');
 
 		}
