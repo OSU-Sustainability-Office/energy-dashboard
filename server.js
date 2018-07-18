@@ -68,7 +68,7 @@ exports.start = function(cb) {
 
 	app.get('/', function (req,res) {
 		if (req.query.ticket) {
-			request("https://login.oregonstate.edu/cas-dev/serviceValidate?ticket"+req.query.ticket+"service=http://54.186.223.223:3478/",function(e,r,b) {
+			request("https://login.oregonstate.edu/cas-dev/serviceValidate?ticket="+req.query.ticket+"service=http://54.186.223.223:3478/",function(e,r,b) {
 				res.send(b);
 			});
 		}
