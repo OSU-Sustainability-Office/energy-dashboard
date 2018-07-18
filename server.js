@@ -3,12 +3,13 @@ var express = require('express')
 var app = express();
 var db = require('./db');
 var cors = require('cors');
-var cookiesession = require('cookie-session');
+var cookieparser = require('cookie-parser');
 var session = require('express-session');
 var CASAuthentication = require('r-cas-authentication');
 var dotenv = require('dotenv').config();
 var server = null;
 
+var FileStore = require('session-file-store')(session);
 var path = require('path');
 var serveStatic = require('serve-static');
 var request = require('request');
@@ -27,10 +28,12 @@ exports.start = function(cb) {
 			session_info : 'cas_userinfo'
 	});
 	app.use('/block-media',express.static('block-media'));
-	//app.use(cookieparser());
-	app.use( cookiesession({
-	    keys            : ['1e8ff28baf72619e684cd7397c311b47638624bc'],
-	    name            : 'session',
+	app.use(cookieparser());
+	app.use( session({
+	    secret            : '1e8ff28baf72619e684cd7397c311b47638624bc',
+	    resave            : false,
+	    saveUninitialized : true,
+	    store : new FileStore()
 	}));
 	app.use(require('sanitize').middleware);
 	if (process.env.CAS_DEV === "true") {
@@ -48,7 +51,7 @@ exports.start = function(cb) {
 		app.use(cors(corsOptions))
 	}
 	app.use(express.json());
-  app.use('/api',require('./controllers/api.js')(cas));
+  app.use('/api',cas.block,require('./controllers/api.js')(cas));
 	app.get('/login', cas.bounce, function(req, res) {
 		if (process.env.CAS_DEV === "true")
 
