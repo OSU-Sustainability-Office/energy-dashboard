@@ -28,7 +28,7 @@ exports.start = function(cb) {
 	app.use('/block-media',express.static('block-media'));
 	app.use(cookieparser());
 	app.use( session({
-	    secret            : 'super secret key',
+	    secret            : '1e8ff28baf72619e684cd7397c311b47638624bc',
 	    resave            : false,
 	    saveUninitialized : true,
 	    cookie: {

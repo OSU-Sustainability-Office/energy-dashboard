@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     login: function() {
-      window.location.href=process.env.ROOT_API+"energy";
+      window.location.href=process.env.ROOT_API+"login";
       //this.$router.push("account")
     },
     explore: function() {
