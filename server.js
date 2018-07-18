@@ -37,7 +37,7 @@ exports.start = function(cb) {
 	    }
 	}));
 	app.use(require('sanitize').middleware);
-	if (process.env.CAS_DEV) {
+	if (process.env.CAS_DEV === "true") {
 		var corsOptions = {
 			origin: 'http://localhost:8080',
 			credentials: true
@@ -46,13 +46,13 @@ exports.start = function(cb) {
 	}
 	app.use(express.json());
   app.use('/api', cas.block,require('./controllers/api.js')(cas));
-	app.get('/energy', cas.bounce, function(req, res) {
+	app.get('/login', cas.bounce_redirect, function(req, res) {
 		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
 			req.session.user = JSON.parse(JSON.stringify(val))[0];
-			if (process.env.CAS_DEV)
+			if (process.env.CAS_DEV === "true")
 				res.status(301).redirect('http://localhost:8080/#/account');
 			else
-				res.sendFile(path.join(public, 'index.html'));
+				res.status(301).redirect('http://http://54.186.223.223:3478/#/account');
 		}).catch(e => {
 			res.status(403).send("ERROR 403: " + e);
 		});
@@ -62,7 +62,7 @@ exports.start = function(cb) {
 	// 	res.sendFile(path.join(__dirname,'/public', 'index.html'));
 	// 	//res.send("Test");
 	// });
-	app.use(serveStatic(__dirname + "/public"))
+	app.use(cas.bounce, serveStatic(__dirname + "/public"))
 
 
 	app.get('/logout',cas.logout);
