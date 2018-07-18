@@ -47,29 +47,29 @@ exports.start = function(cb) {
 	}
 	app.use(express.json());
   app.use('/api', cas.block,require('./controllers/api.js')(cas));
-	// app.get('/login', cas.bounce, function(req, res) {
-	// 	db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
-	// 		req.session.user = JSON.parse(JSON.stringify(val))[0];
-	// 		if (process.env.CAS_DEV === "true")
-	// 			res.status(301).redirect('http://localhost:8080/#/account');
-	// 		else
-	// 			res.status(301).redirect('http://54.186.223.223:3478/#/account');
-	// 	}).catch(e => {
-	// 		res.status(403).send("ERROR 403: " + e);
-	// 	});
-	//
-	// });
+	app.get('/login', cas.bounce, function(req, res) {
+		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
+			req.session.user = JSON.parse(JSON.stringify(val))[0];
+			if (process.env.CAS_DEV === "true")
+				res.status(301).redirect('http://localhost:8080/#/account');
+			else
+				res.status(301).redirect('http://54.186.223.223:3478/#/account');
+		}).catch(e => {
+			res.status(403).send("ERROR 403: " + e);
+		});
+
+	});
 	// app.get('/home', function(req, res) {
 	// 	res.sendFile(path.join(__dirname,'/public', 'index.html'));
 	// 	//res.send("Test");
 	// });
-	app.get('/account', cas.bounce, function(req, res) {
-		res.send(JSON.stringify(req.session[cas.session_name]));
-	});
+	// app.get('/account', cas.bounce, function(req, res) {
+	// 	res.send(JSON.stringify(req.session[cas.session_name]));
+	// });
 
 	//app.get('/authenticate', cas.bounce_redirect);
 
-	//app.use(serveStatic(__dirname + "/public"))
+	app.use(serveStatic(__dirname + "/public"))
 
 
 	// app.get('/', function (req,res) {
