@@ -58,9 +58,13 @@ exports.start = function(cb) {
 		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
 			req.session.user = JSON.parse(JSON.stringify(val))[0];
 			if (process.env.CAS_DEV === "true")
+
 				res.status(301).redirect('http://localhost:8080/#/account');
-			else
+			else {
+				console.log(req.session.user);
 				res.status(301).redirect('http://54.186.223.223:3478/#/account');
+
+			}
 		}).catch(e => {
 			res.status(403).send("ERROR 403: " + e);
 		});
