@@ -80,7 +80,7 @@ exports.start = function(cb) {
 
 	//app.get('/authenticate', cas.bounce_redirect);
 
-	app.use(serveStatic(__dirname + "/public"))
+	app.use(express.static(__dirname + "/public"))
 
 
 	// app.get('/', function (req,res) {
