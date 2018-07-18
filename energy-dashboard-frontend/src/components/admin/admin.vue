@@ -58,13 +58,13 @@ export default {
     }
   },
   created() {
-    axios.get('http://localhost:3000/api/getAllUsers').then (res => {
+    axios.get(process.env.ROOT_API+'api/getAllUsers').then (res => {
       this.users = res.data;
     });
-    axios.get('http://localhost:3000/api/getAllMeterGroups').then (res => {
+    axios.get(process.env.ROOT_API+'api/getAllMeterGroups').then (res => {
       var promises = [];
       for (var i = 0; i < res.data.length; i++) {
-        promises.push(axios.get('http://localhost:3000/api/getMetersForGroup?id='+res.data[i].id));
+        promises.push(axios.get(process.env.ROOT_API+'api/getMetersForGroup?id='+res.data[i].id));
       }
       Promise.all(promises).then(values => {
         for (var i = 0; i < values.length; i++) {
@@ -75,7 +75,7 @@ export default {
       });
 
     });
-    axios.get('http://localhost:3000/api/getDefaultMeters').then (res => {
+    axios.get(process.env.ROOT_API+'api/getDefaultMeters').then (res => {
       this.meters = res.data;
     });
   },
@@ -99,7 +99,7 @@ export default {
         this.meterGroups[group].is_building = 0;
       }
       console.log(this.meterGroups[group]);
-      axios.post('http://localhost:3000/api/updateMeterGroup', this.meterGroups[group]).then (res => {
+      axios.post(process.env.ROOT_API+'api/updateMeterGroup', this.meterGroups[group]).then (res => {
         console.log(res);
       });
 

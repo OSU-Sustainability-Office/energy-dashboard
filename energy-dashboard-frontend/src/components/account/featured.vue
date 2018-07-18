@@ -30,7 +30,7 @@ export default {
     del: function(comp) {
 //      this.$el.removeChild(comp.$el);
         var data = {'id':this.cards[comp].id};
-        axios('http://localhost:3000/api/deleteBlock',{method: "post",data:data, withCredentials:true}).then(() => {
+        axios(process.env.ROOT_API+'api/deleteBlock',{method: "post",data:data, withCredentials:true}).then(() => {
           this.cards.splice(comp,1);
         }).catch(err=>{
           console.log(err);

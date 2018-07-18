@@ -34,7 +34,7 @@ export default {
     this.$eventHub.$emit('loggedIn',[]);
   },
   created() {
-     axios('http://localhost:3000/api/getStoriesForCurrentUser',{method: "get", withCredentials:true}).then (res => {
+     axios(process.env.ROOT_API+'api/getStoriesForCurrentUser',{method: "get", withCredentials:true}).then (res => {
        this.cards = res.data;
      }).catch (e => {
       this.errors.push(e);
@@ -43,7 +43,7 @@ export default {
        var data = {
          id : val[0]
        }
-       axios('http://localhost:3000/api/deleteStory',{method: "post",data:data, withCredentials:true}).catch(err => {
+       axios(process.env.ROOT_API+'api/deleteStory',{method: "post",data:data, withCredentials:true}).catch(err => {
          console.log(err);
        });
        for (var c in this.cards)
@@ -58,7 +58,7 @@ export default {
       for (var i = 0; i < this.cards.length; i++) {
         if (this.cards[i].featured) {
           this.currentStory = this.cards[i].id;
-          axios.get('http://localhost:3000/api/getBlocksForStory?id='+this.cards[i].id).then (res => {
+          axios.get(process.env.ROOT_API+'api/getBlocksForStory?id='+this.cards[i].id).then (res => {
 
             this.cardsFeatured = res.data;
           });
@@ -88,7 +88,10 @@ export default {
       //this.cardsFeatured = null;
       this.editingStory = false;
       this.currentStory = event[0];
-      axios.get('http://localhost:3000/api/getBlocksForStory?id='+event[0]).then (res => {
+      axios(process.env.ROOT_API+'api/changeFeaturedStory',{method: "post", data:{id: event[0]}, withCredentials:true}).catch(e => {
+        console.log(e);
+      });
+      axios.get(process.env.ROOT_API+'api/getBlocksForStory?id='+event[0]).then (res => {
 
         this.cardsFeatured = res.data;
         this.$nextTick(() => {

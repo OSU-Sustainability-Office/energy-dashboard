@@ -53,7 +53,7 @@ export default {
         name : card.name,
         descr : card.description
       }
-      axios('http://localhost:3000/api/updateStory',{method: "post",data:data, withCredentials:true}).then(rid => {
+      axios(process.env.ROOT_API+'api/updateStory',{method: "post",data:data, withCredentials:true}).then(rid => {
         card.id = rid.data;
         this.cards.push(card);
       }).catch(err => {

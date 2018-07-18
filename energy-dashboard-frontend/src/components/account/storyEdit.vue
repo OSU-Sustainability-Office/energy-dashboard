@@ -76,7 +76,7 @@
           descr: this.descr,
           name: this.name
         };
-        axios('http://localhost:3000/api/updateStory',{method: "post",data:data, withCredentials:true}).catch(err => {
+        axios(process.env.ROOT_API+'api/updateStory',{method: "post",data:data, withCredentials:true}).catch(err => {
           console.log(err);
         });
 

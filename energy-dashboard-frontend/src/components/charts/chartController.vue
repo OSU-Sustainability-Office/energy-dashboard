@@ -82,10 +82,10 @@ export default {
 						interval = '15';
 						unit = 'minute';
 					}
-	        axios.get('http://localhost:3000/api/getMetersForGroup?id='+groupId).then (meters => {
+	        axios.get(process.env.ROOT_API+'api/getMetersForGroup?id='+groupId).then (meters => {
 	          meters.data.forEach(meter => {
 	            meterRelation[meter.id.toString()] = meter.operation;
-	            promises.push(axios.get('http://localhost:3000/api/getMeterData?id='+meter.id+'&date_start='+startDate+'&date_end='+endDate+'&mpoints='+mpoint+'&int='+interval+'&unit='+unit));
+	            promises.push(axios.get(process.env.ROOT_API+'api/getMeterData?id='+meter.id+'&date_start='+startDate+'&date_end='+endDate+'&mpoints='+mpoint+'&int='+interval+'&unit='+unit));
 						});
 	          Promise.all(promises).then(values => {
 	            //combine all returned data

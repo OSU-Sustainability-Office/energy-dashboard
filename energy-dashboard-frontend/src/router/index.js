@@ -18,18 +18,6 @@ export default new Router({
       path: '/account',
       name: 'account',
       component: account
-    },
-    {
-      path: '/story/:id',
-      name: 'story',
-      props: true,
-      component: story
-    },
-    {
-      path: '/admin',
-      name: 'admin',
-      props: true,
-      component: admin
     }
   ]
 })

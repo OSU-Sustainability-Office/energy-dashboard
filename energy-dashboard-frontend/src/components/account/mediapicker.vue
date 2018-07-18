@@ -21,10 +21,10 @@ export default {
   },
   mounted() {
 
-    axios.get('http://localhost:3000/api/listAvailableMedia').then(val => {
+    axios.get(process.env.ROOT_API+'api/listAvailableMedia').then(val => {
       var index = 0;
       for (var i of val.data) {
-        this.images.push("http://localhost:3000/block-media/thumbs/"+i);
+        this.images.push(process.env.ROOT_API+"block-media/thumbs/"+i);
         if (i === this.$parent.media)
           this.selected = index+1;
         index++;
@@ -54,7 +54,7 @@ export default {
           if (index -1 < 0)
             this.$parent.media = null;
           else
-            this.$parent.media = this.images[index-1].replace("http://localhost:3000/block-media/thumbs/","");
+            this.$parent.media = this.images[index-1].replace(process.env.ROOT_API+"block-media/thumbs/","");
         }
         else {
           node.style.border = "solid 1px rgb(255,255,255)";

@@ -117,7 +117,7 @@ export default {
           interval: this.int,
           unit: this.unit
         };
-      axios('http://localhost:3000/api/updateBlock',{method: "post",data:data, withCredentials:true}).then(rid => {
+      axios(process.env.ROOT_API+'api/updateBlock',{method: "post",data:data, withCredentials:true}).then(rid => {
         if (rid.status === 201)
           this.$parent.cards[this.index].id = rid.data;
       }).catch(err => {
@@ -136,7 +136,7 @@ export default {
 
       //Make requests for each meter id in the groups
       for (var i = 0; i < groups.length; i++) {
-         promises.push(axios.get('http://localhost:3000/api/getMetersForGroup?id='+groups[i]));
+         promises.push(axios.get(process.env.ROOT_API+'api/getMetersForGroup?id='+groups[i]));
       }
 
 
@@ -148,7 +148,7 @@ export default {
             //use relation object to do adding, or subtracting (based on table data)
             relation[index][meter.id] = meter.operation;
             //Make requests for data for each meter
-            promisesRoundTwo.push(axios.get('http://localhost:3000/api/getMeterData?id='+meter.id+'&date_start='+this.$refs.featureController.dateFrom+'&date_end='+this.$refs.featureController.dateTo+'&mpoints='+points[index]));
+            promisesRoundTwo.push(axios.get(process.env.ROOT_API+'api/getMeterData?id='+meter.id+'&date_start='+this.$refs.featureController.dateFrom+'&date_end='+this.$refs.featureController.dateTo+'&mpoints='+points[index]));
           });
         });
         Promise.all(promisesRoundTwo).then(results => {
@@ -227,7 +227,7 @@ export default {
         this.$refs.chartController.graphType = this.type;
         this.$refs.chartController.unit = this.unit;
         if (this.$parent.cards[this.index].id){
-          axios.get('http://localhost:3000/api/getBlockMeterGroups?id='+this.$parent.cards[this.index].id).then (res => {
+          axios.get(process.env.ROOT_API+'api/getBlockMeterGroups?id='+this.$parent.cards[this.index].id).then (res => {
             //this.$refs.chartController = res.data;
             // this.$refs.featureController.points = [];
             // this.$refs.featureController.groupids = [];

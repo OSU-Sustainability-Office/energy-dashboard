@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     login: function() {
-      window.location.href="http://localhost:3000/energy";
+      window.location.href=process.env.ROOT_API+"energy";
       //this.$router.push("account")
     },
     explore: function() {

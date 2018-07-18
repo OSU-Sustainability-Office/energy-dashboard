@@ -12,23 +12,30 @@ router.get('/currentUser',function(req,res){
 router.get('/currentUserID',function(req,res){
 	res.send(req.session.id);
 });
-router.get('/currentUsers',function(req,res){
-	res.send(req.session[cas.session_name]);
-});
 //High privilige
 router.get('/getAllUsers', function(req,res){
-	db.query("SELECT * FROM users").then (rows => {
-		res.send(rows);
-	}).catch(err => {
-		res.send("error");
-	});
+	if (req.sesion.user.privilege <= 2) {
+		res.status(403).send("403: NON PRIVILIGED USER")
+	}
+	else {
+		db.query("SELECT * FROM users").then (rows => {
+			res.send(rows);
+		}).catch(err => {
+			res.send("error");
+		});
+	}
 });
 router.get('/getAllMeterGroups', function(req,res){
-	db.query("SELECT * FROM meter_groups").then (rows => {
-		res.send(rows);
-	}).catch(err => {
-		res.send("error");
-	});
+	if (req.sesion.user.privilege <= 2) {
+		res.status(403).send("403: NON PRIVILIGED USER")
+	}
+	else {
+		db.query("SELECT * FROM meter_groups").then (rows => {
+			res.send(rows);
+		}).catch(err => {
+			res.send("error");
+		});
+	}
 });
 
 //router.delete('/deleteMeterGroup')
@@ -224,7 +231,31 @@ router.post('/updateBlock',function (req,res) {
 });
 
 //STORIES
-
+router.post('/changeFeaturedStory',function(req, res) {
+	if (req.bodyInt('id') && req.session.user.id) {
+		db.query("SELECT * FROM stories WHERE user_id=?",[req.session.user.id]).then(rows => {
+			var promises = [];
+			rows.forEach(r => {
+				if (r.id === req.bodyInt('id')) {
+					promises.push(db.query("UPDATE stories SET featured=1 WHERE id=?",[r.id]));
+				}
+				else {
+					promises.push(db.query("UPDATE stories SET featured=0 WHERE id=?",[r.id]));
+				}
+			});
+			Promise.all(promises).then(() => {
+				res.send("200: UPDATED FEATURED STORY");
+			}).catch(e => {
+				throw e;
+			});
+		}).catch(e => {
+			res.status(400).send("400: "+e);
+		});
+	}
+	else {
+		res.status(400).send("400: NO ID SPECIFIED");
+	}
+});
 router.get('/getStoryData',function (req,res) {
 	//get a story by its id
 	if (req.queryInt('id')) {
