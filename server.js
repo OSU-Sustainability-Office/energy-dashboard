@@ -73,9 +73,9 @@ exports.start = function(cb) {
 			});
 		}
 		else {
-			request("https://login.oregonstate.edu/cas-dev/login?service=http://54.186.223.223:3478/", function(e,r,b) {
-
-			});
+			//request("https://login.oregonstate.edu/cas-dev/login?service=http://54.186.223.223:3478/", function(e,r,b) {
+				res.status(301).redirect("https://login.oregonstate.edu/cas-dev/login?service=http://54.186.223.223:3478/");
+		//	});
 		}
 	});
 
