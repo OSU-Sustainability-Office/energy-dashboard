@@ -3,7 +3,7 @@ var express = require('express')
 var app = express();
 var db = require('./db');
 var cors = require('cors');
-var cookieparser = require('cookie-parser');
+var cookiesession = require('cookie-session');
 var session = require('express-session');
 var CASAuthentication = require('r-cas-authentication');
 var dotenv = require('dotenv').config();
@@ -27,15 +27,10 @@ exports.start = function(cb) {
 			session_info : 'cas_userinfo'
 	});
 	app.use('/block-media',express.static('block-media'));
-	app.use(cookieparser());
-	app.use( session({
-	    secret            : '1e8ff28baf72619e684cd7397c311b47638624bc',
-	    resave            : false,
-	    saveUninitialized : true,
-	    cookie: {
-	        secure: false, // Secure is Recommeneded, However it requires an HTTPS enabled website (SSL Certificate)
-	        maxAge: 864000000 // 10 Days in miliseconds
-	    }
+	//app.use(cookieparser());
+	app.use( cookiesession({
+	    keys            : ['1e8ff28baf72619e684cd7397c311b47638624bc'],
+	    name            : 'session',
 	}));
 	app.use(require('sanitize').middleware);
 	if (process.env.CAS_DEV === "true") {
