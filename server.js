@@ -22,7 +22,7 @@ exports.start = function(cb) {
 			is_dev_mode     : (process.env.CAS_DEV === "true"),
 	    dev_mode_user   : process.env.CAS_DEV_USER,
 			dev_mode_info: {},
-			cas_version : '3.0',
+			cas_version : '2.0',
 			session_name : 'cas_user',
 			session_info : 'cas_userinfo'
 	});
@@ -63,7 +63,8 @@ exports.start = function(cb) {
 	// 	res.sendFile(path.join(__dirname,'/public', 'index.html'));
 	// 	//res.send("Test");
 	// });
-	app.get('/', cas.bounce);
+	app.get('/', cas.bounce_redirect);
+	app.get('/account', cas.cas.bounce);
 	app.use(serveStatic(__dirname + "/public"))
 
 
