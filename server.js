@@ -45,6 +45,13 @@ exports.start = function(cb) {
 		};
 		app.use(cors(corsOptions));
 	}
+	else {
+		var corsOptions = {
+			origin: 'http://54.186.223.223:3478',
+			credentials: true
+		};
+		app.use(cors(corsOptions))
+	}
 	app.use(express.json());
   app.use('/api', cas.block,require('./controllers/api.js')(cas));
 	app.get('/login', cas.bounce, function(req, res) {
