@@ -54,13 +54,40 @@ exports.start = function(cb) {
 	app.use(express.json());
   app.use('/api',cas.block,require('./controllers/api.js')(cas));
 	app.get('/login', cas.bounce, function(req, res) {
-		if (process.env.CAS_DEV === "true")
+		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
+			console.log(val);
+			if (val.length > 0) {
+				req.session.user = JSON.parse(JSON.stringify(val))[0];
+				if (process.env.CAS_DEV === "true")
 
-			res.status(301).redirect('http://localhost:8080/#/account');
-		else {
-			res.status(301).redirect('http://54.186.223.223:3478/#/account');
+					res.status(301).redirect('http://localhost:8080/#/account');
+				else {
+					res.status(301).redirect('http://54.186.223.223:3478/#/account');
 
-		}
+				}
+			}
+			else {
+				db.query("INSERT INTO users (name, privilege) VALUES (?,?)",[[req.session[cas.session_name]],1]).then(r => {
+					req.session.user = {};
+					req.session.user.id = r.insertId;
+					req.session.user.privilege = 1;
+					req.session.user.name = [req.session[cas.session_name]];
+					console.log(req.session.user);
+					if (process.env.CAS_DEV === "true")
+
+						res.status(301).redirect('http://localhost:8080/#/account');
+					else {
+						res.status(301).redirect('http://54.186.223.223:3478/#/account');
+
+					}
+				}).catch(e=>{
+					throw e;
+				});
+			}
+		}).catch(e => {
+			res.status(403).send("ERROR 403: " + e);
+		});
+	});
 	});
 
 	// app.get('/home', function(req, res) {
