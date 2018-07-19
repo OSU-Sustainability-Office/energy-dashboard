@@ -85,10 +85,10 @@ exports.start = function(cb) {
 			}
 			else {
 				db.query("INSERT INTO users (name, privilege) VALUES (?,?)",[[req.session[cas.session_name]],1]).then(r => {
-					console.log(r);
 					req.session.user.id = r.insertId;
 					req.session.user.privilege = 1;
 					req.session.user.name = [req.session[cas.session_name]];
+					console.log(req.session.user);
 					if (process.env.CAS_DEV === "true")
 
 						res.status(301).redirect('http://localhost:8080/#/account');
