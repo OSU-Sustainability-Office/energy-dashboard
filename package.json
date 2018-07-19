@@ -2,10 +2,10 @@
   "name": "energy-dashboard",
   "version": "1.0.0",
   "description": "OSU Energy Dashboard",
-  "main": "server.js",
+  "main": "energydash.js",
   "scripts": {
     "test": "./node_modules/.bin/_mocha tests",
-    "start": "nodemon --ignore sessions/ server.js"
+    "start": "nodemon --ignore sessions/ energydash.js"
   },
   "repository": {
     "type": "git",

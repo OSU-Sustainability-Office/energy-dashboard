@@ -2,11 +2,11 @@
   "name": "data-collection",
   "version": "1.0.0",
   "description": "This software listens for post requests from acquisuites. When data is received, this server parses through the data and inserts it into the temporary storage in our MySQL database.",
-  "main": "server.js",
+  "main": "data-collector.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Jack Woods",
+  "author": "Jack Woods, Brogan Miner",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.3",

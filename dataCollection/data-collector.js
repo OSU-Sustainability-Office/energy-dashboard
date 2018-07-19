@@ -52,7 +52,6 @@ function insertPoint(record, res, meter_id) {
     query = 'INSERT INTO data (meter_id, time, accumulated_real, real_power, vphase_ab, vphase_bc, vphase_ac, vphase_an, vphase_bn, vphase_cn, cphase_a, cphase_b, cphase_c) VALUES ("' + res[0].id +'","'+timestamp + '",' + point[11].$.value + ',' + point[10].$.value + ',' + point[4].$.value + ',' + point[6].$.value + ',' + point[8].$.value + ',' + point[5].$.value + ',' + point[7].$.value + ',' + point[9].$.value + ',' + point[0].$.value + ',' + point[1].$.value + ',' + point[2].$.value + ')';
   else if (point.length === 29)
     query = 'INSERT INTO data (meter_id, time, accumulated_real, real_power, reactive_power, apparent_power, real_a, real_b, real_c, pf_a, pf_b, pf_c, vphase_ab, vphase_bc, vphase_ac, vphase_an, vphase_bn, vphase_cn, cphase_a, cphase_b, cphase_c) VALUES ("' + res[0].id + '","' + timestamp + '",' + point[0].$.value + ',' + point[1].$.value + ',' + point[2].$.value + ',' + point[3].$.value+ ',' + point[8].$.value + ',' + point[9].$.value + ',' + point[10].$.value + ',' + point[11].$.value + ',' + point[12].$.value + ',' + point[13].$.value + ',' + point[14].$.value + ',' + point[15].$.value + ',' + point[16].$.value + ',' + point[17].$.value + ',' + point[18].$.value + ',' + point[19].$.value + ',' + point[20].$.value + ',' + point[21].$.value + ',' + point[22].$.value + ')';
-  console.log(query);
   if(query !== "")
     connection.query(query);
 }
