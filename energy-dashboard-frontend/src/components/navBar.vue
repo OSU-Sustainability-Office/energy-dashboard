@@ -8,7 +8,7 @@
       <dropdown tag="li" append-to-body>
         <a class="dropdown-toggle" role="button">Account</a>
         <template slot="dropdown">
-            <li><a role="button" :href='process.env.ROOT_API+"logout"'>Sign Out</a></li>
+            <li><a role="button" :href='this.logOutLink'>Sign Out</a></li>
         </template>
       </dropdown>
     </ul>
@@ -20,6 +20,7 @@ export default {
   data() {
     return {
       loggedIn : false,
+      logOutLink: process.env.ROOT_API+"logout"
     }
   },
   created () {
