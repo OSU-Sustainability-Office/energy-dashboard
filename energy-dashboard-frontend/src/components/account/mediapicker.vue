@@ -1,8 +1,8 @@
 <template>
   <div class="container" ref="mainstage">
     <div class='row' ref="imageNodes">
-      <div class='col' @click="selected = 0" style='backgroundColor: rgb(26,26,26)'></div>
-      <div v-for='(image,index) in images' @click="selected = index+1" class='col' :style='"background-image:url(\""+image+"\")"'>
+      <div class='col' @click="$parent.selected = 0" style='backgroundColor: rgb(26,26,26)'></div>
+      <div v-for='(image,index) in images' @click="$parent.selected = index+1" class='col' :style='"background-image:url(\""+image+"\")"'>
       </div>
 
     </div>
@@ -12,10 +12,10 @@
 import axios from 'axios'
 export default {
   name: 'mediapicker',
+  props: ['selected'],
   data() {
     return {
       images : [],
-      selected : 0,
       selectedString: ""
     }
   },
@@ -26,7 +26,7 @@ export default {
       for (var i of val.data) {
         this.images.push(process.env.ROOT_API+"block-media/thumbs/"+i);
         if (i === this.$parent.media)
-          this.selected = index+1;
+          this.$parent.selected = index+1;
         index++;
       }
       this.$nextTick(()=> {
@@ -47,7 +47,6 @@ export default {
 
     },
     selected: function(value) {
-      console.log(value);
       var index = 0;
       for (var node of this.$refs.imageNodes.children) {
         if (index === this.selected) {

@@ -22,7 +22,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<mediapicker ref="imagePicker"  />
+			<mediapicker ref="imagePicker"  v-bind:selected='selected'/>
 		</div>
     <div class="row">
       <div class="col" align="right">
@@ -45,7 +45,8 @@
 				media : "",
 				descr : "",
 				name : "",
-				storyid : 0
+				storyid : 0,
+        selected: 0
 			}
 		},
 		components: {
