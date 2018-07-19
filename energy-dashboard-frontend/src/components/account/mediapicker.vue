@@ -47,6 +47,7 @@ export default {
 
     },
     selected: function(value) {
+      console.log(value);
       var index = 0;
       for (var node of this.$refs.imageNodes.children) {
         if (index === this.selected) {
