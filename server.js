@@ -35,6 +35,7 @@ exports.start = function(cb) {
 	    saveUninitialized : true,
 	    store : new FileStore()
 	}));
+	
 	app.use(require('sanitize').middleware);
 	if (process.env.CAS_DEV === "true") {
 		var corsOptions = {
