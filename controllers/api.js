@@ -284,6 +284,7 @@ router.get('/getBlocksForStory',function (req,res) {
 		res.send("ERROR: COULD NOT RETRIEVE BLOCKS");
 	}
 });
+
 router.get('/getStoriesForCurrentUser',function (req,res) {
 	console.log(req.session.id)
 	if (req.session.user.id) {
