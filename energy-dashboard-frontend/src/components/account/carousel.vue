@@ -56,6 +56,7 @@ export default {
       axios(process.env.ROOT_API+'api/updateStory',{method: "post",data:data, withCredentials:true}).then(rid => {
         card.id = rid.data;
         this.cards.push(card);
+        this.clickedStory(this.cards.length-1);
       }).catch(err => {
         console.log(err);
       });

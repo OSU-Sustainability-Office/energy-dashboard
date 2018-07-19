@@ -1,10 +1,13 @@
 <template>
   <div class="background">
     <!-- <span class="main-heading">Stories</span> -->
-    <carousel v-bind:cards="cards" @edit="editStory($event)" @caro-click='changeStory($event)' class="scrollyBox"/>
+    <carousel v-bind:cards="cards" @edit="editStory($event)" @caro-click='changeStory($event)' class="scrollyBox" ref="caro"/>
     <!-- <span class="main-heading">Featured Blocks</span> -->
-    <featured v-bind:cards="cardsFeatured" ref='featureBox' v-if='!editingStory'/>
+    <featured v-bind:cards="cardsFeatured" ref='featureBox' v-if='!editingStory && currentStory !== null'/>
     <storyEdit v-if='editingStory' ref='storyEdit'/>
+    <div class="nocards" v-if="currentStory === null">
+      Please create  a story to get started
+    </div>
   </div>
 </template>
 
@@ -26,7 +29,7 @@ export default {
     return {
       cards: [],
       cardsFeatured: [],
-      currentStory: 0,
+      currentStory: null,
       editingStory: false
     }
   },
@@ -49,8 +52,15 @@ export default {
        for (var c in this.cards)
         if (this.cards[c].id === val[0]){
           this.cards.splice(c,1);
+          if (this.cards.length === 0) {
+            this.currentStory = null;
+          }
+          if (val[0] === this.currentStory) {
+            this.$refs.caro.clickedStory(c-1);
+          }
           return;
         }
+
      });
   },
   watch: {
@@ -113,6 +123,16 @@ export default {
   position: absolute;
   width: 100%;
   padding: 1em;
+}
+.nocards {
+  color: black;
+  position: absolute;
+  top: 400px;
+  left: 0px;
+  width: 100%;
+  padding: 2em;
+  text-align: center;
+  font-size: 2em;
 }
 .main-heading {
   font-size: 3em;

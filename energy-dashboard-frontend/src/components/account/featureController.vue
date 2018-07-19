@@ -391,6 +391,7 @@ export default {
   width: 50px;
   height: 40px;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .form-group.row {

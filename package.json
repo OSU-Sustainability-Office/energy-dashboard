@@ -30,6 +30,7 @@
     "passport-cas": "^0.1.1",
     "r-cas-authentication": "^1.0.1",
     "request": "^2.87.0",
-    "sanitize": "^2.1.0"
+    "sanitize": "^2.1.0",
+    "session-file-store": "^1.2.0"
   }
 }
