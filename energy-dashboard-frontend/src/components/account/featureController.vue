@@ -320,7 +320,7 @@ export default {
 		});
   },
   mounted () {
-    axios.get(process.env.ROOT_API+'getAllBuildings').then (res => {
+    axios.get(process.env.ROOT_API+'api/getAllBuildings').then (res => {
        res.data.forEach(obj => {
           this.$refs.groups.innerHTML += "<option value='"+obj.id+"'>"+obj.name+"</option>";
        });
