@@ -30,12 +30,12 @@ exports.start = function(cb) {
 	app.use('/block-media',express.static('block-media'));
 	app.use(cookieparser());
 	app.use( session({
-	    secret            : '1e8ff28baf72619e684cd7397c311b47638624bc',
+	    secret            : process.env.SECRET,
 	    resave            : false,
 	    saveUninitialized : true,
 	    store : new FileStore()
 	}));
-	
+
 	app.use(require('sanitize').middleware);
 	if (process.env.CAS_DEV === "true") {
 		var corsOptions = {
@@ -58,7 +58,6 @@ exports.start = function(cb) {
 
 			res.status(301).redirect('http://localhost:8080/#/account');
 		else {
-			console.log(req.session.id);
 			res.status(301).redirect('http://54.186.223.223:3478/#/account');
 
 		}
@@ -74,14 +73,31 @@ exports.start = function(cb) {
 
 	app.get('/undefined', function(req, res) {
 		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
-			req.session.user = JSON.parse(JSON.stringify(val))[0];
-			if (process.env.CAS_DEV === "true")
+			if (val.length > 0) {
+				req.session.user = JSON.parse(JSON.stringify(val))[0];
+				if (process.env.CAS_DEV === "true")
 
-				res.status(301).redirect('http://localhost:8080/#/account');
+					res.status(301).redirect('http://localhost:8080/#/account');
+				else {
+					res.status(301).redirect('http://54.186.223.223:3478/#/account');
+
+				}
+			}
 			else {
-				console.log(req.session.user);
-				res.status(301).redirect('http://54.186.223.223:3478/#/account');
+				db.query("INSERT INTO users (name, privilege) VALUES (?,?)",[[req.session[cas.session_name]],1]).then(r => {
+					req.session.user.id = r.insertid;
+					req.session.user.privilege = 1;
+					req.session.user.name = [req.session[cas.session_name]];
+					if (process.env.CAS_DEV === "true")
 
+						res.status(301).redirect('http://localhost:8080/#/account');
+					else {
+						res.status(301).redirect('http://54.186.223.223:3478/#/account');
+
+					}
+				}).catch(e=>{
+					throw e;
+				});
 			}
 		}).catch(e => {
 			res.status(403).send("ERROR 403: " + e);
