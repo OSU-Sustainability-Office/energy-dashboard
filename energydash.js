@@ -73,6 +73,7 @@ exports.start = function(cb) {
 
 	app.get('/undefined', function(req, res) {
 		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
+			console.log(val);
 			if (val.length > 0) {
 				req.session.user = JSON.parse(JSON.stringify(val))[0];
 				if (process.env.CAS_DEV === "true")
@@ -85,6 +86,7 @@ exports.start = function(cb) {
 			}
 			else {
 				db.query("INSERT INTO users (name, privilege) VALUES (?,?)",[[req.session[cas.session_name]],1]).then(r => {
+					req.session.user = {};
 					req.session.user.id = r.insertId;
 					req.session.user.privilege = 1;
 					req.session.user.name = [req.session[cas.session_name]];
