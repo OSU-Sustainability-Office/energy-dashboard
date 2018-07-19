@@ -88,8 +88,6 @@ exports.start = function(cb) {
 			res.status(403).send("ERROR 403: " + e);
 		});
 	});
-	});
-
 	// app.get('/home', function(req, res) {
 	// 	res.sendFile(path.join(__dirname,'/public', 'index.html'));
 	// 	//res.send("Test");
