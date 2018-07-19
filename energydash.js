@@ -85,6 +85,7 @@ exports.start = function(cb) {
 			}
 			else {
 				db.query("INSERT INTO users (name, privilege) VALUES (?,?)",[[req.session[cas.session_name]],1]).then(r => {
+					console.log(r);
 					req.session.user.id = r.insertid;
 					req.session.user.privilege = 1;
 					req.session.user.name = [req.session[cas.session_name]];
