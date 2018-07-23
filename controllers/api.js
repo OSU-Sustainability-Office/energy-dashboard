@@ -126,7 +126,7 @@ router.post('/updateBlock',function (req,res) {
 					if (req.bodyJson().meter_groups.length > 0) {
 						db.query("DELETE FROM block_groups WHERE block_id=?",[req.bodyInt('id')]).then(rows => {
 							for (meter_group of req.bodyJson().meter_groups) {
-								promises.push(db.query("INSERT INTO block_groups (block_id, group_id, point, name) VALUES (?,?,?,?)",[req.bodyInt('id'),meter_group.id, meter_group.point, meter_group.name]));
+								promises.push(db.query("INSERT INTO block_groups (block_id, group_id, point, name, meter) VALUES (?,?,?,?,?)",[req.bodyInt('id'),meter_group.id, meter_group.point, meter_group.name, meter_group.meter]));
 							}
 						}).catch(err => {
 							throw err;
@@ -396,48 +396,72 @@ router.get('/getDefaultMeters',function (req,res) {
 		res.send("ERROR: COULD NOT GET DEAULT METERS");
 	});
 });
+router.get('/getMeterType',function(req,res) {
+	if (req.queryInt("id")) {
+		db.query("SELECT type FROM meters WHERE id=?",[req.queryInt("id")]).then(r => {
+			res.send(JSON.stringify(r));
+		}).catch(e=> {
+			res.status(400).send("400: "+e);
+		});
+	}
+	else {
+		res.status(400).send("400: NO METER ID");
+	}
+});
 router.get('/getMeterData',function (req,res) {
 	if (req.queryString('date_end') && req.queryString('date_start') && req.queryInt('id') && req.queryString('mpoints')) {
-		var queryString = "SELECT time, meter_id, ";
-		req.queryString('mpoints').split(',').forEach(point => {
-			queryString += point + ", ";
-		});
-		queryString = queryString.substr(0,queryString.length-2);
+		db.query("SELECT type FROM meters WHERE id=?",[req.queryInt('id')]).then( r => {
+			var table = "data";
+			if (r[0].type == 'e') {
+				table = "data";
+			}
+			else if (r[0].type == 'g') {
+				table = "gas_data";
+			}
+			else if (r[0].type == 's') {
+				table = "steam_data";
+			}
+			var queryString = "SELECT time, meter_id, ";
+			req.queryString('mpoints').split(',').forEach(point => {
+				queryString += point + ", ";
+			});
+			queryString = queryString.substr(0,queryString.length-2);
 
-		//Custom time interval fetching using the extract function and the modulus function
-		var extUnit = "MINUTE";
-		var extInt = "15";
-		var remainder = "0";
-		if (req.queryString('unit'))
-			extUnit = req.queryString('unit').toUpperCase();
-		if (req.queryString('int'))
-			extInt = req.queryString('int').toUpperCase();
+			//Custom time interval fetching using the extract function and the modulus function
+			var extUnit = "MINUTE";
+			var extInt = "15";
+			var remainder = "0";
+			if (req.queryString('unit'))
+				extUnit = req.queryString('unit').toUpperCase();
+			if (req.queryString('int'))
+				extInt = req.queryString('int').toUpperCase();
 
-		if (extUnit !== "MINUTE" && parseInt(extInt) > 1 && parseInt(extInt)%2 === 1)
-			remainder = "1";
+			if (extUnit !== "MINUTE" && parseInt(extInt) > 1 && parseInt(extInt)%2 === 1)
+				remainder = "1";
 
-		//this kind of sucks but then we return values we should not include that fall within the months
-		//Ex: when selecting 2 hour intervals it would report 15 minute intervals every 2 hours
-		var extraTimeConditions = " ";
-		if (extUnit !== "MINUTE") {
-			extraTimeConditions += "AND EXTRACT(MINUTE FROM time) = 0 ";
-			if (extUnit !== "HOUR") {
-				extraTimeConditions += "AND EXTRACT(HOUR FROM time) = 0 ";
-				if (extUnit !== "DAY") {
-					extraTimeConditions += "AND EXTRACT(DAY FROM time) = 0 ";
+			//this kind of sucks but then we return values we should not include that fall within the months
+			//Ex: when selecting 2 hour intervals it would report 15 minute intervals every 2 hours
+			var extraTimeConditions = " ";
+			if (extUnit !== "MINUTE") {
+				extraTimeConditions += "AND EXTRACT(MINUTE FROM time) = 0 ";
+				if (extUnit !== "HOUR") {
+					extraTimeConditions += "AND EXTRACT(HOUR FROM time) = 0 ";
+					if (extUnit !== "DAY") {
+						extraTimeConditions += "AND EXTRACT(DAY FROM time) = 0 ";
+					}
 				}
 			}
-		}
 
-		queryString += " FROM data WHERE meter_id=? AND MOD(EXTRACT("+extUnit+" FROM time), "+extInt+") = "+remainder+extraTimeConditions+"AND time >= ? AND time <= ?";
-		db.query(queryString,[req.queryInt('id'),req.queryString('date_start'),req.queryString('date_end')]).then( rows => {
-			rows.forEach(val=> {
-				val.time.setTime(val.time.getTime() - val.time.getTimezoneOffset()*60*1000);
+			queryString += " FROM "+table+" WHERE meter_id=? AND MOD(EXTRACT("+extUnit+" FROM time), "+extInt+") = "+remainder+extraTimeConditions+"AND time >= ? AND time <= ?";
+			db.query(queryString,[req.queryInt('id'),req.queryString('date_start'),req.queryString('date_end')]).then( rows => {
+				rows.forEach(val=> {
+					val.time.setTime(val.time.getTime() - val.time.getTimezoneOffset()*60*1000);
+				});
+				res.send(JSON.stringify(rows));
+			}).catch ( err => {
+				console.log(err);
+				res.status(400).send("400: " + err);
 			});
-			res.send(JSON.stringify(rows));
-		}).catch ( err => {
-			console.log(err);
-			res.send("ERROR: COULD NOT SEND DATA");
 		});
 	}
 	else {
@@ -523,7 +547,7 @@ router.get("/getMeterGroupsForUser", function (req,res) {
 
 router.get("/getMetersForGroup", function (req,res) {
 	if (req.queryString('id')) {
-		db.query('SELECT meters.id, meters.name, meter_group_relation.operation FROM meters LEFT JOIN meter_group_relation ON meters.id=meter_group_relation.meter_id WHERE group_id=?',[req.queryString('id')]).then( rows => {
+		db.query('SELECT meters.id, meters.name, meters.type, meter_group_relation.operation FROM meters LEFT JOIN meter_group_relation ON meters.id=meter_group_relation.meter_id WHERE group_id=?',[req.queryString('id')]).then( rows => {
 			res.send(JSON.stringify(rows));
 		}).catch( err => {
 			res.send('ERROR: COULD NOT GET METERS');

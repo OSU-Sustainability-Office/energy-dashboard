@@ -36,6 +36,7 @@ export default {
 						groups: [],
 						points: [],
 						names: [],
+						submeters: [],
 						start: null,
 						end: null,
 						interval: 15,
@@ -61,9 +62,8 @@ export default {
 				this.chart = this.$refs.piechart;
 			}
 			var promises = [];
-
 			for (var i = 0; i < this.groups.length; i++) {
-				promises.push(this.getData(i,this.points[i],this.groups[i],this.start,this.end, this.interval, this.unit));
+				promises.push(this.getData(i,this.points[i],this.groups[i],this.start,this.end, this.interval, this.unit,this.submeters[i]));
 			}
 			Promise.all(promises).then(() => {
 				this.updateChart();
@@ -71,35 +71,47 @@ export default {
 		}
 	},
   methods: {
-    getData: function (index,mpoint,groupId,startDate,endDate,interval,unit) {
+    getData: function (index,mpoint,groupId,startDate,endDate,interval,unit,submeter) {
+			console.log(mpoint + ' '+ groupId + " " + submeter);
+
+			console.trace();
 			return new Promise((fulfill, reject) => {
 	        var promises = [];
 	        var meterRelation = {};
 					//we need to average the values over intervals for everything but accumulated real
 					var intervalCopy = interval;
 					var unitCopy = unit;
-					if (mpoint !== "accumulated_real") {
+					if (mpoint !== "accumulated_real" || mpoint !== "total" || mpoint !== "cubic_feet" ) {
 						interval = '15';
 						unit = 'minute';
 					}
 	        axios.get(process.env.ROOT_API+'api/getMetersForGroup?id='+groupId).then (meters => {
 	          meters.data.forEach(meter => {
-	            meterRelation[meter.id.toString()] = meter.operation;
-	            promises.push(axios.get(process.env.ROOT_API+'api/getMeterData?id='+meter.id+'&date_start='+startDate+'&date_end='+endDate+'&mpoints='+mpoint+'&int='+interval+'&unit='+unit));
+							if (submeter == 0 || submeter == meter.id) {
+								if ((submeter == 0 && meter.type == 'e') || submeter != 0) {
+	            		meterRelation[meter.id.toString()] = meter.operation;
+	            		promises.push(axios.get(process.env.ROOT_API+'api/getMeterData?id='+meter.id+'&date_start='+startDate+'&date_end='+endDate+'&mpoints='+mpoint+'&int='+interval+'&unit='+unit));
+								}
+							}
 						});
 	          Promise.all(promises).then(values => {
 	            //combine all returned data
 	            var combinedData = {};
+							if (values.length === 0)
+								return;
 	            values.forEach(value => {
-	              if (value.data.length === 0) {
+	              if (value.status === 400 || value.data.length === 0) {
 	                this.updatingChart = false;
 	                return;
 	              }
 	              value.data.forEach(obj => {
 	                //do the combination operation
+									if ("accumulated_real" in obj) {
+										obj.accumulated_real = Math.abs(obj.accumulated_real);
+									}
 	                if (obj.time in combinedData) {
 	                  var time = obj.time;
-	                  if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0) {
+	                  if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0 && submeter === 0) {
 	                    obj.accumulated_real *= -1;
 	                  }
 	                  if ("accumulated_real" in combinedData[time])
@@ -107,7 +119,7 @@ export default {
 	                }
 	                else {
 	                  var time = obj.time;
-	                  if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0) {
+	                  if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0 && submeter === 0) {
 	                    obj.accumulated_real *= -1;
 	                  }
 	                  delete obj.time;
@@ -211,7 +223,7 @@ export default {
       });
       //calculates change per interval (accumulated_real) or average over the interval (every other metering point)
 			var set = this.chartData.datasets[indexM];
-			if (set.mpoint === "accumulated_real") {
+			if (set.mpoint === "accumulated_real" || set.mpoint === "cubic_feet" || set.mpoint === "total") {
 
 				//deep copy object array
         var dataCopy = JSON.parse(JSON.stringify(set.data));

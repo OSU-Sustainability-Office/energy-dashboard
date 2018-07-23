@@ -88,7 +88,7 @@ export default {
       var card = this.$parent.cards[this.index];
       var groupPoints = [];
       for (var i = 0; i < this.$refs.featureController.groupids.length; i++) {
-        groupPoints.push({'id':this.$refs.featureController.groupids[i],'point':this.$refs.featureController.points[i],'name':this.$refs.featureController.names[i]});
+        groupPoints.push({'id':this.$refs.featureController.groupids[i],'point':this.$refs.featureController.points[i],'name':this.$refs.featureController.names[i],'meter':this.$refs.featureController.submeters[i]});
       }
       var data = {};
       if (card.id)
@@ -129,6 +129,7 @@ export default {
       var points = this.$refs.featureController.points;
       var groups = this.$refs.featureController.groupids;
       var names = this.$refs.featureController.names;
+      var meters = this.$refs.featureController.submeters;
 
       var data = [];
       var promises = [];
@@ -142,13 +143,17 @@ export default {
 
       Promise.all(promises).then(results => {
         var promisesRoundTwo = [];
+
         results.forEach((row, index) => {
           relation.push({});
           row.data.forEach((meter, meterIndex) => {
-            //use relation object to do adding, or subtracting (based on table data)
-            relation[index][meter.id] = meter.operation;
-            //Make requests for data for each meter
-            promisesRoundTwo.push(axios.get(process.env.ROOT_API+'api/getMeterData?id='+meter.id+'&date_start='+this.$refs.featureController.dateFrom+'&date_end='+this.$refs.featureController.dateTo+'&mpoints='+points[index]));
+            console.log(meters[index]);
+            if ((meters[index] === 0 && meter.type == "e") || meter.id == meters[index]) {
+              //use relation object to do adding, or subtracting (based on table data)
+              relation[index][meter.id] = meter.operation;
+              //Make requests for data for each meter
+              promisesRoundTwo.push(axios.get(process.env.ROOT_API+'api/getMeterData?id='+meter.id+'&date_start='+this.$refs.featureController.dateFrom+'&date_end='+this.$refs.featureController.dateTo+'&mpoints='+points[index]));
+            }
           });
         });
         Promise.all(promisesRoundTwo).then(results => {
@@ -167,6 +172,7 @@ export default {
                 dataIndex = 1;
                 results[resultEnumerator].data.forEach( (row, rowIndex) => {
                   var a = row[points[index]];
+                  a = Math.abs(a);
                   if (group[key] === 0)
                     a *= -1;
                   if(!data[dataIndex])
@@ -239,11 +245,13 @@ export default {
             var points = [];
             var names = [];
             var groups = [];
-
+            var meters = [];
             for (var i = 0; i < res.data.length; i++) {
               points.push(res.data[i].point);
               groups.push(res.data[i].group_id);
               names.push(res.data[i].name);
+              meters.push(res.data[i].meter);
+
               //
               // this.$refs.chartController.points.push(res.data[i].point);
               // this.$refs.chartController.groups.push(res.data[i].group_id);
@@ -251,16 +259,25 @@ export default {
 
               //Need to update the graph right here
             }
+            //JSON.parse(JSON.stringify(meters));
+            this.$refs.featureController.points = points;//JSON.parse(JSON.stringify(points));
+            this.$refs.featureController.groupids = groups;//JSON.parse(JSON.stringify(groups));
+            this.$refs.featureController.names = names;//JSON.parse(JSON.stringify(names));
 
-            this.$refs.featureController.points = JSON.parse(JSON.stringify(points));
-            this.$refs.featureController.groupids = JSON.parse(JSON.stringify(groups));
-            this.$refs.featureController.names = JSON.parse(JSON.stringify(names));
 
-            this.$refs.chartController.points = JSON.parse(JSON.stringify(points));
-            this.$refs.chartController.groupids = JSON.parse(JSON.stringify(groups));
-            this.$refs.chartController.names = JSON.parse(JSON.stringify(names));
+
+            //JSON.parse(JSON.stringify(meters));
+            this.$refs.chartController.points = points;//JSON.parse(JSON.stringify(points));
+            this.$refs.chartController.groupids = groups;//JSON.parse(JSON.stringify(groups));
+            this.$refs.chartController.names = names;//JSON.parse(JSON.stringify(names));
+
             this.$nextTick(() => {
+              this.$refs.chartController.submeters = meters;
+              this.$refs.featureController.submeters = meters;
+
+              this.$refs.featureController.dontUpdate = false;
               this.$refs.featureController.updateGraph(true);
+              console.log(this.$refs.chartController.points);
             });
 
           });
