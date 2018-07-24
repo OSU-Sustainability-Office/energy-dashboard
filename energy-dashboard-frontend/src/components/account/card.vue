@@ -1,19 +1,12 @@
 <template>
   <div class="card featured" v-bind:class="{ feature : featured}" ref='card' v-on:click='unclickText'>
 
-    <chartController v-if="featured" ref="chartController" :graphType='1' class="chart"/>
-    <featureController v-if="featured" ref="featureController" />
+    <chartController v-bind:start='start' v-bind:end='end' v-bind:interval='int' v-bind:unit='unit' v-bind:graphType='type' v-bind:points='points' v-bind:groups='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="chartController"  class="chart"/>
+    <featureController v-bind:start='start' v-bind:end='end' v-bind:interval='int' v-bind:graphType='type' v-bind:unit='unit' v-bind:points='points' v-bind:groupids='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="featureController" />
     <div class='titleTextFeatured' v-if="featured" v-on:click='clickText' ref='title' v-tooltip="'Click to edit name'">
       {{this.name}}
-
     </div>
     <div class="container descriptionContainer" v-if='featured' ref='descriptionContainer'>
-      <!-- <div class="row" v-on:click='isMaximized = !isMaximized'>
-       <i class="fas" v-bind:class="{ 'fa-chevron-circle-up' : !isMaximized, 'fa-chevron-circle-down' : isMaximized }"></i>
-      </div>
-      <div class='descriptionTextFeatured row' ref="description" v-on:click='clickText'>
-        {{this.description}}
-      </div> -->
       <div class="row">
         <i class="col fas fa-save" v-tooltip="'Save Graph'" @click="save()"></i>
         <i class="col fas fa-download" v-tooltip="'Download Graph Data'" @click="download()"></i>
@@ -32,43 +25,44 @@ import featureController from '@/components/account/featureController'
 
 export default {
   name: 'card',
-  props: ['story_id','name', 'description', 'featured', 'id','start','end','int','unit','type','media','index'],
+  props: ['story_id','name', 'description', 'featured', 'id','start','end','int','unit','type','media','index', 'points', 'groups', 'names', 'meters'],
   components: {
     chartController, featureController
   },
   data() {
     return {
       showPencil : false,
-      // isMaximized : false,
-      // story_id : null,
-      // name: "",
-      // description: "",
-      // featured: false,
-      // id: null,
-      // start: "",
-      // end: "",
-      // type: "",
-      // media: "",
-      // int: 15,
-      // unit: 'minute',
-      // type: 1
     }
   },
   methods: {
     setStart: function(val) {
-      this.$parent.cards[this.index].start = val;
+      this.$parent.cards[this.index].date_start = val;
+      console.log(val);
     },
     setEnd: function(val) {
-      this.$parent.cards[this.index].end = val;
+      this.$parent.cards[this.index].date_end = val;
     },
     setType: function(val) {
-      this.$parent.cards[this.index].type = val;
+      this.$refs.chartController.graphType = val;
+      this.$parent.cards[this.index].graph_type = val;
     },
     setInt: function(val) {
-      this.$parent.cards[this.index].int = val;
+      this.$parent.cards[this.index].date_interval = val;
     },
     setUnit: function(val) {
-      this.$parent.cards[this.index].unit = val;
+      this.$parent.cards[this.index].interval_unit = val;
+    },
+    setPoints: function(val) {
+      this.$parent.cards[this.index].points = val;
+    },
+    setNames: function(val) {
+      this.$parent.cards[this.index].names = val;
+    },
+    setMeters: function(val) {
+      this.$parent.cards[this.index].meters = val;
+    },
+    setGroups: function(val) {
+      this.$parent.cards[this.index].groups = val;
     },
     del: function() {
       this.$parent.del(this.index);
@@ -79,10 +73,7 @@ export default {
     unclickText: function(event) {
       if (event.target !== this.$refs.title)
         this.$refs.title.contentEditable = false;
-      // if (event.target !== this.$refs.description)
-      //   this.$refs.description.contentEditable = false;
       this.$parent.cards[this.index].name = this.$refs.title.innerText;
-      //this.description = this.$refs.description.innerText;
     },
     save: function() {
       var card = this.$parent.cards[this.index];
@@ -91,18 +82,19 @@ export default {
         groupPoints.push({'id':this.$refs.featureController.groupids[i],'point':this.$refs.featureController.points[i],'name':this.$refs.featureController.names[i],'meter':this.$refs.featureController.submeters[i]});
       }
       var data = {};
+      console.log(card);
       if (card.id)
         data = {
           id: card.id,
           meter_groups: groupPoints,
-          date_end: card.end,
-          date_start: card.start,
-          graph_type: card.type,
+          date_end: card.date_end,
+          date_start: card.date_start,
+          graph_type: parseInt(card.graph_type),
           media: card.media,
           descr: card.description,
           name: this.name,
-          interval: card.int,
-          unit: card.unit
+          interval: card.date_interval,
+          unit: card.interval_unit
         };
       else
         data = {
@@ -212,99 +204,43 @@ export default {
         });
       });
 
-    },
-    reload: function() {
-      this.$refs.card.style.backgroundColor = 'rgb(26,26,26)';
-      if (this.featured) {
-        //this.$refs.descriptionContainer.style.bottom = "calc(3.5em - " + this.$refs.descriptionContainer.clientHeight.toString() + "px)";
-      }
-
-      //this.$refs.card.style.backgroundSize = "cover";
-      if (this.featured) {
-        this.$refs.featureController.dateFrom = this.start;
-        this.$refs.featureController.dateTo = this.end;
-        this.$refs.featureController.interval = this.int;
-        this.$refs.featureController.graphType = this.type;
-        this.$refs.featureController.unit = this.unit;
-
-        this.$refs.chartController.start = this.start;
-        this.$refs.chartController.end = this.end;
-        this.$refs.chartController.interval = this.int;
-        this.$refs.chartController.graphType = this.type;
-        this.$refs.chartController.unit = this.unit;
-        if (this.$parent.cards[this.index].id){
-          axios.get(process.env.ROOT_API+'api/getBlockMeterGroups?id='+this.$parent.cards[this.index].id).then (res => {
-            //this.$refs.chartController = res.data;
-            // this.$refs.featureController.points = [];
-            // this.$refs.featureController.groupids = [];
-            // this.$refs.featureController.names = [];
-            //
-            // this.$refs.chartController.points = [];
-            // this.$refs.chartController.groupids = [];
-            // this.$refs.chartController.names = [];
-            var points = [];
-            var names = [];
-            var groups = [];
-            var meters = [];
-            for (var i = 0; i < res.data.length; i++) {
-              points.push(res.data[i].point);
-              groups.push(res.data[i].group_id);
-              names.push(res.data[i].name);
-              meters.push(res.data[i].meter);
-
-              //
-              // this.$refs.chartController.points.push(res.data[i].point);
-              // this.$refs.chartController.groups.push(res.data[i].group_id);
-              // this.$refs.chartController.names.push(res.data[i].name);
-
-              //Need to update the graph right here
-            }
-            //JSON.parse(JSON.stringify(meters));
-            this.$refs.featureController.points = points;//JSON.parse(JSON.stringify(points));
-            this.$refs.featureController.groupids = groups;//JSON.parse(JSON.stringify(groups));
-            this.$refs.featureController.names = names;//JSON.parse(JSON.stringify(names));
-
-
-
-            //JSON.parse(JSON.stringify(meters));
-            this.$refs.chartController.points = points;//JSON.parse(JSON.stringify(points));
-            this.$refs.chartController.groupids = groups;//JSON.parse(JSON.stringify(groups));
-            this.$refs.chartController.names = names;//JSON.parse(JSON.stringify(names));
-
-            this.$nextTick(() => {
-              this.$refs.chartController.submeters = meters;
-              this.$refs.featureController.submeters = meters;
-
-              this.$refs.featureController.dontUpdate = false;
-              this.$refs.featureController.updateGraph(true);
-              console.log(this.$refs.chartController.points);
-            });
-
-          });
-        }
-        else {
-          this.$refs.featureController.points.push("accumulated_real");
-          this.$refs.featureController.groupids.push(8);
-          this.$refs.featureController.names.push("New Graph");
-        }
-      }
     }
   },
   mounted() {
-    //this.$refs.card.style.background = "linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),url('"+this.media+"')";
-    this.reload();
     if (!this.id)
       this.save();
   },
-  watch: {
-    // isMaximized : function(value) {
-    //   if (value) {
-    //     this.$refs.descriptionContainer.style.bottom = "0px";
-    //   }
-    //   else {
-    //     this.$refs.descriptionContainer.style.bottom = "calc(3.5em - " + this.$refs.descriptionContainer.clientHeight.toString() + "px)";
-    //   }
-    // }
+  created() {
+    if (this.id) {
+      axios.get(process.env.ROOT_API+'api/getBlockMeterGroups?id='+this.id).then(res => {
+        var points = [];
+        var names = [];
+        var groups = [];
+        var meters = [];
+        for (var i = 0; i < res.data.length; i++) {
+          points.push(res.data[i].point);
+          groups.push(res.data[i].group_id);
+          names.push(res.data[i].name);
+          meters.push(res.data[i].meter);
+        }
+        this.setGroups(groups);
+        this.setPoints(points);
+        this.setNames(names);
+
+        this.setMeters(meters);
+        this.$nextTick(()=>{
+
+          this.$refs.featureController.mounted = true;
+          this.$refs.featureController.updateGraph(true);
+        });
+      });
+    }
+    else {
+      this.setPoints(['accumulated_real']);
+      this.setGroups([8]);
+      this.setNames(['New Graph']);
+      this.setMeters([0]);
+    }
   }
 }
 </script>

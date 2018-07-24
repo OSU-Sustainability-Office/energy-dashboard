@@ -16,7 +16,7 @@ import axios from 'axios';
 
 export default {
   name: 'card',
-  props: ['id'],
+  props: ['start','end','interval','submeters','groups','points','names','unit','graphType'],
   components: {
     linechart, barchart, doughnutchart, piechart
   },
@@ -25,30 +25,21 @@ export default {
   },
   data() {
     return {
-						graphType: 1,
 						chartData:{
 							datasets: [],
 							labels: []
 						},
 						chart: null,
             chartDataComplete:{},
-            updatingChart: false,
-						groups: [],
-						points: [],
-						names: [],
-						submeters: [],
-						start: null,
-						end: null,
-						interval: 15,
-						unit: "minute",
+            indexesInUse: [],
 						colors: ["#4A773C","#00859B","#FFB500","#006A8E","#C4D6A4","#B8DDE1","#FDD26E","#C6DAE7","AA9D2E","#0D5257","#D3832B","#003B5C","#B7A99A","#A7ACA2","#7A6855","#8E9089"]
 					}
   },
   created() {
-
   },
 	watch: {
 		graphType: function (value) {
+			console.log(value);
 			if (value == 1) {
 				this.chart = this.$refs.linechart;
 			}
@@ -67,21 +58,23 @@ export default {
 			}
 			Promise.all(promises).then(() => {
 				this.updateChart();
-			});
+			}).catch(e=>{});
 		}
 	},
   methods: {
     getData: function (index,mpoint,groupId,startDate,endDate,interval,unit,submeter) {
-			console.log(mpoint + ' '+ groupId + " " + submeter);
-
-			console.trace();
 			return new Promise((fulfill, reject) => {
+					if (this.indexesInUse.includes(index)) {
+						reject("Index in use");
+						return;
+					}
+					this.indexesInUse.push(index);
 	        var promises = [];
 	        var meterRelation = {};
 					//we need to average the values over intervals for everything but accumulated real
 					var intervalCopy = interval;
 					var unitCopy = unit;
-					if (mpoint !== "accumulated_real" || mpoint !== "total" || mpoint !== "cubic_feet" ) {
+					if (mpoint !== "accumulated_real" && mpoint !== "total" && mpoint !== "cubic_feet" ) {
 						interval = '15';
 						unit = 'minute';
 					}
@@ -95,56 +88,70 @@ export default {
 							}
 						});
 	          Promise.all(promises).then(values => {
-	            //combine all returned data
-	            var combinedData = {};
-							if (values.length === 0)
-								return;
-	            values.forEach(value => {
-	              if (value.status === 400 || value.data.length === 0) {
-	                this.updatingChart = false;
-	                return;
-	              }
-	              value.data.forEach(obj => {
-	                //do the combination operation
-									if ("accumulated_real" in obj) {
-										obj.accumulated_real = Math.abs(obj.accumulated_real);
-									}
-	                if (obj.time in combinedData) {
-	                  var time = obj.time;
-	                  if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0 && submeter === 0) {
-	                    obj.accumulated_real *= -1;
-	                  }
-	                  if ("accumulated_real" in combinedData[time])
-	                    combinedData[time].accumulated_real += obj.accumulated_real;
-	                }
-	                else {
-	                  var time = obj.time;
-	                  if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0 && submeter === 0) {
-	                    obj.accumulated_real *= -1;
-	                  }
-	                  delete obj.time;
-	                  delete obj.meter_id;
-	                  combinedData[time] = obj;
-	                }
-	              });
-	            });
+							var cbf = () => {
+								if (index !== this.indexesInUse[0]) {
+									setTimeout(cbf, 10);
+									return;
+								}
+								var combinedData = {};
+								if (values.length === 0)
+									return;
+		            values.forEach(value => {
+		              if (value.status === 400 || value.data.length === 0) {
+		                return;
+		              }
+		              value.data.forEach(obj => {
+		                //do the combination operation
+										if ("accumulated_real" in obj) {
+											obj.accumulated_real = Math.abs(obj.accumulated_real);
+										}
+		                if (obj.time in combinedData) {
+		                  var time = obj.time;
+		                  if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0 && submeter === 0) {
+		                    obj.accumulated_real *= -1;
+		                  }
+		                  if ("accumulated_real" in combinedData[time])
+		                    combinedData[time].accumulated_real += obj.accumulated_real;
+		                }
+		                else {
+		                  var time = obj.time;
+		                  if ("accumulated_real" in obj && meterRelation[obj.meter_id] === 0 && submeter === 0) {
+		                    obj.accumulated_real *= -1;
+		                  }
+		                  delete obj.time;
+		                  delete obj.meter_id;
+		                  combinedData[time] = obj;
+		                }
+		              });
+		            });
 
-	            //parse and create the datasets
-							if (this.graphType == 1 || this.graphType == 2) {
-								this.createDataSet(index,this.names[index],mpoint,intervalCopy,unitCopy,startDate);
-	            	this.parseDataBarLine(index, groupId, combinedData);
+		            //parse and create the datasets
+								if (this.graphType == 1 || this.graphType == 2) {
+									this.createDataSet(index,this.names[index],mpoint,intervalCopy,unitCopy,startDate);
+								//	console.log(JSON.parse(JSON.stringify(this.chartData)));
+									//console.log(index);
+		            	this.parseDataBarLine(index, groupId, combinedData);
+								}
+								else if(this.graphType == 3 || this.graphType == 4)
+									this.parseDataPieDoughnut(index, groupId, combinedData);
+								this.indexesInUse.splice(this.indexesInUse.indexOf(index),1);
+
+								if (this.indexesInUse.length === 0) //Update all at once instead of one after another
+		            	this.chartDataComplete = JSON.parse(JSON.stringify(this.chartData));
+
+								fulfill();
 							}
-							else if(this.graphType == 3 || this.graphType == 4)
-								this.parseDataPieDoughnut(index, groupId, combinedData);
+							setTimeout(cbf,10);
 
-	            this.chartDataComplete = JSON.parse(JSON.stringify(this.chartData));
+	            //combine all returned data
 
-							fulfill();
 	          }).catch (e => {
+							this.indexesInUse.splice(this.indexesInUse.indexOf(index),1);
 	            console.log(e);
 							reject(e);
 	          });
 	        }).catch (e => {
+						this.indexesInUse.splice(this.indexesInUse.indexOf(index),1);
 	          console.log(e);
 						reject(e);
 	        });

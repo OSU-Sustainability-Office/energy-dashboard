@@ -39,6 +39,28 @@ export default {
   created() {
      axios(process.env.ROOT_API+'api/getStoriesForCurrentUser',{method: "get", withCredentials:true}).then (res => {
        this.cards = res.data;
+       for (var card of this.cards) {
+         if (card.featured) {
+           this.currentStory = card.id;
+           axios.get(process.env.ROOT_API+'api/getBlocksForStory?id='+card.id).then (res => {
+             for (var card of res.data) {
+               card.points = ['accumulated_real'];
+               card.meters = [0];
+               card.names = ['Undefined'];
+               card.groups = [8];
+               card.start = card.date_start;
+               card.end = card.date_end;
+               card.int = card.date_interval;
+               card.unit = card.interval_unit;
+               card.graphType = card.graph_type;
+             }
+             this.cardsFeatured = res.data;
+           }).catch(err=> {
+             throw err;
+           });
+           return;
+         }
+       }
      }).catch (e => {
       this.errors.push(e);
      });
@@ -64,18 +86,7 @@ export default {
      });
   },
   watch: {
-    cards: function(value) {
-      for (var i = 0; i < this.cards.length; i++) {
-        if (this.cards[i].featured) {
-          this.currentStory = this.cards[i].id;
-          axios.get(process.env.ROOT_API+'api/getBlocksForStory?id='+this.cards[i].id).then (res => {
 
-            this.cardsFeatured = res.data;
-          });
-          return;
-        }
-      }
-    }
   },
   methods: {
     editStory: function(event) {
@@ -102,7 +113,12 @@ export default {
         console.log(e);
       });
       axios.get(process.env.ROOT_API+'api/getBlocksForStory?id='+event[0]).then (res => {
-
+        for (var card of res.data) {
+          card.points = ['accumulated_real'];
+          card.meters = [0];
+          card.names = ['Undefined'];
+          card.groups = [8];
+        }
         this.cardsFeatured = res.data;
         this.$nextTick(() => {
           this.$eventHub.$emit('reloadChart');
