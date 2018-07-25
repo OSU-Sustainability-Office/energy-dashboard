@@ -2,7 +2,7 @@
   <div class="card featured" v-bind:class="{ feature : featured}" ref='card' v-on:click='unclickText'>
 
     <chartController v-bind:start='start' v-bind:end='end' v-bind:interval='int' v-bind:unit='unit' v-bind:graphType='type' v-bind:points='points' v-bind:groups='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="chartController"  class="chart"/>
-    <featureController v-bind:start='start' v-bind:end='end' v-bind:interval='int' v-bind:graphType='type' v-bind:unit='unit' v-bind:points='points' v-bind:groupids='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="featureController" />
+    <featureController :start='new Date(start)' :end='new Date(end)' v-bind:interval='int' v-bind:graphType='type' v-bind:unit='unit' v-bind:points='points' v-bind:groupids='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="featureController" />
     <div class='titleTextFeatured' v-if="featured" v-on:click='clickText' ref='title' v-tooltip="'Click to edit name'">
       {{this.name}}
     </div>
@@ -37,7 +37,6 @@ export default {
   methods: {
     setStart: function(val) {
       this.$parent.cards[this.index].date_start = val;
-      console.log(val);
     },
     setEnd: function(val) {
       this.$parent.cards[this.index].date_end = val;
@@ -82,7 +81,6 @@ export default {
         groupPoints.push({'id':this.$refs.featureController.groupids[i],'point':this.$refs.featureController.points[i],'name':this.$refs.featureController.names[i],'meter':this.$refs.featureController.submeters[i]});
       }
       var data = {};
-      console.log(card);
       if (card.id)
         data = {
           id: card.id,
@@ -101,7 +99,7 @@ export default {
           story_id: card.story_id,
           meter_groups: groupPoints,
           date_end: this.end,
-          date_start: this.start,
+          date_start: this.start.toString(),
           graph_type: this.type,
           media: this.media,
           descr: this.description,
@@ -118,10 +116,10 @@ export default {
     },
     download: function() {
       //Get all information contained for current data on the graph
-      var points = this.$refs.featureController.points;
-      var groups = this.$refs.featureController.groupids;
-      var names = this.$refs.featureController.names;
-      var meters = this.$refs.featureController.submeters;
+      var points = this.$refs.chartController.points;
+      var groups = this.$refs.chartController.groups;
+      var names = this.$refs.chartController.names;
+      var meters = this.$refs.chartController.submeters;
 
       var data = [];
       var promises = [];
@@ -139,12 +137,11 @@ export default {
         results.forEach((row, index) => {
           relation.push({});
           row.data.forEach((meter, meterIndex) => {
-            console.log(meters[index]);
             if ((meters[index] === 0 && meter.type == "e") || meter.id == meters[index]) {
               //use relation object to do adding, or subtracting (based on table data)
               relation[index][meter.id] = meter.operation;
               //Make requests for data for each meter
-              promisesRoundTwo.push(axios.get(process.env.ROOT_API+'api/getMeterData?id='+meter.id+'&date_start='+this.$refs.featureController.dateFrom+'&date_end='+this.$refs.featureController.dateTo+'&mpoints='+points[index]));
+              promisesRoundTwo.push(axios.get(process.env.ROOT_API+'api/getMeterData?id='+meter.id+'&date_start='+this.$refs.chartController.start+'&date_end='+this.$refs.chartController.end+'&mpoints='+points[index]));
             }
           });
         });
@@ -167,12 +164,35 @@ export default {
                   a = Math.abs(a);
                   if (group[key] === 0)
                     a *= -1;
-                  if(!data[dataIndex])
+
+
+                  if(data[dataIndex]) {
+                    while(data[dataIndex][0] > row.time) {
+                      dataIndex--;
+                      if (!data[dataIndex]) {
+                        data[dataIndex] = row.time;
+                        break;
+                      }
+                    }
+                  }
+                  else {
                     data.push([row.time]);
-                  if(!data[dataIndex][index+1])
-                    data[dataIndex].push(a);
-                  else
+                  }
+
+
+
+
+                  if(data[dataIndex].length < index+2) {
+                    while (data[dataIndex].length < index+2) {
+                      data[dataIndex].push(null);
+                    }
+                    data[dataIndex][index+1] = a;
+
+                  }
+                  else {
+
                     data[dataIndex][index+1] += a;
+                  }
                   dataIndex++;
                 });
                 resultEnumerator++;
@@ -188,7 +208,7 @@ export default {
             }
 
           });
-
+          console.log(data);
           var blob = new Blob([data.join('\n')]);
           if (window.navigator.msSaveOrOpenBlob)
               window.navigator.msSaveBlob(blob, this.name+".csv");
@@ -207,8 +227,14 @@ export default {
     }
   },
   mounted() {
-    if (!this.id)
-      this.save();
+    this.$nextTick(()=>{
+      if (!this.id) {
+
+        this.save();
+      }
+    });
+
+
   },
   created() {
     if (this.id) {
@@ -236,10 +262,24 @@ export default {
       });
     }
     else {
-      this.setPoints(['accumulated_real']);
-      this.setGroups([8]);
-      this.setNames(['New Graph']);
-      this.setMeters([0]);
+
+
+      //this.$nextTick(()=>{
+        this.points = ['accumulated_real'];
+        this.groups = [8];
+        this.names =['New Graph'];
+        this.meters = [0];
+
+        this.setPoints(this.points);
+        this.setGroups(this.groups);
+        this.setNames(this.names);
+        this.setMeters(this.meters);
+        this.$nextTick(()=>{
+          this.$refs.featureController.mounted = true;
+          this.$refs.featureController.updateGraph(true);
+        });
+        //
+      //});
     }
   }
 }

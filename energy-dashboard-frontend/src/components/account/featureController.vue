@@ -81,14 +81,14 @@
           </dropdown>
           <dropdown class="form-group" append-to-body>
             <div class="input-group">
-              <input class="form-control" type="text" v-model="timeFrom" readonly="readonly">
+              <input class="form-control" type="text" v-model="start" readonly="readonly">
               <div class="input-group-btn">
                 <btn class="dropdown-toggle"><i class="glyphicon glyphicon-time"></i></btn>
               </div>
             </div>
             <template slot="dropdown">
               <li style="padding: 10px">
-                <time-picker v-model="timeFrom"/>
+                <time-picker v-model="start"/>
               </li>
             </template>
           </dropdown>
@@ -107,20 +107,20 @@
             </div>
             <template slot="dropdown">
               <li>
-                <date-picker v-model="end"/>
+                <date-picker v-model="end" format="yyyy-MM-dd"/>
               </li>
             </template>
           </dropdown>
           <dropdown class="form-group" append-to-body>
             <div class="input-group">
-              <input class="form-control" type="text" v-model="timeTo" readonly="readonly">
+              <input class="form-control" type="text" v-model="end" readonly="readonly">
               <div class="input-group-btn">
                 <btn class="dropdown-toggle"><i class="glyphicon glyphicon-time"></i></btn>
               </div>
             </div>
             <template slot="dropdown">
               <li style="padding: 10px">
-                <time-picker v-model="timeTo"/>
+                <time-picker v-model="end"/>
               </li>
             </template>
           </dropdown>
@@ -146,9 +146,9 @@
         </select>
         <input type="number" step="15" class="form-control sharedLine" v-model="interval"/>
       </div>
-      <div class="row deleteButton">
+      <!-- <div class="row deleteButton">
         <btn @click='deleteGroup()'>Delete</btn>
-      </div>
+      </div> -->
 
     </div>
   </div>
@@ -170,8 +170,8 @@ export default {
       currentIndex: 0,
       keyPressTimeOut: null,
       mounted: false,
-      timeTo: new Date(),
-      timeFrom: new Date()
+      oldStart: null,
+      oldEnd: null
 
     }
   },
@@ -188,10 +188,6 @@ export default {
       this.names.splice(this.currentIndex,1);
       this.submeters.splice(this.currentIndex,1);
 
-      // if (this.currentIndex === this.points.length) {
-      //   this.currentIndex -= 1;
-      // }
-
       this.$parent.setPoints(this.points);
       this.$parent.setGroups(this.groupids);
       this.$parent.setNames(this.names);
@@ -201,14 +197,14 @@ export default {
     },
     updateGraph: function (partial) {
       if (this.points.length > this.currentIndex && this.groupids.length > this.currentIndex && !partial) {
-        this.$parent.$refs.chartController.getData(this.currentIndex,this.points[this.currentIndex],this.groupids[this.currentIndex],this.start, this.end,this.interval.toString(),this.unit,this.submeters[this.currentIndex]).then(() => {
+        this.$parent.$refs.chartController.getData(this.currentIndex,this.points[this.currentIndex],this.groupids[this.currentIndex],this.start.toISOString(), this.end.toISOString(),this.interval,this.unit,this.submeters[this.currentIndex]).then(() => {
           this.$parent.$refs.chartController.updateChart();
         }).catch(e=>{});
       }
       else {
         var promises = [];
         for (var i = 0; i < this.points.length; i++) {
-          promises.push(this.$parent.$refs.chartController.getData(i,this.points[i],this.groupids[i],this.start, this.end,this.interval.toString(),this.unit,this.submeters[i]));
+          promises.push(this.$parent.$refs.chartController.getData(i,this.points[i],this.groupids[i],this.start.toISOString(), this.end.toISOString(),this.interval,this.unit,this.submeters[i]));
         }
         Promise.all(promises).then(values => {
           this.$parent.$refs.chartController.updateChart();
@@ -228,6 +224,7 @@ export default {
     },
     updateSubmeters: function() {
       axios.get(process.env.ROOT_API+'api/getMetersForGroup?id='+this.groupids[this.currentIndex]).then(rows => {
+
         this.$refs.submeters.innerHTML = "<option value=0>All</option>";
         for (var r in rows.data) {
           this.$refs.submeters.innerHTML += "<option value="+rows.data[r].id+">"+rows.data[r].name+"</option>";
@@ -235,7 +232,6 @@ export default {
       });
     },
     updatedSubmetersValue: function(value) {
-      console.log(value);
       if (!value)
         return;
       if (parseInt(value[this.currentIndex]) === 0) {
@@ -243,27 +239,22 @@ export default {
         //
         //this.$parent.$refs.chartController.points[this.currentIndex] = "accumulated_real";
         //this.$parent.$refs.chartController.submeters = value;
-        this.$parent.setMeters(value);
-        if(this.mounted) {
+        if (!this.mounted) {
+          this.$parent.setMeters(value);
+        }
+        else {
           this.points[this.currentIndex] = "accumulated_real";
           this.$parent.setPoints(this.points);
+          this.$parent.setMeters(value);
           this.updateGraph(false);
         }
       }
       else {
         axios.get(process.env.ROOT_API+'api/getMeterType?id='+parseInt(value[this.currentIndex])).then(rows => {
+
           this.currentType = rows.data[0].type;
-          // if (rows.data[0].type == "s") {
-          //   this.points[this.currentIndex] = "total";
-          // }
-          // else if (rows.data[0].type == "g") {
-          //   this.points[this.currentIndex] = "cubic_feet";
-          // }
-          // else if (rows.data[0].type == "e") {
-          //   this.points[this.currentIndex] = "accumulated_real";
-          // }
-          // this.$parent.setPoints(this.points);
           this.$parent.setMeters(value);
+
           if(this.mounted) {
              if (rows.data[0].type == "s") {
               this.points[this.currentIndex] = "total";
@@ -274,9 +265,10 @@ export default {
             else if (rows.data[0].type == "e") {
               this.points[this.currentIndex] = "accumulated_real";
             }
-            console.log(this.points);
             this.$parent.setPoints(this.points);
+
             this.updateGraph(false);
+
           }
         });
       }
@@ -286,9 +278,18 @@ export default {
     start: function(value) {
       if (!value)
         return;
-      this.timeFrom = new Date(value.toString());
-      console.log(this.timeFrom);
-      this.$parent.setStart(value.toString());
+          //the stupid datepicker changes it back to a string
+      if (typeof value === 'string') {
+        this.start = new Date(value);
+        return;
+      }
+      //Because it is a date object it calls this method even though it doesnt change
+      if (this.oldStart && this.oldStart.toISOString() === value.toISOString()) {
+        return;
+      }
+      this.oldStart = value;
+      this.$parent.setStart(value.toISOString());
+
 
       if (this.mounted)
         this.updateGraph(true);
@@ -296,8 +297,18 @@ export default {
     end: function(value) {
       if (!value)
         return;
-      this.timeTo = new Date(value.toString());
-      this.$parent.setEnd(value.toString());
+        //the stupid datepicker changes it back to a string
+      if (typeof value === 'string') {
+        this.end = new Date(value);
+        return;
+      }
+      //Because it is a date object it calls this method even though it doesnt change
+      if (this.oldEnd && this.oldEnd.toISOString() === value.toISOString()) {
+        return;
+      }
+      this.oldEnd = value;
+
+      this.$parent.setEnd(value.toISOString());
       if (this.mounted)
         this.updateGraph(true);
     },
@@ -311,23 +322,8 @@ export default {
         this.updatedSubmetersValue(this.submeters);
 
       }
-      //this.updateGraph(false);
 
 
-    },
-    timeTo: function(value) {
-      if (!value)
-        return;
-      this.$parent.setEnd(this.dateTo.toString() + this.parseDateTime(value));
-      if (this.mounted)
-        this.updateGraph(true);
-    },
-    timeFrom: function(value) {
-      if (!value)
-        return;
-      this.$parent.setStart(this.dateFrom.toString() + this.parseDateTime(value));
-      if (this.mounted)
-        this.updateGraph(true);
     },
     graphType: function(value) {
       if (!value)
@@ -337,7 +333,6 @@ export default {
     interval: function(value) {
       if (!value)
         return;
-      console.log(value);
       this.$parent.setInt(value);
       if (this.mounted)
         this.updateGraph(true);
@@ -352,6 +347,7 @@ export default {
     submeters: function(value) {
       if (!value)
         return;
+      this.$parent.$refs.chartController.updateFlag = true;
       this.updatedSubmetersValue(value);
 
     },
@@ -387,7 +383,7 @@ export default {
         this.currentType = 'e';
       }
       else {
-        axios.get(process.env.ROOT_API+'api/getMeterType?id='+this.submeters[value]).then(r => {
+        axios.get(process.env.ROOT_API+'api/getMeterType?id='+parseInt(his.submeters[value])).then(r => {
           this.currentType = r.data[0].type;
         });
       }
@@ -414,7 +410,6 @@ export default {
      });
 
      this.$nextTick(() => {
-       //this.mounted = true;
      });
 
   }

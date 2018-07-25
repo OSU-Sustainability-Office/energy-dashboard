@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import * as uiv from 'uiv'
 
 
-Vue.config.productionTip = false
+
 Vue.use(uiv)
 
 /* eslint-disable no-new */
@@ -19,3 +19,4 @@ var v = new Vue({
   components: { App },
   template: '<App/>',
 })
+Vue.config.devtools = false
