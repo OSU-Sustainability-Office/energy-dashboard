@@ -1,7 +1,7 @@
 <template>
 <div class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature">
   <!-- <transition-group name="cardEntry" tag="div" class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature"> -->
-    <card v-for="(card, index) in cards" v-bind:key="index+card.id" v-bind:index="index" :featured="true" v-bind:name='card.name' v-bind:description='card.descr' v-bind:id='card.id' v-bind:start='card.date_start' v-bind:end='card.date_end' v-bind:type='card.graph_type' v-bind:unit='card.interval_unit' v-bind:int='card.date_interval' v-bind:media='card.media' v-bind:story_id='card.story_id' ref="displayedCards"/>
+    <card v-for="(card, index) in cards" v-bind:key="index+card.id" v-bind:index="index" :featured="true" v-bind:name='card.name' v-bind:description='card.descr' v-bind:id='card.id' v-bind:start='card.date_start' v-bind:end='card.date_end' v-bind:type='card.graph_type' v-bind:unit='card.interval_unit' v-bind:int='card.date_interval' v-bind:media='card.media' v-bind:story_id='card.story_id' v-bind:points='card.points' v-bind:names='card.names' v-bind:groups='card.groups' v-bind:meters='card.meters' ref="displayedCards"/>
 
     <div class="addFeatured" key="add" @click="addFeature()" v-bind:class="[isFull() ? 'fullAdd' : 'smallAdd']">
       +

@@ -62,7 +62,7 @@ exports.start = function(cb) {
 
 					res.status(301).redirect('http://localhost:8080/#/account');
 				else {
-					res.status(301).redirect('http://54.186.223.223:3478/#/account');
+					res.status(301).redirect('http://52.39.141.177:3478/#/account');
 
 				}
 			}
@@ -77,7 +77,7 @@ exports.start = function(cb) {
 
 						res.status(301).redirect('http://localhost:8080/#/account');
 					else {
-						res.status(301).redirect('http://54.186.223.223:3478/#/account');
+						res.status(301).redirect('http://52.39.141.177:3478/#/account');
 
 					}
 				}).catch(e=>{
@@ -105,7 +105,7 @@ exports.start = function(cb) {
 
 					res.status(301).redirect('http://localhost:8080/#/account');
 				else {
-					res.status(301).redirect('http://54.186.223.223:3478/#/account');
+					res.status(301).redirect('http://52.39.141.177:3478#/account');
 
 				}
 			}
@@ -120,7 +120,7 @@ exports.start = function(cb) {
 
 						res.status(301).redirect('http://localhost:8080/#/account');
 					else {
-						res.status(301).redirect('http://54.186.223.223:3478/#/account');
+						res.status(301).redirect('http://52.39.141.177:3478/#/account');
 
 					}
 				}).catch(e=>{

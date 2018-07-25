@@ -18,31 +18,39 @@
       <div class="row pointChooser form-group">
         <label>Point: </label>
         <select v-model="points[currentIndex]" class="form-control">
-          <option value="accumulated_real">Accumulated Real</option>
-          <option value="real_power">Total Real Power</option>
-          <option value="reactive_power">Total Reactive Power</option>
-          <option value="apparent_power">Total Apparent Power</option>
-          <option value="real_a">Real Power, Phase A</option>
-          <option value="real_b">Real Power, Phase B</option>
-          <option value="real_c">Real Power, Phase C</option>
-          <option value="reactive_a">Reactive Power, Phase A</option>
-          <option value="reactive_b">Reactive Power, Phase B</option>
-          <option value="reactive_c">Reactive Power, Phase C</option>
-          <option value="apparent_a">Apparent Power, Phase A</option>
-          <option value="apparent_b">Apparent Power, Phase B</option>
-          <option value="apparent_c">Apparent Power, Phase C</option>
-          <option value="pf_a">Power Factor, Phase A</option>
-          <option value="pf_b">Power Factor, Phase B</option>
-          <option value="pf_c">Power Factor, Phase C</option>
-          <option value="vphase_ab">Voltage Phase, Phase A-B</option>
-          <option value="vphase_bc">Voltage Phase, Phase B-C</option>
-          <option value="vphase_ac">Voltage Phase, Phase A-C</option>
-          <option value="vphase_an">Voltage Phase, Phase A-N</option>
-          <option value="vphase_bn">Voltage Phase, Phase B-N</option>
-          <option value="vphase_cn">Voltage Phase, Phase C-N</option>
-          <option value="cphase_a">Current Phase, Phase A</option>
-          <option value="cphase_b">Current Phase, Phase B</option>
-          <option value="cphase_c">Current Phase, Phase C</option>
+          <!-- Electrical Meter Options -->
+          <option value="accumulated_real" v-if="currentType == 'e'">Accumulated Real</option>
+          <option value="real_power" v-if="currentType == 'e'">Total Real Power</option>
+          <option value="reactive_power" v-if="currentType == 'e'">Total Reactive Power</option>
+          <option value="apparent_power" v-if="currentType == 'e'">Total Apparent Power</option>
+          <option value="real_a" v-if="currentType == 'e'">Real Power, Phase A</option>
+          <option value="real_b" v-if="currentType == 'e'">Real Power, Phase B</option>
+          <option value="real_c" v-if="currentType == 'e'">Real Power, Phase C</option>
+          <option value="reactive_a" v-if="currentType == 'e'">Reactive Power, Phase A</option>
+          <option value="reactive_b" v-if="currentType == 'e'">Reactive Power, Phase B</option>
+          <option value="reactive_c" v-if="currentType == 'e'">Reactive Power, Phase C</option>
+          <option value="apparent_a" v-if="currentType == 'e'">Apparent Power, Phase A</option>
+          <option value="apparent_b" v-if="currentType == 'e'">Apparent Power, Phase B</option>
+          <option value="apparent_c" v-if="currentType == 'e'">Apparent Power, Phase C</option>
+          <option value="pf_a" v-if="currentType == 'e'">Power Factor, Phase A</option>
+          <option value="pf_b" v-if="currentType == 'e'">Power Factor, Phase B</option>
+          <option value="pf_c" v-if="currentType == 'e'">Power Factor, Phase C</option>
+          <option value="vphase_ab" v-if="currentType == 'e'">Voltage Phase, Phase A-B</option>
+          <option value="vphase_bc" v-if="currentType == 'e'">Voltage Phase, Phase B-C</option>
+          <option value="vphase_ac" v-if="currentType == 'e'">Voltage Phase, Phase A-C</option>
+          <option value="vphase_an" v-if="currentType == 'e'">Voltage Phase, Phase A-N</option>
+          <option value="vphase_bn" v-if="currentType == 'e'">Voltage Phase, Phase B-N</option>
+          <option value="vphase_cn" v-if="currentType == 'e'">Voltage Phase, Phase C-N</option>
+          <option value="cphase_a" v-if="currentType == 'e'">Current Phase, Phase A</option>
+          <option value="cphase_b" v-if="currentType == 'e'">Current Phase, Phase B</option>
+          <option value="cphase_c" v-if="currentType == 'e'">Current Phase, Phase C</option>
+
+          <!-- Gas Meter Options -->
+          <option value="cubic_feet" v-if="currentType == 'g'">Accumulated Usage</option>
+
+          <!-- Steam Meter Options -->
+          <option value="total" v-if="currentType == 's'">Accumulated Usage</option>
+
         </select>
       </div>
 
@@ -50,38 +58,37 @@
         <label>Group: </label>
         <select ref="groups" class="form-control" v-model="groupids[currentIndex]">
         </select>
-        <!-- <label>Sub-Meter: </label>
+        <label>Sub-Meter: </label>
         <select ref="submeters" class="form-control" v-model="submeters[currentIndex]">
           <option value=0>All</option>
-        </select> -->
+        </select>
       </div>
-
       <div class="row fromDateChooser form-group">
         <label>From Date: </label>
         <form class="form-inline">
           <dropdown class="form-group" append-to-body>
             <div class="input-group">
-              <input class="form-control" type="text" v-model="dateFrom" >
+              <input class="form-control" type="text" v-model="start" >
               <div class="input-group-btn">
                 <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
               </div>
             </div>
             <template slot="dropdown">
               <li>
-                <date-picker v-model="dateFrom"/>
+                <date-picker v-model="start"/>
               </li>
             </template>
           </dropdown>
           <dropdown class="form-group" append-to-body>
             <div class="input-group">
-              <input class="form-control" type="text" v-model="timeFrom.toTimeString()" readonly="readonly">
+              <input class="form-control" type="text" v-model="start" readonly="readonly">
               <div class="input-group-btn">
                 <btn class="dropdown-toggle"><i class="glyphicon glyphicon-time"></i></btn>
               </div>
             </div>
             <template slot="dropdown">
               <li style="padding: 10px">
-                <time-picker v-model="timeFrom"/>
+                <time-picker v-model="start"/>
               </li>
             </template>
           </dropdown>
@@ -93,33 +100,32 @@
         <form class="form-inline">
           <dropdown class="form-group" append-to-body>
             <div class="input-group">
-              <input class="form-control" type="text" v-model="dateTo">
+              <input class="form-control" type="text" v-model="end">
               <div class="input-group-btn">
                 <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
               </div>
             </div>
             <template slot="dropdown">
               <li>
-                <date-picker v-model="dateTo"/>
+                <date-picker v-model="end" format="yyyy-MM-dd"/>
               </li>
             </template>
           </dropdown>
           <dropdown class="form-group" append-to-body>
             <div class="input-group">
-              <input class="form-control" type="text" v-model="timeTo.toTimeString()" readonly="readonly">
+              <input class="form-control" type="text" v-model="end" readonly="readonly">
               <div class="input-group-btn">
                 <btn class="dropdown-toggle"><i class="glyphicon glyphicon-time"></i></btn>
               </div>
             </div>
             <template slot="dropdown">
               <li style="padding: 10px">
-                <time-picker v-model="timeTo"/>
+                <time-picker v-model="end"/>
               </li>
             </template>
           </dropdown>
         </form>
       </div>
-
       <div class="row graphTypeChooser form-group">
         <label>Graph Type: </label>
         <select class="form-control" v-model="graphType" >
@@ -140,6 +146,9 @@
         </select>
         <input type="number" step="15" class="form-control sharedLine" v-model="interval"/>
       </div>
+      <!-- <div class="row deleteButton">
+        <btn @click='deleteGroup()'>Delete</btn>
+      </div> -->
 
     </div>
   </div>
@@ -152,35 +161,17 @@ export default {
   name: 'featureController',
   components: {
   },
-  props: [],
+  props: ["start", "end", "interval", "graphType", "unit", "points", "groupids", "submeters", "names"],
   data() {
     return {
-      // point: "accumulated_real",
-      // groupid: 8,
-      dateFrom: "2018-06-01",//new Date(2018,5,1, 0, 0, 0, 0),
-      dateTo: "2018-06-30", //new Date(2018,5,30, 0, 0, 0, 0)
-      timeTo: new Date(0,0,0,0,0,0),
-      timeFrom: new Date(0,0,0,0,0),
-      interval: 15,
-      graphType: 1,
-      unit: "",
       isMaximized: false,
-      // name: ""
-      points: [],
-      groupids: [],
-      submeters: [],
-      //dateFroms: [],
-      //dateTos: [],
-      //timeTos: [],
-      //timeFroms: [],
-      //intervals: [],
-      //graphTypes: [],
-      //units: [],
-      names: [],
+      currentType: 'e',
       colors: [],
       currentIndex: 0,
       keyPressTimeOut: null,
-      dontUpdate: false
+      mounted: false,
+      oldStart: null,
+      oldEnd: null
 
     }
   },
@@ -188,34 +179,41 @@ export default {
     addGroup: function() {
       this.points.push('accumulated_real');
       this.groupids.push(8);
-      this.names.push('New Graph')
-      //this.currentIndex = this.points.length -1;
+      this.names.push('New Graph');
+      this.submeters.push(0);
+    },
+    deleteGroup: function() {
+      this.points.splice(this.currentIndex,1);
+      this.groupids.splice(this.currentIndex,1);
+      this.names.splice(this.currentIndex,1);
+      this.submeters.splice(this.currentIndex,1);
+
+      this.$parent.setPoints(this.points);
+      this.$parent.setGroups(this.groupids);
+      this.$parent.setNames(this.names);
+
+      this.$parent.setMeters(this.meters);
+      this.mounted = true;
     },
     updateGraph: function (partial) {
-      if (!this.dontUpdate) {
-       //this.$parent.loaded = false;
-      //console.log(this.$parent);
-      //console.log(this.points);
-      //console.log(this.groupids);
       if (this.points.length > this.currentIndex && this.groupids.length > this.currentIndex && !partial) {
-        this.$parent.$refs.chartController.getData(this.currentIndex,this.points[this.currentIndex],this.groupids[this.currentIndex],this.dateFrom+this.parseDateTime(this.timeFrom), this.dateTo+this.parseDateTime(this.timeTo),this.interval.toString(),this.unit).then(() => {
+        this.$parent.$refs.chartController.getData(this.currentIndex,this.points[this.currentIndex],this.groupids[this.currentIndex],this.start.toISOString(), this.end.toISOString(),this.interval,this.unit,this.submeters[this.currentIndex]).then(() => {
           this.$parent.$refs.chartController.updateChart();
-        });
+        }).catch(e=>{});
       }
       else {
         var promises = [];
         for (var i = 0; i < this.points.length; i++) {
-
-          promises.push(this.$parent.$refs.chartController.getData(i,this.points[i],this.groupids[i],this.dateFrom+this.parseDateTime(this.timeFrom), this.dateTo+this.parseDateTime(this.timeTo),this.interval.toString(),this.unit));
-          //console.log("update");
+          promises.push(this.$parent.$refs.chartController.getData(i,this.points[i],this.groupids[i],this.start.toISOString(), this.end.toISOString(),this.interval,this.unit,this.submeters[i]));
         }
         Promise.all(promises).then(values => {
           this.$parent.$refs.chartController.updateChart();
-        });
+        }).catch(e=>{});
       }
-}
     },
     parseDateTime: function(dateTime) {
+      if (!dateTime)
+        return;
       var hours = dateTime.getHours();
       if (hours < 10)
         hours = "0"+hours,toString();
@@ -223,69 +221,142 @@ export default {
       if (minutes < 10)
         minutes = "0"+minutes.toString();
       return "T"+hours+":"+minutes+":000"
+    },
+    updateSubmeters: function() {
+      axios.get(process.env.ROOT_API+'api/getMetersForGroup?id='+this.groupids[this.currentIndex]).then(rows => {
+
+        this.$refs.submeters.innerHTML = "<option value=0>All</option>";
+        for (var r in rows.data) {
+          this.$refs.submeters.innerHTML += "<option value="+rows.data[r].id+">"+rows.data[r].name+"</option>";
+        }
+      });
+    },
+    updatedSubmetersValue: function(value) {
+      if (!value)
+        return;
+      if (parseInt(value[this.currentIndex]) === 0) {
+        this.currentType = "e";
+        //
+        //this.$parent.$refs.chartController.points[this.currentIndex] = "accumulated_real";
+        //this.$parent.$refs.chartController.submeters = value;
+        if (!this.mounted) {
+          this.$parent.setMeters(value);
+        }
+        else {
+          this.points[this.currentIndex] = "accumulated_real";
+          this.$parent.setPoints(this.points);
+          this.$parent.setMeters(value);
+          this.updateGraph(false);
+        }
+      }
+      else {
+        axios.get(process.env.ROOT_API+'api/getMeterType?id='+parseInt(value[this.currentIndex])).then(rows => {
+
+          this.currentType = rows.data[0].type;
+          this.$parent.setMeters(value);
+
+          if(this.mounted) {
+             if (rows.data[0].type == "s") {
+              this.points[this.currentIndex] = "total";
+            }
+            else if (rows.data[0].type == "g") {
+              this.points[this.currentIndex] = "cubic_feet";
+            }
+            else if (rows.data[0].type == "e") {
+              this.points[this.currentIndex] = "accumulated_real";
+            }
+            this.$parent.setPoints(this.points);
+
+            this.updateGraph(false);
+
+          }
+        });
+      }
     }
   },
   watch: {
-    dateFrom: function(value) {
-      if(!value)
-        return;
-      this.$parent.setStart(value.toString() + this.parseDateTime(this.timeFrom));
-      this.$parent.$refs.chartController.start = value.toString() + this.parseDateTime(this.timeFrom);
-      this.updateGraph(false);
-    },
-    dateTo: function(value) {
+    start: function(value) {
       if (!value)
         return;
-      this.$parent.setEnd(value.toString() + this.parseDateTime(this.timeTo));
-      this.$parent.$refs.chartController.end = value.toString() + this.parseDateTime(this.timeTo);
-      this.updateGraph(false);
+          //the stupid datepicker changes it back to a string
+      if (typeof value === 'string') {
+        this.start = new Date(value);
+        return;
+      }
+      //Because it is a date object it calls this method even though it doesnt change
+      if (this.oldStart && this.oldStart.toISOString() === value.toISOString()) {
+        return;
+      }
+      this.oldStart = value;
+      this.$parent.setStart(value.toISOString());
+
+
+      if (this.mounted)
+        this.updateGraph(true);
+    },
+    end: function(value) {
+      if (!value)
+        return;
+        //the stupid datepicker changes it back to a string
+      if (typeof value === 'string') {
+        this.end = new Date(value);
+        return;
+      }
+      //Because it is a date object it calls this method even though it doesnt change
+      if (this.oldEnd && this.oldEnd.toISOString() === value.toISOString()) {
+        return;
+      }
+      this.oldEnd = value;
+
+      this.$parent.setEnd(value.toISOString());
+      if (this.mounted)
+        this.updateGraph(true);
     },
     groupids: function(value) {
       if (!value)
         return;
-      this.$parent.$refs.chartController.groups = value;
-      this.updateGraph(false);
-    },
-    timeTo: function(value) {
-      if (!value)
-        return;
-      this.$parent.setEnd(this.dateTo.toString() + this.parseDateTime(value));
-      this.$parent.$refs.chartController.end = this.dateTo.toString() + this.parseDateTime(value);
-      this.updateGraph(true);
-    },
-    timeFrom: function(value) {
-      if (!value)
-        return;
-      this.$parent.setStart(this.dateFrom.toString() + this.parseDateTime(value));
-      this.$parent.$refs.chartController.start = this.dateFrom.toString() + this.parseDateTime(value);
-      this.updateGraph(true);
+      this.$parent.setGroups(value);
+      this.updateSubmeters();
+      if (this.mounted) {
+        this.submeters[this.currentIndex] = 0; //This updates the graph for us
+        this.updatedSubmetersValue(this.submeters);
+
+      }
+
+
     },
     graphType: function(value) {
       if (!value)
         return;
       this.$parent.setType(value);
-      this.$parent.$refs.chartController.graphType = value;
-      //this.updateGraph(true);
     },
     interval: function(value) {
       if (!value)
         return;
       this.$parent.setInt(value);
-      this.$parent.$refs.chartController.interval = value;
-      this.updateGraph(true);
+      if (this.mounted)
+        this.updateGraph(true);
     },
     unit: function(value) {
       if (!value)
         return;
       this.$parent.setUnit(value);
-      this.$parent.$refs.chartController.unit = value;
-      this.updateGraph(true);
+      if (this.mounted)
+        this.updateGraph(true);
+    },
+    submeters: function(value) {
+      if (!value)
+        return;
+      this.$parent.$refs.chartController.updateFlag = true;
+      this.updatedSubmetersValue(value);
+
     },
     points: function(value) {
       if (!value)
         return;
-      this.updateGraph(false);
-      this.$parent.$refs.chartController.points = value;
+      this.$parent.setPoints(value);
+      if (this.mounted)
+        this.updateGraph(false);
       this.$nextTick(() => {
         Array.from(this.$refs.indexChooser.children).forEach(e => {e.style.borderColor = "#FFFFFF"});
         this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)';
@@ -294,17 +365,28 @@ export default {
     names: function(value) {
       if (!value)
         return;
-      this.$parent.$refs.chartController.names = value;
-      clearTimeout(this.keyPressTimeOut);
-      this.keyPressTimeOut = setTimeout(() => {
-        this.updateGraph(false);
-      }, 800);
+      this.$parent.setNames(value);
+      if (this.mounted) {
+        clearTimeout(this.keyPressTimeOut);
+        this.keyPressTimeOut = setTimeout(() => {
+          this.updateGraph(false);
+        }, 800);
+      }
 
     },
     currentIndex: function(value) {
-      // /console.log(this.$refs.indexChooser.children);
       Array.from(this.$refs.indexChooser.children).forEach(e => {e.style.borderColor = "#FFFFFF"});
       this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)';
+
+      this.updateSubmeters();
+      if (parseInt(this.submeters[this.currentIndex]) === 0) {
+        this.currentType = 'e';
+      }
+      else {
+        axios.get(process.env.ROOT_API+'api/getMeterType?id='+parseInt(his.submeters[value])).then(r => {
+          this.currentType = r.data[0].type;
+        });
+      }
     },
     isMaximized: function(value) {
       if (value) {
@@ -316,10 +398,9 @@ export default {
     }
   },
   created() {
-    this.$eventHub.$on('reloadChart',() => {
-		});
   },
   mounted () {
+    this.updateSubmeters();
     axios.get(process.env.ROOT_API+'api/getAllBuildings').then (res => {
        res.data.forEach(obj => {
           this.$refs.groups.innerHTML += "<option value='"+obj.id+"'>"+obj.name+"</option>";
@@ -327,7 +408,12 @@ export default {
      }).catch (e => {
       this.errors.push(e);
      });
+
+     this.$nextTick(() => {
+     });
+
   }
+
 }
 </script>
 
