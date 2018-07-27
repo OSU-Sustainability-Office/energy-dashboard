@@ -4,6 +4,8 @@ import index from '@/components/home/index'
 import account from '@/components/account/account'
 import story from '@/components/story/story'
 import admin from '@/components/admin/admin'
+import map from '@/components/map/map'
+
 
 Vue.use(Router)
 
@@ -18,6 +20,11 @@ export default new Router({
       path: '/account',
       name: 'account',
       component: account
+    },
+    {
+      path: '/map',
+      name: 'map',
+      component: map
     }
   ]
 })

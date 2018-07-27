@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }"/>
+		<linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartDataComplete" :style="styleC"/>
 		<barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }" />
 		<doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }" />
 		<piechart v-if="graphType == 4" ref="piechart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }" />
@@ -16,7 +16,7 @@ import axios from 'axios';
 
 export default {
   name: 'card',
-  props: ['start','end','interval','submeters','groups','points','names','unit','graphType'],
+  props: ['start','end','interval','submeters','groups','points','names','unit','graphType','styleC'],
   components: {
     linechart, barchart, doughnutchart, piechart
   },
@@ -39,7 +39,7 @@ export default {
   },
 	watch: {
 		graphType: function (value) {
-			console.log(value);
+			//console.log(value);
 			if (value == 1) {
 				this.chart = this.$refs.linechart;
 			}
@@ -63,6 +63,7 @@ export default {
 	},
   methods: {
     getData: function (index,mpoint,groupId,startDate,endDate,interval,unit,submeter) {
+			//console.log(index + ' ' + mpoint + ' ' + groupId + ' ' + startDate + ' ' + endDate + ' ' + interval + ' ' + unit + ' ' + submeter);
 			return new Promise((fulfill, reject) => {
 					if (this.indexesInUse.includes(index)) {
 						reject("Index in use");

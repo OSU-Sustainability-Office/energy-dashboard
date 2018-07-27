@@ -3,6 +3,7 @@ var router = express.Router();
 var db = require('../db');
 var cas = null;
 var fs = require('fs');
+const mapData = require('./building-data.json');
 
 router.use(require('sanitize').middleware);
 
@@ -40,6 +41,9 @@ router.get('/getAllMeterGroups', function(req,res){
 
 //router.delete('/deleteMeterGroup')
 
+router.get('/getBuildingsForMap',function(req,res) {
+	res.send(mapData);
+});
 
 //BUILDINGS
 router.get('/getAllBuildings',function (req,res) {

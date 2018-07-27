@@ -49,13 +49,13 @@ export default {
 							ticks: {
 								fontColor: 'white',
 								autoSkip: true,
-								maxTicksLimit: 30
+								maxTicksLimit: 30,
 							},
 	            type: 'time',
 	            time: {
 	              unit: 'hour',
 	              displayFormats: {
-	                'hour': 'M/DD h:00 a'
+	                'hour': 'M/DD'
 	              }
 	            }
 	          }]

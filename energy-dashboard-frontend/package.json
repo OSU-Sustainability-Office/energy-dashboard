@@ -20,7 +20,8 @@
     "uiv": "^0.23.0",
     "vue": "^2.5.2",
     "vue-chartjs": "^3.3.1",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue2-leaflet": "^1.0.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
