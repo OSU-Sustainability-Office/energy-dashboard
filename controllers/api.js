@@ -3,7 +3,7 @@ var router = express.Router();
 var db = require('../db');
 var cas = null;
 var fs = require('fs');
-const mapData = require('./building-data.json');
+const mapData = require('./energydboardbuildings.json');
 
 router.use(require('sanitize').middleware);
 
@@ -233,8 +233,36 @@ router.post('/updateBlock',function (req,res) {
 		});
 	}
 });
+//GROUPS
+router.get('/getPublicGroups',function(req,res) {
+	db.query('SELECT id, name FROM story_groups').then(r => {
+		res.send(JSON.stringify(r));
+	}).catch(e => {
+		res.status(400).send('400: '+e);
+	})
+});
+router.get('/getGroupData',function(req,res) {
+	var promises = [];
+	promises.push(db.query('SELECT name,id FROM story_groups WHERE id=?',[req.queryInt('id')]));
+	promises.push(db.query('SELECT stories.name AS name, stories.id AS id FROM story_group_relation JOIN stories ON stories.id = story_group_relation.story_id WHERE story_group_relation.story_group_id=?',[req.queryInt('id')]));
+
+	Promise.all(promises).then(r => {res.send(JSON.stringify(r))}).catch(e=>{res.status(400).send('400: '+e)});
+});
+
 
 //STORIES
+router.get('/getStoryGroup',function(req,res) {
+	if (req.queryInt('id')) {
+		db.query('SELECT relation.name AS group_name, stories.name AS story_name, stories.id AS story_id FROM (SELECT story_groups.name AS name, story_group_relation.story_id AS story_id, story_groups.id AS group_id FROM story_groups RIGHT JOIN story_group_relation ON story_group_relation.story_group_id = story_groups.id) AS relation JOIN stories ON stories.id = relation.story_id WHERE relation.group_id IN (SELECT story_groups.id FROM story_groups RIGHT JOIN story_group_relation ON story_groups.id = story_group_relation.story_group_id WHERE story_group_relation.story_id = ?)',[req.queryInt('id')]).then(val => {
+			res.send(JSON.stringify(val));
+		}).catch(e => {
+			res.status(400).send('400: '+e);
+		});
+	}
+	else {
+		res.status(400).send('400: NO ID');
+	}
+});
 router.post('/changeFeaturedStory',function(req, res) {
 	if (req.bodyInt('id') && req.session.user.id) {
 		db.query("SELECT * FROM stories WHERE user_id=?",[req.session.user.id]).then(rows => {

@@ -2,44 +2,27 @@
   <div class="view container">
     <div class="title row">
       <!-- {{ title }} -->
-      <span class="col">{{ title }}</span>
-      <span class="col-1"><i class="fas fa-times" @click="hide()" v-tooltip="'Delete Story'"></i></span>
+      <span class="col-xs-11">{{ title }}</span>
+      <span class="col-xs-1 text-right"><i class="fas fa-times" @click="hide()" v-tooltip="'Close View'"></i></span>
     </div>
     <div class="media row" ref='media'>
       <!-- <img v-if='media' :src='api+"block-media/thumbs/"+media' /> -->
     </div>
     <div class="graphcontrol container-fluid">
       <div class="buttons row">
-        <btn class="col">Week</btn>
-        <btn class="col active">Month</btn>
-        <btn class="col">Year</btn>
+        <btn @click='currentRange = 0' class="col" v-bind:class="{ active: currentRange == 0 }">Week</btn>
+        <btn @click='currentRange = 1' class="col" v-bind:class="{ active: currentRange == 1 }">Month</btn>
+        <btn @click='currentRange = 2' class="col" v-bind:class="{ active: currentRange == 2 }">Year</btn>
       </div>
       <div class="d-flex flex-row graph" ref='scrollBox'>
-        <div class="col inline" v-for='block in blocks'>
-          <chartController v-bind:start='dateOffset()' :end='(new Date()).toISOString()' v-bind:interval='int' v-bind:unit='unit' graphType=1 v-bind:points='[block.point]' v-bind:groups='[block.group_id]' :names='[block.name]' :submeters='[block.meter]' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding': '0.5em' }"/>
+        <div class="col-xs-12 inline" v-for='block in blocks'>
+          <chartController :randomColors=1 v-bind:start='dateOffset()' :end='(new Date()).toISOString()' v-bind:interval='int' v-bind:unit='unit' graphType=1 v-bind:points='[block.point]' v-bind:groups='[block.group_id]' :names='[block.name]' :submeters='[block.meter]' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding': '0.5em' }"/>
         </div>
       </div>
-      <i class="graphslide left fas fa-caret-left" @mouseover='displayArrow($event)' @mouseleave='hideArrow($event)' @click='prev()'></i>
-      <i class="graphslide right fas fa-caret-right" @mouseover='displayArrow($event)' @mouseleave='hideArrow($event)' @click='next()'></i>
+      <i class="graphslide left fas fa-caret-left" @click='prev()' ref="prevArrow"></i>
+      <i class="graphslide right fas fa-caret-right" @click='next()' ref="nextArrow"></i>
       <div class="buttons row">
-        <btn class="col">View in Dashboard</btn>
-      </div>
-      <div class="utilities container-fluid">
-        <div class="row head">
-          <div class="col">
-            Building Utilities
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            Electric
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            Steam
-          </div>
-        </div>
+        <btn @click='$router.push({path: `/public/${$parent.openStory}/${currentRange}`})' class="col-xs-12">View in Dashboard</btn>
       </div>
     </div>
   </div>
@@ -67,7 +50,7 @@
     },
     methods: {
       hide: function() {
-        this.$el.style.display = "none";
+        this.$parent.showSide = false;
       },
       dateOffset: function() {
         var d = new Date();
@@ -82,26 +65,30 @@
         }
         return d.toISOString();
       },
-      displayArrow: function(target) {
-        if (target.target.classList.contains('right') && this.index < this.blocks.length) {
-          target.target.style.opacity = 1;
-          this.index++;
-        }
-        if (target.target.classList.contains('left') && this.$refs.scrollBox.scrollLeft > 0) {
-          target.target.style.opacity = 1;
-          this.index--;
-        }
-
-      },
-      hideArrow: function(target) {
-        target.target.style.opacity = 0;
-      },
       next: function() {
-        this.$refs.scrollBox.scrollLeft += this.$refs.scrollBox.clientWidth+20;
+        if (this.index + 1 >= this.blocks.length)
+          return;
+        this.index++;
+        this.$refs.scrollBox.childNodes.forEach((child, index) => {
+          child.style.transform = "translateX("+(-1*this.index*(this.$refs.scrollBox.clientWidth+20)).toString()+"px)";
+        });
+        this.$refs.prevArrow.style.opacity = 1;
+        if (this.index+1 === this.blocks.length) {
+          this.$refs.nextArrow.style.opacity = 0;
+        }
       },
       prev: function() {
-        this.$refs.scrollBox.scrollLeft -= this.$refs.scrollBox.clientWidth+20;
-      },
+        if (this.index - 1 < 0)
+          return;
+        this.index--;
+        this.$refs.scrollBox.childNodes.forEach(child => {
+          child.style.transform = "translateX("+(-1*this.index*(this.$refs.scrollBox.clientWidth+20)).toString()+"px)";
+        });
+        this.$refs.nextArrow.style.opacity = 1;
+        if (this.index <= 0) {
+          this.$refs.prevArrow.style.opacity = 0;
+        }
+      }
     },
     watch: {
       media: function(value) {
@@ -109,18 +96,49 @@
       },
       blocks: function(value) {
         this.$nextTick(() => {
+          this.$refs.scrollBox.childNodes.forEach(child => {
+            child.style.transform = "translateX(0px)";
+          });
+          this.index = 0;
           for (var i in value) {
             //console.log(value[i]);
             this.$refs.chartController[i].getData(0,value[i].point,value[i].group_id,this.dateOffset(),(new Date()).toISOString(),this.int,this.unit,value[i].meter);
           }
+          if (this.blocks.length <= 1) {
+            this.$refs.nextArrow.style.opacity = 0;
+          }
+          else {
+            this.$refs.nextArrow.style.opacity = 1;
+          }
         });
 
+      },
+      currentRange: function(value) {
+        if (value == 0) {
+          this.int = 6;
+          this.unit = 'hour';
+        }
+        else if (value == 1) {
+          this.int = 1;
+          this.unit = 'day';
+        }
+        else if (value == 2) {
+          this.int = 15;
+          this.unit = 'day';
+        }
+        for (var i in this.blocks) {
+          this.$refs.chartController[i].getData(0,this.blocks[i].point,this.blocks[i].group_id,this.dateOffset(),(new Date()).toISOString(),this.int,this.unit,this.blocks[i].meter);
+        }
       }
     },
     mounted() {
-      this.$nextTick(() => {
-
-      });
+      this.$refs.prevArrow.style.opacity = 0;
+      if (this.blocks.length <= 1) {
+        this.$refs.nextArrow.style.opacity = 0;
+      }
+      else {
+        this.$refs.nextArrow.style.opacity = 1;
+      }
     }
   }
 </script>
@@ -128,11 +146,11 @@
   .view {
     position: absolute;
     left: 100%;
-    top: 5%;
+    top: 15%;
     width: 350px;
-    height: 90%;
+    padding-bottom: 2em;
     background-color: rgb(26,26,26);
-    z-index: 3000;
+    z-index: 401;
     margin-left: -360px;
     box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
     display: none;
@@ -158,8 +176,18 @@
     margin-top: 1em;
     position: relative;
   }
-  .buttons > * {
+  .buttons > .col {
+
+    width: 30%;
+    margin-left: 1%;
+
+  }
+  .buttons {
+
     margin: 0.5em;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+
   }
   .btn {
     background-color: #000;
@@ -179,27 +207,39 @@
   .btn.active {
     background-color: rgb(215,63,9);
   }
+  .title.row > * {
+    padding: 0;
+    margin: 0;
+  }
   .title {
-    font-size: 1.7vw;
-    height: 1.8em;
+    font-size: 3ch;
+    height: auto;
     background-color: rgb(215,63,9);
     color: #FFF;
-    padding: 0.25em;
     font-family: 'StratumNo2';
   }
-  .title .col-1 {
-    padding-right: 1em;
-    padding-top: 0.05em;
+  .title .col-xs-1 {
+    padding-top: 0.2em;
+    padding-right: 0.5em;
+  }
+  .title .col-xs-11 {
+    padding-top: 0.15em;
+    padding-left: 0.5em;
   }
   .graph {
     overflow-x: hidden;
     overflow-y: hidden;
 
+
+  }
+  .d-flex {
+    display: flex;
   }
   .inline {
     flex: 0 0 100%;
     padding: 0;
     margin-right: 20px;
+    transition: transform 1s;
   }
   .graphslide {
     position: absolute;
@@ -212,19 +252,19 @@
     margin-top: calc(50% - 0.5em);
     top: 0px;
     border-radius: 1em;
-    opacity: 0;
-    transition: 0.2s opacity;
+    opacity: 1;
+    z-index: 0;
   }
   .graphslide:hover {
 
   }
 
   .graphslide.right {
-    right: -0.1em;
+    right: -0.2em;
     padding-left:0.1em;
   }
   .graphslide.left {
-    left: -0.1em;
+    left: -0.2em;
     padding-right:0.1em;
   }
 

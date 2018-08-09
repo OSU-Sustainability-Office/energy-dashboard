@@ -26,8 +26,10 @@ export default {
       this.$refs.card.style.background = "linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url('"+process.env.ROOT_API+"block-media/thumbs/"+this.media+"') center/cover no-repeat";
     else
       this.$refs.card.style.backgroundColor = 'rgb(26,26,26)';
-      if (this.selected)
+      if (this.selected) {
         this.$refs.card.style.borderColor = 'rgb(215,63,9)';
+        this.$refs.card.style.borderWidth = '4px';
+      }
     // this.$eventHub.$on('storyCardChange', data => {
     //   if (this.story_id === data[0]) {
     //     this.name = data[1];
@@ -38,10 +40,14 @@ export default {
   },
   watch: {
     selected: function(value) {
-      if (value)
+      if (value) {
         this.$refs.card.style.borderColor = 'rgb(215,63,9)';
-      else
+        this.$refs.card.style.borderWidth = '4px';
+      }
+      else {
         this.$refs.card.style.borderColor = 'rgb(0,0,0)';
+        this.$refs.card.style.borderWidth = '2.5px';
+      }
     },
     media: function(value) {
       if (value)

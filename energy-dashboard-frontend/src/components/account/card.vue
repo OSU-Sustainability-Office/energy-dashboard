@@ -1,7 +1,7 @@
 <template>
   <div class="card featured" v-bind:class="{ feature : featured}" ref='card' v-on:click='unclickText'>
 
-    <chartController v-bind:start='start' v-bind:end='end' v-bind:interval='int' v-bind:unit='unit' v-bind:graphType='type' v-bind:points='points' v-bind:groups='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="chartController"  class="chart"/>
+    <chartController v-bind:start='start' v-bind:end='end' v-bind:interval='int' v-bind:unit='unit' v-bind:graphType='type' v-bind:points='points' v-bind:groups='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }"/>
     <featureController :start='new Date(start)' :end='new Date(end)' v-bind:interval='int' v-bind:graphType='type' v-bind:unit='unit' v-bind:points='points' v-bind:groupids='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="featureController" />
     <div class='titleTextFeatured' v-if="featured" v-on:click='clickText' ref='title' v-tooltip="'Click to edit name'">
       {{this.name}}

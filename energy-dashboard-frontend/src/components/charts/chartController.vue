@@ -1,9 +1,9 @@
 <template>
 	<div>
 		<linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartDataComplete" :style="styleC"/>
-		<barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }" />
-		<doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }" />
-		<piechart v-if="graphType == 4" ref="piechart" v-bind:chartData="chartDataComplete" :style="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }" />
+		<barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartDataComplete" :style="styleC" />
+		<doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartDataComplete" :style="styleC" />
+		<piechart v-if="graphType == 4" ref="piechart" v-bind:chartData="chartDataComplete" :style="styleC" />
 	</div>
 </template>
 <script>
@@ -16,7 +16,7 @@ import axios from 'axios';
 
 export default {
   name: 'card',
-  props: ['start','end','interval','submeters','groups','points','names','unit','graphType','styleC'],
+  props: ['start','end','interval','submeters','groups','points','names','unit','graphType','styleC','randomColors'],
   components: {
     linechart, barchart, doughnutchart, piechart
   },
@@ -36,6 +36,15 @@ export default {
 					}
   },
   created() {
+		if (this.randomColors == 1) {
+			//DurstenFeld Shuffle
+			for (var i = this.colors.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = this.colors[i];
+        this.colors[i] = this.colors[j];
+        this.colors[j] = temp;
+    	}
+		}
   },
 	watch: {
 		graphType: function (value) {

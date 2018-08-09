@@ -68,7 +68,7 @@ export default {
     clickedStory: function(index) {
       this.cards.forEach(c =>{c.featured = false});
       this.cards[index].featured = true;
-      this.$emit('caro-click',[this.cards[index].id]);
+      this.$emit('caro-click',[this.cards[index].id,1]);
     }
   }
 }

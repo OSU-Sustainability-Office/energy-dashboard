@@ -7,13 +7,13 @@
     <div class="row">
       <homeSide />
     </div>
-    <div class="row justify-content-center buttonBox">
-      <!-- <div class="col-sm-2">
-        <btn @click="explore()">Explore</btn>
-      </div> -->
-      <div class="col-sm-2">
-        <btn @click="login()">Login</btn>
-      </div>
+    <div class="row buttonBox">
+        <div class="col-sm-2 col-sm-offset-4">
+          <btn @click="explore()">Explore</btn>
+        </div>
+        <div class="col-sm-2">
+          <btn @click="login()">Login</btn>
+        </div>
     </div>
   </div>
 </template>
@@ -36,7 +36,7 @@ export default {
       //this.$router.push("account")
     },
     explore: function() {
-      this.$router.push("story/1")
+      this.$router.push("map")
     }
   }
 }

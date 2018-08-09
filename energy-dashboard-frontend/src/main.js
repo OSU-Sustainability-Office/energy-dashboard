@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import * as uiv from 'uiv'
 
@@ -12,6 +13,11 @@ Vue.use(uiv)
 
 /* eslint-disable no-new */
 Vue.prototype.$eventHub = new Vue();
+Vue.prototype.$globals = {
+  signedIn : false,
+  userAccount: "",
+  userPrivilige: 1
+}
 
 var v = new Vue({
   el: '#app',
@@ -20,3 +26,5 @@ var v = new Vue({
   template: '<App/>',
 })
 Vue.config.devtools = false
+
+window.vue = v;

@@ -1,9 +1,11 @@
 <template>
   <div class="background">
     <!-- <span class="main-heading">Stories</span> -->
-    <carousel v-bind:cards="cards" @edit="editStory($event)" @caro-click='changeStory($event)' class="scrollyBox" ref="caro"/>
+    <heropicture v-if='fromMap' v-bind:id='currentStory'></heropicture>
+    <carousel v-if='!fromMap' v-bind:cards="cards" @edit="editStory($event)" @caro-click='changeStory($event)' class="scrollyBox" ref="caro"/>
+    <navdir :key='pathFlag' :path="path" :groupContents='groupContents' :groups='groups' ref='navdir'></navdir>
     <!-- <span class="main-heading">Featured Blocks</span> -->
-    <featured v-bind:cards="cardsFeatured" ref='featureBox' v-if='!editingStory && currentStory !== null'/>
+    <featured v-bind:cards="cardsFeatured" :fromMap='fromMap' ref='featureBox' v-if='!editingStory && currentStory !== null'/>
     <storyEdit v-if='editingStory' ref='storyEdit'/>
     <div class="nocards" v-if="currentStory === null">
       Please create  a story to get started
@@ -12,9 +14,12 @@
 </template>
 
 <script>
+
 import carousel from '@/components/account/carousel'
 import featured from '@/components/account/featured'
 import storyEdit from '@/components/account/storyEdit'
+import heropicture from '@/components/account/heropicture'
+import navdir from '@/components/account/navdir'
 import axios from 'axios';
 
 export default {
@@ -22,7 +27,9 @@ export default {
   components: {
     carousel,
     featured,
-    storyEdit
+    storyEdit,
+    heropicture,
+    navdir
   },
   props: [],
   data() {
@@ -30,37 +37,79 @@ export default {
       cards: [],
       cardsFeatured: [],
       currentStory: null,
-      editingStory: false
+      editingStory: false,
+      fromMap: false,
+      storyName: "",
+      pathFlag: 0,
+      path: [],
+      groupContents: [],
+      groups: []
     }
   },
   mounted () {
-    this.$eventHub.$emit('loggedIn',[]);
+    if (this.$route.path.search('public') > 0) {
+      axios.get(process.env.ROOT_API+'api/getPublicGroups').then (res => {
+        this.groups = res.data;
+      }).catch(e => {
+        console.log(e);
+      });
+      this.fromMap = true;
+      this.path[0] = "Public";
+      this.changeStory([this.$route.params.id,0]);
+      var startDate = new Date();
+      switch(this.$route.params.range) {
+        case 0:
+          startDate.setDate(startDate.getDate() - 7);
+          break;
+        case 1:
+          startDate.setMonth(startDate.getMonth() - 1);
+          break;
+        case 2:
+          startDate.setYear(startDate.getYear() - 1);
+          break;
+        default:
+          break;
+      }
+      for (var card of this.cardsFeatured) {
+        card.start = startDate.toISOString();
+        card.end = (new Date()).toISOString();
+      }
+    }
+    else {
+      this.fromMap = false;
+      this.path[1] = "Your Dashboard";
+    }
   },
   created() {
      axios(process.env.ROOT_API+'api/getStoriesForCurrentUser',{method: "get", withCredentials:true}).then (res => {
-       this.cards = res.data;
-       for (var card of this.cards) {
-         if (card.featured) {
-           this.currentStory = card.id;
-           axios.get(process.env.ROOT_API+'api/getBlocksForStory?id='+card.id).then (res => {
-             for (var card of res.data) {
-               card.points = ['accumulated_real'];
-               card.meters = [0];
-               card.names = ['Undefined'];
-               card.groups = [8];
-               card.start = card.date_start;
-               card.end = card.date_end;
-               card.int = card.date_interval;
-               card.unit = card.interval_unit;
-               card.graphType = card.graph_type;
-             }
-             this.cardsFeatured = res.data;
+       if (!this.fromMap) {
+         this.cards = res.data;
+         for (var card of this.cards) {
+           if (card.featured) {
+             this.currentStory = card.id;
+             this.storyName = card.name;
+             axios.get(process.env.ROOT_API+'api/getBlocksForStory?id='+card.id).then (res => {
+               if (!this.fromMap) {
+                 for (var card of res.data) {
+                   card.points = ['accumulated_real'];
+                   card.meters = [0];
+                   card.names = ['Undefined'];
+                   card.groups = [8];
+                   card.start = card.date_start;
+                   card.end = card.date_end;
+                   card.int = card.date_interval;
+                   card.unit = card.interval_unit;
+                   card.graphType = card.graph_type;
+                 }
+                 this.cardsFeatured = res.data;
+               }
            }).catch(err=> {
              throw err;
            });
            return;
          }
        }
+     }
      }).catch (e => {
       this.errors.push(e);
      });
@@ -86,7 +135,29 @@ export default {
      });
   },
   watch: {
-
+    cardsFeatured: function(val) {
+      if (this.fromMap) {
+        var startDate = new Date();
+        switch(this.$route.params.range) {
+          case '0':
+            startDate.setDate(startDate.getDate() - 7);
+            break;
+          case '1':
+            startDate.setMonth(startDate.getMonth() - 1);
+            break;
+          case '2':
+            startDate.setYear(startDate.getYear() - 1);
+            break;
+          default:
+            console.log(this.$route.params.range);
+            break;
+        }
+        for (var card of val) {
+          card.date_start = startDate.toISOString();
+          card.date_end = (new Date()).toISOString();
+        }
+      }
+    }
   },
   methods: {
     editStory: function(event) {
@@ -106,10 +177,17 @@ export default {
 
     },
     changeStory: function(event) {
-      //this.cardsFeatured = null;
       this.editingStory = false;
       this.currentStory = event[0];
-      axios(process.env.ROOT_API+'api/changeFeaturedStory',{method: "post", data:{id: event[0]}, withCredentials:true}).catch(e => {
+      if (event[1]) {
+        axios(process.env.ROOT_API+'api/changeFeaturedStory',{method: "post", data:{id: event[0]}, withCredentials:true}).catch(e => {
+          console.log(e);
+        });
+      }
+      axios.get(process.env.ROOT_API+'api/getStoryData?id='+event[0]).then(res => {
+        this.storyName = res.data[0].name;
+        this.$refs.navdir.updatePath();
+      }).catch(e=> {
         console.log(e);
       });
       axios.get(process.env.ROOT_API+'api/getBlocksForStory?id='+event[0]).then (res => {
@@ -118,10 +196,12 @@ export default {
           card.meters = [0];
           card.names = ['Undefined'];
           card.groups = [8];
+
         }
         this.cardsFeatured = res.data;
         this.$nextTick(() => {
           this.$eventHub.$emit('reloadChart');
+          this.pathFlag++;
         });
 
       });
