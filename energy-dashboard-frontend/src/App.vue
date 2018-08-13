@@ -17,22 +17,18 @@ export default {
   },
   data () {
     return {
-      transitionName : "pageTo"
+      transitionName: 'pageTo'
     }
-  },
-  created() {
   },
   beforeDestroy () {
   },
   watch: {
-    $route: function(to, from) {
-      //transition in
+    $route: function (to, from) {
+      // transition in
       if (to.path.length > from.path.length) {
-        this.transitionName = "pageTo";
-      }
-      //transition out
-      else {
-        this.transitionName = "pageFrom";
+        this.transitionName = 'pageTo'
+      } else { // transition out
+        this.transitionName = 'pageFrom'
       }
     }
   }

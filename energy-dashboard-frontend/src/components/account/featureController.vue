@@ -6,7 +6,7 @@
 
     <div class="container-fluid controlSection" ref="controlArea">
       <div class="row indexChooser" ref="indexChooser">
-        <btn class="indexButton" v-for="(point, index) in points" @click="currentIndex = index">{{ index + 1 }}</btn>
+        <btn class="indexButton" v-for="(point, index) in points" @click="currentIndex = index" :key='index'>{{ index + 1 }}</btn>
         <btn class="indexButton" @click="addGroup()">+</btn>
       </div>
 
@@ -155,14 +155,14 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 
 export default {
   name: 'featureController',
   components: {
   },
-  props: ["start", "end", "interval", "graphType", "unit", "points", "groupids", "submeters", "names"],
-  data() {
+  props: ['start', 'end', 'interval', 'graphType', 'unit', 'points', 'groupids', 'submeters', 'names'],
+  data () {
     return {
       isMaximized: false,
       currentType: 'e',
@@ -176,244 +176,205 @@ export default {
     }
   },
   methods: {
-    addGroup: function() {
-      this.points.push('accumulated_real');
-      this.groupids.push(8);
-      this.names.push('New Graph');
-      this.submeters.push(0);
+    addGroup: function () {
+      this.points.push('accumulated_real')
+      this.groupids.push(8)
+      this.names.push('New Graph')
+      this.submeters.push(0)
     },
-    deleteGroup: function() {
-      this.points.splice(this.currentIndex,1);
-      this.groupids.splice(this.currentIndex,1);
-      this.names.splice(this.currentIndex,1);
-      this.submeters.splice(this.currentIndex,1);
+    deleteGroup: function () {
+      this.points.splice(this.currentIndex, 1)
+      this.groupids.splice(this.currentIndex, 1)
+      this.names.splice(this.currentIndex, 1)
+      this.submeters.splice(this.currentIndex, 1)
 
-      this.$parent.setPoints(this.points);
-      this.$parent.setGroups(this.groupids);
-      this.$parent.setNames(this.names);
+      this.$parent.setPoints(this.points)
+      this.$parent.setGroups(this.groupids)
+      this.$parent.setNames(this.names)
 
-      this.$parent.setMeters(this.meters);
-      this.mounted = true;
+      this.$parent.setMeters(this.meters)
+      this.mounted = true
     },
     updateGraph: function (partial) {
       if (this.points.length > this.currentIndex && this.groupids.length > this.currentIndex && !partial) {
-        this.$parent.$refs.chartController.getData(this.currentIndex,this.points[this.currentIndex],this.groupids[this.currentIndex],this.start.toISOString(), this.end.toISOString(),this.interval,this.unit,this.submeters[this.currentIndex]).then(() => {
-          this.$parent.$refs.chartController.updateChart();
-        }).catch(e=>{});
-      }
-      else {
-        var promises = [];
+        this.$parent.$refs.chartController.getData(this.currentIndex, this.points[this.currentIndex], this.groupids[this.currentIndex], this.start.toISOString(), this.end.toISOString(), this.interval, this.unit, this.submeters[this.currentIndex]).then(() => {
+          this.$parent.$refs.chartController.updateChart()
+        }).catch(e => { console.log(e) })
+      } else {
+        let promises = []
         for (var i = 0; i < this.points.length; i++) {
-          promises.push(this.$parent.$refs.chartController.getData(i,this.points[i],this.groupids[i],this.start.toISOString(), this.end.toISOString(),this.interval,this.unit,this.submeters[i]));
+          promises.push(this.$parent.$refs.chartController.getData(i, this.points[i], this.groupids[i], this.start.toISOString(), this.end.toISOString(), this.interval, this.unit, this.submeters[i]))
         }
         Promise.all(promises).then(values => {
-          this.$parent.$refs.chartController.updateChart();
-        }).catch(e=>{});
+          this.$parent.$refs.chartController.updateChart()
+        }).catch(e => { console.log(e) })
       }
     },
-    parseDateTime: function(dateTime) {
-      if (!dateTime)
-        return;
-      var hours = dateTime.getHours();
-      if (hours < 10)
-        hours = "0"+hours,toString();
-      var minutes =dateTime.getMinutes()
-      if (minutes < 10)
-        minutes = "0"+minutes.toString();
-      return "T"+hours+":"+minutes+":000"
+    parseDateTime: function (dateTime) {
+      if (!dateTime) { return }
+      let hours = dateTime.getHours()
+      if (hours < 10) {
+        hours = '0' + hours.toString()
+      }
+      let minutes = dateTime.getMinutes()
+      if (minutes < 10) {
+        minutes = '0' + minutes.toString()
+      }
+      return 'T' + hours + ':' + minutes + ':000'
     },
-    updateSubmeters: function() {
-      axios.get(process.env.ROOT_API+'api/getMetersForGroup?id='+this.groupids[this.currentIndex]).then(rows => {
-
-        this.$refs.submeters.innerHTML = "<option value=0>All</option>";
+    updateSubmeters: function () {
+      axios.get(process.env.ROOT_API + 'api/getMetersForGroup?id=' + this.groupids[this.currentIndex]).then(rows => {
+        this.$refs.submeters.innerHTML = '<option value=0>All</option>'
         for (var r in rows.data) {
-          this.$refs.submeters.innerHTML += "<option value="+rows.data[r].id+">"+rows.data[r].name+"</option>";
+          this.$refs.submeters.innerHTML += '<option value=' + rows.data[r].id + '>' + rows.data[r].name + '</option>'
         }
-      });
+      })
     },
-    updatedSubmetersValue: function(value) {
-      if (!value)
-        return;
+    updatedSubmetersValue: function (value) {
+      if (!value) { return }
       if (parseInt(value[this.currentIndex]) === 0) {
-        this.currentType = "e";
-        //
-        //this.$parent.$refs.chartController.points[this.currentIndex] = "accumulated_real";
-        //this.$parent.$refs.chartController.submeters = value;
+        this.currentType = 'e'
         if (!this.mounted) {
-          this.$parent.setMeters(value);
+          this.$parent.setMeters(value)
+        } else {
+          this.points[this.currentIndex] = 'accumulated_real'
+          this.$parent.setPoints(this.points)
+          this.$parent.setMeters(value)
+          this.updateGraph(false)
         }
-        else {
-          this.points[this.currentIndex] = "accumulated_real";
-          this.$parent.setPoints(this.points);
-          this.$parent.setMeters(value);
-          this.updateGraph(false);
-        }
-      }
-      else {
-        axios.get(process.env.ROOT_API+'api/getMeterType?id='+parseInt(value[this.currentIndex])).then(rows => {
-
-          this.currentType = rows.data[0].type;
-          this.$parent.setMeters(value);
-
-          if(this.mounted) {
-             if (rows.data[0].type == "s") {
-              this.points[this.currentIndex] = "total";
+      } else {
+        axios.get(process.env.ROOT_API + 'api/getMeterType?id=' + parseInt(value[this.currentIndex])).then(rows => {
+          this.currentType = rows.data[0].type
+          this.$parent.setMeters(value)
+          if (this.mounted) {
+            if (rows.data[0].type === 's') {
+              this.points[this.currentIndex] = 'total'
+            } else if (rows.data[0].type === 'g') {
+              this.points[this.currentIndex] = 'cubic_feet'
+            } else if (rows.data[0].type === 'e') {
+              this.points[this.currentIndex] = 'accumulated_real'
             }
-            else if (rows.data[0].type == "g") {
-              this.points[this.currentIndex] = "cubic_feet";
-            }
-            else if (rows.data[0].type == "e") {
-              this.points[this.currentIndex] = "accumulated_real";
-            }
-            this.$parent.setPoints(this.points);
+            this.$parent.setPoints(this.points)
 
-            this.updateGraph(false);
-
+            this.updateGraph(false)
           }
-        });
+        })
       }
     }
   },
   watch: {
-    start: function(value) {
-      if (!value)
-        return;
-          //the stupid datepicker changes it back to a string
+    start: function (value) {
+      if (!value) { return }
+      // the stupid datepicker changes it back to a string
       if (typeof value === 'string') {
-        this.start = new Date(value);
-        return;
+        this.start = new Date(value)
+        return
       }
-      //Because it is a date object it calls this method even though it doesnt change
+      // Because it is a date object it calls this method even though it doesnt change
       if (this.oldStart && this.oldStart.toISOString() === value.toISOString()) {
-        return;
+        return
       }
-      this.oldStart = value;
-      this.$parent.setStart(value.toISOString());
+      this.oldStart = value
+      this.$parent.setStart(value.toISOString())
 
-
-      if (this.mounted)
-        this.updateGraph(true);
+      if (this.mounted) { this.updateGraph(true) }
     },
-    end: function(value) {
-      if (!value)
-        return;
-        //the stupid datepicker changes it back to a string
+    end: function (value) {
+      if (!value) { return }
+      // the stupid datepicker changes it back to a string
       if (typeof value === 'string') {
-        this.end = new Date(value);
-        return;
+        this.end = new Date(value)
+        return
       }
-      //Because it is a date object it calls this method even though it doesnt change
+      // Because it is a date object it calls this method even though it doesnt change
       if (this.oldEnd && this.oldEnd.toISOString() === value.toISOString()) {
-        return;
+        return
       }
-      this.oldEnd = value;
+      this.oldEnd = value
 
-      this.$parent.setEnd(value.toISOString());
-      if (this.mounted)
-        this.updateGraph(true);
+      this.$parent.setEnd(value.toISOString())
+      if (this.mounted) { this.updateGraph(true) }
     },
-    groupids: function(value) {
-      if (!value)
-        return;
-      this.$parent.setGroups(value);
-      this.updateSubmeters();
+    groupids: function (value) {
+      if (!value) { return }
+      this.$parent.setGroups(value)
+      this.updateSubmeters()
       if (this.mounted) {
-        this.submeters[this.currentIndex] = 0; //This updates the graph for us
-        this.updatedSubmetersValue(this.submeters);
-
+        this.submeters[this.currentIndex] = 0 // This updates the graph for us
+        this.updatedSubmetersValue(this.submeters)
       }
-
-
     },
-    graphType: function(value) {
-      if (!value)
-        return;
-      this.$parent.setType(value);
+    graphType: function (value) {
+      if (!value) { return }
+      this.$parent.setType(value)
     },
-    interval: function(value) {
-      if (!value)
-        return;
-      this.$parent.setInt(value);
-      if (this.mounted)
-        this.updateGraph(true);
+    interval: function (value) {
+      if (!value) { return }
+      this.$parent.setInt(value)
+      if (this.mounted) { this.updateGraph(true) }
     },
-    unit: function(value) {
-      if (!value)
-        return;
-      this.$parent.setUnit(value);
-      if (this.mounted)
-        this.updateGraph(true);
+    unit: function (value) {
+      if (!value) { return }
+      this.$parent.setUnit(value)
+      if (this.mounted) { this.updateGraph(true) }
     },
-    submeters: function(value) {
-      if (!value)
-        return;
-      this.$parent.$refs.chartController.updateFlag = true;
-      this.updatedSubmetersValue(value);
-
+    submeters: function (value) {
+      if (!value) { return }
+      this.$parent.$refs.chartController.updateFlag = true
+      this.updatedSubmetersValue(value)
     },
-    points: function(value) {
-      if (!value)
-        return;
-      this.$parent.setPoints(value);
-      if (this.mounted)
-        this.updateGraph(false);
+    points: function (value) {
+      if (!value) { return }
+      this.$parent.setPoints(value)
+      if (this.mounted) { this.updateGraph(false) }
       this.$nextTick(() => {
-        Array.from(this.$refs.indexChooser.children).forEach(e => {e.style.borderColor = "#FFFFFF"});
-        this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)';
-      });
+        Array.from(this.$refs.indexChooser.children).forEach(e => { e.style.borderColor = '#FFFFFF' })
+        this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)'
+      })
     },
-    names: function(value) {
-      if (!value)
-        return;
-      this.$parent.setNames(value);
+    names: function (value) {
+      if (!value) { return }
+      this.$parent.setNames(value)
       if (this.mounted) {
-        clearTimeout(this.keyPressTimeOut);
+        clearTimeout(this.keyPressTimeOut)
         this.keyPressTimeOut = setTimeout(() => {
-          this.updateGraph(false);
-        }, 800);
+          this.updateGraph(false)
+        }, 800)
       }
-
     },
-    currentIndex: function(value) {
-      Array.from(this.$refs.indexChooser.children).forEach(e => {e.style.borderColor = "#FFFFFF"});
-      this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)';
+    currentIndex: function (value) {
+      Array.from(this.$refs.indexChooser.children).forEach(e => { e.style.borderColor = '#FFFFFF' })
+      this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)'
 
-      this.updateSubmeters();
+      this.updateSubmeters()
       if (parseInt(this.submeters[this.currentIndex]) === 0) {
-        this.currentType = 'e';
-      }
-      else {
-        axios.get(process.env.ROOT_API+'api/getMeterType?id='+parseInt(his.submeters[value])).then(r => {
-          this.currentType = r.data[0].type;
-        });
+        this.currentType = 'e'
+      } else {
+        axios.get(process.env.ROOT_API + 'api/getMeterType?id=' + parseInt(this.submeters[value])).then(r => {
+          this.currentType = r.data[0].type
+        })
       }
     },
-    isMaximized: function(value) {
+    isMaximized: function (value) {
       if (value) {
-        this.$refs.movingArea.style.right = "0px";
-      }
-      else {
-        this.$refs.movingArea.style.right = "-260px";
+        this.$refs.movingArea.style.right = '0px'
+      } else {
+        this.$refs.movingArea.style.right = '-260px'
       }
     }
   },
-  created() {
+  created () {
   },
   mounted () {
-    this.updateSubmeters();
-    axios.get(process.env.ROOT_API+'api/getAllBuildings').then (res => {
-       res.data.forEach(obj => {
-          this.$refs.groups.innerHTML += "<option value='"+obj.id+"'>"+obj.name+"</option>";
-       });
-     }).catch (e => {
-      this.errors.push(e);
-     });
-
-     this.$nextTick(() => {
-     });
-
+    this.updateSubmeters()
+    axios.get(process.env.ROOT_API + 'api/getAllBuildings').then(res => {
+      res.data.forEach(obj => {
+        this.$refs.groups.innerHTML += '<option value="' + obj.id + '">' + obj.name + '</option>'
+      })
+    }).catch(e => {
+      this.errors.push(e)
+    })
   }
-
 }
 </script>
 
@@ -450,7 +411,6 @@ export default {
   position: relative;
   top: calc(50% - 1em);
 }
-
 
 .controlSection {
   position: absolute;

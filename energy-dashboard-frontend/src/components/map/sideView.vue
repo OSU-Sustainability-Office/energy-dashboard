@@ -15,7 +15,7 @@
         <btn @click='currentRange = 2' class="col" v-bind:class="{ active: currentRange == 2 }">Year</btn>
       </div>
       <div class="d-flex flex-row graph" ref='scrollBox'>
-        <div class="col-xs-12 inline" v-for='block in blocks'>
+        <div class="col-xs-12 inline" v-for='(block,index) in blocks' :key='index'>
           <chartController :randomColors=1 v-bind:start='dateOffset()' :end='(new Date()).toISOString()' v-bind:interval='int' v-bind:unit='unit' graphType=1 v-bind:points='[block.point]' v-bind:groups='[block.group_id]' :names='[block.name]' :submeters='[block.meter]' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding': '0.5em' }"/>
         </div>
       </div>
@@ -28,119 +28,111 @@
   </div>
 </template>
 <script>
-  import chartController from '@/components/charts/chartController'
-  export default {
-    name: "sideView",
-    props: [],
-    components: {
-      chartController
-    },
-    data() {
-      return {
-        api: process.env.ROOT_API,
-        title: '',
-        media: '',
-        currentRange: 1,
-        unit: 'day',
-        int: 1,
-        blocks: [],
-        index: 0
+import chartController from '@/components/charts/chartController'
+export default {
+  name: 'sideView',
+  props: [],
+  components: {
+    chartController
+  },
+  data () {
+    return {
+      api: process.env.ROOT_API,
+      title: '',
+      media: '',
+      currentRange: 1,
+      unit: 'day',
+      int: 1,
+      blocks: [],
+      index: 0
 
+    }
+  },
+  methods: {
+    hide: function () {
+      this.$parent.showSide = false
+    },
+    dateOffset: function () {
+      var d = new Date()
+      if (this.currentRange === 0) {
+        d.setDate(d.getDate() - 7)
+      } else if (this.currentRange === 1) {
+        d.setMonth(d.getMonth() - 1)
+      } else if (this.currentRange === 2) {
+        d.setYear(d.getYear() - 1)
+      }
+      return d.toISOString()
+    },
+    next: function () {
+      if (this.index + 1 >= this.blocks.length) { return }
+      this.index++
+      this.$refs.scrollBox.childNodes.forEach((child, index) => {
+        child.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.clientWidth + 20)).toString() + 'px)'
+      })
+      this.$refs.prevArrow.style.opacity = 1
+      if (this.index + 1 === this.blocks.length) {
+        this.$refs.nextArrow.style.opacity = 0
       }
     },
-    methods: {
-      hide: function() {
-        this.$parent.showSide = false;
-      },
-      dateOffset: function() {
-        var d = new Date();
-        if (this.currentRange === 0) {
-          d.setDate(d.getDate() - 7);
-        }
-        else if (this.currentRange === 1) {
-          d.setMonth(d.getMonth() - 1);
-        }
-        else if (this.currentRange === 2){
-          d.setYear(d.getYear() - 1);
-        }
-        return d.toISOString();
-      },
-      next: function() {
-        if (this.index + 1 >= this.blocks.length)
-          return;
-        this.index++;
-        this.$refs.scrollBox.childNodes.forEach((child, index) => {
-          child.style.transform = "translateX("+(-1*this.index*(this.$refs.scrollBox.clientWidth+20)).toString()+"px)";
-        });
-        this.$refs.prevArrow.style.opacity = 1;
-        if (this.index+1 === this.blocks.length) {
-          this.$refs.nextArrow.style.opacity = 0;
-        }
-      },
-      prev: function() {
-        if (this.index - 1 < 0)
-          return;
-        this.index--;
-        this.$refs.scrollBox.childNodes.forEach(child => {
-          child.style.transform = "translateX("+(-1*this.index*(this.$refs.scrollBox.clientWidth+20)).toString()+"px)";
-        });
-        this.$refs.nextArrow.style.opacity = 1;
-        if (this.index <= 0) {
-          this.$refs.prevArrow.style.opacity = 0;
-        }
-      }
-    },
-    watch: {
-      media: function(value) {
-        this.$refs.media.style.backgroundImage = 'url('+this.api+'block-media/thumbs/'+value+')';
-      },
-      blocks: function(value) {
-        this.$nextTick(() => {
-          this.$refs.scrollBox.childNodes.forEach(child => {
-            child.style.transform = "translateX(0px)";
-          });
-          this.index = 0;
-          for (var i in value) {
-            //console.log(value[i]);
-            this.$refs.chartController[i].getData(0,value[i].point,value[i].group_id,this.dateOffset(),(new Date()).toISOString(),this.int,this.unit,value[i].meter);
-          }
-          if (this.blocks.length <= 1) {
-            this.$refs.nextArrow.style.opacity = 0;
-          }
-          else {
-            this.$refs.nextArrow.style.opacity = 1;
-          }
-        });
-
-      },
-      currentRange: function(value) {
-        if (value == 0) {
-          this.int = 6;
-          this.unit = 'hour';
-        }
-        else if (value == 1) {
-          this.int = 1;
-          this.unit = 'day';
-        }
-        else if (value == 2) {
-          this.int = 15;
-          this.unit = 'day';
-        }
-        for (var i in this.blocks) {
-          this.$refs.chartController[i].getData(0,this.blocks[i].point,this.blocks[i].group_id,this.dateOffset(),(new Date()).toISOString(),this.int,this.unit,this.blocks[i].meter);
-        }
-      }
-    },
-    mounted() {
-      this.$refs.prevArrow.style.opacity = 0;
-      if (this.blocks.length <= 1) {
-        this.$refs.nextArrow.style.opacity = 0;
-      }
-      else {
-        this.$refs.nextArrow.style.opacity = 1;
+    prev: function () {
+      if (this.index - 1 < 0) { return }
+      this.index--
+      this.$refs.scrollBox.childNodes.forEach(child => {
+        child.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.clientWidth + 20)).toString() + 'px)'
+      })
+      this.$refs.nextArrow.style.opacity = 1
+      if (this.index <= 0) {
+        this.$refs.prevArrow.style.opacity = 0
       }
     }
+  },
+  watch: {
+    media: function (value) {
+      this.$refs.media.style.backgroundImage = 'url(' + this.api + 'block-media/thumbs/' + value + ')'
+    },
+    blocks: function (value) {
+      this.$nextTick(() => {
+        this.$refs.scrollBox.childNodes.forEach(child => {
+          child.style.transform = 'translateX(0px)'
+        })
+        this.index = 0
+        for (var i in value) {
+          // console.log(value[i]);
+          this.$refs.chartController[i].getData(0, value[i].point, value[i].group_id, this.dateOffset(), (new Date()).toISOString(), this.int, this.unit, value[i].meter)
+        }
+        if (this.blocks.length <= 1) {
+          this.$refs.nextArrow.style.opacity = 0
+        } else {
+          this.$refs.nextArrow.style.opacity = 1
+        }
+      })
+    },
+    currentRange: function (value) {
+      value = parseInt(value)
+      if (value === 0) {
+        this.int = 6
+        this.unit = 'hour'
+      } else if (value === 1) {
+        this.int = 1
+        this.unit = 'day'
+      } else if (value === 2) {
+        this.int = 15
+        this.unit = 'day'
+      }
+      for (var i in this.blocks) {
+        this.$refs.chartController[i].getData(0, this.blocks[i].point, this.blocks[i].group_id, this.dateOffset(), (new Date()).toISOString(), this.int, this.unit, this.blocks[i].meter)
+      }
+    }
+  },
+  mounted () {
+    this.$refs.prevArrow.style.opacity = 0
+    if (this.blocks.length <= 1) {
+      this.$refs.nextArrow.style.opacity = 0
+    } else {
+      this.$refs.nextArrow.style.opacity = 1
+    }
   }
+}
 </script>
 <style scoped>
   .view {
@@ -229,8 +221,6 @@
   .graph {
     overflow-x: hidden;
     overflow-y: hidden;
-
-
   }
   .d-flex {
     display: flex;

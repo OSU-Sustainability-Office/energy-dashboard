@@ -32,5 +32,12 @@
     "request": "^2.87.0",
     "sanitize": "^2.1.0",
     "session-file-store": "^1.2.0"
+  },
+  "devDependencies": {
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0"
   }
 }

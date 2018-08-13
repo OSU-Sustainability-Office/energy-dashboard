@@ -2,11 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import index from '@/components/home/index'
 import account from '@/components/account/account'
-import story from '@/components/story/story'
-import admin from '@/components/admin/admin'
+// import story from '@/components/story/story'
+// import admin from '@/components/admin/admin'
 import map from '@/components/map/map'
 import directory from '@/components/directory/directory'
-
 
 Vue.use(Router)
 
@@ -20,11 +19,11 @@ export default new Router({
     {
       path: '/account',
       name: 'account',
-      component: account,
+      component: account
     },
     {
       path: '/public/:id/:range',
-      name: 'account',
+      name: 'public',
       component: account
     },
     {

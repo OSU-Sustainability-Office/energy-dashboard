@@ -12,64 +12,49 @@
 <script>
 export default {
   name: 'storyCard',
-  props: ['name','description','selected','media','story_id', 'index'],
-  data() {
-    return{}
-  },
-  created() {
-
-  },
-  mounted() {
-
-
-    if (this.media)
-      this.$refs.card.style.background = "linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url('"+process.env.ROOT_API+"block-media/thumbs/"+this.media+"') center/cover no-repeat";
-    else
-      this.$refs.card.style.backgroundColor = 'rgb(26,26,26)';
-      if (this.selected) {
-        this.$refs.card.style.borderColor = 'rgb(215,63,9)';
-        this.$refs.card.style.borderWidth = '4px';
-      }
-    // this.$eventHub.$on('storyCardChange', data => {
-    //   if (this.story_id === data[0]) {
-    //     this.name = data[1];
-    //     this.description = data[2];
-    //     this.media = data[3];
-    //   }
-    // });
+  props: ['name', 'description', 'selected', 'media', 'story_id', 'index'],
+  mounted () {
+    if (this.media) {
+      this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + process.env.ROOT_API + 'block-media/thumbs/' + this.media + '") center/cover no-repeat'
+    } else {
+      this.$refs.card.style.backgroundColor = 'rgb(26,26,26)'
+    }
+    if (this.selected) {
+      this.$refs.card.style.borderColor = 'rgb(215,63,9)'
+      this.$refs.card.style.borderWidth = '4px'
+    }
   },
   watch: {
-    selected: function(value) {
+    selected: function (value) {
       if (value) {
-        this.$refs.card.style.borderColor = 'rgb(215,63,9)';
-        this.$refs.card.style.borderWidth = '4px';
-      }
-      else {
-        this.$refs.card.style.borderColor = 'rgb(0,0,0)';
-        this.$refs.card.style.borderWidth = '2.5px';
+        this.$refs.card.style.borderColor = 'rgb(215,63,9)'
+        this.$refs.card.style.borderWidth = '4px'
+      } else {
+        this.$refs.card.style.borderColor = 'rgb(0,0,0)'
+        this.$refs.card.style.borderWidth = '2.5px'
       }
     },
-    media: function(value) {
-      if (value)
-        this.$refs.card.style.background = "linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url('"+process.env.ROOT_API+"block-media/thumbs/"+value+"') center/cover no-repeat";
-      else
-        this.$refs.card.style.background = "rgb(26,26,26)";
+    media: function (value) {
+      if (value) {
+        this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + process.env.ROOT_API + 'block-media/thumbs/' + value + '") center/cover no-repeat'
+      } else {
+        this.$refs.card.style.background = 'rgb(26,26,26)'
+      }
     }
   },
   methods: {
-    hover: function(enter) {
+    hover: function (enter) {
       if (enter) {
-        this.$refs.toolbox.style.display = 'block';
+        this.$refs.toolbox.style.display = 'block'
+      } else {
+        this.$refs.toolbox.style.display = 'none'
       }
-      else
-        this.$refs.toolbox.style.display = 'none';
     },
-    clicked: function(event) {
-      if (event.target === this.$el)
-        this.$emit('caro-click');
+    clicked: function (event) {
+      if (event.target === this.$el) { this.$emit('caro-click') }
     },
-    deleteStory: function() {
-      this.$eventHub.$emit('deleteStory',[this.story_id]);
+    deleteStory: function () {
+      this.$eventHub.$emit('deleteStory', [this.story_id])
     }
   }
 }
@@ -88,7 +73,6 @@ export default {
   color: #FFFFFF88;
   font-size: 1.5em;
   padding-left: 0.2em;
-
 
 }
 .fas.fa-times {

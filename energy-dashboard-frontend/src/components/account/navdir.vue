@@ -1,7 +1,7 @@
 <template>
   <div class='bar container-fluid'>
     <div class='row main align-items-center'>
-      <dropdown menu-right append-to-body class='col-2 itm' v-for='(item, index) in path'>
+      <dropdown menu-right append-to-body class='col-2 itm' v-for='(item, index) in path' :key='index'>
         <div class='dropdown-toggle'>
             <div class='leftP'>
               <i :class="getClass(item,index)"></i>
@@ -10,7 +10,7 @@
         </div>
         <template slot="dropdown">
           <div class='selector'>
-            <div v-for='(otherStory, index_o) in getDataForPathIndex(index)' @click='moveRoute(index, index_o)' class='title'>
+            <div v-for='(otherStory, index_o) in getDataForPathIndex(index)' :key='index_o' @click='moveRoute(index, index_o)' class='title'>
               <i :class="getClass(otherStory,index)"></i>
               {{ otherStory }}
             </div>
@@ -24,85 +24,70 @@
 </template>
 
 <script>
-  import axios from 'axios';
-  export default {
-    name: 'navdir',
-    props: ['path','groupContents','groups'],
-    up: 0,
-    data() {
-      return {
-        groupName : '',
+import axios from 'axios'
+export default {
+  name: 'navdir',
+  props: ['path', 'groupContents', 'groups'],
+  up: 0,
+  data () {
+    return {
+      groupName: ''
+    }
+  },
+  methods: {
+    getClass: function (name, index) {
+      if (index === 0) {
+        if (name === 'Public') {
+          return 'fas fa-globe'
+        } else {
+          return 'fas fa-user'
+        }
+      } else if (index === 1) {
+        return 'fas fa-th-large'
+      } else {
+        return 'fas fa-building'
       }
     },
-    methods: {
-      getClass: function(name, index) {
-        if (index === 0) {
-          if (name === "Public") {
-            return "fas fa-globe";
-          }
-          else {
-            return "fas fa-user";
-          }
-        }
-        else if (index === 1) {
-          return "fas fa-th-large";
-        }
-        else {
-          return "fas fa-building";
-        }
-      },
-      getDataForPathIndex: function(i) {
-        if (i === 0) {
-          return ['Public','Your Dashboard']
-        }
-        else if (i === 1) {
-          var r = [];
-          for (var group of this.groups)
-            r.push(group.name);
-          return r;
-        }
-        else if ( i === 2) {
-          var r = [];
-          for (var story of this.groupContents)
-            r.push(story.name);
-          return r;
-        }
-        else {
-          return ['Error'];
-        }
-
-      },
-      moveRoute: function(dirI, dropI) {
-        if (dirI === 2) {
-          console.log(this.groupContents[dropI].id);
-          this.$parent.changeStory([this.groupContents[dropI].id,0]);
-        }
-      },
-      updatePath: function() {
-        axios(process.env.ROOT_API+'api/getStoryGroup?id='+this.$parent.currentStory,{method: "get", withCredentials:true}).then(res => {
-          this.groupName = res.data[0].group_name;
-          this.$parent.path[1] = this.groupName;
-          this.$parent.path[2]= this.$parent.storyName;
-          console.log(this.$parent.path);
-
-          this.$parent.groupContents = [];
-          for (var story of res.data) {
-            this.$parent.groupContents.push({id: story.story_id, name: story.story_name});
-          }
-          console.log(this.groupContents);
-          this.$parent.pathFlag++;
-        }).catch(e => {
-          console.log(e);
-        });
+    getDataForPathIndex: function (i) {
+      if (i === 0) {
+        return ['Public', 'Your Dashboard']
+      } else if (i === 1) {
+        let r = []
+        for (var group of this.groups) { r.push(group.name) }
+        return r
+      } else if (i === 2) {
+        let r = []
+        for (var story of this.groupContents) { r.push(story.name) }
+        return r
+      } else {
+        return ['Error']
       }
     },
-    mounted() {
-
+    moveRoute: function (dirI, dropI) {
+      if (dirI === 2) {
+        console.log(this.groupContents[dropI].id)
+        this.$parent.changeStory([this.groupContents[dropI].id, 0])
+      }
     },
-    watch: {
+    updatePath: function () {
+      axios(process.env.ROOT_API + 'api/getStoryGroup?id=' + this.$parent.currentStory, { method: 'get', withCredentials: true }).then(res => {
+        this.groupName = res.data[0].group_name
+        this.$parent.path[1] = this.groupName
+        this.$parent.path[2] = this.$parent.storyName
+        console.log(this.$parent.path)
 
+        this.$parent.groupContents = []
+        for (var story of res.data) {
+          this.$parent.groupContents.push({ id: story.story_id, name: story.story_name })
+        }
+        console.log(this.groupContents)
+        this.$parent.pathFlag++
+      }).catch(e => {
+        console.log(e)
+      })
     }
   }
+}
 </script>
 <style scoped>
   .bar {

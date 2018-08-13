@@ -1,12 +1,12 @@
 <template>
   <div class='background container-fluid'>
-    <div class='top row' v-for='top in groups'> <!-- Public and Personal dash -->
+    <div class='top row' v-for='(top, tIndex) in groups' v-bind:key='tIndex'> <!-- Public and Personal dash -->
       <div class='h3 col-xs-12' data-toggle='collapse' :data-target='"#col-top-"+top.name.replace(/ /g,"_")' aria-expanded='true' :aria-controls='"col-top-"+top.name.replace(/ /g,"_")'><i class="fas fa-globe"></i>{{top.name}}</div>
       <div class='section collapse row' :id='"col-top-"+top.name.replace(/ /g,"_")'>
-          <div class='category row' v-for='section in top.subgroups'> <!-- education, research, etc. -->
+          <div class='category row' v-for='(section, sIndex) in top.subgroups' :key='sIndex'> <!-- education, research, etc. -->
               <div class='h4 col-xs-12' data-toggle='collapse' :data-target='"#col-sect-"+section.name.replace(/ /g,"_").replace(/&/g,"a")' aria-expanded='true' :aria-controls='"col-sect-"+section.name.replace(/ /g,"_").replace(/&/g,"a")'>  <i class="fas fa-th-large"></i>{{section.name}}</div>
               <div class='collapse row' :id='"col-sect-"+section.name.replace(/ /g,"_").replace(/&/g,"a")'>
-                <div class='building col-xs-3 h5' v-for='building in section.subgroups'> <!-- building -->
+                <div class='building col-xs-3 h5' v-for='(building, bIndex) in section.subgroups' :key="bIndex"> <!-- building -->
                   <i class="fas fa-building"></i>{{building.name}}
                 </div>
               </div>
@@ -17,27 +17,27 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 export default {
   name: '',
-  data() {
+  data () {
     return {
       groups: []
     }
   },
   created () {
-    this.groups.push({name: 'Public', subgroups: []});
-    axios.get(process.env.ROOT_API+'api/getPublicGroups').then(res => {
+    this.groups.push({name: 'Public', subgroups: []})
+    axios.get(process.env.ROOT_API + 'api/getPublicGroups').then(res => {
       for (var group of res.data) {
-        axios.get(process.env.ROOT_API+'api/getGroupData?id='+group.id).then(gd => {
-          this.groups[0].subgroups.push({name:gd.data[0][0].name, id:gd.data[0][0].id, subgroups:gd.data[1]});
+        axios.get(process.env.ROOT_API + 'api/getGroupData?id=' + group.id).then(gd => {
+          this.groups[0].subgroups.push({ name: gd.data[0][0].name, id: gd.data[0][0].id, subgroups: gd.data[1] })
         }).catch(e => {
-          throw e;
-        });
+          throw e
+        })
       }
     }).catch(e => {
-      console.log(e);
-    });
+      console.log(e)
+    })
   }
 }
 </script>

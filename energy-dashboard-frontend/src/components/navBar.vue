@@ -38,24 +38,22 @@
 <script>
 export default {
   name: 'navigbar',
-  data() {
+  data () {
     return {
-      loggedIn : false,
-      logOutLink: process.env.ROOT_API+"logout"
+      loggedIn: false,
+      logOutLink: process.env.ROOT_API + 'logout'
     }
   },
   created () {
     this.$eventHub.$on('loggedIn', val => {
-      this.loggedIn = true;
-    });
+      this.loggedIn = true
+    })
   },
   methods: {
-    isActive: function(s) {
-      if (s === 'account' && this.$route.path.search('public') > 0)
-        return true;
-      if ("/" + s === this.$route.path)
-        return true;
-      return false;
+    isActive: function (s) {
+      if (s === 'account' && this.$route.path.search('public') > 0) { return true }
+      if ('/' + s === this.$route.path) { return true }
+      return false
     }
   }
 }

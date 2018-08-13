@@ -31,12 +31,12 @@ export default {
     exploreBtn
   },
   methods: {
-    login: function() {
-      window.location.href=process.env.ROOT_API+"login";
-      //this.$router.push("account")
+    login: function () {
+      window.location.href = process.env.ROOT_API + 'login'
+      // this.$router.push("account")
     },
-    explore: function() {
-      this.$router.push("map")
+    explore: function () {
+      this.$router.push('map')
     }
   }
 }

@@ -20,28 +20,28 @@
   </div>
 </template>
 <script>
-import chartController from '@/components/charts/chartController';
+import chartController from '@/components/charts/chartController'
+
 export default {
-  props: ['name','media','description','date_end','date_start','descr','graph_type','id','media','story_id'],
+  props: ['name', 'media', 'description', 'date_end', 'date_start', 'descr', 'graph_type', 'id', 'story_id'],
   components: {
     chartController
   },
-  data() {
+  data () {
     return {
-      isMaximized : false
+      isMaximized: false
     }
   },
   methods: {
 
   },
   watch: {
-    isMaximized: function(value) {
-      //open section
+    isMaximized: function (value) {
+      // open section
       if (value) {
-        this.$refs.buttonsAndStuff.style.right = "1em";
-      }
-      else {
-        this.$refs.buttonsAndStuff.style.right = "calc(-20% + 3.8em)";
+        this.$refs.buttonsAndStuff.style.right = '1em'
+      } else {
+        this.$refs.buttonsAndStuff.style.right = 'calc(-20% + 3.8em)'
       }
     }
   }

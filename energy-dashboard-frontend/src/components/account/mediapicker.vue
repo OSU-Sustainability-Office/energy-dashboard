@@ -2,7 +2,7 @@
   <div class="container" ref="mainstage">
     <div class='row' ref="imageNodes">
       <div class='col' @click="$parent.selected = 0" style='backgroundColor: rgb(26,26,26)'></div>
-      <div v-for='(image,index) in images' @click="$parent.selected = index+1" class='col' :style='"background-image:url(\""+image+"\")"'>
+      <div v-for='(image,index) in images' @click="$parent.selected = index+1" :key='index' class='col' :style='"background-image:url(\""+image+"\")"'>
       </div>
 
     </div>
@@ -13,53 +13,48 @@ import axios from 'axios'
 export default {
   name: 'mediapicker',
   props: ['selected'],
-  data() {
+  data () {
     return {
-      images : [],
-      selectedString: ""
+      images: [],
+      selectedString: ''
     }
   },
-  mounted() {
-
-    axios.get(process.env.ROOT_API+'api/listAvailableMedia').then(val => {
-      var index = 0;
+  mounted () {
+    axios.get(process.env.ROOT_API + 'api/listAvailableMedia').then(val => {
+      var index = 0
       for (var i of val.data) {
-        this.images.push(process.env.ROOT_API+"block-media/thumbs/"+i);
-        if (i === this.$parent.media)
-          this.$parent.selected = index+1;
-        index++;
+        this.images.push(process.env.ROOT_API + 'block-media/thumbs/' + i)
+        if (i === this.$parent.media) { this.$parent.selected = index + 1 }
+        index++
       }
-      this.$nextTick(()=> {
-        var index = 0;
+      this.$nextTick(() => {
+        var index = 0
         for (var node of this.$refs.imageNodes.children) {
-          if (index === this.selected)
-            node.style.border = "solid 2px rgb(215,63,9)";
-          else {
-            node.style.border = "solid 1px rgb(255,255,255)";
+          if (index === this.selected) {
+            node.style.border = 'solid 2px rgb(215,63,9)'
+          } else {
+            node.style.border = 'solid 1px rgb(255,255,255)'
           }
-          index++;
+          index++
         }
-      });
-    });
+      })
+    })
   },
   watch: {
-    selectedString: function(v) {
-
-    },
-    selected: function(value) {
-      var index = 0;
+    selected: function (value) {
+      var index = 0
       for (var node of this.$refs.imageNodes.children) {
         if (index === this.selected) {
-          node.style.border = "solid 2px rgb(215,63,9)";
-          if (index -1 < 0)
-            this.$parent.media = null;
-          else
-            this.$parent.media = this.images[index-1].replace(process.env.ROOT_API+"block-media/thumbs/","");
+          node.style.border = 'solid 2px rgb(215,63,9)'
+          if (index - 1 < 0) {
+            this.$parent.media = null
+          } else {
+            this.$parent.media = this.images[index - 1].replace(process.env.ROOT_API + 'block-media/thumbs/', '')
+          }
+        } else {
+          node.style.border = 'solid 1px rgb(255,255,255)'
         }
-        else {
-          node.style.border = "solid 1px rgb(255,255,255)";
-        }
-        index++;
+        index++
       }
     }
   }

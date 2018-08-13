@@ -82,11 +82,11 @@
   </div>
 </template>
 <script>
-import { LMap, LTileLayer, LMarker, LPolygon, LGeoJson } from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LPolygon, LGeoJson } from 'vue2-leaflet'
 import sideView from '@/components/map/sideView'
-import axios from 'axios';
-import Vue from 'vue';
-var componenet = null;
+import axios from 'axios'
+import L from 'leaflet'
+
 export default {
   name: 'featured',
   components: {
@@ -97,117 +97,115 @@ export default {
     sideView,
     LGeoJson
   },
-  data() {
+  data () {
     return {
-      zoom:15.5,
+      zoom: 15.5,
       center: L.latLng(44.565, -123.2785),
-      url:'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-      //url: 'https://api.mapbox.com/styles/v1/jack-woods/cjh85kv6z0lzo2slfl00ygdit/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
-      attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      //attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+      // url: 'https://api.mapbox.com/styles/v1/jack-woods/cjh85kv6z0lzo2slfl00ygdit/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
       map: null,
       polygonData: null,
       openStory: 0,
       showSide: false,
       ele: [],
       rKey: 0,
-      selected: ["Residence","Athletics","Dining","Research","Education","Common"],
+      selected: ['Residence', 'Athletics', 'Dining', 'Research', 'Education', 'Common'],
       show: false,
       buildingOptions: {
-        onEachFeature: function(feature, layer) {
-          layer.on('click',function(e){window.vue.$eventHub.$emit('clickedPolygon',[feature.properties.story_id])});
-          layer.on('mouseover',function(e){e.target.setStyle({fillColor : "#000",color : "#000"})});
-          layer.on('mouseout',(e)=>{window.vue.$eventHub.$emit('resetPolygon',[e.target])});
+        onEachFeature: function (feature, layer) {
+          layer.on('click', function (e) { window.vue.$eventHub.$emit('clickedPolygon', [feature.properties.story_id]) })
+          layer.on('mouseover', function (e) { e.target.setStyle({ fillColor: '#000', color: '#000' }) })
+          layer.on('mouseout', (e) => { window.vue.$eventHub.$emit('resetPolygon', [e.target]) })
         },
-        style: function(feature) {
-          var color = "#000";
+        style: function (feature) {
+          var color = '#000'
           switch (feature.properties.affiliation) {
-            case "Residence":
-              color = "#D3832B";
-              break;
-            case "Education":
-              color = "#0D5257";
-              break;
-            case "Research":
-              color = "#AA9D2E";
-              break;
-            case "Common":
-              color = "#7A6855";
-              break;
-            case "Athletics":
-              color = "#FFB500";
-              break;
-            case "Dining":
-              color = "#4A773C";
-              break;
+            case 'Residence':
+              color = '#D3832B'
+              break
+            case 'Education':
+              color = '#0D5257'
+              break
+            case 'Research':
+              color = '#AA9D2E'
+              break
+            case 'Common':
+              color = '#7A6855'
+              break
+            case 'Athletics':
+              color = '#FFB500'
+              break
+            case 'Dining':
+              color = '#4A773C'
+              break
             default:
-              break;
+              break
           }
           return {
-              weight: 2,
-              color: color,
-              opacity: 1,
-              fillColor: color,
-              fillOpacity: 0.7
+            weight: 2,
+            color: color,
+            opacity: 1,
+            fillColor: color,
+            fillOpacity: 0.7
           }
         }
       }
     }
-
   },
   methods: {
-    polyClick: function(value) {
-      this.showSide = true;
-      this.openStory = value;
-      axios.get(process.env.ROOT_API+'api/getStoryData?id='+value).then(val => {
-        this.$refs.sideview.$el.style.display = "block";
-        this.$refs.sideview.media = val.data[0].media;
-        this.$refs.sideview.title = val.data[0].name;
-      });
-      axios.get(process.env.ROOT_API+'api/getBlocksForStory?id='+value).then(val => {
-        var promises = [];
+    polyClick: function (value) {
+      this.showSide = true
+      this.openStory = value
+      axios.get(process.env.ROOT_API + 'api/getStoryData?id=' + value).then(val => {
+        this.$refs.sideview.$el.style.display = 'block'
+        this.$refs.sideview.media = val.data[0].media
+        this.$refs.sideview.title = val.data[0].name
+      })
+      axios.get(process.env.ROOT_API + 'api/getBlocksForStory?id=' + value).then(val => {
+        var promises = []
         val.data.forEach(row => {
-          promises.push(axios.get(process.env.ROOT_API+'api/getBlockMeterGroups?id='+row.id));
+          promises.push(axios.get(process.env.ROOT_API + 'api/getBlockMeterGroups?id=' + row.id))
         })
         Promise.all(promises).then(results => {
-          var b = [];
+          var b = []
           results.forEach(r => {
-            b.push(r.data[0]);
-          });
-          this.$refs.sideview.blocks = b;
-        });
-      });
+            b.push(r.data[0])
+          })
+          this.$refs.sideview.blocks = b
+        })
+      })
     }
   },
-  created() {
-    axios.get(process.env.ROOT_API+'api/getBuildingsForMap').then(res => {
-      this.polygonData = res.data;
-    });
-    this.$eventHub.$on('clickedPolygon',(v)=>(this.polyClick(v[0])));
-    this.$eventHub.$on('resetPolygon',(v)=>{this.$refs.geoLayer.mapObject.resetStyle(v[0])});
+  created () {
+    axios.get(process.env.ROOT_API + 'api/getBuildingsForMap').then(res => {
+      this.polygonData = res.data
+    })
+    this.$eventHub.$on('clickedPolygon', (v) => (this.polyClick(v[0])))
+    this.$eventHub.$on('resetPolygon', (v) => { this.$refs.geoLayer.mapObject.resetStyle(v[0]) })
   },
-  mounted() {
+  mounted () {
     this.$nextTick(() => {
-      this.map = this.$refs.map.mapObject;
-      //this.map.$el.style.zIndex = 0;
-    });
-    this.ele.push(this.$refs.dropdown.$el);
+      this.map = this.$refs.map.mapObject
+      // this.map.$el.style.zIndex = 0;
+    })
+    this.ele.push(this.$refs.dropdown.$el)
   },
   watch: {
-    selected: function(val) {
-      this.rKey++;
-    //  L.geoJSON(this.polygonData).addTo(this.map);
+    selected: function (val) {
+      this.rKey++
+      //  L.geoJSON(this.polygonData).addTo(this.map);
       this.$nextTick(() => {
         for (var layerKey of Object.keys(this.map._layers)) {
-          var layer = this.map._layers[layerKey];
+          var layer = this.map._layers[layerKey]
           if (layer.feature) {
             if (!val.includes(layer.feature.properties.affiliation)) {
-              this.map.removeLayer(layer);
+              this.map.removeLayer(layer)
             }
           }
         }
-      });
-
+      })
     }
   }
 }
