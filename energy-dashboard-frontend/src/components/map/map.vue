@@ -5,7 +5,7 @@
 
         <div class='key col'>
           <div class='row'>
-            <div class='col-1 label'>Key</div>
+            <div class='keyEl label font-weight-bold'>Key</div>
             <div class='keyEl'><div class='res swatch'></div>Residence</div>
             <div class='keyEl'><div class='din swatch'></div>Dining</div>
             <div class='keyEl'><div class='ath swatch'></div>Athletics & Rec</div>
@@ -14,60 +14,53 @@
             <div class='keyEl'><div class='com swatch'></div>Common</div>
           </div>
         </div>
-        <div class='fil col'>
-          <dropdown ref="dropdown" :not-close-elements="ele" v-model="show" class="dropdown-form" menu-right>
-            <btn type="primary" class="dropdown-toggle">Filter </btn>
-              <template slot="dropdown">
-                <div class='container filter'>
-                  <div class='row'>
-                    <div class='col-xs-12 label'>Building Type</div>
-                  </div>
-                  <div class='row'>
-                    <div class='col-xs-6'>
-                      <div class='row'>
-                        <div class='col-xs-12'>
-                          <input type="checkbox" value='Residence' v-model="selected" checked> Residence
-                        </div>
-                      </div>
-                      <div class='row'>
-                        <div class='col-xs-12'>
-                          <input type="checkbox" value='Dining' v-model="selected" checked> Dining
-                        </div>
-                      </div>
-                      <div class='row'>
-                        <div class='col-xs-12'>
-                          <input type="checkbox" value='Athletics' v-model="selected" checked> Athletics & Rec
-                        </div>
+        <div class='fil col-4'>
+          <div class='dropdown d-inline-block'>
+            <button class="btn dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Filter </button>
+            <div class='dropdown-menu' aria-labelledby="dropdownMenuButton">
+              <div class='container'>
+                <div class='row text-center'>
+                  <div class='col label font-weight-bold'>Building Type</div>
+                </div>
+                <div class='row'>
+                  <div class='col'>
+                    <div class='row'>
+                      <div class='col'>
+                        <input type="checkbox" value='Residence' v-model="selected" checked> Residence
                       </div>
                     </div>
-                    <div class='col-xs-6'>
-                      <div class='row'>
-                        <div class='col-xs-12'>
-                          <input type="checkbox" value='Research' v-model="selected" checked> Research
-                        </div>
+                    <div class='row'>
+                      <div class='col'>
+                        <input type="checkbox" value='Dining' v-model="selected" checked> Dining
                       </div>
-                      <div class='row'>
-                        <div class='col-xs-12'>
-                          <input type="checkbox" value='Education' v-model="selected" checked> Education
-                        </div>
+                    </div>
+                    <div class='row'>
+                      <div class='col'>
+                        <input type="checkbox" value='Athletics' v-model="selected" checked> Athletics & Rec
                       </div>
-                      <div class='row'>
-                        <div class='col-xs-12'>
-                          <input type="checkbox" value='Common' v-model="selected" checked> Common
-                        </div>
+                    </div>
+                  </div>
+                  <div class='col'>
+                    <div class='row'>
+                      <div class='col'>
+                        <input type="checkbox" value='Research' v-model="selected" checked> Research
+                      </div>
+                    </div>
+                    <div class='row'>
+                      <div class='col'>
+                        <input type="checkbox" value='Education' v-model="selected" checked> Education
+                      </div>
+                    </div>
+                    <div class='row'>
+                      <div class='col'>
+                        <input type="checkbox" value='Common' v-model="selected" checked> Common
                       </div>
                     </div>
                   </div>
                 </div>
-
-              </template>
-          </dropdown>
-          <!-- <label>
-            View
-          </label>
-          <select>
-            <option> Type </option>
-          </select> -->
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -298,12 +291,13 @@ export default {
   color: #000;
   font-size: 1em;
 }
-.container.filter {
+.dropdown-menu > .container {
   width: 300px;
 }
 .btn {
   background-color: #FFF !important;
   color: #000 !important;
+  border: solid 1px #000;
 }
 .keyEl {
   display: inline-block;
@@ -313,6 +307,7 @@ export default {
   position: absolute;
   top: 0.5em;
   right: 2em;
+  padding-left: 2em;
 }
 .col {
   display: inline-block;

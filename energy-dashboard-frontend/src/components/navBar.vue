@@ -1,39 +1,24 @@
 <template>
-  <!-- <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-expand-sm">
     <a class="navbar-brand" href="/">
-      <img src="/static/images/logo.png" class="d-inline-block align-top" alt="">
+      <img src="/static/images/logo.png" height=50 width=auto alt="">
     </a>
-    <ul class="navbar-nav">
-      <li><a role="button" v-bind:class='[isActive("map") ? "active" : ""]' href="#/map">Map</a></li>
-      <li><a role="button" v-bind:class='[isActive("account") ? "active" : ""]' href="#/account">Dashboard</a></li>
-      <dropdown tag="li" append-to-body>
-        <a class="dropdown-toggle" role="button">Account</a>
-        <template slot="dropdown">
-            <li><a role="button" :href='this.logOutLink'>Sign Out</a></li>
-        </template>
-      </dropdown>
-    </ul>
-  </nav> -->
-  <navbar>
-    <a class="navbar-brand" slot="brand" href="/">
-      <img src="/static/images/logo.png" class="d-inline-block align-top" alt="">
-    </a>
-    <template slot="collapse">
-      <navbar-nav>
-        <li><a role="button" href="#/map" v-bind:class='[isActive("map") ? "active" : ""]'>Map</a></li>
-        <li><a role="button" href="#/directory" v-bind:class='[isActive("directory") ? "active" : ""]'>Directory</a></li>
-        <li><a role="button" href="#/account" v-bind:class='[isActive("account") ? "active" : ""]'>Dashboard</a></li>
-      </navbar-nav>
-      <navbar-nav right>
-        <dropdown tag="li" menu-right append-to-body >
-          <a class="dropdown-toggle" role="button">Account</a>
-          <template slot="dropdown" class="navD">
-              <li><a role="button" :href='this.logOutLink'>Sign Out</a></li>
-          </template>
-        </dropdown>
-      </navbar-nav>
-    </template>
-  </navbar>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class='pos-left collapse navbar-collapse' id="navbarSupportedContent">
+      <ul class="navbar-nav">
+        <li class='nav-item' v-bind:class='[isActive("map") ? "active" : ""]'><a class="nav-link" href="#/map">Map</a></li>
+        <li class='nav-item' v-bind:class='[isActive("account") ? "active" : ""]'><a class="nav-link" href="#/account">Dashboard</a></li>
+        <li class='nav-item' v-bind:class='[isActive("directory") ? "active" : ""]'><a class="nav-link" href="#/directory">Directory</a></li>
+      </ul>
+    </div>
+    <div class='pos-right navbar-collapse collapse w-100 order-3 dual-collapse2'>
+      <ul class="navbar-nav">
+        <li class='nav-item'><a class='nav-link' :href='this.logOutLink'>Sign Out</a></li>
+      </ul>
+    </div>
+  </nav>
 </template>
 <script>
 export default {
@@ -58,53 +43,49 @@ export default {
   }
 }
 </script>
-<style>
 
-.dropdown-menu {
-  z-index: 2000;
-  /* position: absolute;
-  right: 20px !important; */
-}
-.dropdown-menu .navD {
-  z-index: 2000;
-  position: absolute;
-  right: 20px !important;
-}
-</style>
 <style scoped>
-.navbar {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  width: 100%;
-  background-color: #D73F09;
-  border: none;
-  border-radius: 0;
-  z-index: 3;
-}
-.navbar-nav {
-  padding-left: 10em;
-}
-.navbar a {
-  text-decoration: none;
-  color: #FFF !important;
-  font-size: 1.3em;
-  padding: 1em;
-}
-.navbar-nav > li:not(.dropdown) > a:not(.active):hover  {
-  color: #000 !important;
-}
-.active {
-  background-color: rgba(0,0,0,0.2) !important;
-}
-img {
-  position: absolute;
-  top: 0.3em;
-  left: 0.5em;
-  height: 2.5em;
-  width: auto;
-}
-.dropdown.open > * {
-  background-color: rgba(0,0,0,0.2) !important;
+@media (min-width: 576px) {
+  .pos-left {
+    position: absolute;
+    top: 0;
+    left: 15em;
+    height: 4em;
+  }
+  .pos-right {
+    position: absolute;
+    top: 0;
+    right: 0em;
+    height: 4em;
+    width: 8em !important;
+  }
+  .navbar-nav {
+    height: 100%;
+  }
+  .navbar-nav li {
+    height: 100%;
+    padding: 1em;
+  }
+  .navbar-nav a {
+    color: #FFF;
+  }
+  .navbar-nav li:not(.active):hover > a {
+    color: #000;
+  }
+  .active {
+    background-color: rgba(0,0,0,0.3);
+  }
+  .navbar {
+    background-color: #D73F09;
+    height: 4em;
+  }
+  .navbar-toggler {
+    padding: 0.6em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    color: #FFF;
+    border: solid 0.1em #FFF;
+    font-size: 1.6em;
+  }
 }
 </style>

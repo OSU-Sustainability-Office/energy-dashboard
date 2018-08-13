@@ -5,9 +5,6 @@ import App from './App'
 import router from './router'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import * as uiv from 'uiv'
-
-Vue.use(uiv)
 
 /* eslint-disable no-new */
 Vue.prototype.$eventHub = new Vue()

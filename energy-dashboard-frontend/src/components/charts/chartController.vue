@@ -101,7 +101,7 @@ export default {
                 setTimeout(cbf, 10)
                 return
               }
-              var combinedData = {}
+              let combinedData = {}
               if (values.length === 0) { return }
               values.forEach(value => {
                 if (value.status === 400 || value.data.length === 0) {
@@ -131,7 +131,6 @@ export default {
                   }
                 })
               })
-
               // parse and create the datasets
               if (this.graphType === 1 || this.graphType === 2) {
                 this.createDataSet(index, this.names[index], mpoint, intervalCopy, unitCopy, startDate)
@@ -145,6 +144,7 @@ export default {
 
               if (this.indexesInUse.length === 0) { // Update all at once instead of one after another
                 this.chartDataComplete = JSON.parse(JSON.stringify(this.chartData))
+                console.log(this.chartData)
               }
 
               resolve()
@@ -173,7 +173,7 @@ export default {
         }
       }
 
-      var o = {
+      let o = {
         label: name,
         backgroundColor: this.colors[index],
         borderColor: this.colors[index],
@@ -231,7 +231,7 @@ export default {
         // deep copy object array
         let dataCopy = JSON.parse(JSON.stringify(set.data))
 
-        for (var i = 1; i < set.data.length; i++) {
+        for (let i = 1; i < set.data.length; i++) {
           let b = i - 1
           let lastCounted = dataCopy[b].y
           while (!lastCounted) { lastCounted = dataCopy[--b].y }

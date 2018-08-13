@@ -8,11 +8,15 @@
       <homeSide />
     </div>
     <div class="row buttonBox">
-        <div class="col-sm-2 col-sm-offset-4">
-          <btn @click="explore()">Explore</btn>
+        <div class="col">
+          <div class="row justify-content-end">
+            <div class="btn col-4" @click="explore()">Explore</div>
+          </div>
         </div>
-        <div class="col-sm-2">
-          <btn @click="login()">Login</btn>
+        <div class="col">
+          <div class="row justify-content-start">
+            <div class="btn col-4" @click="login()">Login</div>
+          </div>
         </div>
     </div>
   </div>
@@ -21,19 +25,16 @@
 <script>
 import homeContent from '@/components/home/homeContent'
 import homeSide from '@/components/home/homeSide'
-import exploreBtn from '@/components/home/exploreBtn'
 
 export default {
   name: 'index',
   components: {
     homeContent,
-    homeSide,
-    exploreBtn
+    homeSide
   },
   methods: {
     login: function () {
       window.location.href = process.env.ROOT_API + 'login'
-      // this.$router.push("account")
     },
     explore: function () {
       this.$router.push('map')
@@ -58,6 +59,17 @@ export default {
   color: #FFFFFF;
   top: 0px;
   width: 100%;
+  border: solid 1px #FFF;
+}
+.btn:hover {
+  background-color: #C72F09;
+  color: #FFFFFF;
+  border: solid 1px #CCC;
+}
+.btn:active {
+  background-color: #d76740;
+  color: #FFFFFF;
+  border: solid 1px #CCC;
 }
 #background {
   background: url('/static/images/solar.jpg');

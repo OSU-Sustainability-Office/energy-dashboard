@@ -1,9 +1,9 @@
 <template>
   <div class="app">
     <navigbar />
-    <transition v-bind:name="transitionName">
-      <router-view />
-    </transition>
+      <transition v-bind:name="transitionName">
+        <router-view />
+      </transition>
   </div>
 </template>
 
@@ -92,4 +92,8 @@ body {
 /* .pageTransition-leave-actiev {
 
 } */
+</style>
+
+<style scoped>
+
 </style>

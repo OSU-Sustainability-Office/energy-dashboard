@@ -1,28 +1,27 @@
 <template>
   <div class="view container">
     <div class="title row">
-      <!-- {{ title }} -->
-      <span class="col-xs-11">{{ title }}</span>
-      <span class="col-xs-1 text-right"><i class="fas fa-times" @click="hide()" v-tooltip="'Close View'"></i></span>
+      <span class="col">{{ title }}</span>
+      <span class="col-1 text-right" ><i class="fas fa-times" @click="hide()"></i></span>
     </div>
     <div class="media row" ref='media'>
       <!-- <img v-if='media' :src='api+"block-media/thumbs/"+media' /> -->
     </div>
     <div class="graphcontrol container-fluid">
       <div class="buttons row">
-        <btn @click='currentRange = 0' class="col" v-bind:class="{ active: currentRange == 0 }">Week</btn>
-        <btn @click='currentRange = 1' class="col" v-bind:class="{ active: currentRange == 1 }">Month</btn>
-        <btn @click='currentRange = 2' class="col" v-bind:class="{ active: currentRange == 2 }">Year</btn>
+        <button @click='currentRange = 0' class="col btn" v-bind:class="{ active: currentRange == 0 }">Week</button>
+        <button @click='currentRange = 1' class="col btn" v-bind:class="{ active: currentRange == 1 }">Month</button>
+        <button @click='currentRange = 2' class="col btn" v-bind:class="{ active: currentRange == 2 }">Year</button>
       </div>
       <div class="d-flex flex-row graph" ref='scrollBox'>
-        <div class="col-xs-12 inline" v-for='(block,index) in blocks' :key='index'>
-          <chartController :randomColors=1 v-bind:start='dateOffset()' :end='(new Date()).toISOString()' v-bind:interval='int' v-bind:unit='unit' graphType=1 v-bind:points='[block.point]' v-bind:groups='[block.group_id]' :names='[block.name]' :submeters='[block.meter]' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding': '0.5em' }"/>
+        <div class="col inline" v-for='(block,index) in blocks' :key='index'>
+          <chartController :randomColors=1 v-bind:start='dateOffset()' :end='(new Date()).toISOString()' v-bind:interval='int' v-bind:unit='unit' :graphType='1' v-bind:points='[block.point]' v-bind:groups='[block.group_id]' :names='[block.name]' :submeters='[block.meter]' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding': '0.5em' }"/>
         </div>
       </div>
       <i class="graphslide left fas fa-caret-left" @click='prev()' ref="prevArrow"></i>
       <i class="graphslide right fas fa-caret-right" @click='next()' ref="nextArrow"></i>
       <div class="buttons row">
-        <btn @click='$router.push({path: `/public/${$parent.openStory}/${currentRange}`})' class="col-xs-12">View in Dashboard</btn>
+        <button @click='$router.push({path: `/public/${$parent.openStory}/${currentRange}`})' class="col btn">View in Dashboard</button>
       </div>
     </div>
   </div>
@@ -97,7 +96,6 @@ export default {
         })
         this.index = 0
         for (var i in value) {
-          // console.log(value[i]);
           this.$refs.chartController[i].getData(0, value[i].point, value[i].group_id, this.dateOffset(), (new Date()).toISOString(), this.int, this.unit, value[i].meter)
         }
         if (this.blocks.length <= 1) {
@@ -119,7 +117,7 @@ export default {
         this.int = 15
         this.unit = 'day'
       }
-      for (var i in this.blocks) {
+      for (let i in this.blocks) {
         this.$refs.chartController[i].getData(0, this.blocks[i].point, this.blocks[i].group_id, this.dateOffset(), (new Date()).toISOString(), this.int, this.unit, this.blocks[i].meter)
       }
     }
@@ -184,6 +182,7 @@ export default {
   .btn {
     background-color: #000;
     color: #FFF;
+    border: solid 1px #FFF;
   }
   .utilities .row {
     color: #FFF;
@@ -210,11 +209,11 @@ export default {
     color: #FFF;
     font-family: 'StratumNo2';
   }
-  .title .col-xs-1 {
+  .title .col-1 {
     padding-top: 0.2em;
     padding-right: 0.5em;
   }
-  .title .col-xs-11 {
+  .title .col {
     padding-top: 0.15em;
     padding-left: 0.5em;
   }
