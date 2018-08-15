@@ -18,11 +18,16 @@
         <li class='nav-item'><a class='nav-link' :href='this.logOutLink'>Sign Out</a></li>
       </ul>
     </div>
+    <b-modal size="lg" ref="dir" body-class="dirModal" hide-header hide-footer>
+      <directory />
+    </b-modal>
   </nav>
 </template>
 <script>
+import directory from '@/components/directory/directory.vue'
 export default {
   name: 'navigbar',
+  components: {directory},
   data () {
     return {
       loggedIn: false,
@@ -39,10 +44,22 @@ export default {
       if (s === 'account' && this.$route.path.search('public') > 0) { return true }
       if ('/' + s === this.$route.path) { return true }
       return false
+    },
+    showDirectory: function () {
+      this.$refs.dir.show()
     }
   }
 }
 </script>
+<style>
+.modal-content {
+  background-color: rgba(0,0,0,0);
+  border: none;
+}
+.dirModal {
+  padding-top: 150px;
+}
+</style>
 
 <style scoped>
 @media (min-width: 576px) {
@@ -63,7 +80,7 @@ export default {
     height: 100%;
   }
   .navbar-nav li {
-    height: 100%;
+    height: calc(100% - 2px);
     padding: 1em;
   }
   .navbar-nav a {
@@ -78,6 +95,7 @@ export default {
   .navbar {
     background-color: #D73F09;
     height: 4em;
+    border-bottom: solid 1px rgb(226,226,226);
   }
   .navbar-toggler {
     padding: 0.6em;

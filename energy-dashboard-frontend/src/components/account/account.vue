@@ -3,7 +3,7 @@
     <!-- <span class="main-heading">Stories</span> -->
     <heropicture v-if='fromMap' v-bind:id='currentStory'></heropicture>
     <carousel v-if='!fromMap' v-bind:cards="cards" @edit="editStory($event)" @caro-click='changeStory($event)' class="scrollyBox" ref="caro"/>
-    <navdir :key='pathFlag' :path="path" :groupContents='groupContents' :groups='groups' ref='navdir'></navdir>
+    <navdir :key='pathFlag' :path="path" :groupContents='groupContents' :groups='groups' ref='navdir' class="naviv"></navdir>
     <!-- <span class="main-heading">Featured Blocks</span> -->
     <featured v-bind:cards="cardsFeatured" :fromMap='fromMap' ref='featureBox' v-if='!editingStory && currentStory !== null'/>
     <storyEdit v-if='editingStory' ref='storyEdit'/>
@@ -207,6 +207,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.naviv {
+  position: absolute;
+  top: 200px;
+  left: 0px;
+}
 .background {
   background: #fff;
   top: 4em;

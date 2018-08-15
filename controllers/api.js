@@ -237,7 +237,7 @@ router.get('/getPublicGroups', function (req, res) {
 router.get('/getGroupData', function (req, res) {
   let promises = []
   promises.push(db.query('SELECT name,id FROM story_groups WHERE id=?', [req.queryInt('id')]))
-  promises.push(db.query('SELECT stories.name AS name, stories.id AS id FROM story_group_relation JOIN stories ON stories.id = story_group_relation.story_id WHERE story_group_relation.story_group_id=?', [req.queryInt('id')]))
+  promises.push(db.query('SELECT stories.name AS name, stories.media AS media, stories.description AS description, stories.id AS id FROM story_group_relation JOIN stories ON stories.id = story_group_relation.story_id WHERE story_group_relation.story_group_id=?', [req.queryInt('id')]))
   Promise.all(promises).then(r => { res.send(JSON.stringify(r)) }).catch(e => { res.status(400).send('400: ' + e.message) })
 })
 

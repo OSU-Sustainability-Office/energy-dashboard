@@ -1,6 +1,6 @@
 <template>
   <div class="storyCard" ref='card' v-on:click="clicked" @mouseover="hover(true)" @mouseleave="hover(false)">
-    <div class="toolbox" ref="toolbox">
+    <div class="toolbox" ref="toolbox" v-if='!notools'>
       <i class="fas fa-pencil-alt" @click="$emit('edit')" v-tooltip="'Edit Story Card'"></i>
       <i class="fas fa-times" @click="deleteStory()" v-tooltip="'Delete Story'"></i>
     </div>
@@ -12,7 +12,7 @@
 <script>
 export default {
   name: 'storyCard',
-  props: ['name', 'description', 'selected', 'media', 'story_id', 'index'],
+  props: ['name', 'description', 'selected', 'media', 'story_id', 'index', 'notools'],
   mounted () {
     if (this.media) {
       this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + process.env.ROOT_API + 'block-media/thumbs/' + this.media + '") center/cover no-repeat'
@@ -44,10 +44,12 @@ export default {
   },
   methods: {
     hover: function (enter) {
-      if (enter) {
-        this.$refs.toolbox.style.display = 'block'
-      } else {
-        this.$refs.toolbox.style.display = 'none'
+      if (this.$refs.toolbox) {
+        if (enter) {
+          this.$refs.toolbox.style.display = 'block'
+        } else {
+          this.$refs.toolbox.style.display = 'none'
+        }
       }
     },
     clicked: function (event) {

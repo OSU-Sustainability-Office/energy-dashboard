@@ -92,6 +92,12 @@ body {
 /* .pageTransition-leave-actiev {
 
 } */
+.dropdown-item:active {
+  background-color: #D73F09;
+}
+.dropdown-item:active > * {
+  color: #FFF;
+}
 </style>
 
 <style scoped>

@@ -183,7 +183,10 @@ export default {
       this.map = this.$refs.map.mapObject
       // this.map.$el.style.zIndex = 0;
     })
-    this.ele.push(this.$refs.dropdown.$el)
+  },
+  beforeDestroy () {
+    this.$eventHub.$off('clickedPolygon')
+    this.$eventHub.$off('resetPolygon')
   },
   watch: {
     selected: function (val) {
@@ -221,7 +224,7 @@ export default {
   top: -50px;
   height: 50px;
   margin-top: 50px;
-  z-index: 2000;
+  z-index: 1020;
   background-color: #FFF;
 }
 .topBar > .row {

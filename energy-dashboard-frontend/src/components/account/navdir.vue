@@ -1,24 +1,23 @@
 <template>
   <div class='bar container-fluid'>
     <div class='row main align-items-center'>
-      <dropdown menu-right append-to-body class='col-2 itm' v-for='(item, index) in path' :key='index'>
-        <div class='dropdown-toggle'>
+      <b-dropdown v-for='(item, index) in path' variant="link" :key='index' :id='"dropdown-" + index' class="itm col-2" boundary="window" no-caret>
+        <template slot='button-content'>
+          <div class='container-fluid'>
             <div class='leftP'>
               <i :class="getClass(item,index)"></i>
             </div>
             <div class='it'>{{ item }}</div>
-        </div>
-        <template slot="dropdown">
-          <div class='selector'>
-            <div v-for='(otherStory, index_o) in getDataForPathIndex(index)' :key='index_o' @click='moveRoute(index, index_o)' class='title'>
-              <i :class="getClass(otherStory,index)"></i>
-              {{ otherStory }}
+            <div class='rightP'>
+              <i class="fas fa-caret-down"></i>
             </div>
           </div>
         </template>
-      </dropdown>
-      <div class='col itm-end'>
-      </div>
+        <b-dropdown-item v-for='(otherStory, index_o) in getDataForPathIndex(index)' :key='index_o' class='' @click='moveRoute(index, index_o)'>
+          <i :class='getClass(otherStory,index)'></i>
+          {{ otherStory }}
+        </b-dropdown-item>
+      </b-dropdown>
     </div>
   </div>
 </template>
@@ -92,10 +91,9 @@ export default {
 <style scoped>
   .bar {
     position: absolute;
-    top: 200px;
     left: 0px;
     height: 40px;
-    z-index: 0;
+    z-index: 10;
     box-shadow: 0px 2px 4px -2px rgba(0,0,0,0.5);
   }
   .row.main {
@@ -104,18 +102,13 @@ export default {
     white-space: nowrap;
     height: 100%;
     width: 100%;
-    background-color: rgba(0,0,0,0.3);
   }
   .itm {
     background-color: #FFF;
     display: inline-block;
-    padding-top: 10px;
-    padding-left: 60px;
-    margin-left: -17px;
-    margin-right: 4px;
     height: 100%;
-    /* border-right: solid 1px rgb(0,0,0); */
-    clip-path:polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%);
+    border-right: solid 2px rgb(226,226,226);
+    /* clip-path:polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%); */
     color: rgb(26,26,26);
     cursor: pointer;
   }
@@ -137,15 +130,24 @@ export default {
     position: absolute;
     left: 0px;
     top: 0px;
-    padding-top: 10px;
-    padding-left: 30px;
+    padding-top: 7px;
+    color: #D73F09;
+  }
+  .rightP {
+    display: inline-block;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 10px;
+    padding-top: 7px;
     color: #D73F09;
   }
   .it {
-    font-weight: bold;
     text-overflow: ellipsis;
     display: inline-block;
-    padding-left: 10px;
+    color: #000;
+    padding-left: 30px;
+    padding-top: 2px;
   }
   .col-3.itm > .row > .col.it {
     padding-top: 10px;
@@ -154,6 +156,9 @@ export default {
     font-size: 1.5em;
   }
   .itm:hover .leftP {
+    color: #FFF;
+  }
+  .itm:hover .rightP {
     color: #FFF;
   }
   .dropdown-toggle {
