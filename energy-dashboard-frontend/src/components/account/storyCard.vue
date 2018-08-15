@@ -1,8 +1,8 @@
 <template>
   <div class="storyCard" ref='card' v-on:click="clicked" @mouseover="hover(true)" @mouseleave="hover(false)">
     <div class="toolbox" ref="toolbox" v-if='!notools'>
-      <i class="fas fa-pencil-alt" @click="$emit('edit')" v-tooltip="'Edit Story Card'"></i>
-      <i class="fas fa-times" @click="deleteStory()" v-tooltip="'Delete Story'"></i>
+      <i class="fas fa-pencil-alt" @click="$emit('edit')" v-b-tooltip.hover title='Edit Story Card'></i>
+      <i class="fas fa-times" @click="deleteStory()" v-b-tooltip.hover title='Delete Story'></i>
     </div>
     <span class="storyName">{{this.name}}</span>
     <span class="storyDescription">{{this.description}}</span>

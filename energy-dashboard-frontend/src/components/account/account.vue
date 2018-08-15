@@ -1,8 +1,7 @@
 <template>
   <div class="background">
     <!-- <span class="main-heading">Stories</span> -->
-    <heropicture v-if='fromMap' v-bind:id='currentStory'></heropicture>
-    <carousel v-if='!fromMap' v-bind:cards="cards" @edit="editStory($event)" @caro-click='changeStory($event)' class="scrollyBox" ref="caro"/>
+    <heropicture v-bind:id='currentStory'></heropicture>
     <navdir :key='pathFlag' :path="path" :groupContents='groupContents' :groups='groups' ref='navdir' class="naviv"></navdir>
     <!-- <span class="main-heading">Featured Blocks</span> -->
     <featured v-bind:cards="cardsFeatured" :fromMap='fromMap' ref='featureBox' v-if='!editingStory && currentStory !== null'/>
@@ -76,7 +75,7 @@ export default {
       }
     } else {
       this.fromMap = false
-      this.path[1] = 'Your Dashboard'
+      this.path[0] = 'Your Dashboard'
     }
   },
   created () {
@@ -101,6 +100,7 @@ export default {
                   card.graphType = card.graph_type
                 }
                 this.cardsFeatured = res.data
+                this.$refs.navdir.updatePath()
               }
             }).catch(err => {
               throw err

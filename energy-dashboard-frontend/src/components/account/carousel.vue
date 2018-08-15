@@ -8,7 +8,7 @@
         </div>
       </div>
     </div>
-    <div id="expand" v-on:click="isMaximized = !isMaximized"><i class="fas" v-bind:class="{ 'fa-chevron-circle-down' : !isMaximized, 'fa-chevron-circle-up' : isMaximized }"></i></div>
+    <!-- <div id="expand" v-on:click="isMaximized = !isMaximized"><i class="fas" v-bind:class="{ 'fa-chevron-circle-down' : !isMaximized, 'fa-chevron-circle-up' : isMaximized }"></i></div> -->
 
   </div>
 </template>
@@ -78,8 +78,9 @@ export default {
   right:0px;
   z-index: 1;
   background-color: #FFF;
-  box-shadow: 0px 1px 4px rgba(0,0,0,0.5);
+  /* box-shadow: 0px 1px 4px rgba(0,0,0,0.5); */
   padding: 0;
+  border-bottom: solid 2px rgb(226,226,226);
 }
 .scroll {
   overflow-x: scroll;

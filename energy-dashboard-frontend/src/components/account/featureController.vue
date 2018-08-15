@@ -6,8 +6,8 @@
 
     <div class="container-fluid controlSection" ref="controlArea">
       <div class="row indexChooser" ref="indexChooser">
-        <btn class="indexButton" v-for="(point, index) in points" @click="currentIndex = index" :key='index'>{{ index + 1 }}</btn>
-        <btn class="indexButton" @click="addGroup()">+</btn>
+        <b-button class="indexButton" v-for="(point, index) in points" @click="currentIndex = index" :key='index'>{{ index + 1 }}</b-button>
+        <b-button class="indexButton" @click="addGroup()">+</b-button>
       </div>
 
       <div class="row nameChooser form-group">
@@ -65,66 +65,14 @@
       </div>
       <div class="row fromDateChooser form-group">
         <label>From Date: </label>
-        <form class="form-inline">
-          <dropdown class="form-group" append-to-body>
-            <div class="input-group">
-              <input class="form-control" type="text" v-model="start" >
-              <div class="input-group-btn">
-                <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
-              </div>
-            </div>
-            <template slot="dropdown">
-              <li>
-                <date-picker v-model="start"/>
-              </li>
-            </template>
-          </dropdown>
-          <dropdown class="form-group" append-to-body>
-            <div class="input-group">
-              <input class="form-control" type="text" v-model="start" readonly="readonly">
-              <div class="input-group-btn">
-                <btn class="dropdown-toggle"><i class="glyphicon glyphicon-time"></i></btn>
-              </div>
-            </div>
-            <template slot="dropdown">
-              <li style="padding: 10px">
-                <time-picker v-model="start"/>
-              </li>
-            </template>
-          </dropdown>
-        </form>
+        <el-date-picker v-model='start' type='datetime'>
+        </el-date-picker>
       </div>
 
       <div class="row toDateChooser form-group">
         <label>To Date: </label>
-        <form class="form-inline">
-          <dropdown class="form-group" append-to-body>
-            <div class="input-group">
-              <input class="form-control" type="text" v-model="end">
-              <div class="input-group-btn">
-                <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
-              </div>
-            </div>
-            <template slot="dropdown">
-              <li>
-                <date-picker v-model="end" format="yyyy-MM-dd"/>
-              </li>
-            </template>
-          </dropdown>
-          <dropdown class="form-group" append-to-body>
-            <div class="input-group">
-              <input class="form-control" type="text" v-model="end" readonly="readonly">
-              <div class="input-group-btn">
-                <btn class="dropdown-toggle"><i class="glyphicon glyphicon-time"></i></btn>
-              </div>
-            </div>
-            <template slot="dropdown">
-              <li style="padding: 10px">
-                <time-picker v-model="end"/>
-              </li>
-            </template>
-          </dropdown>
-        </form>
+        <el-date-picker v-model='end' type='datetime'>
+        </el-date-picker>
       </div>
       <div class="row graphTypeChooser form-group">
         <label>Graph Type: </label>
@@ -171,7 +119,8 @@ export default {
       keyPressTimeOut: null,
       mounted: false,
       oldStart: null,
-      oldEnd: null
+      oldEnd: null,
+      test: ''
 
     }
   },
@@ -379,21 +328,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-.btn-primary {
-  background-color: rgb(215,63,9) !important;
-}
-.btn-info {
-  background-color: rgb(215,63,9) !important;
-  border: none;
-}
- .btn-block.btn-info {
-  background-color: rgb(26,26,26) !important;
-}
-.glyphicon {
-  color: rgb(215,63,9) !important;
-}
-</style>
+
 <style scoped>
 
 .expandingSection {
@@ -402,6 +337,10 @@ export default {
   left:0px;
   width: 40px;
   display: inline-block;
+  cursor: pointer;
+}
+.expandingSection:hover .fas {
+  color: rgb(215,63,9);
 }
 .fas {
   color: #fff;

@@ -15,15 +15,14 @@
           </div>
         </div>
         <div class='fil col-4'>
-          <div class='dropdown d-inline-block'>
-            <button class="btn dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Filter </button>
-            <div class='dropdown-menu' aria-labelledby="dropdownMenuButton">
+          <b-dropdown class='d-inline-block' toggle-class='mapFilterBtn' menu-class='dropdownArea' text='Filter' ref='mapFilter'>
+            <b-dropdown-item disabled>
               <div class='container'>
                 <div class='row text-center'>
                   <div class='col label font-weight-bold'>Building Type</div>
                 </div>
                 <div class='row'>
-                  <div class='col'>
+                  <div class='col-6'>
                     <div class='row'>
                       <div class='col'>
                         <input type="checkbox" value='Residence' v-model="selected" checked> Residence
@@ -40,7 +39,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class='col'>
+                  <div class='col-6'>
                     <div class='row'>
                       <div class='col'>
                         <input type="checkbox" value='Research' v-model="selected" checked> Research
@@ -59,8 +58,8 @@
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </b-dropdown-item>
+          </b-dropdown>
         </div>
       </div>
     </div>
@@ -181,7 +180,6 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject
-      // this.map.$el.style.zIndex = 0;
     })
   },
   beforeDestroy () {
@@ -209,6 +207,28 @@ export default {
 
 <style >
 @import "../../../node_modules/leaflet/dist/leaflet.css";
+.dropdownArea {
+  width: 350px;
+}
+.dropdownArea > a:active {
+  background-color: rgba(0,0,0,0);
+}
+.dropdownArea > a:active > * {
+  color: rgb(26,26,26) !important;
+}
+.dropdownArea > a > * {
+  color: rgb(26,26,26);
+}
+.mapFilterBtn {
+  background-color: #FFF !important;
+  color: #000 !important;
+  border: solid 1px #000;
+}
+.mapFilterBtn:active {
+  background-color: rgba(0,0,0,0.1) !important;
+  color: #000 !important;
+  border: solid 1px #000;
+}
 </style>
 <style scoped>
 .main {
@@ -293,14 +313,6 @@ export default {
 .label {
   color: #000;
   font-size: 1em;
-}
-.dropdown-menu > .container {
-  width: 300px;
-}
-.btn {
-  background-color: #FFF !important;
-  color: #000 !important;
-  border: solid 1px #000;
 }
 .keyEl {
   display: inline-block;
