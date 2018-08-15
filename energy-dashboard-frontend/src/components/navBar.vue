@@ -41,8 +41,9 @@ export default {
   },
   methods: {
     isActive: function (s) {
-      if (s === 'account' && this.$route.path.search('public') > 0) { return true }
-      if ('/' + s === this.$route.path) { return true }
+      let splitPath = this.$route.path.substr(1).split('/')
+      if (s === 'account' && splitPath[0] === 'public') { return true }
+      if (s === splitPath[0]) { return true }
       return false
     },
     showDirectory: function () {

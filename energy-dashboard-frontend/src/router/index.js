@@ -33,7 +33,11 @@ export default new Router({
     },
     {
       path: '/directory',
-      name: 'direcoty',
+      name: 'directory',
+      component: directory
+    },
+    {
+      path: '/directory/:group',
       component: directory
     }
   ]

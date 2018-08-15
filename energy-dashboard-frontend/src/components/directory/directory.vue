@@ -1,16 +1,16 @@
 <template>
-  <div class='container'>
-    <navdir :path='path'/>
-    <div class='mainArea container-fluid accordion' id="mainaccordion">
-      <div v-if='path.length === 1' class="card section" v-for='(item, index) in subGroupsForPath()' :key='index'>
+  <div class='container-fluid'>
+    <navdir :path='path' :groups='subGroupsForPath()' class="bar"/>
+    <div class='mainArea container-fluid'>
+      <div class="container section" v-for='(item, index) in subGroupsForPath()' :key='index'>
         <div class="row">
-          <div class='col h3' data-toggle="collapse" :href='"#collapse-"+item.name.replace(/ /g,"_").replace(/&/g,"a")' aria-expanded="false">{{ item.name }}</div>
+          <div :class="[item.open ? 'open' : '']" class='col h3' :aria-controls='"collapse-"+item.name.replace(/ /g,"_").replace(/&/g,"a")' :aria-expanded='item.open' @click='pushItem(item,index)' >{{ item.name }}</div>
         </div>
-          <div class="row collapse justify-content-start padded" :id='"collapse-" + item.name.replace(/ /g,"_").replace(/&/g,"a")' data-parent="#mainaccordion">
+          <b-collapse class="row justify-content-start padded" v-model='item.open' :id='"collapse-" + item.name.replace(/ /g,"_").replace(/&/g,"a")'>
             <div class='col-lg-3' v-for='(building, index_b) in item.subgroups' :key='index_b' @click='$router.push({path: `/public/${building.id}/1`})'>
               <storycard :name='building.name' :notools='true' :media='building.media' :description='building.description' class="storyCard" />
             </div>
-          </div>
+          </b-collapse>
       </div>
     </div>
   </div>
@@ -20,6 +20,7 @@
 import axios from 'axios'
 import navdir from '@/components/account/navdir.vue'
 import storycard from '@/components/account/storyCard.vue'
+
 export default {
   name: '',
   components: {
@@ -29,7 +30,8 @@ export default {
   data () {
     return {
       groups: [],
-      path: ['Public']
+      path: ['Public'],
+      currentGroups: []
     }
   },
   created () {
@@ -38,7 +40,7 @@ export default {
     axios.get(process.env.ROOT_API + 'api/getPublicGroups').then(res => {
       for (var group of res.data) {
         axios.get(process.env.ROOT_API + 'api/getGroupData?id=' + group.id).then(gd => {
-          this.groups[0].subgroups.push({ name: gd.data[0][0].name, media: gd.data[0][0].media, description: gd.data[0][0].description, id: gd.data[0][0].id, subgroups: gd.data[1] })
+          this.groups[0].subgroups.push({ name: gd.data[0][0].name, id: gd.data[0][0].id, subgroups: gd.data[1], open: this.path.includes(gd.data[0][0].name) })
         }).catch(e => {
           throw e
         })
@@ -46,21 +48,30 @@ export default {
     }).catch(e => {
       console.log(e)
     })
+    console.log(this.$route.params)
+    if (this.$route.params.group) {
+      this.path.push(this.$route.params.group)
+    }
   },
   methods: {
     subGroupsForPath: function () {
-      for (let g of this.groups) {
-        if (this.path.length > 1) {
-          for (let b of g.subgroups) {
-            if (b.name === this.path[this.path.length - 1]) {
-              return b.subgroups
-            }
-          }
-        } else {
-          if (g.name === this.path[this.path.length - 1]) {
-            return g.subgroups
-          }
+      if (this.path[0] === 'Public') {
+        return this.groups[0].subgroups
+      }
+      return this.groups[1].subgroups
+    },
+    pushItem: function (item) {
+      for (let section of this.subGroupsForPath()) {
+        if (section !== item) {
+          section.open = false
         }
+      }
+      item.open = !item.open
+      if (this.path.length > 1) {
+        this.path.pop()
+      }
+      if (item.open) {
+        this.path.push(item.name)
       }
     }
   }
@@ -70,10 +81,10 @@ export default {
 <style scoped>
 .mainArea {
   position: absolute;
-  top: 120px;
   left: 0px;
   width: 100%;
   border-radius: 10px;
+  margin-top: 8em;
 }
 .h3 {
   border-bottom: solid 1px rgba(126,126,126,0.2);
@@ -84,6 +95,16 @@ export default {
   padding: 0.5em;
   color: #FFF;
   box-shadow: 0px 2px 4px -2px rgba(0,0,0,0.5);
+  cursor: pointer;
+}
+.open {
+  background-color: rgb(215,63,9) !important;
+}
+.h3:hover {
+  background-color: rgb(215,63,9);
+}
+.h3:active {
+  background-color: #d76740;
 }
 .padded {
   padding: 2em;

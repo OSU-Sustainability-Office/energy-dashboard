@@ -63,8 +63,9 @@ export default {
       }
     },
     moveRoute: function (dirI, dropI) {
-      if (dirI === 2) {
-        console.log(this.groupContents[dropI].id)
+      if (dirI === 1) {
+        this.$router.push({ path: `/directory/${this.groups[dropI].name}` })
+      } else if (dirI === 2) {
         this.$parent.changeStory([this.groupContents[dropI].id, 0])
       }
     },
