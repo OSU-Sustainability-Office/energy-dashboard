@@ -2,7 +2,7 @@
   <div class="container-fluid caro">
     <div class="scroll">
       <div class="flex" v-bind:class="{ maximized : isMaximized }">
-        <storyCard  v-for="(card,index) in cards" @edit="edit(card.id)" @caro-click="clickedStory(index)" v-bind:index="card.index" v-bind:name="card.name" v-bind:description="card.description" v-bind:media="card.media" v-bind:story_id="card.id" v-bind:selected="card.featured" ref="cardsvue"/>
+        <storyCard  v-for="(card,index) in cards" :key='index' @edit="edit(card.id)" @caro-click="clickedStory(index)" v-bind:index="card.index" v-bind:name="card.name" v-bind:description="card.description" v-bind:media="card.media" v-bind:story_id="card.id" v-bind:selected="card.featured" ref="cardsvue"/>
         <div class="addStory" @click="addStory()" >
           <span>+</span>
         </div>
@@ -15,7 +15,7 @@
 
 <script>
 import storyCard from '@/components/account/storyCard'
-import axios from 'axios';
+import axios from 'axios'
 export default {
   name: 'carousel',
   props: ['cards'],
@@ -23,52 +23,48 @@ export default {
     storyCard
   },
   data () {
-
-
     return {
-      isMaximized: false,
+      isMaximized: false
     }
   },
   created () {
     this.$eventHub.$on('storyCardChange', data => {
       for (var card of this.cards) {
         if (card.id === data[0]) {
-          console.log(card);
-          card.name = data[1];
-          card.description = data[2];
-          card.media = data[3];
+          card.name = data[1]
+          card.description = data[2]
+          card.media = data[3]
         }
       }
-    });
+    })
   },
   methods: {
-    addStory: function() {
+    addStory: function () {
       var card = {
-        name: "New Story",
-        description: "story description",
-        media: "",
+        name: 'New Story',
+        description: 'story description',
+        media: '',
         featured: false
       }
       var data = {
-        name : card.name,
-        descr : card.description
+        name: card.name,
+        descr: card.description
       }
-      axios(process.env.ROOT_API+'api/updateStory',{method: "post",data:data, withCredentials:true}).then(rid => {
-        card.id = rid.data;
-        this.cards.push(card);
-        this.clickedStory(this.cards.length-1);
+      axios(process.env.ROOT_API + 'api/updateStory', { method: 'post', data: data, withCredentials: true }).then(rid => {
+        card.id = rid.data
+        this.cards.push(card)
+        this.clickedStory(this.cards.length - 1)
       }).catch(err => {
-        console.log(err);
-      });
-
+        console.log(err)
+      })
     },
-    edit: function(id) {
-      this.$emit('edit',[id]);
+    edit: function (id) {
+      this.$emit('edit', [id])
     },
-    clickedStory: function(index) {
-      this.cards.forEach(c =>{c.featured = false});
-      this.cards[index].featured = true;
-      this.$emit('caro-click',[this.cards[index].id]);
+    clickedStory: function (index) {
+      this.cards.forEach(c => { c.featured = false })
+      this.cards[index].featured = true
+      this.$emit('caro-click', [this.cards[index].id, 1])
     }
   }
 }

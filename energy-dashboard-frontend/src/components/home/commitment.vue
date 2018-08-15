@@ -27,20 +27,20 @@ export default {
     }
   },
   mounted () {
-    var timeout = 150;
+    var timeout = 150
     var i = 0
     while (i < this.commitments.length - 1) {
-      setTimeout (() => {
+      setTimeout(() => {
         this.i++
-        this.keyValue = !this.keyValue;
+        this.keyValue = !this.keyValue
       }, timeout)
       timeout += (100 + 50 * i)
       i++
     }
   },
   filters: {
-    capatilize: function(value) {
-      return value.toUpperCase();
+    capatilize: function (value) {
+      return value.toUpperCase()
     }
   }
 }

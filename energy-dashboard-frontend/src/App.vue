@@ -1,9 +1,9 @@
 <template>
   <div class="app">
     <navigbar />
-    <transition v-bind:name="transitionName">
-      <router-view />
-    </transition>
+      <transition v-bind:name="transitionName">
+        <router-view />
+      </transition>
   </div>
 </template>
 
@@ -17,22 +17,18 @@ export default {
   },
   data () {
     return {
-      transitionName : "pageTo"
+      transitionName: 'pageTo'
     }
-  },
-  created() {
   },
   beforeDestroy () {
   },
   watch: {
-    $route: function(to, from) {
-      //transition in
+    $route: function (to, from) {
+      // transition in
       if (to.path.length > from.path.length) {
-        this.transitionName = "pageTo";
-      }
-      //transition out
-      else {
-        this.transitionName = "pageFrom";
+        this.transitionName = 'pageTo'
+      } else { // transition out
+        this.transitionName = 'pageFrom'
       }
     }
   }
@@ -96,4 +92,14 @@ body {
 /* .pageTransition-leave-actiev {
 
 } */
+.dropdown-item:active {
+  background-color: #D73F09;
+}
+.dropdown-item:active > * {
+  color: #FFF;
+}
+</style>
+
+<style scoped>
+
 </style>

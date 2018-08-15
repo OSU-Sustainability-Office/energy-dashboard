@@ -15,7 +15,7 @@
 
 <script>
 
-import axios from 'axios';
+import axios from 'axios'
 import card from '@/components/story/card'
 
 export default {
@@ -24,67 +24,67 @@ export default {
   components: {
     card
   },
-  data() {
+  data () {
     return {
-      name : null,
-      description : null,
-      blocks : [],
-      media : null,
-      currentBlock : 0
+      name: null,
+      description: null,
+      blocks: [],
+      media: null,
+      currentBlock: 0
     }
   },
-  mounted() {
-    if (this.$refs.mediaBox)
-    this.$refs.mediaBox.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0) 30%),url('"+this.media+"')";
+  mounted () {
+    if (this.$refs.mediaBox) {
+      this.$refs.mediaBox.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0) 30%),url('" + this.media + "')"
+    }
   },
   watch: {
-    media: function(value) {
-      if (this.$refs.mediaBox)
-      this.$refs.mediaBox.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0) 30%),url('"+this.media+"')";
+    media: function (value) {
+      if (this.$refs.mediaBox) {
+        this.$refs.mediaBox.style.backgroundImage = "linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0) 30%),url('" + this.media + "')"
+      }
     }
   },
-  methods : {
-    isNextBlock : function() {
-      if (this.currentBlock >= this.blocks.length-1)
-        return false;
-      else
-        return true;
+  methods: {
+    isNextBlock: function () {
+      if (this.currentBlock >= this.blocks.length - 1) {
+        return false
+      } else {
+        return true
+      }
     },
-    isPreviousBlock : function() {
-      if (this.currentBlock > 0)
-        return true;
-      else
-        return false;
+    isPreviousBlock: function () {
+      if (this.currentBlock > 0) {
+        return true
+      } else {
+        return false
+      }
     },
-    nextBlock : function() {
-      console.log("yo");
-      this.currentBlock++;
+    nextBlock: function () {
+      this.currentBlock++
     },
-    prevBlock : function() {
-      this.currentBlock--;
+    prevBlock: function () {
+      this.currentBlock--
     }
   },
-  created() {
-    axios.get('http://localhost:3000/api/getStoryData?id='+this.id).then(res => {
-      this.name = res.data[0].name;
-      this.description = res.data[0].description;
-      this.media = res.data[0].media;
-    });
-    axios.get('http://localhost:3000/api/getBlockDataForStory?id='+this.id).then(res => {
-      this.blocks = res.data;
+  created () {
+    axios.get('http://localhost:3000/api/getStoryData?id=' + this.id).then(res => {
+      this.name = res.data[0].name
+      this.description = res.data[0].description
+      this.media = res.data[0].media
+    })
+    axios.get('http://localhost:3000/api/getBlockDataForStory?id=' + this.id).then(res => {
+      this.blocks = res.data
     }).catch(err => {
-    });
+      console.log(err)
+    })
   },
-  filters : {
-    capatilize: function(value) {
-      if (value)
-      return value.toUpperCase();
-      return;
+  filters: {
+    capatilize: function (value) {
+      if (value) { return value.toUpperCase() }
     }
   }
 }
-
-
 
 </script>
 

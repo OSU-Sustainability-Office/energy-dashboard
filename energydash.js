@@ -1,181 +1,138 @@
-var express = require('express')
+const express = require('express')
 
-var app = express();
-var db = require('./db');
-var cors = require('cors');
-var cookieparser = require('cookie-parser');
-var session = require('express-session');
-var CASAuthentication = require('r-cas-authentication');
-var dotenv = require('dotenv').config();
-var server = null;
+const app = express()
+const db = require('./db')
+const cors = require('cors')
+const cookieparser = require('cookie-parser')
+const session = require('express-session')
+const CASAuthentication = require('r-cas-authentication')
+let server = null
 
-var FileStore = require('session-file-store')(session);
-var path = require('path');
-var serveStatic = require('serve-static');
-var request = require('request');
+const FileStore = require('session-file-store')(session)
+const path = require('path')
 
+require('dotenv').config()
+require('serve-static')
 
+exports.start = function (cb) {
+  const cas = new CASAuthentication({
+    cas_url: 'https://login.oregonstate.edu/cas-dev/',
+    service_url: process.env.CAS_SERVICE,
+    is_dev_mode: (process.env.CAS_DEV === 'true'),
+    dev_mode_user: process.env.CAS_DEV_USER,
+    dev_mode_info: {},
+    cas_version: '2.0',
+    session_name: 'cas_user',
+    session_info: 'cas_userinfo'
+  })
+  app.use('/block-media', express.static('block-media'))
+  app.use(cookieparser())
+  app.use(session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: new FileStore()
+  }))
 
-exports.start = function(cb) {
-	var cas = new CASAuthentication({
-	    cas_url     : 'https://login.oregonstate.edu/cas-dev/',
-	    service_url : process.env.CAS_SERVICE,
-			is_dev_mode     : (process.env.CAS_DEV === "true"),
-	    dev_mode_user   : process.env.CAS_DEV_USER,
-			dev_mode_info: {},
-			cas_version : '2.0',
-			session_name : 'cas_user',
-			session_info : 'cas_userinfo'
-	});
-	app.use('/block-media',express.static('block-media'));
-	app.use(cookieparser());
-	app.use( session({
-	    secret            : process.env.SECRET,
-	    resave            : false,
-	    saveUninitialized : true,
-	    store : new FileStore()
-	}));
+  app.use(require('sanitize').middleware)
 
-	app.use(require('sanitize').middleware);
-	if (process.env.CAS_DEV === "true") {
-		var corsOptions = {
-			origin: 'http://localhost:8080',
-			credentials: true
-		};
-		app.use(cors(corsOptions));
-	}
-	// else {
-	// 	var corsOptions = {
-	// 		origin: 'http://54.186.223.223:3478',
-	// 		credentials: true
-	// 	};
-	// 	app.use(cors(corsOptions))
-	// }
-	app.use(express.json());
-  app.use('/api',cas.block,require('./controllers/api.js')(cas));
-	app.get('/login', cas.bounce, function(req, res) {
-		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
-			console.log(val);
-			if (val.length > 0) {
-				req.session.user = JSON.parse(JSON.stringify(val))[0];
-				if (process.env.CAS_DEV === "true")
+  if (process.env.CAS_DEV === 'true') {
+    const corsOptions = {
+      origin: 'http://localhost:8080',
+      credentials: true
+    }
+    app.use(cors(corsOptions))
+  }
 
-					res.status(301).redirect('http://localhost:8080/#/account');
-				else {
-					res.status(301).redirect('http://52.39.141.177:3478/#/account');
+  app.use(express.json())
+  app.use('/api', require('./controllers/api.js')(cas))
 
-				}
-			}
-			else {
-				db.query("INSERT INTO users (name, privilege) VALUES (?,?)",[[req.session[cas.session_name]],1]).then(r => {
-					req.session.user = {};
-					req.session.user.id = r.insertId;
-					req.session.user.privilege = 1;
-					req.session.user.name = [req.session[cas.session_name]];
-					console.log(req.session.user);
-					if (process.env.CAS_DEV === "true")
+  app.get('/login', cas.bounce, function (req, res) {
+    db.query('SELECT * FROM users WHERE name = ?', [req.session[cas.session_name]]).then(val => {
+      console.log(val)
+      if (val.length > 0) {
+        req.session.user = JSON.parse(JSON.stringify(val))[0]
+        if (process.env.CAS_DEV === 'true') {
+          res.status(301).redirect('http://localhost:8080/#/account')
+        } else {
+          res.status(301).redirect('http://52.39.141.177:3478/#/account')
+        }
+      } else {
+        db.query('INSERT INTO users (name, privilege) VALUES (?,?)', [[req.session[cas.session_name]], 1]).then(r => {
+          req.session.user = {}
+          req.session.user.id = r.insertId
+          req.session.user.privilege = 1
+          req.session.user.name = [req.session[cas.session_name]]
+          if (process.env.CAS_DEV === 'true') {
+            res.status(301).redirect('http://localhost:8080/#/account')
+          } else {
+            res.status(301).redirect('http://52.39.141.177:3478/#/account')
+          }
+        }).catch(e => {
+          throw e
+        })
+      }
+    }).catch(e => {
+      res.status(403).send('403: ' + e.message)
+    })
+  })
 
-						res.status(301).redirect('http://localhost:8080/#/account');
-					else {
-						res.status(301).redirect('http://52.39.141.177:3478/#/account');
+  app.get('/undefined', function (req, res) {
+    db.query('SELECT * FROM users WHERE name = ?', [req.session[cas.session_name]]).then(val => {
+      if (val.length > 0) {
+        req.session.user = JSON.parse(JSON.stringify(val))[0]
+        if (process.env.CAS_DEV === 'true') {
+          res.status(301).redirect('http://localhost:8080/#/account')
+        } else {
+          res.status(301).redirect('http://52.39.141.177:3478#/account')
+        }
+      } else {
+        db.query('INSERT INTO users (name, privilege) VALUES (?,?)', [[req.session[cas.session_name]], 1]).then(r => {
+          req.session.user = {}
+          req.session.user.id = r.insertId
+          req.session.user.privilege = 1
+          req.session.user.name = [req.session[cas.session_name]]
+          if (process.env.CAS_DEV === 'true') {
+            res.status(301).redirect('http://localhost:8080/#/account')
+          } else {
+            res.status(301).redirect('http://52.39.141.177:3478/#/account')
+          }
+        }).catch(e => {
+          throw e
+        })
+      }
+    }).catch(e => {
+      res.status(403).send('ERROR 403: ' + e)
+    })
+  })
 
-					}
-				}).catch(e=>{
-					throw e;
-				});
-			}
-		}).catch(e => {
-			res.status(403).send("ERROR 403: " + e);
-		});
-	});
-	// app.get('/home', function(req, res) {
-	// 	res.sendFile(path.join(__dirname,'/public', 'index.html'));
-	// 	//res.send("Test");
-	// });
-	// app.get('/account', cas.bounce, function(req, res) {
-	// 	res.send(JSON.stringify(req.session[cas.session_name]));
-	// });
+  app.use(express.static(path.join(__dirname, '/public')))
 
-	app.get('/undefined', function(req, res) {
-		db.query("SELECT * FROM users WHERE name = ?",[req.session[cas.session_name]]).then(val => {
-			console.log(val);
-			if (val.length > 0) {
-				req.session.user = JSON.parse(JSON.stringify(val))[0];
-				if (process.env.CAS_DEV === "true")
-
-					res.status(301).redirect('http://localhost:8080/#/account');
-				else {
-					res.status(301).redirect('http://52.39.141.177:3478#/account');
-
-				}
-			}
-			else {
-				db.query("INSERT INTO users (name, privilege) VALUES (?,?)",[[req.session[cas.session_name]],1]).then(r => {
-					req.session.user = {};
-					req.session.user.id = r.insertId;
-					req.session.user.privilege = 1;
-					req.session.user.name = [req.session[cas.session_name]];
-					console.log(req.session.user);
-					if (process.env.CAS_DEV === "true")
-
-						res.status(301).redirect('http://localhost:8080/#/account');
-					else {
-						res.status(301).redirect('http://52.39.141.177:3478/#/account');
-
-					}
-				}).catch(e=>{
-					throw e;
-				});
-			}
-		}).catch(e => {
-			res.status(403).send("ERROR 403: " + e);
-		});
-	});
-
-	app.use(express.static(__dirname + "/public"))
-
-
-	// app.get('/', function (req,res) {
-	// 	if (req.query.ticket) {
-	// 		request("https://login.oregonstate.edu/cas-dev/serviceValidate?ticket="+req.query.ticket+"&service=http://54.186.223.223:3478/",function(e,r,b) {
-	// 			res.send(b);
-	// 		});
-	// 	}
-	// 	else {
-	// 		//request("https://login.oregonstate.edu/cas-dev/login?service=http://54.186.223.223:3478/", function(e,r,b) {
-	// 			res.status(301).redirect("https://login.oregonstate.edu/cas-dev/login?service=http://54.186.223.223:3478/");
-	// 	//	});
-	// 	}
-	// });
-
-	app.get('/logout',cas.logout);
-	db.connect(function(err) {
-	  if (err) {
-	    throw err;
-	  }
-
-	  // Only launch the node server it connects successfully.
-	  var port = process.env.PORT;
-	  server = app.listen(port);
-	  console.log('Listening on ' + port + '.');
-	  if (cb)
-	  	cb();
-	});
+  app.get('/logout', cas.logout)
+  db.connect(function (err) {
+    if (err) {
+      throw err
+    }
+    // Only launch the node server it connects successfully.
+    const port = process.env.PORT
+    server = app.listen(port)
+    console.log('Listening on ' + port + '.')
+    if (cb) { cb() }
+  })
 }
-exports.close = function(cb) {
+
+exports.close = function (cb) {
   if (server) {
-  	if (cb)
-  		server.close(cb);
-  	else
-  		server.close();
-  	db.close();
+    if (cb) {
+      server.close(cb)
+    } else {
+      server.close()
+    }
+    db.close()
   }
 }
 
 // when app.js is launched directly
 if (module.id === require.main.id) {
-	function pass() {
-
-	}
-  exports.start();
+  exports.start()
 }

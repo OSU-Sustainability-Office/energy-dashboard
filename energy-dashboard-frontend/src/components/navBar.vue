@@ -1,82 +1,110 @@
 <template>
-  <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-expand-sm">
     <a class="navbar-brand" href="/">
-      <img src="/static/images/logo.png" class="d-inline-block align-top" alt="">
+      <img src="/static/images/logo.png" height=50 width=auto alt="">
     </a>
-    <ul class="navbar-nav" v-if='loggedIn'>
-      <li><a role="button" v-bind:class='[isActive("account") ? "active" : ""]' href="#/account">Dashboard</a></li>
-      <dropdown tag="li" append-to-body>
-        <a class="dropdown-toggle" role="button">Account</a>
-        <template slot="dropdown">
-            <li><a role="button" :href='this.logOutLink'>Sign Out</a></li>
-        </template>
-      </dropdown>
-    </ul>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class='pos-left collapse navbar-collapse' id="navbarSupportedContent">
+      <ul class="navbar-nav">
+        <li class='nav-item' v-bind:class='[isActive("map") ? "active" : ""]'><a class="nav-link" href="#/map">Map</a></li>
+        <li class='nav-item' v-bind:class='[isActive("account") ? "active" : ""]'><a class="nav-link" href="#/account">Dashboard</a></li>
+        <li class='nav-item' v-bind:class='[isActive("directory") ? "active" : ""]'><a class="nav-link" href="#/directory">Directory</a></li>
+      </ul>
+    </div>
+    <div class='pos-right navbar-collapse collapse w-100 order-3 dual-collapse2'>
+      <ul class="navbar-nav">
+        <li class='nav-item'><a class='nav-link' :href='this.logOutLink'>Sign Out</a></li>
+      </ul>
+    </div>
+    <b-modal size="lg" ref="dir" body-class="dirModal" hide-header hide-footer>
+      <directory />
+    </b-modal>
   </nav>
 </template>
 <script>
+import directory from '@/components/directory/directory.vue'
 export default {
   name: 'navigbar',
-  data() {
+  components: {directory},
+  data () {
     return {
-      loggedIn : false,
-      logOutLink: process.env.ROOT_API+"logout"
+      loggedIn: false,
+      logOutLink: process.env.ROOT_API + 'logout'
     }
   },
   created () {
     this.$eventHub.$on('loggedIn', val => {
-      this.loggedIn = true;
-    });
+      this.loggedIn = true
+    })
   },
   methods: {
-    isActive: function(s) {
-      if ("/" + s === this.$route.path)
-        return true;
-      return false;
+    isActive: function (s) {
+      let splitPath = this.$route.path.substr(1).split('/')
+      if (s === 'account' && splitPath[0] === 'public') { return true }
+      if (s === splitPath[0]) { return true }
+      return false
+    },
+    showDirectory: function () {
+      this.$refs.dir.show()
     }
   }
 }
 </script>
+<style>
+.modal-content {
+  background-color: rgba(0,0,0,0);
+  border: none;
+}
+.dirModal {
+  padding-top: 150px;
+}
+</style>
 
 <style scoped>
-.navbar {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  width: 100%;
-  padding: 0.2em;
-  background-color: #D73F09;
-  border: none;
-  border-radius: 0;
-  z-index: 3;
+@media (min-width: 576px) {
+  .pos-left {
+    position: absolute;
+    top: 0;
+    left: 15em;
+    height: 4em;
+  }
+  .pos-right {
+    position: absolute;
+    top: 0;
+    right: 0em;
+    height: 4em;
+    width: 8em !important;
+  }
+  .navbar-nav {
+    height: 100%;
+  }
+  .navbar-nav li {
+    height: calc(100% - 2px);
+    padding: 1em;
+  }
+  .navbar-nav a {
+    color: #FFF;
+  }
+  .navbar-nav li:not(.active):hover > a {
+    color: #000;
+  }
+  .active {
+    background-color: rgba(0,0,0,0.3);
+  }
+  .navbar {
+    background-color: #D73F09;
+    height: 4em;
+    border-bottom: solid 1px rgb(226,226,226);
+  }
+  .navbar-toggler {
+    padding: 0.6em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    color: #FFF;
+    border: solid 0.1em #FFF;
+    font-size: 1.6em;
+  }
 }
-.navbar a {
-  text-decoration: none;
-  color: white;
-}
-.dropdown > * > a {
-  color: black;
-}
-.navbar-nav {
-  position: absolute;
-  right: 0.2em;
-}
-.navbar-nav > * {
-  font-size: 1.4em;
-  color: #fff;
-}
-.active {
-  background-color: rgba(0,0,0,0.2);
-}
-a {
-  padding: 1em;
-}
-img {
-  position: absolute;
-  top: 0.3em;
-  left: 0.3em;
-  height: 2.5em;
-  width: auto;
-}
-
 </style>
