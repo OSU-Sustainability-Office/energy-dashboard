@@ -144,7 +144,6 @@ export default {
 
               if (this.indexesInUse.length === 0) { // Update all at once instead of one after another
                 this.chartDataComplete = JSON.parse(JSON.stringify(this.chartData))
-                console.log(this.chartData)
               }
 
               resolve()

@@ -63,7 +63,9 @@ export default {
       }
     },
     moveRoute: function (dirI, dropI) {
-      if (dirI === 1) {
+      if (dirI === 0) {
+        this.$router.push({ path: `/directory` })
+      } if (dirI === 1) {
         this.$router.push({ path: `/directory/${this.groups[dropI].name}` })
       } else if (dirI === 2) {
         this.$parent.changeStory([this.groupContents[dropI].id, 0])
@@ -74,7 +76,6 @@ export default {
         this.groupName = res.data[0].group_name
         this.$parent.path[1] = this.groupName
         this.$parent.path[2] = this.$parent.storyName
-        console.log(this.$parent.path)
 
         this.$parent.groupContents = []
         for (var story of res.data) {

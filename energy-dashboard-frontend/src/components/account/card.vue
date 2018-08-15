@@ -3,14 +3,14 @@
 
     <chartController v-bind:start='start' v-bind:end='end' v-bind:interval='int' v-bind:unit='unit' v-bind:graphType='type' v-bind:points='points' v-bind:groups='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }"/>
     <featureController :start='new Date(start)' :end='new Date(end)' v-bind:interval='int' v-bind:graphType='type' v-bind:unit='unit' v-bind:points='points' v-bind:groupids='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="featureController" />
-    <div class='titleTextFeatured' v-if="featured" v-on:click='clickText' ref='title' v-tooltip="'Click to edit name'">
+    <div class='titleTextFeatured' v-if="featured" v-on:click='clickText' ref='title' v-b-tooltip.hover title='Click to edit name'>
       {{this.name}}
     </div>
     <div class="container descriptionContainer" v-if='featured' ref='descriptionContainer'>
       <div class="row">
-        <i class="col fas fa-save" v-tooltip="'Save Graph'" @click="save()"></i>
-        <i class="col fas fa-download" v-tooltip="'Download Graph Data'" @click="download()"></i>
-        <i class="col fas fa-times" @click="del()" v-tooltip="'Delete Graph'"></i>
+        <i class="col fas fa-save" v-b-tooltip.hover title='Save Graph' @click="save()"></i>
+        <i class="col fas fa-download" v-b-tooltip.hover title='Download Graph Data' @click="download()"></i>
+        <i class="col fas fa-times" @click="del()" v-b-tooltip.hover title='Delete Graph'></i>
       </div>
     </div>
   </div>

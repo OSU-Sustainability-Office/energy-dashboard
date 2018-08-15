@@ -137,16 +137,16 @@ export default {
     position: absolute;
     left: 100%;
     top: 15%;
-    width: 350px;
+    width: 450px;
     padding-bottom: 2em;
     background-color: rgb(26,26,26);
     z-index: 401;
-    margin-left: -360px;
+    margin-left: -470px;
     box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
     display: none;
   }
   .media {
-    height: 200px;
+    height: 300px;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -238,7 +238,7 @@ export default {
     width: 1em;
     height: 1em;
     text-align: center;
-    margin-top: calc(50% - 0.5em);
+    margin-top: calc(50% - 2em);
     top: 0px;
     border-radius: 1em;
     opacity: 1;
