@@ -1,0 +1,90 @@
+Design plan for new API:
+Eliminate needless successive calls to the API.
+
+All existing api should be left intact. However, they should use the appropriate method and the naming convention should be limited to the element
+  eg. post: deleteBlock -> delete: block & get: getBlockData -> get: block
+
+Two new main APIs:
+1) Get all block data
+  With given block id retrieves all meters, meter data points, meter relations, and data with that block.
+2) Get all story data
+  Similar to the API above with it now consisting of stories as well
+
+*note: data represented from these api calls should not be added/subtracted based on relation. This should be left to the client to reduce large blocking operations on the server.
+
+Vuex will act as a store for all data. The store will be responsible for making requests. So now instead of making a call to the api directly you will just specify to get the data from the store. The store will then process your request for the data taking action as necessary (making new requests, computing data). Data translations, eg. moving the chart data into a usable form for chart.js will still be handled by the chart controller. The store will act as a caching mechanism to limit requests. Only full data for the displayed charts will be kept. All story data (public and user will be available).
+
+Note this design means that all data requests would be promises
+
+Example Store Layout:
+
+{
+  currentStory: {
+    name,
+    description,
+    id,
+    media,
+    public
+    blocks: [
+      {
+        id,
+        name,
+        start,
+        end,
+        interval,
+        unit,
+        type,
+        charts:[
+          {
+            point,
+            name,
+            meters: [
+              {
+                name,
+                type,
+                relation
+              }
+            ],
+            data: [
+              {
+                time,
+                value
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  stories: [
+    {
+      name,
+      description,
+      id,
+      media,
+      public
+    }
+  ],
+  user: {
+    name,
+    privilege
+  }
+}
+
+Getters:
+- user
+  no params returns name and privilege
+- story
+  params: id
+  sets the current story (if needed), fills in all columns as above and returns the current story object
+- stories
+  no params returns the stories object
+
+Mutations: Only necessary on the current story as the get will populate the other fields when needed
+- startdate
+- enddate
+- interval
+- unit
+- type
+
+Additonal mutations need to be made for charts, should allow for removing chart at index and adding a chart to the end. Should allow to change to a specified meter group id, select a sub meter and change the name

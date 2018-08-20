@@ -1,0 +1,37 @@
+**Account
+getStoriesForUser -> getBlocksForStory
+deleteStory
+changeFeaturedStory
+getBlocksForStory
+
+**card
+updateBlock
+getMetersForGroup -> getMeterData
+getBlockMeterGroups
+
+**carousel
+updateStory
+
+**featureController
+getMetersForGroup
+getMeterType
+getAllBuildings
+
+**featured
+deleteBlock
+
+**heropicture
+getStoryData
+
+**mediapicker
+listAvailableMedia
+
+**navdir
+getStoryGroup
+
+**storyedit
+updateStory
+
+**chartController
+getData
+getMetersForGroup -> getMeterData
