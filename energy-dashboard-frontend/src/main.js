@@ -8,6 +8,8 @@ import { DatePicker } from 'element-ui'
 import Vuei18n from 'vue-i18n'
 import locale from 'element-ui/lib/locale/lang/en'
 import BootstrapVue from 'bootstrap-vue'
+import AsyncComputed from 'vue-async-computed'
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import '@/assets/element-#D73F09/index.css'
@@ -15,6 +17,7 @@ import '@/assets/element-#D73F09/index.css'
 Vue.use(BootstrapVue)
 Vue.use(Vuei18n)
 Vue.use(DatePicker, { locale: locale })
+Vue.use(AsyncComputed)
 
 Vue.config.lang = 'en'
 

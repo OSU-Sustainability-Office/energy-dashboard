@@ -57,13 +57,16 @@ Example Store Layout:
     ]
   },
   stories: [
-    {
-      name,
-      description,
-      id,
-      media,
-      public
-    }
+    group,
+    stories:[
+      {
+        name,
+        description,
+        id,
+        media,
+        public
+      }
+    ]
   ],
   user: {
     name,

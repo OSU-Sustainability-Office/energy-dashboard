@@ -2,7 +2,7 @@
   <div class="background">
     <!-- <span class="main-heading">Stories</span> -->
     <heropicture v-bind:id='currentStory'></heropicture>
-    <navdir :key='pathFlag' :path="path" :groupContents='groupContents' :groups='groups' ref='navdir' class="naviv"></navdir>
+    <navdir :key='pathFlag' :path="path" ref='navdir' class="naviv"></navdir>
     <!-- <span class="main-heading">Featured Blocks</span> -->
     <featured v-bind:cards="cardsFeatured" :fromMap='fromMap' ref='featureBox' v-if='!editingStory && currentStory !== null'/>
     <storyEdit v-if='editingStory' ref='storyEdit'/>
@@ -47,11 +47,6 @@ export default {
   },
   mounted () {
     if (this.$route.path.search('public') > 0) {
-      axios.get(process.env.ROOT_API + 'api/getPublicGroups').then(res => {
-        this.groups = res.data
-      }).catch(e => {
-        console.log(e)
-      })
       this.fromMap = true
       this.path[0] = 'Public'
       this.changeStory([this.$route.params.id, 0])
@@ -100,7 +95,6 @@ export default {
                   card.graphType = card.graph_type
                 }
                 this.cardsFeatured = res.data
-                this.$refs.navdir.updatePath()
               }
             }).catch(err => {
               throw err

@@ -20,6 +20,7 @@
     "popper.js": "^1.14.4",
     "style-loader": "^0.22.1",
     "vue": "^2.5.17",
+    "vue-async-computed": "^3.4.1",
     "vue-chartjs": "^3.4.0",
     "vue-i18n": "^8.0.0",
     "vue-router": "^3.0.1",

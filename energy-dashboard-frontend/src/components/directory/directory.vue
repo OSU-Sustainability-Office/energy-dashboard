@@ -1,6 +1,6 @@
 <template>
   <div class='container-fluid'>
-    <navdir :path='path' :groups='subGroupsForPath()' class="bar"/>
+    <navdir :path='path' class="bar"/>
     <div class='mainArea container-fluid'>
       <div class="container section" v-for='(item, index) in subGroupsForPath()' :key='index'>
         <div class="row">
@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import navdir from '@/components/account/navdir.vue'
 import storycard from '@/components/account/storyCard.vue'
 
@@ -37,18 +36,16 @@ export default {
   created () {
     this.groups.push({name: 'Public', subgroups: []})
     this.groups.push({name: 'Your Dashboard', subgroups: []})
-    axios.get(process.env.ROOT_API + 'api/getPublicGroups').then(res => {
-      for (var group of res.data) {
-        axios.get(process.env.ROOT_API + 'api/getGroupData?id=' + group.id).then(gd => {
-          this.groups[0].subgroups.push({ name: gd.data[0][0].name, id: gd.data[0][0].id, subgroups: gd.data[1], open: this.path.includes(gd.data[0][0].name) })
-        }).catch(e => {
-          throw e
-        })
+    this.$store.dispatch('stories').then(res => {
+      for (let group of res) {
+        if (group.public) {
+          this.groups[0].subgroups.push({ name: group.group, subgroups: group.stories, open: this.path.includes(group.group) })
+        } else {
+          this.groups[1].subgroups.push({ name: group.group, subgroups: group.stories, open: this.path.includes(group.group) })
+        }
       }
-    }).catch(e => {
-      console.log(e)
     })
-    console.log(this.$route.params)
+
     if (this.$route.params.group) {
       this.path.push(this.$route.params.group)
     }

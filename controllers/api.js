@@ -242,6 +242,40 @@ router.get('/getGroupData', function (req, res) {
 })
 
 // STORIES
+router.get('/stories', (req, res) => {
+  let query = 'SELECT stories.id AS id, stories.name AS name, stories.description AS description, stories.public AS public, stories.media AS media, stories.group_id AS group_id, story_groups.name AS group_name, story_groups.public AS group_public FROM stories JOIN story_groups ON stories.group_id = story_groups.id WHERE stories.public = 1'
+  if (req.session.user) {
+    query = 'SELECT stories.id AS id, stories.name AS name, stories.description AS description, stories.public AS public, stories.media AS media, stories.group_id AS group_id story_groups.name AS group_name, story_groups.public AS group_public FROM stories JOIN story_groups ON stories.group_id = story_groups.id WHERE stories.public = 1 OR stories.user_id = ' + req.session.user.id
+  }
+  db.query(query).then(rows => {
+    res.status(200).send(JSON.stringify(rows))
+  }).catch(e => {
+    res.status(400).send('400: ' + e.message)
+  })
+})
+
+router.get('/story', (req, res) => {
+  if (req.queryInt('id')) {
+    let promises = []
+    const id = req.queryInt('id')
+    promises.push(db.query('SELECT * FROM stories WHERE id=?', [id]))
+    promises.push(db.query('SELECT * FROM blocks WHERE story_id=?', [id]))
+    promises.push(db.query('SELECT block_groups.* FROM (SELECT id FROM blocks WHERE story_id=?) AS block LEFT JOIN block_groups ON block.id = block_groups.block_id', [id]))
+    promises.push(db.query('SELECT meter_group_relation.*, chart.chart_id FROM (SELECT block_groups.group_id as id, block_groups.id AS chart_id FROM (SELECT id FROM blocks WHERE story_id=?) AS block LEFT JOIN block_groups ON block.id = block_groups.block_id) AS chart LEFT JOIN meter_group_relation ON meter_group_relation.group_id = chart.id', [id]))
+    Promise.all(promises).then(r => {
+      let rObj = r[0][0]
+      rObj.blocks = r[1]
+      rObj.openCharts = r[2]
+      rObj.openMeters = r[3]
+      res.send(JSON.stringify(rObj))
+    }).catch(e => {
+      res.status(400).send('400: ' + e.message)
+    })
+  } else {
+    res.status(400).send('400: NO ID')
+  }
+})
+
 router.get('/getStoryGroup', function (req, res) {
   if (req.queryInt('id')) {
     db.query('SELECT relation.name AS group_name, stories.name AS story_name, stories.id AS story_id FROM (SELECT story_groups.name AS name, story_group_relation.story_id AS story_id, story_groups.id AS group_id FROM story_groups RIGHT JOIN story_group_relation ON story_group_relation.story_group_id = story_groups.id) AS relation JOIN stories ON stories.id = relation.story_id WHERE relation.group_id IN (SELECT story_groups.id FROM story_groups RIGHT JOIN story_group_relation ON story_groups.id = story_group_relation.story_group_id WHERE story_group_relation.story_id = ?)', [req.queryInt('id')]).then(val => {
@@ -423,6 +457,18 @@ router.get('/getMeterType', function (req, res) {
     })
   } else {
     res.status(400).send('400: NO METER ID')
+  }
+})
+
+router.get('/data', (req, res) => {
+  if (req.queryString('startDate') && req.queryString('endDate') && req.queryInt('id') && req.queryString('point')) {
+    db.query('SELECT time, point FROM data WHERE time >= ? AND time <= ? AND id = ?', [req.queryString('startDate'), req.queryString('endDate'), req.queryString('point'), req.queryInt('id')]).then(rows => {
+      res.send(JSON.stringify(rows))
+    }).catch(e => {
+      res.status(400).send('400: ' + e.message)
+    })
+  } else {
+    res.status(400).send('400: BAD PARAMS')
   }
 })
 

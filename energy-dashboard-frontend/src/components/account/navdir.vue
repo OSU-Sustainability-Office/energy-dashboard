@@ -23,14 +23,20 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   name: 'navdir',
-  props: ['path', 'groupContents', 'groups'],
+  props: ['path', 'groupContents'],
   up: 0,
   data () {
     return {
       groupName: ''
+    }
+  },
+  asyncComputed: {
+    groups: {
+      get: function () {
+        return this.$store.dispatch('stories')
+      }
     }
   },
   methods: {
@@ -52,11 +58,17 @@ export default {
         return ['Public', 'Your Dashboard']
       } else if (i === 1) {
         let r = []
-        for (var group of this.groups) { r.push(group.name) }
+        if (!this.groups) {
+          return
+        }
+        for (let group of this.groups) { r.push(group.group) }
         return r
       } else if (i === 2) {
         let r = []
-        for (var story of this.groupContents) { r.push(story.name) }
+        if (!this.groups) {
+          return
+        }
+        for (let story of this.groups.find(elm => elm.group === this.path[1]).stories) { r.push(story.name) }
         return r
       } else {
         return ['Error']
@@ -66,26 +78,10 @@ export default {
       if (dirI === 0) {
         this.$router.push({ path: `/directory` })
       } if (dirI === 1) {
-        this.$router.push({ path: `/directory/${this.groups[dropI].name}` })
+        this.$router.push({ path: `/directory/${this.groups[dropI].group}` })
       } else if (dirI === 2) {
-        this.$parent.changeStory([this.groupContents[dropI].id, 0])
+        this.$parent.changeStory([this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id, 0])
       }
-    },
-    updatePath: function () {
-      axios(process.env.ROOT_API + 'api/getStoryGroup?id=' + this.$parent.currentStory, { method: 'get', withCredentials: true }).then(res => {
-        this.groupName = res.data[0].group_name
-        this.$parent.path[1] = this.groupName
-        this.$parent.path[2] = this.$parent.storyName
-
-        this.$parent.groupContents = []
-        for (var story of res.data) {
-          this.$parent.groupContents.push({ id: story.story_id, name: story.story_name })
-        }
-        console.log(this.groupContents)
-        this.$parent.pathFlag++
-      }).catch(e => {
-        console.log(e)
-      })
     }
   }
 }
