@@ -51,7 +51,7 @@ export default new Vuex.Store({
       state.user = payload
     },
     loadBlock: (state, payload) => {
-      state.currentStory.blocks[payload.index] = payload.block
+      state.currentStory.blocks[parseInt(payload.index)] = payload
     },
     loadChart: (state, payload) => {
       state.currentStory.blocks[payload.blockIndex].charts[payload.chartIndex] = payload.data
@@ -69,12 +69,11 @@ export default new Vuex.Store({
         } else {
           axios(process.env.ROOT_API + 'api/story?id=' + id, { method: 'get', data: null, withCredentials: true }).then(res => {
             let story = res.data
-            console.log(story)
             for (let chart of story.openCharts) {
               let b = story.blocks.find(el => el.id === chart.block_id)
               // First put meters into charts
               for (let meter of story.openMeters) {
-                if ((chart.meter === 0 || chart.meter === meter.id) && meter.chart_id === chart.id) {
+                if ((chart.meter === 0 || chart.meter === meter.meter_id) && meter.chart_id === chart.id) {
                   if (chart.meters) {
                     chart.meters.push(meter)
                     story.openMeters.splice(story.openMeters.indexOf(meter), 1)
@@ -96,7 +95,15 @@ export default new Vuex.Store({
             delete story.openMeters
 
             context.commit('loadStory', story)
-            resolve(context.getters.story)
+            let blockPromises = []
+            for (let b in context.getters.story.blocks) {
+              blockPromises.push(context.dispatch('block', { index: b }))
+            }
+            Promise.all(blockPromises).then(() => {
+              resolve(context.getters.story)
+            }).catch(e => {
+              throw e
+            })
           }).catch(e => {
             reject(e)
           })
@@ -130,28 +137,28 @@ export default new Vuex.Store({
     block: (context, payload) => {
       return new Promise((resolve, reject) => {
         let promises = []
-        if (!payload.index) {
+        if (payload.index === null) {
           reject(new Error('Block action needs index'))
         }
-        let block = context.getters.block(payload.index)
+        var block = context.getters.block(payload.index)
         for (let blockKey of Object.keys(payload)) {
           block[blockKey] = payload[blockKey]
         }
         for (let chartIndex in block.charts) {
           let chartData = []
           for (let meter of block.charts[chartIndex].meters) {
-            let paramString = '?id=' + meter.id + '&startDate=' + block.start + '&endDate=' + block.end + '&type=' + block.charts[chartIndex].point
+            let paramString = '?id=' + meter.meter_id + '&startDate=' + block.date_start + '&endDate=' + block.date_end + '&point=' + block.charts[chartIndex].point
             promises.push(axios(process.env.ROOT_API + 'api/data' + paramString, { method: 'get', data: null, withCredentials: true }).then(res => {
-              for (let entry in res.data) {
-                let elm = chartData.find(elm => elm.time === entry.time)
-
+              for (let entry of res.data) {
+                let elm = chartData.find(elm => elm.x === entry.time)
+                let v = Math.abs(entry[Object.keys(entry)[1]])
                 if (elm) {
                   if (meter.operation === 0) {
-                    entry.value *= -1
+                    v *= -1
                   }
-                  elm.value += entry.value
+                  elm.value += v
                 } else {
-                  chartData.push({time: entry.time, value: entry.value})
+                  chartData.push({ x: entry.time, y: v })
                 }
               }
               // This will run for every meter, although it runs more than it should, it should not be a problem

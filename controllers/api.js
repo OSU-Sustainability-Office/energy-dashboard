@@ -340,7 +340,6 @@ router.get('/getBlocksForStory', function (req, res) {
 })
 
 router.get('/getStoriesForCurrentUser', function (req, res) {
-  console.log(req.session.id)
   if (req.session.user.id) {
     db.query('SELECT * FROM stories WHERE user_id=?', req.session.user.id).then(rows => {
       res.send(JSON.stringify(rows))
@@ -462,7 +461,8 @@ router.get('/getMeterType', function (req, res) {
 
 router.get('/data', (req, res) => {
   if (req.queryString('startDate') && req.queryString('endDate') && req.queryInt('id') && req.queryString('point')) {
-    db.query('SELECT time, point FROM data WHERE time >= ? AND time <= ? AND id = ?', [req.queryString('startDate'), req.queryString('endDate'), req.queryString('point'), req.queryInt('id')]).then(rows => {
+    let q = 'SELECT time, ' + req.queryString('point') + ' FROM data WHERE time >= ? AND time <= ? AND meter_id = ?'
+    db.query(q, [req.queryString('startDate'), req.queryString('endDate'), req.queryInt('id')]).then(rows => {
       res.send(JSON.stringify(rows))
     }).catch(e => {
       res.status(400).send('400: ' + e.message)

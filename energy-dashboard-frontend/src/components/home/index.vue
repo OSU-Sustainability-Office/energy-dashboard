@@ -32,6 +32,13 @@ export default {
     homeContent,
     homeSide
   },
+  created () {
+    this.$store.dispatch('story', 117).then(r => {
+      console.log(r)
+    }).catch(e => {
+      console.log(e.message)
+    })
+  },
   methods: {
     login: function () {
       window.location.href = process.env.ROOT_API + 'login'
