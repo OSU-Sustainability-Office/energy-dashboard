@@ -80,7 +80,9 @@ export default {
       } if (dirI === 1) {
         this.$router.push({ path: `/directory/${this.groups[dropI].group}` })
       } else if (dirI === 2) {
-        this.$parent.changeStory([this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id, 0])
+        this.$router.push({ path: `/public/${this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id}/1` })
+        this.$parent.update()
+        // this.$parent.changeStory([this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id, 0])
       }
     }
   }

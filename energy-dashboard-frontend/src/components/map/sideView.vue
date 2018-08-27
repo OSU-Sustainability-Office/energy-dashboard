@@ -110,10 +110,24 @@ export default {
         i = 15
         u = 'day'
       }
-      //
-      // for (let b of this.$store.getters.story.blocks) {
-      //   this.$store.
-      // }
+      let promises = []
+      for (let b of this.$store.getters.story.blocks) {
+        let c = {
+          index: b.index,
+          date_interval: i,
+          interval_unit: u,
+          date_start: this.dateOffset()
+        }
+
+        promises.push(this.$store.dispatch('block', c))
+      }
+      Promise.all(promises).then(() => {
+        for (let controller of this.$refs.chartController) {
+          controller.parseDataBarLine()
+        }
+      }).catch(e => {
+        console.log(e.message)
+      })
     }
   },
   mounted () {

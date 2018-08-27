@@ -50,7 +50,7 @@ router.get('/getBuildingsForMap', function (req, res) {
 })
 
 // BUILDINGS
-router.get('/getAllBuildings', function (req, res) {
+router.get('/buildings', function (req, res) {
   db.query('SELECT id, name FROM meter_groups WHERE is_building=1').then(rows => {
     res.send(rows)
   }).catch(err => {
@@ -439,7 +439,7 @@ router.post('/updateStory', function (req, res) {
   }
 })
 
-// METERS
+//
 router.get('/getDefaultMeters', function (req, res) {
   db.query('SELECT * FROM meters').then(rows => {
     res.send(JSON.stringify(rows))
@@ -596,9 +596,9 @@ router.get('/getMeterGroupsForUser', function (req, res) {
   })
 })
 
-router.get('/getMetersForGroup', function (req, res) {
+router.get('/meters', function (req, res) {
   if (req.queryString('id')) {
-    db.query('SELECT meters.id, meters.name, meters.type, meter_group_relation.operation FROM meters LEFT JOIN meter_group_relation ON meters.id=meter_group_relation.meter_id WHERE group_id=?', [req.queryString('id')]).then(rows => {
+    db.query('SELECT meters.id AS meter_id, meters.name, meters.type, meter_group_relation.operation, meter_group_relation.group_id FROM meters LEFT JOIN meter_group_relation ON meters.id=meter_group_relation.meter_id WHERE group_id=?', [req.queryString('id')]).then(rows => {
       res.send(JSON.stringify(rows))
     }).catch(err => {
       res.status(400).send('400: ' + err.message)

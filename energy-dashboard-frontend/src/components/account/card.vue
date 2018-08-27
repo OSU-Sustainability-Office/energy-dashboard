@@ -1,10 +1,10 @@
 <template>
   <div class="card featured" v-bind:class="{ feature : featured}" ref='card' v-on:click='unclickText'>
 
-    <chartController v-bind:start='start' v-bind:end='end' v-bind:interval='int' v-bind:unit='unit' v-bind:graphType='type' v-bind:points='points' v-bind:groups='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'5em' }"/>
-    <featureController :start='new Date(start)' :end='new Date(end)' v-bind:interval='int' v-bind:graphType='type' v-bind:unit='unit' v-bind:points='points' v-bind:groupids='groups' v-bind:names='names' v-bind:submeters='meters' v-if="featured" ref="featureController" />
+    <chartController :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'8em' }"/>
+    <featureController :index='index' v-if="featured" ref="featureController" />
     <div class='titleTextFeatured' v-if="featured" v-on:click='clickText' ref='title' v-b-tooltip.hover title='Click to edit name'>
-      {{this.name}}
+      {{block(index).name}}
     </div>
     <div class="container descriptionContainer" v-if='featured' ref='descriptionContainer'>
       <div class="row">
@@ -21,10 +21,11 @@
 import chartController from '@/components/charts/chartController'
 import axios from 'axios'
 import featureController from '@/components/account/featureController'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'card',
-  props: ['story_id', 'name', 'description', 'featured', 'id', 'start', 'end', 'int', 'unit', 'type', 'media', 'index', 'points', 'groups', 'names', 'meters'],
+  props: ['index', 'featured'],
   components: {
     chartController, featureController
   },
@@ -32,6 +33,12 @@ export default {
     return {
       showPencil: false
     }
+  },
+  computed: {
+    ...mapGetters([
+      'story',
+      'block'
+    ])
   },
   methods: {
     setStart: function (val) {
@@ -214,50 +221,50 @@ export default {
     }
   },
   mounted () {
-    this.$nextTick(() => {
-      if (!this.id) {
-        this.save()
-      }
-    })
+    // this.$nextTick(() => {
+    //   if (!this.id) {
+    //     this.save()
+    //   }
+    // })
   },
   created () {
-    if (this.id) {
-      axios.get(process.env.ROOT_API + 'api/getBlockMeterGroups?id=' + this.id).then(res => {
-        let points = []
-        let names = []
-        let groups = []
-        let meters = []
-        for (let i = 0; i < res.data.length; i++) {
-          points.push(res.data[i].point)
-          groups.push(res.data[i].group_id)
-          names.push(res.data[i].name)
-          meters.push(res.data[i].meter)
-        }
-        this.setGroups(groups)
-        this.setPoints(points)
-        this.setNames(names)
-
-        this.setMeters(meters)
-        this.$nextTick(() => {
-          this.$refs.featureController.mounted = true
-          this.$refs.featureController.updateGraph(true)
-        })
-      })
-    } else {
-      this.points = ['accumulated_real']
-      this.groups = [8]
-      this.names = ['New Graph']
-      this.meters = [0]
-
-      this.setPoints(this.points)
-      this.setGroups(this.groups)
-      this.setNames(this.names)
-      this.setMeters(this.meters)
-      this.$nextTick(() => {
-        this.$refs.featureController.mounted = true
-        this.$refs.featureController.updateGraph(true)
-      })
-    }
+    // if (this.id) {
+    //   axios.get(process.env.ROOT_API + 'api/getBlockMeterGroups?id=' + this.id).then(res => {
+    //     let points = []
+    //     let names = []
+    //     let groups = []
+    //     let meters = []
+    //     for (let i = 0; i < res.data.length; i++) {
+    //       points.push(res.data[i].point)
+    //       groups.push(res.data[i].group_id)
+    //       names.push(res.data[i].name)
+    //       meters.push(res.data[i].meter)
+    //     }
+    //     this.setGroups(groups)
+    //     this.setPoints(points)
+    //     this.setNames(names)
+    //
+    //     this.setMeters(meters)
+    //     this.$nextTick(() => {
+    //       this.$refs.featureController.mounted = true
+    //       this.$refs.featureController.updateGraph(true)
+    //     })
+    //   })
+    // } else {
+    //   this.points = ['accumulated_real']
+    //   this.groups = [8]
+    //   this.names = ['New Graph']
+    //   this.meters = [0]
+    //
+    //   this.setPoints(this.points)
+    //   this.setGroups(this.groups)
+    //   this.setNames(this.names)
+    //   this.setMeters(this.meters)
+    //   this.$nextTick(() => {
+    //     this.$refs.featureController.mounted = true
+    //     this.$refs.featureController.updateGraph(true)
+    //   })
+    // }
   }
 }
 </script>

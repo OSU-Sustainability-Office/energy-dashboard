@@ -134,6 +134,37 @@ export default new Vuex.Store({
       })
     },
 
+    buildings: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios.get(process.env.ROOT_API + 'api/buildings', { method: 'get', data: null, withCredentials: true }).then(res => {
+          resolve(res.data)
+        }).catch(e => { reject(e) })
+      })
+    },
+
+    building: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        if (payload.blockIndex === null || payload.chartIndex === null || context.getters.story.blocks.length < payload.blockIndex || context.getters.story.blocks[payload.blockIndex].charts.length < payload.chartIndex) {
+          reject(new Error('Building action needs existing chart and block index'))
+        }
+
+        let charts = context.getters.block(payload.blockIndex).charts
+        if (!payload.group_id) {
+          reject(new Error('Building action needs group id'))
+        }
+        charts[payload.chartIndex].group_id = payload.group_id
+
+        axios.get(process.env.ROOT_API + 'api/meters?id=' + payload.group_id, { method: 'get', data: null, withCredentials: true }).then(res => {
+          charts[payload.chartIndex].meters = res.data
+          context.dispatch('block', { index: payload.blockIndex, charts: charts }).then(() => {
+            resolve(context.getters.block(payload.blockIndex))
+          }).catch(e => {
+            throw e
+          })
+        }).catch(e => reject(e))
+      })
+    },
+
     block: (context, payload) => {
       return new Promise((resolve, reject) => {
         let promises = []
@@ -156,7 +187,7 @@ export default new Vuex.Store({
                   if (meter.operation === 0) {
                     v *= -1
                   }
-                  elm.value += v
+                  elm.y += v
                 } else {
                   chartData.push({ x: entry.time, y: v })
                 }

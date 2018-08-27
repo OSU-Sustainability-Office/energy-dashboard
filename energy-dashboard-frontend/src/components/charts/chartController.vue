@@ -20,7 +20,7 @@ export default {
     linechart, barchart, doughnutchart, piechart
   },
   mounted () {
-    this.chart = this.$refs.barchart
+    this.parse()
   },
   data () {
     return {
@@ -66,21 +66,33 @@ export default {
       this.updateChart()
     }
   },
+
   methods: {
+    parse: function () {
+      if (this.graphType === 1 || this.graphType === 2) {
+        this.parseDataBarLine()
+      } else if (this.graphType === 3 || this.graphType === 4) {
+        this.parseDataPieDoughnut()
+      }
+    },
     checkInterval: function (date) {
       let unit = this.story.blocks[this.index].interval_unit
       let int = this.story.blocks[this.index].date_interval
       let uD = 0
+
+      let m = date.slice(14, 16)
+      let h = date.slice(11, 13)
+      let d = date.slice(8, 10)
       if (unit !== 'minute') {
-        if (date.slice(14, 16) !== '00') {
+        if (m !== '00') {
           return true
         }
         if (unit !== 'hour') {
-          if (date.slice(11, 13) !== '00') {
+          if (h !== '00') {
             return true
           }
           if (unit !== 'day') {
-            if (date.slice(8, 10) !== '00') {
+            if (d !== '00') {
               return true
             }
           }
@@ -88,13 +100,13 @@ export default {
       }
       switch (unit) {
         case 'minute':
-          uD = date.slice(14, 16)
+          uD = m
           break
         case 'hour':
-          uD = date.slice(11, 13)
+          uD = h
           break
         case 'day':
-          uD = date.slice(8, 10)
+          uD = d
           break
         case 'month':
           uD = date.slice(5, 7)
@@ -135,17 +147,24 @@ export default {
         labels: []
       }
       for (let line of this.block(this.index).charts) {
-        var data = line.data
-        for (let o = data.length - 1; o >= 1; o--) {
-          if (this.checkInterval(data[o].x) || !data[o].y) {
-            data.splice(o, 1)
-            continue
+        let data = line.data
+        if (!data) {
+          return
+        }
+        if (line.point === 'accumulated_real' || line.point === 'total' || line.point === 'cubic_feet') {
+          // First remove interval items
+          for (let o = data.length - 1; o >= 1; o--) {
+            if (this.checkInterval(data[o].x) || !data[o].y) {
+              data.splice(o, 1)
+            }
           }
-          if (line.point === 'accumulated_real') {
+          // Then get the difference
+          for (let o = data.length - 1; o >= 1; o--) {
             data[o].y -= data[o - 1].y
           }
+          // Remove first item that did not have a calculated interval
+          data.splice(0, 1)
         }
-        data.splice(0, 1)
         tempData.datasets.push({
           label: line.name,
           data: line.data,

@@ -1,14 +1,9 @@
 <template>
   <div class="background">
     <!-- <span class="main-heading">Stories</span> -->
-    <heropicture v-bind:id='currentStory'></heropicture>
+    <heropicture :media='story.media' :description='story.description' :name='story.name'></heropicture>
     <navdir :key='pathFlag' :path="path" ref='navdir' class="naviv"></navdir>
-    <!-- <span class="main-heading">Featured Blocks</span> -->
-    <featured v-bind:cards="cardsFeatured" :fromMap='fromMap' ref='featureBox' v-if='!editingStory && currentStory !== null'/>
-    <storyEdit v-if='editingStory' ref='storyEdit'/>
-    <div class="nocards" v-if="currentStory === null">
-      Please create  a story to get started
-    </div>
+    <featured :cards="story.blocks" :fromMap='true' ref='featureBox' />
   </div>
 </template>
 
@@ -19,7 +14,7 @@ import featured from '@/components/account/featured'
 import storyEdit from '@/components/account/storyEdit'
 import heropicture from '@/components/account/heropicture'
 import navdir from '@/components/account/navdir'
-import axios from 'axios'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'account',
@@ -45,87 +40,74 @@ export default {
       groups: []
     }
   },
-  mounted () {
-    if (this.$route.path.search('public') > 0) {
-      this.fromMap = true
-      this.path[0] = 'Public'
-      this.changeStory([this.$route.params.id, 0])
-      var startDate = new Date()
-      switch (this.$route.params.range) {
-        case 0:
-          startDate.setDate(startDate.getDate() - 7)
-          break
-        case 1:
-          startDate.setMonth(startDate.getMonth() - 1)
-          break
-        case 2:
-          startDate.setYear(startDate.getYear() - 1)
-          break
-        default:
-          break
+  asyncComputed: {
+    stories: {
+      get: function () {
+        return this.$store.dispatch('stories')
       }
-      for (var card of this.cardsFeatured) {
-        card.start = startDate.toISOString()
-        card.end = (new Date()).toISOString()
-      }
-    } else {
-      this.fromMap = false
-      this.path[0] = 'Your Dashboard'
     }
   },
-  created () {
-    axios(process.env.ROOT_API + 'api/getStoriesForCurrentUser', { method: 'get', withCredentials: true }).then(res => {
-      if (!this.fromMap) {
-        this.cards = res.data
-        for (let card of this.cards) {
-          if (card.featured) {
-            this.currentStory = card.id
-            this.storyName = card.name
-            axios.get(process.env.ROOT_API + 'api/getBlocksForStory?id=' + card.id).then(res => {
-              if (!this.fromMap) {
-                for (let card of res.data) {
-                  card.points = ['accumulated_real']
-                  card.meters = [0]
-                  card.names = ['Undefined']
-                  card.groups = [8]
-                  card.start = card.date_start
-                  card.end = card.date_end
-                  card.int = card.date_interval
-                  card.unit = card.interval_unit
-                  card.graphType = card.graph_type
-                }
-                this.cardsFeatured = res.data
-              }
-            }).catch(err => {
-              throw err
-            })
-            return
+  computed: {
+    ...mapGetters([
+      'story',
+      'block'
+    ]),
+    start: {
+      get () {
+        if (this.$route.path.search('public') > 0) {
+          let d = new Date()
+          switch (parseInt(this.$route.params.range)) {
+            case 0:
+              d.setDate(d.getDate() - 7)
+              break
+            case 1:
+              d.setMonth(d.getMonth() - 1)
+              break
+            case 2:
+              d.setYear(d.getYear() - 1)
+              break
+            default:
+              break
+          }
+          return d.toISOString()
+        }
+      }
+    },
+    unit: {
+      get () {
+        if (this.$route.path.search('public') > 0) {
+          switch (parseInt(this.$route.params.range)) {
+            case 0:
+              return 'hour'
+            case 1:
+              return 'hour'
+            case 2:
+              return 'day'
+            default:
+              return 'minute'
           }
         }
       }
-    }).catch(e => {
-      this.errors.push(e)
-    })
-    this.$eventHub.$on('deleteStory', val => {
-      var data = {
-        id: val[0]
-      }
-      axios(process.env.ROOT_API + 'api/deleteStory', { method: 'post', data: data, withCredentials: true }).catch(err => {
-        console.log(err)
-      })
-      for (var c in this.cards) {
-        if (this.cards[c].id === val[0]) {
-          this.cards.splice(c, 1)
-          if (this.cards.length === 0) {
-            this.currentStory = null
+    },
+    interval: {
+      get () {
+        if (this.$route.path.search('public') > 0) {
+          switch (parseInt(this.$route.params.range)) {
+            case 0:
+              return 2
+            case 1:
+              return 8
+            case 2:
+              return 5
+            default:
+              return 'minute'
           }
-          if (val[0] === this.currentStory) {
-            this.$refs.caro.clickedStory(c - 1)
-          }
-          return
         }
       }
-    })
+    }
+  },
+  mounted () {
+    this.update()
   },
   watch: {
     cardsFeatured: function (val) {
@@ -142,7 +124,6 @@ export default {
             startDate.setYear(startDate.getYear() - 1)
             break
           default:
-            console.log(this.$route.params.range)
             break
         }
         for (var card of val) {
@@ -153,6 +134,33 @@ export default {
     }
   },
   methods: {
+    update: function () {
+      if (this.$route.path.search('public') > 0) {
+        this.path = ['Public']
+
+        this.$store.dispatch('story', this.$route.params.id).then((r) => {
+          // This is kind of exensive consider changing at some point, it is async
+          const gName = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) }).group
+          this.path.push(gName)
+          this.path.push(this.story.name)
+          let promises = []
+          for (let b in r.blocks) {
+            let c = {
+              index: b,
+              date_start: this.start,
+              date_end: (new Date()).toISOString(),
+              date_interval: this.interval,
+              interval_unit: this.unit
+            }
+            promises.push(this.$store.dispatch('block', c))
+          }
+
+          Promise.all(promises).then((t) => {
+            this.$refs.featureBox.updateCards()
+          })
+        })
+      }
+    },
     editStory: function (event) {
       this.editingStory = true
       this.$nextTick(function () {
@@ -169,31 +177,7 @@ export default {
     },
     changeStory: function (event) {
       this.editingStory = false
-      this.currentStory = event[0]
-      if (event[1]) {
-        axios(process.env.ROOT_API + 'api/changeFeaturedStory', { method: 'post', data: { id: event[0] }, withCredentials: true }).catch(e => {
-          console.log(e)
-        })
-      }
-      axios.get(process.env.ROOT_API + 'api/getStoryData?id=' + event[0]).then(res => {
-        this.storyName = res.data[0].name
-        this.$refs.navdir.updatePath()
-      }).catch(e => {
-        console.log(e)
-      })
-      axios.get(process.env.ROOT_API + 'api/getBlocksForStory?id=' + event[0]).then(res => {
-        for (var card of res.data) {
-          card.points = ['accumulated_real']
-          card.meters = [0]
-          card.names = ['Undefined']
-          card.groups = [8]
-        }
-        this.cardsFeatured = res.data
-        this.$nextTick(() => {
-          this.$eventHub.$emit('reloadChart')
-          this.pathFlag++
-        })
-      })
+      this.$store.dispatch('story', event[0])
     }
   }
 }
