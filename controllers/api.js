@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const db = require('../db')
-let cas = null
 const fs = require('fs')
 const mapData = require('./energydboardbuildings.json')
 
@@ -9,8 +8,13 @@ router.use(require('sanitize').middleware)
 
 // Begin routes
 // Current user info
-router.get('/currentUser', function (req, res) {
-  res.send(req.session[cas.session_name])
+router.get('/user', function (req, res) {
+  if (req.session.user) {
+    res.send(JSON.stringify({ name: req.session.user.name, privilege: req.session.user.privilige }))
+  } else {
+    res.send(JSON.stringify({ name: '', privilige: 0 }))
+    console.log('hd')
+  }
 })
 
 router.get('/currentUserID', function (req, res) {
@@ -245,7 +249,7 @@ router.get('/getGroupData', function (req, res) {
 router.get('/stories', (req, res) => {
   let query = 'SELECT stories.id AS id, stories.name AS name, stories.description AS description, stories.public AS public, stories.media AS media, stories.group_id AS group_id, story_groups.name AS group_name, story_groups.public AS group_public FROM stories JOIN story_groups ON stories.group_id = story_groups.id WHERE stories.public = 1'
   if (req.session.user) {
-    query = 'SELECT stories.id AS id, stories.name AS name, stories.description AS description, stories.public AS public, stories.media AS media, stories.group_id AS group_id story_groups.name AS group_name, story_groups.public AS group_public FROM stories JOIN story_groups ON stories.group_id = story_groups.id WHERE stories.public = 1 OR stories.user_id = ' + req.session.user.id
+    query = 'SELECT stories.id AS id, stories.name AS name, stories.description AS description, stories.public AS public, stories.media AS media, stories.group_id AS group_id, story_groups.name AS group_name, story_groups.public AS group_public FROM stories JOIN story_groups ON stories.group_id = story_groups.id WHERE stories.public = 1 OR stories.user_id = ' + req.session.user.id
   }
   db.query(query).then(rows => {
     res.status(200).send(JSON.stringify(rows))
@@ -619,4 +623,4 @@ router.get('/listAvailableMedia', function (req, res) {
   })
 })
 
-module.exports = (c) => { cas = c; return router }
+module.exports = () => { return router }

@@ -6,13 +6,16 @@
     </div>
     <span class="storyName">{{this.name}}</span>
     <span class="storyDescription">{{this.description}}</span>
+    <div class='plus' v-if='plus'>
+      +
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'storyCard',
-  props: ['name', 'description', 'selected', 'media', 'story_id', 'index', 'notools'],
+  props: ['name', 'description', 'selected', 'media', 'story_id', 'index', 'notools', 'plus'],
   mounted () {
     if (this.media) {
       this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + process.env.ROOT_API + 'block-media/thumbs/' + this.media + '") center/cover no-repeat'
@@ -100,6 +103,9 @@ export default {
   width: 250px;
 
 }
+.storyCard:hover .plus {
+  color: #FFF;
+}
 .image {
   position: absolute;
   right: 0px;
@@ -114,5 +120,11 @@ export default {
   display: block;
   padding-left: 0.3em;
   z-index: 1;
+}
+.plus {
+  color: rgb(215,63,9);;
+  font-size: 6em;
+  line-height: 1em;
+  text-align: center;
 }
 </style>

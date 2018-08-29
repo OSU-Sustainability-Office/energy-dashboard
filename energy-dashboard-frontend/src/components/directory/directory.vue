@@ -1,24 +1,46 @@
 <template>
   <div class='container-fluid'>
-    <navdir :path='path' class="bar"/>
-    <div class='mainArea container-fluid'>
-      <div class="container section" v-for='(item, index) in subGroupsForPath()' :key='index'>
-        <div class="row">
-          <div :class="[item.open ? 'open' : '']" class='col h3' :aria-controls='"collapse-"+item.name.replace(/ /g,"_").replace(/&/g,"a")' :aria-expanded='item.open' @click='pushItem(item,index)' >{{ item.name }}</div>
-        </div>
-          <b-collapse class="row justify-content-start padded" v-model='item.open' :id='"collapse-" + item.name.replace(/ /g,"_").replace(/&/g,"a")'>
-            <div class='col-lg-3' v-for='(building, index_b) in item.subgroups' :key='index_b' @click='$router.push({path: `/public/${building.id}/1`})'>
-              <storycard :name='building.name' :notools='true' :media='building.media' :description='building.description' class="storyCard" />
+    <!-- <navdir ref='navdir' class="bar"/> -->
+    <b-tabs nav-wrapper-class="w-100">
+      <b-tab title='Public' title-link-class=''>
+        <b-tabs pills card>
+          <b-tab class="container" v-for='(item, index) in subGroupsForPath(0)' :key='index' :title='item.name'>
+            <div class="row justify-content-start padded" >
+              <div class='col' v-for='(building, index_b) in item.subgroups' :key='index_b' @click='$router.push({path: `/public/${building.id}/1`})'>
+                <storycard :name='building.name' :notools='true' :media='building.media' :description='building.description' class="storyCard" />
+              </div>
             </div>
-          </b-collapse>
-      </div>
-    </div>
+          </b-tab>
+        </b-tabs>
+      </b-tab>
+      <b-tab title='Your Dashboard' v-if='user.name !== ""'>
+        <b-tabs pills card>
+          <b-tab class="container" v-for='(item, index) in subGroupsForPath(1)' :key='index' :title='item.name'>
+            <div class="row justify-content-start padded" >
+              <div class='col' v-for='(building, index_b) in item.subgroups' :key='index_b' @click='$router.push({path: `/dashboard/${building.id}`})'>
+                <storycard :name='building.name' :media='building.media' :description='building.description' class="storyCard" />
+              </div>
+              <div class='col'  @click='newStory(index)'>
+                <storycard :plus='true' :notools='true' v-b-tooltip.hover title='Create a Story' />
+              </div>
+            </div>
+          </b-tab>
+          <b-nav-item slot='tabs' class="container" @click.prevent='newTab()'>
+            +
+          </b-nav-item>
+          <div slot="empty" class="text-center text-muted">
+            Click the '+' to create a group
+          </div>
+        </b-tabs>
+      </b-tab>
+    </b-tabs>
   </div>
 </template>
 
 <script>
 import navdir from '@/components/account/navdir.vue'
 import storycard from '@/components/account/storyCard.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: '',
@@ -32,6 +54,14 @@ export default {
       path: ['Public'],
       currentGroups: []
     }
+  },
+  computed: {
+    // User should be populated due to nav-bar, only need to use the getter not the promise action
+    ...mapGetters([
+      'user'
+    ])
+  },
+  mounted () {
   },
   created () {
     this.groups.push({name: 'Public', subgroups: []})
@@ -51,11 +81,14 @@ export default {
     }
   },
   methods: {
-    subGroupsForPath: function () {
-      if (this.path[0] === 'Public') {
-        return this.groups[0].subgroups
-      }
-      return this.groups[1].subgroups
+    newTab: function () {
+      this.groups[1].subgroups.push({ name: 'New Group', subgroups: [] })
+    },
+    newStory: function (groupIndex) {
+      this.groups[1].subgroups[groupIndex].subgroups.push({ name: 'New Story', description: 'description' })
+    },
+    subGroupsForPath: function (r) {
+      return this.groups[r].subgroups
     },
     pushItem: function (item) {
       for (let section of this.subGroupsForPath()) {
@@ -122,6 +155,7 @@ export default {
 .storyCard:hover {
   border: solid 3px rgb(215,63,9);
 }
+
 .storyCard:active {
   border: solid 3px #FFF;
 }

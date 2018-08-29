@@ -7,17 +7,21 @@
     <div class="row">
       <homeSide />
     </div>
-    <div class="row buttonBox">
-        <div class="col">
-          <div class="row justify-content-end">
-            <div class="btn col-4" @click="explore()">Explore</div>
+    <div class="row buttonBox justify-content-center">
+      <div class='col-6'>
+        <div class='row'>
+          <div class="col">
+            <div class="row justify-content-center">
+              <div class="btn col" @click="explore()">Explore</div>
+            </div>
+          </div>
+          <div class="col" v-if='user.name === ""'>
+            <div class="row justify-content-center">
+              <div class="btn col" @click="login()">Login</div>
+            </div>
           </div>
         </div>
-        <div class="col">
-          <div class="row justify-content-start">
-            <div class="btn col-4" @click="login()">Login</div>
-          </div>
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -32,12 +36,18 @@ export default {
     homeContent,
     homeSide
   },
+  data () {
+    return {
+      user: {
+        name: '',
+        privilege: 0
+      }
+    }
+  },
+  mounted () {
+    this.$store.dispatch('user').then(r => { this.user = r })
+  },
   created () {
-    this.$store.dispatch('story', 117).then(r => {
-      console.log(r)
-    }).catch(e => {
-      console.log(e.message)
-    })
   },
   methods: {
     login: function () {

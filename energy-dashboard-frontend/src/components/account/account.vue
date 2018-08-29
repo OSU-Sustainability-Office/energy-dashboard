@@ -2,7 +2,7 @@
   <div class="background">
     <!-- <span class="main-heading">Stories</span> -->
     <heropicture :media='story.media' :description='story.description' :name='story.name'></heropicture>
-    <navdir :key='pathFlag' :path="path" ref='navdir' class="naviv"></navdir>
+    <navdir :key='pathFlag' ref='navdir' class="naviv"></navdir>
     <featured :cards="story.blocks" :fromMap='true' ref='featureBox' />
   </div>
 </template>
@@ -139,10 +139,6 @@ export default {
         this.path = ['Public']
 
         this.$store.dispatch('story', this.$route.params.id).then((r) => {
-          // This is kind of exensive consider changing at some point, it is async
-          const gName = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) }).group
-          this.path.push(gName)
-          this.path.push(this.story.name)
           let promises = []
           for (let b in r.blocks) {
             let c = {
@@ -157,6 +153,14 @@ export default {
 
           Promise.all(promises).then((t) => {
             this.$refs.featureBox.updateCards()
+          })
+        })
+      } else {
+        this.$store.dispatch('user').then(user => {
+          this.$store.dispatch('stories').then(groups => {
+            if (!this.story.id) {
+              this.$store.dispatch('story', groups[0].stories[0].id)
+            }
           })
         })
       }

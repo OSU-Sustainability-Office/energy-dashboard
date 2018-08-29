@@ -49,6 +49,10 @@ export default new Vuex.Store({
     },
     loadUser: (state, payload) => {
       state.user = payload
+      // Reset Stories, if a  user logins in their personal stories need to be accesible
+      if (payload.name !== '') {
+        state.stories = []
+      }
     },
     loadBlock: (state, payload) => {
       state.currentStory.blocks[parseInt(payload.index)] = payload
@@ -209,13 +213,14 @@ export default new Vuex.Store({
     user: (context, payload) => {
       return new Promise((resolve, reject) => {
         if (context.getters.user.name !== '') {
-          resolve(context.getters.user)
+          resolve(context.getters)
         } else {
           axios(process.env.ROOT_API + 'api/user', { method: 'get', data: null, withCredentials: true }).then(res => {
             context.commit('loadUser', res.data)
             resolve(context.getters.user)
           }).catch(e => {
-            reject(e)
+            context.commit('loadUser', { name: '', privilige: 0 })
+            resolve(context.getters.user)
           })
         }
       })
