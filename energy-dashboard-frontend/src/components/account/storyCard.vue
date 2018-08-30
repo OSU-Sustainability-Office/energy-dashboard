@@ -1,7 +1,7 @@
 <template>
-  <div class="storyCard" ref='card' v-on:click="clicked" @mouseover="hover(true)" @mouseleave="hover(false)">
+  <div class="storyCard" ref='card' @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
     <div class="toolbox" ref="toolbox" v-if='!notools'>
-      <i class="fas fa-pencil-alt" @click="$emit('edit')" v-b-tooltip.hover title='Edit Story Card'></i>
+      <i class="fas fa-pencil-alt" @click.prevent='openEdit()' v-b-tooltip.hover title='Edit Story Card'></i>
       <i class="fas fa-times" @click="deleteStory()" v-b-tooltip.hover title='Delete Story'></i>
     </div>
     <span class="storyName">{{this.name}}</span>
@@ -9,13 +9,32 @@
     <div class='plus' v-if='plus'>
       +
     </div>
+    <b-modal size='lg' v-model='openModal' title='Edit Story' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light" @ok='saveTemp()'>
+      <b-container>
+        <div class="row">
+          <label>Name:</label>
+          <el-input type="text" v-model="tempName"></el-input>
+        </div>
+        <div class="row">
+          <label>Description:</label>
+          <el-input type="text" v-model="tempDescription"></el-input>
+        </div>
+        <div class='row'>
+          <mediapicker :media='this.tempMedia' />
+        </div>
+      </b-container>
+    </b-modal>
   </div>
 </template>
 
 <script>
+import mediapicker from '@/components/account/mediapicker.vue'
 export default {
   name: 'storyCard',
-  props: ['name', 'description', 'selected', 'media', 'story_id', 'index', 'notools', 'plus'],
+  props: ['name', 'description', 'selected', 'media', 'story_id', 'index', 'notools', 'plus', 'group'],
+  components: {
+    mediapicker
+  },
   mounted () {
     if (this.media) {
       this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + process.env.ROOT_API + 'block-media/thumbs/' + this.media + '") center/cover no-repeat'
@@ -25,6 +44,14 @@ export default {
     if (this.selected) {
       this.$refs.card.style.borderColor = 'rgb(215,63,9)'
       this.$refs.card.style.borderWidth = '4px'
+    }
+  },
+  data () {
+    return {
+      openModal: false,
+      tempName: '',
+      tempDescription: '',
+      tempMedia: ''
     }
   },
   watch: {
@@ -55,11 +82,23 @@ export default {
         }
       }
     },
+    openEdit: function () {
+      this.tempName = this.name
+      this.tempDescription = this.description
+      this.tempMedia = this.media
+      this.openModal = true
+    },
     clicked: function (event) {
-      if (event.target === this.$el) { this.$emit('caro-click') }
+      if (event.target.classList.contains('fas') || event.target.classList.contains('toolbox')) {
+        return
+      }
+      this.$emit('click')
     },
     deleteStory: function () {
       this.$eventHub.$emit('deleteStory', [this.story_id])
+    },
+    saveTemp: function () {
+      this.$eventHub.$emit('updateStory', [this.group, this.index, this.tempName, this.tempDescription, this.tempMedia])
     }
   }
 }

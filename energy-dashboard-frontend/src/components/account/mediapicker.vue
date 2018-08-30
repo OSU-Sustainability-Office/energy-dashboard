@@ -1,8 +1,8 @@
 <template>
   <div class="container" ref="mainstage">
     <div class='row' ref="imageNodes">
-      <div class='col' @click="$parent.selected = 0" style='backgroundColor: rgb(26,26,26)'></div>
-      <div v-for='(image,index) in images' @click="$parent.selected = index+1" :key='index' class='col' :style='"background-image:url(\""+image+"\")"'>
+      <div class='col' @click="selected = 0" style='backgroundColor: rgb(26,26,26)' v-bind:class="[selected === 0 ? 'selected' : 'e']"></div>
+      <div v-for='(image,index) in images' @click="selected = index + 1" :key='index' class='col' :style='"background-image:url(\"" + api + "block-media/thumbs/" + image + "\")"' v-bind:class="[selected === (index + 1) ? 'selected' : 'e']">
       </div>
 
     </div>
@@ -12,49 +12,30 @@
 import axios from 'axios'
 export default {
   name: 'mediapicker',
-  props: ['selected'],
+  props: ['media'],
   data () {
     return {
       images: [],
-      selectedString: ''
+      selected: 0,
+      api: process.env.ROOT_API
     }
   },
-  mounted () {
+  created () {
     axios.get(process.env.ROOT_API + 'api/listAvailableMedia').then(val => {
       var index = 0
       for (var i of val.data) {
-        this.images.push(process.env.ROOT_API + 'block-media/thumbs/' + i)
-        if (i === this.$parent.media) { this.$parent.selected = index + 1 }
+        this.images.push(i)
+        if (i === this.media) { this.selected = index }
         index++
       }
-      this.$nextTick(() => {
-        var index = 0
-        for (var node of this.$refs.imageNodes.children) {
-          if (index === this.selected) {
-            node.style.border = 'solid 2px rgb(215,63,9)'
-          } else {
-            node.style.border = 'solid 1px rgb(255,255,255)'
-          }
-          index++
-        }
-      })
     })
   },
   watch: {
     selected: function (value) {
-      var index = 0
-      for (var node of this.$refs.imageNodes.children) {
-        if (index === this.selected) {
-          node.style.border = 'solid 2px rgb(215,63,9)'
-          if (index - 1 < 0) {
-            this.$parent.media = null
-          } else {
-            this.$parent.media = this.images[index - 1].replace(process.env.ROOT_API + 'block-media/thumbs/', '')
-          }
-        } else {
-          node.style.border = 'solid 1px rgb(255,255,255)'
-        }
-        index++
+      if (value === 0) {
+        this.$parent.$parent.tempMedia = ''
+      } else {
+        this.$parent.$parent.tempMedia = this.images[value - 1]
       }
     }
   }
@@ -64,6 +45,9 @@ export default {
 label {
   color: white;
   font-family: 'Open Sans', sans-serif;
+}
+.selected {
+  border: solid 4px rgb(215,63,9);
 }
 .container {
   width: 100%;
@@ -81,7 +65,6 @@ label {
   align-items: flex-start;
   justify-content: center;
 }
-
 .col {
   height: 100px;
   background-repeat: no-repeat;

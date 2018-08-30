@@ -1,31 +1,31 @@
 <template>
-  <div class='container-fluid'>
+  <div class='container-fluid mainArea'>
     <!-- <navdir ref='navdir' class="bar"/> -->
-    <b-tabs nav-wrapper-class="w-100">
-      <b-tab title='Public' title-link-class=''>
-        <b-tabs pills card>
+    <b-tabs nav-class="directory-tabs">
+      <b-tab title='Public'>
+        <b-tabs pills card nav-class='directory-group-tab'>
           <b-tab class="container" v-for='(item, index) in subGroupsForPath(0)' :key='index' :title='item.name'>
-            <div class="row justify-content-start padded" >
-              <div class='col' v-for='(building, index_b) in item.subgroups' :key='index_b' @click='$router.push({path: `/public/${building.id}/1`})'>
-                <storycard :name='building.name' :notools='true' :media='building.media' :description='building.description' class="storyCard" />
+            <div class="row padded" >
+              <div class='col-xl-3 col-lg-4 col-md-6' v-for='(building, index_b) in item.subgroups' :key='index_b' >
+                <storycard :name='building.name' :notools='true' :media='building.media' :description='building.description' class="mx-auto storyCard" @click='$router.push({path: `/public/${building.id}/1`})' />
               </div>
             </div>
           </b-tab>
         </b-tabs>
       </b-tab>
       <b-tab title='Your Dashboard' v-if='user.name !== ""'>
-        <b-tabs pills card>
+        <b-tabs pills card nav-class='directory-group-tab'>
           <b-tab class="container" v-for='(item, index) in subGroupsForPath(1)' :key='index' :title='item.name'>
             <div class="row justify-content-start padded" >
-              <div class='col' v-for='(building, index_b) in item.subgroups' :key='index_b' @click='$router.push({path: `/dashboard/${building.id}`})'>
-                <storycard :name='building.name' :media='building.media' :description='building.description' class="storyCard" />
+              <div class='col-xl-3 col-lg-4 col-md-6' v-for='(building, index_b) in item.subgroups' :key='index_b' >
+                <storycard :name='building.name' :media='building.media' :description='building.description' class="storyCard" @click='$router.push({path: `/dashboard/${building.id}`})' :group='index' :index='index_b'/>
               </div>
-              <div class='col'  @click='newStory(index)'>
-                <storycard :plus='true' :notools='true' v-b-tooltip.hover title='Create a Story' />
+              <div class='col-xl-3 col-lg-4 col-md-6'>
+                <storycard :plus='true' @click='newStory(index)' :notools='true' v-b-tooltip.hover title='Create a Story' />
               </div>
             </div>
           </b-tab>
-          <b-nav-item slot='tabs' class="container" @click.prevent='newTab()'>
+          <b-nav-item slot='tabs' class="col plus" @click.prevent='newTab()'>
             +
           </b-nav-item>
           <div slot="empty" class="text-center text-muted">
@@ -61,8 +61,6 @@ export default {
       'user'
     ])
   },
-  mounted () {
-  },
   created () {
     this.groups.push({name: 'Public', subgroups: []})
     this.groups.push({name: 'Your Dashboard', subgroups: []})
@@ -75,7 +73,7 @@ export default {
         }
       }
     })
-
+    this.$eventHub.$on('updateStory', (event) => { this.updateStory(event[0], event[1], event[2], event[3], event[4]) })
     if (this.$route.params.group) {
       this.path.push(this.$route.params.group)
     }
@@ -85,7 +83,16 @@ export default {
       this.groups[1].subgroups.push({ name: 'New Group', subgroups: [] })
     },
     newStory: function (groupIndex) {
-      this.groups[1].subgroups[groupIndex].subgroups.push({ name: 'New Story', description: 'description' })
+      // Vue cannot detect the addition of new properties, make sure all properties that are editable are present in the initialization
+      this.groups[1].subgroups[groupIndex].subgroups.push({ name: 'New Story', description: 'description', media: '' })
+    },
+    updateStory: function (group, index, name, description, media) {
+      if (!this.groups[1].subgroups[group]) {
+        return
+      }
+      this.groups[1].subgroups[group].subgroups[index].media = media
+      this.groups[1].subgroups[group].subgroups[index].name = name
+      this.groups[1].subgroups[group].subgroups[index].description = description
     },
     subGroupsForPath: function (r) {
       return this.groups[r].subgroups
@@ -107,14 +114,27 @@ export default {
   }
 }
 </script>
+<style>
+.directory-tabs .nav-item > a {
+  color: rgb(215,63,9);
+  font-size: 1.4em;
+}
+.directory-group-tab .nav-item > a {
+  color: #000;
+}
+.directory-group-tab .nav-item:hover :not(.active) {
+  color: #FFF;
+  background-color: rgb(26,26,26);
+}
+.directory-group-tab .nav-item .active {
+  color: #FFF;
+  background-color: rgb(215,63,9);
+}
+</style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mainArea {
-  position: absolute;
-  left: 0px;
-  width: 100%;
-  border-radius: 10px;
-  margin-top: 8em;
+  margin-top: 1em;
 }
 .h3 {
   border-bottom: solid 1px rgba(126,126,126,0.2);
@@ -155,8 +175,12 @@ export default {
 .storyCard:hover {
   border: solid 3px rgb(215,63,9);
 }
-
+.plus {
+  font-size: 20px;
+  line-height: 10px;
+}
 .storyCard:active {
   border: solid 3px #FFF;
 }
+
 </style>
