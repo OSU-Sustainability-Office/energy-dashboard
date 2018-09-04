@@ -6,7 +6,7 @@
 
     <div class="container-fluid controlSection" ref="controlArea">
       <div class="row indexChooser" ref="indexChooser">
-        <b-button class="indexButton" v-for="(point, index) in this.block(index).charts" @click="currentIndex = index" :key='index'>{{ index + 1 }}</b-button>
+        <b-button class="indexButton"  v-for="(point, index) in this.block(index).charts" :variant='buttonVariant(index)' @click="currentIndex = index" :key='index'>{{ index + 1 }}</b-button>
         <b-button class="indexButton" @click="addGroup()">+</b-button>
       </div>
 
@@ -95,9 +95,9 @@
         </el-select>
         <el-input-number :step="step" class="sharedLine" v-model="interval" controls-position='right'></el-input-number>
       </div>
-      <!-- <div class="row deleteButton">
-        <btn @click='deleteGroup()'>Delete</btn>
-      </div> -->
+      <div class="row form-group justify-content-center deletebutton" v-if='this.block(index).charts.length > 1'>
+        <b-btn class='col-10' @click='deleteChart()'>Delete</b-btn>
+      </div>
 
     </div>
   </div>
@@ -116,6 +116,7 @@ export default {
       isMaximized: false,
       currentType: 'e',
       colors: [],
+      // This is the charts index, the blocks index is index (really confusing I know, we should change the variable names)
       currentIndex: 0,
       keyPressTimeOut: null,
       mounted: false,
@@ -148,19 +149,19 @@ export default {
     },
     name: {
       get: function () {
-        return this.block(this.index).charts[this.currentIndex].name
+        let n = this.block(this.index).charts[this.currentIndex].name
+        return n
       },
       set: function (v) {
-        let charts = this.block(this.index).charts
-        charts[this.currentIndex].name = v
-        this.$store.dispatch('block', { index: this.index, charts: charts }).then(() => {
+        this.$store.dispatch('block', { index: this.index, charts: [{ name: v, index: this.currentIndex }] }).then(() => {
           this.$parent.$refs.chartController.parse()
         })
       }
     },
     start: {
       get: function () {
-        return this.block(this.index).date_start
+        let s = this.block(this.index).date_start
+        return s
       },
       set: function (v) {
         this.$store.dispatch('block', { index: this.index, date_start: v.toISOString() }).then(() => {
@@ -183,9 +184,7 @@ export default {
         return this.block(this.index).charts[this.currentIndex].point
       },
       set: function (v) {
-        let charts = this.block(this.index).charts
-        charts[this.currentIndex].point = v
-        this.$store.dispatch('block', { index: this.index, charts: charts }).then(() => {
+        this.$store.dispatch('block', { index: this.index, charts: [{ point: v, index: this.currentIndex }] }).then(() => {
           this.$parent.$refs.chartController.parse()
         })
       }
@@ -222,6 +221,23 @@ export default {
     }
   },
   methods: {
+    addGroup: function () {
+      this.$store.dispatch('addChart', { index: this.index }).then(() => {
+        this.$parent.$refs.chartController.parse()
+      })
+    },
+    buttonVariant: function (i) {
+      if (i === this.currentIndex) {
+        return 'primary'
+      } else {
+        return 'secondary'
+      }
+    },
+    deleteChart: function () {
+      this.$store.commit('removeChart', { blockIndex: this.index, chartIndex: this.currentIndex })
+      this.currentIndex = 0
+      this.$parent.$refs.chartController.parse()
+    }
   },
   watch: {
     isMaximized: function (value) {
@@ -338,6 +354,9 @@ export default {
   height: 100%;
   background-color: rgba(0,0,0,0.7);
   transition: right 1s;
+}
+.deletebutton {
+  padding-bottom: 1em;
 }
 </style>
 el-

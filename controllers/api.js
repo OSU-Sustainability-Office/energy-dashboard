@@ -7,12 +7,180 @@ const mapData = require('./energydboardbuildings.json')
 router.use(require('sanitize').middleware)
 
 // Begin routes
+
+// ROUTES FOR CHANGING DATA
+router.post('/story', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    if (req.bodyInt('group_id')) {
+      db.query('INSERT INTO stories (user_id, group_id, name, description) VALUES (?, ?, ?, ?)', [req.session.user.id, req.bodyInt('group_id'), req.bodyString('name'), req.bodyString('description')]).then(rows => {
+        res.status(201).send(JSON.stringify({ id: rows.insertId }))
+      }).catch(e => {
+        res.status(400).send('400: ' + e.message)
+      })
+    } else {
+      res.status(400).send('400: NO GROUP')
+    }
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+router.put('/story', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    if (req.bodyInt('id')) {
+      db.query('UPDATE stories SET name = ?, description = ?, media = ? WHERE id = ? AND user_id = ?', [req.bodyString('name'), req.bodyString('description'), req.bodyString('media'), req.bodyInt('id'), req.session.user.id]).then(() => {
+        res.status(204).send()
+      }).catch(e => {
+        res.status(400).send('400: ' + e.message)
+      })
+    } else {
+      res.status(400).send('400: NO ID')
+    }
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+router.delete('/story', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    if (req.bodyInt('id')) {
+      db.query('DELETE FROM stories WHERE user_id = ? AND id = ?', [req.session.user.id, req.bodyInt('id')]).then(() => {
+        res.status(204).send()
+      }).catch(e => {
+        res.status(400).send('400: ' + e.message)
+      })
+    } else {
+      res.status(400).send('400: NO ID')
+    }
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+
+router.post('/group', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    db.query('INSERT INTO story_groups (name, user_id) VALUES (?, ?)', [req.bodyString('name'), req.session.user.id]).then(rows => {
+      res.status(201).send(JSON.stringify({ id: rows.insertId }))
+    }).catch(e => {
+      res.status(400).send('400: ' + e.message)
+    })
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+router.put('/group', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    if (req.bodyInt('id')) {
+      db.query('UPDATE story_groups SET name = ? WHERE id = ? AND user_id = ?', [req.bodyString('name'), req.bodyInt('id'), req.session.user.id]).then(() => {
+        res.status(204).send()
+      }).catch(e => {
+        res.status(400).send('400: ' + e.message)
+      })
+    } else {
+      res.status(400).send('400: NO ID')
+    }
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+router.delete('/group', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    if (req.bodyInt('id')) {
+      db.query('DELETE FROM story_groups WHERE user_id = ? AND id = ?', [req.session.user.id, req.bodyInt('id')]).then(() => {
+        res.status(204).send()
+      })
+    } else {
+      res.status(400).send('400: NO ID')
+    }
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+
+router.post('/block', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    db.query('INSERT INTO blocks (date_start, date_end, graph_type, story_id, name, date_interval, interval_unit) VALUES (?, ?, ?, (SELECT id FROM stories WHERE user_id = ? AND id = ?), ?, ?, ?)', [req.bodyString('date_start'), req.bodyString('date_end'), req.bodyInt('graph_type'), req.session.user.id, req.bodyInt('story_id'), req.bodyString('name'), req.bodyInt('date_interval'), req.bodyString('interval_unit')]).then(rows => {
+      res.status(201).send(JSON.stringify({ id: rows.insertId }))
+    }).catch(e => {
+      res.status(400).send('400: ' + e.message)
+    })
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+router.put('/block', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    if (req.bodyInt('id')) {
+      db.query('UPDATE blocks INNER JOIN stories on blocks.story_id = stories.id SET blocks.name = ?, blocks.date_start = ?, blocks.date_end = ?, blocks.graph_type = ?, blocks.date_interval = ?, blocks.interval_unit = ? WHERE blocks.id = ? AND stories.user_id = ?', [req.bodyString('name'), req.bodyString('date_start'), req.bodyString('date_end'), req.bodyInt('graph_type'), req.bodyInt('date_interval'), req.bodyString('interval_unit'), req.bodyInt('id'), req.session.user.id]).then(() => {
+        res.status(204).send()
+      }).catch(e => {
+        res.status(400).send('400: ' + e.message)
+      })
+    } else {
+      res.status(400).send('400: NO ID')
+    }
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+router.delete('/block', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    if (req.bodyInt('id')) {
+      db.query('DELETE blocks FROM blocks INNER JOIN stories ON blocks.story_id = stories.id WHERE stories.user_id = ? AND blocks.id = ?', [req.session.user.id, req.bodyInt('id')]).then(() => {
+        res.status(204).send()
+      })
+    } else {
+      res.status(400).send('400: NO ID')
+    }
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+
+router.post('/chart', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    db.query('INSERT INTO block_groups (block_id, group_id, name, point, meter) VALUES ((SELECT blocks.id FROM stories INNER JOIN blocks ON blocks.story_id = stories.id WHERE stories.user_id = ? AND blocks.id = ?), ?, ?, ?, ?)', [req.session.user.id, req.bodyInt('block_id'), req.bodyInt('group_id'), req.bodyString('name'), req.bodyString('point'), req.bodyInt('meter')]).then(rows => {
+      res.status(201).send(JSON.stringify({ id: rows.insertId }))
+    }).catch(e => {
+      res.status(400).send('400: ' + e.message)
+    })
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+router.put('/chart', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    if (req.bodyInt('id')) {
+      db.query('UPDATE block_groups INNER JOIN (SELECT stories.user_id, blocks.id FROM stories INNER JOIN blocks ON blocks.story_id = stories.id) AS blocks ON blocks.id = block_groups.block_id SET block_groups.group_id = ?, block_groups.name = ?, block_groups.point = ?, block_groups.meter = ? WHERE block_groups.id = ? AND blocks.user_id = ?', [req.bodyInt('group_id'), req.bodyString('name'), req.bodyString('point'), req.bodyInt('meter'), req.bodyInt('id'), req.session.user.id]).then(() => {
+        res.status(204).send()
+      }).catch(e => {
+        res.status(400).send('400: ' + e.message)
+      })
+    } else {
+      res.status(400).send('400: NO ID')
+    }
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+router.delete('/chart', function (req, res) {
+  if (req.session.user && req.session.user.id) {
+    if (req.bodyInt('id')) {
+      db.query('DELETE block_groups FROM block_groups INNER JOIN (SELECT stories.user_id, blocks.id FROM stories INNER JOIN blocks ON blocks.story_id = stories.id) AS blocks ON blocks.id = block_groups.block_id WHERE block_groups.id = ? AND blocks.user_id = ?', [req.bodyInt('id'), req.session.user.id]).then(() => {
+        res.status(204).send()
+      })
+    } else {
+      res.status(400).send('400: NO ID')
+    }
+  } else {
+    res.status(403).send('403: NOT AUTHORIZED')
+  }
+})
+
 // Current user info
 router.get('/user', function (req, res) {
   if (req.session.user) {
-    res.send(JSON.stringify({ name: req.session.user.name, privilege: req.session.user.privilige }))
+    res.send(JSON.stringify({ name: req.session.user.name, privilege: req.session.user.privilige, id: req.session.user.id }))
   } else {
-    res.send(JSON.stringify({ name: '', privilige: 0 }))
+    res.send(JSON.stringify({ name: '', privilige: 0, id: null }))
     console.log('hd')
   }
 })

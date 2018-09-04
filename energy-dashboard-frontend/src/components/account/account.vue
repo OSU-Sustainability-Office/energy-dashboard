@@ -2,8 +2,17 @@
   <div class="background">
     <!-- <span class="main-heading">Stories</span> -->
     <heropicture :media='story.media' :description='story.description' :name='story.name'></heropicture>
-    <navdir :key='pathFlag' ref='navdir' class="naviv"></navdir>
-    <featured :cards="story.blocks" :fromMap='true' ref='featureBox' />
+    <navdir ref='navdir' class="naviv"></navdir>
+    <div class="modText row" v-if='changeFlag === true'>
+      <div class='col text-center align-middle'>
+        Changes were made
+      </div>
+      <div class='col-2'>
+        <b-btn @click='cancel()'> Cancel </b-btn>
+        <b-btn @click='save()' variant='primary'> Save </b-btn>
+      </div>
+    </div>
+    <featured ref='featureBox' />
   </div>
 </template>
 
@@ -28,16 +37,19 @@ export default {
   props: [],
   data () {
     return {
-      cards: [],
-      cardsFeatured: [],
-      currentStory: null,
-      editingStory: false,
-      fromMap: false,
-      storyName: '',
-      pathFlag: 0,
-      path: [],
-      groupContents: [],
-      groups: []
+      changeFlag: false,
+      fullyMounted: false
+    }
+  },
+  watch: {
+    story: {
+      handler: function () {
+        if (this.fullyMounted) {
+          this.changeFlag = true
+          this.$store.commit('modifyFlag')
+        }
+      },
+      deep: true
     }
   },
   asyncComputed: {
@@ -106,34 +118,51 @@ export default {
       }
     }
   },
+  created () {
+    this.changeFlag = this.story.modified
+  },
   mounted () {
     this.update()
   },
-  watch: {
-    cardsFeatured: function (val) {
-      if (this.fromMap) {
-        var startDate = new Date()
-        switch (this.$route.params.range) {
-          case '0':
-            startDate.setDate(startDate.getDate() - 7)
-            break
-          case '1':
-            startDate.setMonth(startDate.getMonth() - 1)
-            break
-          case '2':
-            startDate.setYear(startDate.getYear() - 1)
-            break
-          default:
-            break
-        }
-        for (var card of val) {
-          card.date_start = startDate.toISOString()
-          card.date_end = (new Date()).toISOString()
+  methods: {
+    save: function () {
+      for (let block of this.story.blocks) {
+        if (block.id === null) {
+          this.$store.dispatch('createBlock', block).then(() => {
+            for (let chart of block.charts) {
+              this.$store.dispatch('createChart', chart)
+            }
+          })
+        } else {
+          this.$store.dispatch('updateBlock', block).then(() => {
+            for (let chart of block.charts) {
+              if (chart.id) {
+                this.$store.dispatch('updateChart', chart)
+              } else {
+                this.$store.dispatch('createChart', chart)
+              }
+            }
+          })
         }
       }
-    }
-  },
-  methods: {
+      for (let obj of this.story.removedObjs) {
+        if (obj.type === 'block') {
+          this.$store.dispatch('deleteBlock', obj.id)
+        } else if (obj.type === 'chart') {
+          this.$store.dispatch('deleteChart', obj.id)
+        }
+      }
+    },
+    cancel: function () {
+      let id = this.story.id
+      this.$store.commit('loadStory', { id: null })
+      this.$store.dispatch('story', id).then(() => {
+        this.$refs.featureBox.updateCards()
+        this.changeFlag = false
+        this.$store.commit('modifyFlag', false)
+        console.log(this.story.modified)
+      })
+    },
     update: function () {
       if (this.$route.path.search('public') > 0) {
         this.path = ['Public']
@@ -153,31 +182,27 @@ export default {
 
           Promise.all(promises).then((t) => {
             this.$refs.featureBox.updateCards()
+            this.fullyMounted = true
           })
         })
       } else {
-        this.$store.dispatch('user').then(user => {
-          this.$store.dispatch('stories').then(groups => {
-            if (!this.story.id) {
-              this.$store.dispatch('story', groups[0].stories[0].id)
-            }
+        if (this.$route.params.id) {
+          this.$store.dispatch('story', this.$route.params.id).then((r) => {
+            this.$refs.featureBox.updateCards()
+            this.fullyMounted = true
           })
-        })
-      }
-    },
-    editStory: function (event) {
-      this.editingStory = true
-      this.$nextTick(function () {
-        this.$refs.storyEdit.storyid = event[0]
-        for (var i = 0; i < this.cards.length; i++) {
-          if (this.cards[i].id === event[0]) {
-            this.$refs.storyEdit.name = this.cards[i].name
-            this.$refs.storyEdit.descr = this.cards[i].description
-            this.$refs.storyEdit.media = this.cards[i].media
-            break
-          }
+        } else {
+          this.$store.dispatch('user').then(user => {
+            this.$store.dispatch('stories').then(groups => {
+              if (!this.story.id) {
+                this.$store.dispatch('story', groups[0].stories[0].id).then(() => {
+                  this.fullyMounted = true
+                })
+              }
+            })
+          })
         }
-      })
+      }
     },
     changeStory: function (event) {
       this.editingStory = false
@@ -189,6 +214,23 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.modText {
+  position: absolute;
+  top: 240px;
+  width: 100%;
+  background-color: rgba(0,0,0,0.4);
+  color: #FFF;
+  z-index: 2;
+  font-size: 12px;
+}
+.modText .col {
+  margin: 0.6em;
+}
+.modText .btn {
+  font-size: 10px;
+  padding: 0.5em;
+  margin: 0.25em;
+}
 .naviv {
   position: absolute;
   top: 200px;

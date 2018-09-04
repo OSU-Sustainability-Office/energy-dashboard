@@ -35,6 +35,6 @@ var v = new Vue({
   components: { App },
   template: '<App/>'
 })
-Vue.config.devtools = false
+Vue.config.devtools = true
 
 window.vue = v

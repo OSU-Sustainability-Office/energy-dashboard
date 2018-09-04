@@ -5,6 +5,7 @@ import axios from 'axios'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  strict: true,
   state: {
     currentStory: {
       name: '',
@@ -12,7 +13,9 @@ export default new Vuex.Store({
       description: '',
       public: false,
       media: '',
-      blocks: []
+      blocks: [],
+      modified: false,
+      removed: []
     },
     stories: [],
     user: {
@@ -47,6 +50,29 @@ export default new Vuex.Store({
     loadStories: (state, payload) => {
       state.stories = payload
     },
+    addGroup: (state, payload) => {
+      state.stories.push(payload)
+    },
+    deleteGroup: (state, payload) => {
+      state.stories.splice(state.stories.map(e => { return e.id }).indexOf(payload.id), 1)
+    },
+    updateGroup: (state, payload) => {
+      state.stories.find(el => el.id === payload.id).group = payload.name
+    },
+    addStory: (state, payload) => {
+      state.stories.find(el => el.id === payload.group_id).stories.push(payload)
+    },
+    updateStory: (state, payload) => {
+      const story = state.stories.find(el => el.id === payload.group_id).stories.find(el => el.id === payload.id)
+
+      story.name = payload.name
+      story.description = payload.description
+      story.media = payload.media
+    },
+    deleteStory: (state, payload) => {
+      const stories = state.stories.find(el => el.id === payload.group_id).stories
+      stories.splice(stories.map(el => { return el.id }).indexOf(payload.id), 1)
+    },
     loadUser: (state, payload) => {
       state.user = payload
       // Reset Stories, if a  user logins in their personal stories need to be accesible
@@ -55,13 +81,37 @@ export default new Vuex.Store({
       }
     },
     loadBlock: (state, payload) => {
-      state.currentStory.blocks[parseInt(payload.index)] = payload
+      Vue.set(state.currentStory.blocks, parseInt(payload.index), payload)
+    },
+    setBlockId: (state, payload) => {
+      state.currentStory.blocks[payload.index].id = payload.id
+    },
+    removeBlock: (state, payload) => {
+      let r = state.currentStory.blocks.splice(payload.index, 1)
+      if (r.id) {
+        state.story.removedObjs.push({ id: r.id, type: 'block' })
+      }
     },
     loadChart: (state, payload) => {
-      state.currentStory.blocks[payload.blockIndex].charts[payload.chartIndex] = payload.data
+      Vue.set(state.currentStory.blocks[payload.blockIndex].charts, payload.chartIndex, payload.data)
+    },
+    setChartId: (state, payload) => {
+      state.currentStory.blocks[payload.block_index].charts[payload.chart_index] = payload.id
+    },
+    removeChart: (state, payload) => {
+      let r = state.currentStory.blocks[payload.blockIndex].charts.splice(payload.index, 1)
+      if (r.id) {
+        state.story.removedObjs.push({ id: r.id, type: 'chart' })
+      }
     },
     loadData: (state, payload) => {
       state.currentStory.blocks[payload.blockIndex].charts[payload.chartIndex].data = payload.data
+    },
+    modifyFlag: (state, payload) => {
+      state.currentStory.modified = true
+      if (payload !== undefined) {
+        state.currentStory.modified = payload
+      }
     }
   },
   actions: {
@@ -123,10 +173,10 @@ export default new Vuex.Store({
           axios(process.env.ROOT_API + 'api/stories', { method: 'get', data: null, withCredentials: true }).then(res => {
             let master = []
             for (let row of res.data) {
-              if (!master.find(elm => { return elm.group === row.group_name })) {
-                master.push({ group: row.group_name, stories: [ row ], public: row.group_public })
+              if (!master.find(elm => { return elm.id === row.group_id })) {
+                master.push({ group: row.group_name, stories: [ row ], public: row.group_public, id: row.group_id })
               } else {
-                master.find(elm => { return elm.group === row.group_name }).stories.push(row)
+                master.find(elm => { return elm.id === row.group_id }).stories.push(row)
               }
             }
             context.commit('loadStories', master)
@@ -151,16 +201,11 @@ export default new Vuex.Store({
         if (payload.blockIndex === null || payload.chartIndex === null || context.getters.story.blocks.length < payload.blockIndex || context.getters.story.blocks[payload.blockIndex].charts.length < payload.chartIndex) {
           reject(new Error('Building action needs existing chart and block index'))
         }
-
-        let charts = context.getters.block(payload.blockIndex).charts
         if (!payload.group_id) {
           reject(new Error('Building action needs group id'))
         }
-        charts[payload.chartIndex].group_id = payload.group_id
-
         axios.get(process.env.ROOT_API + 'api/meters?id=' + payload.group_id, { method: 'get', data: null, withCredentials: true }).then(res => {
-          charts[payload.chartIndex].meters = res.data
-          context.dispatch('block', { index: payload.blockIndex, charts: charts }).then(() => {
+          context.dispatch('block', { index: payload.blockIndex, charts: [{ index: payload.chartIndex, group_id: payload.group_id, meters: res.data }] }).then(() => {
             resolve(context.getters.block(payload.blockIndex))
           }).catch(e => {
             throw e
@@ -172,13 +217,34 @@ export default new Vuex.Store({
     block: (context, payload) => {
       return new Promise((resolve, reject) => {
         let promises = []
+
         if (payload.index === null) {
           reject(new Error('Block action needs index'))
         }
-        var block = context.getters.block(payload.index)
-        for (let blockKey of Object.keys(payload)) {
-          block[blockKey] = payload[blockKey]
+        let block = {}
+        if (context.getters.block(payload.index)) {
+          // Deep copy prevents callbacks to data changing on computed variables
+          block = JSON.parse(JSON.stringify(context.getters.block(payload.index)))
         }
+        // Manipulate old block to conform to payloads new keys
+        for (let blockKey of Object.keys(payload)) {
+          // Special case for charts
+          if (blockKey === 'charts') {
+            for (let chartObj of payload.charts) {
+              if (chartObj.index === undefined) {
+                block[blockKey] = payload[blockKey]
+                continue
+              }
+              let chartIndex = chartObj.index
+              for (let chartKey of Object.keys(chartObj)) {
+                block.charts[chartIndex][chartKey] = chartObj[chartKey]
+              }
+            }
+          } else {
+            block[blockKey] = payload[blockKey]
+          }
+        }
+        // Aqquire new data for the charts since they were manipulated
         for (let chartIndex in block.charts) {
           let chartData = []
           for (let meter of block.charts[chartIndex].meters) {
@@ -219,10 +285,166 @@ export default new Vuex.Store({
             context.commit('loadUser', res.data)
             resolve(context.getters.user)
           }).catch(e => {
-            context.commit('loadUser', { name: '', privilige: 0 })
+            context.commit('loadUser', { name: '', privilige: 0, id: null })
             resolve(context.getters.user)
           })
         }
+      })
+    },
+
+    addChart: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        const l = context.getters.story.blocks[payload.index].charts.length
+        context.commit('loadChart', {
+          blockIndex: payload.index,
+          chartIndex: l,
+          data: {
+            name: 'New Chart',
+            group_id: 9,
+            point: 'accumulated_real',
+            meters: [
+              { meter_id: 8, operation: 1 },
+              { meter_id: 9, operation: 1 }
+            ]
+          }
+        })
+        context.dispatch('block', { index: payload.index }).then(() => {
+          resolve()
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+
+    // Server side create/update/delete actions
+    // GROUP
+    createGroup: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios(process.env.ROOT_API + 'api/group', { method: 'post', data: { name: payload.name }, withCredentials: true }).then(res => {
+          payload.id = res.data.id
+          context.commit('addGroup', { group: payload.name, id: payload.id, stories: [] })
+          resolve(res.data.id)
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    updateGroup: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios(process.env.ROOT_API + 'api/group', { method: 'put', data: { name: payload.name, id: payload.id }, withCredentials: true }).then(res => {
+          context.commit('updateGroup', { name: payload.name, id: payload.id })
+          resolve()
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    deleteGroup: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios(process.env.ROOT_API + 'api/group', { method: 'delete', data: { id: payload.id }, withCredentials: true }).then(res => {
+          context.commit('deleteGroup', { id: payload.id })
+          resolve()
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    // STORY
+    createStory: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios(process.env.ROOT_API + 'api/story', { method: 'post', data: payload, withCredentials: true }).then(res => {
+          payload.id = res.data.id
+          context.commit('addStory', payload)
+          resolve()
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    updateStory: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        context.commit('updateStory', payload)
+        axios(process.env.ROOT_API + 'api/story', { method: 'put', data: payload, withCredentials: true }).then(res => {
+          resolve()
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    deleteStory: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        context.commit('deleteStory', payload)
+        axios(process.env.ROOT_API + 'api/story', { method: 'delete', data: { id: payload.id }, withCredentials: true }).then(res => {
+          resolve()
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    createBlock: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios(process.env.ROOT_API + 'api/block', { method: 'post', data: { date_start: payload.date_start, date_end: payload.date_end, graph_type: payload.graph_type, story_id: payload.story_id, name: payload.name, date_interval: payload.date_interval, interval_unit: payload.interval_unit }, withCredentials: true }).then(res => {
+          context.commit('setBlockId', { index: payload.index, id: res.data.id })
+          resolve(res.data.id)
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    updateBlock: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        console.log(payload)
+        axios(process.env.ROOT_API + 'api/block', { method: 'put', data: { id: payload.id, date_start: payload.date_start, date_end: payload.date_end, graph_type: payload.graph_type, story_id: payload.story_id, name: payload.name, date_interval: payload.date_interval, interval_unit: payload.interval_unit }, withCredentials: true }).then(res => {
+          resolve()
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    deleteBlock: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios(process.env.ROOT_API + 'api/block', { method: 'delete', data: { id: payload.id }, withCredentials: true }).then(res => {
+          resolve()
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    createChart: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        let meter = 0
+        if (payload.meters.length === 1) {
+          meter = payload.meters[0].meter_id
+        }
+        axios(process.env.ROOT_API + 'api/chart', { method: 'post', data: { block_id: payload.block_id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: meter }, withCredentials: true }).then(res => {
+          console.log(payload)
+          resolve(res.data.id)
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    updateChart: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        console.log(payload)
+        let meter = 0
+        if (payload.meters.length === 1) {
+          meter = payload.meters[0].meter_id
+        }
+        axios(process.env.ROOT_API + 'api/chart', { method: 'put', data: { id: payload.id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: meter }, withCredentials: true }).then(res => {
+          resolve()
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    deleteChart: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios(process.env.ROOT_API + 'api/chart', { method: 'delete', data: { id: payload.id }, withCredentials: true }).then(res => {
+          resolve()
+        }).catch(e => {
+          reject(e)
+        })
       })
     }
   }

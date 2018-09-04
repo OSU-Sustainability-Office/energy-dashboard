@@ -12,12 +12,12 @@
         <div class='row'>
           <div class="col">
             <div class="row justify-content-center">
-              <div class="btn col" @click="explore()">Explore</div>
+              <b-btn variant='primary' class="col" @click="explore()">Explore</b-btn>
             </div>
           </div>
           <div class="col" v-if='user.name === ""'>
             <div class="row justify-content-center">
-              <div class="btn col" @click="login()">Login</div>
+              <b-btn variant='primary' class="col" @click="login()">Login</b-btn>
             </div>
           </div>
         </div>
@@ -72,21 +72,8 @@ export default {
   margin: 10px;
 }
 .btn {
-  background-color: #D73F09;
-  color: #FFFFFF;
   top: 0px;
   width: 100%;
-  border: solid 1px #FFF;
-}
-.btn:hover {
-  background-color: #C72F09;
-  color: #FFFFFF;
-  border: solid 1px #CCC;
-}
-.btn:active {
-  background-color: #d76740;
-  color: #FFFFFF;
-  border: solid 1px #CCC;
 }
 #background {
   background: url('/static/images/solar.jpg');

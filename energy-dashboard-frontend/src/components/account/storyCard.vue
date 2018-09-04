@@ -9,7 +9,7 @@
     <div class='plus' v-if='plus'>
       +
     </div>
-    <b-modal size='lg' v-model='openModal' title='Edit Story' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light" @ok='saveTemp()'>
+    <b-modal size='lg' v-model='openModal' title='Edit Story' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light" @ok='saveTemp()' footer-class='storycard-modal-footer'>
       <b-container>
         <div class="row">
           <label>Name:</label>
@@ -95,7 +95,7 @@ export default {
       this.$emit('click')
     },
     deleteStory: function () {
-      this.$eventHub.$emit('deleteStory', [this.story_id])
+      this.$eventHub.$emit('deleteStory', [this.group, this.index])
     },
     saveTemp: function () {
       this.$eventHub.$emit('updateStory', [this.group, this.index, this.tempName, this.tempDescription, this.tempMedia])
@@ -104,6 +104,29 @@ export default {
 }
 
 </script>
+<style>
+/* .storycard-modal-footer .btn-primary {
+  background-color: rgb(215,63,9) !important;
+  border: solid 1px rgb(215,63,9);
+}
+.storycard-modal-footer .btn-primary:hover {
+  background-color: rgb(215,63,9) !important;
+  border: solid 1px rgb(215,63,9);
+}
+.storycard-modal-footer .btn-primary:active {
+  background-color: rgb(215,63,9) !important;
+  border: solid 1px rgb(215,63,9);
+}
+.storycard-modal-footer .btn-secondary {
+  background-color: rgb(26,26,26) !important;
+  border: solid 1px rgb(26,26,26);
+}
+.storycard-modal-footer .btn-secondary:hover {
+  background-color: rgb(26,26,26) !important;
+  border: solid 1px rgb(26,26,26);
+} */
+
+</style>
 
 <style scoped>
 .toolbox {
@@ -161,9 +184,10 @@ export default {
   z-index: 1;
 }
 .plus {
-  color: rgb(215,63,9);;
+  color: rgb(215,63,9);
   font-size: 6em;
   line-height: 1em;
   text-align: center;
 }
+
 </style>

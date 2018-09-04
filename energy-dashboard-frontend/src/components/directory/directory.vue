@@ -14,24 +14,40 @@
         </b-tabs>
       </b-tab>
       <b-tab title='Your Dashboard' v-if='user.name !== ""'>
-        <b-tabs pills card nav-class='directory-group-tab'>
+        <b-tabs pills card :nav-class="['directory-group-tab', 'short']" v-model='openUserTab'>
           <b-tab class="container" v-for='(item, index) in subGroupsForPath(1)' :key='index' :title='item.name'>
-            <div class="row justify-content-start padded" >
+            <div class="row padded" >
               <div class='col-xl-3 col-lg-4 col-md-6' v-for='(building, index_b) in item.subgroups' :key='index_b' >
-                <storycard :name='building.name' :media='building.media' :description='building.description' class="storyCard" @click='$router.push({path: `/dashboard/${building.id}`})' :group='index' :index='index_b'/>
+                <storycard :name='building.name' :media='building.media' :description='building.description' class="mx-auto storyCard" @click='$router.push({path: `/dashboard/${building.id}`})' :group='index' :index='index_b'/>
               </div>
               <div class='col-xl-3 col-lg-4 col-md-6'>
-                <storycard :plus='true' @click='newStory(index)' :notools='true' v-b-tooltip.hover title='Create a Story' />
+                <storycard class='mx-auto' :plus='true' @click='newStory(index)' :notools='true' v-b-tooltip.hover title='Create a Story' />
               </div>
             </div>
           </b-tab>
-          <b-nav-item slot='tabs' class="col plus" @click.prevent='newTab()'>
+          <b-nav-item slot='tabs' class="tab plus" @click.prevent='newTab()'>
             +
           </b-nav-item>
           <div slot="empty" class="text-center text-muted">
             Click the '+' to create a group
           </div>
         </b-tabs>
+        <div class='editgroup'>
+          <b-btn @click='openGroupEdit()'>Edit Group</b-btn>
+          <b-modal v-model='groupedit' title="Edit Group" body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
+            <b-container>
+              <div class="row">
+                <label>Name:</label>
+                <el-input type="text" v-model='tempGroupName'>New Group</el-input>
+              </div>
+            </b-container>
+            <b-container slot='modal-footer'>
+              <b-btn @click='groupSave()'> Ok </b-btn>
+              <b-btn @click='groupedit = false'> Cancel </b-btn>
+              <b-btn @click='groupDelete(openUserTab)'> Delete </b-btn>
+            </b-container>
+          </b-modal>
+        </div>
       </b-tab>
     </b-tabs>
   </div>
@@ -52,7 +68,10 @@ export default {
     return {
       groups: [],
       path: ['Public'],
-      currentGroups: []
+      currentGroups: [],
+      groupedit: false,
+      tempGroupName: '',
+      openUserTab: 0
     }
   },
   computed: {
@@ -67,24 +86,52 @@ export default {
     this.$store.dispatch('stories').then(res => {
       for (let group of res) {
         if (group.public) {
-          this.groups[0].subgroups.push({ name: group.group, subgroups: group.stories, open: this.path.includes(group.group) })
+          this.groups[0].subgroups.push({ name: group.group, subgroups: group.stories, id: group.id })
         } else {
-          this.groups[1].subgroups.push({ name: group.group, subgroups: group.stories, open: this.path.includes(group.group) })
+          this.groups[1].subgroups.push({ name: group.group, subgroups: group.stories, id: group.id })
         }
       }
     })
+    // 0: group, 1: index, 2: id
+    this.$eventHub.$on('deleteStory', (event) => { this.deleteStory(event[2], event[0], event[1]) })
+    // 0: group, 1: index, 2: name, 3: description, 4: media
     this.$eventHub.$on('updateStory', (event) => { this.updateStory(event[0], event[1], event[2], event[3], event[4]) })
+
     if (this.$route.params.group) {
       this.path.push(this.$route.params.group)
     }
   },
   methods: {
+    openGroupEdit: function () {
+      this.groupedit = true
+      this.tempGroupName = this.groups[1].subgroups[this.openUserTab].name
+    },
+    groupSave: function () {
+      this.groups[1].subgroups[this.openUserTab].name = this.tempGroupName
+      this.groupedit = false
+      this.$store.dispatch('updateGroup', this.groups[1].subgroups[this.openUserTab])
+    },
+    groupDelete: function (index) {
+      this.$store.dispatch('deleteGroup', { id: this.groups[1].subgroups[index].id })
+      this.groups[1].subgroups.splice(index, 1)
+      this.openUserTab = 0
+      this.groupedit = false
+    },
     newTab: function () {
-      this.groups[1].subgroups.push({ name: 'New Group', subgroups: [] })
+      this.groups[1].subgroups.push({ name: 'New Group', subgroups: [], id: null })
     },
     newStory: function (groupIndex) {
+      let promise = []
+      if (!this.groups[1].subgroups[groupIndex].id) {
+        promise.push(this.$store.dispatch('createGroup', this.groups[1].subgroups[groupIndex]))
+      }
       // Vue cannot detect the addition of new properties, make sure all properties that are editable are present in the initialization
-      this.groups[1].subgroups[groupIndex].subgroups.push({ name: 'New Story', description: 'description', media: '' })
+      Promise.all(promise).then((r) => {
+        let newStory = { name: 'New Story', description: 'description', media: '', id: null, group_id: this.groups[1].subgroups[groupIndex].id }
+        this.groups[1].subgroups[groupIndex].subgroups.push(newStory)
+
+        this.$store.dispatch('createStory', newStory)
+      })
     },
     updateStory: function (group, index, name, description, media) {
       if (!this.groups[1].subgroups[group]) {
@@ -93,6 +140,19 @@ export default {
       this.groups[1].subgroups[group].subgroups[index].media = media
       this.groups[1].subgroups[group].subgroups[index].name = name
       this.groups[1].subgroups[group].subgroups[index].description = description
+
+      this.$store.dispatch('updateStory', this.groups[1].subgroups[group].subgroups[index])
+    },
+    deleteStory: function (id, group, index) {
+      if (!this.groups[1].subgroups[group]) {
+        return
+      }
+      this.$store.dispatch('deleteStory', { id: this.groups[1].subgroups[group].subgroups[index].id, group_id: this.groups[1].subgroups[group].id }).then(() => {
+        if (this.groups[1].subgroups[group].subgroups.length === 0) {
+          this.groupDelete(group)
+        }
+      })
+      this.groups[1].subgroups[group].subgroups.splice(index, 1)
     },
     subGroupsForPath: function (r) {
       return this.groups[r].subgroups
@@ -118,6 +178,9 @@ export default {
 .directory-tabs .nav-item > a {
   color: rgb(215,63,9);
   font-size: 1.4em;
+}
+.directory-group-tab.short {
+  width: 90%;
 }
 .directory-group-tab .nav-item > a {
   color: #000;
@@ -176,11 +239,20 @@ export default {
   border: solid 3px rgb(215,63,9);
 }
 .plus {
-  font-size: 20px;
-  line-height: 10px;
+  font-weight: bold;
+  font-size: 1.5em;
+  line-height: 1.125em;
+  color: rgb(215,63,9);
+}
+.plus a {
+    color: rgb(215,63,9);
 }
 .storyCard:active {
   border: solid 3px #FFF;
 }
-
+.editgroup {
+  position: absolute;
+  top: 9em;
+  right: 2em;
+}
 </style>

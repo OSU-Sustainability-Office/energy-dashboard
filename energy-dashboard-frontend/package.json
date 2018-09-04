@@ -17,6 +17,8 @@
     "chart.js": "^2.7.2",
     "e": "0.0.4",
     "element-ui": "^2.4.6",
+    "jszip": "^3.1.5",
+    "launch-editor-middleware": "^2.2.1",
     "popper.js": "^1.14.4",
     "style-loader": "^0.22.1",
     "vue": "^2.5.17",

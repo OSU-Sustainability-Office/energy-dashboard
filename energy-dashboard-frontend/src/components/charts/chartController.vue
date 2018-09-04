@@ -147,7 +147,8 @@ export default {
         labels: []
       }
       for (let line of this.block(this.index).charts) {
-        let data = line.data
+        // Deep copy prevents callbacks to data changing on computed variables
+        let data = JSON.parse(JSON.stringify(line.data))
         if (!data) {
           return
         }
@@ -167,7 +168,7 @@ export default {
         }
         tempData.datasets.push({
           label: line.name,
-          data: line.data,
+          data: data,
           backgroundColor: this.colors[i],
           borderColor: this.colors[i],
           fill: false,

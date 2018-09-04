@@ -18,13 +18,17 @@
           {{ otherStory }}
         </b-dropdown-item>
       </b-dropdown>
+      <div class='col text-right'>
+        <i class="fas fa-download dButton" v-b-tooltip.hover title='Download Graph Data' @click="download()"></i>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-
+var JSZip = require('jszip')
+var zip = new JSZip()
 export default {
   name: 'navdir',
   props: ['groupContents'],
@@ -77,6 +81,55 @@ export default {
     }
   },
   methods: {
+    download: function () {
+      let names = []
+      for (let block of this.story.blocks) {
+        let organizedData = [['Time']]
+        for (let chart of block.charts) {
+          organizedData[0].push(chart.name)
+          // Consider a better way for this
+          let mappedData = organizedData.slice(1, organizedData.length).map(e => { return e[0] })
+          for (let point of chart.data) {
+            if (mappedData.indexOf(point.x) < 0) {
+              let iDate = Date.parse(point.x)
+              let index = 1
+              if (!organizedData[index]) {
+                organizedData.splice(index, 0, [point.x, point.y])
+                continue
+              }
+              while (iDate > Date.parse(organizedData[index][0])) {
+                if (Date.parse(organizedData[index][0]) < iDate) {
+                  break
+                }
+                index++
+              }
+              organizedData.splice(index, 0, [point.x, point.y])
+            } else {
+              organizedData[mappedData.indexOf(point.x) + 1].push(point.y)
+            }
+          }
+        }
+        for (let array of organizedData) {
+          array = array.join(',')
+        }
+        organizedData = organizedData.join('\n')
+        let name = block.name
+        if (names.indexOf(name) >= 0) {
+          name += '-' + block.index
+        }
+        zip.file(name + '.csv', organizedData)
+        names.push(name)
+      }
+      var downloadName = this.story.name
+      zip.generateAsync({ type: 'blob' }).then(function (blob) {
+        let a = window.document.createElement('a')
+        a.href = window.URL.createObjectURL(blob, { type: 'text/plain' })
+        a.download = downloadName + '.zip'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      })
+    },
     getClass: function (name, index) {
       if (index === 0) {
         if (name === 'Public') {
@@ -222,4 +275,12 @@ export default {
     font-size: 1.2em !important;
     font-family: 'Open Sans', sans-serif !important;
   }
+  .dButton {
+    cursor: pointer;
+    color: #D73F09;
+  }
+  .dButton:hover {
+    color: #000;
+  }
+
 </style>

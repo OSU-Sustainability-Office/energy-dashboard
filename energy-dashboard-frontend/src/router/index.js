@@ -17,7 +17,12 @@ export default new Router({
       component: index
     },
     {
-      path: '/dashboard',
+      path: '/dashboard/',
+      name: 'dashboard',
+      component: account
+    },
+    {
+      path: '/dashboard/:id',
       name: 'account',
       component: account
     },
