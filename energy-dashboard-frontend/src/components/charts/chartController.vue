@@ -54,15 +54,14 @@ export default {
       value = parseInt(value)
       if (value === 1) {
         this.chart = this.$refs.linechart
-        this.parseDataBarLine()
       } else if (value === 2) {
         this.chart = this.$refs.barchart
-        this.parseDataBarLine()
       } else if (value === 3) {
         this.chart = this.$refs.doughnutchart
       } else if (value === 4) {
         this.chart = this.$refs.piechart
       }
+      this.parse()
       this.updateChart()
     }
   },
@@ -119,26 +118,30 @@ export default {
     updateChart: function () {
       if (this.chart) { this.chart.update() }
     },
-    parseDataPieDoughnut: function (indexM, groupId, data) {
-      if (!data || !groupId) { return }
-      if (!this.chartData.datasets[0] || !this.chartData.datasets[0].data || this.chartData.datasets[0].mpoint) {
-        this.chartData = {
-          labels: [],
-          datasets: [{
-            data: []
-          }]
+    parseDataPieDoughnut: function () {
+      if (!this.block(this.index)) {
+        return
+      }
+      let tempData = {
+        datasets: [{
+          data: [],
+          backgroundColor: []
+        }],
+        labels: []
+      }
+      let index = 0
+      for (let piece of this.block(this.index).charts) {
+        if (!piece.data) {
+          return
         }
-        this.chartData.datasets[0].backgroundColor = this.colors
+        let value = piece.data[piece.data.length - 1].y - piece.data[0].y
+        tempData.datasets[0].data.push(value)
+        tempData.datasets[0].backgroundColor.push(this.colors[index])
+        tempData.labels.push(piece.name)
+        index++
       }
 
-      this.chartData.datasets[0].data[indexM] = 0
-
-      this.chartData.labels[indexM] = this.names[indexM]
-      let kArray = Object.keys(data)
-      if (kArray.length === 0) { return }
-
-      let innerKey = Object.keys(data[kArray[0]])[0]
-      this.chartData.datasets[0].data[indexM] = data[kArray[kArray.length - 1]][innerKey] - data[kArray[0]][innerKey]
+      this.chartData = tempData
     },
     parseDataBarLine: function () {
       let i = 0

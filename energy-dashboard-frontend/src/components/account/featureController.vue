@@ -75,6 +75,16 @@
         <el-date-picker v-model='end' type='datetime'>
         </el-date-picker>
       </div>
+
+      <div class="row graphTypeChooser form-group">
+        <label>Graph Type: </label>
+        <el-select v-model="graphtype">
+          <el-option :value='1' label='Line Chart'></el-option>
+          <el-option :value='2' label='Bar Chart'></el-option>
+          <el-option :value='3' label='Doughnut Chart'></el-option>
+          <el-option :value='4' label='Pie Chart'></el-option>
+        </el-select>
+      </div>
       <!--<div class="row graphTypeChooser form-group">
         <label>Graph Type: </label>
         <select class="form-control" v-model="graphType" >
@@ -235,6 +245,16 @@ export default {
           if (this.mounted) {
             this.$store.commit('modifyFlag')
           }
+        })
+      }
+    },
+    graphtype: {
+      get: function () {
+        return this.block(this.index).graph_type
+      },
+      set: function (v) {
+        this.$store.dispatch('block', { index: this.index, graph_type: v }).then(() => {
+          this.$parent.$refs.chartController.parse()
         })
       }
     }
