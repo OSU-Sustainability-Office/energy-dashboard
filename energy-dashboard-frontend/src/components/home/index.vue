@@ -7,17 +7,21 @@
     <div class="row">
       <homeSide />
     </div>
-    <div class="row buttonBox">
-        <div class="col">
-          <div class="row justify-content-end">
-            <div class="btn col-4" @click="explore()">Explore</div>
+    <div class="row buttonBox justify-content-center">
+      <div class='col-6'>
+        <div class='row'>
+          <div class="col">
+            <div class="row justify-content-center">
+              <b-btn variant='primary' class="col" @click="explore()">Explore</b-btn>
+            </div>
+          </div>
+          <div class="col" v-if='user.name === ""'>
+            <div class="row justify-content-center">
+              <b-btn variant='primary' class="col" @click="login()">Login</b-btn>
+            </div>
           </div>
         </div>
-        <div class="col">
-          <div class="row justify-content-start">
-            <div class="btn col-4" @click="login()">Login</div>
-          </div>
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -31,6 +35,19 @@ export default {
   components: {
     homeContent,
     homeSide
+  },
+  data () {
+    return {
+      user: {
+        name: '',
+        privilege: 0
+      }
+    }
+  },
+  mounted () {
+    this.$store.dispatch('user').then(r => { this.user = r })
+  },
+  created () {
   },
   methods: {
     login: function () {
@@ -55,21 +72,8 @@ export default {
   margin: 10px;
 }
 .btn {
-  background-color: #D73F09;
-  color: #FFFFFF;
   top: 0px;
   width: 100%;
-  border: solid 1px #FFF;
-}
-.btn:hover {
-  background-color: #C72F09;
-  color: #FFFFFF;
-  border: solid 1px #CCC;
-}
-.btn:active {
-  background-color: #d76740;
-  color: #FFFFFF;
-  border: solid 1px #CCC;
 }
 #background {
   background: url('/static/images/solar.jpg');

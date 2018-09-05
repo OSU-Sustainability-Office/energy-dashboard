@@ -1,205 +1,202 @@
 <template>
   <div class="background">
-    <!-- <span class="main-heading">Stories</span> -->
-    <heropicture v-bind:id='currentStory'></heropicture>
-    <navdir :key='pathFlag' :path="path" :groupContents='groupContents' :groups='groups' ref='navdir' class="naviv"></navdir>
-    <!-- <span class="main-heading">Featured Blocks</span> -->
-    <featured v-bind:cards="cardsFeatured" :fromMap='fromMap' ref='featureBox' v-if='!editingStory && currentStory !== null'/>
-    <storyEdit v-if='editingStory' ref='storyEdit'/>
-    <div class="nocards" v-if="currentStory === null">
-      Please create  a story to get started
-    </div>
+    <heropicture :media='story.media' :description='story.description' :name='story.name'></heropicture>
+    <navdir ref='navdir' class="naviv"></navdir>
+    <featured ref='featureBox' />
   </div>
 </template>
 
 <script>
 
-import carousel from '@/components/account/carousel'
 import featured from '@/components/account/featured'
-import storyEdit from '@/components/account/storyEdit'
 import heropicture from '@/components/account/heropicture'
 import navdir from '@/components/account/navdir'
-import axios from 'axios'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'account',
   components: {
-    carousel,
     featured,
-    storyEdit,
     heropicture,
     navdir
   },
   props: [],
   data () {
     return {
-      cards: [],
-      cardsFeatured: [],
-      currentStory: null,
-      editingStory: false,
-      fromMap: false,
-      storyName: '',
-      pathFlag: 0,
-      path: [],
-      groupContents: [],
-      groups: []
+      changeFlag: false,
+      fullyMounted: false
     }
   },
-  mounted () {
-    if (this.$route.path.search('public') > 0) {
-      axios.get(process.env.ROOT_API + 'api/getPublicGroups').then(res => {
-        this.groups = res.data
-      }).catch(e => {
-        console.log(e)
-      })
-      this.fromMap = true
-      this.path[0] = 'Public'
-      this.changeStory([this.$route.params.id, 0])
-      var startDate = new Date()
-      switch (this.$route.params.range) {
-        case 0:
-          startDate.setDate(startDate.getDate() - 7)
-          break
-        case 1:
-          startDate.setMonth(startDate.getMonth() - 1)
-          break
-        case 2:
-          startDate.setYear(startDate.getYear() - 1)
-          break
-        default:
-          break
+  asyncComputed: {
+    stories: {
+      get: function () {
+        return this.$store.dispatch('stories')
       }
-      for (var card of this.cardsFeatured) {
-        card.start = startDate.toISOString()
-        card.end = (new Date()).toISOString()
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'story',
+      'block'
+    ]),
+    start: {
+      get () {
+        if (this.$route.path.search('public') > 0) {
+          let d = new Date()
+          switch (parseInt(this.$route.params.range)) {
+            case 0:
+              d.setDate(d.getDate() - 7)
+              break
+            case 1:
+              d.setMonth(d.getMonth() - 1)
+              break
+            case 2:
+              d.setYear(d.getYear() - 1)
+              break
+            default:
+              break
+          }
+          return d.toISOString()
+        }
       }
-    } else {
-      this.fromMap = false
-      this.path[0] = 'Your Dashboard'
+    },
+    unit: {
+      get () {
+        if (this.$route.path.search('public') > 0) {
+          switch (parseInt(this.$route.params.range)) {
+            case 0:
+              return 'hour'
+            case 1:
+              return 'hour'
+            case 2:
+              return 'day'
+            default:
+              return 'minute'
+          }
+        }
+      }
+    },
+    interval: {
+      get () {
+        if (this.$route.path.search('public') > 0) {
+          switch (parseInt(this.$route.params.range)) {
+            case 0:
+              return 2
+            case 1:
+              return 8
+            case 2:
+              return 5
+            default:
+              return 'minute'
+          }
+        }
+      }
     }
   },
   created () {
-    axios(process.env.ROOT_API + 'api/getStoriesForCurrentUser', { method: 'get', withCredentials: true }).then(res => {
-      if (!this.fromMap) {
-        this.cards = res.data
-        for (let card of this.cards) {
-          if (card.featured) {
-            this.currentStory = card.id
-            this.storyName = card.name
-            axios.get(process.env.ROOT_API + 'api/getBlocksForStory?id=' + card.id).then(res => {
-              if (!this.fromMap) {
-                for (let card of res.data) {
-                  card.points = ['accumulated_real']
-                  card.meters = [0]
-                  card.names = ['Undefined']
-                  card.groups = [8]
-                  card.start = card.date_start
-                  card.end = card.date_end
-                  card.int = card.date_interval
-                  card.unit = card.interval_unit
-                  card.graphType = card.graph_type
-                }
-                this.cardsFeatured = res.data
-                this.$refs.navdir.updatePath()
-              }
-            }).catch(err => {
-              throw err
-            })
-            return
-          }
-        }
-      }
-    }).catch(e => {
-      this.errors.push(e)
-    })
-    this.$eventHub.$on('deleteStory', val => {
-      var data = {
-        id: val[0]
-      }
-      axios(process.env.ROOT_API + 'api/deleteStory', { method: 'post', data: data, withCredentials: true }).catch(err => {
-        console.log(err)
-      })
-      for (var c in this.cards) {
-        if (this.cards[c].id === val[0]) {
-          this.cards.splice(c, 1)
-          if (this.cards.length === 0) {
-            this.currentStory = null
-          }
-          if (val[0] === this.currentStory) {
-            this.$refs.caro.clickedStory(c - 1)
-          }
-          return
-        }
-      }
+    this.changeFlag = this.story.modified
+    this.$eventHub.$on('reloadCharts', () => {
+      this.$refs.featureBox.updateCards()
     })
   },
-  watch: {
-    cardsFeatured: function (val) {
-      if (this.fromMap) {
-        var startDate = new Date()
-        switch (this.$route.params.range) {
-          case '0':
-            startDate.setDate(startDate.getDate() - 7)
-            break
-          case '1':
-            startDate.setMonth(startDate.getMonth() - 1)
-            break
-          case '2':
-            startDate.setYear(startDate.getYear() - 1)
-            break
-          default:
-            console.log(this.$route.params.range)
-            break
-        }
-        for (var card of val) {
-          card.date_start = startDate.toISOString()
-          card.date_end = (new Date()).toISOString()
-        }
-      }
-    }
+  mounted () {
+    this.update()
   },
   methods: {
-    editStory: function (event) {
-      this.editingStory = true
-      this.$nextTick(function () {
-        this.$refs.storyEdit.storyid = event[0]
-        for (var i = 0; i < this.cards.length; i++) {
-          if (this.cards[i].id === event[0]) {
-            this.$refs.storyEdit.name = this.cards[i].name
-            this.$refs.storyEdit.descr = this.cards[i].description
-            this.$refs.storyEdit.media = this.cards[i].media
-            break
+    save: function () {
+      for (let block of this.story.blocks) {
+        if (block.id === null) {
+          this.$store.dispatch('createBlock', block).then(() => {
+            for (let chart of block.charts) {
+              this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meters: chart.meters })
+            }
+          })
+        } else {
+          this.$store.dispatch('updateBlock', block).then(() => {
+            for (let chart of block.charts) {
+              if (chart.id) {
+                this.$store.dispatch('updateChart', chart)
+              } else {
+                this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meters: chart.meters })
+              }
+            }
+          })
+        }
+      }
+      if (this.story.removed.length > 0) {
+        for (let obj of this.story.removed) {
+          if (obj.type === 'block') {
+            this.$store.dispatch('deleteBlock', { id: obj.id })
+          } else if (obj.type === 'chart') {
+            this.$store.dispatch('deleteChart', { id: obj.id })
           }
         }
+        this.$store.commit('resetRemoved')
+      }
+      this.$nextTick(() => {
+        this.changeFlag = false
+        this.$store.commit('modifyFlag', false)
       })
+    },
+    cancel: function () {
+      let id = this.story.id
+      this.$store.commit('loadStory', { id: null })
+      this.$store.dispatch('story', id).then(() => {
+        this.$refs.featureBox.updateCards()
+        this.$nextTick(() => {
+          this.changeFlag = false
+          this.$store.commit('modifyFlag', false)
+        })
+      })
+    },
+    update: function () {
+      if (this.$route.path.search('public') > 0) {
+        this.path = ['Public']
+
+        this.$store.dispatch('story', this.$route.params.id).then((r) => {
+          let promises = []
+          for (let b in r.blocks) {
+            let c = {
+              index: b,
+              date_start: this.start,
+              date_end: (new Date()).toISOString(),
+              date_interval: this.interval,
+              interval_unit: this.unit
+            }
+            promises.push(this.$store.dispatch('block', c))
+          }
+
+          Promise.all(promises).then((t) => {
+            this.$refs.featureBox.updateCards()
+            this.fullyMounted = true
+          })
+        })
+      } else {
+        if (this.$route.params.id) {
+          this.$store.dispatch('story', this.$route.params.id).then((r) => {
+            this.$refs.featureBox.updateCards()
+            this.$nextTick(() => {
+              this.fullyMounted = true
+            })
+          })
+        } else {
+          this.$store.dispatch('user').then(user => {
+            this.$store.dispatch('stories').then(groups => {
+              if (!this.story.id) {
+                this.$store.dispatch('story', groups[0].stories[0].id).then(() => {
+                  this.$nextTick(() => {
+                    this.fullyMounted = true
+                  })
+                })
+              }
+            })
+          })
+        }
+      }
     },
     changeStory: function (event) {
       this.editingStory = false
-      this.currentStory = event[0]
-      if (event[1]) {
-        axios(process.env.ROOT_API + 'api/changeFeaturedStory', { method: 'post', data: { id: event[0] }, withCredentials: true }).catch(e => {
-          console.log(e)
-        })
-      }
-      axios.get(process.env.ROOT_API + 'api/getStoryData?id=' + event[0]).then(res => {
-        this.storyName = res.data[0].name
-        this.$refs.navdir.updatePath()
-      }).catch(e => {
-        console.log(e)
-      })
-      axios.get(process.env.ROOT_API + 'api/getBlocksForStory?id=' + event[0]).then(res => {
-        for (var card of res.data) {
-          card.points = ['accumulated_real']
-          card.meters = [0]
-          card.names = ['Undefined']
-          card.groups = [8]
-        }
-        this.cardsFeatured = res.data
-        this.$nextTick(() => {
-          this.$eventHub.$emit('reloadChart')
-          this.pathFlag++
-        })
-      })
+      this.$store.dispatch('story', event[0])
     }
   }
 }
@@ -207,6 +204,23 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.modText {
+  position: absolute;
+  top: 240px;
+  width: 100%;
+  background-color: rgba(0,0,0,0.4);
+  color: #FFF;
+  z-index: 2;
+  font-size: 12px;
+}
+.modText .col {
+  margin: 0.6em;
+}
+.modText .btn {
+  font-size: 10px;
+  padding: 0.5em;
+  margin: 0.25em;
+}
 .naviv {
   position: absolute;
   top: 200px;

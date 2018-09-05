@@ -1,25 +1,68 @@
 <template>
-  <div class='container-fluid'>
-    <navdir :path='path' :groups='subGroupsForPath()' class="bar"/>
-    <div class='mainArea container-fluid'>
-      <div class="container section" v-for='(item, index) in subGroupsForPath()' :key='index'>
-        <div class="row">
-          <div :class="[item.open ? 'open' : '']" class='col h3' :aria-controls='"collapse-"+item.name.replace(/ /g,"_").replace(/&/g,"a")' :aria-expanded='item.open' @click='pushItem(item,index)' >{{ item.name }}</div>
-        </div>
-          <b-collapse class="row justify-content-start padded" v-model='item.open' :id='"collapse-" + item.name.replace(/ /g,"_").replace(/&/g,"a")'>
-            <div class='col-lg-3' v-for='(building, index_b) in item.subgroups' :key='index_b' @click='$router.push({path: `/public/${building.id}/1`})'>
-              <storycard :name='building.name' :notools='true' :media='building.media' :description='building.description' class="storyCard" />
+  <div class='container-fluid mainArea'>
+    <!-- <navdir ref='navdir' class="bar"/> -->
+    <b-tabs nav-class="directory-tabs">
+      <b-tab title='Public'>
+        <b-tabs pills card nav-class='directory-group-tab'>
+          <b-tab class="container" v-for='(item, index) in subGroupsForPath(0)' :key='index' :title='item.name'>
+            <div class="row padded" >
+              <div class='col-xl-3 col-lg-4 col-md-6' v-for='(building, index_b) in item.subgroups' :key='index_b' >
+                <storycard :name='building.name' :notools='true' :media='building.media' :description='building.description' class="mx-auto storyCard" @click='$router.push({path: `/public/${building.id}/1`})' />
+              </div>
             </div>
-          </b-collapse>
-      </div>
-    </div>
+          </b-tab>
+        </b-tabs>
+      </b-tab>
+      <b-tab title='Your Dashboard' v-if='user.name !== ""'>
+        <b-tabs pills card :nav-class="['directory-group-tab', 'short']" v-model='openUserTab'>
+          <b-tab class="container" v-for='(item, index) in subGroupsForPath(1)' :key='index' :title='item.name'>
+            <div class="row padded" >
+              <div class='col-xl-3 col-lg-4 col-md-6' v-for='(building, index_b) in item.subgroups' :key='index_b' >
+                <storycard :name='building.name' :media='building.media' :description='building.description' class="mx-auto storyCard" @click='$router.push({path: `/dashboard/${building.id}`})' :group='index' :index='index_b'/>
+              </div>
+              <div class='col-xl-3 col-lg-4 col-md-6'>
+                <storycard class='mx-auto' :plus='true' @click='newStory(index)' :notools='true' v-b-tooltip.hover title='Create a Story' />
+              </div>
+            </div>
+          </b-tab>
+          <b-nav-item slot='tabs' class="tab plus" @click.prevent='newTab()'>
+            +
+          </b-nav-item>
+          <div slot="empty" class="text-center text-muted">
+            Click the '+' to create a group
+          </div>
+        </b-tabs>
+        <div class='editgroup'>
+          <b-btn @click='openGroupEdit()'>Edit Group</b-btn>
+          <b-modal v-model='groupedit' title="Edit Group" body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
+            <b-container>
+              <div class="row">
+                <label>Name:</label>
+                <el-input type="text" v-model='tempGroupName'>New Group</el-input>
+              </div>
+            </b-container>
+            <b-container slot='modal-footer'>
+              <div class='row'>
+                <div class='col-6'>
+                  <b-btn @click='groupSave()' variant='primary'> Ok </b-btn>
+                  <b-btn @click='groupedit = false'> Cancel </b-btn>
+                </div>
+                <div class='col text-right'>
+                  <b-btn @click='groupDelete(openUserTab)' variant='danger'> Delete </b-btn>
+                </div>
+              </div>
+            </b-container>
+          </b-modal>
+        </div>
+      </b-tab>
+    </b-tabs>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
 import navdir from '@/components/account/navdir.vue'
 import storycard from '@/components/account/storyCard.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: '',
@@ -31,34 +74,94 @@ export default {
     return {
       groups: [],
       path: ['Public'],
-      currentGroups: []
+      currentGroups: [],
+      groupedit: false,
+      tempGroupName: '',
+      openUserTab: 0
     }
+  },
+  computed: {
+    // User should be populated due to nav-bar, only need to use the getter not the promise action
+    ...mapGetters([
+      'user'
+    ])
   },
   created () {
     this.groups.push({name: 'Public', subgroups: []})
     this.groups.push({name: 'Your Dashboard', subgroups: []})
-    axios.get(process.env.ROOT_API + 'api/getPublicGroups').then(res => {
-      for (var group of res.data) {
-        axios.get(process.env.ROOT_API + 'api/getGroupData?id=' + group.id).then(gd => {
-          this.groups[0].subgroups.push({ name: gd.data[0][0].name, id: gd.data[0][0].id, subgroups: gd.data[1], open: this.path.includes(gd.data[0][0].name) })
-        }).catch(e => {
-          throw e
-        })
+    this.$store.dispatch('stories').then(res => {
+      for (let group of res) {
+        if (group.public) {
+          this.groups[0].subgroups.push({ name: group.group, subgroups: group.stories, id: group.id })
+        } else {
+          this.groups[1].subgroups.push({ name: group.group, subgroups: group.stories, id: group.id })
+        }
       }
-    }).catch(e => {
-      console.log(e)
     })
-    console.log(this.$route.params)
+    // 0: group, 1: index, 2: id
+    this.$eventHub.$on('deleteStory', (event) => { this.deleteStory(event[2], event[0], event[1]) })
+    // 0: group, 1: index, 2: name, 3: description, 4: media
+    this.$eventHub.$on('updateStory', (event) => { this.updateStory(event[0], event[1], event[2], event[3], event[4]) })
+
     if (this.$route.params.group) {
       this.path.push(this.$route.params.group)
     }
   },
   methods: {
-    subGroupsForPath: function () {
-      if (this.path[0] === 'Public') {
-        return this.groups[0].subgroups
+    openGroupEdit: function () {
+      this.groupedit = true
+      this.tempGroupName = this.groups[1].subgroups[this.openUserTab].name
+    },
+    groupSave: function () {
+      this.groups[1].subgroups[this.openUserTab].name = this.tempGroupName
+      this.groupedit = false
+      this.$store.dispatch('updateGroup', this.groups[1].subgroups[this.openUserTab])
+    },
+    groupDelete: function (index) {
+      this.$store.dispatch('deleteGroup', { id: this.groups[1].subgroups[index].id })
+      this.groups[1].subgroups.splice(index, 1)
+      this.openUserTab = 0
+      this.groupedit = false
+    },
+    newTab: function () {
+      this.groups[1].subgroups.push({ name: 'New Group', subgroups: [], id: null })
+    },
+    newStory: function (groupIndex) {
+      let promise = []
+      if (!this.groups[1].subgroups[groupIndex].id) {
+        promise.push(this.$store.dispatch('createGroup', this.groups[1].subgroups[groupIndex]))
       }
-      return this.groups[1].subgroups
+      // Vue cannot detect the addition of new properties, make sure all properties that are editable are present in the initialization
+      Promise.all(promise).then((r) => {
+        let newStory = { name: 'New Story', description: 'description', media: '', id: null, group_id: this.groups[1].subgroups[groupIndex].id }
+        this.groups[1].subgroups[groupIndex].subgroups.push(newStory)
+
+        this.$store.dispatch('createStory', newStory)
+      })
+    },
+    updateStory: function (group, index, name, description, media) {
+      if (!this.groups[1].subgroups[group]) {
+        return
+      }
+      this.groups[1].subgroups[group].subgroups[index].media = media
+      this.groups[1].subgroups[group].subgroups[index].name = name
+      this.groups[1].subgroups[group].subgroups[index].description = description
+
+      this.$store.dispatch('updateStory', this.groups[1].subgroups[group].subgroups[index])
+    },
+    deleteStory: function (id, group, index) {
+      if (!this.groups[1].subgroups[group]) {
+        return
+      }
+      this.$store.dispatch('deleteStory', { id: this.groups[1].subgroups[group].subgroups[index].id, group_id: this.groups[1].subgroups[group].id }).then(() => {
+        if (this.groups[1].subgroups[group].subgroups.length === 0) {
+          this.groupDelete(group)
+        }
+      })
+      this.groups[1].subgroups[group].subgroups.splice(index, 1)
+    },
+    subGroupsForPath: function (r) {
+      return this.groups[r].subgroups
     },
     pushItem: function (item) {
       for (let section of this.subGroupsForPath()) {
@@ -77,14 +180,30 @@ export default {
   }
 }
 </script>
+<style>
+.directory-tabs .nav-item > a {
+  color: rgb(215,63,9);
+  font-size: 1.4em;
+}
+.directory-group-tab.short {
+  width: 90%;
+}
+.directory-group-tab .nav-item > a {
+  color: #000;
+}
+.directory-group-tab .nav-item:hover :not(.active) {
+  color: #FFF;
+  background-color: rgb(26,26,26);
+}
+.directory-group-tab .nav-item .active {
+  color: #FFF;
+  background-color: rgb(215,63,9);
+}
+</style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mainArea {
-  position: absolute;
-  left: 0px;
-  width: 100%;
-  border-radius: 10px;
-  margin-top: 8em;
+  margin-top: 1em;
 }
 .h3 {
   border-bottom: solid 1px rgba(126,126,126,0.2);
@@ -125,7 +244,21 @@ export default {
 .storyCard:hover {
   border: solid 3px rgb(215,63,9);
 }
+.plus {
+  font-weight: bold;
+  font-size: 1.5em;
+  line-height: 1.125em;
+  color: rgb(215,63,9);
+}
+.plus a {
+    color: rgb(215,63,9);
+}
 .storyCard:active {
   border: solid 3px #FFF;
+}
+.editgroup {
+  position: absolute;
+  top: 9em;
+  right: 2em;
 }
 </style>

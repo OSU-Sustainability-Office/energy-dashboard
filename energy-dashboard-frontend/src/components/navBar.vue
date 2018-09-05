@@ -9,13 +9,14 @@
     <div class='pos-left collapse navbar-collapse' id="navbarSupportedContent">
       <ul class="navbar-nav">
         <li class='nav-item' v-bind:class='[isActive("map") ? "active" : ""]'><a class="nav-link" href="#/map">Map</a></li>
-        <li class='nav-item' v-bind:class='[isActive("account") ? "active" : ""]'><a class="nav-link" href="#/account">Dashboard</a></li>
+        <li class='nav-item' v-bind:class='[isActive("dashboard") ? "active" : ""]'><a class="nav-link" href="#/dashboard">Dashboard</a></li>
         <li class='nav-item' v-bind:class='[isActive("directory") ? "active" : ""]'><a class="nav-link" href="#/directory">Directory</a></li>
       </ul>
     </div>
     <div class='pos-right navbar-collapse collapse w-100 order-3 dual-collapse2'>
       <ul class="navbar-nav">
-        <li class='nav-item'><a class='nav-link' :href='this.logOutLink'>Sign Out</a></li>
+        <li class='nav-item' v-if='user !== null && user.name !== ""'><a class='nav-link' @click='logOut()'>Sign Out</a></li>
+        <li class='nav-item' v-if='(user === null || user.name === "") && $route.path !== "/"'><a class='nav-link' :href='loginLink'>Sign In</a></li>
       </ul>
     </div>
     <b-modal size="lg" ref="dir" body-class="dirModal" hide-header hide-footer>
@@ -25,24 +26,28 @@
 </template>
 <script>
 import directory from '@/components/directory/directory.vue'
+
 export default {
   name: 'navigbar',
   components: {directory},
   data () {
     return {
-      loggedIn: false,
-      logOutLink: process.env.ROOT_API + 'logout'
+      logOutLink: process.env.ROOT_API + 'logout',
+      loginLink: process.env.ROOT_API + 'login',
+      user: null
     }
   },
-  created () {
-    this.$eventHub.$on('loggedIn', val => {
-      this.loggedIn = true
-    })
+  mounted () {
+    this.$store.dispatch('user').then(r => { this.user = r })
   },
   methods: {
+    logOut: function () {
+      this.$store.commit('loadUser', { name: '', privilige: 0 })
+      window.location = this.logOutLink
+    },
     isActive: function (s) {
       let splitPath = this.$route.path.substr(1).split('/')
-      if (s === 'account' && splitPath[0] === 'public') { return true }
+      if (s === 'dashboard' && splitPath[0] === 'public') { return true }
       if (s === splitPath[0]) { return true }
       return false
     },

@@ -98,6 +98,53 @@ body {
 .dropdown-item:active > * {
   color: #FFF;
 }
+.btn-primary {
+  background-color: #D73F09 !important;
+  color: #FFFFFF;
+  border: solid 1px #FFF;
+}
+.btn-primary:hover {
+  background-color: #C72F09 !important;
+  color: #FFFFFF;
+  border: solid 1px #CCC;
+}
+.btn-primary:active {
+  background-color: #d76740 !important;
+  color: #FFFFFF;
+  border: solid 1px #CCC !important;
+}
+
+.btn-secondary {
+  background-color: #262626 !important;
+  color: #FFFFFF;
+  border: solid 1px #FFF;
+}
+.btn-secondary:hover {
+  background-color: #000000 !important;
+  color: #FFFFFF;
+  border: solid 1px #CCC;
+}
+.btn-secondary:active {
+  background-color: #303030 !important;
+  color: #FFFFFF;
+  border: solid 1px #CCC !important;
+}
+
+.btn-danger {
+  background-color: #d50510 !important;
+  color: #FFFFFF;
+  border: solid 1px #FFF;
+}
+.btn-danger:hover {
+  background-color: #ad040d !important;
+  color: #FFFFFF;
+  border: solid 1px #CCC;
+}
+.btn-danger:active {
+  background-color: #c3050f !important;
+  color: #FFFFFF;
+  border: solid 1px #CCC !important;
+}
 </style>
 
 <style scoped>

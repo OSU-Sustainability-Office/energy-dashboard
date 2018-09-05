@@ -53,9 +53,9 @@ exports.start = function (cb) {
       if (val.length > 0) {
         req.session.user = JSON.parse(JSON.stringify(val))[0]
         if (process.env.CAS_DEV === 'true') {
-          res.status(301).redirect('http://localhost:8080/#/account')
+          res.status(301).redirect('http://localhost:8080/#/map')
         } else {
-          res.status(301).redirect('http://52.39.141.177:3478/#/account')
+          res.status(301).redirect('http://52.39.141.177:3478/#/map')
         }
       } else {
         db.query('INSERT INTO users (name, privilege) VALUES (?,?)', [[req.session[cas.session_name]], 1]).then(r => {
@@ -64,9 +64,9 @@ exports.start = function (cb) {
           req.session.user.privilege = 1
           req.session.user.name = [req.session[cas.session_name]]
           if (process.env.CAS_DEV === 'true') {
-            res.status(301).redirect('http://localhost:8080/#/account')
+            res.status(301).redirect('http://localhost:8080/#/map')
           } else {
-            res.status(301).redirect('http://52.39.141.177:3478/#/account')
+            res.status(301).redirect('http://52.39.141.177:3478/#/map')
           }
         }).catch(e => {
           throw e
@@ -82,9 +82,9 @@ exports.start = function (cb) {
       if (val.length > 0) {
         req.session.user = JSON.parse(JSON.stringify(val))[0]
         if (process.env.CAS_DEV === 'true') {
-          res.status(301).redirect('http://localhost:8080/#/account')
+          res.status(301).redirect('http://localhost:8080/#/map')
         } else {
-          res.status(301).redirect('http://52.39.141.177:3478#/account')
+          res.status(301).redirect('http://52.39.141.177:3478#/map')
         }
       } else {
         db.query('INSERT INTO users (name, privilege) VALUES (?,?)', [[req.session[cas.session_name]], 1]).then(r => {
@@ -93,9 +93,9 @@ exports.start = function (cb) {
           req.session.user.privilege = 1
           req.session.user.name = [req.session[cas.session_name]]
           if (process.env.CAS_DEV === 'true') {
-            res.status(301).redirect('http://localhost:8080/#/account')
+            res.status(301).redirect('http://localhost:8080/#/map')
           } else {
-            res.status(301).redirect('http://52.39.141.177:3478/#/account')
+            res.status(301).redirect('http://52.39.141.177:3478/#/map')
           }
         }).catch(e => {
           throw e
@@ -108,7 +108,15 @@ exports.start = function (cb) {
 
   app.use(express.static(path.join(__dirname, '/public')))
 
-  app.get('/logout', cas.logout)
+  app.get('/logout', function (req, res) {
+    req.session.destroy(e => {
+      if (process.env.CAS_DEV === 'true') {
+        res.status(301).redirect('http://localhost:8080/#/')
+      } else {
+        res.status(301).redirect('http://52.39.141.177:3478/#/')
+      }
+    })
+  })
   db.connect(function (err) {
     if (err) {
       throw err

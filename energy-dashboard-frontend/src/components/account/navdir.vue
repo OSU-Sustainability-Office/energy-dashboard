@@ -18,22 +18,122 @@
           {{ otherStory }}
         </b-dropdown-item>
       </b-dropdown>
+      <div class='col text-right'>
+        <i class="fas fa-save dButton" v-b-tooltip.hover title='Save Story Charts' v-if='path[0] === "Your Dashboard"' @click="$parent.save()"></i>
+        <i class="fas fa-download dButton" v-b-tooltip.hover title='Download Story Data' @click="download()"></i>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import { mapGetters } from 'vuex'
+var JSZip = require('jszip')
+var zip = new JSZip()
 export default {
   name: 'navdir',
-  props: ['path', 'groupContents', 'groups'],
+  props: ['groupContents'],
   up: 0,
   data () {
     return {
-      groupName: ''
+      groupName: '',
+      path: []
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'story',
+      'stories'
+    ])
+  },
+  watch: {
+    story: {
+      handler: function (v) {
+        // This is kind of expensive consider changing at some point
+        const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+        if (!group.public) {
+          this.path = ['Your Dashboard']
+        } else {
+          this.path = ['Public']
+        }
+
+        this.path.push(group.group)
+        this.path.push(this.story.name)
+      }
+    }
+
+  },
+  mounted () {
+    // This is kind of expensive consider changing at some point
+    const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+    if (group) {
+      if (!group.public) {
+        this.path = ['Your Dashboard']
+      } else {
+        this.path = ['Public']
+      }
+
+      this.path.push(group.group)
+      this.path.push(this.story.name)
+    }
+  },
+  asyncComputed: {
+    groups: {
+      get: function () {
+        return this.$store.dispatch('stories')
+      }
     }
   },
   methods: {
+    download: function () {
+      let names = []
+      for (let block of this.story.blocks) {
+        let organizedData = [['Time']]
+        for (let chart of block.charts) {
+          organizedData[0].push(chart.name)
+          // Consider a better way for this
+          let mappedData = organizedData.slice(1, organizedData.length).map(e => { return e[0] })
+          for (let point of chart.data) {
+            if (mappedData.indexOf(point.x) < 0) {
+              let iDate = Date.parse(point.x)
+              let index = 1
+              if (!organizedData[index]) {
+                organizedData.splice(index, 0, [point.x, point.y])
+                continue
+              }
+              while (iDate > Date.parse(organizedData[index][0])) {
+                if (Date.parse(organizedData[index][0]) < iDate) {
+                  break
+                }
+                index++
+              }
+              organizedData.splice(index, 0, [point.x, point.y])
+            } else {
+              organizedData[mappedData.indexOf(point.x) + 1].push(point.y)
+            }
+          }
+        }
+        for (let array of organizedData) {
+          array = array.join(',')
+        }
+        organizedData = organizedData.join('\n')
+        let name = block.name
+        if (names.indexOf(name) >= 0) {
+          name += '-' + block.index
+        }
+        zip.file(name + '.csv', organizedData)
+        names.push(name)
+      }
+      var downloadName = this.story.name
+      zip.generateAsync({ type: 'blob' }).then(function (blob) {
+        let a = window.document.createElement('a')
+        a.href = window.URL.createObjectURL(blob, { type: 'text/plain' })
+        a.download = downloadName + '.zip'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      })
+    },
     getClass: function (name, index) {
       if (index === 0) {
         if (name === 'Public') {
@@ -52,11 +152,23 @@ export default {
         return ['Public', 'Your Dashboard']
       } else if (i === 1) {
         let r = []
-        for (var group of this.groups) { r.push(group.name) }
+        if (!this.groups) {
+          return
+        }
+        const cGroup = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+        for (let group of this.groups) {
+          // Cant be === because public is undefined if not true
+          if ((!cGroup.public && !group.public) || (cGroup.public && group.public)) {
+            r.push(group.group)
+          }
+        }
         return r
       } else if (i === 2) {
         let r = []
-        for (var story of this.groupContents) { r.push(story.name) }
+        if (!this.groups) {
+          return
+        }
+        for (let story of this.groups.find(elm => elm.group === this.path[1]).stories) { r.push(story.name) }
         return r
       } else {
         return ['Error']
@@ -66,26 +178,13 @@ export default {
       if (dirI === 0) {
         this.$router.push({ path: `/directory` })
       } if (dirI === 1) {
-        this.$router.push({ path: `/directory/${this.groups[dropI].name}` })
+        this.$router.push({ path: `/directory/${this.groups[dropI].group}` })
+        this.$parent.update()
       } else if (dirI === 2) {
-        this.$parent.changeStory([this.groupContents[dropI].id, 0])
+        this.$router.push({ path: `/public/${this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id}/1` })
+        this.$parent.update()
+        // this.$parent.changeStory([this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id, 0])
       }
-    },
-    updatePath: function () {
-      axios(process.env.ROOT_API + 'api/getStoryGroup?id=' + this.$parent.currentStory, { method: 'get', withCredentials: true }).then(res => {
-        this.groupName = res.data[0].group_name
-        this.$parent.path[1] = this.groupName
-        this.$parent.path[2] = this.$parent.storyName
-
-        this.$parent.groupContents = []
-        for (var story of res.data) {
-          this.$parent.groupContents.push({ id: story.story_id, name: story.story_name })
-        }
-        console.log(this.groupContents)
-        this.$parent.pathFlag++
-      }).catch(e => {
-        console.log(e)
-      })
     }
   }
 }
@@ -186,4 +285,13 @@ export default {
     font-size: 1.2em !important;
     font-family: 'Open Sans', sans-serif !important;
   }
+  .dButton {
+    cursor: pointer;
+    color: #D73F09;
+    padding-right: 0.4em;
+  }
+  .dButton:hover {
+    color: #000;
+  }
+
 </style>

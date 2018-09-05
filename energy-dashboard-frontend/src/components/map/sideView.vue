@@ -1,7 +1,7 @@
 <template>
   <div class="view container">
     <div class="title row">
-      <span class="col">{{ title }}</span>
+      <span class="col">{{ story.name }}</span>
       <span class="col-1 text-right" ><i class="fas fa-times" @click="hide()"></i></span>
     </div>
     <div class="media row" ref='media'>
@@ -14,8 +14,8 @@
         <button @click='currentRange = 2' class="col btn" v-bind:class="{ active: currentRange == 2 }">Year</button>
       </div>
       <div class="d-flex flex-row graph" ref='scrollBox'>
-        <div class="col inline" v-for='(block,index) in blocks' :key='index'>
-          <chartController :randomColors=1 v-bind:start='dateOffset()' :end='(new Date()).toISOString()' v-bind:interval='int' v-bind:unit='unit' :graphType='1' v-bind:points='[block.point]' v-bind:groups='[block.group_id]' :names='[block.name]' :submeters='[block.meter]' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding': '0.5em' }"/>
+        <div class="col inline" v-for='(block,index) in story.blocks' :key='index'>
+          <chartController :randomColors=1 :graphType='1' :index=index ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding': '0.5em' }"/>
         </div>
       </div>
       <i class="graphslide left fas fa-caret-left" @click='prev()' ref="prevArrow"></i>
@@ -28,6 +28,8 @@
 </template>
 <script>
 import chartController from '@/components/charts/chartController'
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'sideView',
   props: [],
@@ -42,10 +44,15 @@ export default {
       currentRange: 1,
       unit: 'day',
       int: 1,
-      blocks: [],
       index: 0
 
     }
+  },
+  computed: {
+    ...mapGetters([
+      'story',
+      'block'
+    ])
   },
   methods: {
     hide: function () {
@@ -63,13 +70,13 @@ export default {
       return d.toISOString()
     },
     next: function () {
-      if (this.index + 1 >= this.blocks.length) { return }
+      if (this.index + 1 >= this.story.blocks.length) { return }
       this.index++
       this.$refs.scrollBox.childNodes.forEach((child, index) => {
         child.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.clientWidth + 20)).toString() + 'px)'
       })
       this.$refs.prevArrow.style.opacity = 1
-      if (this.index + 1 === this.blocks.length) {
+      if (this.index + 1 === this.story.blocks.length) {
         this.$refs.nextArrow.style.opacity = 0
       }
     },
@@ -89,42 +96,56 @@ export default {
     media: function (value) {
       this.$refs.media.style.backgroundImage = 'url(' + this.api + 'block-media/thumbs/' + value + ')'
     },
-    blocks: function (value) {
-      this.$nextTick(() => {
-        this.$refs.scrollBox.childNodes.forEach(child => {
-          child.style.transform = 'translateX(0px)'
-        })
-        this.index = 0
-        for (var i in value) {
-          this.$refs.chartController[i].getData(0, value[i].point, value[i].group_id, this.dateOffset(), (new Date()).toISOString(), this.int, this.unit, value[i].meter)
-        }
-        if (this.blocks.length <= 1) {
-          this.$refs.nextArrow.style.opacity = 0
-        } else {
-          this.$refs.nextArrow.style.opacity = 1
-        }
-      })
-    },
     currentRange: function (value) {
       value = parseInt(value)
+      let i = 0
+      let u = 0
       if (value === 0) {
-        this.int = 6
-        this.unit = 'hour'
+        i = 6
+        u = 'hour'
       } else if (value === 1) {
-        this.int = 1
-        this.unit = 'day'
+        i = 1
+        u = 'day'
       } else if (value === 2) {
-        this.int = 15
-        this.unit = 'day'
+        i = 15
+        u = 'day'
       }
-      for (let i in this.blocks) {
-        this.$refs.chartController[i].getData(0, this.blocks[i].point, this.blocks[i].group_id, this.dateOffset(), (new Date()).toISOString(), this.int, this.unit, this.blocks[i].meter)
+      let promises = []
+      for (let b of this.$store.getters.story.blocks) {
+        let c = {
+          index: b.index,
+          date_interval: i,
+          interval_unit: u,
+          date_start: this.dateOffset()
+        }
+
+        promises.push(this.$store.dispatch('block', c))
       }
+      Promise.all(promises).then(() => {
+        for (let controller of this.$refs.chartController) {
+          controller.parseDataBarLine()
+        }
+      }).catch(e => {
+        console.log(e.message)
+      })
     }
   },
   mounted () {
+    this.$store.dispatch('story', this.$parent.openStory).then(() => {
+      let promises = []
+      this.media = this.story.media
+      for (let block in this.story.blocks) {
+        promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
+      }
+
+      Promise.all(promises).then(() => {
+        for (let controller of this.$refs.chartController) {
+          controller.parseDataBarLine()
+        }
+      })
+    })
     this.$refs.prevArrow.style.opacity = 0
-    if (this.blocks.length <= 1) {
+    if (this.story.length <= 1) {
       this.$refs.nextArrow.style.opacity = 0
     } else {
       this.$refs.nextArrow.style.opacity = 1
@@ -143,7 +164,7 @@ export default {
     z-index: 401;
     margin-left: -470px;
     box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
-    display: none;
+    display: block;
   }
   .media {
     height: 300px;

@@ -5,63 +5,64 @@
     </div>
 
     <div class="container-fluid controlSection" ref="controlArea">
-      <div class="row indexChooser" ref="indexChooser">
-        <b-button class="indexButton" v-for="(point, index) in points" @click="currentIndex = index" :key='index'>{{ index + 1 }}</b-button>
+      <div class="row indexChooser" ref="indexChooser" v-if='!story.public'>
+        <b-button class="indexButton"  v-for="(point, index) in this.block(index).charts" :variant='buttonVariant(index)' @click="currentIndex = index" :key='index'>{{ index + 1 }}</b-button>
         <b-button class="indexButton" @click="addGroup()">+</b-button>
       </div>
 
-      <div class="row nameChooser form-group">
+      <div class="row nameChooser form-group" v-if='!story.public'>
         <label>Name:</label>
-        <input class="form-control" type="text" v-model="names[currentIndex]">
+        <el-input type="text" v-model="name"></el-input>
       </div>
 
       <div class="row pointChooser form-group">
         <label>Point: </label>
-        <select v-model="points[currentIndex]" class="form-control">
+        <el-select v-model="point">
           <!-- Electrical Meter Options -->
-          <option value="accumulated_real" v-if="currentType == 'e'">Accumulated Real</option>
-          <option value="real_power" v-if="currentType == 'e'">Total Real Power</option>
-          <option value="reactive_power" v-if="currentType == 'e'">Total Reactive Power</option>
-          <option value="apparent_power" v-if="currentType == 'e'">Total Apparent Power</option>
-          <option value="real_a" v-if="currentType == 'e'">Real Power, Phase A</option>
-          <option value="real_b" v-if="currentType == 'e'">Real Power, Phase B</option>
-          <option value="real_c" v-if="currentType == 'e'">Real Power, Phase C</option>
-          <option value="reactive_a" v-if="currentType == 'e'">Reactive Power, Phase A</option>
-          <option value="reactive_b" v-if="currentType == 'e'">Reactive Power, Phase B</option>
-          <option value="reactive_c" v-if="currentType == 'e'">Reactive Power, Phase C</option>
-          <option value="apparent_a" v-if="currentType == 'e'">Apparent Power, Phase A</option>
-          <option value="apparent_b" v-if="currentType == 'e'">Apparent Power, Phase B</option>
-          <option value="apparent_c" v-if="currentType == 'e'">Apparent Power, Phase C</option>
-          <option value="pf_a" v-if="currentType == 'e'">Power Factor, Phase A</option>
-          <option value="pf_b" v-if="currentType == 'e'">Power Factor, Phase B</option>
-          <option value="pf_c" v-if="currentType == 'e'">Power Factor, Phase C</option>
-          <option value="vphase_ab" v-if="currentType == 'e'">Voltage Phase, Phase A-B</option>
-          <option value="vphase_bc" v-if="currentType == 'e'">Voltage Phase, Phase B-C</option>
-          <option value="vphase_ac" v-if="currentType == 'e'">Voltage Phase, Phase A-C</option>
-          <option value="vphase_an" v-if="currentType == 'e'">Voltage Phase, Phase A-N</option>
-          <option value="vphase_bn" v-if="currentType == 'e'">Voltage Phase, Phase B-N</option>
-          <option value="vphase_cn" v-if="currentType == 'e'">Voltage Phase, Phase C-N</option>
-          <option value="cphase_a" v-if="currentType == 'e'">Current Phase, Phase A</option>
-          <option value="cphase_b" v-if="currentType == 'e'">Current Phase, Phase B</option>
-          <option value="cphase_c" v-if="currentType == 'e'">Current Phase, Phase C</option>
+          <el-option value="accumulated_real" v-if="currentType === 'e'" label='Accumulated Real'></el-option>
+          <el-option value="real_power" v-if="currentType === 'e'" label='Total Real Power'></el-option>
+          <el-option value="reactive_power" v-if="currentType === 'e'" label='Total Reactive Power'></el-option>
+          <el-option value="apparent_power" v-if="currentType === 'e'" label='Total Apparent Power'></el-option>
+          <el-option value="real_a" v-if="currentType === 'e'" label='Real Power, Phase A'></el-option>
+          <el-option value="real_b" v-if="currentType === 'e'" label='Real Power, Phase B'></el-option>
+          <el-option value="real_c" v-if="currentType === 'e'" label='Real Power, Phase C'></el-option>
+          <el-option value="reactive_a" v-if="currentType === 'e'" label='Reactive Power, Phase A'></el-option>
+          <el-option value="reactive_b" v-if="currentType === 'e'" label='Reactive Power, Phase B'></el-option>
+          <el-option value="reactive_c" v-if="currentType === 'e'" label='Reactive Power, Phase C'></el-option>
+          <el-option value="apparent_a" v-if="currentType === 'e'" label='Apparent Power, Phase A'></el-option>
+          <el-option value="apparent_b" v-if="currentType === 'e'" label='Apparent Power, Phase B'></el-option>
+          <el-option value="apparent_c" v-if="currentType === 'e'" label='Apparent Power, Phase C'></el-option>
+          <el-option value="pf_a" v-if="currentType === 'e'" label='Power Factor, Phase A'></el-option>
+          <el-option value="pf_b" v-if="currentType === 'e'" label='Power Factor, Phase B'></el-option>
+          <el-option value="pf_c" v-if="currentType === 'e'" label='Power Factor, Phase C'></el-option>
+          <el-option value="vphase_ab" v-if="currentType === 'e'" label='Voltage Phase, Phase A-B'></el-option>
+          <el-option value="vphase_bc" v-if="currentType === 'e'" label='Voltage Phase, Phase B-C'></el-option>
+          <el-option value="vphase_ac" v-if="currentType === 'e'" label='Voltage Phase, Phase A-C'></el-option>
+          <el-option value="vphase_an" v-if="currentType === 'e'" label='Voltage Phase, Phase A-N'></el-option>
+          <el-option value="vphase_bn" v-if="currentType === 'e'" label='Voltage Phase, Phase B-N'></el-option>
+          <el-option value="vphase_cn" v-if="currentType === 'e'" label='Voltage Phase, Phase C-N'></el-option>
+          <el-option value="cphase_a" v-if="currentType === 'e'" label='Current Phase, Phase A'></el-option>
+          <el-option value="cphase_b" v-if="currentType === 'e'" label='Current Phase, Phase B'></el-option>
+          <el-option value="cphase_c" v-if="currentType === 'e'" label='Current Phase, Phase C'></el-option>
 
           <!-- Gas Meter Options -->
-          <option value="cubic_feet" v-if="currentType == 'g'">Accumulated Usage</option>
+          <el-option value="cubic_feet" v-if="currentType === 'g'" label='Accumulated Usage'></el-option>
 
           <!-- Steam Meter Options -->
-          <option value="total" v-if="currentType == 's'">Accumulated Usage</option>
+          <el-option value="total" v-if="currentType === 's'" label='Accumulated Usage'></el-option>
 
-        </select>
+        </el-select>
       </div>
 
-      <div class="row groupChooser form-group">
-        <label>Group: </label>
-        <select ref="groups" class="form-control" v-model="groupids[currentIndex]">
-        </select>
-        <label>Sub-Meter: </label>
-        <select ref="submeters" class="form-control" v-model="submeters[currentIndex]">
+      <div class="row groupChooser form-group" v-if='!story.public'>
+        <label>Building: </label>
+        <el-select ref="groups" v-model="group" filterable placeholder="Building">
+          <el-option v-for='(item, index) in buildings' :key='index' :label='item.name' :value='item.id'></el-option>
+        </el-select>
+        <!-- <label>Meter: </label>
+        <select ref="submeters" class="form-control" v-model="meter">
           <option value=0>All</option>
-        </select>
+        </select> -->
       </div>
       <div class="row fromDateChooser form-group">
         <label>From Date: </label>
@@ -69,12 +70,12 @@
         </el-date-picker>
       </div>
 
-      <div class="row toDateChooser form-group">
+       <div class="row toDateChooser form-group">
         <label>To Date: </label>
         <el-date-picker v-model='end' type='datetime'>
         </el-date-picker>
       </div>
-      <div class="row graphTypeChooser form-group">
+      <!--<div class="row graphTypeChooser form-group">
         <label>Graph Type: </label>
         <select class="form-control" v-model="graphType" >
           <option value=1>Line Chart</option>
@@ -82,39 +83,40 @@
           <option value=3>Doughnut Chart</option>
           <option value=4>Pie Chart</option>
         </select>
-      </div>
+      </div>-->
 
       <div class="row intervalUnitChooser form-group">
-        <label>Interval: </label>
-        <select class="form-control sharedLine" v-model="unit" >
-          <option value="minute">Minutes</option>
-          <option value="hour">Hours</option>
-          <option value="day">Days</option>
-          <option value="month">Months</option>
-        </select>
-        <input type="number" step="15" class="form-control sharedLine" v-model="interval"/>
+        <label style='width: 100%'>Interval: </label>
+        <el-select class="sharedLine" v-model="unit" >
+          <el-option value="minute" label='Minutes'></el-option>
+          <el-option value="hour" label='Hours'></el-option>
+          <el-option value="day" label='Days'></el-option>
+          <el-option value="month" label='Months'></el-option>
+        </el-select>
+        <el-input-number :step="step" class="sharedLine" v-model="interval" controls-position='right'></el-input-number>
       </div>
-      <!-- <div class="row deleteButton">
-        <btn @click='deleteGroup()'>Delete</btn>
-      </div> -->
+      <div class="row form-group justify-content-center deletebutton" v-if='this.block(index).charts.length > 1'>
+        <b-btn class='col-10' @click='deleteChart()'>Delete</b-btn>
+      </div>
 
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'featureController',
   components: {
   },
-  props: ['start', 'end', 'interval', 'graphType', 'unit', 'points', 'groupids', 'submeters', 'names'],
+  props: ['index'],
   data () {
     return {
       isMaximized: false,
       currentType: 'e',
       colors: [],
+      // This is the charts index, the blocks index is index (really confusing I know, we should change the variable names)
       currentIndex: 0,
       keyPressTimeOut: null,
       mounted: false,
@@ -124,186 +126,142 @@ export default {
 
     }
   },
-  methods: {
-    addGroup: function () {
-      this.points.push('accumulated_real')
-      this.groupids.push(8)
-      this.names.push('New Graph')
-      this.submeters.push(0)
-    },
-    deleteGroup: function () {
-      this.points.splice(this.currentIndex, 1)
-      this.groupids.splice(this.currentIndex, 1)
-      this.names.splice(this.currentIndex, 1)
-      this.submeters.splice(this.currentIndex, 1)
-
-      this.$parent.setPoints(this.points)
-      this.$parent.setGroups(this.groupids)
-      this.$parent.setNames(this.names)
-
-      this.$parent.setMeters(this.meters)
-      this.mounted = true
-    },
-    updateGraph: function (partial) {
-      if (this.points.length > this.currentIndex && this.groupids.length > this.currentIndex && !partial) {
-        this.$parent.$refs.chartController.getData(this.currentIndex, this.points[this.currentIndex], this.groupids[this.currentIndex], this.start.toISOString(), this.end.toISOString(), this.interval, this.unit, this.submeters[this.currentIndex]).then(() => {
-          this.$parent.$refs.chartController.updateChart()
-        }).catch(e => { console.log(e) })
-      } else {
-        let promises = []
-        for (var i = 0; i < this.points.length; i++) {
-          promises.push(this.$parent.$refs.chartController.getData(i, this.points[i], this.groupids[i], this.start.toISOString(), this.end.toISOString(), this.interval, this.unit, this.submeters[i]))
-        }
-        Promise.all(promises).then(values => {
-          this.$parent.$refs.chartController.updateChart()
-        }).catch(e => { console.log(e) })
+  asyncComputed: {
+    buildings: {
+      get: function () {
+        return this.$store.dispatch('buildings')
       }
-    },
-    parseDateTime: function (dateTime) {
-      if (!dateTime) { return }
-      let hours = dateTime.getHours()
-      if (hours < 10) {
-        hours = '0' + hours.toString()
-      }
-      let minutes = dateTime.getMinutes()
-      if (minutes < 10) {
-        minutes = '0' + minutes.toString()
-      }
-      return 'T' + hours + ':' + minutes + ':000'
-    },
-    updateSubmeters: function () {
-      axios.get(process.env.ROOT_API + 'api/getMetersForGroup?id=' + this.groupids[this.currentIndex]).then(rows => {
-        this.$refs.submeters.innerHTML = '<option value=0>All</option>'
-        for (var r in rows.data) {
-          this.$refs.submeters.innerHTML += '<option value=' + rows.data[r].id + '>' + rows.data[r].name + '</option>'
-        }
-      })
-    },
-    updatedSubmetersValue: function (value) {
-      if (!value) { return }
-      if (parseInt(value[this.currentIndex]) === 0) {
-        this.currentType = 'e'
-        if (!this.mounted) {
-          this.$parent.setMeters(value)
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'story',
+      'block'
+    ]),
+    step: {
+      get: function () {
+        if (this.unit === 'minute') {
+          return 15
         } else {
-          this.points[this.currentIndex] = 'accumulated_real'
-          this.$parent.setPoints(this.points)
-          this.$parent.setMeters(value)
-          this.updateGraph(false)
+          return 1
         }
-      } else {
-        axios.get(process.env.ROOT_API + 'api/getMeterType?id=' + parseInt(value[this.currentIndex])).then(rows => {
-          this.currentType = rows.data[0].type
-          this.$parent.setMeters(value)
+      }
+    },
+    name: {
+      get: function () {
+        let n = this.block(this.index).charts[this.currentIndex].name
+        return n
+      },
+      set: function (v) {
+        this.$store.dispatch('block', { index: this.index, charts: [{ name: v, index: this.currentIndex }] }).then(() => {
+          this.$parent.$refs.chartController.parse()
           if (this.mounted) {
-            if (rows.data[0].type === 's') {
-              this.points[this.currentIndex] = 'total'
-            } else if (rows.data[0].type === 'g') {
-              this.points[this.currentIndex] = 'cubic_feet'
-            } else if (rows.data[0].type === 'e') {
-              this.points[this.currentIndex] = 'accumulated_real'
-            }
-            this.$parent.setPoints(this.points)
-
-            this.updateGraph(false)
+            this.$store.commit('modifyFlag')
+          }
+        })
+      }
+    },
+    start: {
+      get: function () {
+        let s = this.block(this.index).date_start
+        return s
+      },
+      set: function (v) {
+        this.$store.dispatch('block', { index: this.index, date_start: v.toISOString() }).then(() => {
+          this.$parent.$refs.chartController.parse()
+          if (this.mounted) {
+            this.$store.commit('modifyFlag')
+          }
+        })
+      }
+    },
+    end: {
+      get: function () {
+        return this.block(this.index).date_end
+      },
+      set: function (v) {
+        this.$store.dispatch('block', { index: this.index, date_end: v.toISOString() }).then(() => {
+          this.$parent.$refs.chartController.parse()
+          if (this.mounted) {
+            this.$store.commit('modifyFlag')
+          }
+        })
+      }
+    },
+    point: {
+      get: function () {
+        return this.block(this.index).charts[this.currentIndex].point
+      },
+      set: function (v) {
+        this.$store.dispatch('block', { index: this.index, charts: [{ point: v, index: this.currentIndex }] }).then(() => {
+          this.$parent.$refs.chartController.parse()
+          this.$store.commit('modifyFlag')
+        })
+      }
+    },
+    group: {
+      get: function () {
+        return this.block(this.index).charts[this.currentIndex].group_id
+      },
+      set: function (v) {
+        this.$store.dispatch('building', { blockIndex: this.index, chartIndex: this.currentIndex, group_id: v }).then(() => {
+          this.$parent.$refs.chartController.parse()
+          if (this.mounted) {
+            this.$store.commit('modifyFlag')
+          }
+        })
+      }
+    },
+    unit: {
+      get: function () {
+        return this.block(this.index).interval_unit
+      },
+      set: function (v) {
+        this.$store.dispatch('block', { index: this.index, interval_unit: v }).then(() => {
+          this.$parent.$refs.chartController.parse()
+          if (this.mounted) {
+            this.$store.commit('modifyFlag')
+          }
+        })
+      }
+    },
+    interval: {
+      get: function () {
+        return this.block(this.index).date_interval
+      },
+      set: function (v) {
+        this.$store.dispatch('block', { index: this.index, date_interval: v }).then(() => {
+          this.$parent.$refs.chartController.parse()
+          if (this.mounted) {
+            this.$store.commit('modifyFlag')
           }
         })
       }
     }
   },
-  watch: {
-    start: function (value) {
-      if (!value) { return }
-      // the stupid datepicker changes it back to a string
-      if (typeof value === 'string') {
-        this.start = new Date(value)
-        return
-      }
-      // Because it is a date object it calls this method even though it doesnt change
-      if (this.oldStart && this.oldStart.toISOString() === value.toISOString()) {
-        return
-      }
-      this.oldStart = value
-      this.$parent.setStart(value.toISOString())
-
-      if (this.mounted) { this.updateGraph(true) }
-    },
-    end: function (value) {
-      if (!value) { return }
-      // the stupid datepicker changes it back to a string
-      if (typeof value === 'string') {
-        this.end = new Date(value)
-        return
-      }
-      // Because it is a date object it calls this method even though it doesnt change
-      if (this.oldEnd && this.oldEnd.toISOString() === value.toISOString()) {
-        return
-      }
-      this.oldEnd = value
-
-      this.$parent.setEnd(value.toISOString())
-      if (this.mounted) { this.updateGraph(true) }
-    },
-    groupids: function (value) {
-      if (!value) { return }
-      this.$parent.setGroups(value)
-      this.updateSubmeters()
-      if (this.mounted) {
-        this.submeters[this.currentIndex] = 0 // This updates the graph for us
-        this.updatedSubmetersValue(this.submeters)
-      }
-    },
-    graphType: function (value) {
-      if (!value) { return }
-      this.$parent.setType(value)
-    },
-    interval: function (value) {
-      if (!value) { return }
-      this.$parent.setInt(value)
-      if (this.mounted) { this.updateGraph(true) }
-    },
-    unit: function (value) {
-      if (!value) { return }
-      this.$parent.setUnit(value)
-      if (this.mounted) { this.updateGraph(true) }
-    },
-    submeters: function (value) {
-      if (!value) { return }
-      this.$parent.$refs.chartController.updateFlag = true
-      this.updatedSubmetersValue(value)
-    },
-    points: function (value) {
-      if (!value) { return }
-      this.$parent.setPoints(value)
-      if (this.mounted) { this.updateGraph(false) }
-      this.$nextTick(() => {
-        Array.from(this.$refs.indexChooser.children).forEach(e => { e.style.borderColor = '#FFFFFF' })
-        this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)'
+  methods: {
+    addGroup: function () {
+      this.$store.dispatch('addChart', { index: this.index }).then(() => {
+        this.$parent.$refs.chartController.parse()
+        if (this.mounted) {
+          this.$store.commit('modifyFlag')
+        }
       })
     },
-    names: function (value) {
-      if (!value) { return }
-      this.$parent.setNames(value)
-      if (this.mounted) {
-        clearTimeout(this.keyPressTimeOut)
-        this.keyPressTimeOut = setTimeout(() => {
-          this.updateGraph(false)
-        }, 800)
-      }
-    },
-    currentIndex: function (value) {
-      Array.from(this.$refs.indexChooser.children).forEach(e => { e.style.borderColor = '#FFFFFF' })
-      this.$refs.indexChooser.children[this.currentIndex].style.borderColor = 'rgb(215,63,9)'
-
-      this.updateSubmeters()
-      if (parseInt(this.submeters[this.currentIndex]) === 0) {
-        this.currentType = 'e'
+    buttonVariant: function (i) {
+      if (i === this.currentIndex) {
+        return 'primary'
       } else {
-        axios.get(process.env.ROOT_API + 'api/getMeterType?id=' + parseInt(this.submeters[value])).then(r => {
-          this.currentType = r.data[0].type
-        })
+        return 'secondary'
       }
     },
+    deleteChart: function () {
+      this.$store.commit('removeChart', { blockIndex: this.index, chartIndex: this.currentIndex })
+      this.currentIndex = 0
+      this.$parent.$refs.chartController.parse()
+    }
+  },
+  watch: {
     isMaximized: function (value) {
       if (value) {
         this.$refs.movingArea.style.right = '0px'
@@ -311,18 +269,6 @@ export default {
         this.$refs.movingArea.style.right = '-260px'
       }
     }
-  },
-  created () {
-  },
-  mounted () {
-    this.updateSubmeters()
-    axios.get(process.env.ROOT_API + 'api/getAllBuildings').then(res => {
-      res.data.forEach(obj => {
-        this.$refs.groups.innerHTML += '<option value="' + obj.id + '">' + obj.name + '</option>'
-      })
-    }).catch(e => {
-      this.errors.push(e)
-    })
   }
 }
 </script>
@@ -405,6 +351,11 @@ export default {
 .intervalUnitChooser input {
   margin-top: 0.5em;
 }
+.sharedLine {
+  width: 48%;
+  display: inline-block;
+  margin: 0.1em;
+}
 
 .controlArea {
   position: absolute;
@@ -414,4 +365,8 @@ export default {
   background-color: rgba(0,0,0,0.7);
   transition: right 1s;
 }
+.deletebutton {
+  padding-bottom: 1em;
+}
 </style>
+el-
