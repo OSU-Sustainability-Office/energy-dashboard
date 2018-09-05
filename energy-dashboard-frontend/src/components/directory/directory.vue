@@ -42,9 +42,15 @@
               </div>
             </b-container>
             <b-container slot='modal-footer'>
-              <b-btn @click='groupSave()'> Ok </b-btn>
-              <b-btn @click='groupedit = false'> Cancel </b-btn>
-              <b-btn @click='groupDelete(openUserTab)'> Delete </b-btn>
+              <div class='row'>
+                <div class='col-6'>
+                  <b-btn @click='groupSave()' variant='primary'> Ok </b-btn>
+                  <b-btn @click='groupedit = false'> Cancel </b-btn>
+                </div>
+                <div class='col text-right'>
+                  <b-btn @click='groupDelete(openUserTab)' variant='danger'> Delete </b-btn>
+                </div>
+              </div>
             </b-container>
           </b-modal>
         </div>

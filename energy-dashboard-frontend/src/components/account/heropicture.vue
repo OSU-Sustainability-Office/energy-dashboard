@@ -11,11 +11,21 @@ export default {
   props: ['media', 'name', 'description'],
   watch: {
     media: function (value) {
-      this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.ROOT_API + 'block-media/' + value + '\')'
+      this.$refs.main.style.backgroundImage = ''
+      if (value) {
+        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.ROOT_API + 'block-media/' + value + '\')'
+      } else {
+        this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
+      }
     }
   },
   mounted () {
-    this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.ROOT_API + 'block-media/' + this.media + '\')'
+    this.$refs.main.style.backgroundImage = ''
+    if (this.media) {
+      this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.ROOT_API + 'block-media/' + this.media + '\')'
+    } else {
+      this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
+    }
   }
 
 }

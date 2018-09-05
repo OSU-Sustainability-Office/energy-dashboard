@@ -19,7 +19,8 @@
         </b-dropdown-item>
       </b-dropdown>
       <div class='col text-right'>
-        <i class="fas fa-download dButton" v-b-tooltip.hover title='Download Graph Data' @click="download()"></i>
+        <i class="fas fa-save dButton" v-b-tooltip.hover title='Save Story Charts' v-if='path[0] === "Your Dashboard"' @click="$parent.save()"></i>
+        <i class="fas fa-download dButton" v-b-tooltip.hover title='Download Story Data' @click="download()"></i>
       </div>
     </div>
   </div>
@@ -46,27 +47,30 @@ export default {
     ])
   },
   watch: {
-    story: function () {
-      // This is kind of expensive consider changing at some point
-      const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
-      if (group.public) {
-        this.path = ['Public']
-      } else {
-        this.path = ['Your Dashboard']
-      }
+    story: {
+      handler: function (v) {
+        // This is kind of expensive consider changing at some point
+        const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+        if (!group.public) {
+          this.path = ['Your Dashboard']
+        } else {
+          this.path = ['Public']
+        }
 
-      this.path.push(group.group)
-      this.path.push(this.story.name)
+        this.path.push(group.group)
+        this.path.push(this.story.name)
+      }
     }
+
   },
   mounted () {
     // This is kind of expensive consider changing at some point
     const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
     if (group) {
-      if (group.public) {
-        this.path = ['Public']
-      } else {
+      if (!group.public) {
         this.path = ['Your Dashboard']
+      } else {
+        this.path = ['Public']
       }
 
       this.path.push(group.group)
@@ -151,7 +155,13 @@ export default {
         if (!this.groups) {
           return
         }
-        for (let group of this.groups) { r.push(group.group) }
+        const cGroup = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+        for (let group of this.groups) {
+          // Cant be === because public is undefined if not true
+          if ((!cGroup.public && !group.public) || (cGroup.public && group.public)) {
+            r.push(group.group)
+          }
+        }
         return r
       } else if (i === 2) {
         let r = []
@@ -278,6 +288,7 @@ export default {
   .dButton {
     cursor: pointer;
     color: #D73F09;
+    padding-right: 0.4em;
   }
   .dButton:hover {
     color: #000;

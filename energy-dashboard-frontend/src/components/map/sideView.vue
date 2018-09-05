@@ -1,7 +1,7 @@
 <template>
   <div class="view container">
     <div class="title row">
-      <span class="col">{{ title }}</span>
+      <span class="col">{{ story.name }}</span>
       <span class="col-1 text-right" ><i class="fas fa-times" @click="hide()"></i></span>
     </div>
     <div class="media row" ref='media'>
@@ -133,6 +133,7 @@ export default {
   mounted () {
     this.$store.dispatch('story', this.$parent.openStory).then(() => {
       let promises = []
+      this.media = this.story.media
       for (let block in this.story.blocks) {
         promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
       }
@@ -163,7 +164,7 @@ export default {
     z-index: 401;
     margin-left: -470px;
     box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
-    display: none;
+    display: block;
   }
   .media {
     height: 300px;

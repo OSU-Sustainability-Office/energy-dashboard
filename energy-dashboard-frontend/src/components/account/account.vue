@@ -1,26 +1,14 @@
 <template>
   <div class="background">
-    <!-- <span class="main-heading">Stories</span> -->
     <heropicture :media='story.media' :description='story.description' :name='story.name'></heropicture>
     <navdir ref='navdir' class="naviv"></navdir>
-    <div class="modText row" v-if='changeFlag === true'>
-      <div class='col text-center align-middle'>
-        Changes were made
-      </div>
-      <div class='col-2'>
-        <b-btn @click='cancel()'> Cancel </b-btn>
-        <b-btn @click='save()' variant='primary'> Save </b-btn>
-      </div>
-    </div>
     <featured ref='featureBox' />
   </div>
 </template>
 
 <script>
 
-import carousel from '@/components/account/carousel'
 import featured from '@/components/account/featured'
-import storyEdit from '@/components/account/storyEdit'
 import heropicture from '@/components/account/heropicture'
 import navdir from '@/components/account/navdir'
 import { mapGetters } from 'vuex'
@@ -28,9 +16,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'account',
   components: {
-    carousel,
     featured,
-    storyEdit,
     heropicture,
     navdir
   },
@@ -39,17 +25,6 @@ export default {
     return {
       changeFlag: false,
       fullyMounted: false
-    }
-  },
-  watch: {
-    story: {
-      handler: function () {
-        if (this.fullyMounted) {
-          this.changeFlag = true
-          this.$store.commit('modifyFlag')
-        }
-      },
-      deep: true
     }
   },
   asyncComputed: {
@@ -120,6 +95,9 @@ export default {
   },
   created () {
     this.changeFlag = this.story.modified
+    this.$eventHub.$on('reloadCharts', () => {
+      this.$refs.featureBox.updateCards()
+    })
   },
   mounted () {
     this.update()
@@ -130,7 +108,7 @@ export default {
         if (block.id === null) {
           this.$store.dispatch('createBlock', block).then(() => {
             for (let chart of block.charts) {
-              this.$store.dispatch('createChart', chart)
+              this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meters: chart.meters })
             }
           })
         } else {
@@ -139,28 +117,36 @@ export default {
               if (chart.id) {
                 this.$store.dispatch('updateChart', chart)
               } else {
-                this.$store.dispatch('createChart', chart)
+                this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meters: chart.meters })
               }
             }
           })
         }
       }
-      for (let obj of this.story.removedObjs) {
-        if (obj.type === 'block') {
-          this.$store.dispatch('deleteBlock', obj.id)
-        } else if (obj.type === 'chart') {
-          this.$store.dispatch('deleteChart', obj.id)
+      if (this.story.removed.length > 0) {
+        for (let obj of this.story.removed) {
+          if (obj.type === 'block') {
+            this.$store.dispatch('deleteBlock', { id: obj.id })
+          } else if (obj.type === 'chart') {
+            this.$store.dispatch('deleteChart', { id: obj.id })
+          }
         }
+        this.$store.commit('resetRemoved')
       }
+      this.$nextTick(() => {
+        this.changeFlag = false
+        this.$store.commit('modifyFlag', false)
+      })
     },
     cancel: function () {
       let id = this.story.id
       this.$store.commit('loadStory', { id: null })
       this.$store.dispatch('story', id).then(() => {
         this.$refs.featureBox.updateCards()
-        this.changeFlag = false
-        this.$store.commit('modifyFlag', false)
-        console.log(this.story.modified)
+        this.$nextTick(() => {
+          this.changeFlag = false
+          this.$store.commit('modifyFlag', false)
+        })
       })
     },
     update: function () {
@@ -189,14 +175,18 @@ export default {
         if (this.$route.params.id) {
           this.$store.dispatch('story', this.$route.params.id).then((r) => {
             this.$refs.featureBox.updateCards()
-            this.fullyMounted = true
+            this.$nextTick(() => {
+              this.fullyMounted = true
+            })
           })
         } else {
           this.$store.dispatch('user').then(user => {
             this.$store.dispatch('stories').then(groups => {
               if (!this.story.id) {
                 this.$store.dispatch('story', groups[0].stories[0].id).then(() => {
-                  this.fullyMounted = true
+                  this.$nextTick(() => {
+                    this.fullyMounted = true
+                  })
                 })
               }
             })

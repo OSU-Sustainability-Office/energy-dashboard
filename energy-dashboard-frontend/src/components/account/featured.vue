@@ -67,7 +67,7 @@ export default {
           { meter_id: 9, operation: 1 }
         ]
       }]
-      this.$store.dispatch('block', card).then(() => console.log('done'))
+      this.$store.dispatch('block', card).then(() => this.$store.commit('modifyFlag'))
     }
   }
 

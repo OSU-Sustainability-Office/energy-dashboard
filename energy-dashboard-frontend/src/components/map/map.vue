@@ -76,7 +76,6 @@
 <script>
 import { LMap, LTileLayer, LMarker, LPolygon, LGeoJson } from 'vue2-leaflet'
 import sideView from '@/components/map/sideView'
-import axios from 'axios'
 import L from 'leaflet'
 
 export default {
@@ -94,9 +93,7 @@ export default {
       zoom: 15.5,
       center: L.latLng(44.565, -123.2785),
       url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-      // url: 'https://api.mapbox.com/styles/v1/jack-woods/cjh85kv6z0lzo2slfl00ygdit/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
       map: null,
       polygonData: null,
       openStory: 0,
@@ -150,29 +147,11 @@ export default {
     polyClick: function (value) {
       this.showSide = true
       this.openStory = value
-      axios.get(process.env.ROOT_API + 'api/getStoryData?id=' + value).then(val => {
-        this.$refs.sideview.$el.style.display = 'block'
-        this.$refs.sideview.media = val.data[0].media
-        this.$refs.sideview.title = val.data[0].name
-      })
-      axios.get(process.env.ROOT_API + 'api/getBlocksForStory?id=' + value).then(val => {
-        var promises = []
-        val.data.forEach(row => {
-          promises.push(axios.get(process.env.ROOT_API + 'api/getBlockMeterGroups?id=' + row.id))
-        })
-        Promise.all(promises).then(results => {
-          var b = []
-          results.forEach(r => {
-            b.push(r.data[0])
-          })
-          this.$refs.sideview.blocks = b
-        })
-      })
     }
   },
   created () {
-    axios.get(process.env.ROOT_API + 'api/getBuildingsForMap').then(res => {
-      this.polygonData = res.data
+    this.$store.dispatch('mapdata').then(r => {
+      this.polygonData = r
     })
     this.$eventHub.$on('clickedPolygon', (v) => (this.polyClick(v[0])))
     this.$eventHub.$on('resetPolygon', (v) => { this.$refs.geoLayer.mapObject.resetStyle(v[0]) })

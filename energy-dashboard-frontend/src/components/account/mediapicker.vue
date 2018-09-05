@@ -9,7 +9,6 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
 export default {
   name: 'mediapicker',
   props: ['media'],
@@ -21,9 +20,9 @@ export default {
     }
   },
   created () {
-    axios.get(process.env.ROOT_API + 'api/listAvailableMedia').then(val => {
+    this.$store.dispatch('media').then(r => {
       var index = 0
-      for (var i of val.data) {
+      for (var i of r) {
         this.images.push(i)
         if (i === this.media) { this.selected = index }
         index++

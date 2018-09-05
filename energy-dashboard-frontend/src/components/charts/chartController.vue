@@ -146,12 +146,16 @@ export default {
         datasets: [],
         labels: []
       }
+      if (!this.block(this.index)) {
+        return
+      }
       for (let line of this.block(this.index).charts) {
         // Deep copy prevents callbacks to data changing on computed variables
-        let data = JSON.parse(JSON.stringify(line.data))
-        if (!data) {
+        if (!line.data) {
           return
         }
+        let data = JSON.parse(JSON.stringify(line.data))
+
         if (line.point === 'accumulated_real' || line.point === 'total' || line.point === 'cubic_feet') {
           // First remove interval items
           for (let o = data.length - 1; o >= 1; o--) {

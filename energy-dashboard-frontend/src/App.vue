@@ -129,6 +129,22 @@ body {
   color: #FFFFFF;
   border: solid 1px #CCC !important;
 }
+
+.btn-danger {
+  background-color: #d50510 !important;
+  color: #FFFFFF;
+  border: solid 1px #FFF;
+}
+.btn-danger:hover {
+  background-color: #ad040d !important;
+  color: #FFFFFF;
+  border: solid 1px #CCC;
+}
+.btn-danger:active {
+  background-color: #c3050f !important;
+  color: #FFFFFF;
+  border: solid 1px #CCC !important;
+}
 </style>
 
 <style scoped>

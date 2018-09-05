@@ -44,8 +44,13 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    resetRemoved: (state, payload) => {
+      state.currentStory.removed = []
+    },
     loadStory: (state, payload) => {
       state.currentStory = payload
+      state.currentStory.modified = false
+      state.currentStory.removed = []
     },
     loadStories: (state, payload) => {
       state.stories = payload
@@ -83,13 +88,16 @@ export default new Vuex.Store({
     loadBlock: (state, payload) => {
       Vue.set(state.currentStory.blocks, parseInt(payload.index), payload)
     },
+    changeBlockName: (state, payload) => {
+      state.currentStory.blocks[payload.index].name = payload.name
+    },
     setBlockId: (state, payload) => {
       state.currentStory.blocks[payload.index].id = payload.id
     },
     removeBlock: (state, payload) => {
-      let r = state.currentStory.blocks.splice(payload.index, 1)
+      let r = state.currentStory.blocks.splice(payload.index, 1)[0]
       if (r.id) {
-        state.story.removedObjs.push({ id: r.id, type: 'block' })
+        state.currentStory.removed.push({ id: r.id, type: 'block' })
       }
     },
     loadChart: (state, payload) => {
@@ -99,9 +107,9 @@ export default new Vuex.Store({
       state.currentStory.blocks[payload.block_index].charts[payload.chart_index] = payload.id
     },
     removeChart: (state, payload) => {
-      let r = state.currentStory.blocks[payload.blockIndex].charts.splice(payload.index, 1)
+      let r = state.currentStory.blocks[payload.blockIndex].charts.splice(payload.index, 1)[0]
       if (r.id) {
-        state.story.removedObjs.push({ id: r.id, type: 'chart' })
+        state.currentStory.removed.push({ id: r.id, type: 'chart' })
       }
     },
     loadData: (state, payload) => {
@@ -383,6 +391,7 @@ export default new Vuex.Store({
     },
     createBlock: (context, payload) => {
       return new Promise((resolve, reject) => {
+        console.log(payload)
         axios(process.env.ROOT_API + 'api/block', { method: 'post', data: { date_start: payload.date_start, date_end: payload.date_end, graph_type: payload.graph_type, story_id: payload.story_id, name: payload.name, date_interval: payload.date_interval, interval_unit: payload.interval_unit }, withCredentials: true }).then(res => {
           context.commit('setBlockId', { index: payload.index, id: res.data.id })
           resolve(res.data.id)
@@ -393,7 +402,6 @@ export default new Vuex.Store({
     },
     updateBlock: (context, payload) => {
       return new Promise((resolve, reject) => {
-        console.log(payload)
         axios(process.env.ROOT_API + 'api/block', { method: 'put', data: { id: payload.id, date_start: payload.date_start, date_end: payload.date_end, graph_type: payload.graph_type, story_id: payload.story_id, name: payload.name, date_interval: payload.date_interval, interval_unit: payload.interval_unit }, withCredentials: true }).then(res => {
           resolve()
         }).catch(e => {
@@ -416,8 +424,9 @@ export default new Vuex.Store({
         if (payload.meters.length === 1) {
           meter = payload.meters[0].meter_id
         }
+        console.log(payload)
         axios(process.env.ROOT_API + 'api/chart', { method: 'post', data: { block_id: payload.block_id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: meter }, withCredentials: true }).then(res => {
-          console.log(payload)
+          context.commit('setChartId', { block_index: payload.index, chart_index: payload.chartIndex, id: res.data.id })
           resolve(res.data.id)
         }).catch(e => {
           reject(e)
@@ -426,7 +435,6 @@ export default new Vuex.Store({
     },
     updateChart: (context, payload) => {
       return new Promise((resolve, reject) => {
-        console.log(payload)
         let meter = 0
         if (payload.meters.length === 1) {
           meter = payload.meters[0].meter_id
@@ -440,8 +448,29 @@ export default new Vuex.Store({
     },
     deleteChart: (context, payload) => {
       return new Promise((resolve, reject) => {
+        console.log(payload)
         axios(process.env.ROOT_API + 'api/chart', { method: 'delete', data: { id: payload.id }, withCredentials: true }).then(res => {
           resolve()
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+
+    // COMMANDS THAT DONT DO ANYTHING TO THE STORE
+    mapdata: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios.get(process.env.ROOT_API + 'api/map').then(res => {
+          resolve(res.data)
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    media: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios.get(process.env.ROOT_API + 'api/media').then(val => {
+          resolve(val.data)
         }).catch(e => {
           reject(e)
         })

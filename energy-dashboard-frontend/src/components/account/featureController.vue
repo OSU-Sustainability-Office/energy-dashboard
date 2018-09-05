@@ -5,12 +5,12 @@
     </div>
 
     <div class="container-fluid controlSection" ref="controlArea">
-      <div class="row indexChooser" ref="indexChooser">
+      <div class="row indexChooser" ref="indexChooser" v-if='!story.public'>
         <b-button class="indexButton"  v-for="(point, index) in this.block(index).charts" :variant='buttonVariant(index)' @click="currentIndex = index" :key='index'>{{ index + 1 }}</b-button>
         <b-button class="indexButton" @click="addGroup()">+</b-button>
       </div>
 
-      <div class="row nameChooser form-group">
+      <div class="row nameChooser form-group" v-if='!story.public'>
         <label>Name:</label>
         <el-input type="text" v-model="name"></el-input>
       </div>
@@ -54,7 +54,7 @@
         </el-select>
       </div>
 
-      <div class="row groupChooser form-group">
+      <div class="row groupChooser form-group" v-if='!story.public'>
         <label>Building: </label>
         <el-select ref="groups" v-model="group" filterable placeholder="Building">
           <el-option v-for='(item, index) in buildings' :key='index' :label='item.name' :value='item.id'></el-option>
@@ -155,6 +155,9 @@ export default {
       set: function (v) {
         this.$store.dispatch('block', { index: this.index, charts: [{ name: v, index: this.currentIndex }] }).then(() => {
           this.$parent.$refs.chartController.parse()
+          if (this.mounted) {
+            this.$store.commit('modifyFlag')
+          }
         })
       }
     },
@@ -166,6 +169,9 @@ export default {
       set: function (v) {
         this.$store.dispatch('block', { index: this.index, date_start: v.toISOString() }).then(() => {
           this.$parent.$refs.chartController.parse()
+          if (this.mounted) {
+            this.$store.commit('modifyFlag')
+          }
         })
       }
     },
@@ -176,6 +182,9 @@ export default {
       set: function (v) {
         this.$store.dispatch('block', { index: this.index, date_end: v.toISOString() }).then(() => {
           this.$parent.$refs.chartController.parse()
+          if (this.mounted) {
+            this.$store.commit('modifyFlag')
+          }
         })
       }
     },
@@ -186,6 +195,7 @@ export default {
       set: function (v) {
         this.$store.dispatch('block', { index: this.index, charts: [{ point: v, index: this.currentIndex }] }).then(() => {
           this.$parent.$refs.chartController.parse()
+          this.$store.commit('modifyFlag')
         })
       }
     },
@@ -196,6 +206,9 @@ export default {
       set: function (v) {
         this.$store.dispatch('building', { blockIndex: this.index, chartIndex: this.currentIndex, group_id: v }).then(() => {
           this.$parent.$refs.chartController.parse()
+          if (this.mounted) {
+            this.$store.commit('modifyFlag')
+          }
         })
       }
     },
@@ -206,6 +219,9 @@ export default {
       set: function (v) {
         this.$store.dispatch('block', { index: this.index, interval_unit: v }).then(() => {
           this.$parent.$refs.chartController.parse()
+          if (this.mounted) {
+            this.$store.commit('modifyFlag')
+          }
         })
       }
     },
@@ -216,6 +232,9 @@ export default {
       set: function (v) {
         this.$store.dispatch('block', { index: this.index, date_interval: v }).then(() => {
           this.$parent.$refs.chartController.parse()
+          if (this.mounted) {
+            this.$store.commit('modifyFlag')
+          }
         })
       }
     }
@@ -224,6 +243,9 @@ export default {
     addGroup: function () {
       this.$store.dispatch('addChart', { index: this.index }).then(() => {
         this.$parent.$refs.chartController.parse()
+        if (this.mounted) {
+          this.$store.commit('modifyFlag')
+        }
       })
     },
     buttonVariant: function (i) {
@@ -247,18 +269,6 @@ export default {
         this.$refs.movingArea.style.right = '-260px'
       }
     }
-  },
-  created () {
-  },
-  mounted () {
-    // this.updateSubmeters()
-    // axios.get(process.env.ROOT_API + 'api/getAllBuildings').then(res => {
-    //   res.data.forEach(obj => {
-    //     this.$refs.groups.innerHTML += '<option value="' + obj.id + '">' + obj.name + '</option>'
-    //   })
-    // }).catch(e => {
-    //   this.errors.push(e)
-    // })
   }
 }
 </script>
