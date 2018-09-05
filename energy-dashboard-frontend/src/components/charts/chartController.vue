@@ -172,6 +172,16 @@ export default {
           }
           // Remove first item that did not have a calculated interval
           data.splice(0, 1)
+        } else {
+          let lastIndex = 0
+          let newData = []
+          for (let i in data) {
+            if (!this.checkInterval(data[i].x)) {
+              newData.push({ x: data[i].x, y: (data[i].y - data[lastIndex].y) / (i - lastIndex) })
+              lastIndex = i
+            }
+          }
+          data = newData
         }
         tempData.datasets.push({
           label: line.name,
