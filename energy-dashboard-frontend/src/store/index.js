@@ -424,7 +424,6 @@ export default new Vuex.Store({
         if (payload.meters.length === 1) {
           meter = payload.meters[0].meter_id
         }
-        console.log(payload)
         axios(process.env.ROOT_API + 'api/chart', { method: 'post', data: { block_id: payload.block_id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: meter }, withCredentials: true }).then(res => {
           context.commit('setChartId', { block_index: payload.index, chart_index: payload.chartIndex, id: res.data.id })
           resolve(res.data.id)
