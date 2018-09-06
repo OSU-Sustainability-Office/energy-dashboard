@@ -474,6 +474,15 @@ export default new Vuex.Store({
           reject(e)
         })
       })
+    },
+    buildingMeters: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios.get(process.env.ROOT_API + 'api/meters?id=' + payload.id).then(val => {
+          resolve(val.data)
+        }).catch(e => {
+          reject(e)
+        })
+      })
     }
   }
 })
