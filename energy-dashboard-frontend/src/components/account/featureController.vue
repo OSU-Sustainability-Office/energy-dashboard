@@ -59,10 +59,13 @@
         <el-select ref="groups" v-model="group" filterable placeholder="Building">
           <el-option v-for='(item, index) in buildings' :key='index' :label='item.name' :value='item.id'></el-option>
         </el-select>
-        <!-- <label>Meter: </label>
-        <select ref="submeters" class="form-control" v-model="meter">
-          <option value=0>All</option>
-        </select> -->
+      </div>
+      <div class='row form-group'>
+        <label>Meter: </label>
+        <el-select ref="submeters" v-model="meter">
+          <el-option :value='0' label='All'></el-option>
+          <el-option v-for='(item, index) in buildingMeters' :key='index' :label='item.name' :value='item.meter_id'></el-option>
+        </el-select>
       </div>
       <div class="row fromDateChooser form-group">
         <label>From Date: </label>
@@ -85,15 +88,6 @@
           <el-option :value='4' label='Pie Chart'></el-option>
         </el-select>
       </div>
-      <!--<div class="row graphTypeChooser form-group">
-        <label>Graph Type: </label>
-        <select class="form-control" v-model="graphType" >
-          <option value=1>Line Chart</option>
-          <option value=2>Bar Chart</option>
-          <option value=3>Doughnut Chart</option>
-          <option value=4>Pie Chart</option>
-        </select>
-      </div>-->
 
       <div class="row intervalUnitChooser form-group">
         <label style='width: 100%'>Interval: </label>
@@ -141,6 +135,11 @@ export default {
       get: function () {
         return this.$store.dispatch('buildings')
       }
+    },
+    buildingMeters: {
+      get: function () {
+        return this.$store.dispatch('buildingMeters', { id: this.block(this.index).charts[this.currentIndex].group_id })
+      }
     }
   },
   computed: {
@@ -154,6 +153,41 @@ export default {
           return 15
         } else {
           return 1
+        }
+      }
+    },
+    meter: {
+      get: function () {
+        if (this.block(this.index).charts[this.currentIndex].meters.length > 1) {
+          return 0
+        } else {
+          return this.block(this.index).charts[this.currentIndex].meters[0].meter_id
+        }
+      },
+      set: function (v) {
+        if (v !== 0) {
+          let meter = this.buildingMeters.find(e => e.meter_id === v)
+          let point = ''
+          if (meter.type === 'e') {
+            point = 'accumulated_real'
+          } else if (meter.type === 's') {
+            point = 'total'
+          } else if (meter.type === 'g') {
+            point = 'cubic_feet'
+          }
+          this.$store.dispatch('block', { index: this.index, charts: [{ meters: [meter], index: this.currentIndex, point: point, meter: meter.meter_id }] }).then(() => {
+            this.$parent.$refs.chartController.parse()
+            if (this.mounted) {
+              this.$store.commit('modifyFlag')
+            }
+          })
+        } else {
+          this.$store.dispatch('block', { index: this.index, charts: [{ meters: this.buildingMeters, index: this.currentIndex, point: 'accumulated_real', meter: 0 }] }).then(() => {
+            this.$parent.$refs.chartController.parse()
+            if (this.mounted) {
+              this.$store.commit('modifyFlag')
+            }
+          })
         }
       }
     },
@@ -260,6 +294,12 @@ export default {
     }
   },
   methods: {
+    // buildingMeters: function () {
+    //   this.$store.dispatch('buildingMeters', { id: this.block(this.index).charts[this.currentIndex].group_id }).then(r => {
+    //     console.log(r)
+    //     return r
+    //   })
+    // },
     addGroup: function () {
       this.$store.dispatch('addChart', { index: this.index }).then(() => {
         this.$parent.$refs.chartController.parse()
