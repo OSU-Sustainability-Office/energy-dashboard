@@ -131,6 +131,7 @@ export default new Vuex.Store({
         } else {
           axios(process.env.ROOT_API + 'api/story?id=' + id, { method: 'get', data: null, withCredentials: true }).then(res => {
             let story = res.data
+            console.log(JSON.parse(JSON.stringify(story.blocks)))
             for (let chart of story.openCharts) {
               let b = story.blocks.find(el => el.id === chart.block_id)
               // First put meters into charts

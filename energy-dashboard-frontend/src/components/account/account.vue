@@ -43,6 +43,7 @@ export default {
       get () {
         if (this.$route.path.search('public') > 0) {
           let d = new Date()
+          d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000)
           switch (parseInt(this.$route.params.range)) {
             case 0:
               d.setDate(d.getDate() - 7)
@@ -56,6 +57,15 @@ export default {
             default:
               break
           }
+          return d.toISOString()
+        }
+      }
+    },
+    end: {
+      get () {
+        if (this.$route.path.search('public') > 0) {
+          let d = new Date()
+          d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000)
           return d.toISOString()
         }
       }
@@ -159,7 +169,7 @@ export default {
             let c = {
               index: b,
               date_start: this.start,
-              date_end: (new Date()).toISOString(),
+              date_end: this.end,
               date_interval: this.interval,
               interval_unit: this.unit
             }

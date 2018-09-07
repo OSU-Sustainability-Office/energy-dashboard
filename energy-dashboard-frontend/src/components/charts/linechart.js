@@ -13,6 +13,27 @@ export default {
             radius: 3
           }
         },
+        tooltips: {
+          callbacks: {
+            title: function (item, data) {
+              let d = new Date(item[0].xLabel)
+              let meridiem = 'am'
+              let hours = d.getHours()
+              if (hours > 12) {
+                hours -= 12
+                meridiem = 'pm'
+              } else if (hours === 0) {
+                hours = 12
+              }
+              let minutes = d.getMinutes()
+              if (minutes < 10) {
+                minutes = '0' + minutes
+              }
+              let year = d.getYear().toString().slice(1)
+              return d.getMonth() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem
+            }
+          }
+        },
         layout: {
           padding: {
             left: 0,
