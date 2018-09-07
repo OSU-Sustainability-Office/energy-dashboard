@@ -133,6 +133,12 @@ export default {
   mounted () {
     this.$store.dispatch('story', this.$parent.openStory).then(() => {
       let promises = []
+      this.$refs.prevArrow.style.opacity = 0
+      if (this.story.blocks.length <= 1) {
+        this.$refs.nextArrow.style.opacity = 0
+      } else {
+        this.$refs.nextArrow.style.opacity = 1
+      }
       this.media = this.story.media
       for (let block in this.story.blocks) {
         promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
@@ -144,12 +150,6 @@ export default {
         }
       })
     })
-    this.$refs.prevArrow.style.opacity = 0
-    if (this.story.length <= 1) {
-      this.$refs.nextArrow.style.opacity = 0
-    } else {
-      this.$refs.nextArrow.style.opacity = 1
-    }
   }
 }
 </script>
