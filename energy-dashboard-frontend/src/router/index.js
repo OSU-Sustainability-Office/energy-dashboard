@@ -42,7 +42,19 @@ export default new Router({
       component: directory
     },
     {
-      path: '/directory/:group',
+      path: '/directory/public/',
+      component: directory
+    },
+    {
+      path: '/directory/private/',
+      component: directory
+    },
+    {
+      path: '/directory/public/:group',
+      component: directory
+    },
+    {
+      path: '/directory/private/:group',
       component: directory
     }
   ]

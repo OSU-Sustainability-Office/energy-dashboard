@@ -1,10 +1,10 @@
 <template>
   <div class='container-fluid mainArea'>
     <!-- <navdir ref='navdir' class="bar"/> -->
-    <b-tabs nav-class="directory-tabs">
-      <b-tab title='Public'>
-        <b-tabs pills card nav-class='directory-group-tab'>
-          <b-tab class="container" v-for='(item, index) in subGroupsForPath(0)' :key='index' :title='item.name'>
+    <b-tabs nav-class="directory-tabs" v-model='mainGroup'>
+      <b-tab title='Public' :key='0'>
+        <b-tabs pills card nav-class='directory-group-tab' v-model='openPublicTab'>
+          <b-tab class="container" v-for='(item, index) in subGroupsForPath(0)' :key='index' :title='item.name' ref='group'>
             <div class="row padded" >
               <div class='col-xl-3 col-lg-4 col-md-6' v-for='(building, index_b) in item.subgroups' :key='index_b' >
                 <storycard :name='building.name' :notools='true' :media='building.media' :description='building.description' class="mx-auto storyCard" @click='$router.push({path: `/public/${building.id}/1`})' />
@@ -13,7 +13,7 @@
           </b-tab>
         </b-tabs>
       </b-tab>
-      <b-tab title='Your Dashboard' v-if='user.name !== ""'>
+      <b-tab title='Your Dashboard' v-if='user.name !== ""' :key='1'>
         <b-tabs pills card :nav-class="['directory-group-tab', 'short']" v-model='openUserTab'>
           <b-tab class="container" v-for='(item, index) in subGroupsForPath(1)' :key='index' :title='item.name'>
             <div class="row padded" >
@@ -77,7 +77,9 @@ export default {
       currentGroups: [],
       groupedit: false,
       tempGroupName: '',
-      openUserTab: 0
+      openUserTab: 0,
+      openPublicTab: 0,
+      mainGroup: 0
     }
   },
   computed: {
@@ -97,15 +99,26 @@ export default {
           this.groups[1].subgroups.push({ name: group.group, subgroups: group.stories, id: group.id })
         }
       }
+      if (this.$route.path.search('private') > 0) {
+        this.mainGroup = 1
+      } else {
+        this.mainGroup = 0
+      }
+      this.$nextTick(() => {
+        if (this.$route.params.group) {
+          let i = this.groups[this.mainGroup].subgroups.map(e => { return e.id }).indexOf(parseInt(this.$route.params.group))
+          if (this.$route.path.search('private') > 0) {
+            this.openUserTab = i
+          } else {
+            this.openPublicTab = i
+          }
+        }
+      })
     })
     // 0: group, 1: index, 2: id
     this.$eventHub.$on('deleteStory', (event) => { this.deleteStory(event[2], event[0], event[1]) })
     // 0: group, 1: index, 2: name, 3: description, 4: media
     this.$eventHub.$on('updateStory', (event) => { this.updateStory(event[0], event[1], event[2], event[3], event[4]) })
-
-    if (this.$route.params.group) {
-      this.path.push(this.$route.params.group)
-    }
   },
   methods: {
     openGroupEdit: function () {
