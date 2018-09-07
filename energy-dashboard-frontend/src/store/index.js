@@ -107,7 +107,7 @@ export default new Vuex.Store({
       state.currentStory.blocks[payload.block_index].charts[payload.chart_index] = payload.id
     },
     removeChart: (state, payload) => {
-      let r = state.currentStory.blocks[payload.blockIndex].charts.splice(payload.index, 1)[0]
+      let r = state.currentStory.blocks[payload.blockIndex].charts.splice(payload.chartIndex, 1)[0]
       if (r.id) {
         state.currentStory.removed.push({ id: r.id, type: 'chart' })
       }
@@ -129,6 +129,16 @@ export default new Vuex.Store({
         if (context.getters.currentStory && id === context.getters.currentStory.id) {
           resolve(context.getters.currentStory)
         } else {
+          context.commit('loadStory', {
+            name: '',
+            id: null,
+            description: '',
+            public: false,
+            media: '',
+            blocks: [],
+            modified: false,
+            removed: []
+          })
           axios(process.env.ROOT_API + 'api/story?id=' + id, { method: 'get', data: null, withCredentials: true }).then(res => {
             let story = res.data
             for (let chart of story.openCharts) {

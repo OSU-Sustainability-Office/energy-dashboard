@@ -106,7 +106,9 @@ export default {
   created () {
     this.changeFlag = this.story.modified
     this.$eventHub.$on('reloadCharts', () => {
-      this.$refs.featureBox.updateCards()
+      if (this.fullyMounted) {
+        this.$refs.featureBox.updateCards()
+      }
     })
   },
   mounted () {
@@ -162,7 +164,7 @@ export default {
     update: function () {
       if (this.$route.path.search('public') > 0) {
         this.path = ['Public']
-
+        this.fullyMounted = false
         this.$store.dispatch('story', this.$route.params.id).then((r) => {
           let promises = []
           for (let b in r.blocks) {
@@ -198,6 +200,8 @@ export default {
                     this.fullyMounted = true
                   })
                 })
+              } else {
+                this.fullyMounted = true
               }
             })
           })

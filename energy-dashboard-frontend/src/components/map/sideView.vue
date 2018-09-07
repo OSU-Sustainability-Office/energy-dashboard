@@ -131,9 +131,9 @@ export default {
     }
   },
   mounted () {
+    this.$refs.prevArrow.style.opacity = 0
     this.$store.dispatch('story', this.$parent.openStory).then(() => {
       let promises = []
-      this.$refs.prevArrow.style.opacity = 0
       if (this.story.blocks.length <= 1) {
         this.$refs.nextArrow.style.opacity = 0
       } else {

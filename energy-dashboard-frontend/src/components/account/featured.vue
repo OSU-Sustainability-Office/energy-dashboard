@@ -1,7 +1,7 @@
 <template>
 <div class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature" :key='update'>
   <!-- <transition-group name="cardEntry" tag="div" class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature"> -->
-    <card v-for="(card, index) in story.blocks" v-bind:key="index" v-bind:class="[index === 0 ? 'fullWidth' : '']" v-bind:index="index" :featured="true" ref="displayedCards"/>
+    <card v-if='$parent.fullyMounted' v-for="(card, index) in story.blocks" v-bind:key="index" v-bind:class="[index === 0 ? 'fullWidth' : '']" v-bind:index="index" :featured="true" ref="displayedCards"/>
 
     <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()" v-bind:class="[isFull() ? 'fullAdd' : 'smallAdd']">
       +
@@ -104,6 +104,13 @@ export default {
   margin-left: 0.2em;
   border: solid 2px #000;
   border-radius: 7px;
+  cursor: pointer;
+}
+.addFeatured:hover {
+  color: #C72F09;
+}
+.addFeatured:active {
+  color: #d76740;
 }
 .fullAdd {
   border-left: none;

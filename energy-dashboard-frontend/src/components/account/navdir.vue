@@ -1,7 +1,7 @@
 <template>
   <div class='bar container-fluid'>
     <div class='row main align-items-center'>
-      <b-dropdown v-for='(item, index) in path' variant="link" :key='index' :id='"dropdown-" + index' class="itm col-2" boundary="window" no-caret>
+      <b-dropdown v-for='(item, index) in path' variant="link" :key='index' :id='"dropdown-" + index' class="itm col" boundary="window" no-caret>
         <template slot='button-content'>
           <div class='container-fluid'>
             <div class='leftP'>
