@@ -176,14 +176,30 @@ export default {
     },
     moveRoute: function (dirI, dropI) {
       if (dirI === 0) {
-        this.$router.push({ path: `/directory` })
+        if (dropI === 0) {
+          this.$router.push({ path: `/directory/public` })
+        } else {
+          this.$router.push({ path: `/directory/private` })
+        }
       } if (dirI === 1) {
-        this.$router.push({ path: `/directory/${this.groups[dropI].group}` })
-        this.$parent.update()
+        const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+        if (group.public) {
+          this.$router.push({ path: `/directory/public/${this.groups[dropI].id}` })
+        } else {
+          let p = 0
+          while (1) { if (this.groups[p].public) { p++ } else { break } }
+          dropI += p
+          this.$router.push({ path: `/directory/private/${this.groups[dropI].id}` })
+        }
       } else if (dirI === 2) {
-        this.$router.push({ path: `/public/${this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id}/1` })
-        this.$parent.update()
+        const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+        if (group.public) {
+          this.$router.push({ path: `/public/${this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id}/1` })
+        } else {
+          this.$router.push({ path: `/dashboard/${this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id}/` })
+        }
         // this.$parent.changeStory([this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id, 0])
+        this.$parent.update()
       }
     }
   }
