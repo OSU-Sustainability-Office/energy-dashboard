@@ -195,22 +195,22 @@ export default {
 </script>
 <style>
 .directory-tabs .nav-item > a {
-  color: rgb(215,63,9);
-  font-size: 1.4em;
+  color: rgb(215,63,9) !important;
+  font-size: 1.4em !important;
 }
 .directory-group-tab.short {
   width: 90%;
 }
 .directory-group-tab .nav-item > a {
-  color: #000;
+  color: #000 !important;
 }
 .directory-group-tab .nav-item:hover :not(.active) {
-  color: #FFF;
-  background-color: rgb(26,26,26);
+  color: #FFF !important;
+  background-color: rgb(26,26,26) !important;
 }
 .directory-group-tab .nav-item .active {
-  color: #FFF;
-  background-color: rgb(215,63,9);
+  color: #FFF !important;
+  background-color: rgb(215,63,9) !important;
 }
 </style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

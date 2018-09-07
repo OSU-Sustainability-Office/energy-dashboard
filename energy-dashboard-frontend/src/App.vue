@@ -101,12 +101,12 @@ body {
 .btn-primary {
   background-color: #D73F09 !important;
   color: #FFFFFF;
-  border: solid 1px #FFF;
+  border: solid 1px #FFF !important;
 }
 .btn-primary:hover {
   background-color: #C72F09 !important;
   color: #FFFFFF;
-  border: solid 1px #CCC;
+  border: solid 1px #CCC !important;
 }
 .btn-primary:active {
   background-color: #d76740 !important;
@@ -122,7 +122,7 @@ body {
 .btn-secondary:hover {
   background-color: #000000 !important;
   color: #FFFFFF;
-  border: solid 1px #CCC;
+  border: solid 1px #CCC !important;
 }
 .btn-secondary:active {
   background-color: #303030 !important;
@@ -138,7 +138,7 @@ body {
 .btn-danger:hover {
   background-color: #ad040d !important;
   color: #FFFFFF;
-  border: solid 1px #CCC;
+  border: solid 1px #CCC !important;
 }
 .btn-danger:active {
   background-color: #c3050f !important;
