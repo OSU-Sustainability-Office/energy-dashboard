@@ -69,13 +69,13 @@
       </div>
       <div class="row fromDateChooser form-group">
         <label>From Date: </label>
-        <el-date-picker v-model='start' type='datetime'>
+        <el-date-picker v-model='start' align='right' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z'>
         </el-date-picker>
       </div>
 
        <div class="row toDateChooser form-group">
         <label>To Date: </label>
-        <el-date-picker v-model='end' type='datetime'>
+        <el-date-picker v-model='end' align='right' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z'>
         </el-date-picker>
       </div>
 
@@ -211,7 +211,8 @@ export default {
         return s
       },
       set: function (v) {
-        this.$store.dispatch('block', { index: this.index, date_start: v.toISOString() }).then(() => {
+        console.log(v)
+        this.$store.dispatch('block', { index: this.index, date_start: v }).then(() => {
           this.$parent.$refs.chartController.parse()
           if (this.mounted) {
             this.$store.commit('modifyFlag')
@@ -224,7 +225,7 @@ export default {
         return this.block(this.index).date_end
       },
       set: function (v) {
-        this.$store.dispatch('block', { index: this.index, date_end: v.toISOString() }).then(() => {
+        this.$store.dispatch('block', { index: this.index, date_end: v }).then(() => {
           this.$parent.$refs.chartController.parse()
           if (this.mounted) {
             this.$store.commit('modifyFlag')
@@ -294,12 +295,6 @@ export default {
     }
   },
   methods: {
-    // buildingMeters: function () {
-    //   this.$store.dispatch('buildingMeters', { id: this.block(this.index).charts[this.currentIndex].group_id }).then(r => {
-    //     console.log(r)
-    //     return r
-    //   })
-    // },
     addGroup: function () {
       this.$store.dispatch('addChart', { index: this.index }).then(() => {
         this.$parent.$refs.chartController.parse()
@@ -429,4 +424,3 @@ export default {
   padding-bottom: 1em;
 }
 </style>
-el-

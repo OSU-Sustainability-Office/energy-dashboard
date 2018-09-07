@@ -66,6 +66,16 @@ router.get('/story', (req, res) => {
     Promise.all(promises).then(r => {
       let rObj = r[0][0]
       rObj.blocks = r[1]
+      // Fix for wrong timezone should not be for loop....
+      for (let b of rObj.blocks) {
+        let ds = new Date(b.date_start)
+        ds.setTime(ds.getTime() - ds.getTimezoneOffset() * 60 * 1000)
+        b.date_start = ds.toISOString()
+
+        let de = new Date(b.date_end)
+        de.setTime(de.getTime() - de.getTimezoneOffset() * 60 * 1000)
+        b.date_end = de.toISOString()
+      }
       rObj.openCharts = r[2]
       rObj.openMeters = r[3]
       res.send(JSON.stringify(rObj))
@@ -236,6 +246,7 @@ router.get('/stories', (req, res) => {
 
 router.get('/data', (req, res) => {
   if (req.queryString('startDate') && req.queryString('endDate') && req.queryInt('id') && req.queryString('point')) {
+    console.log(req.queryString('startDate'))
     let q = 'SELECT time, ' + req.queryString('point') + ' FROM data WHERE time >= ? AND time <= ? AND meter_id = ?'
     db.query(q, [req.queryString('startDate'), req.queryString('endDate'), req.queryInt('id')]).then(rows => {
       res.send(JSON.stringify(rows))
