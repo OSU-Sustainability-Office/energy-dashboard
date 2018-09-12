@@ -1,9 +1,9 @@
 <template>
-  <div class='container-fluid mainArea'>
+  <div class='container-fluid'>
     <!-- <navdir ref='navdir' class="bar"/> -->
     <b-tabs nav-class="directory-tabs" v-model='mainGroup'>
       <b-tab title='Public' :key='0'>
-        <b-tabs pills card nav-class='directory-group-tab' v-model='openPublicTab'>
+        <b-tabs class='mainArea' pills nav-class='directory-group-tab' v-model='openPublicTab'>
           <b-tab class='cotainer' title='All'>
             <div class="row padded" >
               <div class='col-xl-3 col-lg-4 col-md-6' v-for='(building, index_b) in allStories()' :key='index_b' >
@@ -156,6 +156,14 @@ export default {
     this.$eventHub.$on('deleteStory', (event) => { this.deleteStory(event[2], event[0], event[1]) })
     // 0: group, 1: index, 2: name, 3: description, 4: media
     this.$eventHub.$on('updateStory', (event) => { this.updateStory(event[0], event[1], event[2], event[3], event[4]) })
+
+    this.$eventHub.$on('updateDirectoryListings', (event) => {
+      if (event[0] > 0) {
+        this.mainGroup = 1
+      } else {
+        this.mainGroup = 0
+      }
+    })
   },
   methods: {
     allStories: function () {
@@ -239,6 +247,13 @@ export default {
 }
 </script>
 <style>
+.directory-tabs {
+  display: none;
+}
+.directory-group-tab {
+  border-bottom: solid 1px rgba(0,0,0,0.1);
+  padding: 0.5em;
+}
 .directory-tabs .nav-item > a {
   color: rgb(215,63,9) !important;
   font-size: 1.4em !important;
@@ -262,6 +277,7 @@ export default {
 <style scoped>
 .mainArea {
   margin-top: 1em;
+
 }
 .h3 {
   border-bottom: solid 1px rgba(126,126,126,0.2);
@@ -321,7 +337,7 @@ export default {
 }
 .searchArea {
   position: absolute;
-  top: 9em;
+  top: 5.1em;
   right: 2em;
 }
 </style>
