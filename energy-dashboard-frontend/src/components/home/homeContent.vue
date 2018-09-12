@@ -1,6 +1,6 @@
 <template>
   <div id="center">
-    <h2 class="highlight">COMMITED TO:</h2>
+    <h2 class="highlight">COMMITTED TO:</h2>
     <commitment />
   </div>
 
