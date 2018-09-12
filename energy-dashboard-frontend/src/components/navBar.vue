@@ -11,7 +11,7 @@
         <li class='nav-item' v-bind:class='[isActive("map") ? "active" : ""]'><a class="nav-link" href="#/map">Map</a></li>
 
         <li class='nav-item' v-bind:class='[isActive("publicdir") ? "active" : ""]'><a class="nav-link" @click='move("/directory/public")'>Building List</a></li>
-        <li class='nav-item' v-bind:class='[isActive("privatedir") ? "active" : ""]'><a class="nav-link" @click='move("/directory/private")'>My Dashboard</a></li>
+        <li class='nav-item' v-if='user !== null && user.name !== ""' v-bind:class='[isActive("privatedir") ? "active" : ""]'><a class="nav-link" @click='move("/directory/private")'>My Dashboard</a></li>
       </ul>
     </div>
     <div class='pos-right navbar-collapse collapse w-100 order-3 dual-collapse2'>
