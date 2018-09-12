@@ -145,7 +145,7 @@ export default new Vuex.Store({
               let b = story.blocks.find(el => el.id === chart.block_id)
               // First put meters into charts
               for (let meter of story.openMeters) {
-                if ((chart.meter === 0 || chart.meter === meter.meter_id) && meter.chart_id === chart.id) {
+                if (((chart.meter === 0 && meter.type === 'e') || chart.meter === meter.meter_id) && meter.chart_id === chart.id) {
                   if (chart.meters) {
                     chart.meters.push(meter)
                     story.openMeters.splice(story.openMeters.indexOf(meter), 1)
@@ -223,7 +223,13 @@ export default new Vuex.Store({
           reject(new Error('Building action needs group id'))
         }
         axios.get(process.env.ROOT_API + 'api/meters?id=' + payload.group_id, { method: 'get', data: null, withCredentials: true }).then(res => {
-          context.dispatch('block', { index: payload.blockIndex, charts: [{ index: payload.chartIndex, group_id: payload.group_id, meters: res.data }] }).then(() => {
+          let r = []
+          for (let meter of res.data) {
+            if (meter.type === 'e') {
+              r.push(meter)
+            }
+          }
+          context.dispatch('block', { index: payload.blockIndex, charts: [{ index: payload.chartIndex, group_id: payload.group_id, meters: r, point: 'accumulated_real' }] }).then(() => {
             resolve(context.getters.block(payload.blockIndex))
           }).catch(e => {
             throw e
@@ -268,9 +274,22 @@ export default new Vuex.Store({
           for (let meter of block.charts[chartIndex].meters) {
             let paramString = '?id=' + meter.meter_id + '&startDate=' + block.date_start + '&endDate=' + block.date_end + '&point=' + block.charts[chartIndex].point
             promises.push(axios(process.env.ROOT_API + 'api/data' + paramString, { method: 'get', data: null, withCredentials: true }).then(res => {
+              console.log(res.data)
               for (let entry of res.data) {
                 let elm = chartData.find(elm => elm.x === entry.time)
-                let v = Math.abs(entry[Object.keys(entry)[1]])
+                let v = entry[Object.keys(entry)[1]]
+                if (block.charts[chartIndex].point === 'pf_a' || block.charts[chartIndex].point === 'pf_b' || block.charts[chartIndex].point === 'pf_c' || block.charts[chartIndex].point === 'reactive_a' || block.charts[chartIndex].point === 'reactive_b' || block.charts[chartIndex].point === 'reactive_c') {
+                  // Do not move to statement above, pf and reactive can be negative in some rare cases
+                  // if put in statement above the value is always positive
+                  // additionally this may not be the correct way to handle the data when the acc_real is neg
+                  // wait for more clarification with Lety
+                  if (meter.negate) {
+                    v *= -1
+                  }
+                } else {
+                  v = Math.abs(v)
+                }
+
                 if (elm) {
                   if (meter.operation === 0) {
                     v *= -1

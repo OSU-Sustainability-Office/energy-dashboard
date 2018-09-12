@@ -27,7 +27,7 @@ export default {
     }
   },
   mounted () {
-    var timeout = 150
+    var timeout = 10
     var i = 0
     while (i < this.commitments.length - 1) {
       setTimeout(() => {
@@ -47,15 +47,16 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 .message {
   position: absolute;
   transition: all 0.5s;
+  opacity: 1;
+  transition-property: opacity, transform;
 }
-.fade-leave-active {
-  position: absolute;
+ .fade-leave-active, .fade-enter-active {
 }
-.fade-enter/* .fade-leave-active below version 2.1.8 */ {
+.fade-enter {
   opacity: 0;
   transform: translateY(60px);
 }
