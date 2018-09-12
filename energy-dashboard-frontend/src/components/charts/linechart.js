@@ -60,6 +60,10 @@ export default {
             },
             gridLines: {
               display: true // my new default options
+            },
+            scaleLabel: {
+              display: true,
+              labelString: this.$parent.buildLabel('y')
             }
           }],
           xAxes: [{
@@ -70,6 +74,10 @@ export default {
               fontColor: 'white',
               autoSkip: true,
               maxTicksLimit: 30
+            },
+            scaleLabel: {
+              display: true,
+              labelString: this.$parent.buildLabel('x')
             },
             type: 'time',
             time: {

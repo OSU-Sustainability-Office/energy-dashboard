@@ -50,16 +50,19 @@ export default {
   },
   watch: {
     graphType: function (value) {
-      // console.log(value);
       value = parseInt(value)
-      if (value === 1) {
-        this.chart = this.$refs.linechart
-      } else if (value === 2) {
-        this.chart = this.$refs.barchart
-      } else if (value === 3) {
-        this.chart = this.$refs.doughnutchart
-      } else if (value === 4) {
-        this.chart = this.$refs.piechart
+      switch(value) {
+        case 1:
+          this.chart = this.$refs.linechart
+          break
+        case 2:
+          this.chart = this.$refs.barchart
+          break
+        case 3:
+          this.chart = this.$refs.doughnutchart
+          break
+        default:
+          this.chart = this.$refs.piechart
       }
       this.parse()
       this.updateChart()
@@ -202,6 +205,81 @@ export default {
         i++
       }
       this.chartData = tempData
+    },
+    // Creates either an X or a Y axis label for a chart, depending on the parameters.
+    buildLabel: function (axis) {
+      let label = '' // start with an empty string and build
+
+      if (axis === 'y') {
+        // This axis must contain the units for the given chart.point
+        let point = this.story.blocks[this.index].charts[this.index].point
+        switch (this.story.blocks[this.index].charts[this.index].point) {
+          case 'accumulated_real' :
+            return 'Accumulated Real Energy Net (kWh)'
+          case 'real_power':
+            return 'Total Real Power (W)'
+          case 'reactive_power':
+            return 'Total Reactive Power (var)'
+          case 'apparent_power':
+            return 'Total Apparent Power (VA)'
+          case 'real_a':
+            return 'Real Power, Phase A (kW)'
+          case 'real_b':
+            return 'Real Power, Phase B (kW)'
+          case 'real_c':
+            return 'Real Power, Phase C (kW)'
+          case 'reactive_a':
+            return 'Reactive Power, Phase A (kVAR)'
+          case 'reactive_b':
+            return 'Reactive Power, Phase B (kVAR)'
+          case 'reactive_c':
+            return 'Reactive Power, Phase C (kVAR)'
+          case 'pf_a':
+            return 'Power Factor, Phase A'
+          case 'pf_b':
+            return 'Power Factor, Phase B'
+          case 'pf_c':
+            return 'Power Factor, Phase C'
+          case 'vphase_ab':
+            return 'Voltage Phase, Phase A-B (V)'
+          case 'vphase_bc':
+            return 'Voltage Phase, Phase B-C (V)'
+          case 'vphase_ac':
+            return 'Voltage Phase, Phase A-C (V)'
+          case 'vphase_an':
+            return 'Voltage Phase, Phase A-N (V)'
+          case 'vphase_bn':
+            return 'Voltage Phase, Phase B-N (V)'
+          case 'vphase_cn':
+            return 'Voltage Phase, Phase C-N (V)'
+          case 'cphase_a':
+            return 'Current Phase, Phase A (A)'
+          case 'cphase_b':
+            return 'Current Phase, Phase B (A)'
+          case 'cphase_c':
+            return 'Current Phase, Phase C (A)'
+          case 'cubic_feet':
+            return 'Total Natural Gas (CF)'
+          case 'maximum':
+            return 'Peak Natural Gas Flow (CFm)'
+          case 'minimum':
+            return 'Minimum Natural Gas Flow (CFm)'
+          case 'instant':
+            return 'Natural Gas Instantaneous (CFm)'
+          case 'rate':
+            return 'Natural Gas Rate (CFm)'
+          case 'total':
+            return 'Steam (Pounds)'
+          case 'input':
+            return 'Steam Input'
+        }
+      } else {
+        // The x axis displays time
+        console.log(JSON.stringify(this.story.blocks[this.index].charts[this.index].data[0]))
+        let date1 = new Date(Date.parse(this.story.blocks[this.index].charts[this.index].data[0].x))
+        let date2 = new Date(Date.parse(this.story.blocks[this.index].charts[this.index].data[this.story.blocks[this.index].charts[this.index].data.length - 1].x))
+        return date1.toDateString() + ' to ' + date2.toDateString()
+      }
     }
   }
 }

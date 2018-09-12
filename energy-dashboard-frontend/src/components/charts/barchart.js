@@ -33,7 +33,12 @@ export default {
               fontColor: 'white'
             },
             gridLines: {
-              display: true // my new default options
+              display: true, // my new default options
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            scaleLabel: {
+              display: true,
+              labelString: this.$parent.buildLabel('y')
             }
           }],
           xAxes: [{
@@ -52,6 +57,10 @@ export default {
               displayFormats: {
                 'hour': 'M/DD h:00 a'
               }
+            },
+            scaleLabel: {
+              display: true,
+              labelString: this.$parent.buildLabel('x')
             }
           }]
         }
