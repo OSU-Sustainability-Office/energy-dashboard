@@ -98,7 +98,7 @@ export default {
               let iDate = Date.parse(point.x)
               let index = 1
               if (!organizedData[index]) {
-                organizedData.splice(index, 0, [point.x, point.y])
+                organizedData.splice(index, 0, [(new Date(point.x)).toString(), point.y])
                 continue
               }
               while (iDate > Date.parse(organizedData[index][0])) {
@@ -107,7 +107,7 @@ export default {
                 }
                 index++
               }
-              organizedData.splice(index, 0, [point.x, point.y])
+              organizedData.splice(index, 0, [(new Date(point.x)).toString(), point.y])
             } else {
               organizedData[mappedData.indexOf(point.x) + 1].push(point.y)
             }

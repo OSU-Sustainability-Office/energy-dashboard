@@ -182,7 +182,13 @@ export default {
             }
           })
         } else {
-          this.$store.dispatch('block', { index: this.index, charts: [{ meters: this.buildingMeters, index: this.currentIndex, point: 'accumulated_real', meter: 0 }] }).then(() => {
+          let r = []
+          for (let meter of this.buildingMeters) {
+            if (meter.type === 'e') {
+              r.push(meter)
+            }
+          }
+          this.$store.dispatch('block', { index: this.index, charts: [{ meters: r, index: this.currentIndex, point: 'accumulated_real', meter: 0 }] }).then(() => {
             this.$parent.$refs.chartController.parse()
             if (this.mounted) {
               this.$store.commit('modifyFlag')
@@ -211,7 +217,6 @@ export default {
         return s
       },
       set: function (v) {
-        console.log(v)
         this.$store.dispatch('block', { index: this.index, date_start: v }).then(() => {
           this.$parent.$refs.chartController.parse()
           if (this.mounted) {

@@ -18,7 +18,7 @@ function insertPoint(record, res, meter_id) {
 
   // Format timestamp
   var d = new Date(record.time._);
-  d.setTime(d.getTime() - d.getTimezoneOffset()*60*1000);
+  // d.setTime(d.getTime() - d.getTimezoneOffset()*60*1000);
   console.log("Inserting meter data into table from: " + d);
   var year = d.getFullYear();
   var month = ("0" + (d.getMonth() + 1)).slice(-2); // 2 digit

@@ -161,7 +161,7 @@ export default {
 
         if (line.point === 'accumulated_real' || line.point === 'total' || line.point === 'cubic_feet') {
           // First remove interval items
-          for (let o = data.length - 1; o >= 1; o--) {
+          for (let o = data.length - 1; o >= 0; o--) {
             if (this.checkInterval(data[o].x) || !data[o].y) {
               data.splice(o, 1)
             }
@@ -169,16 +169,23 @@ export default {
           // Then get the difference
           for (let o = data.length - 1; o >= 1; o--) {
             data[o].y -= data[o - 1].y
+            if (data[o].y < 0) {
+              data[o].y = 0
+            }
           }
           // Remove first item that did not have a calculated interval
           data.splice(0, 1)
         } else {
           let lastIndex = 0
+          let runningTotal = 0
           let newData = []
           for (let i in data) {
             if (!this.checkInterval(data[i].x)) {
-              newData.push({ x: data[i].x, y: (data[i].y - data[lastIndex].y) / (i - lastIndex) })
+              newData.push({ x: data[i].x, y: (data[i].y + runningTotal) / (i - lastIndex) })
               lastIndex = i
+              runningTotal = 0
+            } else {
+              runningTotal += data[i].y
             }
           }
           data = newData
@@ -190,7 +197,7 @@ export default {
           borderColor: this.colors[i],
           fill: false,
           showLine: true,
-          spanGaps: true
+          spanGaps: false
         })
         i++
       }
