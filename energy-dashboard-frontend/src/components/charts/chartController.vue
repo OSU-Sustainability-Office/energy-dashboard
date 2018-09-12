@@ -50,16 +50,19 @@ export default {
   },
   watch: {
     graphType: function (value) {
-      // console.log(value);
       value = parseInt(value)
-      if (value === 1) {
-        this.chart = this.$refs.linechart
-      } else if (value === 2) {
-        this.chart = this.$refs.barchart
-      } else if (value === 3) {
-        this.chart = this.$refs.doughnutchart
-      } else if (value === 4) {
-        this.chart = this.$refs.piechart
+      switch(value) {
+        case 1:
+          this.chart = this.$refs.linechart
+          break
+        case 2:
+          this.chart = this.$refs.barchart
+          break
+        case 3:
+          this.chart = this.$refs.doughnutchart
+          break
+        default:
+          this.chart = this.$refs.piechart
       }
       this.parse()
       this.updateChart()
