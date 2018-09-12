@@ -4,14 +4,27 @@
     <b-tabs nav-class="directory-tabs" v-model='mainGroup'>
       <b-tab title='Public' :key='0'>
         <b-tabs pills card nav-class='directory-group-tab' v-model='openPublicTab'>
+          <b-tab class='cotainer' title='All'>
+            <div class="row padded" >
+              <div class='col-xl-3 col-lg-4 col-md-6' v-for='(building, index_b) in allStories()' :key='index_b' >
+                <storycard :name='building.name' :notools='true' :media='building.media' :description='building.description' class="mx-auto storyCard" @click='$router.push({path: `/public/${building.id}/1`})' ref='card'/>
+              </div>
+            </div>
+          </b-tab>
           <b-tab class="container" v-for='(item, index) in subGroupsForPath(0)' :key='index' :title='item.name' ref='group'>
             <div class="row padded" >
               <div class='col-xl-3 col-lg-4 col-md-6' v-for='(building, index_b) in item.subgroups' :key='index_b' >
-                <storycard :name='building.name' :notools='true' :media='building.media' :description='building.description' class="mx-auto storyCard" @click='$router.push({path: `/public/${building.id}/1`})' />
+                <storycard :name='building.name' :notools='true' :media='building.media' :description='building.description' class="mx-auto storyCard" @click='$router.push({path: `/public/${building.id}/1`})' ref='card'/>
               </div>
             </div>
           </b-tab>
         </b-tabs>
+        <div class='searchArea'>
+          <el-input v-model='search'>
+            <i class="el-icon-search el-input__icon" slot="prefix"></i>
+          </el-input>
+
+        </div>
       </b-tab>
       <b-tab title='Your Dashboard' v-if='user.name !== ""' :key='1'>
         <b-tabs pills card :nav-class="['directory-group-tab', 'short']" v-model='openUserTab'>
@@ -79,7 +92,27 @@ export default {
       tempGroupName: '',
       openUserTab: 0,
       openPublicTab: 0,
-      mainGroup: 0
+      mainGroup: 0,
+      search: ''
+    }
+  },
+  watch: {
+    search: function (v) {
+      let values = this.allStories().filter((story, index, arr) => (
+        // Check that the item's name includes query
+        (story.name && story.name.toLowerCase().includes(v.toLowerCase())) ||
+        // Check that description includes query
+        (story.description && story.description.toLowerCase().includes(v.toLowerCase()))
+      )).map(e => {
+        return e.name
+      })
+      for (let card of this.$refs.card) {
+        if (values.indexOf(card.name) < 0) {
+          card.$el.parentNode.style.display = 'none'
+        } else {
+          card.$el.parentNode.style.display = 'block'
+        }
+      }
     }
   },
   computed: {
@@ -93,10 +126,12 @@ export default {
     this.groups.push({name: 'Your Dashboard', subgroups: []})
     this.$store.dispatch('stories').then(res => {
       for (let group of res) {
+        let g = [].concat(group.stories)
+        g.sort((a, b) => { return a.name > b.name })
         if (group.public) {
-          this.groups[0].subgroups.push({ name: group.group, subgroups: group.stories, id: group.id })
+          this.groups[0].subgroups.push({ name: group.group, subgroups: g, id: group.id })
         } else {
-          this.groups[1].subgroups.push({ name: group.group, subgroups: group.stories, id: group.id })
+          this.groups[1].subgroups.push({ name: group.group, subgroups: g, id: group.id })
         }
       }
       if (this.$route.path.search('private') > 0) {
@@ -104,6 +139,8 @@ export default {
       } else {
         this.mainGroup = 0
       }
+      this.groups[0].subgroups.sort((a, b) => { return a.name > b.name })
+      this.groups[1].subgroups.sort((a, b) => { return a.name > b.name })
       this.$nextTick(() => {
         if (this.$route.params.group) {
           let i = this.groups[this.mainGroup].subgroups.map(e => { return e.id }).indexOf(parseInt(this.$route.params.group))
@@ -121,6 +158,14 @@ export default {
     this.$eventHub.$on('updateStory', (event) => { this.updateStory(event[0], event[1], event[2], event[3], event[4]) })
   },
   methods: {
+    allStories: function () {
+      let r = []
+      for (let g of this.groups[0].subgroups) {
+        r = r.concat(g.subgroups)
+      }
+      r.sort((a, b) => { return a.name > b.name })
+      return r
+    },
     openGroupEdit: function () {
       this.groupedit = true
       this.tempGroupName = this.groups[1].subgroups[this.openUserTab].name
@@ -270,6 +315,11 @@ export default {
   border: solid 3px #FFF;
 }
 .editgroup {
+  position: absolute;
+  top: 9em;
+  right: 2em;
+}
+.searchArea {
   position: absolute;
   top: 9em;
   right: 2em;
