@@ -9,8 +9,9 @@
     <div class='pos-left collapse navbar-collapse' id="navbarSupportedContent">
       <ul class="navbar-nav">
         <li class='nav-item' v-bind:class='[isActive("map") ? "active" : ""]'><a class="nav-link" href="#/map">Map</a></li>
-        <li class='nav-item' v-bind:class='[isActive("dashboard") ? "active" : ""]'><a class="nav-link" href="#/dashboard">Dashboard</a></li>
-        <li class='nav-item' v-bind:class='[isActive("directory") ? "active" : ""]'><a class="nav-link" href="#/directory">Directory</a></li>
+
+        <li class='nav-item' v-bind:class='[isActive("publicdir") ? "active" : ""]'><a class="nav-link" @click='move("/directory/public")'>Building List</a></li>
+        <li class='nav-item' v-bind:class='[isActive("privatedir") ? "active" : ""]'><a class="nav-link" @click='move("/directory/private")'>My Dashboard</a></li>
       </ul>
     </div>
     <div class='pos-right navbar-collapse collapse w-100 order-3 dual-collapse2'>
@@ -45,8 +46,14 @@ export default {
       this.$store.commit('loadUser', { name: '', privilige: 0 })
       window.location = this.logOutLink
     },
+    move: function (v) {
+      this.$router.push({path: v})
+      this.$eventHub.$emit('updateDirectoryListings', [v.search('private')])
+    },
     isActive: function (s) {
       let splitPath = this.$route.path.substr(1).split('/')
+      if (s === 'privatedir' && splitPath[0] === 'directory' && splitPath[1] === 'private') { return true }
+      if (s === 'publicdir' && splitPath[0] === 'directory' && splitPath[1] === 'public') { return true }
       if (s === 'dashboard' && splitPath[0] === 'public') { return true }
       if (s === splitPath[0]) { return true }
       return false
