@@ -77,7 +77,7 @@ export default {
             case 0:
               return 'hour'
             case 1:
-              return 'hour'
+              return 'day'
             case 2:
               return 'day'
             default:
@@ -91,13 +91,13 @@ export default {
         if (this.$route.path.search('public') > 0) {
           switch (parseInt(this.$route.params.range)) {
             case 0:
-              return 2
+              return 1
             case 1:
-              return 8
+              return 1
             case 2:
-              return 5
+              return 7
             default:
-              return 'minute'
+              return 15
           }
         }
       }
