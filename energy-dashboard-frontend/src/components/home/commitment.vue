@@ -27,14 +27,14 @@ export default {
     }
   },
   mounted () {
-    var timeout = 10
+    var timeout = 100
     var i = 0
     while (i < this.commitments.length - 1) {
       setTimeout(() => {
         this.i++
         this.keyValue = !this.keyValue
       }, timeout)
-      timeout += (100 + 50 * i)
+      timeout += 90 * i
       i++
     }
   },

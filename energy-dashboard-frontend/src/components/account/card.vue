@@ -1,17 +1,19 @@
 <template>
   <div class="card featured" v-bind:class="{ feature : featured}" ref='card'>
+    <div class='titleTextFeatured personalTitle row' ref='title'>
+      <div class='col'>{{block(index).name}}</div>
+      <i class="col-1 text-right fas fa-pencil-alt" @click='editcard = true' v-b-tooltip.hover title='Edit Block'></i>
+    </div>
+    <!-- <div class='titleTextFeatured' v-if="story.public">
+      {{block(index).name}}
 
-    <chartController :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '2.5em','padding-left':'1.5em','padding-top':'8em' }"/>
+    </div> -->
+    <chartController :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '0.5em','padding-left':'0.5em','padding-top':'1em' }" :height='520'/>
     <!-- <featureController :index='index' v-if="featured" ref="featureController" /> -->
-    <div class='titleTextFeatured personalTitle' v-if="!story.public" @click='editcard = true' ref='title' v-b-tooltip.hover title='Click to edit'>
-      {{block(index).name}}
-    </div>
-    <div class='titleTextFeatured' v-if="story.public">
-      {{block(index).name}}
-    </div>
+
     <b-modal lazy size='lg' v-model='editcard' title='Edit Block' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
       <b-container>
-        <div class="row form-group">
+        <div class="row form-group" v-if='!story.public'>
           <label class='col-4'>Name:</label>
           <el-input type="text" v-model='tempName' class='col'></el-input>
         </div>
@@ -35,7 +37,7 @@
             <el-option :value="5" label='1 Month'></el-option>
           </el-select>
         </div>
-        <div class="row form-group">
+        <div class="row form-group" v-if='!story.public'>
           <label class='col-4'>Graph Type: </label>
           <el-select v-model="graphtype" class='col'>
             <el-option :value='1' label='Line Chart'></el-option>
@@ -54,7 +56,7 @@
             <b-btn @click='cardSave()' variant='primary'> Ok </b-btn>
             <b-btn @click='editcard = false'> Cancel </b-btn>
           </div>
-          <div class='col text-right'>
+          <div class='col text-right' v-if='!story.public'>
             <b-btn @click='cardDelete()' variant='danger'> Delete Block</b-btn>
           </div>
         </div>
@@ -204,7 +206,6 @@ export default {
   color: rgb(215,63,9);
   font-size: 2em;
   font-family: 'StratumNo2';
-  position: absolute;
   padding-top: 0.3em;
 }
 .personalTitle {
@@ -216,10 +217,9 @@ export default {
 }
 .fas {
   color: #FFFFFF99;
-  font-size: 2em;
+  padding-top: 0.2em;
+  font-size: 0.9em;
   width: 100%;
-  text-align: center;
-  display: inline-block;
   cursor: pointer;
 }
 .storyName {

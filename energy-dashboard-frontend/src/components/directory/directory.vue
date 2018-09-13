@@ -27,7 +27,7 @@
         </div>
       </b-tab>
       <b-tab title='Your Dashboard' v-if='user.name !== ""' :key='1'>
-        <b-tabs pills card :nav-class="['directory-group-tab', 'short']" v-model='openUserTab'>
+        <b-tabs pills :nav-class="['directory-group-tab']" v-model='openUserTab'>
           <b-tab class="container" v-for='(item, index) in subGroupsForPath(1)' :key='index' :title='item.name'>
             <div class="row padded" >
               <div class='col-xl-3 col-lg-4 col-md-6' v-for='(building, index_b) in item.subgroups' :key='index_b' >
@@ -332,7 +332,7 @@ export default {
 }
 .editgroup {
   position: absolute;
-  top: 9em;
+  top: 4.8em;
   right: 2em;
 }
 .searchArea {

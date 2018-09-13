@@ -15,7 +15,7 @@
       </div>
       <div class="d-flex flex-row graph" ref='scrollBox'>
         <div class="col inline" v-for='(block,index) in story.blocks' :key='index'>
-          <chartController :randomColors=1 :graphType='1' :index=index ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding': '0.5em' }"/>
+          <chartController :randomColors=1 :graphType='1' :index=index ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding': '0.5em' }" :height='200'/>
         </div>
       </div>
       <i class="graphslide left fas fa-caret-left" @click='prev()' ref="prevArrow"></i>

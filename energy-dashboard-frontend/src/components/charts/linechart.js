@@ -30,7 +30,7 @@ export default {
                 minutes = '0' + minutes
               }
               let year = d.getYear().toString().slice(1)
-              return d.getMonth() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem
+              return (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem
             }
           }
         },
