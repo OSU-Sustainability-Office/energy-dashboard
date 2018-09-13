@@ -1,9 +1,9 @@
 <template>
   <div>
-    <linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartData" :style="styleC"/>
-    <barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartData" :style="styleC" />
-    <doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" />
-    <piechart v-if="graphType == 4" ref="piechart" v-bind:chartData="chartData" :style="styleC" />
+    <linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <piechart v-if="graphType == 4" ref="piechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
   </div>
 </template>
 <script>
@@ -15,7 +15,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'card',
-  props: ['index', 'graphType', 'styleC', 'randomColors'],
+  props: ['index', 'graphType', 'styleC', 'randomColors', 'height'],
   components: {
     linechart, barchart, doughnutchart, piechart
   },

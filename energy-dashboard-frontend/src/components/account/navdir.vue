@@ -1,7 +1,7 @@
 <template>
   <div class='bar container-fluid'>
     <div class='row main align-items-center'>
-      <b-dropdown v-for='(item, index) in path' variant="link" :key='index' :id='"dropdown-" + index' class="itm col" boundary="window" no-caret>
+      <b-dropdown v-for='(item, index) in path' v-if='index > 0' variant="link" :key='index' :id='"dropdown-" + index' class="itm col" boundary="window" no-caret>
         <template slot='button-content'>
           <div class='container-fluid'>
             <div class='leftP'>
@@ -13,7 +13,7 @@
             </div>
           </div>
         </template>
-        <b-dropdown-item v-for='(otherStory, index_o) in getDataForPathIndex(index)' :key='index_o' class='' @click='moveRoute(index, index_o)'>
+        <b-dropdown-item v-for='(otherStory, index_o) in getDataForPathIndex(index)' :key='index_o' class='col' @click='moveRoute(index, index_o)'>
           <i :class='getClass(otherStory,index)'></i>
           {{ otherStory }}
         </b-dropdown-item>

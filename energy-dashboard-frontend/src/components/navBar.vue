@@ -97,10 +97,11 @@ export default {
     padding: 1em;
   }
   .navbar-nav a {
-    color: #FFF;
+    color: #FFF !important;
+    cursor: pointer;
   }
-  .navbar-nav li:not(.active):hover > a {
-    color: #000;
+  .navbar-nav li:not(.active):hover > a:not(.active) {
+    color: #000 !important;
   }
   .active {
     background-color: rgba(0,0,0,0.3);
