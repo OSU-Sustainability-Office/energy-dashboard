@@ -260,7 +260,7 @@ export default {
 </script>
 <style>
 .directory-tabs {
-  display: none;
+  display: none !important;
 }
 .directory-group-tab {
   border-bottom: solid 1px rgba(0,0,0,0.1);
