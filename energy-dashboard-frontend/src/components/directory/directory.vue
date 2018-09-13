@@ -31,7 +31,7 @@
           <b-tab class="container" v-for='(item, index) in subGroupsForPath(1)' :key='index' :title='item.name'>
             <div class="row padded" >
               <div class='col-xl-3 col-lg-4 col-md-6' v-for='(building, index_b) in item.subgroups' :key='index_b' >
-                <storycard :name='building.name' :media='building.media' :description='building.description' class="mx-auto storyCard" @click='$router.push({path: `/dashboard/${building.id}`})' :group='index' :index='index_b'/>
+                <storycard :name='building.name' :media='building.media' :description='building.description' class="mx-auto storyCard" @click='$router.push({path: `/dashboard/${building.id}`})' :group='index' :index='index_b' ref='story'/>
               </div>
               <div class='col-xl-3 col-lg-4 col-md-6'>
                 <storycard class='mx-auto' :plus='true' @click='newStory(index)' :notools='true' v-b-tooltip.hover title='Create a Story' />
@@ -58,9 +58,9 @@
               <div class='row'>
                 <div class='col-6'>
                   <b-btn @click='groupSave()' variant='primary'> Ok </b-btn>
-                  <b-btn @click='groupedit = false'> Cancel </b-btn>
+                  <b-btn @click='groupedit = false; createFlag = false'> Cancel </b-btn>
                 </div>
-                <div class='col text-right'>
+                <div class='col text-right' v-if='!createFlag'>
                   <b-btn @click='groupDelete(openUserTab)' variant='danger'> Delete </b-btn>
                 </div>
               </div>
@@ -93,7 +93,8 @@ export default {
       openUserTab: 0,
       openPublicTab: 0,
       mainGroup: 0,
-      search: ''
+      search: '',
+      createFlag: false
     }
   },
   watch: {
@@ -179,9 +180,15 @@ export default {
       this.tempGroupName = this.groups[1].subgroups[this.openUserTab].name
     },
     groupSave: function () {
-      this.groups[1].subgroups[this.openUserTab].name = this.tempGroupName
-      this.groupedit = false
-      this.$store.dispatch('updateGroup', this.groups[1].subgroups[this.openUserTab])
+      if (this.createFlag) {
+        this.groups[1].subgroups.push({ name: this.tempGroupName, subgroups: [], id: null })
+        this.groupedit = false
+        this.createFlag = false
+      } else {
+        this.groups[1].subgroups[this.openUserTab].name = this.tempGroupName
+        this.groupedit = false
+        this.$store.dispatch('updateGroup', this.groups[1].subgroups[this.openUserTab])
+      }
     },
     groupDelete: function (index) {
       this.$store.dispatch('deleteGroup', { id: this.groups[1].subgroups[index].id })
@@ -190,7 +197,11 @@ export default {
       this.groupedit = false
     },
     newTab: function () {
-      this.groups[1].subgroups.push({ name: 'New Group', subgroups: [], id: null })
+      // this.groups[1].subgroups.push({ name: 'Untitled Group', subgroups: [], id: null })
+
+      this.createFlag = true
+      this.groupedit = true
+      this.tempGroupName = 'Untitled Group'
     },
     newStory: function (groupIndex) {
       let promise = []
@@ -199,10 +210,11 @@ export default {
       }
       // Vue cannot detect the addition of new properties, make sure all properties that are editable are present in the initialization
       Promise.all(promise).then((r) => {
-        let newStory = { name: 'New Story', description: 'description', media: '', id: null, group_id: this.groups[1].subgroups[groupIndex].id }
+        let newStory = { name: 'Untitled Story', description: 'description', media: '', id: null, group_id: this.groups[1].subgroups[groupIndex].id }
         this.groups[1].subgroups[groupIndex].subgroups.push(newStory)
-
-        this.$store.dispatch('createStory', newStory)
+        this.$store.dispatch('createStory', newStory).then(() => {
+          this.$refs.story[this.$refs.story.length - 1].openEdit()
+        })
       })
     },
     updateStory: function (group, index, name, description, media) {

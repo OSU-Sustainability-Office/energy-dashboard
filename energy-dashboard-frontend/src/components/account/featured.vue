@@ -48,7 +48,7 @@ export default {
     },
     addFeature: function () {
       var card = {}
-      card.name = 'New Chart'
+      card.name = 'Untitled Chart'
       card.date_start = '2018-06-01T00:00:00.000Z'
       card.date_end = '2018-06-30T23:59:00.000Z'
       card.date_interval = 15
