@@ -241,7 +241,6 @@ export default new Vuex.Store({
     block: (context, payload) => {
       return new Promise((resolve, reject) => {
         let promises = []
-
         if (payload.index === null) {
           reject(new Error('Block action needs index'))
         }
