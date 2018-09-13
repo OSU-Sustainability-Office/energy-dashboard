@@ -145,9 +145,9 @@ export default {
         if (this.$route.params.group) {
           let i = this.groups[this.mainGroup].subgroups.map(e => { return e.id }).indexOf(parseInt(this.$route.params.group))
           if (this.$route.path.search('private') > 0) {
-            this.openUserTab = i
+            this.openUserTab = i + 1
           } else {
-            this.openPublicTab = i
+            this.openPublicTab = i + 1
           }
         }
       })

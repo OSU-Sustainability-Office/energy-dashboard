@@ -51,7 +51,7 @@ export default {
   watch: {
     graphType: function (value) {
       value = parseInt(value)
-      switch(value) {
+      switch (value) {
         case 1:
           this.chart = this.$refs.linechart
           break
@@ -208,12 +208,17 @@ export default {
     },
     // Creates either an X or a Y axis label for a chart, depending on the parameters.
     buildLabel: function (axis) {
-      let label = '' // start with an empty string and build
-
       if (axis === 'y') {
         // This axis must contain the units for the given chart.point
-        let point = this.story.blocks[this.index].charts[this.index].point
-        switch (this.story.blocks[this.index].charts[this.index].point) {
+        const point = this.story.blocks[this.index].charts[0].point
+        if (!point) {
+          return ''
+        }
+
+        if (this.$parent.$options._componentTag === 'sideView') {
+          return ''
+        }
+        switch (point) {
           case 'accumulated_real' :
             return 'Accumulated Real Energy Net (kWh)'
           case 'real_power':
@@ -275,10 +280,20 @@ export default {
         }
       } else {
         // The x axis displays time
-        console.log(JSON.stringify(this.story.blocks[this.index].charts[this.index].data[0]))
-        let date1 = new Date(Date.parse(this.story.blocks[this.index].charts[this.index].data[0].x))
-        let date2 = new Date(Date.parse(this.story.blocks[this.index].charts[this.index].data[this.story.blocks[this.index].charts[this.index].data.length - 1].x))
-        return date1.toDateString() + ' to ' + date2.toDateString()
+        if (!this.story.blocks[this.index].charts[0].data) {
+          return ''
+        }
+        if (this.$parent.$options._componentTag === 'sideView') {
+          return ''
+        }
+        let date1 = new Date(this.story.blocks[this.index].charts[0].data[0].x)
+
+        let date2 = new Date(this.story.blocks[this.index].charts[0].data[this.story.blocks[this.index].charts[0].data.length - 1].x)
+        if (date1 && date2) {
+          return date1.toDateString() + ' to ' + date2.toDateString()
+        } else {
+          return ''
+        }
       }
     }
   }

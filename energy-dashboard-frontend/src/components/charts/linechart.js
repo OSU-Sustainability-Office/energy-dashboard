@@ -62,7 +62,7 @@ export default {
               display: true // my new default options
             },
             scaleLabel: {
-              display: true,
+              display: (this.$parent.buildLabel('y') !== ''),
               labelString: this.$parent.buildLabel('y')
             }
           }],
@@ -76,7 +76,7 @@ export default {
               maxTicksLimit: 30
             },
             scaleLabel: {
-              display: true,
+              display: (this.$parent.buildLabel('y') !== ''),
               labelString: this.$parent.buildLabel('x')
             },
             type: 'time',

@@ -51,6 +51,9 @@ export default {
       handler: function (v) {
         // This is kind of expensive consider changing at some point
         const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+        if (!group) {
+          return
+        }
         if (!group.public) {
           this.path = ['Your Dashboard']
         } else {
@@ -156,6 +159,9 @@ export default {
           return
         }
         const cGroup = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+        if (!cGroup) {
+          return
+        }
         for (let group of this.groups) {
           // Cant be === because public is undefined if not true
           if ((!cGroup.public && !group.public) || (cGroup.public && group.public)) {
@@ -183,20 +189,20 @@ export default {
         }
       } if (dirI === 1) {
         const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
-        if (group.public) {
-          this.$router.push({ path: `/directory/public/${this.groups[dropI].id}` })
-        } else {
+        if (!group.public) {
           let p = 0
           while (1) { if (this.groups[p].public) { p++ } else { break } }
           dropI += p
           this.$router.push({ path: `/directory/private/${this.groups[dropI].id}` })
+        } else {
+          this.$router.push({ path: `/directory/public/${this.groups[dropI].id}` })
         }
       } else if (dirI === 2) {
         const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
-        if (group.public) {
-          this.$router.push({ path: `/public/${this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id}/1` })
-        } else {
+        if (!group.public) {
           this.$router.push({ path: `/dashboard/${this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id}/` })
+        } else {
+          this.$router.push({ path: `/public/${this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id}/1` })
         }
         // this.$parent.changeStory([this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id, 0])
         this.$parent.update()

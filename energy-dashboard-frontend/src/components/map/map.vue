@@ -6,12 +6,11 @@
         <div class='key col'>
           <div class='row'>
             <div class='keyEl label font-weight-bold'>Key</div>
-            <div class='keyEl'><div class='res swatch'></div>Residence</div>
-            <div class='keyEl'><div class='din swatch'></div>Dining</div>
+            <div class='keyEl'><div class='edu swatch'></div>Academics</div>
             <div class='keyEl'><div class='ath swatch'></div>Athletics & Rec</div>
-            <div class='keyEl'><div class='rch swatch'></div>Research</div>
-            <div class='keyEl'><div class='edu swatch'></div>Education</div>
-            <div class='keyEl'><div class='com swatch'></div>Common</div>
+            <div class='keyEl'><div class='din swatch'></div>Dining</div>
+            <div class='keyEl'><div class='com swatch'></div>Events & Admin</div>
+            <div class='keyEl'><div class='res swatch'></div>Residence</div>
           </div>
         </div>
         <div class='fil col-4'>
@@ -105,7 +104,10 @@ export default {
       buildingOptions: {
         onEachFeature: function (feature, layer) {
           layer.on('click', function (e) { window.vue.$eventHub.$emit('clickedPolygon', [feature.properties.story_id]) })
-          layer.on('mouseover', function (e) { e.target.setStyle({ fillColor: '#000', color: '#000' }) })
+          layer.on('mouseover', function (e) {
+            e.target.setStyle({ fillColor: '#000', color: '#000' })
+            e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
+          })
           layer.on('mouseout', (e) => { window.vue.$eventHub.$emit('resetPolygon', [e.target]) })
         },
         style: function (feature) {
@@ -114,13 +116,10 @@ export default {
             case 'Residence':
               color = '#D3832B'
               break
-            case 'Education':
+            case 'Academics':
               color = '#0D5257'
               break
-            case 'Research':
-              color = '#AA9D2E'
-              break
-            case 'Common':
+            case 'Admin':
               color = '#7A6855'
               break
             case 'Athletics':

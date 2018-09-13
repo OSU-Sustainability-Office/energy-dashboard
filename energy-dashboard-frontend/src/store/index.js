@@ -274,7 +274,6 @@ export default new Vuex.Store({
           for (let meter of block.charts[chartIndex].meters) {
             let paramString = '?id=' + meter.meter_id + '&startDate=' + block.date_start + '&endDate=' + block.date_end + '&point=' + block.charts[chartIndex].point
             promises.push(axios(process.env.ROOT_API + 'api/data' + paramString, { method: 'get', data: null, withCredentials: true }).then(res => {
-              console.log(res.data)
               for (let entry of res.data) {
                 let elm = chartData.find(elm => elm.x === entry.time)
                 let v = entry[Object.keys(entry)[1]]
