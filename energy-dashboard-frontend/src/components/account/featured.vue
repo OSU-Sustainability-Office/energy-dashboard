@@ -7,29 +7,91 @@
       +
     </div>
   <!-- </transition-group> -->
+
+  <b-modal lazy size='lg' v-model='newCard' title='New Block' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
+    <b-container>
+      <el-form label-width='120px' label-position='left' :model='form' ref='form'>
+        <el-form-item label='Name: ' v-if='!story.public' :rules="{required: true, message: 'A name is required', trigger: 'blur'}" prop='name'>
+          <!-- <label class='col-4'>Name:</label> -->
+          <el-input type="text" v-model='form.name' style='width: 100%;'></el-input>
+        </el-form-item>
+        <el-form-item label='From Date: ' :rules="{required: true, message: 'A from date is required', trigger: 'blur'}" point='start'>
+          <!-- <label class='col-4 text-left'>From Date: </label> -->
+          <el-date-picker v-model='form.start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z' style='width: 100%;'>
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label='To Date: ' :rules="{required: true, message: 'A date to is required', trigger: 'blur'}" point='end'>
+          <!-- <label class='col-4 text-left'>To Date: </label> -->
+          <el-date-picker v-model='form.end' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z' style='width: 100%;'>
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label='Interval: ' :rules="{required: true, message: 'An interval is required', trigger: 'blur'}" prop='intUnit'>
+          <!-- <label class='col-4'>Interval: </label> -->
+          <el-select v-model="form.intUnit" style='width: 100%;'>
+            <el-option :value="1" label='15 Minutes'></el-option>
+            <el-option :value="2" label='1 Hour'></el-option>
+            <el-option :value="3" label='1 Day'></el-option>
+            <el-option :value="4" label='1 week'></el-option>
+            <el-option :value="5" label='1 Month'></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if='!story.public' label='Graph Type: ' :rules="{required: true, message: 'A graph type is required', trigger: 'blur'}" prop='graphType'>
+          <!-- <label class='col-4'>Graph Type: </label> -->
+          <el-select v-model="form.graphType" style='width: 100%;'>
+            <el-option :value='1' label='Line Chart'></el-option>
+            <el-option :value='2' label='Bar Chart'></el-option>
+            <el-option :value='3' label='Doughnut Chart'></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div class='row form-group'>
+        <label class='col'>Datasets: </label>
+        <featureController :index='story.blocks.length' ref="featureController" class='container-fluid' />
+      </div>
+    </b-container>
+    <b-container slot='modal-footer'>
+      <div class='row'>
+        <div class='col'>
+          <b-btn @click='cardSave()' variant='primary'> Ok </b-btn>
+          <b-btn @click='newCard = false'> Cancel </b-btn>
+        </div>
+      </div>
+    </b-container>
+  </b-modal>
 </div>
 </template>
 
 <script>
 import card from '@/components/account/card'
+import featureController from '@/components/account/featureController'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'featured',
   components: {
-    card
+    card,
+    featureController
   },
   props: ['cards', 'fromMap'],
   data () {
     return {
       isMinimized: false,
-      update: 0
+      update: 0,
+      form: {
+        start: null,
+        end: null,
+        intUnit: null,
+        graphType: null,
+        name: null
+      },
+      newCard: false
     }
   },
   computed: {
     ...mapGetters([
       'user',
-      'story'
+      'story',
+      'block'
     ])
   },
   methods: {
@@ -40,34 +102,128 @@ export default {
         }
       }
     },
+    cardSave: function () {
+      let validators = []
+      validators.push(this.$refs.featureController.$refs.form.validate())
+      validators.push(this.$refs.form.validate())
+      Promise.all(validators).then(async (r) => {
+        const card = {
+          name: this.form.name,
+          date_start: this.form.start,
+          date_end: this.form.end,
+          date_interval: this.interval(this.form.intUnit),
+          interval_unit: this.unit(this.form.intUnit),
+          charts: [],
+          story_id: this.story.id,
+          index: this.form.index,
+          graph_type: this.form.graphType,
+          id: null
+        }
+        for (const chart of this.$refs.featureController.form) {
+          const meters = await this.$store.dispatch('buildingMeters', { id: chart.group })
+          const newChart = {
+            name: chart.name,
+            group_id: chart.group,
+            point: chart.point,
+            meters: []
+          }
+          if (chart.meter === 0) {
+            newChart.meters = newChart.meters.concat(meters.filter(e => e.type === 'e'))
+          } else {
+            newChart.meters.push(meters.find(e => e.meter_id === chart.meter))
+          }
+          card.charts.push(newChart)
+        }
+        this.$store.dispatch('block', card).then(() => {
+          this.newCard = false
+          this.$refs.displayedCards[this.form.index].$refs.chartController.parse()
+        })
+      }).catch(() => {})
+    },
     isFull: function () {
       if (this.story.blocks.length === 0) {
         return true
       }
       return (this.story.blocks.length % 2 === 1)
     },
+    interval: function (i) {
+      switch (i) {
+        case 1:
+          return 15
+        case 2:
+          return 1
+        case 3:
+          return 1
+        case 4:
+          return 7
+        case 5:
+          return 1
+      }
+    },
+    unit: function (i) {
+      switch (i) {
+        case 1:
+          return 'minute'
+        case 2:
+          return 'hour'
+        case 3:
+          return 'day'
+        case 4:
+          return 'day'
+        case 5:
+          return 'month'
+      }
+    },
     addFeature: function () {
-      var card = {}
-      card.name = 'Untitled Chart'
-      card.date_start = '2018-06-01T00:00:00.000Z'
-      card.date_end = '2018-06-30T23:59:00.000Z'
-      card.date_interval = 15
-      card.interval_unit = 'minute'
-      card.graph_type = 1
-      card.story_id = this.story.id
-      card.index = this.story.blocks.length
-      card.id = null
-      // Default chart is the MU
-      card.charts = [{
-        name: 'New Chart',
-        group_id: 9,
-        point: 'accumulated_real',
-        meters: [
-          { meter_id: 8, operation: 1 },
-          { meter_id: 9, operation: 1 }
-        ]
-      }]
-      this.$store.dispatch('block', card).then(() => this.$store.commit('modifyFlag'))
+      this.form.name = null
+      this.form.end = null
+      this.form.start = null
+      this.form.intUnit = null
+      this.form.graphType = null
+      this.form.index = this.story.blocks.length
+      this.newCard = true
+      this.$nextTick(() => {
+        this.$refs.featureController.form = [{
+          name: null,
+          meter: null,
+          point: null,
+          group: null
+        }]
+      })
+    },
+    reverseInt: function (unit, interval) {
+      if (interval === 15 && unit === 'minute') {
+        return 1
+      } else if (interval === 1 && unit === 'hour') {
+        return 2
+      } else if (interval === 1 && unit === 'day') {
+        return 3
+      } else if (interval === 7 && unit === 'day') {
+        return 4
+      } else if (interval === 1 && unit === 'month') {
+        return 5
+      }
+    },
+    editModal: function (index) {
+      this.form.name = this.block(index).name
+      this.form.end = this.block(index).date_end
+      this.form.start = this.block(index).date_start
+      this.form.intUnit = this.reverseInt(this.block(index).interval_unit, this.block(index).date_interval)
+      this.form.graphType = this.block(index).graph_type
+      this.form.index = index
+      this.newCard = true
+      this.$nextTick(() => {
+        this.$refs.featureController.form = []
+        for (const chart of this.block(index).charts) {
+          const newChart = {
+            meter: (chart.meters.length > 1) ? 0 : chart.meters[0].meter_id,
+            name: chart.name,
+            group: chart.group_id,
+            point: chart.point
+          }
+          this.$refs.featureController.form.push(newChart)
+        }
+      })
     }
   }
 

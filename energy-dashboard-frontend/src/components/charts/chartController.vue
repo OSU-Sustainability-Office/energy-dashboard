@@ -279,16 +279,8 @@ export default {
             return 'Steam Input'
         }
       } else {
-        // The x axis displays time
-        if (!this.story.blocks[this.index].charts[0].data) {
-          return ''
-        }
-        if (this.$parent.$options._componentTag === 'sideView') {
-          return ''
-        }
-        let date1 = new Date(this.story.blocks[this.index].charts[0].data[0].x)
-
-        let date2 = new Date(this.story.blocks[this.index].charts[0].data[this.story.blocks[this.index].charts[0].data.length - 1].x)
+        const date1 = new Date(this.story.blocks[this.index].date_start)
+        const date2 = new Date(this.story.blocks[this.index].date_end)
         if (date1 && date2) {
           return date1.toDateString() + ' to ' + date2.toDateString()
         } else {

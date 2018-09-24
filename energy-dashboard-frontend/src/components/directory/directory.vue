@@ -47,7 +47,7 @@
         </b-tabs>
         <div class='editgroup'>
           <b-btn @click='openGroupEdit()'>Edit Group</b-btn>
-          <b-modal v-model='groupedit' title="Edit Group" body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
+          <b-modal v-model='groupedit' :title="(createFlag)?'New Group':'Edit Group'" body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
             <b-container>
               <div class="row">
                 <label>Name:</label>
@@ -177,6 +177,7 @@ export default {
     },
     openGroupEdit: function () {
       this.groupedit = true
+      this.createFlag = false
       this.tempGroupName = this.groups[1].subgroups[this.openUserTab].name
     },
     groupSave: function () {

@@ -2,7 +2,7 @@
   <div class="card featured" v-bind:class="{ feature : featured}" ref='card'>
     <div class='titleTextFeatured personalTitle row' ref='title'>
       <div class='col'>{{block(index).name}}</div>
-      <i class="col-1 text-right fas fa-pencil-alt" @click='editcard = true' v-b-tooltip.hover title='Edit Block'></i>
+      <i class="col-1 text-right fas fa-pencil-alt" @click='$parent.editModal(index)' v-b-tooltip.hover title='Edit Block'></i>
     </div>
     <!-- <div class='titleTextFeatured' v-if="story.public">
       {{block(index).name}}

@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-import { DatePicker, Select, Option, Input, InputNumber } from 'element-ui'
+import { DatePicker, Select, Option, Input, InputNumber, Form, FormItem } from 'element-ui'
 import Vuei18n from 'vue-i18n'
 import locale from 'element-ui/lib/locale/lang/en'
 import BootstrapVue from 'bootstrap-vue'
@@ -20,6 +20,8 @@ Vue.use(DatePicker, { locale: locale })
 Vue.use(Select)
 Vue.use(Option)
 Vue.use(Input)
+Vue.use(Form)
+Vue.use(FormItem)
 Vue.use(InputNumber)
 Vue.use(AsyncComputed)
 
