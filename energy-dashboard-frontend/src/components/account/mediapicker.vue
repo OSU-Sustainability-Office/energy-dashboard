@@ -1,8 +1,8 @@
 <template>
   <div class="container" ref="mainstage">
     <div class='row' ref="imageNodes">
-      <div class='col' @click="selected = 0" style='backgroundColor: rgb(26,26,26)' v-bind:class="[selected === 0 ? 'selected' : 'e']"></div>
-      <div v-for='(image,index) in images' @click="selected = index + 1" :key='index' class='col' :style='"background-image:url(\"" + api + "block-media/thumbs/" + image + "\")"' v-bind:class="[selected === (index + 1) ? 'selected' : 'e']">
+      <div class='col' @click="$emit('input', '')" style='backgroundColor: rgb(26,26,26)' v-bind:class="[selected === 0 ? 'selected' : 'e']"></div>
+      <div v-for='(image,index) in images' @click="$emit('input', image)" :key='index' class='col' :style='"background-image:url(\"" + api + "block-media/thumbs/" + image + "\")"' v-bind:class="[selected === (index + 1) ? 'selected' : 'e']">
       </div>
 
     </div>
@@ -11,7 +11,7 @@
 <script>
 export default {
   name: 'mediapicker',
-  props: ['media'],
+  props: ['value'],
   data () {
     return {
       images: [],
@@ -24,18 +24,14 @@ export default {
       var index = 0
       for (var i of r) {
         this.images.push(i)
-        if (i === this.media) { this.selected = index }
+        if (i === this.value) { this.selected = index }
         index++
       }
     })
   },
   watch: {
-    selected: function (value) {
-      if (value === 0) {
-        this.$parent.$parent.tempMedia = ''
-      } else {
-        this.$parent.$parent.tempMedia = this.images[value - 1]
-      }
+    value: function (value) {
+      this.selected = this.images.indexOf(this.value) + 1
     }
   }
 }

@@ -12,7 +12,7 @@ router.use(require('sanitize').middleware)
 router.post('/story', function (req, res) {
   if (req.session.user && req.session.user.id) {
     if (req.bodyInt('group_id')) {
-      db.query('INSERT INTO stories (user_id, group_id, name, description) VALUES (?, ?, ?, ?)', [req.session.user.id, req.bodyInt('group_id'), req.bodyString('name'), req.bodyString('description')]).then(rows => {
+      db.query('INSERT INTO stories (user_id, group_id, name, description, media) VALUES (?, ?, ?, ?, ?)', [req.session.user.id, req.bodyInt('group_id'), req.bodyString('name'), req.bodyString('description'), req.bodyString('media')]).then(rows => {
         res.status(201).send(JSON.stringify({ id: rows.insertId }))
       }).catch(e => {
         res.status(400).send('400: ' + e.message)
