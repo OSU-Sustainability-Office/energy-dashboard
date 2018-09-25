@@ -91,7 +91,7 @@ export default {
     return {
       zoom: 15.5,
       center: L.latLng(44.565, -123.2785),
-      url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+      url: 'https://api.mapbox.com/styles/v1/jack-woods/cjmi2qpp13u4o2spgb66d07ci/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       map: null,
       polygonData: null,
