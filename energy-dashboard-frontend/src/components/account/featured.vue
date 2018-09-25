@@ -8,7 +8,7 @@
     </div>
   <!-- </transition-group> -->
 
-  <b-modal lazy size='lg' v-model='newCard' title='New Block' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
+  <b-modal lazy size='lg' v-model='newCard' :title='(!newCard.name)? "New Block" : "Edit Block"' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
     <b-container>
       <el-form label-width='120px' label-position='left' :model='form' ref='form'>
         <el-form-item label='Name: ' v-if='!story.public' :rules="{required: true, message: 'A name is required', trigger: 'blur'}" prop='name'>
@@ -44,10 +44,11 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div class='row form-group'>
+      <div class='row form-group' v-if='!story.public'>
         <label class='col'>Datasets: </label>
         <featureController :index='story.blocks.length' ref="featureController" class='container-fluid' />
       </div>
+      <featureController v-if='story.public' :index='story.blocks.length' ref="featureController" />
     </b-container>
     <b-container slot='modal-footer'>
       <div class='row'>

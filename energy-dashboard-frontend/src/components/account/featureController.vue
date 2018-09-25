@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid controlSection" ref="controlArea">
+    <div ref="controlArea">
       <div class="row pad-bottom" ref="indexChooser" v-if='!story.public'>
         <b-button class="indexButton"  v-for="(point, index) in this.form" :variant='buttonVariant(index)' @click="changeIndex(index)" :key='index'>{{ index + 1 }}</b-button>
         <b-button class="indexButton" @click="addGroup()">+</b-button>

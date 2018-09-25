@@ -46,8 +46,8 @@
           </el-select>
         </div>
         <div class='row form-group'>
-          <label class='col'>Datasets: </label>
-          <featureController :index='index' ref="featureController" class='container-fluid' />
+          <label class='col' v-if='!story.public'>Datasets: </label>
+          <featureController :index='index' ref="featureController" class='container-fluid controlSection' />
         </div>
       </b-container>
       <b-container slot='modal-footer'>
