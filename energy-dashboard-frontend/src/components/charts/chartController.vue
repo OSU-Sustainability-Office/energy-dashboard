@@ -20,10 +20,24 @@ export default {
     linechart, barchart, doughnutchart, piechart
   },
   mounted () {
+    switch (parseInt(this.graphType)) {
+      case 1:
+        this.chart = this.$refs.linechart
+        break
+      case 2:
+        this.chart = this.$refs.barchart
+        break
+      case 3:
+        this.chart = this.$refs.doughnutchart
+        break
+      default:
+        this.chart = this.$refs.piechart
+    }
     this.parse()
   },
   data () {
     return {
+      chart: null,
       chartData: {
         datasets: [],
         labels: []
@@ -72,6 +86,40 @@ export default {
   methods: {
     parse: function () {
       if (this.graphType === 1 || this.graphType === 2) {
+        this.chart.$data._chart.options.scales.yAxes[0] = {
+          ticks: {
+            beginAtZero: false,
+            fontColor: 'white'
+          },
+          gridLines: {
+            display: true // my new default options
+          },
+          scaleLabel: {
+            display: (this.buildLabel('y') !== ''),
+            labelString: this.buildLabel('y')
+          }
+        }
+        this.chart.$data._chart.options.scales.xAxes[0] = {
+          scaleLabel: {
+            display: (this.buildLabel('y') !== ''),
+            labelString: this.buildLabel('x')
+          },
+          gridLines: {
+            display: false
+          },
+          ticks: {
+            fontColor: 'white',
+            autoSkip: true,
+            maxTicksLimit: 30
+          },
+          type: 'time',
+          time: {
+            unit: 'hour',
+            displayFormats: {
+              'hour': 'M/DD'
+            }
+          }
+        }
         this.parseDataBarLine()
       } else if (this.graphType === 3 || this.graphType === 4) {
         this.parseDataPieDoughnut()
@@ -279,16 +327,8 @@ export default {
             return 'Steam Input'
         }
       } else {
-        // The x axis displays time
-        if (!this.story.blocks[this.index].charts[0].data) {
-          return ''
-        }
-        if (this.$parent.$options._componentTag === 'sideView') {
-          return ''
-        }
-        let date1 = new Date(this.story.blocks[this.index].charts[0].data[0].x)
-
-        let date2 = new Date(this.story.blocks[this.index].charts[0].data[this.story.blocks[this.index].charts[0].data.length - 1].x)
+        const date1 = new Date(this.story.blocks[this.index].date_start)
+        const date2 = new Date(this.story.blocks[this.index].date_end)
         if (date1 && date2) {
           return date1.toDateString() + ' to ' + date2.toDateString()
         } else {

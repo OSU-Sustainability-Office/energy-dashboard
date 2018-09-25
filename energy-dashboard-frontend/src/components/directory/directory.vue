@@ -34,7 +34,7 @@
                 <storycard :name='building.name' :media='building.media' :description='building.description' class="mx-auto storyCard" @click='$router.push({path: `/dashboard/${building.id}`})' :group='index' :index='index_b' ref='story'/>
               </div>
               <div class='col-xl-3 col-lg-4 col-md-6'>
-                <storycard class='mx-auto' :plus='true' @click='newStory(index)' :notools='true' v-b-tooltip.hover title='Create a Story' />
+                <storycard class='mx-auto' :plus='true' @click='openStoryEdit(index, null, null, null, null)' :notools='true' v-b-tooltip.hover title='Create a Story' />
               </div>
             </div>
           </b-tab>
@@ -47,7 +47,7 @@
         </b-tabs>
         <div class='editgroup'>
           <b-btn @click='openGroupEdit()'>Edit Group</b-btn>
-          <b-modal v-model='groupedit' title="Edit Group" body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
+          <b-modal v-model='groupedit' :title="(createFlag)?'New Group':'Edit Group'" body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
             <b-container>
               <div class="row">
                 <label>Name:</label>
@@ -69,19 +69,36 @@
         </div>
       </b-tab>
     </b-tabs>
+    <b-modal size='lg' v-model='storyEdit' title='Edit Story' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light" @ok='updateStory(openUserTab, openStoryIndex)' footer-class='storycard-modal-footer'>
+      <b-container>
+        <div class="row">
+          <label>Name:</label>
+          <el-input type="text" v-model="storyform.name"></el-input>
+        </div>
+        <div class="row">
+          <label>Description:</label>
+          <el-input type="text" v-model="storyform.description"></el-input>
+        </div>
+        <div class='row'>
+          <mediapicker v-model='storyform.media' ref='picker'/>
+        </div>
+      </b-container>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import navdir from '@/components/account/navdir.vue'
 import storycard from '@/components/account/storyCard.vue'
+import mediapicker from '@/components/account/mediapicker.vue'
 import { mapGetters } from 'vuex'
 
 export default {
   name: '',
   components: {
     navdir,
-    storycard
+    storycard,
+    mediapicker
   },
   data () {
     return {
@@ -94,7 +111,14 @@ export default {
       openPublicTab: 0,
       mainGroup: 0,
       search: '',
-      createFlag: false
+      createFlag: false,
+      storyEdit: false,
+      openStoryIndex: 0,
+      storyform: {
+        name: null,
+        description: null,
+        media: null
+      }
     }
   },
   watch: {
@@ -156,7 +180,7 @@ export default {
     // 0: group, 1: index, 2: id
     this.$eventHub.$on('deleteStory', (event) => { this.deleteStory(event[2], event[0], event[1]) })
     // 0: group, 1: index, 2: name, 3: description, 4: media
-    this.$eventHub.$on('updateStory', (event) => { this.updateStory(event[0], event[1], event[2], event[3], event[4]) })
+    this.$eventHub.$on('openStoryEdit', (event) => { this.openStoryEdit(event[0], event[1], event[2], event[3], event[4]) })
 
     this.$eventHub.$on('updateDirectoryListings', (event) => {
       if (event[0] > 0) {
@@ -175,8 +199,23 @@ export default {
       r.sort((a, b) => { return a.name > b.name })
       return r
     },
+    openStoryEdit: function (group, index, name, description, media) {
+      if (!name) {
+        this.storyform.name = 'Untitled Story'
+        this.storyform.description = null
+        this.storyform.media = ''
+        this.openStoryIndex = this.groups[1].subgroups[group].subgroups.length
+      } else {
+        this.storyform.name = this.groups[1].subgroups[group].subgroups[index].name
+        this.storyform.description = this.groups[1].subgroups[group].subgroups[index].description
+        this.storyform.media = this.groups[1].subgroups[group].subgroups[index].media
+        this.openStoryIndex = index
+      }
+      this.storyEdit = true
+    },
     openGroupEdit: function () {
       this.groupedit = true
+      this.createFlag = false
       this.tempGroupName = this.groups[1].subgroups[this.openUserTab].name
     },
     groupSave: function () {
@@ -217,18 +256,36 @@ export default {
         })
       })
     },
-    updateStory: function (group, index, name, description, media) {
-      if (!this.groups[1].subgroups[group]) {
-        return
+    updateStory: function (group, index) {
+      if (this.groups[1].subgroups[group].subgroups.length > index) {
+        this.$store.dispatch('updateStory', {
+          media: this.storyform.media,
+          description: this.storyform.description,
+          name: this.storyform.name,
+          id: this.groups[1].subgroups[group].subgroups[index].id,
+          group_id: this.groups[1].subgroups[group].subgroups[index].group_id
+        })
+      } else {
+        this.groups[1].subgroups[group].subgroups.push({
+          media: this.storyform.media,
+          name: this.storyform.name,
+          description: this.storyform.description,
+          id: null,
+          group_id: null
+        })
+        let promise = []
+        if (!this.groups[1].subgroups[group].id) {
+          promise.push(this.$store.dispatch('createGroup', this.groups[1].subgroups[group]))
+        }
+        Promise.all(promise).then((r) => {
+          this.groups[1].subgroups[group].subgroups[index].group_id = this.groups[1].subgroups[group].id
+          this.$store.dispatch('createStory', this.groups[1].subgroups[group].subgroups[index])
+        })
       }
-      this.groups[1].subgroups[group].subgroups[index].media = media
-      this.groups[1].subgroups[group].subgroups[index].name = name
-      this.groups[1].subgroups[group].subgroups[index].description = description
-
-      this.$store.dispatch('updateStory', this.groups[1].subgroups[group].subgroups[index])
+      this.storyEdit = false
     },
     deleteStory: function (id, group, index) {
-      if (!this.groups[1].subgroups[group]) {
+      if (!this.groups[1].subgroups[group] || !this.groups[1].subgroups[group].subgroups[index]) {
         return
       }
       this.$store.dispatch('deleteStory', { id: this.groups[1].subgroups[group].subgroups[index].id, group_id: this.groups[1].subgroups[group].id }).then(() => {

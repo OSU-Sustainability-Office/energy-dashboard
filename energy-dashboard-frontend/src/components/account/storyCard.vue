@@ -9,7 +9,7 @@
     <div class='plus' v-if='plus'>
       +
     </div>
-    <b-modal size='lg' v-model='openModal' title='Edit Story' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light" @ok='saveTemp()' footer-class='storycard-modal-footer'>
+    <!-- <b-modal size='lg' v-model='openModal' title='Edit Story' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light" @ok='saveTemp()' footer-class='storycard-modal-footer'>
       <b-container>
         <div class="row">
           <label>Name:</label>
@@ -23,7 +23,7 @@
           <mediapicker :media='this.tempMedia' />
         </div>
       </b-container>
-    </b-modal>
+    </b-modal> -->
   </div>
 </template>
 
@@ -83,10 +83,7 @@ export default {
       }
     },
     openEdit: function () {
-      this.tempName = this.name
-      this.tempDescription = this.description
-      this.tempMedia = this.media
-      this.openModal = true
+      this.$eventHub.$emit('openStoryEdit', [this.group, this.index, this.name, this.description, this.media])
     },
     clicked: function (event) {
       if (event.target.classList.contains('fas') || event.target.classList.contains('toolbox')) {
@@ -98,7 +95,7 @@ export default {
       this.$eventHub.$emit('deleteStory', [this.group, this.index])
     },
     saveTemp: function () {
-      this.$eventHub.$emit('updateStory', [this.group, this.index, this.tempName, this.tempDescription, this.tempMedia])
+
     }
   }
 }
