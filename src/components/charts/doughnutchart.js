@@ -1,0 +1,44 @@
+import { Doughnut, mixins } from 'vue-chartjs'
+
+export default {
+  name: 'doughnutchart',
+  extends: Doughnut,
+  mixins: [mixins.reactiveProp],
+  props: [],
+  data () {
+    return {
+      options: {
+        layout: {
+          padding: {
+            left: 0,
+            right: 0,
+            bottom: 0,
+            top: 0
+          }
+        },
+        legend: {
+          labels: {
+            fontColor: 'white'
+          }
+        },
+        title: {
+          fontColor: 'white'
+        },
+        responsive: true, // my new default options
+        maintainAspectRatio: false // my new default options
+      }
+    }
+  },
+  mounted () {
+    this.renderChart(this.chartData, this.options)
+  },
+  methods: {
+    setOptions: function (opts) {
+      this.options = opts
+      this.renderChart(this.chartData, this.options)
+    },
+    update: function () {
+      this.$data._chart.update()
+    }
+  }
+}
