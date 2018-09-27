@@ -49,8 +49,8 @@ module.exports = {
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
-    assetsPublicPath: '/energy-dashboard/',
+    assetsSubDirectory: 'energy-dashboard/static',
+    assetsPublicPath: '/',
 
     /**
      * Source Maps

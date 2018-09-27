@@ -76,7 +76,7 @@ export default {
   width: 100%;
 }
 #background {
-  background: url('static/images/solar.jpg');
+  background: url('/static/images/solar.jpg');
   background-size: cover;
   background-position: center center;
   top: 4em;
