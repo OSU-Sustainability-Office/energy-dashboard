@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     login: function () {
-      window.location.href = process.env.ROOT_API + '/auth/login?returnURI=' + process.env.HOST_ADDRESS + '/#/map'
+      window.location.href = process.env.ROOT_API + '/auth/login?returnURI=' + process.env.HOST_ADDRESS + '#/map'
     },
     explore: function () {
       this.$router.push('map')
@@ -76,7 +76,7 @@ export default {
   width: 100%;
 }
 #background {
-  background: url( process.env.BASE + '/static/images/solar.jpg');
+  background: url('/static/images/solar.jpg');
   background-size: cover;
   background-position: center center;
   top: 4em;

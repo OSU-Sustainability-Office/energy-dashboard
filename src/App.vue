@@ -40,10 +40,10 @@ export default {
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 @font-face {
     font-family: 'StratumNo2';
-    src: url( process.env.BASE + '/static/fonts/StratumNo2-Bold.woff2') format('woff2'),
-        url( process.env.BASE + '/static/fonts/StratumNo2-Bold.woff') format('woff'),
-        url( process.env.BASE + '/static/fonts/StratumNo2-Bold.ttf') format('truetype'),
-        url( process.env.BASE + '/static/fonts/StratumNo2-Bold.svg#StratumNo2-Bold') format('svg');
+    src: url('/static/fonts/StratumNo2-Bold.woff2') format('woff2'),
+        url('/static/fonts/StratumNo2-Bold.woff') format('woff'),
+        url('/static/fonts/StratumNo2-Bold.ttf') format('truetype'),
+        url('/static/fonts/StratumNo2-Bold.svg#StratumNo2-Bold') format('svg');
     font-weight: bold;
     font-style: normal;
 }
