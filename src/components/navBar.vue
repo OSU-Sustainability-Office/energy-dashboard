@@ -33,8 +33,7 @@ export default {
   components: {directory},
   data () {
     return {
-      logOutLink: process.env.ROOT_API + '/auth/logout',
-      loginLink: process.env.ROOT_API + '/auth/login',
+      loginLink: process.env.ROOT_API + '/auth/login?returnURI=' + process.env.HOST_ADDRESS + '/#/map',
       user: null
     }
   },
@@ -43,8 +42,7 @@ export default {
   },
   methods: {
     logOut: function () {
-      this.$store.commit('loadUser', { name: '', privilige: 0 })
-      window.location = this.logOutLink
+      this.$store.dispatch('logout')
     },
     move: function (v) {
       this.$router.push({path: v})

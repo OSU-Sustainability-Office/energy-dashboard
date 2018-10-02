@@ -510,6 +510,15 @@ export default new Vuex.Store({
           reject(e)
         })
       })
+    },
+    logout: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios.get(process.env.ROOT_API + '/auth/logout').then(r => {
+          if (r.status === 200) {
+            context.commit('loadUser', { name: '', privilege: 0, id: null })
+          }
+        })
+      })
     }
   }
 })

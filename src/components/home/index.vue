@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     login: function () {
-      window.location.href = process.env.ROOT_API + '/auth/login?returnURI=' + process.env.HOST_ADDRESS + '#/map'
+      window.location.href = process.env.ROOT_API + '/auth/login?returnURI=' + process.env.HOST_ADDRESS + '/#/map'
     },
     explore: function () {
       this.$router.push('map')
