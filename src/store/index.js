@@ -79,11 +79,12 @@ export default new Vuex.Store({
       stories.splice(stories.map(el => { return el.id }).indexOf(payload.id), 1)
     },
     loadUser: (state, payload) => {
-      state.user = payload
+      console.log(payload)
       // Reset Stories, if a  user logins in their personal stories need to be accesible
-      if (payload.name !== '') {
+      if (payload.name !== state.user.name) {
         state.stories = []
       }
+      state.user = payload
     },
     loadBlock: (state, payload) => {
       Vue.set(state.currentStory.blocks, parseInt(payload.index), payload)
@@ -320,6 +321,7 @@ export default new Vuex.Store({
             context.commit('loadUser', res.data)
             resolve(context.getters.user)
           }).catch(e => {
+            console.log(e.message)
             context.commit('loadUser', { name: '', privilige: 0, id: null })
             resolve(context.getters.user)
           })
