@@ -97,40 +97,49 @@ export default {
   background-color: #D73F09;
   border-bottom: solid 1px rgb(226,226,226);
   z-index: 20;
-
 }
 .navbar-dark .navbar-nav .nav-link {
   color: #FFF;
 }
-.navbar-dark .navbar-nav .active .nav-link {
-  color: #000 !important;
+@media (max-width: 576px){
+  .navbar-dark .navbar-nav .active .nav-link {
+    color: #000 !important;
+  }
 }
 
 @media (min-width: 576px) {
+  #nav_collapse {
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .navbar {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .navbar-brand {
+    padding-left: 1em;
+    padding-right: 1em;
+    margin: 0;
+  }
   .navbar-nav {
     height: 100%;
   }
   .navbar-nav li {
-    height: 100%;
-    padding: 1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    height: 80px;
+    line-height: 60px;
   }
   .navbar-nav a {
     color: #FFF !important;
     cursor: pointer;
   }
-  .navbar-nav li:not(.active):hover > a:not(.active) {
+  .navbar-dark .navbar-nav not(.active):hover .nav-link {
     color: #000 !important;
   }
   .active {
     background-color: rgba(0,0,0,0.3);
-  }
-  .navbar-toggler {
-    padding: 0.6em;
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
-    color: #FFF;
-    border: solid 0.1em #FFF;
-    font-size: 1.6em;
   }
 }
 </style>
