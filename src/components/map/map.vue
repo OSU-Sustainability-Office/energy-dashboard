@@ -1,67 +1,39 @@
 <template>
-  <div class="main">
-    <div class='topBar container-fluid'>
+  <div>
+    <div class='contianer-fluid topBar' ref='topBar'>
       <div class='row'>
 
         <div class='col-10'>
           <div class='row'>
             <div class='col-1 label font-weight-bold'>Key</div>
-            <div class='col'><div class='edu swatch'></div>Academics</div>
-            <div class='col'><div class='ath swatch'></div>Athletics & Rec</div>
-            <div class='col'><div class='din swatch'></div>Dining</div>
-            <div class='col'><div class='com swatch'></div>Events & Admin</div>
-            <div class='col'><div class='res swatch'></div>Residence</div>
+            <div class='col-11'>
+              <div class='row'>
+                <div class='col fixed-height'><div class='edu swatch'></div>Academics</div>
+                <div class='col fixed-height'><div class='ath swatch'></div>Athletics & Rec</div>
+                <div class='col fixed-height'><div class='din swatch'></div>Dining</div>
+                <div class='col fixed-height'><div class='com swatch'></div>Events & Admin</div>
+                <div class='col fixed-height'><div class='res swatch'></div>Residence</div>
+              </div>
+            </div>
           </div>
         </div>
         <div class='col text-right'>
           <b-dropdown class='d-inline-block' toggle-class='mapFilterBtn' size='sm' right menu-class='dropdownArea' text='Filter' ref='mapFilter'>
-            <b-dropdown-item disabled>
-              <div class='container'>
-                <div class='row text-center'>
-                  <div class='col label font-weight-bold'>Building Type</div>
-                </div>
-                <div class='row'>
-                  <div class='col-6'>
-                    <div class='row'>
-                      <div class='col'>
-                        <input type="checkbox" value='Residence' v-model="selected" checked> Residence
-                      </div>
-                    </div>
-                    <div class='row'>
-                      <div class='col'>
-                        <input type="checkbox" value='Dining' v-model="selected" checked> Dining
-                      </div>
-                    </div>
-                    <div class='row'>
-                      <div class='col'>
-                        <input type="checkbox" value='Athletics' v-model="selected" checked> Athletics & Rec
-                      </div>
-                    </div>
-                  </div>
-                  <div class='col-6'>
-                    <div class='row'>
-                      <div class='col'>
-                        <input type="checkbox" value='Academics' v-model="selected" checked> Academics
-                      </div>
-                    </div>
-                    <div class='row'>
-                      <div class='col'>
-                        <input type="checkbox" value='Admin' v-model="selected" checked> Events & Admin
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </b-dropdown-item>
+            <b-dropdown-header>Building Type</b-dropdown-header>
+            <b-dropdown-item-button disabled> <input type="checkbox" value='Residence' v-model="selected" checked> Residence </b-dropdown-item-button>
+            <b-dropdown-item-button disabled> <input type="checkbox" value='Athletics' v-model="selected" checked> Athletics & Rec </b-dropdown-item-button>
+            <b-dropdown-item-button disabled> <input type="checkbox" value='Dining' v-model="selected" checked> Dining </b-dropdown-item-button>
+            <b-dropdown-item-button disabled> <input type="checkbox" value='Academics' v-model="selected" checked> Academics </b-dropdown-item-button>
+            <b-dropdown-item-button disabled> <input type="checkbox" value='Admin' v-model="selected" checked> Events & Admin </b-dropdown-item-button>
           </b-dropdown>
         </div>
       </div>
     </div>
-    <div class='container-fluid mapContainer' ref='mapContainer'>
-      <!-- <l-map style="height: 100%;" :zoom="zoom" :center="center" ref='map'>
+    <div class='mapContainer' ref='mapContainer'>
+      <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
         <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
         <l-geo-json :key='rKey' :geojson='this.polygonData' :options='buildingOptions' ref="geoLayer"></l-geo-json>
-      </l-map> -->
+      </l-map>
     </div>
     <transition name='side'>
       <sideView v-bind:key='openStory' ref='sideview' v-if='showSide'></sideView>
@@ -95,7 +67,7 @@ export default {
       showSide: false,
       ele: [],
       rKey: 0,
-      selected: ['Residence', 'Athletics', 'Dining', 'Research', 'Education', 'Common'],
+      selected: ['Residence', 'Athletics', 'Dining', 'Academics', 'Admin'],
       show: false,
       buildingOptions: {
         onEachFeature: function (feature, layer) {
@@ -154,6 +126,10 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject
+      this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
+      window.addEventListener('resize', () => {
+        this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
+      })
     })
   },
   beforeDestroy () {
@@ -180,6 +156,7 @@ export default {
 </script>
 
 <style >
+
 @import "../../../node_modules/leaflet/dist/leaflet.css";
 .dropdownArea {
   width: 350px;
@@ -210,9 +187,21 @@ export default {
 }
 </style>
 <style scoped>
+.dropdown-header {
+  font-weight: bold;
+  color: #000 !important;
+  font-size: 16px;
+}
+.dropdown-item.disabled, .dropdown-item:disabled {
+  color: #000 !important;
+}
+.fixed-height {
+  white-space: nowrap;
+}
 .mapContainer {
   background-color: blue;
-  height: 100%;
+  height: 100vh;
+  width: 100%;
 }
 .main {
   position: absolute;
