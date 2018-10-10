@@ -89,7 +89,7 @@ export default {
       style: {
         'display': 'inline-block',
         'width': '100%',
-        'height': this.chartHeight(),
+        'height': '56%',
         'padding-right': '0.5em',
         'padding-left': '0.5em',
         'padding-top': '1em'
@@ -188,8 +188,11 @@ export default {
     }
   },
   mounted () {
-    window.addEventListener('resize', () => {
+    this.$nextTick(() => {
       this.$refs.chartController.chart.$data._chart.canvas.style.height = this.chartHeight().toString() + 'px'
+      window.addEventListener('resize', () => {
+        this.$refs.chartController.chart.$data._chart.canvas.style.height = this.chartHeight().toString() + 'px'
+      })
     })
   }
 }
