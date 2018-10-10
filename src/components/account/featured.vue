@@ -244,7 +244,8 @@ export default {
   padding-right: 1em;
   padding-top: 1em;
   padding-bottom: 1em;
-  width: calc(100% - 2em);
+  width: 100%;
+  left: 0;
 }
 .fullWidth {
   width: 100% !important;

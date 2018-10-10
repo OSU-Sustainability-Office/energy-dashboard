@@ -1,6 +1,6 @@
 <template>
   <div class="card featured" v-bind:class="{ feature : featured}" ref='card'>
-    <div class='titleTextFeatured personalTitle row' ref='title'>
+    <div class='titleTextFeatured row' ref='title'>
       <div class='col'>{{block(index).name}}</div>
       <i class="col-1 text-right fas fa-pencil-alt" @click='$parent.editModal(index)' v-b-tooltip.hover title='Edit Block'></i>
     </div>
@@ -8,7 +8,7 @@
       {{block(index).name}}
 
     </div> -->
-    <chartController :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding-right': '0.5em','padding-left':'0.5em','padding-top':'1em' }" :height='520'/>
+    <chartController :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '56%', 'padding-right': '0.5em','padding-left':'0.5em','padding-top':'1em' }" :height='chartHeight()' />
     <!-- <featureController :index='index' v-if="featured" ref="featureController" /> -->
 
     <b-modal lazy size='lg' v-model='editcard' title='Edit Block' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
@@ -161,6 +161,10 @@ export default {
       this.$store.commit('removeBlock', { index: this.index })
       this.$eventHub.$emit('reloadCharts')
       this.$store.commit('modifyFlag')
+    },
+    chartHeight: function () {
+      // 200 for padding (large over estimate) ~16:9 aspect ratio
+      return (window.innerWidth - 200) * 9 / 16
     }
   },
   watch: {
@@ -180,36 +184,54 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.card {
-  margin-left: 0.5%;
-  margin-right: 0.5%;
-  margin-top: 1em;
-  border: 2px solid #000;
-  border-radius: 5px;
-  height: 10em;
-
-  overflow: hidden;
-  width: 250px;
+@media (min-width: 425px){
+  .card {
+    margin-left: 0.5%;
+    margin-right: 0.5%;
+  }
+  .feature {
+    padding-right: 2em;
+    padding-left: 2em;
+  }
+  .titleTextFeatured {
+    font-size: 2em;
+    padding-top: 0.3em;
+  }
 }
-.col {
-  margin: 0em;
+@media (max-width: 425px){
+  .card {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  .feature {
+    padding-right: 0.3em;
+    padding-left: 0.3em;
+  }
+  .titleTextFeatured {
+    font-size: 1.1em;
+    padding-top: 0.1em;
+  }
 }
 .feature {
   background: #000;
-  height: 40em;
-  padding-right: 2em;
-  padding-left: 2em;
   width: 100%;
   flex: 1 1 49%;
 }
+.card {
+  margin-top: 1em;
+  border: 2px solid #000;
+  border-radius: 5px;
+
+  overflow: hidden;
+}
+
+.col {
+  margin: 0em;
+}
+
 .titleTextFeatured {
   color: rgb(215,63,9);
-  font-size: 2em;
   font-family: 'StratumNo2';
-  padding-top: 0.3em;
-}
-.personalTitle {
-  cursor: pointer;
 }
 .descriptionTextFeatured {
   color: rgb(255,255,255);

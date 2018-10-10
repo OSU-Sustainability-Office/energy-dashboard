@@ -1,5 +1,5 @@
 <template>
-  <div class="view container">
+  <div class="view container-fluid">
     <div class="title row">
       <span class="col">{{ story.name }}</span>
       <span class="col-1 text-right" ><i class="fas fa-times" @click="hide()"></i></span>
@@ -154,24 +154,77 @@ export default {
 }
 </script>
 <style scoped>
+.view {
+  padding-bottom: 2em;
+  background-color: rgb(26,26,26);
+  z-index: 401;
+  box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
+  display: block;
+}
+.media {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+.graphslide {
+  position: absolute;
+  color: white;
+  background-color: rgb(215,63,9);
+  font-size: 2.5em;
+  width: 1em;
+  height: 1em;
+  text-align: center;
+  border-radius: 1em;
+  opacity: 1;
+  z-index: 0;
+}
+@media (min-width: 800px){
   .view {
     position: absolute;
     left: 100%;
     top: 15%;
     width: 450px;
-    padding-bottom: 2em;
-    background-color: rgb(26,26,26);
-    z-index: 401;
     margin-left: -470px;
-    box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
-    display: block;
   }
   .media {
     height: 300px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
   }
+  .graphslide {
+    margin-top: calc(50% - 2em);
+    top: 0px;
+  }
+  .graphslide.right {
+    right: -0.2em;
+    padding-left:0.1em;
+  }
+  .graphslide.left {
+    left: -0.2em;
+    padding-right:0.1em;
+  }
+}
+@media (max-width: 800px){
+  .view {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    width: 100%;
+  }
+  .media {
+    height: 150px;
+  }
+  .graphslide {
+    margin-top: 3.3em;
+    top: 0px;
+  }
+  .graphslide.right {
+    right: -0.2em;
+    padding-left:0.1em;
+  }
+  .graphslide.left {
+    left: -0.2em;
+    padding-right:0.1em;
+  }
+}
   .chart {
     height: 200px;
     width: 100%;
@@ -251,31 +304,10 @@ export default {
     margin-right: 20px;
     transition: transform 1s;
   }
-  .graphslide {
-    position: absolute;
-    color: white;
-    background-color: rgb(215,63,9);
-    font-size: 2.5em;
-    width: 1em;
-    height: 1em;
-    text-align: center;
-    margin-top: calc(50% - 2em);
-    top: 0px;
-    border-radius: 1em;
-    opacity: 1;
-    z-index: 0;
-  }
   .graphslide:hover {
 
   }
 
-  .graphslide.right {
-    right: -0.2em;
-    padding-left:0.1em;
-  }
-  .graphslide.left {
-    left: -0.2em;
-    padding-right:0.1em;
-  }
+
 
 </style>

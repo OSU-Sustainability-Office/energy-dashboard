@@ -1,29 +1,4 @@
 <template>
-  <!-- <nav class="navbar navbar-expand-sm">
-    <a class="navbar-brand" href="/">
-      <img src="static/images/logo.png" height=50 width=auto alt="">
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <i class="white fas fa-bars"></i>
-    </button>
-    <div class='pos-left collapse navbar-collapse' id="navbarSupportedContent">
-      <ul class="navbar-nav">
-        <li class='nav-item' v-bind:class='[isActive("map") ? "active" : ""]'><a class="nav-link" href="#/map">Map</a></li>
-
-        <li class='nav-item' v-bind:class='[isActive("publicdir") ? "active" : ""]'><a class="nav-link" @click='move("/directory/public")'>Building List</a></li>
-        <li class='nav-item' v-if='user !== null && user.name !== ""' v-bind:class='[isActive("privatedir") ? "active" : ""]'><a class="nav-link" @click='move("/directory/private")'>My Dashboard</a></li>
-      </ul>
-    </div>
-    <div class='pos-right navbar-collapse collapse w-100 order-3 dual-collapse2'>
-      <ul class="navbar-nav">
-        <li class='nav-item' v-if='user !== null && user.name !== ""'><a class='nav-link' @click='logOut()'>Sign Out</a></li>
-        <li class='nav-item' v-if='(user === null || user.name === "") && $route.path !== "/"'><a class='nav-link' :href='loginLink'>Sign In</a></li>
-      </ul>
-    </div>
-     <b-modal size="lg" ref="dir" body-class="dirModal" hide-header hide-footer>
-      <directory />
-    </b-modal>
-  </nav> -->
   <b-navbar toggleable='sm' class='navbar' type='dark'>
     <b-navbar-brand href='#'>
       <img src="static/images/logo.png" height=50 width=auto alt="">
