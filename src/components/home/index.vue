@@ -8,14 +8,14 @@
       <homeSide />
     </div>
     <div class="row buttonBox justify-content-center">
-      <div class='col-6'>
+      <div class='col-md-8'>
         <div class='row'>
-          <div class="col">
+          <div class="col-sm">
             <div class="row justify-content-center">
               <b-btn variant='primary' class="col" @click="explore()">Explore</b-btn>
             </div>
           </div>
-          <div class="col" v-if='user.name === ""'>
+          <div class="col-sm" v-if='user.name === ""'>
             <div class="row justify-content-center">
               <b-btn variant='primary' class="col" @click="login()">Login</b-btn>
             </div>

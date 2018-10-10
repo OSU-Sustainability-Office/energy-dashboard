@@ -1,75 +1,43 @@
 <template>
-  <div class="main">
-    <div class='topBar container-fluid'>
+  <div>
+    <div class='contianer-fluid topBar' ref='topBar'>
       <div class='row'>
 
-        <div class='key col'>
+        <div class='col-10'>
           <div class='row'>
-            <div class='keyEl label font-weight-bold'>Key</div>
-            <div class='keyEl'><div class='edu swatch'></div>Academics</div>
-            <div class='keyEl'><div class='ath swatch'></div>Athletics & Rec</div>
-            <div class='keyEl'><div class='din swatch'></div>Dining</div>
-            <div class='keyEl'><div class='com swatch'></div>Events & Admin</div>
-            <div class='keyEl'><div class='res swatch'></div>Residence</div>
+            <div class='col-1 label font-weight-bold'>Key</div>
+            <div class='col-11'>
+              <div class='row'>
+                <div class='col fixed-height'><div class='edu swatch'></div>Academics</div>
+                <div class='col fixed-height'><div class='ath swatch'></div>Athletics & Rec</div>
+                <div class='col fixed-height'><div class='din swatch'></div>Dining</div>
+                <div class='col fixed-height'><div class='com swatch'></div>Events & Admin</div>
+                <div class='col fixed-height'><div class='res swatch'></div>Residence</div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class='fil col-4'>
-          <b-dropdown class='d-inline-block' toggle-class='mapFilterBtn' menu-class='dropdownArea' text='Filter' ref='mapFilter'>
-            <b-dropdown-item disabled>
-              <div class='container'>
-                <div class='row text-center'>
-                  <div class='col label font-weight-bold'>Building Type</div>
-                </div>
-                <div class='row'>
-                  <div class='col-6'>
-                    <div class='row'>
-                      <div class='col'>
-                        <input type="checkbox" value='Residence' v-model="selected" checked> Residence
-                      </div>
-                    </div>
-                    <div class='row'>
-                      <div class='col'>
-                        <input type="checkbox" value='Dining' v-model="selected" checked> Dining
-                      </div>
-                    </div>
-                    <div class='row'>
-                      <div class='col'>
-                        <input type="checkbox" value='Athletics' v-model="selected" checked> Athletics & Rec
-                      </div>
-                    </div>
-                  </div>
-                  <div class='col-6'>
-                    <div class='row'>
-                      <div class='col'>
-                        <input type="checkbox" value='Research' v-model="selected" checked> Research
-                      </div>
-                    </div>
-                    <div class='row'>
-                      <div class='col'>
-                        <input type="checkbox" value='Education' v-model="selected" checked> Education
-                      </div>
-                    </div>
-                    <div class='row'>
-                      <div class='col'>
-                        <input type="checkbox" value='Common' v-model="selected" checked> Common
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </b-dropdown-item>
+        <div class='col text-right'>
+          <b-dropdown class='d-inline-block' toggle-class='mapFilterBtn' size='sm' right menu-class='dropdownArea' text='Filter' ref='mapFilter'>
+            <b-dropdown-header>Building Type</b-dropdown-header>
+            <b-dropdown-item-button disabled> <input type="checkbox" value='Residence' v-model="selected" checked> Residence </b-dropdown-item-button>
+            <b-dropdown-item-button disabled> <input type="checkbox" value='Athletics' v-model="selected" checked> Athletics & Rec </b-dropdown-item-button>
+            <b-dropdown-item-button disabled> <input type="checkbox" value='Dining' v-model="selected" checked> Dining </b-dropdown-item-button>
+            <b-dropdown-item-button disabled> <input type="checkbox" value='Academics' v-model="selected" checked> Academics </b-dropdown-item-button>
+            <b-dropdown-item-button disabled> <input type="checkbox" value='Admin' v-model="selected" checked> Events & Admin </b-dropdown-item-button>
           </b-dropdown>
         </div>
       </div>
     </div>
+    <div class='mapContainer' ref='mapContainer'>
+      <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
+        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+        <l-geo-json :key='rKey' :geojson='this.polygonData' :options='buildingOptions' ref="geoLayer"></l-geo-json>
+      </l-map>
+    </div>
     <transition name='side'>
       <sideView v-bind:key='openStory' ref='sideview' v-if='showSide'></sideView>
     </transition>
-    <l-map style="height: calc(100% - 50px); position:absolute;top: 50px;" :zoom="zoom" :center="center" ref='map'>
-      <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-      <l-geo-json :key='rKey' :geojson='this.polygonData' :options='buildingOptions' ref="geoLayer"></l-geo-json>
-    </l-map>
-
   </div>
 </template>
 <script>
@@ -99,7 +67,7 @@ export default {
       showSide: false,
       ele: [],
       rKey: 0,
-      selected: ['Residence', 'Athletics', 'Dining', 'Research', 'Education', 'Common'],
+      selected: ['Residence', 'Athletics', 'Dining', 'Academics', 'Admin'],
       show: false,
       buildingOptions: {
         onEachFeature: function (feature, layer) {
@@ -158,6 +126,10 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject
+      this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
+      window.addEventListener('resize', () => {
+        this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
+      })
     })
   },
   beforeDestroy () {
@@ -184,6 +156,7 @@ export default {
 </script>
 
 <style >
+
 @import "../../../node_modules/leaflet/dist/leaflet.css";
 .dropdownArea {
   width: 350px;
@@ -200,15 +173,36 @@ export default {
 .mapFilterBtn {
   background-color: #FFF !important;
   color: #000 !important;
-  border: solid 1px #000;
+  border: solid 1px #000 !important;
+}
+.mapFilterBtn:hover {
+  background-color: rgba(0,0,0,0.15) !important;
+  color: #000 !important;
+  border: solid 1px #000 !important;
 }
 .mapFilterBtn:active {
   background-color: rgba(0,0,0,0.1) !important;
   color: #000 !important;
-  border: solid 1px #000;
+  border: solid 1px #000 !important;
 }
 </style>
 <style scoped>
+.dropdown-header {
+  font-weight: bold;
+  color: #000 !important;
+  font-size: 16px;
+}
+.dropdown-item.disabled, .dropdown-item:disabled {
+  color: #000 !important;
+}
+.fixed-height {
+  white-space: nowrap;
+}
+.mapContainer {
+  background-color: blue;
+  height: 100vh;
+  width: 100%;
+}
 .main {
   position: absolute;
   top: 4em;
@@ -218,15 +212,12 @@ export default {
 .topBar {
   box-shadow: 0px 1px 4px rgba(0,0,0,0.5);
   width:100%;
-  position: absolute;
-  top: -50px;
-  height: 50px;
-  margin-top: 50px;
-  z-index: 1020;
+  position: relative;
+  top: 0px;
   background-color: #FFF;
-}
-.topBar > .row {
-  height: 100%;
+  padding: 1em;
+  padding-left: 3em;
+  padding-right: 3em;
 }
 .side-enter-active, .side-leave-active {
   transition: all 1s;
@@ -246,15 +237,6 @@ export default {
 .side-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
   transform: translateY(500px);
-}
-.key {
-  display: inline-block;
-}
-.key > .row {
-  padding-left: 1.5em;
-}
-.key > .row > .keyEl {
-  padding: 1em;
 }
 .swatch {
   width: 20px;
@@ -291,18 +273,5 @@ export default {
 .label {
   color: #000;
   font-size: 1em;
-}
-.keyEl {
-  display: inline-block;
-}
-.fil {
-  display: inline-block;
-  position: absolute;
-  top: 0.5em;
-  right: 2em;
-  padding-left: 2em;
-}
-.col {
-  display: inline-block;
 }
 </style>

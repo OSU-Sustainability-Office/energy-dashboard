@@ -401,12 +401,12 @@ export default {
 }
 .editgroup {
   position: absolute;
-  top: 4.8em;
+  top: 5.7em;
   right: 2em;
 }
 .searchArea {
   position: absolute;
-  top: 5.1em;
+  top: 6.1em;
   right: 2em;
 }
 </style>
