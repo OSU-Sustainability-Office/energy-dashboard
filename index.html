@@ -3,15 +3,62 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script> -->
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <title>OSU Energy Dashboard</title>
+    <style>
+      h1.incompatible {
+        color: rgba(255,255,255,0.85);
+        font-family: "StratumNo2";
+        font-size: 90px;
+        padding: 30px;
+        padding-top: 10px;
+        background-color: #8b2728;
+        width: 100%;
+        height: 120px;
+      }
+      h3.incompatible {
+        color: #FFF;
+        padding: 20px;
+      }
+      h4.incompatible {
+        color: #FFF;
+        font-weight: bold;
+      }
+      div.incompatible {
+        text-align: center;
+      }
+      li.incompatible {
+        color: #FFF;
+        list-style: none;
+
+      }
+      li.incompatible a {
+        font-size: 24px;
+        color: rgba(255,255,255,0.7);
+        text-decoration: underline;
+      }
+    </style>
+    <script>
+      var supportsES6 = function() {
+          try {
+            new Function("(a = 0) => a");
+            return true;
+          }
+          catch (err) {
+            return false;
+          }
+      }();
+    </script>
   </head>
   <body>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
+  <script>
+    if (!supportsES6) {
+      var bod = document.body;
+      bod.innerHTML = "<h1 class='incompatible'>We're Sorry...</h1><h3 class='incompatible'>An incompatible browser was detected. Please update to a supported browser to use this application.</h3><div class='incompatible'><h4 class='incompatible'>Supported Browsers:</h4><ul class='incompatible'><li class='incompatible'><a href='https://www.google.com/chrome/'>Chrome</a> (version > 68)</li><li class='incompatible'><a href='https://www.mozilla.org/en-US/firefox/new/'>Firefox</a> (version > 54)</li><li class='incompatible'><a href='https://www.microsoft.com/en-us/windows/microsoft-edge'>Edge</a> (version > 14)</li><li class='incompatible'><a href='https://support.apple.com/downloads/safari'>Safari</a> (version > 10)</li><li class='incompatible'><a href='https://www.opera.com/download'>Opera</a> (version > 55)</li></ul></div>";
+      bod.style.backgroundColor = "#c23737";
+    }
+  </script>
 </html>
