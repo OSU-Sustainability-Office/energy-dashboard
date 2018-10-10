@@ -82,7 +82,6 @@ export default {
       this.updateChart()
     }
   },
-
   methods: {
     parse: function () {
       if (this.graphType === 1 || this.graphType === 2) {

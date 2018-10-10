@@ -8,7 +8,7 @@
       {{block(index).name}}
 
     </div> -->
-    <chartController :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '56%', 'padding-right': '0.5em','padding-left':'0.5em','padding-top':'1em' }" :height='chartHeight()' />
+    <chartController :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC='style' :height='this.chartHeight()'/>
     <!-- <featureController :index='index' v-if="featured" ref="featureController" /> -->
 
     <b-modal lazy size='lg' v-model='editcard' title='Edit Block' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
@@ -85,7 +85,15 @@ export default {
       interval_unit: 'minute',
       date_start: '',
       date_end: '',
-      graphtype: 1
+      graphtype: 1,
+      style: {
+        'display': 'inline-block',
+        'width': '100%',
+        'height': this.chartHeight(),
+        'padding-right': '0.5em',
+        'padding-left': '0.5em',
+        'padding-top': '1em'
+      }
     }
   },
   computed: {
@@ -178,6 +186,11 @@ export default {
         this.graphtype = this.block(this.index).graph_type
       }
     }
+  },
+  mounted () {
+    window.addEventListener('resize', () => {
+      this.$refs.chartController.chart.$data._chart.canvas.style.height = this.chartHeight().toString() + 'px'
+    })
   }
 }
 </script>
