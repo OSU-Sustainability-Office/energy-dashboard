@@ -1,0 +1,4 @@
+Navigation Bar needs hover,
+Date Range selection needs hover,
+Edit card button needs hover,
+Change that little navbar to look better (add hover etc)

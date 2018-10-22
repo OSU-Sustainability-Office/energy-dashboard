@@ -52,7 +52,7 @@ export default {
               d.setMonth(d.getMonth() - 1)
               break
             case 2:
-              d.setYear(d.getYear() - 1)
+              d.setFullYear(d.getFullYear() - 1)
               break
             default:
               break

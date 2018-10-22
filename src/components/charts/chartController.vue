@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading='loading' element-loading-background="rgba(0, 0, 0, 0.8)">
     <linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
@@ -38,14 +38,25 @@ export default {
   data () {
     return {
       chart: null,
+      loading: true,
       chartData: {
         datasets: [],
         labels: []
       },
-      colors: ['#4A773C', '#00859B', '#FFB500', '#006A8E', '#C4D6A4', '#B8DDE1', '#FDD26E', '#C6DAE7', 'AA9D2E', '#0D5257', '#D3832B', '#003B5C', '#B7A99A', '#A7ACA2', '#7A6855', '#8E9089']
+      colors: ['#4A773C', '#00859B', '#FFB500', '#006A8E', '#C4D6A4', '#B8DDE1', '#FDD26E', '#C6DAE7', 'AA9D2E', '#0D5257', '#D3832B', '#003B5C', '#B7A99A', '#A7ACA2', '#7A6855', '#8E9089'],
+      map: {
+        minute: 0,
+        hour: 1,
+        day: 2,
+        month: 3
+      }
     }
   },
   created () {
+    this.$eventHub.$on('loadingData', (ind) => {
+
+      // this.loading = true
+    })
     if (parseInt(this.randomColors) === 1) {
       // DurstenFeld Shuffle
       for (var i = this.colors.length - 1; i > 0; i--) {
@@ -123,47 +134,16 @@ export default {
       } else if (this.graphType === 3 || this.graphType === 4) {
         this.parseDataPieDoughnut()
       }
+      this.loading = false
     },
-    checkInterval: function (date) {
-      let unit = this.story.blocks[this.index].interval_unit
-      let int = this.story.blocks[this.index].date_interval
-      let uD = 0
-
-      let m = date.slice(14, 16)
-      let h = date.slice(11, 13)
-      let d = date.slice(8, 10)
-      if (unit !== 'minute') {
-        if (m !== '00') {
+    checkInterval: function (date, unit, int) {
+      const ar = [date.slice(14, 16), date.slice(11, 13), date.slice(8, 10), date.slice(5, 7)]
+      for (let i = this.map[unit] - 1; i >= 0; i--) {
+        if (ar[i] !== '00') {
           return true
         }
-        if (unit !== 'hour') {
-          if (h !== '00') {
-            return true
-          }
-          if (unit !== 'day') {
-            if (d !== '00') {
-              return true
-            }
-          }
-        }
       }
-      switch (unit) {
-        case 'minute':
-          uD = m
-          break
-        case 'hour':
-          uD = h
-          break
-        case 'day':
-          uD = d
-          break
-        case 'month':
-          uD = date.slice(5, 7)
-          break
-        default:
-          break
-      }
-      return (uD % int)
+      return (ar[this.map[unit]] % int)
     },
     updateChart: function () {
       if (this.chart) { this.chart.update() }
@@ -209,28 +189,43 @@ export default {
         }
         let data = JSON.parse(JSON.stringify(line.data))
 
+        const unit = this.story.blocks[this.index].interval_unit
+        const int = this.story.blocks[this.index].date_interval
+
         if (line.point === 'accumulated_real' || line.point === 'total' || line.point === 'cubic_feet') {
-          // First remove interval items
-          for (let o = data.length - 1; o >= 0; o--) {
-            if (this.checkInterval(data[o].x) || !data[o].y) {
+          // Remove all elements from the end of data  that are within our interval
+          let offset = 0
+          while (this.checkInterval(data[data.length - (offset + 1)].x, unit, int)) {
+            offset++
+          }
+          data.splice(data.length - offset, offset)
+
+          // Set the offset to 1, the last element in the array is a valid date
+          offset = 1
+
+          // Loop through the array backwards, starting at length - 2 because that is the start of unchecked dates
+          for (let o = data.length - 2; o >= 0; o--) {
+            // if we find a valid date
+            if (!this.checkInterval(data[o].x, unit, int)) {
+              // get the difference from the last valid date to the current one
+              data[data.length - offset].y -= data[o].y
+
+              // increase the offset specifying that the number of valid dats has increased
+              offset++
+            } else {
+              // remove the element if it is not a valid date
               data.splice(o, 1)
             }
           }
-          // Then get the difference
-          for (let o = data.length - 1; o >= 1; o--) {
-            data[o].y -= data[o - 1].y
-            if (data[o].y < 0) {
-              data[o].y = 0
-            }
-          }
-          // Remove first item that did not have a calculated interval
+
+          // remove the first element because we have nothing to compare it to
           data.splice(0, 1)
         } else {
           let lastIndex = 0
           let runningTotal = 0
           let newData = []
           for (let i in data) {
-            if (!this.checkInterval(data[i].x)) {
+            if (!this.checkInterval(data[i].x, unit, int)) {
               newData.push({ x: data[i].x, y: (data[i].y + runningTotal) / (i - lastIndex) })
               lastIndex = i
               runningTotal = 0
