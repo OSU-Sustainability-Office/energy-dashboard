@@ -2,7 +2,7 @@
   <div class="card featured" v-bind:class="{ feature : featured}" ref='card'>
     <div class='titleTextFeatured row' ref='title'>
       <div class='col'>{{block(index).name}}</div>
-      <i class="col-1 text-right fas fa-pencil-alt" @click='$parent.editModal(index)' v-b-tooltip.hover title='Edit Block'></i>
+      <i class="col-1 text-right fas fa-sliders-h" @click='$parent.editModal(index)' v-b-tooltip.hover title='Change Parameters'></i>
     </div>
     <!-- <div class='titleTextFeatured' v-if="story.public">
       {{block(index).name}}
@@ -10,58 +10,6 @@
     </div> -->
     <chartController :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC='style' :height='this.chartHeight()'/>
     <!-- <featureController :index='index' v-if="featured" ref="featureController" /> -->
-
-    <b-modal lazy size='lg' v-model='editcard' title='Edit Block' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
-      <b-container>
-        <div class="row form-group" v-if='!story.public'>
-          <label class='col-4'>Name:</label>
-          <el-input type="text" v-model='tempName' class='col'></el-input>
-        </div>
-        <div class='row form-group'>
-          <label class='col-4 text-left'>From Date: </label>
-          <el-date-picker class='col' v-model='date_start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z'>
-          </el-date-picker>
-        </div>
-        <div class='row form-group'>
-          <label class='col-4 text-left'>To Date: </label>
-          <el-date-picker class='col' v-model='date_end' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z'>
-          </el-date-picker>
-        </div>
-        <div class='row form-group'>
-          <label class='col-4'>Interval: </label>
-          <el-select class='col' v-model="intunit" >
-            <el-option :value="1" label='15 Minutes'></el-option>
-            <el-option :value="2" label='1 Hour'></el-option>
-            <el-option :value="3" label='1 Day'></el-option>
-            <el-option :value="4" label='1 week'></el-option>
-            <el-option :value="5" label='1 Month'></el-option>
-          </el-select>
-        </div>
-        <div class="row form-group" v-if='!story.public'>
-          <label class='col-4'>Graph Type: </label>
-          <el-select v-model="graphtype" class='col'>
-            <el-option :value='1' label='Line Chart'></el-option>
-            <el-option :value='2' label='Bar Chart'></el-option>
-            <el-option :value='3' label='Doughnut Chart'></el-option>
-          </el-select>
-        </div>
-        <div class='row form-group'>
-          <label class='col' v-if='!story.public'>Datasets: </label>
-          <featureController :index='index' ref="featureController" class='container-fluid controlSection' />
-        </div>
-      </b-container>
-      <b-container slot='modal-footer'>
-        <div class='row'>
-          <div class='col-6'>
-            <b-btn @click='cardSave()' variant='primary'> Ok </b-btn>
-            <b-btn @click='editcard = false'> Cancel </b-btn>
-          </div>
-          <div class='col text-right' v-if='!story.public'>
-            <b-btn @click='cardDelete()' variant='danger'> Delete Block</b-btn>
-          </div>
-        </div>
-      </b-container>
-    </b-modal>
   </div>
 </template>
 
@@ -200,6 +148,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 @media (min-width: 425px){
   .card {
     margin-left: 0.5%;
@@ -212,6 +161,12 @@ export default {
   .titleTextFeatured {
     font-size: 2em;
     padding-top: 0.3em;
+  }
+}
+@media (min-width: 800px){
+  .card {
+    margin-left: 4em;
+    margin-right: 4em;
   }
 }
 @media (max-width: 425px){
@@ -227,6 +182,10 @@ export default {
     font-size: 1.1em;
     padding-top: 0.1em;
   }
+  .fas {
+    padding-right: 2.2em;
+    padding-top: 0.2em;
+  }
 }
 .feature {
   background: #000;
@@ -237,7 +196,6 @@ export default {
   margin-top: 1em;
   border: 2px solid #000;
   border-radius: 5px;
-
   overflow: hidden;
 }
 
@@ -259,6 +217,9 @@ export default {
   font-size: 0.9em;
   width: 100%;
   cursor: pointer;
+}
+.fas:hover {
+  color: rgba(215,63,9, 0.8);
 }
 .storyName {
   color:rgb(215,63,9);

@@ -1,6 +1,6 @@
 <template>
   <b-navbar toggleable='sm' class='navbar' type='dark'>
-    <b-navbar-brand href='#'>
+    <b-navbar-brand href='/#/'>
       <img src="static/images/logo.png" height=50 width=auto alt="">
     </b-navbar-brand>
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
@@ -110,7 +110,7 @@ export default {
     color: #FFF !important;
     cursor: pointer;
   }
-  .navbar-dark .navbar-nav not(.active):hover .nav-link {
+  .nav-item:not(.active):hover  > a {
     color: #000 !important;
   }
   .active {

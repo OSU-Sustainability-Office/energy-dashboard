@@ -271,11 +271,10 @@ export default new Vuex.Store({
         // Aqquire new data for the charts since they were manipulated
         for (let chartIndex in block.charts) {
           morePromises.push(new Promise((resolve, reject) => {
-            // let chartData = []
             let chartPromises = []
             for (let meter of block.charts[chartIndex].meters) {
               const paramString = '?id=' + meter.meter_id + '&startDate=' + block.date_start + '&endDate=' + block.date_end + '&point=' + block.charts[chartIndex].point
-              chartPromises.push(axios(process.env.ROOT_API + '/energy/data' + paramString, { method: 'get', data: null, withCredentials: true })) // .then(res => {
+              chartPromises.push(axios(process.env.ROOT_API + '/energy/data' + paramString, { method: 'get', data: null, withCredentials: true }))
             }
             Promise.all(chartPromises).then((r) => {
               let finalData = []
@@ -289,10 +288,13 @@ export default new Vuex.Store({
                 default: 0
               }
               for (let set in r) {
-                if (!r[set].data) {
-                  throw new Error('Data is empty')
+                if (!r[set].data || r[set].data.length <= 0) {
+                  // If we dont get any data in the set skip to the next set
+                  continue
                 }
+                // get multiplier for oddly hooked up meters for points that can be negative
                 const multiplier = ((block.charts[chartIndex].meters[set].negate) ? -1 : 1) * (map[Object.keys(r[set].data[0])[1]] || map['default'])
+                // get negation factor for accumulated_real
                 const mu2 = (block.charts[chartIndex].meters[set].operation) ? 1 : -1
                 if (multiplier === 0) {
                   let insert = 0
