@@ -241,7 +241,6 @@ export default new Vuex.Store({
 
     block: (context, payload) => {
       return new Promise((resolve, reject) => {
-        let promises = []
         if (payload.index === null) {
           reject(new Error('Block action needs index'))
         }
@@ -268,42 +267,69 @@ export default new Vuex.Store({
             block[blockKey] = payload[blockKey]
           }
         }
+        let morePromises = []
         // Aqquire new data for the charts since they were manipulated
         for (let chartIndex in block.charts) {
-          let chartData = []
-          for (let meter of block.charts[chartIndex].meters) {
-            let paramString = '?id=' + meter.meter_id + '&startDate=' + block.date_start + '&endDate=' + block.date_end + '&point=' + block.charts[chartIndex].point
-            promises.push(axios(process.env.ROOT_API + '/energy/data' + paramString, { method: 'get', data: null, withCredentials: true }).then(res => {
-              for (let entry of res.data) {
-                let elm = chartData.find(elm => elm.x === entry.time)
-                let v = entry[Object.keys(entry)[1]]
-                if (block.charts[chartIndex].point === 'pf_a' || block.charts[chartIndex].point === 'pf_b' || block.charts[chartIndex].point === 'pf_c' || block.charts[chartIndex].point === 'reactive_a' || block.charts[chartIndex].point === 'reactive_b' || block.charts[chartIndex].point === 'reactive_c') {
-                  // Do not move to statement above, pf and reactive can be negative in some rare cases
-                  // if put in statement above the value is always positive
-                  // additionally this may not be the correct way to handle the data when the acc_real is neg
-                  // wait for more clarification with Lety
-                  if (meter.negate) {
-                    v *= -1
-                  }
-                } else {
-                  v = Math.abs(v)
+          morePromises.push(new Promise((resolve, reject) => {
+            let chartPromises = []
+            for (let meter of block.charts[chartIndex].meters) {
+              const paramString = '?id=' + meter.meter_id + '&startDate=' + block.date_start + '&endDate=' + block.date_end + '&point=' + block.charts[chartIndex].point
+              chartPromises.push(axios(process.env.ROOT_API + '/energy/data' + paramString, { method: 'get', data: null, withCredentials: true }))
+            }
+            Promise.all(chartPromises).then((r) => {
+              let finalData = []
+              const map = {
+                pf_a: 1,
+                pf_b: 1,
+                pf_c: 1,
+                reactive_a: 1,
+                reactive_b: 1,
+                reactive_c: 1,
+                default: 0
+              }
+              for (let set in r) {
+                if (!r[set].data || r[set].data.length <= 0) {
+                  // If we dont get any data in the set skip to the next set
+                  continue
                 }
-
-                if (elm) {
-                  if (meter.operation === 0) {
-                    v *= -1
+                // get multiplier for oddly hooked up meters for points that can be negative
+                const multiplier = ((block.charts[chartIndex].meters[set].negate) ? -1 : 1) * (map[Object.keys(r[set].data[0])[1]] || map['default'])
+                // get negation factor for accumulated_real
+                const mu2 = (block.charts[chartIndex].meters[set].operation) ? 1 : -1
+                if (multiplier === 0) {
+                  let insert = 0
+                  for (let data of r[set].data) {
+                    while (insert < finalData.length && data.time > finalData[insert].x) {
+                      insert++
+                    }
+                    if (insert === finalData.length) {
+                      finalData.push({x: data.time, y: Math.abs(data[Object.keys(data)[1]]) * mu2})
+                    } else {
+                      finalData[insert].y += Math.abs(data[Object.keys(data)[1]]) * mu2
+                    }
                   }
-                  elm.y += v
                 } else {
-                  chartData.push({ x: entry.time, y: v })
+                  let insert = 0
+                  for (let data of r[set].data) {
+                    while (insert < finalData.length && data.time > finalData[insert].x) {
+                      insert++
+                    }
+                    if (insert === finalData.length) {
+                      finalData.push({x: data.time, y: (data[Object.keys(data)[1]]) * multiplier})
+                    } else {
+                      finalData[insert].y += (data[Object.keys(data)[1]]) * multiplier
+                    }
+                  }
                 }
               }
-              // This will run for every meter, although it runs more than it should, it should not be a problem
-              block.charts[chartIndex].data = chartData
-            }))
-          }
+              block.charts[chartIndex].data = finalData
+              resolve()
+            }).catch(e => {
+              reject(e)
+            })
+          }))
         }
-        Promise.all(promises).then(() => {
+        Promise.all(morePromises).then(() => {
           context.commit('loadBlock', block)
           resolve(context.getters.block(payload.index))
         }).catch(e => {

@@ -18,14 +18,17 @@
           </div>
         </div>
         <div class='col text-right'>
-          <b-dropdown class='d-inline-block' toggle-class='mapFilterBtn' size='sm' right menu-class='dropdownArea' text='Filter' ref='mapFilter'>
-            <b-dropdown-header>Building Type</b-dropdown-header>
-            <b-dropdown-item-button disabled> <input type="checkbox" value='Residence' v-model="selected" checked> Residence </b-dropdown-item-button>
-            <b-dropdown-item-button disabled> <input type="checkbox" value='Athletics' v-model="selected" checked> Athletics & Rec </b-dropdown-item-button>
-            <b-dropdown-item-button disabled> <input type="checkbox" value='Dining' v-model="selected" checked> Dining </b-dropdown-item-button>
-            <b-dropdown-item-button disabled> <input type="checkbox" value='Academics' v-model="selected" checked> Academics </b-dropdown-item-button>
-            <b-dropdown-item-button disabled> <input type="checkbox" value='Admin' v-model="selected" checked> Events & Admin </b-dropdown-item-button>
-          </b-dropdown>
+          <el-dropdown :hide-on-click='false'>
+            <b-btn class='mapFilterBtn' v-b-tooltip.hover=''><i class='fas fa-cog'></i></b-btn>
+            <el-dropdown-menu slot='dropdown'>
+              <el-dropdown-item disabled><span class='bold'>Building Type</span></el-dropdown-item>
+              <el-dropdown-item divided> <input type="checkbox" value='Residence' v-model="selected" checked> Residence </el-dropdown-item>
+              <el-dropdown-item> <input type="checkbox" value='Athletics' v-model="selected" checked> Athletics & Rec </el-dropdown-item>
+              <el-dropdown-item> <input type="checkbox" value='Dining' v-model="selected" checked> Dining </el-dropdown-item>
+              <el-dropdown-item> <input type="checkbox" value='Academics' v-model="selected" checked> Academics </el-dropdown-item>
+              <el-dropdown-item> <input type="checkbox" value='Admin' v-model="selected" checked> Events & Admin </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
       </div>
     </div>
@@ -187,6 +190,10 @@ export default {
 }
 </style>
 <style scoped>
+.bold {
+  font-weight: bold;
+  color: #000;
+}
 .dropdown-header {
   font-weight: bold;
   color: #000 !important;

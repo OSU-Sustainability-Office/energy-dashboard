@@ -6,10 +6,10 @@
     <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()" v-bind:class="[isFull() ? 'fullAdd' : 'smallAdd']">
       +
     </div>
+
   <!-- </transition-group> -->
 
-  <b-modal lazy size='lg' v-model='newCard' :title='(!newCard.name)? "New Block" : "Edit Block"' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light">
-    <b-container>
+  <el-dialog size='lg' :visible.sync='newCard' :title='(!form.name)? "New Block" : "Edit Block"' width="80%">
       <el-form label-width='120px' label-position='left' :model='form' ref='form'>
         <el-form-item label='Name: ' v-if='!story.public' :rules="{required: true, message: 'A name is required', trigger: 'blur'}" prop='name'>
           <!-- <label class='col-4'>Name:</label> -->
@@ -49,16 +49,15 @@
         <featureController :index='story.blocks.length' ref="featureController" class='container-fluid' />
       </div>
       <featureController v-if='story.public' :index='story.blocks.length' ref="featureController" />
-    </b-container>
-    <b-container slot='modal-footer'>
-      <div class='row'>
-        <div class='col'>
-          <b-btn @click='cardSave()' variant='primary'> Ok </b-btn>
-          <b-btn @click='newCard = false'> Cancel </b-btn>
+      <span slot='footer'>
+        <div class='row'>
+          <div class='col'>
+            <b-btn @click='cardSave()' variant='primary'> Ok </b-btn>
+            <b-btn @click='newCard = false'> Cancel </b-btn>
+          </div>
         </div>
-      </div>
-    </b-container>
-  </b-modal>
+      </span>
+  </el-dialog>
 </div>
 </template>
 
@@ -76,6 +75,7 @@ export default {
   props: ['cards', 'fromMap'],
   data () {
     return {
+      dialogVisible: false,
       isMinimized: false,
       update: 0,
       form: {
@@ -120,6 +120,7 @@ export default {
           graph_type: this.form.graphType,
           id: null
         }
+        this.$eventHub.$emit('loadingData', this.form.index)
         for (const chart of this.$refs.featureController.form) {
           const meters = await this.$store.dispatch('buildingMeters', { id: chart.group })
           const newChart = {
@@ -135,6 +136,7 @@ export default {
           }
           card.charts.push(newChart)
         }
+
         this.$store.dispatch('block', card).then(() => {
           this.newCard = false
           this.$refs.displayedCards[this.form.index].$refs.chartController.parse()
@@ -244,7 +246,8 @@ export default {
   padding-right: 1em;
   padding-top: 1em;
   padding-bottom: 1em;
-  width: calc(100% - 2em);
+  width: 100%;
+  left: 0;
 }
 .fullWidth {
   width: 100% !important;

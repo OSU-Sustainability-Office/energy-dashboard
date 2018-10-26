@@ -1,5 +1,5 @@
 <template>
-  <div class="view container">
+  <div class="view container-fluid">
     <div class="title row">
       <span class="col">{{ story.name }}</span>
       <span class="col-1 text-right" ><i class="fas fa-times" @click="hide()"></i></span>
@@ -9,9 +9,9 @@
     </div>
     <div class="graphcontrol container-fluid">
       <div class="buttons row">
-        <button @click='currentRange = 0' class="col btn" v-bind:class="{ active: currentRange == 0 }">Week</button>
-        <button @click='currentRange = 1' class="col btn" v-bind:class="{ active: currentRange == 1 }">Month</button>
-        <button @click='currentRange = 2' class="col btn" v-bind:class="{ active: currentRange == 2 }">Year</button>
+        <b-btn variant='secondary' @click='currentRange = 0' class="col" v-bind:class="{ active: currentRange == 0 }">Week</b-btn>
+        <b-btn variant='secondary' @click='currentRange = 1' class="col" v-bind:class="{ active: currentRange == 1 }">Month</b-btn>
+        <b-btn variant='secondary' @click='currentRange = 2' class="col" v-bind:class="{ active: currentRange == 2 }">Year</b-btn>
       </div>
       <div class="d-flex flex-row graph" ref='scrollBox'>
         <div class="col inline" v-for='(block,index) in story.blocks' :key='index'>
@@ -21,7 +21,7 @@
       <i class="graphslide left fas fa-caret-left" @click='prev()' ref="prevArrow"></i>
       <i class="graphslide right fas fa-caret-right" @click='next()' ref="nextArrow"></i>
       <div class="buttons row">
-        <button @click='$router.push({path: `/public/${$parent.openStory}/${currentRange}`})' class="col btn">View in Dashboard</button>
+        <b-btn @click='$router.push({path: `/public/${$parent.openStory}/${currentRange}`})' class="col">View in Dashboard</b-btn>
       </div>
     </div>
   </div>
@@ -154,24 +154,77 @@ export default {
 }
 </script>
 <style scoped>
+.view {
+  padding-bottom: 2em;
+  background-color: rgb(26,26,26);
+  z-index: 401;
+  box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
+  display: block;
+}
+.media {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+.graphslide {
+  position: absolute;
+  color: white;
+  background-color: rgb(215,63,9);
+  font-size: 2.5em;
+  width: 1em;
+  height: 1em;
+  text-align: center;
+  border-radius: 1em;
+  opacity: 1;
+  z-index: 0;
+}
+@media (min-width: 800px){
   .view {
     position: absolute;
     left: 100%;
     top: 15%;
     width: 450px;
-    padding-bottom: 2em;
-    background-color: rgb(26,26,26);
-    z-index: 401;
     margin-left: -470px;
-    box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
-    display: block;
   }
   .media {
     height: 300px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
   }
+  .graphslide {
+    margin-top: calc(50% - 2em);
+    top: 0px;
+  }
+  .graphslide.right {
+    right: -0.2em;
+    padding-left:0.1em;
+  }
+  .graphslide.left {
+    left: -0.2em;
+    padding-right:0.1em;
+  }
+}
+@media (max-width: 800px){
+  .view {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    width: 100%;
+  }
+  .media {
+    height: 150px;
+  }
+  .graphslide {
+    margin-top: 3.3em;
+    top: 0px;
+  }
+  .graphslide.right {
+    right: -0.2em;
+    padding-left:0.1em;
+  }
+  .graphslide.left {
+    left: -0.2em;
+    padding-right:0.1em;
+  }
+}
   .chart {
     height: 200px;
     width: 100%;
@@ -200,11 +253,6 @@ export default {
     padding-left: 0.5em;
 
   }
-  .btn {
-    background-color: #000;
-    color: #FFF;
-    border: solid 1px #FFF;
-  }
   .utilities .row {
     color: #FFF;
   }
@@ -216,8 +264,9 @@ export default {
     font-size: 1.2em;
     border-bottom: 1px solid rgba(0,0,0,0.6);
   }
-  .btn.active {
-    background-color: rgb(215,63,9);
+  .active {
+    background-color: rgb(215,63,9) !important;
+    border: solid 1px #FFF !important;
   }
   .title.row > * {
     padding: 0;
@@ -251,31 +300,10 @@ export default {
     margin-right: 20px;
     transition: transform 1s;
   }
-  .graphslide {
-    position: absolute;
-    color: white;
-    background-color: rgb(215,63,9);
-    font-size: 2.5em;
-    width: 1em;
-    height: 1em;
-    text-align: center;
-    margin-top: calc(50% - 2em);
-    top: 0px;
-    border-radius: 1em;
-    opacity: 1;
-    z-index: 0;
+  .fa-times {
+    cursor: pointer;
   }
-  .graphslide:hover {
-
+  .fa-times:hover {
+    text-shadow: 0px 0px 5px #aaa;
   }
-
-  .graphslide.right {
-    right: -0.2em;
-    padding-left:0.1em;
-  }
-  .graphslide.left {
-    left: -0.2em;
-    padding-right:0.1em;
-  }
-
 </style>

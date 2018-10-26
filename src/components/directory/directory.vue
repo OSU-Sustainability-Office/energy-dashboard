@@ -341,6 +341,11 @@ export default {
   color: #FFF !important;
   background-color: rgb(215,63,9) !important;
 }
+@media (max-width: 890px){
+  .directory-group-tab {
+    padding-top: 4em;
+  }
+}
 </style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
@@ -408,5 +413,17 @@ export default {
   position: absolute;
   top: 6.1em;
   right: 2em;
+}
+@media (max-width: 890px){
+  .searchArea {
+    position: absolute;
+    top: 6.1em;
+    left: 2em;
+  }
+  .editgroup {
+    position: absolute;
+    top: 5.7em;
+    left: 2em;
+  }
 }
 </style>

@@ -1,23 +1,23 @@
 <template>
   <div class='bar container-fluid'>
     <div class='row main align-items-center'>
-      <b-dropdown v-for='(item, index) in path' v-if='index > 0' variant="link" :key='index' :id='"dropdown-" + index' class="itm col" boundary="window" no-caret>
-        <template slot='button-content'>
-          <div class='container-fluid'>
-            <div class='leftP'>
-              <i :class="getClass(item,index)"></i>
-            </div>
-            <div class='it'>{{ item }}</div>
-            <div class='rightP'>
-              <i class="fas fa-caret-down"></i>
-            </div>
+      <el-dropdown v-for='(item, index) in path' v-if='index > 0' :key='index' :id='"dropdown-" + index' class="itm col" placement='bottom-start' @command='(a)=>{moveRoute(a[0], a[1])}'>
+        <div class=''>
+          <div class='leftP'>
+            <i :class="getClass(item,index)"></i>
           </div>
-        </template>
-        <b-dropdown-item v-for='(otherStory, index_o) in getDataForPathIndex(index)' :key='index_o' class='col' @click='moveRoute(index, index_o)'>
-          <i :class='getClass(otherStory,index)'></i>
-          {{ otherStory }}
-        </b-dropdown-item>
-      </b-dropdown>
+          <div class='it'>{{ item }}</div>
+          <div class='rightP'>
+            <i class="fas fa-caret-down"></i>
+          </div>
+        </div>
+        <el-dropdown-menu slot='dropdown'>
+          <el-dropdown-item v-for='(otherStory, index_o) in getDataForPathIndex(index)' :key='index_o' class='col' :command='[index, index_o]'>
+            <i :class='getClass(otherStory,index)'></i>
+            {{ otherStory }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <div class='col text-right'>
         <i class="fas fa-save dButton" v-b-tooltip.hover title='Save Story Charts' v-if='path[0] === "Your Dashboard"' @click="$parent.save()"></i>
         <i class="fas fa-download dButton" v-b-tooltip.hover title='Download Story Data' @click="download()"></i>
@@ -212,6 +212,9 @@ export default {
 }
 </script>
 <style scoped>
+  .el-dropdown-menu__item {
+    width: 350px;
+  }
   .bar {
     position: absolute;
     left: 0px;
@@ -228,7 +231,6 @@ export default {
   }
   .itm {
     background-color: #FFF;
-    display: inline-block;
     height: 100%;
     border-right: solid 2px rgb(226,226,226);
     /* clip-path:polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%); */
@@ -251,7 +253,7 @@ export default {
   .leftP {
     display: inline-block;
     position: absolute;
-    left: 0px;
+    left: 20px;
     top: 0px;
     padding-top: 7px;
     color: #D73F09;
@@ -259,7 +261,7 @@ export default {
   .rightP {
     display: inline-block;
     position: absolute;
-    right: 0px;
+    right: 20px;
     top: 0px;
     width: 10px;
     padding-top: 7px;
@@ -269,8 +271,9 @@ export default {
     text-overflow: ellipsis;
     display: inline-block;
     color: #000;
-    padding-left: 30px;
-    padding-top: 2px;
+    padding-left: 36px;
+    padding-top: 5px;
+    font-size: 16px;
   }
   .col-3.itm > .row > .col.it {
     padding-top: 10px;
