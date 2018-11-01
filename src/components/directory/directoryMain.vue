@@ -24,7 +24,7 @@
               <span slot='label' class='tab-label'>{{item.name}}</span>
               <el-row type='flex' justify='left' class='story-flex'>
                 <el-col v-for='story in item.stories' :key='story.id' :span='4'>
-                  <storycard :name='story.name' :notools='(item.public && parseInt(item.public) === 1)? 1 : 0' :media='story.media' :description='story.description' class='storyCard' @click='$router.push({ path: `/public/${story.id}/1`})' ref='card' />
+                  <storycard :name='story.name' :notools='(item.public && parseInt(item.public) === 1)? 1 : 0' :media='story.media' :description='story.description' :story_id='story.id' class='storyCard' @click='$router.push({ path: `/public/${story.id}/1`})' ref='card' />
                 </el-col>
                 <el-col v-if='!publicDir' :span='4'>
                   <el-tooltip content="Create New Story" placement="top">
@@ -99,6 +99,7 @@ export default {
           let g = [].concat(group.stories)
           allStories = allStories.concat(g)
           g.sort((a, b) => { return a.name > b.name })
+          console.log(group)
           this.groups.push({ name: group.group, stories: g, id: group.id })
         }
       }
@@ -112,18 +113,10 @@ export default {
         this.openName = name
       }
     })
-    // 0: group, 1: index, 2: id
-    this.$eventHub.$on('deleteStory', (event) => { this.deleteStory(event[2], event[0], event[1]) })
-    // 0: group, 1: index, 2: name, 3: description, 4: media
+    // 0: id
+    this.$eventHub.$on('deleteStory', (event) => { this.deleteStory(event[0]) })
+    // 0: name, 1: description, 2: media, 3: name, 4: id
     this.$eventHub.$on('openStoryEdit', (event) => { this.openStoryEdit(event[0], event[1], event[2], event[3], event[4]) })
-
-    this.$eventHub.$on('updateDirectoryListings', (event) => {
-      if (event[0] > 0) {
-        this.mainGroup = 1
-      } else {
-        this.mainGroup = 0
-      }
-    })
   },
   methods: {
     /* GROUP EDITING AND CREATING */
@@ -163,7 +156,7 @@ export default {
       storyEditor.form.name = name
       storyEditor.form.description = description
       storyEditor.form.media = media
-      storyEditor.form.id = id
+      storyEditor.id = id
       storyEditor.title = (id === null) ? 'Create Story' : 'Edit Story'
       storyEditor.toggle = true
     },
@@ -172,10 +165,6 @@ export default {
 
       if (openGroup.id) {
         if (id) {
-          const story = this.openGroup.stories.find(e => { return e.id === id })
-          story.name = name
-          story.description = description
-          story.media = media
           this.$store.dispatch('updateStory', {
             media: media,
             description: description,
@@ -203,20 +192,20 @@ export default {
             id: id,
             group_id: groupId
           }
+          openGroup.stories.push(story)
           this.$store.dispatch('createStory', story)
         })
       }
     },
-    deleteStory: function (id, group, index) {
-      if (!this.groups[1].subgroups[group] || !this.groups[1].subgroups[group].subgroups[index]) {
-        return
-      }
-      this.$store.dispatch('deleteStory', { id: this.groups[1].subgroups[group].subgroups[index].id, group_id: this.groups[1].subgroups[group].id }).then(() => {
-        if (this.groups[1].subgroups[group].subgroups.length === 0) {
-          this.groupDelete(group)
+    deleteStory: function (id) {
+      const openGroup = this.groups.find(e => { return e.name === this.openName })
+      const index = openGroup.stories.map(e => e.id).indexOf(id)
+      this.$store.dispatch('deleteStory', { id: id, group_id: openGroup.id }).then(() => {
+        openGroup.stories.splice(index, 1)
+        if (openGroup.stories.length === 0) {
+          this.groupDelete(openGroup.id)
         }
       })
-      this.groups[1].subgroups[group].subgroups.splice(index, 1)
     }
   }
 }

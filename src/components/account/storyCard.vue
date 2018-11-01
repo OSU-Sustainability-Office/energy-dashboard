@@ -9,21 +9,6 @@
     <div class='plus' v-if='plus'>
       +
     </div>
-    <!-- <b-modal size='lg' v-model='openModal' title='Edit Story' body-bg-variant="light" header-bg-variant="light" footer-bg-variant="light" @ok='saveTemp()' footer-class='storycard-modal-footer'>
-      <b-container>
-        <div class="row">
-          <label>Name:</label>
-          <el-input type="text" v-model="tempName"></el-input>
-        </div>
-        <div class="row">
-          <label>Description:</label>
-          <el-input type="text" v-model="tempDescription"></el-input>
-        </div>
-        <div class='row'>
-          <mediapicker :media='this.tempMedia' />
-        </div>
-      </b-container>
-    </b-modal> -->
   </div>
 </template>
 
@@ -84,7 +69,7 @@ export default {
       this.$emit('click')
     },
     deleteStory: function () {
-      this.$eventHub.$emit('deleteStory', [this.group, this.index])
+      this.$eventHub.$emit('deleteStory', [this.story_id])
     },
     saveTemp: function () {
 

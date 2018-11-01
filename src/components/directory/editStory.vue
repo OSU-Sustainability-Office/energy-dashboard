@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync='toggle' :title='title' @open='form.name = name' width='90%'>
+  <el-dialog :visible.sync='toggle' :title='title' width='90%'>
     <el-form :model='form' ref='form'>
       <el-form-item label='Title: ' prop='name' :rules="{required: true, message: 'A name is required', trigger: 'blur'}">
         <el-input type='text' v-model='form.name' ></el-input>
