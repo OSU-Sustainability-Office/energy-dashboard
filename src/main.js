@@ -12,7 +12,9 @@ import AsyncComputed from 'vue-async-computed'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import '@/assets/element-#D73F09/index.css'
+// import '@/assets/element-#D73F09/index.css'
+// import 'element-ui/lib/theme-chalk/index.css'
+import '@/assets/style-variables.scss'
 
 Vue.use(BootstrapVue)
 Vue.use(Vuei18n)
@@ -28,8 +30,7 @@ var v = new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
-  template: '<App/>'
+  render: h => h(App)
 })
 Vue.config.devtools = true
 

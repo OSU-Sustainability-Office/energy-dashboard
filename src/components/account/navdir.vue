@@ -183,9 +183,9 @@ export default {
     moveRoute: function (dirI, dropI) {
       if (dirI === 0) {
         if (dropI === 0) {
-          this.$router.push({ path: `/directory/public` })
+          this.$router.push({ path: `/buildinglist/` })
         } else {
-          this.$router.push({ path: `/directory/private` })
+          this.$router.push({ path: `/dashboard/` })
         }
       } if (dirI === 1) {
         const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
@@ -193,9 +193,9 @@ export default {
           let p = 0
           while (1) { if (this.groups[p].public) { p++ } else { break } }
           dropI += p
-          this.$router.push({ path: `/directory/private/${this.groups[dropI].id}` })
+          this.$router.push({ path: `/dashboard/${this.groups[dropI].id}` })
         } else {
-          this.$router.push({ path: `/directory/public/${this.groups[dropI].id}` })
+          this.$router.push({ path: `/buildinglist/${this.groups[dropI].id}` })
         }
       } else if (dirI === 2) {
         const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })

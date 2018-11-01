@@ -7,8 +7,8 @@
     <b-collapse is-nav id="nav_collapse">
       <b-navbar-nav>
         <b-nav-item v-bind:class='[isActive("map") ? "active" : ""]' href="#/map">Map</b-nav-item>
-        <b-nav-item v-bind:class='[isActive("publicdir") ? "active" : ""]' @click='move("/directory/public")'>Building List</b-nav-item>
-        <b-nav-item v-if='user !== null && user.name !== ""' v-bind:class='[isActive("privatedir") ? "active" : ""]' @click='move("/directory/private")'>My Dashboard</b-nav-item>
+        <b-nav-item v-bind:class='[isActive("buildinglist") ? "active" : ""]' @click='move("/buildinglist")'>Building List</b-nav-item>
+        <b-nav-item v-if='user !== null && user.name !== ""' v-bind:class='[isActive("dashboard") ? "active" : ""]' @click='move("/dashboard")'>My Dashboard</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-item v-if='(user !== null && user.name !== "") && $route.path !== "/"' @click='logOut()'>Sign Out</b-nav-item>
@@ -18,12 +18,11 @@
   </b-navbar>
 </template>
 <script>
-import directory from '@/components/directory/directory.vue'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'navigbar',
-  components: {directory},
+  components: {},
   data () {
     return {
       loginLink: process.env.ROOT_API + '/auth/login?returnURI=' + process.env.HOST_ADDRESS + '/#/map'
@@ -47,9 +46,6 @@ export default {
     },
     isActive: function (s) {
       let splitPath = this.$route.path.substr(1).split('/')
-      if (s === 'privatedir' && splitPath[0] === 'directory' && splitPath[1] === 'private') { return true }
-      if (s === 'publicdir' && splitPath[0] === 'directory' && splitPath[1] === 'public') { return true }
-      if (s === 'dashboard' && splitPath[0] === 'public') { return true }
       if (s === splitPath[0]) { return true }
       return false
     },
@@ -67,9 +63,11 @@ export default {
   border-color: #FFF !important;
 }
 </style>
-<style scoped>
+<style scoped lang='scss'>
+@import '@/assets/style-variables.scss';
+
 .navbar {
-  background-color: #D73F09;
+  background-color: $--color-primary;
   border-bottom: solid 1px rgb(226,226,226);
   z-index: 20;
 }

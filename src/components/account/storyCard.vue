@@ -1,6 +1,6 @@
 <template>
   <div class="storyCard" ref='card' @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
-    <div class="toolbox" ref="toolbox" v-if='!notools'>
+    <div class="toolbox" ref="toolbox" v-if='parseInt(notools) === 0'>
       <i class="fas fa-pencil-alt" @click.prevent='openEdit()' v-b-tooltip.hover title='Edit Story Card'></i>
       <i class="fas fa-times" @click="deleteStory()" v-b-tooltip.hover title='Delete Story'></i>
     </div>
@@ -46,14 +46,6 @@ export default {
       this.$refs.card.style.borderWidth = '4px'
     }
   },
-  data () {
-    return {
-      openModal: false,
-      tempName: '',
-      tempDescription: '',
-      tempMedia: ''
-    }
-  },
   watch: {
     selected: function (value) {
       if (value) {
@@ -83,7 +75,7 @@ export default {
       }
     },
     openEdit: function () {
-      this.$eventHub.$emit('openStoryEdit', [this.group, this.index, this.name, this.description, this.media])
+      this.$eventHub.$emit('openStoryEdit', [this.name, this.description, this.media, this.story_id])
     },
     clicked: function (event) {
       if (event.target.classList.contains('fas') || event.target.classList.contains('toolbox')) {
@@ -122,7 +114,7 @@ export default {
 .storyName {
   color:rgb(215,63,9);
   font-family: 'StratumNo2';
-  font-size: 1.8em;
+  font-size: 1.7em;
   display: block;
   z-index: 1;
 }
