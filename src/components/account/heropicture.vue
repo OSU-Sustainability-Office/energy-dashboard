@@ -1,8 +1,12 @@
 <template>
-  <div class="container-fluid background" ref='main'>
-    <div class='title'>{{name}}</div>
-    <div class='subtitle'>{{description}}</div>
-  </div>
+  <el-container class='stage'>
+    <el-main class='main'>
+      <div  class="background" ref='main'>
+        <div class='title'>{{name}}</div>
+        <div class='subtitle'>{{description}}</div>
+      </div>
+    </el-main>
+  </el-container>
 </template>
 <script>
 
@@ -31,11 +35,22 @@ export default {
 }
 </script>
 <style scoped>
+  .stage {
+    position: relative;
+    top: 0;
+    left: 0;
+    padding: 0;
+    margin: 0;
+    height: 200px;
+  }
+  .main {
+    padding: 0;
+  }
   .background {
     position: absolute;
     top: 0px;
     left: 0px;
-    height: 200px;
+    height: 100%;
     width:100%;
     background-position: center;
     background-size: cover;

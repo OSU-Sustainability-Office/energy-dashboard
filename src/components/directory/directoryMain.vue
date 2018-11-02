@@ -24,7 +24,7 @@
               <span slot='label' class='tab-label'>{{item.name}}</span>
               <el-row type='flex' justify='left' class='story-flex'>
                 <el-col v-for='story in item.stories' :key='story.id' :span='4'>
-                  <storycard :name='story.name' :notools='(item.public && parseInt(item.public) === 1)? 1 : 0' :media='story.media' :description='story.description' :story_id='story.id' class='storyCard' @click='$router.push({ path: `/public/${story.id}/1`})' ref='card' />
+                  <storycard :name='story.name' :notools='(publicDir !== null)? 1:0' :media='story.media' :description='story.description' :story_id='story.id' class='storyCard' @click='$router.push({ path: `/public/${story.id}/1`})' ref='card' />
                 </el-col>
                 <el-col v-if='!publicDir' :span='4'>
                   <el-tooltip content="Create New Story" placement="top">
@@ -112,6 +112,7 @@ export default {
         let name = this.groups.find(e => { return e.id === parseInt(this.$route.params.group) }).name
         this.openName = name
       }
+      console.log(this.publicDir)
     })
     // 0: id
     this.$eventHub.$on('deleteStory', (event) => { this.deleteStory(event[0]) })

@@ -10,10 +10,11 @@
 //
 // /* Colors
 // -------------------------- */
-// $--color-white: #fff !default;
-// $--color-black: #000 !default;
-//
+$--color-white: #fff !default;
+$--color-black: #1A1A1A !default;
+$--nav-height: 90px;
 $--color-primary: #D73F09;
+$--color-info: #1A1A1A;
 // $--color-primary-light-1: mix($--color-white, $--color-primary, 10%) !default; /* 53a8ff */
 // $--color-primary-light-2: mix($--color-white, $--color-primary, 20%) !default; /* 66b1ff */
 // $--color-primary-light-3: mix($--color-white, $--color-primary, 30%) !default; /* 79bbff */
@@ -41,7 +42,7 @@ $--color-primary: #D73F09;
 //
 // $--color-text-primary: #303133 !default;
 // $--color-text-regular: #606266 !default;
-// $--color-text-secondary: #909399 !default;
+//$--color-text-secondary: #909399 !default;
 // $--color-text-placeholder: #c0c4cc !default;
 //
 // /* Link

@@ -1,29 +1,30 @@
 <template>
-  <div class='bar container-fluid'>
-    <div class='row main align-items-center'>
-      <el-dropdown v-for='(item, index) in path' v-if='index > 0' :key='index' :id='"dropdown-" + index' class="itm col" placement='bottom-start' @command='(a)=>{moveRoute(a[0], a[1])}'>
-        <div class=''>
-          <div class='leftP'>
-            <i :class="getClass(item,index)"></i>
-          </div>
-          <div class='it'>{{ item }}</div>
-          <div class='rightP'>
-            <i class="fas fa-caret-down"></i>
-          </div>
-        </div>
-        <el-dropdown-menu slot='dropdown'>
-          <el-dropdown-item v-for='(otherStory, index_o) in getDataForPathIndex(index)' :key='index_o' class='col' :command='[index, index_o]'>
-            <i :class='getClass(otherStory,index)'></i>
-            {{ otherStory }}
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-      <div class='col text-right'>
-        <i class="fas fa-save dButton" v-b-tooltip.hover title='Save Story Charts' v-if='path[0] === "Your Dashboard"' @click="$parent.save()"></i>
-        <i class="fas fa-download dButton" v-b-tooltip.hover title='Download Story Data' @click="download()"></i>
-      </div>
-    </div>
-  </div>
+  <el-container class='stage'>
+    <el-main class='main'>
+        <el-row class='bar'>
+          <el-col :span='20'>
+            <el-menu mode='horizontal' class='menu' background-color='#00000000' text-color='#000'>
+              <el-submenu index='1'>
+                <template slot="title">{{ group.group }}</template>
+                <el-menu-item v-for='(group, index) in filteredGroups' :key='group.id' :index='""+index'>
+                  {{ group.group }}
+                </el-menu-item>
+              </el-submenu>
+              <el-submenu index='2'>
+                <template slot="title">{{ story.name }}</template>
+                <el-menu-item v-for='(storyS, index) in navStories' :key='storyS.id' :index='""+index'>
+                  {{ storyS.name }}
+                </el-menu-item>
+              </el-submenu>
+            </el-menu>
+          </el-col>
+          <el-col :span='4'>
+            <i class="fas fa-save dButton" v-b-tooltip.hover title='Save Story Charts' v-if='path[0] === "Your Dashboard"' @click="$parent.save()"></i>
+            <i class="fas fa-download dButton" v-b-tooltip.hover title='Download Story Data' @click="download()"></i>
+          </el-col>
+      </el-row>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -37,47 +38,57 @@ export default {
   data () {
     return {
       groupName: '',
-      path: []
+      path: [],
+      filteredGroups: [],
+      navStories: []
     }
   },
   computed: {
     ...mapGetters([
       'story',
       'stories'
-    ])
+    ]),
+    group: {
+      get: function () {
+        return this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+      }
+    }
   },
   watch: {
     story: {
       handler: function (v) {
         // This is kind of expensive consider changing at some point
-        const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
-        if (!group) {
-          return
-        }
-        if (!group.public) {
-          this.path = ['Your Dashboard']
-        } else {
-          this.path = ['Public']
-        }
-
-        this.path.push(group.group)
-        this.path.push(this.story.name)
+        // const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+        // if (!group) {
+        //   return
+        // }
+        // if (!group.public) {
+        //   this.path = ['Your Dashboard']
+        // } else {
+        //   this.path = ['Public']
+        // }
+        //
+        // this.path.push(group.group)
+        // this.path.push(this.story.name)
       }
     }
 
   },
   mounted () {
     // This is kind of expensive consider changing at some point
-    const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
-    if (group) {
-      if (!group.public) {
-        this.path = ['Your Dashboard']
-      } else {
-        this.path = ['Public']
-      }
-
-      this.path.push(group.group)
-      this.path.push(this.story.name)
+    console.log('mounted')
+    if (this.group) {
+      this.$store.dispatch('stories').then((r) => {
+        console.log(r)
+        for (let groupSingle of r) {
+          if (groupSingle.public === this.group.public) {
+            if (this.group.id === groupSingle.id) {
+              this.navStories = groupSingle.stories
+            }
+            this.filteredGroups.push(groupSingle)
+          }
+        }
+      })
     }
   },
   asyncComputed: {
@@ -211,112 +222,125 @@ export default {
   }
 }
 </script>
-<style scoped>
-  .el-dropdown-menu__item {
-    width: 350px;
+<style scoped lang='scss'>
+@import '@/assets/style-variables.scss';
+  .stage {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 60px;
+  }
+  .main {
+    padding: 0;
   }
   .bar {
     position: absolute;
+    top: 0px;
     left: 0px;
-    height: 40px;
-    z-index: 10;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    background-color: $--color-white;
     box-shadow: 0px 2px 4px -2px rgba(0,0,0,0.5);
   }
-  .row.main {
-    position: absolute;
-    left: 1%;
-    white-space: nowrap;
-    height: 100%;
-    width: 100%;
+  .menu {
+    border: none;
   }
-  .itm {
-    background-color: #FFF;
-    height: 100%;
-    border-right: solid 2px rgb(226,226,226);
-    /* clip-path:polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%); */
-    color: rgb(26,26,26);
-    cursor: pointer;
-  }
-  .itm-end {
-    background-color: #FFF;
-    display: inline-block;
-    margin-left: -17px;
-    height: 100%;
-    clip-path:polygon(0 0, 100% 0, 100% 100%, 0 100%, 15px 50%);
-    color: rgb(26,26,26);
-    cursor: pointer;
-  }
-  .itm:hover {
-    background-color: #D73F09;
-    color: #FFF;
-  }
-  .leftP {
-    display: inline-block;
-    position: absolute;
-    left: 20px;
-    top: 0px;
-    padding-top: 7px;
-    color: #D73F09;
-  }
-  .rightP {
-    display: inline-block;
-    position: absolute;
-    right: 20px;
-    top: 0px;
-    width: 10px;
-    padding-top: 7px;
-    color: #D73F09;
-  }
-  .it {
-    text-overflow: ellipsis;
-    display: inline-block;
-    color: #000;
-    padding-left: 36px;
-    padding-top: 5px;
-    font-size: 16px;
-  }
-  .col-3.itm > .row > .col.it {
-    padding-top: 10px;
-  }
-  .fas {
-    font-size: 1.5em;
-  }
-  .itm:hover .leftP {
-    color: #FFF;
-  }
-  .itm:hover .rightP {
-    color: #FFF;
-  }
-  .dropdown-toggle {
-    width: 100%;
-    height: 100%;
-  }
-  .selector {
-    width: 250px;
-    margin: 10px;
-  }
-
-  .selector .title{
-    text-overflow: ellipsis;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-  }
-  .selector .title:hover {
-    color: #D73F09;
-  }
-  .title {
-    height: 30px !important;
-    font-size: 1.2em !important;
-    font-family: 'Open Sans', sans-serif !important;
-  }
-  .dButton {
-    cursor: pointer;
-    color: #D73F09;
-    padding-right: 0.4em;
-  }
-  .dButton:hover {
-    color: #000;
-  }
+  // .row.main {
+  //   position: absolute;
+  //   left: 1%;
+  //   white-space: nowrap;
+  //   height: 100%;
+  //   width: 100%;
+  // }
+  // .itm {
+  //   background-color: #FFF;
+  //   height: 100%;
+  //   border-right: solid 2px rgb(226,226,226);
+  //   /* clip-path:polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%); */
+  //   color: rgb(26,26,26);
+  //   cursor: pointer;
+  // }
+  // .itm-end {
+  //   background-color: #FFF;
+  //   display: inline-block;
+  //   margin-left: -17px;
+  //   height: 100%;
+  //   clip-path:polygon(0 0, 100% 0, 100% 100%, 0 100%, 15px 50%);
+  //   color: rgb(26,26,26);
+  //   cursor: pointer;
+  // }
+  // .itm:hover {
+  //   background-color: #D73F09;
+  //   color: #FFF;
+  // }
+  // .leftP {
+  //   display: inline-block;
+  //   position: absolute;
+  //   left: 20px;
+  //   top: 0px;
+  //   padding-top: 7px;
+  //   color: #D73F09;
+  // }
+  // .rightP {
+  //   display: inline-block;
+  //   position: absolute;
+  //   right: 20px;
+  //   top: 0px;
+  //   width: 10px;
+  //   padding-top: 7px;
+  //   color: #D73F09;
+  // }
+  // .it {
+  //   text-overflow: ellipsis;
+  //   display: inline-block;
+  //   color: #000;
+  //   padding-left: 36px;
+  //   padding-top: 5px;
+  //   font-size: 16px;
+  // }
+  // .col-3.itm > .row > .col.it {
+  //   padding-top: 10px;
+  // }
+  // .fas {
+  //   font-size: 1.5em;
+  // }
+  // .itm:hover .leftP {
+  //   color: #FFF;
+  // }
+  // .itm:hover .rightP {
+  //   color: #FFF;
+  // }
+  // .dropdown-toggle {
+  //   width: 100%;
+  //   height: 100%;
+  // }
+  // .selector {
+  //   width: 250px;
+  //   margin: 10px;
+  // }
+  //
+  // .selector .title{
+  //   text-overflow: ellipsis;
+  //   cursor: pointer;
+  //   width: 100%;
+  //   height: 100%;
+  // }
+  // .selector .title:hover {
+  //   color: #D73F09;
+  // }
+  // .title {
+  //   height: 30px !important;
+  //   font-size: 1.2em !important;
+  //   font-family: 'Open Sans', sans-serif !important;
+  // }
+  // .dButton {
+  //   cursor: pointer;
+  //   color: #D73F09;
+  //   padding-right: 0.4em;
+  // }
+  // .dButton:hover {
+  //   color: #000;
+  // }
 
 </style>
