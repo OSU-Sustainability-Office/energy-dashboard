@@ -1,5 +1,6 @@
 <template>
-<div class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature" :key='update'>
+<el-container class='stage'>
+<div v-bind:class="{ minimized : isMinimized }" ref="feature" :key='update'>
   <!-- <transition-group name="cardEntry" tag="div" class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature"> -->
     <card v-if='$parent.fullyMounted' v-for="(card, index) in story.blocks" v-bind:key="index" v-bind:class="[index === 0 ? 'fullWidth' : 'fullWidth']" v-bind:index="index" :featured="true" ref="displayedCards"/>
 
@@ -59,6 +60,7 @@
       </span>
   </el-dialog>
 </div>
+</el-container>
 </template>
 
 <script>
@@ -235,6 +237,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.stage {
+  position: relative;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
 .flexFeature {
   position: absolute;
   top: 250px;

@@ -76,20 +76,9 @@ export default {
   },
   mounted () {
     // This is kind of expensive consider changing at some point
-    console.log('mounted')
-    if (this.group) {
-      this.$store.dispatch('stories').then((r) => {
-        console.log(r)
-        for (let groupSingle of r) {
-          if (groupSingle.public === this.group.public) {
-            if (this.group.id === groupSingle.id) {
-              this.navStories = groupSingle.stories
-            }
-            this.filteredGroups.push(groupSingle)
-          }
-        }
-      })
-    }
+    this.$nextTick(() => {
+      console.log(this.stories)
+    })
   },
   asyncComputed: {
     groups: {
@@ -246,101 +235,4 @@ export default {
   .menu {
     border: none;
   }
-  // .row.main {
-  //   position: absolute;
-  //   left: 1%;
-  //   white-space: nowrap;
-  //   height: 100%;
-  //   width: 100%;
-  // }
-  // .itm {
-  //   background-color: #FFF;
-  //   height: 100%;
-  //   border-right: solid 2px rgb(226,226,226);
-  //   /* clip-path:polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%); */
-  //   color: rgb(26,26,26);
-  //   cursor: pointer;
-  // }
-  // .itm-end {
-  //   background-color: #FFF;
-  //   display: inline-block;
-  //   margin-left: -17px;
-  //   height: 100%;
-  //   clip-path:polygon(0 0, 100% 0, 100% 100%, 0 100%, 15px 50%);
-  //   color: rgb(26,26,26);
-  //   cursor: pointer;
-  // }
-  // .itm:hover {
-  //   background-color: #D73F09;
-  //   color: #FFF;
-  // }
-  // .leftP {
-  //   display: inline-block;
-  //   position: absolute;
-  //   left: 20px;
-  //   top: 0px;
-  //   padding-top: 7px;
-  //   color: #D73F09;
-  // }
-  // .rightP {
-  //   display: inline-block;
-  //   position: absolute;
-  //   right: 20px;
-  //   top: 0px;
-  //   width: 10px;
-  //   padding-top: 7px;
-  //   color: #D73F09;
-  // }
-  // .it {
-  //   text-overflow: ellipsis;
-  //   display: inline-block;
-  //   color: #000;
-  //   padding-left: 36px;
-  //   padding-top: 5px;
-  //   font-size: 16px;
-  // }
-  // .col-3.itm > .row > .col.it {
-  //   padding-top: 10px;
-  // }
-  // .fas {
-  //   font-size: 1.5em;
-  // }
-  // .itm:hover .leftP {
-  //   color: #FFF;
-  // }
-  // .itm:hover .rightP {
-  //   color: #FFF;
-  // }
-  // .dropdown-toggle {
-  //   width: 100%;
-  //   height: 100%;
-  // }
-  // .selector {
-  //   width: 250px;
-  //   margin: 10px;
-  // }
-  //
-  // .selector .title{
-  //   text-overflow: ellipsis;
-  //   cursor: pointer;
-  //   width: 100%;
-  //   height: 100%;
-  // }
-  // .selector .title:hover {
-  //   color: #D73F09;
-  // }
-  // .title {
-  //   height: 30px !important;
-  //   font-size: 1.2em !important;
-  //   font-family: 'Open Sans', sans-serif !important;
-  // }
-  // .dButton {
-  //   cursor: pointer;
-  //   color: #D73F09;
-  //   padding-right: 0.4em;
-  // }
-  // .dButton:hover {
-  //   color: #000;
-  // }
-
 </style>

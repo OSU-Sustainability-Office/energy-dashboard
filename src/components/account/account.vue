@@ -183,6 +183,7 @@ export default {
           Promise.all(promises).then((t) => {
             this.$refs.featureBox.updateCards()
             this.fullyMounted = true
+            // This where all updating to navdir needs to be done
           })
         })
       } else {

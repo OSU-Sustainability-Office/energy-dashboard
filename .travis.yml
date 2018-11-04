@@ -22,3 +22,11 @@ deploy:
   keep-history: true
   on:
     branch: master
+  provider: s3
+  access_key_id: $S3_ACCESS_ID
+  secret_access_key: $S3_ACCESS_KEY
+  bucket: "energy-dashboard"
+  skip_cleanup: true
+  local_dir: dist
+  on:
+    all_branches: true
