@@ -175,7 +175,7 @@ $sideMenu-width: 250px;
 }
 .stage {
   padding: 0;
-  position: relative;
+  position: absolute;
   width: 100%;
   height: calc(100vh - #{$--nav-height});
 }

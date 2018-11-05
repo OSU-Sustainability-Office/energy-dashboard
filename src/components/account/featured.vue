@@ -1,14 +1,14 @@
 <template>
-<el-container class='stage'>
-<div v-bind:class="{ minimized : isMinimized }" ref="feature" :key='update'>
-  <!-- <transition-group name="cardEntry" tag="div" class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature"> -->
-    <card v-if='$parent.fullyMounted' v-for="(card, index) in story.blocks" v-bind:key="index" v-bind:class="[index === 0 ? 'fullWidth' : 'fullWidth']" v-bind:index="index" :featured="true" ref="displayedCards"/>
+<el-row class='stage'>
+<el-col :span='1'>
+  &nbsp;
+</el-col>
+<el-col class='main' ref="feature" :span='22'>
+    <card v-for="(card, index) in story.blocks" v-bind:key="index" v-bind:index="index" ref="displayedCards"/>
 
-    <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()" v-bind:class="[isFull() ? 'fullAdd' : 'smallAdd']">
+    <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()">
       +
     </div>
-
-  <!-- </transition-group> -->
 
   <el-dialog size='lg' :visible.sync='newCard' :title='(!form.name)? "New Block" : "Edit Block"' width="80%">
       <el-form label-width='120px' label-position='left' :model='form' ref='form'>
@@ -45,22 +45,18 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div class='row form-group' v-if='!story.public'>
-        <label class='col'>Datasets: </label>
-        <featureController :index='story.blocks.length' ref="featureController" class='container-fluid' />
+      <div class='form-group' v-if='!story.public'>
+        <label>Datasets: </label>
+        <featureController :index='story.blocks.length' ref="featureController" />
       </div>
       <featureController v-if='story.public' :index='story.blocks.length' ref="featureController" />
       <span slot='footer'>
-        <div class='row'>
-          <div class='col'>
-            <b-btn @click='cardSave()' variant='primary'> Ok </b-btn>
-            <b-btn @click='newCard = false'> Cancel </b-btn>
-          </div>
-        </div>
+            <el-button @click='cardSave()' variant='primary'> Ok </el-button>
+            <el-button @click='newCard = false'> Cancel </el-button>
       </span>
   </el-dialog>
-</div>
-</el-container>
+</el-col>
+</el-row>
 </template>
 
 <script>
@@ -238,28 +234,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .stage {
-  position: relative;
-  width: 100%;
+  position: static;
   top: 0;
-  left: 0;
-}
-.flexFeature {
-  position: absolute;
-  top: 250px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 1em;
-  padding-right: 1em;
-  padding-top: 1em;
-  padding-bottom: 1em;
-  width: 100%;
-  left: 0;
-}
-.fullWidth {
-  width: 100% !important;
-  flex-basis: 100% !important;
+  height: auto
 }
 .addFeatured {
   font-size: 4em;
@@ -284,30 +261,5 @@ export default {
   border-left: none;
   border-radius: 0px 7px 7px 0px;
 }
-.smallAdd {
 
-  border-right: none;
-  border-radius: 7px 0px 0px 7px;
-}
-.cardEntry-enter-active, .cardEntry-leave-active {
-  transition-property: opacity, transform, width;
-  transition-duration: 1s;
-  backface-visibility: hidden;
-}
-.cardEntry-leave-active {
-  position: relative;
-}
-
-/* .page-enter-active {
-  transition-delay: 1s;
-} */
-.cardEntry-enter {
-  transform: translateX(1000px);
-  opacity: 1;
-}
-.cardEntry-leave-to {
-  transform: translateX(-1000px);
-  opacity: 0;
-}
-.minimized {}
 </style>

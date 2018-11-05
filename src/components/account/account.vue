@@ -1,11 +1,11 @@
 <template>
-  <el-container class="stage">
-    <el-main class='main'>
+  <el-row class="stage">
+    <el-col class='main'>
       <heropicture :media='story.media' :description='story.description' :name='story.name'></heropicture>
-      <navdir ref='navdir'></navdir>
+      <navdir ref='navdir' @update='update'></navdir>
       <featured ref='featureBox' />
-    </el-main>
-  </el-container>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -183,7 +183,7 @@ export default {
           Promise.all(promises).then((t) => {
             this.$refs.featureBox.updateCards()
             this.fullyMounted = true
-            // This where all updating to navdir needs to be done
+            this.$refs.navdir.populate()
           })
         })
       } else {
@@ -223,11 +223,13 @@ export default {
 @import '@/assets/style-variables.scss';
 
 .stage {
-  position: relative;
-  top: 0;
+  position: absolute;
+  top: $--nav-height;
   left: 0;
   height: calc(100vh - #{$--nav-height});
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 .main {
   padding: 0;

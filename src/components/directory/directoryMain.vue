@@ -99,7 +99,6 @@ export default {
           let g = [].concat(group.stories)
           allStories = allStories.concat(g)
           g.sort((a, b) => { return a.name > b.name })
-          console.log(group)
           this.groups.push({ name: group.group, stories: g, id: group.id })
         }
       }
@@ -112,7 +111,6 @@ export default {
         let name = this.groups.find(e => { return e.id === parseInt(this.$route.params.group) }).name
         this.openName = name
       }
-      console.log(this.publicDir)
     })
     // 0: id
     this.$eventHub.$on('deleteStory', (event) => { this.deleteStory(event[0]) })
@@ -215,6 +213,7 @@ export default {
 @import '@/assets/style-variables.scss';
 /*--- top level ---*/
 .container {
+  position: absolute;
   margin: 0;
   max-width: 100%;
   padding: 0;

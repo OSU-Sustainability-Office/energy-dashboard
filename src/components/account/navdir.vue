@@ -1,30 +1,34 @@
 <template>
-  <el-container class='stage'>
-    <el-main class='main'>
+  <el-row class='stage'>
+    <el-col class='main'>
         <el-row class='bar'>
           <el-col :span='20'>
-            <el-menu mode='horizontal' class='menu' background-color='#00000000' text-color='#000'>
-              <el-submenu index='1'>
-                <template slot="title">{{ group.group }}</template>
-                <el-menu-item v-for='(group, index) in filteredGroups' :key='group.id' :index='""+index'>
-                  {{ group.group }}
+            <el-menu mode='horizontal' class='menu' background-color='#FFF' text-color='#1a1a1a' :router='true' @select='handleSelect'>
+              <el-submenu index='1' :router='true'>
+                <template slot="title" class='menu-title'><i class="fas fa-th-large"></i>{{ group.group }}</template>
+                <el-menu-item class='group-item' v-for='(groupS, index) in filteredGroups' :key='groupS.id' :index='"1-"+index' :route='{path: ((group.public)?"/buildinglist/":"/dashboard/") + groupS.id}'>
+                  <i class="fas fa-th-large"></i>{{ groupS.group }}
                 </el-menu-item>
               </el-submenu>
-              <el-submenu index='2'>
-                <template slot="title">{{ story.name }}</template>
-                <el-menu-item v-for='(storyS, index) in navStories' :key='storyS.id' :index='""+index'>
-                  {{ storyS.name }}
+              <el-submenu index='2' :router='false'>
+                <template class='menu-title' slot="title"><i class="fas fa-building"></i>{{ story.name }}</template>
+                <el-menu-item class='story-item' v-for='(storyS, index) in navStories' :key='storyS.id' :index='"2-"+index' :route='{path: (group.public)?`/public/${storyS.id}/1`:`/story/${storyS.id}`}'>
+                  <i class="fas fa-building"></i>{{ storyS.name }}
                 </el-menu-item>
               </el-submenu>
             </el-menu>
           </el-col>
-          <el-col :span='4'>
-            <i class="fas fa-save dButton" v-b-tooltip.hover title='Save Story Charts' v-if='path[0] === "Your Dashboard"' @click="$parent.save()"></i>
-            <i class="fas fa-download dButton" v-b-tooltip.hover title='Download Story Data' @click="download()"></i>
+          <el-col :span='4' class='buttons'>
+            <el-tooltip content='Click to save story' placement='top'>
+              <i class="fas fa-save" v-if='path[0] === "Your Dashboard"' @click="$parent.save()"></i>
+            </el-tooltip>
+            <el-tooltip content='Click to download data' placement='top'>
+              <i class="fas fa-download" @click="download()"></i>
+            </el-tooltip>
           </el-col>
       </el-row>
-    </el-main>
-  </el-container>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -38,47 +42,20 @@ export default {
   data () {
     return {
       groupName: '',
-      path: [],
       filteredGroups: [],
-      navStories: []
+      navStories: [],
+      path: [],
+      group: {
+        group: '',
+        public: false
+      }
     }
   },
   computed: {
     ...mapGetters([
       'story',
       'stories'
-    ]),
-    group: {
-      get: function () {
-        return this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
-      }
-    }
-  },
-  watch: {
-    story: {
-      handler: function (v) {
-        // This is kind of expensive consider changing at some point
-        // const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
-        // if (!group) {
-        //   return
-        // }
-        // if (!group.public) {
-        //   this.path = ['Your Dashboard']
-        // } else {
-        //   this.path = ['Public']
-        // }
-        //
-        // this.path.push(group.group)
-        // this.path.push(this.story.name)
-      }
-    }
-
-  },
-  mounted () {
-    // This is kind of expensive consider changing at some point
-    this.$nextTick(() => {
-      console.log(this.stories)
-    })
+    ])
   },
   asyncComputed: {
     groups: {
@@ -137,80 +114,41 @@ export default {
         document.body.removeChild(a)
       })
     },
-    getClass: function (name, index) {
-      if (index === 0) {
-        if (name === 'Public') {
-          return 'fas fa-globe'
-        } else {
-          return 'fas fa-user'
-        }
-      } else if (index === 1) {
-        return 'fas fa-th-large'
-      } else {
-        return 'fas fa-building'
+    populate: function () {
+      this.filteredGroups = []
+      this.group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
+      if (!this.group) {
+        return
       }
-    },
-    getDataForPathIndex: function (i) {
-      if (i === 0) {
-        return ['Public', 'Your Dashboard']
-      } else if (i === 1) {
-        let r = []
-        if (!this.groups) {
-          return
+      for (let story of this.stories) {
+        if (story.public === this.group.public) {
+          this.filteredGroups.push(story)
         }
-        const cGroup = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
-        if (!cGroup) {
-          return
-        }
-        for (let group of this.groups) {
-          // Cant be === because public is undefined if not true
-          if ((!cGroup.public && !group.public) || (cGroup.public && group.public)) {
-            r.push(group.group)
-          }
-        }
-        return r
-      } else if (i === 2) {
-        let r = []
-        if (!this.groups) {
-          return
-        }
-        for (let story of this.groups.find(elm => elm.group === this.path[1]).stories) { r.push(story.name) }
-        return r
-      } else {
-        return ['Error']
       }
+      this.navStories = this.group.stories
     },
-    moveRoute: function (dirI, dropI) {
-      if (dirI === 0) {
-        if (dropI === 0) {
-          this.$router.push({ path: `/buildinglist/` })
-        } else {
-          this.$router.push({ path: `/dashboard/` })
-        }
-      } if (dirI === 1) {
-        const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
-        if (!group.public) {
-          let p = 0
-          while (1) { if (this.groups[p].public) { p++ } else { break } }
-          dropI += p
-          this.$router.push({ path: `/dashboard/${this.groups[dropI].id}` })
-        } else {
-          this.$router.push({ path: `/buildinglist/${this.groups[dropI].id}` })
-        }
-      } else if (dirI === 2) {
-        const group = this.stories.find(p => { return p.stories.find(e => { return e.name === this.story.name }) })
-        if (!group.public) {
-          this.$router.push({ path: `/dashboard/${this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id}/` })
-        } else {
-          this.$router.push({ path: `/public/${this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id}/1` })
-        }
-        // this.$parent.changeStory([this.groups.find(elm => elm.group === this.path[1]).stories[dropI].id, 0])
-        this.$parent.update()
+    handleSelect: function (index) {
+      if (index[0] === '2') {
+        this.$nextTick(() => { this.$emit('update') })
       }
     }
   }
 }
 </script>
+<style lang='scss'>
+@import '@/assets/style-variables.scss';
+.el-menu--horizontal > .el-submenu.is-active .el-submenu__title {
+  border: none !important;
+}
+.el-submenu__title:hover {
+  color: $--color-white !important;
+  background-color: $--color-black !important;
+}
+.el-submenu.is-opened > .el-submenu__title{
+  color: $--color-white !important;
+  background-color: $--color-black !important;
+}
+</style>
 <style scoped lang='scss'>
 @import '@/assets/style-variables.scss';
   .stage {
@@ -234,5 +172,27 @@ export default {
   }
   .menu {
     border: none;
+  }
+
+  .fas {
+    color: $--color-primary !important;
+    padding: 0.5em;
+  }
+  .el-menu-item:hover {
+    color: $--color-white !important;
+    background-color: $--color-black !important;
+  }
+  .buttons {
+    text-align: right;
+  }
+  .buttons .fas {
+    font-size: 1.5em;
+    line-height: 60px;
+    padding: 0;
+    padding-right: 0.8em;
+    cursor: pointer;
+  }
+  .buttons .fas:hover {
+    color: $--color-black !important;
   }
 </style>

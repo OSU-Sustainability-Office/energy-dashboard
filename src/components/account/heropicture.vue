@@ -1,12 +1,12 @@
 <template>
-  <el-container class='stage'>
-    <el-main class='main'>
+  <el-row class='stage'>
+    <el-col :span='24' class='main'>
       <div  class="background" ref='main'>
         <div class='title'>{{name}}</div>
         <div class='subtitle'>{{description}}</div>
       </div>
-    </el-main>
-  </el-container>
+    </el-col>
+  </el-row>
 </template>
 <script>
 

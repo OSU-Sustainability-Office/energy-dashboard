@@ -192,7 +192,7 @@ export default {
   padding: 0.2em;
   padding-left: 0.8em;
   padding-right: 0.8em;
-  font-size: 4ch;
+  font-size: 3.2ch;
   height: auto;
   background-color: rgb(215,63,9);
   color: #FFF;

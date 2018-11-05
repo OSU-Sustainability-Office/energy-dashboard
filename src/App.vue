@@ -63,6 +63,8 @@ body {
 } */
 .pageTo-enter {
   transform: scale(0.5);
+  position: absolute;
+  overflow: visible;
 }
 .pageTo-leave-active {
   transform: scale(2);
@@ -81,6 +83,8 @@ body {
 } */
 .pageFrom-enter {
   transform: scale(2);
+  position: absolute;
+  overflow: visible;
 }
 .pageFrom-leave-active {
   transform: scale(0.5);

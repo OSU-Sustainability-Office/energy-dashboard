@@ -3,13 +3,13 @@
     <el-header>
       <el-row>
         <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="2">
-          <img src="static/images/logo.png" height=70 width=auto alt="" class='sus-nav-image' @click='$router.push("/#/")'>
+          <img src="static/images/logo.png" height=60 width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/"})'>
         </el-col>
         <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="21">
           <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='#00000000' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
-            <el-menu-item index="map">Map</el-menu-item>
-            <el-menu-item index="buildinglist">Building List</el-menu-item>
-            <el-menu-item v-if='(user !== null && user.name !== "") && $route.path !== "/"' index="dashboard">My Dashboard</el-menu-item>
+            <el-menu-item index="map" :route='{path: "/map"}' ref='mapItem'>Map</el-menu-item>
+            <el-menu-item index="buildinglist" :route='{path: "/buildinglist"}' ref='buildingItem'>Building List</el-menu-item>
+            <el-menu-item v-if='(user !== null && user.name !== "") && $route.path !== "/"' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
           </el-menu>
         </el-col>
         <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
@@ -42,16 +42,24 @@ export default {
   },
   watch: {
     '$route.path': function (path) {
-      if (path === '/') {
-        this.activeIndex = ''
-      } else {
-        this.activeIndex = path.split('/')[1]
+      this.activeIndex = path.split('/')[1]
+      const buttons = [this.$refs.mapItem, this.$refs.buildingItem, this.$refs.dashboardItem]
+      for (let item of buttons) {
+        if (this.activeIndex !== item.index) {
+          item.$el.classList.remove('is-active')
+        } else {
+          item.$el.classList.add('is-active')
+        }
       }
     }
   },
   methods: {
     logOut: function () {
       this.$store.dispatch('logout')
+    },
+    handleSelect: function (select) {
+      this.$router.push({ path: '/' + select })
+      this.activeIndex = select
     }
   }
 }
@@ -66,15 +74,21 @@ export default {
   z-index: 2000;
 }
 .sus-nav-image {
-  padding-top: $--nav-height - 80;
+  padding-top: ($--nav-height - 60) / 2;
   cursor: pointer;
 }
 .sus-nav-menu {
   height: $--nav-height !important;
 }
 .sus-nav-menu > * {
-  padding-top: 12px;
+  padding-top: 5px;
   height: $--nav-height - 2px !important;
+  color: $--color-white;
+  border: none;
+}
+.el-menu-item {
+  color: $--color-white !important;
+  border: none !important;
 }
 .sus-nav-menu > *:not(.is-active):hover {
   color: $--color-black !important;
@@ -88,8 +102,8 @@ export default {
 .sus-nav-menu > *:not(.is-active):hover:after {
   content: "\a0";
   display: block;
-  padding: 2px 0;
-  line-height: 10px;
+  padding: 0 2px;
+  line-height: 1px;
   border-bottom: 3px solid #000;
 }
 .sus-nav-sign {
