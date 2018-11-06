@@ -1,9 +1,11 @@
 <template>
-    <div ref="controlArea">
-      <div class="row pad-bottom" ref="indexChooser" v-if='!story.public'>
-        <b-button class="indexButton"  v-for="(point, index) in this.form" :variant='buttonVariant(index)' @click="changeIndex(index)" :key='index'>{{ index + 1 }}</b-button>
-        <b-button class="indexButton" @click="addGroup()">+</b-button>
-      </div>
+    <el-row ref="controlArea">
+      <el-row class="pad-bottom" ref="indexChooser" v-if='!story.public'>
+        <el-col :span='24'>
+          <el-button class="indexButton"  v-for="(point, index) in this.form" :type='buttonVariant(index)' @click="changeIndex(index)" :key='index'>{{ index + 1 }}</el-button>
+          <el-button class="indexButton" @click="addGroup()">+</el-button>
+        </el-col>
+      </el-row>
       <el-form ref='form' :model='form[currentIndex]' label-width="120px" size='large' label-position='left'>
         <el-form-item v-if='!story.public' prop='name' label='Name: ' :rules="{required: true, message: 'A name is required', trigger: 'blur'}">
           <!-- <label class='col-4'>Name:</label> -->
@@ -14,31 +16,31 @@
           <!-- <label class='col-4'>Point: </label> -->
           <el-select v-model="form[currentIndex].point" style='width: 100%;'>
             <!-- Electrical Meter Options -->
-            <el-option value="accumulated_real" v-if="currentType === 'e'" label='Accumulated Real'></el-option>
-            <el-option value="real_power" v-if="currentType === 'e'" label='Total Real Power'></el-option>
-            <el-option value="reactive_power" v-if="currentType === 'e'" label='Total Reactive Power'></el-option>
-            <el-option value="apparent_power" v-if="currentType === 'e'" label='Total Apparent Power'></el-option>
-            <el-option value="real_a" v-if="currentType === 'e'" label='Real Power, Phase A'></el-option>
-            <el-option value="real_b" v-if="currentType === 'e'" label='Real Power, Phase B'></el-option>
-            <el-option value="real_c" v-if="currentType === 'e'" label='Real Power, Phase C'></el-option>
-            <el-option value="reactive_a" v-if="currentType === 'e'" label='Reactive Power, Phase A'></el-option>
-            <el-option value="reactive_b" v-if="currentType === 'e'" label='Reactive Power, Phase B'></el-option>
-            <el-option value="reactive_c" v-if="currentType === 'e'" label='Reactive Power, Phase C'></el-option>
-            <el-option value="apparent_a" v-if="currentType === 'e'" label='Apparent Power, Phase A'></el-option>
-            <el-option value="apparent_b" v-if="currentType === 'e'" label='Apparent Power, Phase B'></el-option>
-            <el-option value="apparent_c" v-if="currentType === 'e'" label='Apparent Power, Phase C'></el-option>
+            <el-option value="accumulated_real" v-if="currentType === 'e'" label='Net Energy Usage (kWh)'></el-option>
+            <el-option value="real_power" v-if="currentType === 'e'" label='Real Power (W)'></el-option>
+            <el-option value="reactive_power" v-if="currentType === 'e'" label='Reactive Power (VAR)'></el-option>
+            <el-option value="apparent_power" v-if="currentType === 'e'" label='Apparent Power (VA)'></el-option>
+            <el-option value="real_a" v-if="currentType === 'e'" label='Real Power, Phase A (W)'></el-option>
+            <el-option value="real_b" v-if="currentType === 'e'" label='Real Power, Phase B (W)'></el-option>
+            <el-option value="real_c" v-if="currentType === 'e'" label='Real Power, Phase C (W)'></el-option>
+            <el-option value="reactive_a" v-if="currentType === 'e'" label='Reactive Power, Phase A (VAR)'></el-option>
+            <el-option value="reactive_b" v-if="currentType === 'e'" label='Reactive Power, Phase B (VAR)'></el-option>
+            <el-option value="reactive_c" v-if="currentType === 'e'" label='Reactive Power, Phase C (VAR)'></el-option>
+            <el-option value="apparent_a" v-if="currentType === 'e'" label='Apparent Power, Phase A (VA)'></el-option>
+            <el-option value="apparent_b" v-if="currentType === 'e'" label='Apparent Power, Phase B (VA)'></el-option>
+            <el-option value="apparent_c" v-if="currentType === 'e'" label='Apparent Power, Phase C (VA)'></el-option>
             <el-option value="pf_a" v-if="currentType === 'e'" label='Power Factor, Phase A'></el-option>
             <el-option value="pf_b" v-if="currentType === 'e'" label='Power Factor, Phase B'></el-option>
             <el-option value="pf_c" v-if="currentType === 'e'" label='Power Factor, Phase C'></el-option>
-            <el-option value="vphase_ab" v-if="currentType === 'e'" label='Voltage Phase, Phase A-B'></el-option>
-            <el-option value="vphase_bc" v-if="currentType === 'e'" label='Voltage Phase, Phase B-C'></el-option>
-            <el-option value="vphase_ac" v-if="currentType === 'e'" label='Voltage Phase, Phase A-C'></el-option>
-            <el-option value="vphase_an" v-if="currentType === 'e'" label='Voltage Phase, Phase A-N'></el-option>
-            <el-option value="vphase_bn" v-if="currentType === 'e'" label='Voltage Phase, Phase B-N'></el-option>
-            <el-option value="vphase_cn" v-if="currentType === 'e'" label='Voltage Phase, Phase C-N'></el-option>
-            <el-option value="cphase_a" v-if="currentType === 'e'" label='Current Phase, Phase A'></el-option>
-            <el-option value="cphase_b" v-if="currentType === 'e'" label='Current Phase, Phase B'></el-option>
-            <el-option value="cphase_c" v-if="currentType === 'e'" label='Current Phase, Phase C'></el-option>
+            <el-option value="vphase_ab" v-if="currentType === 'e'" label='Voltage Phase, Phase A-B (V)'></el-option>
+            <el-option value="vphase_bc" v-if="currentType === 'e'" label='Voltage Phase, Phase B-C (V)'></el-option>
+            <el-option value="vphase_ac" v-if="currentType === 'e'" label='Voltage Phase, Phase A-C (V)'></el-option>
+            <el-option value="vphase_an" v-if="currentType === 'e'" label='Voltage Phase, Phase A-N (V)'></el-option>
+            <el-option value="vphase_bn" v-if="currentType === 'e'" label='Voltage Phase, Phase B-N (V)'></el-option>
+            <el-option value="vphase_cn" v-if="currentType === 'e'" label='Voltage Phase, Phase C-N (V)'></el-option>
+            <el-option value="cphase_a" v-if="currentType === 'e'" label='Current Phase, Phase A (A)'></el-option>
+            <el-option value="cphase_b" v-if="currentType === 'e'" label='Current Phase, Phase B (A)'></el-option>
+            <el-option value="cphase_c" v-if="currentType === 'e'" label='Current Phase, Phase C (A)'></el-option>
 
             <!-- Gas Meter Options -->
             <el-option value="cubic_feet" v-if="currentType === 'g'" label='Accumulated Usage'></el-option>
@@ -63,44 +65,13 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <!-- <div class="row fromDateChooser form-group">
-        <label class='col-4'>From Date: </label>
-        <el-date-picker class='col' v-model='start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z'>
-        </el-date-picker>
-      </div>
+      <el-row class="deletebutton" v-if='this.form.length > 1'>
+        <el-col :span='10'>
+          <el-button @click='deleteChart()' type='danger'>Delete Dataset</el-button>
+        </el-col>
+      </el-row>
 
-       <div class="row toDateChooser form-group">
-        <label class='col-4'>To Date: </label>
-        <el-date-picker class='col' v-model='end' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z'>
-        </el-date-picker>
-      </div> -->
-
-      <!-- <div class="row graphTypeChooser form-group">
-        <label class='col-4'>Graph Type: </label>
-        <el-select v-model="graphtype" class='col'>
-          <el-option :value='1' label='Line Chart'></el-option>
-          <el-option :value='2' label='Bar Chart'></el-option>
-          <el-option :value='3' label='Doughnut Chart'></el-option>
-           <el-option :value='4' label='Pie Chart'></el-option> -->
-        <!-- </el-select>
-      </div> -->
-
-      <!-- <div class="row intervalUnitChooser form-group">
-        <label class='col-4'>Interval: </label>
-        <el-select class='col' v-model="intunit" >
-          <el-option :value="1" label='15 Minutes'></el-option>
-          <el-option :value="2" label='1 Hour'></el-option>
-          <el-option :value="3" label='1 Day'></el-option>
-          <el-option :value="4" label='1 week'></el-option>
-          <el-option :value="5" label='1 Month'></el-option>
-        </el-select> -->
-        <!-- <el-input-number :step="step" class="sharedLine" v-model="interval" controls-position='right'></el-input-number> -->
-      <!-- </div> -->
-      <div class="row form-group justify-content-center deletebutton" v-if='this.form.length > 1'>
-        <b-btn class='col-10' @click='deleteChart()' variant='danger'>Delete Dataset</b-btn>
-      </div>
-
-    </div>
+    </el-row>
 </template>
 
 <script>
@@ -255,7 +226,7 @@ export default {
       if (i === this.currentIndex) {
         return 'primary'
       } else {
-        return 'secondary'
+        return 'info'
       }
     },
     deleteChart: function () {
@@ -275,8 +246,6 @@ export default {
 }
 .indexButton {
   position: static;
-  color: #fff;
-  background-color: #000;
   margin: 0.2em;
   width: 50px;
   height: 40px;

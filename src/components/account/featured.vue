@@ -1,13 +1,15 @@
 <template>
-<div class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature" :key='update'>
-  <!-- <transition-group name="cardEntry" tag="div" class="flexFeature" v-bind:class="{ minimized : isMinimized }" ref="feature"> -->
-    <card v-if='$parent.fullyMounted' v-for="(card, index) in story.blocks" v-bind:key="index" v-bind:class="[index === 0 ? 'fullWidth' : 'fullWidth']" v-bind:index="index" :featured="true" ref="displayedCards"/>
+<el-row class='stage'>
+<el-col :span='1'>
+  &nbsp;
+</el-col>
+<el-col class='main' ref="feature" :span='22'>
+    <card v-for="(card, index) in story.blocks" v-bind:key="index" v-bind:index="index" ref="displayedCards" @editModal='editModal'/>
 
-    <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()" v-bind:class="[isFull() ? 'fullAdd' : 'smallAdd']">
-      +
+    <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()">
+      <i class="fas fa-plus"></i>
+      <div class='hiddenAddChart'>Click To Add Block</div>
     </div>
-
-  <!-- </transition-group> -->
 
   <el-dialog size='lg' :visible.sync='newCard' :title='(!form.name)? "New Block" : "Edit Block"' width="80%">
       <el-form label-width='120px' label-position='left' :model='form' ref='form'>
@@ -15,12 +17,12 @@
           <!-- <label class='col-4'>Name:</label> -->
           <el-input type="text" v-model='form.name' style='width: 100%;'></el-input>
         </el-form-item>
-        <el-form-item label='From Date: ' :rules="{required: true, message: 'A from date is required', trigger: 'blur'}" point='start'>
+        <el-form-item label='From Date: ' :rules="[{validator: dateValidator, type: 'date', required: true, message: 'A from date is required', trigger: 'change'}]" prop='start'>
           <!-- <label class='col-4 text-left'>From Date: </label> -->
           <el-date-picker v-model='form.start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z' style='width: 100%;'>
           </el-date-picker>
         </el-form-item>
-        <el-form-item label='To Date: ' :rules="{required: true, message: 'A date to is required', trigger: 'blur'}" point='end'>
+        <el-form-item label='To Date: ' :rules="{validator: dateValidator, type: 'date', required: true, message: 'A to date is required', trigger: 'change'}" prop='end'>
           <!-- <label class='col-4 text-left'>To Date: </label> -->
           <el-date-picker v-model='form.end' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z' style='width: 100%;'>
           </el-date-picker>
@@ -44,21 +46,18 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div class='row form-group' v-if='!story.public'>
-        <label class='col'>Datasets: </label>
-        <featureController :index='story.blocks.length' ref="featureController" class='container-fluid' />
+      <div v-if='!story.public'>
+        <label>Datasets: </label>
+        <featureController :index='story.blocks.length' ref="featureController" />
       </div>
       <featureController v-if='story.public' :index='story.blocks.length' ref="featureController" />
       <span slot='footer'>
-        <div class='row'>
-          <div class='col'>
-            <b-btn @click='cardSave()' variant='primary'> Ok </b-btn>
-            <b-btn @click='newCard = false'> Cancel </b-btn>
-          </div>
-        </div>
+            <el-button @click='cardSave()' type='primary'> Ok </el-button>
+            <el-button @click='newCard = false' type='info'> Cancel </el-button>
       </span>
   </el-dialog>
-</div>
+</el-col>
+</el-row>
 </template>
 
 <script>
@@ -85,6 +84,7 @@ export default {
         graphType: null,
         name: null
       },
+
       newCard: false
     }
   },
@@ -97,10 +97,18 @@ export default {
   },
   methods: {
     updateCards: function () {
-      if (this.$refs.displayedCards && this.$refs.displayedCards.length > 1) {
+      if (this.$refs.displayedCards && this.$refs.displayedCards.length >= 1) {
         for (let card of this.$refs.displayedCards) {
           card.$refs.chartController.parse()
         }
+      }
+    },
+    dateValidator: function (rule, value, callback) {
+      console.log(this.form)
+      if (!value) {
+        callback(new Error(rule.message))
+      } else {
+        callback()
       }
     },
     cardSave: function () {
@@ -234,37 +242,41 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.flexFeature {
-  position: absolute;
-  top: 250px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 1em;
-  padding-right: 1em;
-  padding-top: 1em;
-  padding-bottom: 1em;
-  width: 100%;
-  left: 0;
-}
-.fullWidth {
-  width: 100% !important;
-  flex-basis: 100% !important;
+<style scoped lang='scss'>
+@import '@/assets/style-variables.scss';
+.stage {
+  position: static;
+  top: 0;
+  height: auto
 }
 .addFeatured {
-  font-size: 4em;
-  color: rgb(215,63,9);
-  height: 10em;
-  flex: 0 60px;
-  line-height: 9.8em;
-  margin-top: 0.2em;
-  margin-right: 0.2em;
-  margin-left: 0.2em;
-  border: solid 2px #000;
-  border-radius: 7px;
+  background-color: $--color-black;
+  height: calc(400px + 0.8em);
+  color: $--color-primary;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 10em;
   cursor: pointer;
+}
+.addFeatured .fas {
+  margin-top: 1em;
+}
+.addFeatured:hover {
+  border: solid 1px $--color-primary;
+  outline: solid 3px $--color-primary;
+  outline-offset: -4px;
+}
+.addFeatured:hover .fas {
+  color: $--color-white;
+}
+.hiddenAddChart {
+  display: none;
+  font-size: 0.2em;
+}
+.addFeatured:hover .hiddenAddChart {
+  display: block;
 }
 .addFeatured:hover {
   color: #C72F09;
@@ -272,34 +284,5 @@ export default {
 .addFeatured:active {
   color: #d76740;
 }
-.fullAdd {
-  border-left: none;
-  border-radius: 0px 7px 7px 0px;
-}
-.smallAdd {
 
-  border-right: none;
-  border-radius: 7px 0px 0px 7px;
-}
-.cardEntry-enter-active, .cardEntry-leave-active {
-  transition-property: opacity, transform, width;
-  transition-duration: 1s;
-  backface-visibility: hidden;
-}
-.cardEntry-leave-active {
-  position: relative;
-}
-
-/* .page-enter-active {
-  transition-delay: 1s;
-} */
-.cardEntry-enter {
-  transform: translateX(1000px);
-  opacity: 1;
-}
-.cardEntry-leave-to {
-  transform: translateX(-1000px);
-  opacity: 0;
-}
-.minimized {}
 </style>

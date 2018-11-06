@@ -1,47 +1,29 @@
 <template>
-  <div>
-    <div class='contianer-fluid topBar' ref='topBar'>
-      <div class='row'>
-
-        <div class='col-10'>
-          <div class='row'>
-            <div class='col-1 label font-weight-bold'>Key</div>
-            <div class='col-11'>
-              <div class='row'>
-                <div class='col fixed-height'><div class='edu swatch'></div>Academics</div>
-                <div class='col fixed-height'><div class='ath swatch'></div>Athletics & Rec</div>
-                <div class='col fixed-height'><div class='din swatch'></div>Dining</div>
-                <div class='col fixed-height'><div class='com swatch'></div>Events & Admin</div>
-                <div class='col fixed-height'><div class='res swatch'></div>Residence</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class='col text-right'>
-          <el-dropdown :hide-on-click='false'>
-            <b-btn class='mapFilterBtn' v-b-tooltip.hover=''><i class='fas fa-cog'></i></b-btn>
-            <el-dropdown-menu slot='dropdown'>
-              <el-dropdown-item disabled><span class='bold'>Building Type</span></el-dropdown-item>
-              <el-dropdown-item divided> <input type="checkbox" value='Residence' v-model="selected" checked> Residence </el-dropdown-item>
-              <el-dropdown-item> <input type="checkbox" value='Athletics' v-model="selected" checked> Athletics & Rec </el-dropdown-item>
-              <el-dropdown-item> <input type="checkbox" value='Dining' v-model="selected" checked> Dining </el-dropdown-item>
-              <el-dropdown-item> <input type="checkbox" value='Academics' v-model="selected" checked> Academics </el-dropdown-item>
-              <el-dropdown-item> <input type="checkbox" value='Admin' v-model="selected" checked> Events & Admin </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </div>
+  <el-row class='stage'>
+    <el-col :span='24'>
+      <el-menu class='sideMenu' mode='vertical' backgroundColor='#1A1A1A' @select='handleSelect'>
+        <el-menu-item-group>
+          <span slot='title' class='sideMenuGroupTitle'>Key</span>
+          <el-tooltip content="Click to toggle visibility" placement="right">
+            <el-menu-item index='Academics' :class="[(isDisplayed('Academics') ? 'active' : 'notactive')]"><span class='edu swatch'></span>Academics</el-menu-item>
+          </el-tooltip>
+          <el-menu-item index='Athletics' :class="[(isDisplayed('Athletics') ? 'active' : 'notactive')]"><span class='ath swatch'></span>Athletics & Rec</el-menu-item>
+          <el-menu-item index='Dining' :class="[(isDisplayed('Dining') ? 'active' : 'notactive')]"><span class='din swatch'></span>Dining</el-menu-item>
+          <el-menu-item index='Admin' :class="[(isDisplayed('Admin') ? 'active' : 'notactive')]"><span class='com swatch'></span>Events & Admin</el-menu-item>
+          <el-menu-item index='Residence' :class="[(isDisplayed('Residence') ? 'active' : 'notactive')]"><span class='res swatch'></span>Residence</el-menu-item>
+        </el-menu-item-group>
+      </el-menu>
+      <div class='mapContainer' ref='mapContainer'>
+        <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
+          <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+          <l-geo-json :key='rKey' :geojson='this.polygonData' :options='buildingOptions' ref="geoLayer"></l-geo-json>
+        </l-map>
       </div>
-    </div>
-    <div class='mapContainer' ref='mapContainer'>
-      <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
-        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-        <l-geo-json :key='rKey' :geojson='this.polygonData' :options='buildingOptions' ref="geoLayer"></l-geo-json>
-      </l-map>
-    </div>
-    <transition name='side'>
-      <sideView v-bind:key='openStory' ref='sideview' v-if='showSide'></sideView>
-    </transition>
-  </div>
+      <transition name='side'>
+        <sideView :key='openStory' :storyId='openStory' ref='sideview' v-if='showSide' @hide='showSide = false'></sideView>
+      </transition>
+    </el-col>
+  </el-row>
 </template>
 <script>
 import { LMap, LTileLayer, LMarker, LPolygon, LGeoJson } from 'vue2-leaflet'
@@ -115,8 +97,24 @@ export default {
   },
   methods: {
     polyClick: function (value) {
-      this.showSide = true
       this.openStory = value
+      this.$nextTick(() => {
+        this.showSide = true
+      })
+    },
+    isDisplayed: function (v) {
+      if (this.selected.indexOf(v) >= 0) {
+        return true
+      } else {
+        return false
+      }
+    },
+    handleSelect: function (string) {
+      if (this.selected.indexOf(string) >= 0) {
+        this.selected.splice(this.selected.indexOf(string), 1)
+      } else {
+        this.selected.push(string)
+      }
     }
   },
   created () {
@@ -129,10 +127,10 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject
-      this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
-      window.addEventListener('resize', () => {
-        this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
-      })
+      // this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
+      // window.addEventListener('resize', () => {
+      //   this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
+      // })
     })
   },
   beforeDestroy () {
@@ -159,73 +157,42 @@ export default {
 </script>
 
 <style >
-
 @import "../../../node_modules/leaflet/dist/leaflet.css";
-.dropdownArea {
-  width: 350px;
-}
-.dropdownArea > a:active {
-  background-color: rgba(0,0,0,0);
-}
-.dropdownArea > a:active > * {
-  color: rgb(26,26,26) !important;
-}
-.dropdownArea > a > * {
-  color: rgb(26,26,26);
-}
-.mapFilterBtn {
-  background-color: #FFF !important;
-  color: #000 !important;
-  border: solid 1px #000 !important;
-}
-.mapFilterBtn:hover {
-  background-color: rgba(0,0,0,0.15) !important;
-  color: #000 !important;
-  border: solid 1px #000 !important;
-}
-.mapFilterBtn:active {
-  background-color: rgba(0,0,0,0.1) !important;
-  color: #000 !important;
-  border: solid 1px #000 !important;
-}
 </style>
-<style scoped>
-.bold {
-  font-weight: bold;
-  color: #000;
+<style scoped lang='scss'>
+@import '@/assets/style-variables.scss';
+$sideMenu-width: 250px;
+.main {
+
 }
-.dropdown-header {
-  font-weight: bold;
-  color: #000 !important;
-  font-size: 16px;
+.stage {
+  padding: 0;
+  position: absolute;
+  width: 100%;
+  height: calc(100vh - #{$--nav-height});
 }
-.dropdown-item.disabled, .dropdown-item:disabled {
-  color: #000 !important;
+.sideMenu {
+  background-color: $--color-black;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20000;
+  width: $sideMenu-width;
 }
-.fixed-height {
-  white-space: nowrap;
+.sideMenuGroupTitle {
+  font-size: 18px;
+  color: #ffffffAA;
 }
 .mapContainer {
   background-color: blue;
-  height: 100vh;
-  width: 100%;
-}
-.main {
   position: absolute;
-  top: 4em;
-  width:100%;
-  height: calc(100% - 4em);
+  top: 0;
+  left: 250px;
+  height: 100%;
+  width: calc(100% - #{$sideMenu-width});
 }
-.topBar {
-  box-shadow: 0px 1px 4px rgba(0,0,0,0.5);
-  width:100%;
-  position: relative;
-  top: 0px;
-  background-color: #FFF;
-  padding: 1em;
-  padding-left: 3em;
-  padding-right: 3em;
-}
+
 .side-enter-active, .side-leave-active {
   transition: all 1s;
 }
@@ -253,27 +220,37 @@ export default {
   margin-right: 0.5em;
   border: solid 2px #000;
 }
-.res.swatch {
+.notactive {
+  color: #FFFFFF66 !important;
+}
+.active {
+  color: #FFFFFF !important;
+}
+.notactive .swatch {
+  background-color: #FFFFFF22;
+  border-color: #FFFFFF44;
+}
+.active .res.swatch {
   background-color: #D3832BB3;
   border-color: #D3832B;
 }
-.ath.swatch {
+.active .ath.swatch {
   background-color: #FFB500B3;
   border-color: #FFB500;
 }
-.din.swatch {
+.active .din.swatch {
   background-color: #4A773CB3;
   border-color: #4A773C;
 }
-.rch.swatch {
+.active .rch.swatch {
   background-color: #AA9D2EB3;
   border-color: #AA9D2E;
 }
-.edu.swatch {
+.active .edu.swatch {
   background-color: #0D5257B3;
   border-color: #0D5257;
 }
-.com.swatch {
+.active .com.swatch {
   background-color: #7A6855B3;
   border-color: #7A6855;
 }

@@ -19,8 +19,8 @@ export default {
 
 <style>
 .highlight {
-  /* color: #D73F09;
-  background-color: rgba(255,255,255,0.8); */
+  color: #FFF;
+  font-size: 0.4em;
 }
 #center {
   color: #fff;

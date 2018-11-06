@@ -1,30 +1,46 @@
 <template>
-  <div class="view container-fluid">
-    <div class="title row">
-      <span class="col">{{ story.name }}</span>
-      <span class="col-1 text-right" ><i class="fas fa-times" @click="hide()"></i></span>
-    </div>
-    <div class="media row" ref='media'>
-      <!-- <img v-if='media' :src='api+"block-media/thumbs/"+media' /> -->
-    </div>
-    <div class="graphcontrol container-fluid">
-      <div class="buttons row">
-        <b-btn variant='secondary' @click='currentRange = 0' class="col" v-bind:class="{ active: currentRange == 0 }">Week</b-btn>
-        <b-btn variant='secondary' @click='currentRange = 1' class="col" v-bind:class="{ active: currentRange == 1 }">Month</b-btn>
-        <b-btn variant='secondary' @click='currentRange = 2' class="col" v-bind:class="{ active: currentRange == 2 }">Year</b-btn>
-      </div>
-      <div class="d-flex flex-row graph" ref='scrollBox'>
-        <div class="col inline" v-for='(block,index) in story.blocks' :key='index'>
-          <chartController :randomColors=1 :graphType='1' :index=index ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding': '0.5em' }" :height='200'/>
-        </div>
-      </div>
-      <i class="graphslide left fas fa-caret-left" @click='prev()' ref="prevArrow"></i>
-      <i class="graphslide right fas fa-caret-right" @click='next()' ref="nextArrow"></i>
-      <div class="buttons row">
-        <b-btn @click='$router.push({path: `/public/${$parent.openStory}/${currentRange}`})' class="col">View in Dashboard</b-btn>
-      </div>
-    </div>
-  </div>
+  <el-container class='stage'>
+    <el-main class='main'>
+      <el-row class="title">
+        <el-col :span='23'>{{ story.name }}</el-col>
+        <el-col :span='1' class='close-box'><i class="fas fa-times" @click="hide()"></i></el-col>
+      </el-row>
+      <el-row>
+        <el-col :span='24'>
+          <div class="media" ref='media'></div>
+        </el-col>
+      </el-row>
+      <el-row class="graphcontrol">
+        <el-col :span='24'>
+          <el-row class="buttons">
+            <el-col :span='8' class='rangeButtonParent'>
+              <el-button class='rangeButton' @click='currentRange = 0' v-bind:class="{ active: currentRange == 0 }">Week</el-button>
+            </el-col>
+            <el-col :span='8' class='rangeButtonParent'>
+              <el-button class='rangeButton' @click='currentRange = 1' v-bind:class="{ active: currentRange == 1 }">Month</el-button>
+            </el-col>
+            <el-col :span='8' class='rangeButtonParent'>
+              <el-button class='rangeButton' @click='currentRange = 2' v-bind:class="{ active: currentRange == 2 }">Year</el-button>
+            </el-col>
+          </el-row>
+          <el-row class='graphslide'>
+            <i class="left fas fa-angle-left" @click='prev()' ref="prevArrow"></i>
+            <i class="right fas fa-angle-right" @click='next()' ref="nextArrow"></i>
+          </el-row>
+          <el-row type='flex' class="graph" ref='scrollBox'>
+            <el-col class='inline' v-for='(block,index) in story.blocks' :key='index' :span='24'>
+              <chartController :randomColors=1 :graphType='1' :index=index ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
+            </el-col>
+          </el-row>
+          <el-row class="buttons">
+            <el-col :span='24'>
+              <el-button class='bigButton' @click='$router.push({path: `/public/${storyId}/${currentRange}`})'>View Full Graph</el-button>
+            </el-col>
+          </el-row>
+        </el-col>
+      </el-row>
+    </el-main>
+  </el-container>
 </template>
 <script>
 import chartController from '@/components/charts/chartController'
@@ -32,7 +48,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'sideView',
-  props: [],
+  props: ['storyId'],
   components: {
     chartController
   },
@@ -56,7 +72,7 @@ export default {
   },
   methods: {
     hide: function () {
-      this.$parent.showSide = false
+      this.$emit('hide')
     },
     dateOffset: function () {
       var d = new Date()
@@ -72,23 +88,23 @@ export default {
     next: function () {
       if (this.index + 1 >= this.story.blocks.length) { return }
       this.index++
-      this.$refs.scrollBox.childNodes.forEach((child, index) => {
-        child.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.clientWidth + 20)).toString() + 'px)'
+      this.$refs.scrollBox.$children.forEach((child, index) => {
+        child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
       })
-      this.$refs.prevArrow.style.opacity = 1
+      this.$refs.prevArrow.style.display = 'block'
       if (this.index + 1 === this.story.blocks.length) {
-        this.$refs.nextArrow.style.opacity = 0
+        this.$refs.nextArrow.style.display = 'none'
       }
     },
     prev: function () {
       if (this.index - 1 < 0) { return }
       this.index--
-      this.$refs.scrollBox.childNodes.forEach(child => {
-        child.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.clientWidth + 20)).toString() + 'px)'
+      this.$refs.scrollBox.$children.forEach(child => {
+        child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
       })
-      this.$refs.nextArrow.style.opacity = 1
+      this.$refs.nextArrow.style.display = 'block'
       if (this.index <= 0) {
-        this.$refs.prevArrow.style.opacity = 0
+        this.$refs.prevArrow.style.display = 'none'
       }
     }
   },
@@ -131,13 +147,13 @@ export default {
     }
   },
   mounted () {
-    this.$refs.prevArrow.style.opacity = 0
-    this.$store.dispatch('story', this.$parent.openStory).then(() => {
+    this.$refs.prevArrow.style.display = 'none'
+    this.$store.dispatch('story', this.storyId).then(() => {
       let promises = []
       if (this.story.blocks.length <= 1) {
-        this.$refs.nextArrow.style.opacity = 0
+        this.$refs.nextArrow.style.display = 'none'
       } else {
-        this.$refs.nextArrow.style.opacity = 1
+        this.$refs.nextArrow.style.display = 'block'
       }
       this.media = this.story.media
       for (let block in this.story.blocks) {
@@ -153,157 +169,125 @@ export default {
   }
 }
 </script>
-<style scoped>
-.view {
-  padding-bottom: 2em;
-  background-color: rgb(26,26,26);
+<style scoped lang='scss'>
+@import '@/assets/style-variables.scss';
+
+.stage {
   z-index: 401;
-  box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
   display: block;
+  position: absolute;
+  left: 100%;
+  top: 15%;
+  width: 450px;
+  margin-left: -470px;
+  height: 85%;
+}
+.main {
+  padding: 0;
+  background-color: rgb(26,26,26);
+  box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
+}
+.title {
+  padding: 0.3em;
+  padding-left: 0.8em;
+  padding-right: 0.8em;
+  font-size: 3.2ch;
+  height: auto;
+  background-color: rgb(215,63,9);
+  color: #FFF;
+  font-family: 'StratumNo2';
+  border-bottom: solid 1px #fff;
+}
+.close-box {
+  cursor: pointer;
 }
 .media {
+  height: 200px;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  border-bottom: solid 1px #fff;
 }
+.graphcontrol {
+  padding: 1.5em;
+}
+.buttons {
+  padding-bottom: 1.5em;
+}
+
+.rangeButtonParent {
+  padding: 0.2em;
+}
+.rangeButton {
+  background-color: $--color-black;
+  color: darken($--color-white, 30%);
+  border-color: darken($--color-white, 30%);
+  width: 100%;
+}
+.rangeButton:not(.active):hover {
+  background-color: #000;//darken($--color-primary, 10%);
+  color: $--color-white;
+  border-color: $--color-white;
+}
+.rangeButton.active {
+  background-color: $--color-primary;
+  color: $--color-white;
+  border-color: $--color-white;
+}
+.rangeButton.active:hover {
+  background-color: $--color-primary;
+  color: $--color-white;
+  border-color: $--color-white;
+}
+
+.graph {
+  width: 100%;
+  overflow: hidden;
+}
+.inline {
+  margin-right: 20px;
+  transition: transform 1s;
+  display: inline-block;
+  float: left;
+}
+
 .graphslide {
   position: absolute;
-  color: white;
-  background-color: rgb(215,63,9);
-  font-size: 2.5em;
-  width: 1em;
-  height: 1em;
-  text-align: center;
-  border-radius: 1em;
-  opacity: 1;
-  z-index: 0;
+  color: rgba($--color-white, 0.4);
+  top: 155px;
+  font-size: 3em;
+  width: 100%;
+  left: 0;
 }
-@media (min-width: 800px){
-  .view {
-    position: absolute;
-    left: 100%;
-    top: 15%;
-    width: 450px;
-    margin-left: -470px;
-  }
-  .media {
-    height: 300px;
-  }
-  .graphslide {
-    margin-top: calc(50% - 2em);
-    top: 0px;
-  }
-  .graphslide.right {
-    right: -0.2em;
-    padding-left:0.1em;
-  }
-  .graphslide.left {
-    left: -0.2em;
-    padding-right:0.1em;
-  }
+.graphslide > * {
+  cursor: pointer;
 }
-@media (max-width: 800px){
-  .view {
-    position: absolute;
-    left: 0px;
-    bottom: 0px;
-    width: 100%;
-  }
-  .media {
-    height: 150px;
-  }
-  .graphslide {
-    margin-top: 3.3em;
-    top: 0px;
-  }
-  .graphslide.right {
-    right: -0.2em;
-    padding-left:0.1em;
-  }
-  .graphslide.left {
-    left: -0.2em;
-    padding-right:0.1em;
-  }
+.graphslide > *:hover {
+  color: $--color-white;
 }
-  .chart {
-    height: 200px;
-    width: 100%;
-    background-color: #000;
-    margin-top: 0.5em;
-    border-radius: 10px;
-  }
-  .row {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-  .graphcontrol {
-    margin-top: 1em;
-    position: relative;
-  }
-  .buttons > .col {
+.graphslide .right {
+  position: absolute;
+  right: 8px;
+}
+.graphslide .left {
+  position: absolute;
+  left: 8px;
+}
 
-    width: 30%;
-    margin-left: 1%;
-
-  }
-  .buttons {
-
-    margin: 0.5em;
-    padding-right: 0.5em;
-    padding-left: 0.5em;
-
-  }
-  .utilities .row {
-    color: #FFF;
-  }
-  .utilities .row.head {
-    margin-top: 1em;
-    color: #FFF;
-  }
-  .row.head {
-    font-size: 1.2em;
-    border-bottom: 1px solid rgba(0,0,0,0.6);
-  }
-  .active {
-    background-color: rgb(215,63,9) !important;
-    border: solid 1px #FFF !important;
-  }
-  .title.row > * {
-    padding: 0;
-    margin: 0;
-  }
-  .title {
-    font-size: 3ch;
-    height: auto;
-    background-color: rgb(215,63,9);
-    color: #FFF;
-    font-family: 'StratumNo2';
-  }
-  .title .col-1 {
-    padding-top: 0.2em;
-    padding-right: 0.5em;
-  }
-  .title .col {
-    padding-top: 0.15em;
-    padding-left: 0.5em;
-  }
-  .graph {
-    overflow-x: hidden;
-    overflow-y: hidden;
-  }
-  .d-flex {
-    display: flex;
-  }
-  .inline {
-    flex: 0 0 100%;
-    padding: 0;
-    margin-right: 20px;
-    transition: transform 1s;
-  }
-  .fa-times {
-    cursor: pointer;
-  }
-  .fa-times:hover {
-    text-shadow: 0px 0px 5px #aaa;
-  }
+.bigButton {
+  background-color: $--color-black;
+  color: darken($--color-white, 30%);
+  border-color: darken($--color-white, 30%);
+  width: 100%;
+}
+.bigButton:hover {
+  background-color: #000;
+  color: $--color-white;
+  border-color: $--color-white;
+}
+.bigButton:active {
+  background-color: $--color-black;
+  color: $--color-white;
+  border-color: $--color-white;
+}
 </style>

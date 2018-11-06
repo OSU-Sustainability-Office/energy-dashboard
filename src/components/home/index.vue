@@ -1,29 +1,31 @@
 <template>
-  <div id="background" class="container-fluid">
-    <!-- <div id="background"><div id="shadow"></div></div> -->
-    <div class="row">
-      <homeContent />
-    </div>
-    <div class="row">
-      <homeSide />
-    </div>
-    <div class="row buttonBox justify-content-center">
-      <div class='col-md-8'>
-        <div class='row'>
-          <div class="col-sm">
-            <div class="row justify-content-center">
-              <b-btn variant='primary' class="col" @click="explore()">Explore</b-btn>
-            </div>
-          </div>
-          <div class="col-sm" v-if='user.name === ""'>
-            <div class="row justify-content-center">
-              <b-btn variant='primary' class="col" @click="login()">Login</b-btn>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <el-container class='stage'>
+    <el-main class="background">
+      <el-row>
+        <homeContent />
+      </el-row>
+      <el-row class='side'>
+        <homeSide />
+      </el-row>
+      <el-row class="buttonBox">
+          <el-col :span='6'>
+            &nbsp;
+          </el-col>
+          <el-col :span='(user.name === "")?5 : 10'>
+            <el-button type='primary' class='home-button' @click="explore()">Explore</el-button>
+          </el-col>
+          <el-col :span='2' v-if='user.name === ""'>
+            &nbsp;
+          </el-col>
+          <el-col :span='5' v-if='user.name === ""'>
+              <el-button type='primary' class='home-button' @click="login()">Login</el-button>
+          </el-col>
+          <el-col :span='6'>
+            &nbsp;
+          </el-col>
+      </el-row>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -61,36 +63,41 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.container-fluid {
-  padding: 0px;
-}
-.buttonBox {
-  padding-top: 10px;
-}
-.row {
-  margin: 10px;
-}
-.btn {
-  top: 0px;
+<style scoped lang='scss'>
+@import '@/assets/style-variables.scss';
+
+.stage {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: calc(100vh - #{$--nav-height});
   width: 100%;
 }
-#background {
+.background {
   background: url('/static/images/solar.jpg');
   background-size: cover;
   background-position: center center;
-  top: 4em;
-  bottom: 0px;
-  width: 100%;
   position: absolute;
+  top: 0;
+  left: 0;
+  height:100%;
+  width: 100%;
   z-index: 0;
 }
-#shadow {
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
+.side {
+  padding-top: 1em;
+}
+.buttonBox {
+  padding-top: 2em;
+}
+.home-button {
   width: 100%;
-  background: linear-gradient( rgba(0,0,0,1), rgba(0,0,0,0));
-  z-index: 0;
+  border: solid 1px $--color-white;
+}
+.home-button:hover {
+  border: solid 1px $--color-white;
+}
+.home-button:active {
+  border: solid 1px $--color-white;
 }
 </style>

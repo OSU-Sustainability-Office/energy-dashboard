@@ -1,32 +1,31 @@
 <template>
-  <b-navbar toggleable='sm' class='navbar' type='dark'>
-    <b-navbar-brand href='/#/'>
-      <img src="static/images/logo.png" height=50 width=auto alt="">
-    </b-navbar-brand>
-    <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-    <b-collapse is-nav id="nav_collapse">
-      <b-navbar-nav>
-        <b-nav-item v-bind:class='[isActive("map") ? "active" : ""]' href="#/map">Map</b-nav-item>
-        <b-nav-item v-bind:class='[isActive("publicdir") ? "active" : ""]' @click='move("/directory/public")'>Building List</b-nav-item>
-        <b-nav-item v-if='user !== null && user.name !== ""' v-bind:class='[isActive("privatedir") ? "active" : ""]' @click='move("/directory/private")'>My Dashboard</b-nav-item>
-      </b-navbar-nav>
-      <b-navbar-nav class="ml-auto">
-        <b-nav-item v-if='(user !== null && user.name !== "") && $route.path !== "/"' @click='logOut()'>Sign Out</b-nav-item>
-        <b-nav-item v-if='(user === null || user.name === "") && $route.path !== "/"' :href='loginLink'>Sign In</b-nav-item>
-      </b-navbar-nav>
-    </b-collapse>
-  </b-navbar>
+    <el-row class='sus-nav'>
+      <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="2">
+        <img src="static/images/logo.png" height=50 width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/"})'>
+      </el-col>
+      <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="21">
+        <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='#00000000' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
+          <el-menu-item index="map" :route='{path: "/map"}' ref='mapItem'>Map</el-menu-item>
+          <el-menu-item index="buildinglist" :route='{path: "/buildinglist"}' ref='buildingItem'>Building List</el-menu-item>
+          <el-menu-item v-if='(user !== null && user.name !== "") && $route.path !== "/"' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
+        </el-menu>
+      </el-col>
+      <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
+        <a class='sus-nav-sign' v-if='(user !== null && user.name !== "") && $route.path !== "/"' @click='logOut()'>Sign Out</a>
+        <a class='sus-nav-sign' v-if='(user === null || user.name === "") && $route.path !== "/"' :href='loginLink'>Sign In</a>
+      </el-col>
+    </el-row>
 </template>
 <script>
-import directory from '@/components/directory/directory.vue'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'navigbar',
-  components: {directory},
+  components: {},
   data () {
     return {
-      loginLink: process.env.ROOT_API + '/auth/login?returnURI=' + process.env.HOST_ADDRESS + '/#/map'
+      loginLink: process.env.ROOT_API + '/auth/login?returnURI=' + process.env.HOST_ADDRESS + '/#/map',
+      activeIndex: ''
     }
   },
   computed: {
@@ -36,85 +35,91 @@ export default {
   },
   mounted () {
     this.$store.dispatch('user')
+    this.activeIndex = this.$route.path.split('/')[1]
+  },
+  watch: {
+    '$route.path': function (path) {
+      this.activeIndex = path.split('/')[1]
+      const buttons = [this.$refs.mapItem, this.$refs.buildingItem, this.$refs.dashboardItem]
+      for (let item of buttons) {
+        if (!item) {
+          continue
+        }
+        if (this.activeIndex !== item.index) {
+          item.$el.classList.remove('is-active')
+        } else {
+          item.$el.classList.add('is-active')
+        }
+      }
+    }
   },
   methods: {
     logOut: function () {
       this.$store.dispatch('logout')
     },
-    move: function (v) {
-      this.$router.push({path: v})
-      this.$eventHub.$emit('updateDirectoryListings', [v.search('private')])
-    },
-    isActive: function (s) {
-      let splitPath = this.$route.path.substr(1).split('/')
-      if (s === 'privatedir' && splitPath[0] === 'directory' && splitPath[1] === 'private') { return true }
-      if (s === 'publicdir' && splitPath[0] === 'directory' && splitPath[1] === 'public') { return true }
-      if (s === 'dashboard' && splitPath[0] === 'public') { return true }
-      if (s === splitPath[0]) { return true }
-      return false
-    },
-    showDirectory: function () {
-      this.$refs.dir.show()
+    handleSelect: function (select) {
+      this.$router.push({ path: '/' + select })
+      this.activeIndex = select
     }
   }
 }
 </script>
-<style>
-.navbar-toggler-icon {
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") !important;
-}
-.navbar-toggler {
-  border-color: #FFF !important;
-}
-</style>
-<style scoped>
-.navbar {
-  background-color: #D73F09;
-  border-bottom: solid 1px rgb(226,226,226);
-  z-index: 20;
-}
-.navbar-dark .navbar-nav .nav-link {
-  color: #FFF;
-}
-@media (max-width: 576px){
-  .navbar-dark .navbar-nav .active .nav-link {
-    color: #000 !important;
-  }
-}
+<style scoped lang='scss'>
+@import '@/assets/style-variables.scss';
 
-@media (min-width: 576px) {
-  #nav_collapse {
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  .navbar {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-  .navbar-brand {
-    padding-left: 1em;
-    padding-right: 1em;
-    margin: 0;
-  }
-  .navbar-nav {
-    height: 100%;
-  }
-  .navbar-nav li {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    height: 80px;
-    line-height: 60px;
-  }
-  .navbar-nav a {
-    color: #FFF !important;
-    cursor: pointer;
-  }
-  .nav-item:not(.active):hover  > a {
-    color: #000 !important;
-  }
-  .active {
-    background-color: rgba(0,0,0,0.3);
-  }
+.sus-nav {
+  background-color: $--color-primary;
+  border-bottom: solid 1px $--color-white;
+  height: $--nav-height !important;
+  z-index: 2000;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+.sus-nav-image {
+  padding-top: ($--nav-height - 50) / 2;
+  cursor: pointer;
+}
+.sus-nav-menu {
+  height: $--nav-height !important;
+  border: none !important;
+}
+.sus-nav-menu > * {
+  padding-top: 5px;
+  height: $--nav-height - 2px !important;
+  color: $--color-white;
+  border: none;
+}
+.el-menu-item {
+  color: $--color-white !important;
+  border: none !important;
+}
+.sus-nav-menu > *:not(.is-active):hover {
+  color: $--color-black !important;
+  background-color: rgba(0,0,0,0) !important;
+}
+.sus-nav-menu > *.is-active {
+  border-bottom: none !important;
+  background-color: rgba(0,0,0,0.3) !important;
+  color: $--color-white !important;
+}
+.sus-nav-menu > *:not(.is-active):hover:after {
+  content: "\a0";
+  display: block;
+  padding: 0 2px;
+  line-height: 1px;
+  border-bottom: 3px solid #000;
+}
+.sus-nav-sign {
+  color: #FFFFFF !important;
+  height: $--nav-height !important;
+  line-height: $--nav-height !important;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  font-size: 1.1em;
+}
+.sus-nav-sign:hover {
+  color: #000000 !important;
+  text-decoration: none;
 }
 </style>

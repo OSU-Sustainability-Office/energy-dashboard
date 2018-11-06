@@ -2,10 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import index from '@/components/home/index'
 import account from '@/components/account/account'
-// import story from '@/components/story/story'
-// import admin from '@/components/admin/admin'
 import map from '@/components/map/map'
-import directory from '@/components/directory/directory'
+import publicDirectory from '@/components/directory/directoryPublic.vue'
+import privateDirectory from '@/components/directory/directoryPrivate.vue'
 
 Vue.use(Router)
 
@@ -17,18 +16,13 @@ export default new Router({
       component: index
     },
     {
-      path: '/dashboard/',
-      name: 'dashboard',
-      component: account
-    },
-    {
-      path: '/dashboard/:id',
-      name: 'account',
-      component: account
-    },
-    {
       path: '/public/:id/:range',
       name: 'public',
+      component: account
+    },
+    {
+      path: '/story/:id',
+      name: 'private',
       component: account
     },
     {
@@ -37,25 +31,20 @@ export default new Router({
       component: map
     },
     {
-      path: '/directory',
-      name: 'directory',
-      component: directory
+      path: '/buildingList/',
+      component: publicDirectory
     },
     {
-      path: '/directory/public/',
-      component: directory
+      path: '/dashboard/',
+      component: privateDirectory
     },
     {
-      path: '/directory/private/',
-      component: directory
+      path: '/buildingList/:group',
+      component: publicDirectory
     },
     {
-      path: '/directory/public/:group',
-      component: directory
-    },
-    {
-      path: '/directory/private/:group',
-      component: directory
+      path: '/dashboard/:group',
+      component: privateDirectory
     }
   ]
 })

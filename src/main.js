@@ -7,14 +7,16 @@ import store from './store'
 import elm from 'element-ui'
 import Vuei18n from 'vue-i18n'
 import locale from 'element-ui/lib/locale/lang/en'
-import BootstrapVue from 'bootstrap-vue'
+// import BootstrapVue from 'bootstrap-vue'
 import AsyncComputed from 'vue-async-computed'
+import 'element-ui/lib/theme-chalk/reset.css'
+// import 'bootstrap/dist/css/bootstrap.min.css'
+// import 'bootstrap-vue/dist/bootstrap-vue.css'
+// import '@/assets/element-#D73F09/index.css'
+// import 'element-ui/lib/theme-chalk/index.css'
+import '@/assets/style-variables.scss'
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import '@/assets/element-#D73F09/index.css'
-
-Vue.use(BootstrapVue)
+// Vue.use(BootstrapVue)
 Vue.use(Vuei18n)
 Vue.use(elm, { locale: locale })
 Vue.use(AsyncComputed)
@@ -28,8 +30,7 @@ var v = new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
-  template: '<App/>'
+  render: h => h(App)
 })
 Vue.config.devtools = true
 

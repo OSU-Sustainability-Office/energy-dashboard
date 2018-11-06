@@ -1,9 +1,11 @@
 <template>
-  <div class="background">
-    <heropicture :media='story.media' :description='story.description' :name='story.name'></heropicture>
-    <navdir ref='navdir' class="naviv"></navdir>
-    <featured ref='featureBox' />
-  </div>
+  <el-row class="stage">
+    <el-col class='main'>
+      <heropicture :media='story.media' :description='story.description' :name='story.name'></heropicture>
+      <navdir ref='navdir' @update='update' @save='save'></navdir>
+      <featured ref='featureBox' />
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -19,13 +21,6 @@ export default {
     featured,
     heropicture,
     navdir
-  },
-  props: [],
-  data () {
-    return {
-      changeFlag: false,
-      fullyMounted: false
-    }
   },
   asyncComputed: {
     stories: {
@@ -104,11 +99,8 @@ export default {
     }
   },
   created () {
-    this.changeFlag = this.story.modified
     this.$eventHub.$on('reloadCharts', () => {
-      if (this.fullyMounted) {
-        this.$refs.featureBox.updateCards()
-      }
+      this.$refs.featureBox.updateCards()
     })
   },
   mounted () {
@@ -145,26 +137,17 @@ export default {
         }
         this.$store.commit('resetRemoved')
       }
-      this.$nextTick(() => {
-        this.changeFlag = false
-        this.$store.commit('modifyFlag', false)
-      })
     },
     cancel: function () {
       let id = this.story.id
       this.$store.commit('loadStory', { id: null })
       this.$store.dispatch('story', id).then(() => {
         this.$refs.featureBox.updateCards()
-        this.$nextTick(() => {
-          this.changeFlag = false
-          this.$store.commit('modifyFlag', false)
-        })
       })
     },
     update: function () {
       if (this.$route.path.search('public') > 0) {
         this.path = ['Public']
-        this.fullyMounted = false
         this.$store.dispatch('story', this.$route.params.id).then((r) => {
           let promises = []
           for (let b in r.blocks) {
@@ -180,28 +163,24 @@ export default {
 
           Promise.all(promises).then((t) => {
             this.$refs.featureBox.updateCards()
-            this.fullyMounted = true
+            this.$refs.navdir.populate()
           })
         })
       } else {
         if (this.$route.params.id) {
           this.$store.dispatch('story', this.$route.params.id).then((r) => {
             this.$refs.featureBox.updateCards()
-            this.$nextTick(() => {
-              this.fullyMounted = true
-            })
+            this.$refs.navdir.populate()
           })
         } else {
           this.$store.dispatch('user').then(user => {
             this.$store.dispatch('stories').then(groups => {
               if (!this.story.id) {
                 this.$store.dispatch('story', groups[0].stories[0].id).then(() => {
-                  this.$nextTick(() => {
-                    this.fullyMounted = true
-                  })
+                  this.$refs.navdir.populate()
                 })
               } else {
-                this.fullyMounted = true
+                this.$refs.navdir.populate()
               }
             })
           })
@@ -216,53 +195,19 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.modText {
+<style scoped lang='scss'>
+@import '@/assets/style-variables.scss';
+
+.stage {
   position: absolute;
-  top: 240px;
+  top: 0;
+  left: 0;
+  height: calc(100vh - #{$--nav-height});
   width: 100%;
-  background-color: rgba(0,0,0,0.4);
-  color: #FFF;
-  z-index: 2;
-  font-size: 12px;
+  margin: 0;
+  padding: 0;
 }
-.modText .col {
-  margin: 0.6em;
-}
-.modText .btn {
-  font-size: 10px;
-  padding: 0.5em;
-  margin: 0.25em;
-}
-.naviv {
-  position: absolute;
-  top: 200px;
-  left: 0px;
-}
-.background {
-  background: #fff;
-  top: 4em;
-  bottom: 0px;
-  position: absolute;
-  width: 100%;
-  padding: 1em;
-}
-.nocards {
-  color: black;
-  position: absolute;
-  top: 400px;
-  left: 0px;
-  width: 100%;
-  padding: 2em;
-  text-align: center;
-  font-size: 2em;
-}
-.main-heading {
-  font-size: 3em;
-  margin-left: .3em;
-}
-.scrollyBox {
-  /* background-color: rgb(183,169,154); */
+.main {
+  padding: 0;
 }
 </style>

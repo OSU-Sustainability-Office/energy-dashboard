@@ -1,5 +1,5 @@
 <template>
-  <div v-loading='loading' element-loading-background="rgba(0, 0, 0, 0.8)">
+  <div element-loading-background="rgba(0, 0, 0, 0.8)">
     <linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
@@ -43,7 +43,7 @@ export default {
         datasets: [],
         labels: []
       },
-      colors: ['#4A773C', '#00859B', '#FFB500', '#006A8E', '#C4D6A4', '#B8DDE1', '#FDD26E', '#C6DAE7', 'AA9D2E', '#0D5257', '#D3832B', '#003B5C', '#B7A99A', '#A7ACA2', '#7A6855', '#8E9089'],
+      colors: ['#4A773C', '#00859B', '#FFB500', '#006A8E', '#C4D6A4', '#B8DDE1', '#FDD26E', '#C6DAE7', '#AA9D2E', '#0D5257', '#D3832B', '#003B5C', '#B7A99A', '#A7ACA2', '#7A6855', '#8E9089'],
       map: {
         minute: 0,
         hour: 1,
@@ -248,6 +248,40 @@ export default {
       }
       this.chartData = tempData
     },
+    unit: function () {
+      const map = {
+        accumulated_real: 'kWh',
+        real_power: 'W',
+        reactive_power: 'VAR',
+        apparent_power: 'VA',
+        real_a: 'kW',
+        real_b: 'kW',
+        real_c: 'kW',
+        reactive_a: 'VAR',
+        reactive_b: 'VAR',
+        reactive_c: 'VAR',
+        pf_a: '',
+        pf_b: '',
+        pf_c: '',
+        vphase_ab: 'V',
+        vphase_bc: 'V',
+        vphase_ac: 'V',
+        vphase_an: 'V',
+        vphase_bn: 'V',
+        vphase_cn: 'V',
+        cphase_a: 'A',
+        cphase_b: 'A',
+        cphase_c: 'A',
+        cubic_feet: 'CF',
+        maximum: 'CFm',
+        minimum: 'CFm',
+        instant: 'CFm',
+        rate: 'CFm',
+        total: 'lbs.',
+        input: ''
+      }
+      return map[this.story.blocks[this.index].charts[0].point]
+    },
     // Creates either an X or a Y axis label for a chart, depending on the parameters.
     buildLabel: function (axis) {
       if (axis === 'y') {
@@ -262,13 +296,13 @@ export default {
         }
         switch (point) {
           case 'accumulated_real' :
-            return 'Accumulated Real Energy Net (kWh)'
+            return 'Net Energy Usage (kWh)'
           case 'real_power':
-            return 'Total Real Power (W)'
+            return 'Real Power (W)'
           case 'reactive_power':
-            return 'Total Reactive Power (var)'
+            return 'Reactive Power (VAR)'
           case 'apparent_power':
-            return 'Total Apparent Power (VA)'
+            return 'Apparent Power (VA)'
           case 'real_a':
             return 'Real Power, Phase A (kW)'
           case 'real_b':

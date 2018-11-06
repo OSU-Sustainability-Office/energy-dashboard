@@ -31,6 +31,9 @@ export default {
               }
               let year = d.getYear().toString().slice(1)
               return (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem
+            },
+            label: (item, data) => {
+              return item.yLabel + ' ' + this.$parent.unit()
             }
           }
         },
