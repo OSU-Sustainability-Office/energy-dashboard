@@ -17,12 +17,12 @@
           <!-- <label class='col-4'>Name:</label> -->
           <el-input type="text" v-model='form.name' style='width: 100%;'></el-input>
         </el-form-item>
-        <el-form-item label='From Date: ' :rules="{required: true, message: 'A from date is required', trigger: 'blur'}" point='start'>
+        <el-form-item label='From Date: ' :rules="[{validator: dateValidator, type: 'date', required: true, message: 'A from date is required', trigger: 'change'}]" prop='start'>
           <!-- <label class='col-4 text-left'>From Date: </label> -->
           <el-date-picker v-model='form.start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z' style='width: 100%;'>
           </el-date-picker>
         </el-form-item>
-        <el-form-item label='To Date: ' :rules="{required: true, message: 'A date to is required', trigger: 'blur'}" point='end'>
+        <el-form-item label='To Date: ' :rules="{validator: dateValidator, type: 'date', required: true, message: 'A to date is required', trigger: 'change'}" prop='end'>
           <!-- <label class='col-4 text-left'>To Date: </label> -->
           <el-date-picker v-model='form.end' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z' style='width: 100%;'>
           </el-date-picker>
@@ -84,6 +84,7 @@ export default {
         graphType: null,
         name: null
       },
+
       newCard: false
     }
   },
@@ -100,6 +101,14 @@ export default {
         for (let card of this.$refs.displayedCards) {
           card.$refs.chartController.parse()
         }
+      }
+    },
+    dateValidator: function (rule, value, callback) {
+      console.log(this.form)
+      if (!value) {
+        callback(new Error(rule.message))
+      } else {
+        callback()
       }
     },
     cardSave: function () {

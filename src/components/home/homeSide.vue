@@ -38,7 +38,7 @@ h1 {
   padding-left: 0px;
   margin: 0px;
   color: #000;
-  font-size: 22px;
+  font-size: 32px;
   font-weight: 800;
 }
 </style>

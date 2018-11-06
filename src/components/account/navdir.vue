@@ -66,11 +66,42 @@ export default {
   },
   methods: {
     download: function () {
+      const map = {
+        accumulated_real: 'kWh',
+        real_power: 'W',
+        reactive_power: 'VAR',
+        apparent_power: 'VA',
+        real_a: 'kW',
+        real_b: 'kW',
+        real_c: 'kW',
+        reactive_a: 'VAR',
+        reactive_b: 'VAR',
+        reactive_c: 'VAR',
+        pf_a: '',
+        pf_b: '',
+        pf_c: '',
+        vphase_ab: 'V',
+        vphase_bc: 'V',
+        vphase_ac: 'V',
+        vphase_an: 'V',
+        vphase_bn: 'V',
+        vphase_cn: 'V',
+        cphase_a: 'A',
+        cphase_b: 'A',
+        cphase_c: 'A',
+        cubic_feet: 'CF',
+        maximum: 'CFm',
+        minimum: 'CFm',
+        instant: 'CFm',
+        rate: 'CFm',
+        total: 'lbs.',
+        input: ''
+      }
       let names = []
       for (let block of this.story.blocks) {
         let organizedData = [['Time']]
         for (let chart of block.charts) {
-          organizedData[0].push(chart.name)
+          organizedData[0].push(chart.name + ' (' + map[chart.point] + ')')
           // Consider a better way for this
           let mappedData = organizedData.slice(1, organizedData.length).map(e => { return e[0] })
           for (let point of chart.data) {

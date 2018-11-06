@@ -116,6 +116,7 @@ export default {
   text-decoration: none;
   cursor: pointer;
   transition: color 0.2s ease;
+  font-size: 1.1em;
 }
 .sus-nav-sign:hover {
   color: #000000 !important;

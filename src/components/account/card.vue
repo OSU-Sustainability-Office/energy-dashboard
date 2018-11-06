@@ -6,7 +6,7 @@
         <el-col :span='4' class='right'><i class="fas fa-sliders-h" @click='$emit("editModal",index)'></i></el-col>
       </el-row>
       <el-row>
-        <chartController :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC='style' :height='400'/>
+        <chartController :randomColors='1' :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC='style' :height='400'/>
       </el-row>
   </el-col>
   </el-row>

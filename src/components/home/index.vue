@@ -11,10 +11,10 @@
           <el-col :span='6'>
             &nbsp;
           </el-col>
-          <el-col :span='5'>
+          <el-col :span='(user.name === "")?5 : 10'>
             <el-button type='primary' class='home-button' @click="explore()">Explore</el-button>
           </el-col>
-          <el-col :span='2'>
+          <el-col :span='2' v-if='user.name === ""'>
             &nbsp;
           </el-col>
           <el-col :span='5' v-if='user.name === ""'>
