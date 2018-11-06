@@ -2,7 +2,7 @@
   <el-row class="stage">
     <el-col class='main'>
       <heropicture :media='story.media' :description='story.description' :name='story.name'></heropicture>
-      <navdir ref='navdir' @update='update'></navdir>
+      <navdir ref='navdir' @update='update' @save='save'></navdir>
       <featured ref='featureBox' />
     </el-col>
   </el-row>

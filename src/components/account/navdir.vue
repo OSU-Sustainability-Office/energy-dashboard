@@ -20,7 +20,7 @@
           </el-col>
           <el-col :span='4' class='buttons'>
             <el-tooltip content='Click to save story' placement='top'>
-              <i class="fas fa-save" v-if='path[0] === "Your Dashboard"' @click="$parent.save()"></i>
+              <i class="fas fa-save" v-if='!$route.path.includes("public")' @click="$emit('save')"></i>
             </el-tooltip>
             <el-tooltip content='Click to download data' placement='top'>
               <i class="fas fa-download" @click="download()"></i>
@@ -33,7 +33,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { JSZip } from 'jszip'
+var JSZip = require('jszip')
 var zip = new JSZip()
 export default {
   name: 'navdir',

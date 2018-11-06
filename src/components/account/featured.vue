@@ -7,7 +7,8 @@
     <card v-for="(card, index) in story.blocks" v-bind:key="index" v-bind:index="index" ref="displayedCards" @editModal='editModal'/>
 
     <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()">
-      +
+      <i class="fas fa-plus"></i>
+      <div class='hiddenAddChart'>Click To Add Block</div>
     </div>
 
   <el-dialog size='lg' :visible.sync='newCard' :title='(!form.name)? "New Block" : "Edit Block"' width="80%">
@@ -51,8 +52,8 @@
       </div>
       <featureController v-if='story.public' :index='story.blocks.length' ref="featureController" />
       <span slot='footer'>
-            <el-button @click='cardSave()' variant='primary'> Ok </el-button>
-            <el-button @click='newCard = false'> Cancel </el-button>
+            <el-button @click='cardSave()' type='primary'> Ok </el-button>
+            <el-button @click='newCard = false' type='info'> Cancel </el-button>
       </span>
   </el-dialog>
 </el-col>
@@ -232,34 +233,47 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang='scss'>
+@import '@/assets/style-variables.scss';
 .stage {
   position: static;
   top: 0;
   height: auto
 }
 .addFeatured {
-  font-size: 4em;
-  color: rgb(215,63,9);
-  height: 10em;
-  flex: 0 60px;
-  line-height: 9.8em;
-  margin-top: 0.2em;
-  margin-right: 0.2em;
-  margin-left: 0.2em;
-  border: solid 2px #000;
-  border-radius: 7px;
+  background-color: $--color-black;
+  height: calc(400px + 0.8em);
+  color: $--color-primary;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 10em;
   cursor: pointer;
+}
+.addFeatured .fas {
+  margin-top: 1em;
+}
+.addFeatured:hover {
+  border: solid 1px $--color-primary;
+  outline: solid 3px $--color-primary;
+  outline-offset: -4px;
+}
+.addFeatured:hover .fas {
+  color: $--color-white;
+}
+.hiddenAddChart {
+  display: none;
+  font-size: 0.2em;
+}
+.addFeatured:hover .hiddenAddChart {
+  display: block;
 }
 .addFeatured:hover {
   color: #C72F09;
 }
 .addFeatured:active {
   color: #d76740;
-}
-.fullAdd {
-  border-left: none;
-  border-radius: 0px 7px 7px 0px;
 }
 
 </style>

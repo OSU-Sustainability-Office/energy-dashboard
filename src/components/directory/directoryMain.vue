@@ -24,7 +24,7 @@
               <span slot='label' class='tab-label'>{{item.name}}</span>
               <el-row type='flex' justify='left' class='story-flex'>
                 <el-col v-for='story in item.stories' :key='story.id' :span='4' class='storyContainer'>
-                  <storycard :name='story.name' :notools='(publicDir !== null)? 1:0' :media='story.media' :description='story.description' :story_id='story.id' class='storyCard' @click='$router.push({ path: `/public/${story.id}/1`})' ref='card' />
+                  <storycard :name='story.name' :notools='(publicDir !== null)? 1:0' :media='story.media' :description='story.description' :story_id='story.id' class='storyCard' @click='$router.push({ path: (story.public)?`/public/${story.id}/1`:`/story/${story.id}`})' ref='card' />
                 </el-col>
                 <el-col v-if='!publicDir' :span='4' class='storyContainer'>
                   <el-tooltip content="Create New Story" placement="top">
@@ -41,7 +41,7 @@
 
       <!-- Modal Views -->
       <editGroup ref='groupEditor' @save='(event) => { groupSave(event.name, event.id) }' @delete='(event) => { groupDelete(event.id) }'/>
-      <editStory ref='storyEditor' @save='(event) => { storySave(event.name, event.description, event.media, event.id) }' @delete='(event) => { storydelete() }' />
+      <editStory ref='storyEditor' @save='(event) => { storySave(event.name, event.description, event.media, event.id) }' @delete='(event) => { deleteStory(event.id) }' />
   </el-container>
 </template>
 

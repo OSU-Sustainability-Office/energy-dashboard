@@ -1,6 +1,6 @@
 <template>
-  <el-container class='stage'>
-    <el-main>
+  <el-row class='stage'>
+    <el-col :span='24'>
       <el-menu class='sideMenu' mode='vertical' backgroundColor='#1A1A1A' @select='handleSelect'>
         <el-menu-item-group>
           <span slot='title' class='sideMenuGroupTitle'>Key</span>
@@ -22,8 +22,8 @@
       <transition name='side'>
         <sideView :key='openStory' :storyId='openStory' ref='sideview' v-if='showSide' @hide='showSide = false'></sideView>
       </transition>
-    </el-main>
-  </el-container>
+    </el-col>
+  </el-row>
 </template>
 <script>
 import { LMap, LTileLayer, LMarker, LPolygon, LGeoJson } from 'vue2-leaflet'

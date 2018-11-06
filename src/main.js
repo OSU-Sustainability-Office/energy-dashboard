@@ -9,7 +9,7 @@ import Vuei18n from 'vue-i18n'
 import locale from 'element-ui/lib/locale/lang/en'
 // import BootstrapVue from 'bootstrap-vue'
 import AsyncComputed from 'vue-async-computed'
-
+import 'element-ui/lib/theme-chalk/reset.css'
 // import 'bootstrap/dist/css/bootstrap.min.css'
 // import 'bootstrap-vue/dist/bootstrap-vue.css'
 // import '@/assets/element-#D73F09/index.css'

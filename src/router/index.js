@@ -2,8 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import index from '@/components/home/index'
 import account from '@/components/account/account'
-// import story from '@/components/story/story'
-// import admin from '@/components/admin/admin'
 import map from '@/components/map/map'
 import publicDirectory from '@/components/directory/directoryPublic.vue'
 import privateDirectory from '@/components/directory/directoryPrivate.vue'
@@ -20,6 +18,11 @@ export default new Router({
     {
       path: '/public/:id/:range',
       name: 'public',
+      component: account
+    },
+    {
+      path: '/story/:id',
+      name: 'private',
       component: account
     },
     {

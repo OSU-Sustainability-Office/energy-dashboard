@@ -28,36 +28,17 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #home-side {
   background-color: rgba(255,255,255,.85);
-  padding: 1em;
+  padding: 2em;
 }
 h1 {
   padding: .25em;
   padding-left: 0px;
   margin: 0px;
-}
-@media screen and (max-width: 900px) {
-  .topcenter {
-    margin-top: 15%;
-  }
-  .body {
-     font-size: 16px;
-  }
-  h1 {
-    font-size: 24px;
-  }
-}
-@media screen and (max-width: 575px) {
-  .topcenter {
-    margin-top: 15%;
-  }
-  .body {
-     font-size: 12px;
-  }
-  h1 {
-    font-size: 20px;
-  }
+  color: #000;
+  font-size: 22px;
+  font-weight: 800;
 }
 </style>

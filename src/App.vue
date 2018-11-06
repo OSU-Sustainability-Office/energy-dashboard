@@ -3,10 +3,10 @@
     <el-header class='header'>
       <navigbar />
     </el-header>
-    <el-main class='main'>
-      <transition v-bind:name="transitionName">
+    <el-main class='main' ref='main'>
+      <!-- <transition v-bind:name="transitionName" v-on:after-leave="enableScroll" v-on:before-enter="disableScroll"> -->
         <router-view />
-      </transition>
+      <!-- </transition> -->
     </el-main>
   </el-container>
 </template>
@@ -25,6 +25,14 @@ export default {
     }
   },
   beforeDestroy () {
+  },
+  methods: {
+    disableScroll: function () {
+      this.$refs.main.$el.style.overflow = 'hidden'
+    },
+    enableScroll: function () {
+      this.$refs.main.$el.style.overflow = 'auto'
+    }
   },
   watch: {
     $route: function (to, from) {
@@ -66,7 +74,7 @@ body {
   transition-delay: 1s;
 } */
 .pageTo-enter {
-  transform: scale(0.5);
+  transform: scale(0.75);
   position: absolute;
   overflow: visible;
 }
@@ -91,7 +99,7 @@ body {
   overflow: visible;
 }
 .pageFrom-leave-active {
-  transform: scale(0.5);
+  transform: scale(0.75);
 }
 .pageFrom-enter, .pageFrom-leave-active {
   opacity: 0;

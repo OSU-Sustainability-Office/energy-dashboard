@@ -35,6 +35,7 @@ export default {
   },
   mounted () {
     this.$store.dispatch('user')
+    this.activeIndex = this.$route.path.split('/')[1]
   },
   watch: {
     '$route.path': function (path) {

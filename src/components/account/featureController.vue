@@ -2,7 +2,7 @@
     <el-row ref="controlArea">
       <el-row class="pad-bottom" ref="indexChooser" v-if='!story.public'>
         <el-col :span='24'>
-          <el-button class="indexButton"  v-for="(point, index) in this.form" :variant='buttonVariant(index)' @click="changeIndex(index)" :key='index'>{{ index + 1 }}</el-button>
+          <el-button class="indexButton"  v-for="(point, index) in this.form" :type='buttonVariant(index)' @click="changeIndex(index)" :key='index'>{{ index + 1 }}</el-button>
           <el-button class="indexButton" @click="addGroup()">+</el-button>
         </el-col>
       </el-row>
@@ -67,7 +67,7 @@
       </el-form>
       <el-row class="deletebutton" v-if='this.form.length > 1'>
         <el-col :span='10'>
-          <el-button @click='deleteChart()' variant='danger'>Delete Dataset</el-button>
+          <el-button @click='deleteChart()' type='danger'>Delete Dataset</el-button>
         </el-col>
       </el-row>
 
@@ -226,7 +226,7 @@ export default {
       if (i === this.currentIndex) {
         return 'primary'
       } else {
-        return 'secondary'
+        return 'info'
       }
     },
     deleteChart: function () {
@@ -246,8 +246,6 @@ export default {
 }
 .indexButton {
   position: static;
-  color: #fff;
-  background-color: #000;
   margin: 0.2em;
   width: 50px;
   height: 40px;

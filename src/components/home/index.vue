@@ -12,13 +12,13 @@
             &nbsp;
           </el-col>
           <el-col :span='5'>
-            <el-button class='home-button' @click="explore()">Explore</el-button>
+            <el-button type='primary' class='home-button' @click="explore()">Explore</el-button>
           </el-col>
           <el-col :span='2'>
             &nbsp;
           </el-col>
           <el-col :span='5' v-if='user.name === ""'>
-              <el-button class='home-button' @click="login()">Login</el-button>
+              <el-button type='primary' class='home-button' @click="login()">Login</el-button>
           </el-col>
           <el-col :span='6'>
             &nbsp;
@@ -91,19 +91,13 @@ export default {
   padding-top: 2em;
 }
 .home-button {
-  background-color: $--color-primary;
   width: 100%;
-  color: $--color-white;
   border: solid 1px $--color-white;
 }
 .home-button:hover {
-  background-color: lighten($--color-primary, 5%);
-  color: $--color-white;
-  border: solid 1px darken($--color-white, 20%);
+  border: solid 1px $--color-white;
 }
 .home-button:active {
-  background-color: darken($--color-primary, 5%);
-  color: darken($--color-white, 5%);
-  border: solid 1px darken($--color-white, 20%);
+  border: solid 1px $--color-white;
 }
 </style>
