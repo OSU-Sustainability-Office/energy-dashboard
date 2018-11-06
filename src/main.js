@@ -7,16 +7,16 @@ import store from './store'
 import elm from 'element-ui'
 import Vuei18n from 'vue-i18n'
 import locale from 'element-ui/lib/locale/lang/en'
-import BootstrapVue from 'bootstrap-vue'
+// import BootstrapVue from 'bootstrap-vue'
 import AsyncComputed from 'vue-async-computed'
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+// import 'bootstrap/dist/css/bootstrap.min.css'
+// import 'bootstrap-vue/dist/bootstrap-vue.css'
 // import '@/assets/element-#D73F09/index.css'
 // import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/style-variables.scss'
 
-Vue.use(BootstrapVue)
+// Vue.use(BootstrapVue)
 Vue.use(Vuei18n)
 Vue.use(elm, { locale: locale })
 Vue.use(AsyncComputed)

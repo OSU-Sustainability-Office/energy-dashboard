@@ -8,7 +8,7 @@
     <span slot='footer'>
       <el-button @click='deleteGroup()' type='danger'>Delete</el-button>
       <el-button @click='saveGroup()' type='primary'>Save</el-button>
-      <el-button @click='toggle = false'>Cancel</el-button>
+      <el-button type='info' @click='toggle = false'>Cancel</el-button>
     </span>
   </el-dialog>
 </template>

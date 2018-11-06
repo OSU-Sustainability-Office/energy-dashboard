@@ -117,18 +117,6 @@ export default {
       this.$eventHub.$emit('reloadCharts')
       this.$store.commit('modifyFlag')
     }
-  },
-  watch: {
-    editcard: function (v) {
-      if (v) {
-        this.tempName = this.block(this.index).name
-        this.interval = this.block(this.index).date_interval
-        this.interval_unit = this.block(this.index).interval_unit
-        this.date_start = this.block(this.index).date_start
-        this.date_end = this.block(this.index).date_end
-        this.graphtype = this.block(this.index).graph_type
-      }
-    }
   }
 }
 </script>
@@ -144,10 +132,18 @@ export default {
   color: $--color-primary;
   margin-top: 1em;
   margin-bottom: 1em;
+  border-radius: 5px;
 }
 .title {
   font-family: 'StratumNO2';
   font-size: 2em;
+}
+.title .fas {
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+.title .fas:hover {
+  color: $--color-white;
 }
 .right {
   text-align: right;

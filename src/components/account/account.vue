@@ -22,13 +22,6 @@ export default {
     heropicture,
     navdir
   },
-  props: [],
-  data () {
-    return {
-      changeFlag: false,
-      fullyMounted: false
-    }
-  },
   asyncComputed: {
     stories: {
       get: function () {
@@ -106,11 +99,8 @@ export default {
     }
   },
   created () {
-    this.changeFlag = this.story.modified
     this.$eventHub.$on('reloadCharts', () => {
-      if (this.fullyMounted) {
-        this.$refs.featureBox.updateCards()
-      }
+      this.$refs.featureBox.updateCards()
     })
   },
   mounted () {
@@ -147,26 +137,17 @@ export default {
         }
         this.$store.commit('resetRemoved')
       }
-      this.$nextTick(() => {
-        this.changeFlag = false
-        this.$store.commit('modifyFlag', false)
-      })
     },
     cancel: function () {
       let id = this.story.id
       this.$store.commit('loadStory', { id: null })
       this.$store.dispatch('story', id).then(() => {
         this.$refs.featureBox.updateCards()
-        this.$nextTick(() => {
-          this.changeFlag = false
-          this.$store.commit('modifyFlag', false)
-        })
       })
     },
     update: function () {
       if (this.$route.path.search('public') > 0) {
         this.path = ['Public']
-        this.fullyMounted = false
         this.$store.dispatch('story', this.$route.params.id).then((r) => {
           let promises = []
           for (let b in r.blocks) {
@@ -182,7 +163,6 @@ export default {
 
           Promise.all(promises).then((t) => {
             this.$refs.featureBox.updateCards()
-            this.fullyMounted = true
             this.$refs.navdir.populate()
           })
         })
@@ -190,21 +170,17 @@ export default {
         if (this.$route.params.id) {
           this.$store.dispatch('story', this.$route.params.id).then((r) => {
             this.$refs.featureBox.updateCards()
-            this.$nextTick(() => {
-              this.fullyMounted = true
-            })
+            this.$refs.navdir.populate()
           })
         } else {
           this.$store.dispatch('user').then(user => {
             this.$store.dispatch('stories').then(groups => {
               if (!this.story.id) {
                 this.$store.dispatch('story', groups[0].stories[0].id).then(() => {
-                  this.$nextTick(() => {
-                    this.fullyMounted = true
-                  })
+                  this.$refs.navdir.populate()
                 })
               } else {
-                this.fullyMounted = true
+                this.$refs.navdir.populate()
               }
             })
           })
@@ -224,7 +200,7 @@ export default {
 
 .stage {
   position: absolute;
-  top: $--nav-height;
+  top: 0;
   left: 0;
   height: calc(100vh - #{$--nav-height});
   width: 100%;

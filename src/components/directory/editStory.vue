@@ -12,7 +12,7 @@
     <span slot='footer'>
       <el-button @click='deleteStory()' type='danger' v-if='id !== null'>Delete</el-button>
       <el-button @click='saveStory()' type='primary'>Save</el-button>
-      <el-button @click='toggle = false'>Cancel</el-button>
+      <el-button type='info' @click='toggle = false'>Cancel</el-button>
     </span>
   </el-dialog>
 </template>

@@ -1,8 +1,12 @@
 <template>
   <div class="storyCard" ref='card' @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
     <div class="toolbox" ref="toolbox" v-if='parseInt(notools) === 0'>
-      <i class="fas fa-pencil-alt" @click.prevent='openEdit()' v-b-tooltip.hover title='Edit Story Card'></i>
-      <i class="fas fa-times" @click="deleteStory()" v-b-tooltip.hover title='Delete Story'></i>
+      <el-tooltip content="Edit Story" placement="top">
+        <i class="fas fa-pencil-alt" @click.prevent='openEdit()'></i>
+      </el-tooltip>
+      <el-tooltip content="Delete Story" placement="top">
+        <i class="fas fa-times" @click="deleteStory()"></i>
+      </el-tooltip>
     </div>
     <span class="storyName">{{this.name}}</span>
     <span class="storyDescription">{{this.description}}</span>
@@ -108,12 +112,10 @@ export default {
   border: 2.5px solid rgb(0,0,0);
   padding: 1em;
   height: 150px;
-  /* margin-left: 0.5%;
-  margin-right: 0.5%; */
   margin-top: 1em;
   border-radius: 5px;
   overflow: hidden;
-  width: 250px;
+  /* width: 250px; */
 
 }
 .storyCard:hover .plus {
@@ -137,7 +139,7 @@ export default {
 .plus {
   color: rgb(215,63,9);
   font-size: 6em;
-  line-height: 1em;
+  line-height: 150px;
   text-align: center;
 }
 

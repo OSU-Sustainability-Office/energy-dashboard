@@ -33,7 +33,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-var JSZip = require('jszip')
+import { JSZip } from 'jszip'
 var zip = new JSZip()
 export default {
   name: 'navdir',
@@ -186,6 +186,7 @@ export default {
     text-align: right;
   }
   .buttons .fas {
+    transition: color 0.2s ease;
     font-size: 1.5em;
     line-height: 60px;
     padding: 0;

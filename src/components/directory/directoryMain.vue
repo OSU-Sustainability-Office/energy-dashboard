@@ -23,12 +23,12 @@
             <el-tab-pane v-for='item in groups' :key='item.id' :name='item.name' >
               <span slot='label' class='tab-label'>{{item.name}}</span>
               <el-row type='flex' justify='left' class='story-flex'>
-                <el-col v-for='story in item.stories' :key='story.id' :span='4'>
+                <el-col v-for='story in item.stories' :key='story.id' :span='4' class='storyContainer'>
                   <storycard :name='story.name' :notools='(publicDir !== null)? 1:0' :media='story.media' :description='story.description' :story_id='story.id' class='storyCard' @click='$router.push({ path: `/public/${story.id}/1`})' ref='card' />
                 </el-col>
-                <el-col v-if='!publicDir' :span='4'>
+                <el-col v-if='!publicDir' :span='4' class='storyContainer'>
                   <el-tooltip content="Create New Story" placement="top">
-                    <storycard :plus='true' :notools='1' @click="openStoryEdit('', '', '', null)"/>
+                    <storycard :plus='true' :notools='1' class='storyCard' @click="openStoryEdit('', '', '', null)"/>
                   </el-tooltip>
                 </el-col>
                 <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
@@ -249,12 +249,17 @@ export default {
 }
 
 /*--- Cards   ---*/
+.storyContainer {
+  padding: 0.5em;
+}
 .storyCard {
   margin: auto;
   cursor: pointer;
 }
 .storyCard:hover {
-  border: solid 3px $--color-primary;
+  border-color: $--color-primary;
+  outline: solid 3px $--color-primary;
+  outline-offset: -5px;
 }
 
 </style>

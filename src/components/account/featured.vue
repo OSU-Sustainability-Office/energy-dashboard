@@ -4,7 +4,7 @@
   &nbsp;
 </el-col>
 <el-col class='main' ref="feature" :span='22'>
-    <card v-for="(card, index) in story.blocks" v-bind:key="index" v-bind:index="index" ref="displayedCards"/>
+    <card v-for="(card, index) in story.blocks" v-bind:key="index" v-bind:index="index" ref="displayedCards" @editModal='editModal'/>
 
     <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()">
       +
@@ -45,7 +45,7 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div class='form-group' v-if='!story.public'>
+      <div v-if='!story.public'>
         <label>Datasets: </label>
         <featureController :index='story.blocks.length' ref="featureController" />
       </div>
@@ -95,7 +95,7 @@ export default {
   },
   methods: {
     updateCards: function () {
-      if (this.$refs.displayedCards && this.$refs.displayedCards.length > 1) {
+      if (this.$refs.displayedCards && this.$refs.displayedCards.length >= 1) {
         for (let card of this.$refs.displayedCards) {
           card.$refs.chartController.parse()
         }

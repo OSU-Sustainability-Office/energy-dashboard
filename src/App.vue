@@ -1,10 +1,14 @@
 <template>
-  <div class="app">
-    <navigbar />
+  <el-container class="app">
+    <el-header class='header'>
+      <navigbar />
+    </el-header>
+    <el-main class='main'>
       <transition v-bind:name="transitionName">
         <router-view />
       </transition>
-  </div>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -96,61 +100,36 @@ body {
 /* .pageTransition-leave-actiev {
 
 } */
-.dropdown-item:active {
-  background-color: #D73F09;
-}
-.dropdown-item:active > * {
-  color: #FFF;
-}
-.btn-primary {
-  background-color: #D73F09 !important;
-  color: #FFFFFF;
-  border: solid 1px #FFF !important;
-}
-.btn-primary:hover {
-  background-color: #C72F09 !important;
-  color: #FFFFFF;
-  border: solid 1px #CCC !important;
-}
-.btn-primary:active {
-  background-color: #d76740 !important;
-  color: #FFFFFF;
-  border: solid 1px #CCC !important;
-}
-
-.btn-secondary {
-  background-color: #262626 !important;
-  color: #FFFFFF;
-  border: solid 1px #FFF;
-}
-.btn-secondary:hover {
-  background-color: #000000 !important;
-  color: #FFFFFF;
-  border: solid 1px #CCC !important;
-}
-.btn-secondary:active {
-  background-color: #303030 !important;
-  color: #FFFFFF;
-  border: solid 1px #CCC !important;
-}
-
-.btn-danger {
-  background-color: #d50510 !important;
-  color: #FFFFFF;
-  border: solid 1px #FFF;
-}
-.btn-danger:hover {
-  background-color: #ad040d !important;
-  color: #FFFFFF;
-  border: solid 1px #CCC !important;
-}
-.btn-danger:active {
-  background-color: #c3050f !important;
-  color: #FFFFFF;
-  border: solid 1px #CCC !important;
-}
 </style>
 
-<style scoped>
+<style scoped lang='scss'>
+@import '@/assets/style-variables.scss';
 
+.app {
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+}
+.header {
+  margin: 0;
+  padding: 0;
+  height: $--nav-height;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.main {
+  position: absolute;
+  top: $--nav-height;
+  left: 0;
+  min-height: calc(100% - #{$--nav-height});
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
 </style>

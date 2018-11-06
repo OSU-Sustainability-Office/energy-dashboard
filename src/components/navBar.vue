@@ -1,24 +1,20 @@
 <template>
-  <el-container class='sus-nav'>
-    <el-header>
-      <el-row>
-        <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="2">
-          <img src="static/images/logo.png" height=60 width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/"})'>
-        </el-col>
-        <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="21">
-          <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='#00000000' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
-            <el-menu-item index="map" :route='{path: "/map"}' ref='mapItem'>Map</el-menu-item>
-            <el-menu-item index="buildinglist" :route='{path: "/buildinglist"}' ref='buildingItem'>Building List</el-menu-item>
-            <el-menu-item v-if='(user !== null && user.name !== "") && $route.path !== "/"' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
-          </el-menu>
-        </el-col>
-        <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
-          <a class='sus-nav-sign' v-if='(user !== null && user.name !== "") && $route.path !== "/"' @click='logOut()'>Sign Out</a>
-          <a class='sus-nav-sign' v-if='(user === null || user.name === "") && $route.path !== "/"' :href='loginLink'>Sign In</a>
-        </el-col>
-      </el-row>
-    </el-header>
-  </el-container>
+    <el-row class='sus-nav'>
+      <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="2">
+        <img src="static/images/logo.png" height=50 width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/"})'>
+      </el-col>
+      <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="21">
+        <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='#00000000' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
+          <el-menu-item index="map" :route='{path: "/map"}' ref='mapItem'>Map</el-menu-item>
+          <el-menu-item index="buildinglist" :route='{path: "/buildinglist"}' ref='buildingItem'>Building List</el-menu-item>
+          <el-menu-item v-if='(user !== null && user.name !== "") && $route.path !== "/"' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
+        </el-menu>
+      </el-col>
+      <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
+        <a class='sus-nav-sign' v-if='(user !== null && user.name !== "") && $route.path !== "/"' @click='logOut()'>Sign Out</a>
+        <a class='sus-nav-sign' v-if='(user === null || user.name === "") && $route.path !== "/"' :href='loginLink'>Sign In</a>
+      </el-col>
+    </el-row>
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -45,6 +41,9 @@ export default {
       this.activeIndex = path.split('/')[1]
       const buttons = [this.$refs.mapItem, this.$refs.buildingItem, this.$refs.dashboardItem]
       for (let item of buttons) {
+        if (!item) {
+          continue
+        }
         if (this.activeIndex !== item.index) {
           item.$el.classList.remove('is-active')
         } else {
@@ -72,13 +71,16 @@ export default {
   border-bottom: solid 1px $--color-white;
   height: $--nav-height !important;
   z-index: 2000;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 .sus-nav-image {
-  padding-top: ($--nav-height - 60) / 2;
+  padding-top: ($--nav-height - 50) / 2;
   cursor: pointer;
 }
 .sus-nav-menu {
   height: $--nav-height !important;
+  border: none !important;
 }
 .sus-nav-menu > * {
   padding-top: 5px;
@@ -110,7 +112,9 @@ export default {
   color: #FFFFFF !important;
   height: $--nav-height !important;
   line-height: $--nav-height !important;
+  text-decoration: none;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 .sus-nav-sign:hover {
   color: #000000 !important;

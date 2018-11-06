@@ -1,12 +1,17 @@
 <template>
-  <div class="container" ref="mainstage">
-    <div class='row' ref="imageNodes">
-      <div class='col' @click="$emit('input', '')" style='backgroundColor: rgb(26,26,26)' v-bind:class="[selected === 0 ? 'selected' : 'e']"></div>
-      <div v-for='(image,index) in images' @click="$emit('input', image)" :key='index' class='col' :style='"background-image:url(\"" + api + "/energy/images/" + image + "\")"' v-bind:class="[selected === (index + 1) ? 'selected' : 'e']">
-      </div>
-
-    </div>
-  </div>
+  <el-row class="container" ref="mainstage">
+    <el-col :span='24' ref="imageNodes">
+      <el-row type='flex' justify='left' class='row'>
+        <el-col :span='6'>
+          <div class='col' @click="select('')" style='backgroundColor: rgb(26,26,26)' v-bind:class="[selected === 0 ? 'selected' : 'e']"></div>
+        </el-col>
+        <el-col :span='6' v-for='(image,index) in images' :key='index'>
+          <div class='col' @click="select(image)" :style='"background-image:url(\"" + api + "/energy/images/" + image + "\")"' v-bind:class="[selected === (index + 1) ? 'selected' : 'e']"></div>
+        </el-col>
+        <el-col v-for='n in 10' :key='n+"bad"' :span='6' class='noHeight'></el-col>
+      </el-row>
+    </el-col>
+  </el-row>
 </template>
 <script>
 export default {
@@ -21,6 +26,7 @@ export default {
   },
   created () {
     this.$store.dispatch('media').then(r => {
+      this.images = []
       var index = 0
       for (var i of r) {
         this.images.push(i)
@@ -33,6 +39,12 @@ export default {
     value: function (value) {
       this.selected = this.images.indexOf(this.value) + 1
     }
+  },
+  methods: {
+    select: function (image) {
+      this.$emit('input', image)
+      console.log('hi')
+    }
   }
 }
 </script>
@@ -42,7 +54,10 @@ label {
   font-family: 'Open Sans', sans-serif;
 }
 .selected {
-  border: solid 4px rgb(215,63,9);
+  outline: solid 4px rgb(215,63,9);
+  outline-offset: -5px;
+  border: solid 1px rgb(215,63,9);
+  overflow: hidden;
 }
 .container {
   width: 100%;
@@ -53,24 +68,26 @@ label {
 
 }
 .row {
-  width: 100%;
-  padding: 0px;
-  margin: auto;
-  float: none;
-  align-items: flex-start;
-  justify-content: center;
+  flex-wrap: wrap !important;
+  overflow-x: hidden;
+}
+.row > * {
+  height: 100px;
+  margin: 0.5em;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+  min-width: 200px;
+}
+.row > *:not(.noHeight) {
+  cursor: pointer;
 }
 .col {
-  height: 100px;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-basis: 200px;
-  margin: 0.5em;
+  height: 100%;
+  width: 100%;
   border-radius: 5px;
-  align-self: flex-start;
-  float: left;
+}
+.noHeight {
+  height: 0px;
 }
 </style>

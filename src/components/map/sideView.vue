@@ -29,7 +29,7 @@
           </el-row>
           <el-row type='flex' class="graph" ref='scrollBox'>
             <el-col class='inline' v-for='(block,index) in story.blocks' :key='index' :span='24'>
-              <chartController :randomColors=1 :graphType='1' :index=index ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '100%', 'padding': '0.5em' }" :height='200'/>
+              <chartController :randomColors=1 :graphType='1' :index=index ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
             </el-col>
           </el-row>
           <el-row class="buttons">
@@ -88,7 +88,6 @@ export default {
     next: function () {
       if (this.index + 1 >= this.story.blocks.length) { return }
       this.index++
-      console.log(this.$refs.scrollBox)
       this.$refs.scrollBox.$children.forEach((child, index) => {
         child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
       })
@@ -189,7 +188,7 @@ export default {
   box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
 }
 .title {
-  padding: 0.2em;
+  padding: 0.3em;
   padding-left: 0.8em;
   padding-right: 0.8em;
   font-size: 3.2ch;
@@ -246,7 +245,6 @@ export default {
   overflow: hidden;
 }
 .inline {
-  padding: 0;
   margin-right: 20px;
   transition: transform 1s;
   display: inline-block;

@@ -1,5 +1,5 @@
 <template>
-  <div v-loading='loading' element-loading-background="rgba(0, 0, 0, 0.8)">
+  <div element-loading-background="rgba(0, 0, 0, 0.8)">
     <linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>

@@ -7,18 +7,10 @@
           <el-tooltip content="Click to toggle visibility" placement="right">
             <el-menu-item index='Academics' :class="[(isDisplayed('Academics') ? 'active' : 'notactive')]"><span class='edu swatch'></span>Academics</el-menu-item>
           </el-tooltip>
-          <el-tooltip content="Click to toggle visibility" placement="right">
-            <el-menu-item index='Athletics' :class="[(isDisplayed('Athletics') ? 'active' : 'notactive')]"><span class='ath swatch'></span>Athletics & Rec</el-menu-item>
-          </el-tooltip>
-          <el-tooltip content="Click to toggle visibility" placement="right">
-            <el-menu-item index='Dining' :class="[(isDisplayed('Dining') ? 'active' : 'notactive')]"><span class='din swatch'></span>Dining</el-menu-item>
-          </el-tooltip>
-          <el-tooltip content="Click to toggle visibility" placement="right">
-            <el-menu-item index='Admin' :class="[(isDisplayed('Admin') ? 'active' : 'notactive')]"><span class='com swatch'></span>Events & Admin</el-menu-item>
-          </el-tooltip>
-          <el-tooltip content="Click to toggle visibility" placement="right">
-            <el-menu-item index='Residence' :class="[(isDisplayed('Residence') ? 'active' : 'notactive')]"><span class='res swatch'></span>Residence</el-menu-item>
-          </el-tooltip>
+          <el-menu-item index='Athletics' :class="[(isDisplayed('Athletics') ? 'active' : 'notactive')]"><span class='ath swatch'></span>Athletics & Rec</el-menu-item>
+          <el-menu-item index='Dining' :class="[(isDisplayed('Dining') ? 'active' : 'notactive')]"><span class='din swatch'></span>Dining</el-menu-item>
+          <el-menu-item index='Admin' :class="[(isDisplayed('Admin') ? 'active' : 'notactive')]"><span class='com swatch'></span>Events & Admin</el-menu-item>
+          <el-menu-item index='Residence' :class="[(isDisplayed('Residence') ? 'active' : 'notactive')]"><span class='res swatch'></span>Residence</el-menu-item>
         </el-menu-item-group>
       </el-menu>
       <div class='mapContainer' ref='mapContainer'>
