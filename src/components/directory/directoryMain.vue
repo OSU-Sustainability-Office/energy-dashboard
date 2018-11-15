@@ -32,7 +32,8 @@
                   </el-tooltip>
                 </el-col>
                 <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
-                <el-col v-for='n in 10' :key='n' :span='4'>
+                <el-col v-for='n in 10' :key='n' :span='4' class='blankSlate'>
+                  &nbsp;
                 </el-col>
               </el-row>
             </el-tab-pane>
@@ -91,19 +92,19 @@ export default {
       'user'
     ])
   },
-  created () {
+  mounted () {
     this.$store.dispatch('stories').then(res => {
       let allStories = []
       for (let group of res) {
         if (group.public === this.publicDir) {
           let g = [].concat(group.stories)
           allStories = allStories.concat(g)
-          g.sort((a, b) => { return a.name > b.name })
+          g.sort((a, b) => { return (a.name > b.name) ? 1 : -1 })
           this.groups.push({ name: group.group, stories: g, id: group.id })
         }
       }
       if (this.publicDir) {
-        allStories.sort((a, b) => { return a.name > b.name })
+        allStories.sort((a, b) => { return (a.name > b.name) ? 1 : -1 })
         this.groups.splice(0, 0, {name: 'All', stories: allStories, id: 0})
       }
       this.openName = this.groups[0].name
@@ -161,7 +162,6 @@ export default {
     },
     storySave: function (name, description, media, id) {
       const openGroup = this.groups.find(e => { return e.name === this.openName })
-
       if (openGroup.id) {
         if (id) {
           this.$store.dispatch('updateStory', {
@@ -260,6 +260,10 @@ export default {
   border-color: $--color-primary;
   outline: solid 3px $--color-primary;
   outline-offset: -5px;
+}
+.blankSlate {
+  padding-right: 0.5em;
+  padding-left: 0.5em;
 }
 
 </style>

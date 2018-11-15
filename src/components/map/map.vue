@@ -179,10 +179,12 @@ $sideMenu-width: 250px;
   left: 0;
   z-index: 20000;
   width: $sideMenu-width;
+  padding-top: 1em;
 }
 .sideMenuGroupTitle {
   font-size: 18px;
-  color: #ffffffAA;
+  color: #ffffff;
+  font-weight: bolder;
 }
 .mapContainer {
   background-color: blue;
