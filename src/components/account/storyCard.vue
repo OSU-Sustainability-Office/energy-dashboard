@@ -11,7 +11,7 @@
     <span class="storyName">{{this.name}}</span>
     <span class="storyDescription">{{this.description}}</span>
     <div class='plus' v-if='plus'>
-      +
+      <i class="fas fa-plus"></i>
     </div>
   </div>
 </template>
@@ -67,7 +67,7 @@ export default {
       this.$eventHub.$emit('openStoryEdit', [this.name, this.description, this.media, this.story_id])
     },
     clicked: function (event) {
-      if (event.target.classList.contains('fas') || event.target.classList.contains('toolbox')) {
+      if (event.target.parentNode.classList.contains('toolbox') || event.target.classList.contains('toolbox')) {
         return
       }
       this.$emit('click')
@@ -112,14 +112,14 @@ export default {
   border: 2.5px solid rgb(0,0,0);
   padding: 1em;
   height: 150px;
-  margin-top: 1em;
+  margin: 1em;
   border-radius: 5px;
   overflow: hidden;
   /* width: 250px; */
 
 }
-.storyCard:hover .plus {
-  color: #FFF;
+.storyCard:hover .plus .fas {
+  color: #FFF !important;
 }
 .image {
   position: absolute;
@@ -137,10 +137,16 @@ export default {
   z-index: 1;
 }
 .plus {
-  color: rgb(215,63,9);
+  text-align: center;
+}
+.plus .fas {
   font-size: 6em;
   line-height: 150px;
   text-align: center;
+  width: calc(100% - .33em);
+}
+.plus .fas {
+  color: rgb(215,63,9) !important;
 }
 
 </style>

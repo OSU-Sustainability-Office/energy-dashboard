@@ -544,6 +544,7 @@ export default new Vuex.Store({
         axios.get(process.env.ROOT_API + '/auth/logout').then(r => {
           if (r.status === 200) {
             context.commit('loadUser', { name: '', privilege: 0, id: null })
+            window.location.replace(r.data.url)
           }
         })
       })

@@ -104,7 +104,6 @@ export default {
       }
     },
     dateValidator: function (rule, value, callback) {
-      console.log(this.form)
       if (!value) {
         callback(new Error(rule.message))
       } else {
@@ -128,7 +127,6 @@ export default {
           graph_type: this.form.graphType,
           id: null
         }
-        this.$eventHub.$emit('loadingData', this.form.index)
         for (const chart of this.$refs.featureController.form) {
           const meters = await this.$store.dispatch('buildingMeters', { id: chart.group })
           const newChart = {
@@ -139,8 +137,16 @@ export default {
           }
           if (chart.meter === 0) {
             newChart.meters = newChart.meters.concat(meters.filter(e => e.type === 'e'))
+            newChart.point = 'accumulated_real'
           } else {
             newChart.meters.push(meters.find(e => e.meter_id === chart.meter))
+            if (newChart.meters[0].type === 'e') {
+              newChart.point = 'accumulated_real'
+            } else if (newChart.meters[0].type === 's') {
+              newChart.point = 'total'
+            } else {
+              newChart.point = 'cubic_feet'
+            }
           }
           card.charts.push(newChart)
         }

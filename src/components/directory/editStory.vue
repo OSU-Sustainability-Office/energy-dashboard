@@ -5,7 +5,7 @@
         <el-input type='text' v-model='form.name' ></el-input>
       </el-form-item>
       <el-form-item label='Sub-Title: ' prop='description' :rules="{required: false, message: 'A name is required', trigger: 'blur'}">
-        <el-input type='text' v-model='form.decription' ></el-input>
+        <el-input type='text' v-model='form.description' ></el-input>
       </el-form-item>
     </el-form>
     <mediapicker v-model='form.media' ref='picker'/>
