@@ -17,6 +17,7 @@ export default {
           callbacks: {
             title: function (item, data) {
               let d = new Date(item[0].xLabel)
+              d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000)
               let meridiem = 'am'
               let hours = d.getHours()
               if (hours > 12) {

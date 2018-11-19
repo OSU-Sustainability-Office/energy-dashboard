@@ -273,7 +273,11 @@ export default new Vuex.Store({
           morePromises.push(new Promise((resolve, reject) => {
             let chartPromises = []
             for (let meter of block.charts[chartIndex].meters) {
-              const paramString = '?id=' + meter.meter_id + '&startDate=' + block.date_start + '&endDate=' + block.date_end + '&point=' + block.charts[chartIndex].point
+              let start = new Date(block.date_start)
+              start.setTime(start.getTime() + start.getTimezoneOffset() * 60 * 1000)
+              let end = new Date(block.date_end)
+              end.setTime(end.getTime() + end.getTimezoneOffset() * 60 * 1000)
+              const paramString = '?id=' + meter.meter_id + '&startDate=' + start.toISOString() + '&endDate=' + end.toISOString() + '&point=' + block.charts[chartIndex].point
               chartPromises.push(axios(process.env.ROOT_API + '/energy/data' + paramString, { method: 'get', data: null, withCredentials: true }))
             }
             Promise.all(chartPromises).then((r) => {
