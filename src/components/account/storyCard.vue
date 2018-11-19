@@ -138,6 +138,7 @@ export default {
 }
 .plus {
   text-align: center;
+  padding-right: 1em;
 }
 .plus .fas {
   font-size: 6em;
