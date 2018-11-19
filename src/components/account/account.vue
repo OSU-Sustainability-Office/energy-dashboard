@@ -52,6 +52,7 @@ export default {
             default:
               break
           }
+          console.log(d.toISOString())
           return d.toISOString()
         }
       }
