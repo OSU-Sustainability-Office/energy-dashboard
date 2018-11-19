@@ -7,7 +7,7 @@
         </el-col>
         <el-col :span='20' id="home-side" v-bind:class="location">
           <h1>OSU Energy Dashboard</h1>
-          <p class='body'>This Energy Dashboard has been developed to help members of the Oregon State University community understand the connection between their everyday actions and their carbon emissions. This is an important step in <a href='https://fa.oregonstate.edu/sustainability/planning-policy-assessment/institutional-carbon-neutrality/osu-carbon-planning'>Oregon State University’s initiative to be carbon neutral by 2025.</a></p>
+          <p class='body'>This Energy Dashboard has been developed by the Oregon State University Sustainability Office to enable members of the OSU community to access, view, and analyze energy consumption trends.</p>
         </el-col>
         <el-col :span='2'>
           &nbsp;
