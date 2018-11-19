@@ -141,6 +141,7 @@ export default {
       this.$store.dispatch('deleteGroup', { id: id })
       const index = this.groups.map(e => e.id).indexOf(id)
       this.groups.splice(index, 1)
+      this.openName = this.groups[0].name
     },
     newGroup: function () {
       this.$refs.groupEditor.name = ''
