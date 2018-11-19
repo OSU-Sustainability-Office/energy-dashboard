@@ -45,7 +45,7 @@ export default {
     checkDuplicate: function (rule, value, callback) {
       let b = false
       for (const g of this.$parent.$parent.groups) {
-        if (g.name === value) {
+        if (g.name === value && g.id !== this.id) {
           b = true
           break
         }
@@ -57,12 +57,8 @@ export default {
       }
     },
     deleteGroup: function () {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          this.$emit('delete', {id: this.id})
-          this.toggle = false
-        }
-      })
+      this.$emit('delete', {id: this.id})
+      this.toggle = false
     }
   }
 }
