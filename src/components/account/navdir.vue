@@ -3,7 +3,8 @@
     <el-col class='main'>
         <el-row class='bar'>
           <el-col :span='20'>
-            <el-menu mode='horizontal' class='menu' background-color='#FFF' text-color='#1a1a1a' :router='true' @select='handleSelect'>
+            <span v-if='story.user_id !== user.id && !story.public'>&nbsp;</span>
+            <el-menu mode='horizontal' class='menu' background-color='#FFF' text-color='#1a1a1a' :router='true' @select='handleSelect' v-if='story.user_id === user.id || story.public'>
               <el-submenu index='1' :router='true'>
                 <template slot="title" class='menu-title'><i class="fas fa-th-large"></i>{{ group.group }}</template>
                 <el-menu-item class='group-item' v-for='(groupS, index) in filteredGroups' :key='groupS.id' :index='"1-"+index' :route='{path: ((group.public)?"/buildinglist/":"/dashboard/") + groupS.id}'>
@@ -20,7 +21,7 @@
           </el-col>
           <el-col :span='4' class='buttons'>
             <el-tooltip content='Click to save story' placement='top'>
-              <i class="fas fa-save" v-if='!$route.path.includes("public")' @click="$emit('save')"></i>
+              <i class="fas fa-save" v-if='story.user_id === user.id' @click="$emit('save')"></i>
             </el-tooltip>
             <el-tooltip content='Click to download data' placement='top'>
               <i class="fas fa-download" @click="download()"></i>
@@ -54,7 +55,8 @@ export default {
   computed: {
     ...mapGetters([
       'story',
-      'stories'
+      'stories',
+      'user'
     ])
   },
   asyncComputed: {

@@ -4,6 +4,7 @@
     <barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <piechart v-if="graphType == 4" ref="piechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <el-col :span='24' class='NoData' :style='`height:${height}px;line-height:${height}px;`' v-if="graphType == 100">Data Unavailable</el-col>
   </div>
 </template>
 <script>
@@ -33,7 +34,6 @@ export default {
       default:
         this.chart = this.$refs.piechart
     }
-    this.parse()
   },
   data () {
     return {
@@ -89,52 +89,32 @@ export default {
         default:
           this.chart = this.$refs.piechart
       }
-      this.parse()
-      this.updateChart()
+      // this.parse()
+      // this.updateChart()
     }
   },
   methods: {
     parse: function () {
+      if (!this.chart) {
+        switch (this.graphType) {
+          case 1:
+            this.chart = this.$refs.linechart
+            break
+          case 2:
+            this.chart = this.$refs.barchart
+            break
+          case 3:
+            this.chart = this.$refs.doughnutchart
+            break
+          default:
+            this.chart = null
+        }
+      }
       if (this.graphType === 1 || this.graphType === 2) {
-        this.chart.$data._chart.options.scales.yAxes[0] = {
-          ticks: {
-            beginAtZero: false,
-            fontColor: 'white'
-          },
-          gridLines: {
-            display: true // my new default options
-          },
-          scaleLabel: {
-            display: (this.buildLabel('y') !== ''),
-            labelString: this.buildLabel('y')
-          }
-        }
-        this.chart.$data._chart.options.scales.xAxes[0] = {
-          scaleLabel: {
-            display: (this.buildLabel('y') !== ''),
-            labelString: this.buildLabel('x')
-          },
-          gridLines: {
-            display: false
-          },
-          ticks: {
-            fontColor: 'white',
-            autoSkip: true,
-            maxTicksLimit: 30
-          },
-          type: 'time',
-          time: {
-            unit: 'hour',
-            displayFormats: {
-              'hour': 'M/DD'
-            }
-          }
-        }
         this.parseDataBarLine()
       } else if (this.graphType === 3 || this.graphType === 4) {
         this.parseDataPieDoughnut()
       }
-      this.loading = false
     },
     checkInterval: function (date, unit, int) {
       const ar = [date.slice(14, 16), date.slice(11, 13), date.slice(8, 10), date.slice(5, 7)]
@@ -148,6 +128,9 @@ export default {
     updateChart: function () {
       if (this.chart) { this.chart.update() }
     },
+    dataUnavailable: function () {
+      this.graphType = 100
+    },
     parseDataPieDoughnut: function () {
       if (!this.block(this.index)) {
         return
@@ -160,9 +143,11 @@ export default {
         labels: []
       }
       let index = 0
+      let noDataCount = 0
       for (let piece of this.block(this.index).charts) {
-        if (!piece.data) {
-          return
+        if (!piece.data || piece.data.length === 0) {
+          noDataCount++
+          continue
         }
         let value = piece.data[piece.data.length - 1].y - piece.data[0].y
         tempData.datasets[0].data.push(value)
@@ -170,7 +155,10 @@ export default {
         tempData.labels.push(piece.name)
         index++
       }
-
+      if (noDataCount === this.block(this.index).charts.length) {
+        this.dataUnavailable()
+        return
+      }
       this.chartData = tempData
     },
     parseDataBarLine: function () {
@@ -182,10 +170,12 @@ export default {
       if (!this.block(this.index)) {
         return
       }
+      let noDataCount = 0
       for (let line of this.block(this.index).charts) {
         // Deep copy prevents callbacks to data changing on computed variables
-        if (!line.data) {
-          return
+        if (!line.data || line.data.length === 0) {
+          noDataCount++
+          continue
         }
         let data = JSON.parse(JSON.stringify(line.data))
 
@@ -246,6 +236,10 @@ export default {
         })
         i++
       }
+      if (noDataCount === this.block(this.index).charts.length) {
+        this.dataUnavailable()
+        return
+      }
       this.chartData = tempData
     },
     unit: function () {
@@ -281,6 +275,12 @@ export default {
         input: ''
       }
       return map[this.story.blocks[this.index].charts[0].point]
+    },
+    getStart: function () {
+      return this.story.blocks[this.index].date_start
+    },
+    getEnd: function () {
+      return this.story.blocks[this.index].date_end
     },
     // Creates either an X or a Y axis label for a chart, depending on the parameters.
     buildLabel: function (axis) {
@@ -355,8 +355,8 @@ export default {
             return 'Steam Input'
         }
       } else {
-        const date1 = new Date(this.story.blocks[this.index].date_start)
-        const date2 = new Date(this.story.blocks[this.index].date_end)
+        const date1 = new Date(this.getStart())
+        const date2 = new Date(this.getEnd())
         if (date1 && date2) {
           return date1.toDateString() + ' to ' + date2.toDateString()
         } else {
@@ -367,3 +367,13 @@ export default {
   }
 }
 </script>
+<style lang='scss' scoped>
+@import '@/assets/style-variables.scss';
+
+  .NoData {
+    text-align: center;
+    color: $--color-white;
+    font-weight: 800;
+    font-size: 22px;
+  }
+</style>

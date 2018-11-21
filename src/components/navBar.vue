@@ -7,7 +7,7 @@
         <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='#00000000' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
           <el-menu-item index="map" :route='{path: "/map"}' ref='mapItem'>Map</el-menu-item>
           <el-menu-item index="buildinglist" :route='{path: "/buildinglist"}' ref='buildingItem'>Building List</el-menu-item>
-          <el-menu-item v-if='(user !== null && user.name !== "") && $route.path !== "/"' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
+          <el-menu-item v-if='(user !== null && user.name !== "") ' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
         </el-menu>
       </el-col>
       <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
