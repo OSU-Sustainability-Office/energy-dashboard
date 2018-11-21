@@ -7,7 +7,13 @@
         </el-col>
       </el-row>
       <el-form ref='form' :model='form[currentIndex]' label-width="120px" size='large' label-position='left'>
-        <el-form-item v-if='!story.public' prop='name' label='Name: ' :rules="{required: true, message: 'A name is required', trigger: 'blur'}">
+        <el-form-item v-if='!story.public' prop='group' label='Building: ' :rules="{required: true, message: 'A building is required', trigger: 'blur'}">
+          <!-- <label class='col-4'>Building: </label> -->
+          <el-select ref="groups" v-model="form[currentIndex].group" filterable placeholder="Building" style='width: 100%;' @change='form[currentIndex].meter = 0'>
+            <el-option v-for='(item, index) in buildings' :key='index' :label='item.name' :value='item.id'></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if='!story.public' prop='name' label='Set Name: ' :rules="{required: true, message: 'A set name is required', trigger: 'blur'}">
           <!-- <label class='col-4'>Name:</label> -->
           <el-input type="text" v-model="form[currentIndex].name" style='width: 100%;'></el-input>
         </el-form-item>
@@ -51,12 +57,6 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if='!story.public' prop='group' label='Building: ' :rules="{required: true, message: 'A building is required', trigger: 'blur'}">
-          <!-- <label class='col-4'>Building: </label> -->
-          <el-select ref="groups" v-model="form[currentIndex].group" filterable placeholder="Building" style='width: 100%;'>
-            <el-option v-for='(item, index) in buildings' :key='index' :label='item.name' :value='item.id'></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item prop='meter' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
           <!-- <label class='col-4'>Meter: </label> -->
           <el-select ref="submeters" v-model="form[currentIndex].meter" style='width: 100%;'>
@@ -116,7 +116,8 @@ export default {
           name: chart.name,
           meter: meter,
           point: chart.point,
-          group: chart.group_id
+          group: chart.group_id,
+          id: chart.id
         })
       }
     } else {
@@ -124,7 +125,8 @@ export default {
         meter: null,
         name: null,
         group: null,
-        point: null
+        point: null,
+        id: null
       })
     }
   },
@@ -188,16 +190,6 @@ export default {
       })
     },
     addGroup: function () {
-      // this.$store.dispatch('addChart', { index: this.index }).then(() => {
-      //   // this.$parent.$refs.chartController.parse()
-      //   if (this.mounted) {
-      //     this.$store.commit('modifyFlag')
-      //   }
-      // })
-      // this.point.push('accumulated_real')
-      // this.meter.push(0)
-      // this.group.push(8)
-      // this.name.push('Untitled Chart')
       this.$refs.form.validate((valid) => {
         if (valid) {
           this.form.push({
@@ -217,7 +209,8 @@ export default {
           point: this.form[i].point,
           group_id: this.form[i].group,
           name: this.form[i].name,
-          meters: await this.meters(i)
+          meters: await this.meters(i),
+          id: this.form[i].id
         })
       }
       return r
@@ -230,7 +223,11 @@ export default {
       }
     },
     deleteChart: function () {
-      this.form.splice(this.currentIndex, 1)
+      let r = this.form.splice(this.currentIndex, 1)
+      if (r[0].id) {
+        this.$store.commit('removeChart', { blockIndex: this.index, chartIndex: this.currentIndex })
+      }
+
       this.currentIndex = 0
 
       // this.$parent.$refs.chartController.parse()

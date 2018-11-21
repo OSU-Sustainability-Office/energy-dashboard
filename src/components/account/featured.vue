@@ -48,10 +48,11 @@
       </el-form>
       <div v-if='!story.public'>
         <label>Datasets: </label>
-        <featureController :index='story.blocks.length' ref="featureController" />
+        <featureController :index='form.index' ref="featureController" />
       </div>
       <featureController v-if='story.public' :index='story.blocks.length' ref="featureController" />
       <span slot='footer'>
+            <el-button @click='cardDelete()' v-if='!story.public' type='danger'> Delete </el-button>
             <el-button @click='cardSave()' type='primary'> Ok </el-button>
             <el-button @click='newCard = false' type='info'> Cancel </el-button>
       </span>
@@ -82,7 +83,9 @@ export default {
         end: null,
         intUnit: null,
         graphType: null,
-        name: null
+        name: null,
+        index: null,
+        id: null
       },
 
       newCard: false
@@ -110,6 +113,11 @@ export default {
         callback()
       }
     },
+    cardDelete: function () {
+      this.newCard = false
+      this.$store.commit('removeBlock', { index: this.form.index })
+      this.$eventHub.$emit('reloadCharts')
+    },
     cardSave: function () {
       let validators = []
       validators.push(this.$refs.featureController.$refs.form.validate())
@@ -125,11 +133,12 @@ export default {
           story_id: this.story.id,
           index: this.form.index,
           graph_type: this.form.graphType,
-          id: null
+          id: this.form.id
         }
         for (const chart of this.$refs.featureController.form) {
           const meters = await this.$store.dispatch('buildingMeters', { id: chart.group })
           const newChart = {
+            id: chart.id,
             name: chart.name,
             group_id: chart.group,
             point: chart.point,
@@ -156,12 +165,6 @@ export default {
           this.$refs.displayedCards[this.form.index].$refs.chartController.parse()
         })
       }).catch(() => {})
-    },
-    isFull: function () {
-      if (this.story.blocks.length === 0) {
-        return true
-      }
-      return (this.story.blocks.length % 2 === 1)
     },
     interval: function (i) {
       switch (i) {
@@ -197,6 +200,7 @@ export default {
       this.form.start = null
       this.form.intUnit = null
       this.form.graphType = null
+      this.form.id = null
       this.form.index = this.story.blocks.length
       this.newCard = true
       this.$nextTick(() => {
@@ -204,7 +208,8 @@ export default {
           name: null,
           meter: null,
           point: null,
-          group: null
+          group: null,
+          id: null
         }]
       })
     },
@@ -227,6 +232,7 @@ export default {
       this.form.start = this.block(index).date_start
       this.form.intUnit = this.reverseInt(this.block(index).interval_unit, this.block(index).date_interval)
       this.form.graphType = this.block(index).graph_type
+      this.form.id = this.block(index).id
       this.form.index = index
       this.newCard = true
       this.$nextTick(() => {
@@ -236,7 +242,8 @@ export default {
             meter: (chart.meters.length > 1) ? 0 : chart.meters[0].meter_id,
             name: chart.name,
             group: chart.group_id,
-            point: chart.point
+            point: chart.point,
+            id: chart.id
           }
           this.$refs.featureController.form.push(newChart)
         }

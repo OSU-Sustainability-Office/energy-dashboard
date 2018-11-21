@@ -18,25 +18,17 @@ export default {
         },
         tooltips: {
           callbacks: {
-            title: function (item, data) {
-              let d = new Date(item[0].xLabel)
-              let meridiem = 'am'
-              let hours = d.getHours()
-              if (hours > 12) {
-                hours -= 12
-                meridiem = 'pm'
-              } else if (hours === 0) {
-                hours = 12
-              }
-              let minutes = d.getMinutes()
-              if (minutes < 10) {
-                minutes = '0' + minutes
-              }
-              let year = d.getYear().toString().slice(1)
-              return (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem
+            title: (item, data) => {
+              return data.labels[item[0].index]
             },
             label: (item, data) => {
-              return item.yLabel + ' ' + this.$parent.unit()
+              return data.datasets[0].data[item.index] + ' ' + this.$parent.unit()
+            },
+            footer: (item, data) => {
+              let start = new Date(this.$parent.getStart())
+              let end = new Date(this.$parent.getEnd())
+
+              return this.formatDate(start) + ' - ' + this.formatDate(end)
             }
           }
         },
@@ -63,6 +55,23 @@ export default {
     },
     update: function () {
       this.$data._chart.update()
+    },
+    formatDate: function (d) {
+      d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000)
+      let meridiem = 'am'
+      let hours = d.getHours()
+      if (hours > 12) {
+        hours -= 12
+        meridiem = 'pm'
+      } else if (hours === 0) {
+        hours = 12
+      }
+      let minutes = d.getMinutes()
+      if (minutes < 10) {
+        minutes = '0' + minutes
+      }
+      let year = d.getYear().toString().slice(1)
+      return (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem
     }
   }
 }

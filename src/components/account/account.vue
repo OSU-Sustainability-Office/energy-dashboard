@@ -32,7 +32,8 @@ export default {
   computed: {
     ...mapGetters([
       'story',
-      'block'
+      'block',
+      'user'
     ]),
     start: {
       get () {
@@ -52,7 +53,6 @@ export default {
             default:
               break
           }
-          console.log(d.toISOString())
           return d.toISOString()
         }
       }
@@ -109,20 +109,21 @@ export default {
   },
   methods: {
     save: function () {
+      let promises = []
       for (let block of this.story.blocks) {
         if (block.id === null) {
           this.$store.dispatch('createBlock', block).then(() => {
             for (let chart of block.charts) {
-              this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meters: chart.meters })
+              promises.push(this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meters: chart.meters }))
             }
           })
         } else {
           this.$store.dispatch('updateBlock', block).then(() => {
             for (let chart of block.charts) {
               if (chart.id) {
-                this.$store.dispatch('updateChart', chart)
+                promises.push(this.$store.dispatch('updateChart', chart))
               } else {
-                this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meters: chart.meters })
+                promises.push(this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meters: chart.meters }))
               }
             }
           })
@@ -131,13 +132,24 @@ export default {
       if (this.story.removed.length > 0) {
         for (let obj of this.story.removed) {
           if (obj.type === 'block') {
-            this.$store.dispatch('deleteBlock', { id: obj.id })
+            promises.push(this.$store.dispatch('deleteBlock', { id: obj.id }))
           } else if (obj.type === 'chart') {
-            this.$store.dispatch('deleteChart', { id: obj.id })
+            promises.push(this.$store.dispatch('deleteChart', { id: obj.id }))
           }
         }
-        this.$store.commit('resetRemoved')
+        promises.push(this.$store.commit('resetRemoved'))
       }
+      Promise.all(promises).then(() => {
+        this.$message({
+          message: 'Story saved successfully',
+          type: 'success'
+        })
+      }).catch(() => {
+        this.$message({
+          message: 'Error could not save story',
+          type: 'error'
+        })
+      })
     },
     cancel: function () {
       let id = this.story.id
@@ -171,20 +183,25 @@ export default {
         if (this.$route.params.id) {
           this.$store.dispatch('story', this.$route.params.id).then((r) => {
             this.$refs.featureBox.updateCards()
-            this.$refs.navdir.populate()
+            if (this.$refs.navdir) {
+              this.$refs.navdir.populate()
+            }
           })
         } else {
-          this.$store.dispatch('user').then(user => {
-            this.$store.dispatch('stories').then(groups => {
-              if (!this.story.id) {
-                this.$store.dispatch('story', groups[0].stories[0].id).then(() => {
-                  this.$refs.navdir.populate()
-                })
-              } else {
-                this.$refs.navdir.populate()
-              }
-            })
-          })
+          this.$router.push('/#/map')
+          // this.$store.dispatch('user').then(user => {
+          //   this.$store.dispatch('stories').then(groups => {
+          //     if (!this.story.id) {
+          //       this.$store.dispatch('story', groups[0].stories[0].id).then(() => {
+          //         this.$refs.navdir.populate()
+          //       })
+          //     } else {
+          //       if (this.$refs.navdir) {
+          //         this.$refs.navdir.populate()
+          //       }
+          //     }
+          //   })
+          // })
         }
       }
     },

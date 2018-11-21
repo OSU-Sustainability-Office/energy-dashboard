@@ -79,7 +79,6 @@ export default new Vuex.Store({
       stories.splice(stories.map(el => { return el.id }).indexOf(payload.id), 1)
     },
     loadUser: (state, payload) => {
-      console.log(payload)
       // Reset Stories, if a  user logins in their personal stories need to be accesible
       if (payload.name !== state.user.name) {
         state.stories = []
@@ -299,7 +298,10 @@ export default new Vuex.Store({
                 // get multiplier for oddly hooked up meters for points that can be negative
                 const multiplier = ((block.charts[chartIndex].meters[set].negate) ? -1 : 1) * (map[Object.keys(r[set].data[0])[1]] || map['default'])
                 // get negation factor for accumulated_real
-                const mu2 = (block.charts[chartIndex].meters[set].operation) ? 1 : -1
+                let mu2 = (block.charts[chartIndex].meters[set].operation) ? 1 : -1
+                if (block.charts[chartIndex].meters.length === 1) {
+                  mu2 = 1
+                }
                 if (multiplier === 0) {
                   let insert = 0
                   for (let data of r[set].data) {
@@ -545,7 +547,7 @@ export default new Vuex.Store({
     },
     logout: (context, payload) => {
       return new Promise((resolve, reject) => {
-        axios.get(process.env.ROOT_API + '/auth/logout').then(r => {
+        axios(process.env.ROOT_API + '/auth/logout', { withCredentials: true }).then(r => {
           if (r.status === 200) {
             context.commit('loadUser', { name: '', privilege: 0, id: null })
             window.location.replace(r.data.url)
