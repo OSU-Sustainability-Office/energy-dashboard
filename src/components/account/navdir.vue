@@ -35,7 +35,6 @@
 <script>
 import { mapGetters } from 'vuex'
 var JSZip = require('jszip')
-var zip = new JSZip()
 export default {
   name: 'navdir',
   props: ['groupContents'],
@@ -68,6 +67,7 @@ export default {
   },
   methods: {
     download: function () {
+      let zip = new JSZip()
       const map = {
         accumulated_real: 'kWh',
         real_power: 'W',

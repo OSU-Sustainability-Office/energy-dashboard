@@ -452,8 +452,12 @@ export default new Vuex.Store({
     },
     createBlock: (context, payload) => {
       return new Promise((resolve, reject) => {
-        console.log(payload)
-        axios(process.env.ROOT_API + '/energy/block', { method: 'post', data: { date_start: payload.date_start, date_end: payload.date_end, graph_type: payload.graph_type, story_id: payload.story_id, name: payload.name, date_interval: payload.date_interval, interval_unit: payload.interval_unit }, withCredentials: true }).then(res => {
+        let start = new Date(payload.date_start)
+        start.setTime(start.getTime() - start.getTimezoneOffset() * 60 * 1000)
+        let end = new Date(payload.date_end)
+        end.setTime(end.getTime() - end.getTimezoneOffset() * 60 * 1000)
+
+        axios(process.env.ROOT_API + '/energy/block', { method: 'post', data: { date_start: start.toISOString(), date_end: end.toISOString(), graph_type: payload.graph_type, story_id: payload.story_id, name: payload.name, date_interval: payload.date_interval, interval_unit: payload.interval_unit }, withCredentials: true }).then(res => {
           context.commit('setBlockId', { index: payload.index, id: res.data.id })
           resolve(res.data.id)
         }).catch(e => {
@@ -463,7 +467,12 @@ export default new Vuex.Store({
     },
     updateBlock: (context, payload) => {
       return new Promise((resolve, reject) => {
-        axios(process.env.ROOT_API + '/energy/block', { method: 'put', data: { id: payload.id, date_start: payload.date_start, date_end: payload.date_end, graph_type: payload.graph_type, story_id: payload.story_id, name: payload.name, date_interval: payload.date_interval, interval_unit: payload.interval_unit }, withCredentials: true }).then(res => {
+        let start = new Date(payload.date_start)
+        start.setTime(start.getTime() - start.getTimezoneOffset() * 60 * 1000)
+        let end = new Date(payload.date_end)
+        end.setTime(end.getTime() - end.getTimezoneOffset() * 60 * 1000)
+
+        axios(process.env.ROOT_API + '/energy/block', { method: 'put', data: { id: payload.id, date_start: start.toISOString(), date_end: end.toISOString(), graph_type: payload.graph_type, story_id: payload.story_id, name: payload.name, date_interval: payload.date_interval, interval_unit: payload.interval_unit }, withCredentials: true }).then(res => {
           resolve()
         }).catch(e => {
           reject(e)
