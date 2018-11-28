@@ -61,7 +61,7 @@ export default {
             e.target.setStyle({ fillColor: '#000', color: '#000' })
             e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
           })
-          layer.on('mouseout', (e) => { window.vue.$eventHub.$emit('resetPolygon', [e.target]) })
+          layer.on('mouseout', e => { window.vue.$eventHub.$emit('resetPolygon', [e.target]) })
         },
         style: function (feature) {
           var color = '#000'
@@ -121,8 +121,8 @@ export default {
     this.$store.dispatch('mapdata').then(r => {
       this.polygonData = r
     })
-    this.$eventHub.$on('clickedPolygon', (v) => (this.polyClick(v[0])))
-    this.$eventHub.$on('resetPolygon', (v) => { this.$refs.geoLayer.mapObject.resetStyle(v[0]) })
+    this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0])))
+    this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.mapObject.resetStyle(v[0]) })
   },
   mounted () {
     this.$nextTick(() => {
