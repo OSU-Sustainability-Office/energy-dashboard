@@ -5,9 +5,7 @@ aws configure set aws_secret_access_key $S3_ACCESS_KEY
 aws configure set default.region us-west-2
 
 REPO_NAME=$(basename `git rev-parse --show-toplevel`)
-BRANCH_NAME=$(git branch | grep \* | cut -d ' ' -f2)
-LAST_COMMIT=$(git rev-parse --short HEAD)
-export BUCKET_NAME="$REPO_NAME-$BRANCH_NAME-$LAST_COMMIT"
+export BUCKET_NAME="$REPO_NAME-$TRAVIS_BRANCH-$TRAVIS_COMMIT"
 
 echo $BUCKET_NAME
 

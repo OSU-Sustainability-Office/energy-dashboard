@@ -1,32 +1,36 @@
-language: node_js
-node_js:
-    - "10"
-before_install:
-    - pip install --user awscli
-    - export PATH=$PATH:$HOME/.local/bin
-cache:
-  directories:
-      - node_modules
-      - $HOME/.local
-script:
-  - npm run build
-  - source pre_deploy.sh
+matrix:
+  include:
+    - language: python
+      python: 3.6
+    - language: node_js
+      node_js:
+          - "10"
+      before_install:
+          - pip install --user awscli
+          - export PATH=$PATH:$HOME/.local/bin
+      cache:
+        directories:
+            - node_modules
+            - $HOME/.local
+      script:
+        - npm run build
+        - source pre_deploy.sh
 
-deploy:
-- provider: pages
-  local-dir: dist/
-  skip-cleanup: true
-  github-token: $GITHUB_TOKEN
-  keep-history: true
-  on:
-    branch: master
-- provider: s3
-  access_key_id: $S3_ACCESS_ID
-  secret_access_key: $S3_ACCESS_KEY
-  bucket: $BUCKET_NAME
-  skip_cleanup: true
-  local_dir: dist
-  on:
-    all_branches: true
-after_success:
-  - mocha tests/integration.js
+      deploy:
+      - provider: pages
+        local-dir: dist/
+        skip-cleanup: true
+        github-token: $GITHUB_TOKEN
+        keep-history: true
+        on:
+          branch: master
+      - provider: s3
+        access_key_id: $S3_ACCESS_ID
+        secret_access_key: $S3_ACCESS_KEY
+        bucket: $BUCKET_NAME
+        skip_cleanup: true
+        local_dir: dist
+        on:
+          all_branches: true
+      after_success:
+        - mocha tests/integration.js
