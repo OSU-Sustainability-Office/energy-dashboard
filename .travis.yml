@@ -31,5 +31,5 @@ deploy:
   local_dir: dist
   on:
     all_branches: true
-  after_deploy:
-    - mocha tests/integration.js
+after_deploy:
+  - mocha tests/integration.js
