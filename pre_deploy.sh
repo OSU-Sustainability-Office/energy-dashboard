@@ -6,7 +6,7 @@ aws configure set default.region us-west-2
 
 REPO_NAME=$(basename `git rev-parse --show-toplevel`)
 COMMIT=`echo $TRAVIS_COMMIT | cut -c8`
-export BUCKET_NAME="$REPO_NAME-$TRAVIS_BRANCH-"
+export BUCKET_NAME="$REPO_NAME-$TRAVIS_BRANCH-$COMMIT"
 
 echo $BUCKET_NAME
 
