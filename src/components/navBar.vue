@@ -1,9 +1,9 @@
 <template>
     <el-row class='sus-nav'>
-      <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="2">
+      <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">
         <img src="static/images/logo.png" height=50 width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/"})'>
       </el-col>
-      <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="21">
+      <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="20">
         <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='#00000000' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
           <el-menu-item index="map" :route='{path: "/map"}' ref='mapItem'>Map</el-menu-item>
           <el-menu-item index="buildinglist" :route='{path: "/buildinglist"}' ref='buildingItem'>Building List</el-menu-item>
