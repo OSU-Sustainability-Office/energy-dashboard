@@ -1,4 +1,5 @@
 #!/bin/bash
+echo 'Setting up Buckets and environment for deploy'
 aws configure set aws_access_key_id $S3_ACCESS_ID
 aws configure set aws_secret_access_key $S3_ACCESS_KEY
 aws configure set default.region us-west-2

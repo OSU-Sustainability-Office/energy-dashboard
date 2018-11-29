@@ -12,6 +12,7 @@ cache:
       - $HOME/.local
 script:
   - npm run build
+  - echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
   - source pre_deploy.sh
 
 deploy:
