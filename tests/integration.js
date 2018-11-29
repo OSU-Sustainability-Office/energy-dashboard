@@ -22,7 +22,7 @@ describe('Integration Tests for Chrome', function () {
 
   before(function () {
     driver = new webdriver.Builder().usingServer('http://hub-cloud.browserstack.com/wd/hub').withCapabilities(capabilities).build()
-    //driver = new webdriver.Builder().forBrowser('chrome').build()
+    // driver = new webdriver.Builder().forBrowser('chrome').build()
   })
 
   after(function () {
@@ -94,7 +94,7 @@ describe('Integration Tests for Chrome', function () {
             let o = await popUp.getCssValue('opacity')
             return Promise.resolve(o === '1')
           }, 5000)
-          let el =  await driver.wait(driver.findElement(webdriver.By.xpath('//div[@class=\'close-box el-col el-col-1\']')), 5000)
+          let el = await driver.wait(driver.findElement(webdriver.By.xpath('//div[@class=\'close-box el-col el-col-1\']')), 5000)
           await driver.wait(el.isEnabled(), 5000)
           el.click()
           try {
@@ -102,11 +102,11 @@ describe('Integration Tests for Chrome', function () {
               let o = await popUp.isDisplayed()
               return Promise.resolve(!o)
             }, 5000)
-          } catch {
+          } catch (e) {
             // Nothing for now need to specify specific exception for no element
           }
           return Promise.resolve()
-        } catch {
+        } catch (e) {
           return Promise.reject(new Error('Unable to close side view'))
         }
       })

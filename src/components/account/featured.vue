@@ -122,7 +122,7 @@ export default {
       let validators = []
       validators.push(this.$refs.featureController.$refs.form.validate())
       validators.push(this.$refs.form.validate())
-      Promise.all(validators).then(async (r) => {
+      Promise.all(validators).then(async r => {
         const card = {
           name: this.form.name,
           date_start: this.form.start,

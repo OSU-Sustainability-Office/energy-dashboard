@@ -20,6 +20,9 @@
             </el-menu>
           </el-col>
           <el-col :span='4' class='buttons'>
+            <el-tooltip content='Click to copy share link'>
+              <i class="fas fa-share-square" @click='copyUrl()'></i>
+            </el-tooltip>
             <el-tooltip content='Click to save story' placement='top'>
               <i class="fas fa-save" v-if='story.user_id === user.id' @click="$emit('save')"></i>
             </el-tooltip>
@@ -66,6 +69,21 @@ export default {
     }
   },
   methods: {
+    copyUrl: function () {
+      const el = document.createElement('textArea')
+      el.value = window.location.href
+      el.setAttribute('readonly', '')
+      el.style.position = 'absolute'
+      el.style.left = '-9999px'
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      this.$message({
+        message: 'Link copied to clipboard',
+        type: 'success'
+      })
+    },
     download: function () {
       let zip = new JSZip()
       const map = {

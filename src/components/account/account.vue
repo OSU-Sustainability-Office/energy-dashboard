@@ -161,7 +161,7 @@ export default {
     update: function () {
       if (this.$route.path.search('public') > 0) {
         this.path = ['Public']
-        this.$store.dispatch('story', this.$route.params.id).then((r) => {
+        this.$store.dispatch('story', this.$route.params.id).then(r => {
           let promises = []
           for (let b in r.blocks) {
             let c = {
@@ -174,14 +174,14 @@ export default {
             promises.push(this.$store.dispatch('block', c))
           }
 
-          Promise.all(promises).then((t) => {
+          Promise.all(promises).then(t => {
             this.$refs.featureBox.updateCards()
             this.$refs.navdir.populate()
           })
         })
       } else {
         if (this.$route.params.id) {
-          this.$store.dispatch('story', this.$route.params.id).then((r) => {
+          this.$store.dispatch('story', this.$route.params.id).then(r => {
             this.$refs.featureBox.updateCards()
             if (this.$refs.navdir) {
               this.$refs.navdir.populate()
