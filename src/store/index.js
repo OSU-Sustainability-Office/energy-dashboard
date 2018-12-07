@@ -183,7 +183,7 @@ export default new Vuex.Store({
       })
     },
 
-    stories: (context) => {
+    stories: context => {
       return new Promise((resolve, reject) => {
         if (context.getters.stories.length > 0) {
           resolve(context.getters.stories)
@@ -279,7 +279,7 @@ export default new Vuex.Store({
               const paramString = '?id=' + meter.meter_id + '&startDate=' + start.toISOString() + '&endDate=' + end.toISOString() + '&point=' + block.charts[chartIndex].point
               chartPromises.push(axios(process.env.ROOT_API + '/energy/data' + paramString, { method: 'get', data: null, withCredentials: true }))
             }
-            Promise.all(chartPromises).then((r) => {
+            Promise.all(chartPromises).then(r => {
               let finalData = []
               const map = {
                 pf_a: 1,
@@ -549,6 +549,59 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         axios.get(process.env.ROOT_API + '/energy/meters?id=' + payload.id).then(val => {
           resolve(val.data)
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    metersByBuilding: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios.get(process.env.ROOT_API + '/energy/metersbybuilding').then(val => {
+          let returnedObject = {}
+          for (let entry of val.data) {
+            if (!returnedObject[entry.building_name]) {
+              returnedObject[entry.building_name] = [{ id: entry.id, name: entry.meter_name }]
+            } else {
+              returnedObject[entry.building_name].push({ id: entry.id, name: entry.meter_name })
+            }
+          }
+          resolve(returnedObject)
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    meterPoints: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios.get(process.env.ROOT_API + '/energy/meterPoints?id=' + payload.id).then(val => {
+          resolve(val.data)
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    alerts: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios.get(process.env.ROOT_API + '/energy/alerts', { withCredentials: true }).then(val => {
+          resolve(val.data)
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    newAlert: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios(process.env.ROOT_API + '/energy/alert', { method: 'post', data: { meter_id: payload.meter_id }, withCredentials: true }).then(res => {
+          resolve(res.data.id)
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    deleteAlert: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios(process.env.ROOT_API + '/energy/alert', { method: 'delete', data: { id: payload.id }, withCredentials: true }).then(res => {
+          resolve()
         }).catch(e => {
           reject(e)
         })

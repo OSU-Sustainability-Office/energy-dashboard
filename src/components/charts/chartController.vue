@@ -53,7 +53,7 @@ export default {
     }
   },
   created () {
-    this.$eventHub.$on('loadingData', (ind) => {
+    this.$eventHub.$on('loadingData', ind => {
 
       // this.loading = true
     })
