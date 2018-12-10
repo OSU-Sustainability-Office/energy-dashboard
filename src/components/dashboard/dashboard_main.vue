@@ -1,11 +1,11 @@
 <template>
   <el-row class='stage'>
-    <el-col :span='4' class='full-height'>
+    <el-col :span='4' class='full-height' v-if='user.privilege >= 2'>
       <sideview v-model='index'/>
     </el-col>
-    <el-col :span='20' class='full-height'>
+    <el-col :span='(user.privilege >= 2)?20:24' class='full-height'>
       <directory v-if='index === "views"'/>
-      <alerts v-if='index === "alerts"'/>
+      <alerts v-if='index === "alerts" && user.privilege >= 2'/>
     </el-col>
   </el-row>
 </template>
@@ -15,11 +15,18 @@ import sideview from '@/components/dashboard/dashboard_sideview.vue'
 import alerts from '@/components/dashboard/dashboard_alerts.vue'
 import directory from '@/components/directory/directoryPrivate.vue'
 
+import { mapGetters } from 'vuex'
+
 export default {
   components: {
     sideview,
     directory,
     alerts
+  },
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
   },
   data () {
     return {

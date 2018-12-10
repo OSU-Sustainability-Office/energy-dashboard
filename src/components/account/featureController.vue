@@ -8,58 +8,25 @@
       </el-row>
       <el-form ref='form' :model='form[currentIndex]' label-width="120px" size='large' label-position='left'>
         <el-form-item v-if='!story.public' prop='group' label='Building: ' :rules="{required: true, message: 'A building is required', trigger: 'blur'}">
-          <!-- <label class='col-4'>Building: </label> -->
-          <el-select ref="groups" v-model="form[currentIndex].group" filterable placeholder="Building" style='width: 100%;' @change='form[currentIndex].meter = 0'>
+          <el-select ref="groups" v-model="form[currentIndex].group" filterable placeholder="Building" style='width: 100%;' @change='form[currentIndex].meter = 0; form[currentIndex].point = null'>
             <el-option v-for='(item, index) in buildings' :key='index' :label='item.name' :value='item.id'></el-option>
           </el-select>
         </el-form-item>
         <el-form-item v-if='!story.public' prop='name' label='Set Name: ' :rules="{required: true, message: 'A set name is required', trigger: 'blur'}">
-          <!-- <label class='col-4'>Name:</label> -->
           <el-input type="text" v-model="form[currentIndex].name" style='width: 100%;'></el-input>
         </el-form-item>
 
         <el-form-item :rules="{required: true, message: 'A measurement is required', trigger: 'blur'}" prop='point' label='Measurement: '>
-          <!-- <label class='col-4'>Point: </label> -->
           <el-select v-model="form[currentIndex].point" style='width: 100%;'>
-            <!-- Electrical Meter Options -->
-            <el-option value="accumulated_real" v-if="currentType === 'e'" label='Net Energy Usage (kWh)'></el-option>
-            <el-option value="real_power" v-if="currentType === 'e'" label='Real Power (W)'></el-option>
-            <el-option value="reactive_power" v-if="currentType === 'e'" label='Reactive Power (VAR)'></el-option>
-            <el-option value="apparent_power" v-if="currentType === 'e'" label='Apparent Power (VA)'></el-option>
-            <el-option value="real_a" v-if="currentType === 'e'" label='Real Power, Phase A (W)'></el-option>
-            <el-option value="real_b" v-if="currentType === 'e'" label='Real Power, Phase B (W)'></el-option>
-            <el-option value="real_c" v-if="currentType === 'e'" label='Real Power, Phase C (W)'></el-option>
-            <el-option value="reactive_a" v-if="currentType === 'e'" label='Reactive Power, Phase A (VAR)'></el-option>
-            <el-option value="reactive_b" v-if="currentType === 'e'" label='Reactive Power, Phase B (VAR)'></el-option>
-            <el-option value="reactive_c" v-if="currentType === 'e'" label='Reactive Power, Phase C (VAR)'></el-option>
-            <el-option value="apparent_a" v-if="currentType === 'e'" label='Apparent Power, Phase A (VA)'></el-option>
-            <el-option value="apparent_b" v-if="currentType === 'e'" label='Apparent Power, Phase B (VA)'></el-option>
-            <el-option value="apparent_c" v-if="currentType === 'e'" label='Apparent Power, Phase C (VA)'></el-option>
-            <el-option value="pf_a" v-if="currentType === 'e'" label='Power Factor, Phase A'></el-option>
-            <el-option value="pf_b" v-if="currentType === 'e'" label='Power Factor, Phase B'></el-option>
-            <el-option value="pf_c" v-if="currentType === 'e'" label='Power Factor, Phase C'></el-option>
-            <el-option value="vphase_ab" v-if="currentType === 'e'" label='Voltage Phase, Phase A-B (V)'></el-option>
-            <el-option value="vphase_bc" v-if="currentType === 'e'" label='Voltage Phase, Phase B-C (V)'></el-option>
-            <el-option value="vphase_ac" v-if="currentType === 'e'" label='Voltage Phase, Phase A-C (V)'></el-option>
-            <el-option value="vphase_an" v-if="currentType === 'e'" label='Voltage Phase, Phase A-N (V)'></el-option>
-            <el-option value="vphase_bn" v-if="currentType === 'e'" label='Voltage Phase, Phase B-N (V)'></el-option>
-            <el-option value="vphase_cn" v-if="currentType === 'e'" label='Voltage Phase, Phase C-N (V)'></el-option>
-            <el-option value="cphase_a" v-if="currentType === 'e'" label='Current Phase, Phase A (A)'></el-option>
-            <el-option value="cphase_b" v-if="currentType === 'e'" label='Current Phase, Phase B (A)'></el-option>
-            <el-option value="cphase_c" v-if="currentType === 'e'" label='Current Phase, Phase C (A)'></el-option>
-
-            <!-- Gas Meter Options -->
-            <el-option value="cubic_feet" v-if="currentType === 'g'" label='Accumulated Usage'></el-option>
-
-            <!-- Steam Meter Options -->
-            <el-option value="total" v-if="currentType === 's'" label='Accumulated Usage'></el-option>
+            <!-- Meter Measurements -->
+            <el-option v-for='(point, index) in meterPoints' :value='point' :label='$store.getters.mapPoint(point)' :key='index'>
+            </el-option>
 
           </el-select>
         </el-form-item>
 
         <el-form-item prop='meter' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
-          <!-- <label class='col-4'>Meter: </label> -->
-          <el-select ref="submeters" v-model="form[currentIndex].meter" style='width: 100%;'>
+          <el-select ref="submeters" v-model="form[currentIndex].meter" style='width: 100%;' @change='form[currentIndex].point = null'>
             <el-option :value='0' label='All'></el-option>
             <el-option v-for='(item, index) in buildingMeters' :key='index' :label='item.name' :value='item.meter_id'></el-option>
           </el-select>
@@ -94,7 +61,7 @@ export default {
       oldStart: null,
       oldEnd: null,
       test: '',
-
+      points: {},
       meter: [],
       name: [],
       point: [],
@@ -106,15 +73,10 @@ export default {
     // Populate Temporary Data
     if (this.index < this.story.blocks.length) {
       for (let chart of this.block(this.index).charts) {
-        // Meter
-        let meter = 0
-        if (chart.meters.length === 1) {
-          meter = chart.meters[0].meter_id
-        }
         // Name
         this.form.push({
           name: chart.name,
-          meter: meter,
+          meter: chart.meter,
           point: chart.point,
           group: chart.group_id,
           id: chart.id
@@ -142,6 +104,18 @@ export default {
           return
         }
         return this.$store.dispatch('buildingMeters', { id: this.form[this.currentIndex].group })
+      }
+    },
+    meterPoints: {
+      get: function () {
+        if (this.form.length === 0) {
+          return
+        }
+        if (this.form[this.currentIndex].meter) {
+          return this.$store.dispatch('meterPoints', { id: this.form[this.currentIndex].meter })
+        } else {
+          return ['accumulated_real']
+        }
       }
     }
   },
@@ -183,14 +157,14 @@ export default {
       })
     },
     changeIndex: function (index) {
-      this.$refs.form.validate((valid) => {
+      this.$refs.form.validate(valid => {
         if (valid) {
           this.currentIndex = index
         }
       })
     },
     addGroup: function () {
-      this.$refs.form.validate((valid) => {
+      this.$refs.form.validate(valid => {
         if (valid) {
           this.form.push({
             meter: null,

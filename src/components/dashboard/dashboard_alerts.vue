@@ -1,22 +1,22 @@
 <template>
   <el-row class='stage'>
     <el-col :span='24'>
-      <el-row class='alertrow' v-for='item in alerts' :key='item.id' :span='24'>
+      <el-row class='alertrow' v-for='(item, index) in alerts' :key='item.id' :span='24'>
         <el-col :span='4' class='alertmeter'>
           {{ item.building_name }}
           <br />
           <span class='metername'>{{ item.meter_name }}</span>
         </el-col>
         <el-col :span='16'>
-          <el-form :inline="true" :model="alertForm[item.id]" class="form-inline">
+          <el-form :inline="true" :model="alertForm[item.id]" class="form-inline" ref="alertForm">
             <el-form-item label='Measurement: ' :rules="{required: true, message: 'A measurement is required', trigger: 'blur'}">
-              <el-select v-model='item.point'>
-                <el-option v-for='(point, index) in points[item.meter_id]' :value='point' :label='point' :key='index'>
+              <el-select v-model='item.point' @change='updateAlert(item, index)'>
+                <el-option v-for='(point, index) in points[item.meter_id]' :value='point' :label='$store.getters.mapPoint(point)' :key='index'>
                 </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label='Threshold: '>
-              <el-input-number v-model='item.threshold'></el-input-number>
+              <el-input-number v-model='item.threshold' @change='updateAlert(item, index)'></el-input-number>
             </el-form-item>
           </el-form>
         </el-col>
@@ -41,7 +41,7 @@
               </el-form-item>
               <el-form-item label='Measurement: ' :rules="{required: true, message: 'A measurement is required', trigger: 'blur'}">
                 <el-select v-model='newAlertForm.point' :key='updatePoint'>
-                  <el-option v-for='point in points[newAlertForm.meter]' :value='point' :label='point' :key='point'>
+                  <el-option v-for='point in points[newAlertForm.meter]' :value='point' :label='$store.getters.mapPoint(point)' :key='point'>
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -76,7 +76,8 @@ export default {
       meters: {},
       points: {},
       alertForm: {},
-      updatePoint: false
+      updatePoint: false,
+      timeoutMap: {}
     }
   },
   mounted () {
@@ -134,6 +135,24 @@ export default {
             this.updated = !this.updated
             this.creationModal = false
           })
+        }
+      })
+    },
+    updateAlert: function (item, index) {
+      if (this.timeoutMap[item.id]) {
+        clearTimeout(this.timeoutMap[item.id])
+      }
+      this.$refs.alertForm[index].validate(valid => {
+        if (valid) {
+          this.timeoutMap[item.id] = setTimeout(() => {
+            const payload = {
+              id: item.id,
+              point: item.point,
+              threshold: item.threshold
+            }
+            this.$store.dispatch('updateAlert', payload)
+            this.timeoutMap[item.id] = null
+          }, 500)
         }
       })
     },

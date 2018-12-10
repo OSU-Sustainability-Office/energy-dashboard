@@ -41,6 +41,41 @@ export default new Vuex.Store({
     },
     data: state => (blockIndex, chartIndex) => {
       return state.currentStory.blocks[blockIndex].charts[chartIndex].data
+    },
+    // COMMON FUNCTIONS
+    mapPoint: state => point => {
+      const map = {
+        accumulated_real: 'Net Energy Usage (kWh)',
+        real_power: 'Real Power (W)',
+        reactive_power: 'Reactive Power (VAR)',
+        apparent_power: 'Apparent Power (VA)',
+        real_a: 'Real Power, Phase A (kW)',
+        real_b: 'Real Power, Phase B (kW)',
+        real_c: 'Real Power, Phase C (kW)',
+        reactive_a: 'Reactive Power, Phase A (kVAR)',
+        reactive_b: 'Reactive Power, Phase B (kVAR)',
+        reactive_c: 'Reactive Power, Phase C (kVAR)',
+        pf_a: 'Power Factor, Phase A',
+        pf_b: 'Power Factor, Phase B',
+        pf_c: 'Power Factor, Phase C',
+        vphase_ab: 'Voltage, Phase A-B (V)',
+        vphase_bc: 'Voltage, Phase B-C (V)',
+        vphase_ac: 'Voltage, Phase A-C (V)',
+        vphase_an: 'Voltage, Phase A-N (V)',
+        vphase_bn: 'Voltage, Phase B-N (V)',
+        vphase_cn: 'Voltage, Phase C-N (V)',
+        cphase_a: 'Current, Phase A (A)',
+        cphase_b: 'Current, Phase B (A)',
+        cphase_c: 'Current, Phase C (A)',
+        cubic_feet: 'Total Natural Gas (CF)',
+        maximum: 'Maximum',
+        minimum: 'Minimum',
+        rate: 'Natural Gas Rate (CFm)',
+        total: 'Steam (Lbs)',
+        input: 'Steam Input'
+      }
+
+      return map[point]
     }
   },
   mutations: {
@@ -141,6 +176,7 @@ export default new Vuex.Store({
           })
           axios(process.env.ROOT_API + '/energy/story?id=' + id, { method: 'get', data: null, withCredentials: true }).then(res => {
             let story = res.data
+            console.log(JSON.parse(JSON.stringify(res.data)))
             for (let chart of story.openCharts) {
               let b = story.blocks.find(el => el.id === chart.block_id)
               // First put meters into charts
@@ -154,8 +190,7 @@ export default new Vuex.Store({
                   }
                 }
               }
-              // Then put charts into blocks & clean boy
-              delete chart.meter
+              // Then put charts into blocks
               if (b.charts) {
                 b.charts.push(chart)
               } else {
@@ -350,6 +385,7 @@ export default new Vuex.Store({
           resolve(context.getters.user)
         } else {
           axios(process.env.ROOT_API + '/energy/user', { method: 'get', data: null, withCredentials: true }).then(res => {
+            console.log(res.data)
             context.commit('loadUser', res.data)
             resolve(context.getters.user)
           }).catch(e => {
@@ -490,11 +526,7 @@ export default new Vuex.Store({
     },
     createChart: (context, payload) => {
       return new Promise((resolve, reject) => {
-        let meter = 0
-        if (payload.meters.length === 1) {
-          meter = payload.meters[0].meter_id
-        }
-        axios(process.env.ROOT_API + '/energy/chart', { method: 'post', data: { block_id: payload.block_id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: meter }, withCredentials: true }).then(res => {
+        axios(process.env.ROOT_API + '/energy/chart', { method: 'post', data: { block_id: payload.block_id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: payload.meter }, withCredentials: true }).then(res => {
           context.commit('setChartId', { block_index: payload.index, chart_index: payload.chartIndex, id: res.data.id })
           resolve(res.data.id)
         }).catch(e => {
@@ -504,11 +536,7 @@ export default new Vuex.Store({
     },
     updateChart: (context, payload) => {
       return new Promise((resolve, reject) => {
-        let meter = 0
-        if (payload.meters.length === 1) {
-          meter = payload.meters[0].meter_id
-        }
-        axios(process.env.ROOT_API + '/energy/chart', { method: 'put', data: { id: payload.id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: meter }, withCredentials: true }).then(res => {
+        axios(process.env.ROOT_API + '/energy/chart', { method: 'put', data: { id: payload.id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: payload.meter }, withCredentials: true }).then(res => {
           resolve()
         }).catch(e => {
           reject(e)
@@ -591,8 +619,17 @@ export default new Vuex.Store({
     },
     newAlert: (context, payload) => {
       return new Promise((resolve, reject) => {
-        axios(process.env.ROOT_API + '/energy/alert', { method: 'post', data: { meter_id: payload.meter_id }, withCredentials: true }).then(res => {
+        axios(process.env.ROOT_API + '/energy/alert', { method: 'post', data: payload, withCredentials: true }).then(res => {
           resolve(res.data.id)
+        }).catch(e => {
+          reject(e)
+        })
+      })
+    },
+    updateAlert: (context, payload) => {
+      return new Promise((resolve, reject) => {
+        axios(process.env.ROOT_API + '/energy/alert', { method: 'put', data: payload, withCredentials: true }).then(res => {
+          resolve()
         }).catch(e => {
           reject(e)
         })
