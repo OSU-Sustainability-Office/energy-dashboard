@@ -114,7 +114,7 @@ export default {
         if (block.id === null) {
           this.$store.dispatch('createBlock', block).then(() => {
             for (let chart of block.charts) {
-              promises.push(this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meters: chart.meters }))
+              promises.push(this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meter: chart.meter }))
             }
           })
         } else {
@@ -123,7 +123,7 @@ export default {
               if (chart.id) {
                 promises.push(this.$store.dispatch('updateChart', chart))
               } else {
-                promises.push(this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meters: chart.meters }))
+                promises.push(this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meter: chart.meter }))
               }
             }
           })

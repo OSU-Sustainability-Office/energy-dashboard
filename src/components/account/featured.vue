@@ -142,20 +142,13 @@ export default {
             name: chart.name,
             group_id: chart.group,
             point: chart.point,
+            meter: chart.meter,
             meters: []
           }
           if (chart.meter === 0) {
             newChart.meters = newChart.meters.concat(meters.filter(e => e.type === 'e'))
-            newChart.point = 'accumulated_real'
           } else {
             newChart.meters.push(meters.find(e => e.meter_id === chart.meter))
-            if (newChart.meters[0].type === 'e') {
-              newChart.point = 'accumulated_real'
-            } else if (newChart.meters[0].type === 's') {
-              newChart.point = 'total'
-            } else {
-              newChart.point = 'cubic_feet'
-            }
           }
           card.charts.push(newChart)
         }
@@ -239,7 +232,7 @@ export default {
         this.$refs.featureController.form = []
         for (const chart of this.block(index).charts) {
           const newChart = {
-            meter: (chart.meters.length > 1) ? 0 : chart.meters[0].meter_id,
+            meter: chart.meter,
             name: chart.name,
             group: chart.group_id,
             point: chart.point,

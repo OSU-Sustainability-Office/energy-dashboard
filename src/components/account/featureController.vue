@@ -9,7 +9,7 @@
       <el-form ref='form' :model='form[currentIndex]' label-width="120px" size='large' label-position='left'>
         <el-form-item v-if='!story.public' prop='group' label='Building: ' :rules="{required: true, message: 'A building is required', trigger: 'blur'}">
           <!-- <label class='col-4'>Building: </label> -->
-          <el-select ref="groups" v-model="form[currentIndex].group" filterable placeholder="Building" style='width: 100%;' @change='form[currentIndex].meter = 0'>
+          <el-select ref="groups" v-model="form[currentIndex].group" filterable placeholder="Building" style='width: 100%;' @change='form[currentIndex].meter = 0; form[currentIndex].point = "accumulated_real"; currentType = "e"'>
             <el-option v-for='(item, index) in buildings' :key='index' :label='item.name' :value='item.id'></el-option>
           </el-select>
         </el-form-item>
@@ -59,7 +59,7 @@
 
         <el-form-item prop='meter' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
           <!-- <label class='col-4'>Meter: </label> -->
-          <el-select ref="submeters" v-model="form[currentIndex].meter" style='width: 100%;'>
+          <el-select ref="submeters" v-model="form[currentIndex].meter" style='width: 100%;' @change='form[currentIndex].point = null; currentType = typeByMeter(form[currentIndex].meter)'>
             <el-option :value='0' label='All'></el-option>
             <el-option v-for='(item, index) in buildingMeters' :key='index' :label='item.name' :value='item.meter_id'></el-option>
           </el-select>
@@ -106,15 +106,10 @@ export default {
     // Populate Temporary Data
     if (this.index < this.story.blocks.length) {
       for (let chart of this.block(this.index).charts) {
-        // Meter
-        let meter = 0
-        if (chart.meters.length === 1) {
-          meter = chart.meters[0].meter_id
-        }
         // Name
         this.form.push({
           name: chart.name,
-          meter: meter,
+          meter: chart.meter,
           point: chart.point,
           group: chart.group_id,
           id: chart.id
@@ -160,6 +155,11 @@ export default {
       }
     }
   },
+  watch: {
+    currentIndex: function (value) {
+      this.currentType = this.typeByMeter(this.form[this.currentIndex].meter)
+    }
+  },
   methods: {
     meters: function (i) {
       return new Promise((resolve, reject) => {
@@ -189,6 +189,15 @@ export default {
         }
       })
     },
+    typeByMeter: function (id) {
+      if (id === 7 || id === 29) {
+        return 's'
+      } else if (id === 52) {
+        return 'g'
+      } else {
+        return 'e'
+      }
+    },
     addGroup: function () {
       this.$refs.form.validate((valid) => {
         if (valid) {
@@ -209,6 +218,7 @@ export default {
           point: this.form[i].point,
           group_id: this.form[i].group,
           name: this.form[i].name,
+          meter: this.form[i].meter,
           meters: await this.meters(i),
           id: this.form[i].id
         })

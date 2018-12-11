@@ -155,7 +155,6 @@ export default new Vuex.Store({
                 }
               }
               // Then put charts into blocks & clean boy
-              delete chart.meter
               if (b.charts) {
                 b.charts.push(chart)
               } else {
@@ -490,11 +489,7 @@ export default new Vuex.Store({
     },
     createChart: (context, payload) => {
       return new Promise((resolve, reject) => {
-        let meter = 0
-        if (payload.meters.length === 1) {
-          meter = payload.meters[0].meter_id
-        }
-        axios(process.env.ROOT_API + '/energy/chart', { method: 'post', data: { block_id: payload.block_id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: meter }, withCredentials: true }).then(res => {
+        axios(process.env.ROOT_API + '/energy/chart', { method: 'post', data: { block_id: payload.block_id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: payload.meter }, withCredentials: true }).then(res => {
           context.commit('setChartId', { block_index: payload.index, chart_index: payload.chartIndex, id: res.data.id })
           resolve(res.data.id)
         }).catch(e => {
@@ -504,11 +499,7 @@ export default new Vuex.Store({
     },
     updateChart: (context, payload) => {
       return new Promise((resolve, reject) => {
-        let meter = 0
-        if (payload.meters.length === 1) {
-          meter = payload.meters[0].meter_id
-        }
-        axios(process.env.ROOT_API + '/energy/chart', { method: 'put', data: { id: payload.id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: meter }, withCredentials: true }).then(res => {
+        axios(process.env.ROOT_API + '/energy/chart', { method: 'put', data: { id: payload.id, group_id: payload.group_id, name: payload.name, point: payload.point, meter: payload.meter }, withCredentials: true }).then(res => {
           resolve()
         }).catch(e => {
           reject(e)
