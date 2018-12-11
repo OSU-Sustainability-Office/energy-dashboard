@@ -33,7 +33,10 @@
             </el-col>
           </el-row>
           <el-row class="buttons">
-            <el-col :span='24'>
+            <el-col :span='12'>
+              <el-button class='bigButton' @click="$emit('startCompare')">Compare</el-button>
+            </el-col>
+            <el-col :span='12'>
               <el-button class='bigButton' @click='$router.push({path: `/public/${storyId}/${currentRange}`})'>View Full Graph</el-button>
             </el-col>
           </el-row>
@@ -273,12 +276,14 @@ export default {
   position: absolute;
   left: 8px;
 }
-
+.buttons > * {
+  text-align: center;
+}
 .bigButton {
   background-color: $--color-black;
   color: darken($--color-white, 30%);
   border-color: darken($--color-white, 30%);
-  width: 100%;
+  width: 98%;
 }
 .bigButton:hover {
   background-color: #000;

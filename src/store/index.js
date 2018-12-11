@@ -404,13 +404,11 @@ export default new Vuex.Store({
           blockIndex: payload.index,
           chartIndex: l,
           data: {
-            name: 'New Chart',
-            group_id: 9,
-            point: 'accumulated_real',
-            meters: [
-              { meter_id: 8, operation: 1 },
-              { meter_id: 9, operation: 1 }
-            ]
+            name: payload.name,
+            group_id: payload.group,
+            point: payload.point,
+            meter: payload.meter,
+            meters: payload.meters
           }
         })
         context.dispatch('block', { index: payload.index }).then(() => {
