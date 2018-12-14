@@ -142,7 +142,7 @@ export default {
       }
       Promise.all(promises).then(() => {
         for (let controller of this.$refs.chartController) {
-          controller.parseDataBarLine()
+          controller.parse()
         }
       }).catch(e => {
         console.log(e.message)
@@ -165,7 +165,7 @@ export default {
 
       Promise.all(promises).then(() => {
         for (let controller of this.$refs.chartController) {
-          controller.parseDataBarLine()
+          controller.parse()
         }
       })
     })

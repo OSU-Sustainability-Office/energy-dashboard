@@ -3,13 +3,24 @@
     <el-col :span='24' class='innerContent'>
       <el-row class='title'>
         <el-col :span='23'>
-          Kelley Engineering Center Vs Dixon Recreation Center
+          {{oldName}} Vs {{newName}}
         </el-col>
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="$emit('hide')"></i></el-col>
       </el-row>
       <el-row class='pics'>
         <el-col :span='24'>
-          <div class='rightSlopeUp'></div><div class='leftSlopeDown'></div>
+          <div class='rightSlopeUp' :style='`background-image: url("https://api.sustainability.oregonstate.edu/energy/images/${oldMedia}");`'></div><div class='leftSlopeDown' :style='`background-image: url("https://api.sustainability.oregonstate.edu/energy/images/${newMedia}");`'></div>
+        </el-col>
+      </el-row>
+      <el-row class='buttons'>
+        <el-col :span='8' class='rangeButtonParent'>
+          <el-button class='rangeButton' @click='currentRange = 0' v-bind:class="{ active: currentRange == 0 }">Week</el-button>
+        </el-col>
+        <el-col :span='8' class='rangeButtonParent'>
+          <el-button class='rangeButton' @click='currentRange = 1' v-bind:class="{ active: currentRange == 1 }">Month</el-button>
+        </el-col>
+        <el-col :span='8' class='rangeButtonParent'>
+          <el-button class='rangeButton' @click='currentRange = 2' v-bind:class="{ active: currentRange == 2 }">Year</el-button>
         </el-col>
       </el-row>
       <el-row class='grid'>
@@ -34,7 +45,45 @@ export default {
   props: ['compareStory', 'storyId'],
   data () {
     return {
-      currentRange: 0
+      currentRange: 1,
+      oldName: null,
+      oldMedia: null,
+      newMedia: null,
+      newName: null
+    }
+  },
+  watch: {
+    currentRange: function (value) {
+      value = parseInt(value)
+      let i = 0
+      let u = 0
+      if (value === 0) {
+        i = 6
+        u = 'hour'
+      } else if (value === 1) {
+        i = 1
+        u = 'day'
+      } else if (value === 2) {
+        i = 15
+        u = 'day'
+      }
+      let promises = []
+      for (let b of this.$store.getters.story.blocks) {
+        let c = {
+          index: b.index,
+          date_interval: i,
+          interval_unit: u,
+          date_start: this.dateOffset()
+        }
+
+        promises.push(this.$store.dispatch('block', c))
+      }
+      Promise.all(promises).then(() => {
+        this.$refs.pieChartController.parse()
+        this.$refs.lineChartController.parse()
+      }).catch(e => {
+        console.log(e.message)
+      })
     }
   },
   computed: {
@@ -44,9 +93,16 @@ export default {
     ])
   },
   mounted () {
+    this.$nextTick(() => {
+      this.$refs.pieChartController.colors = this.$refs.lineChartController.colors
+    })
     this.$store.dispatch('story', this.storyId).then(async () => {
+      this.oldName = this.story.name
+      this.oldMedia = this.story.media
       let chartCopy = JSON.parse(JSON.stringify(this.story.blocks[0].charts[0]))
       await this.$store.dispatch('story', this.compareStory)
+      this.newName = this.story.name
+      this.newMedia = this.story.media
       await this.$store.dispatch('addChart', {
         index: 0,
         name: chartCopy.name,
@@ -55,7 +111,7 @@ export default {
         meter: chartCopy.meter,
         meters: chartCopy.meters
       })
-      await this.$store.dispatch('block', { index: this.story.blocks[0], date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' })
+      await this.$store.dispatch('block', { index: 0, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' })
 
       this.$refs.lineChartController.parse()
       this.$refs.pieChartController.parse()
@@ -116,7 +172,7 @@ export default {
 }
 .pics > .el-col {
   position: relative;
-  height: 250px;
+  height: 220px;
   background-color: $--color-white;
 }
 .pics {
@@ -132,7 +188,6 @@ $border-width: 3px;
   left: 0;
   display: inline-block;
   clip-path: polygon(0% 0%, 0% 100%, 100% 100%, calc(100% - #{$slope}) 0%);
-  background-image: url('https://api.sustainability.oregonstate.edu/energy/images/heathermiller_20180425_030.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -151,7 +206,36 @@ $border-width: 3px;
   background-size: cover;
   background-position: center;
 }
+.buttons {
+  padding: 1em;
+}
 
+.rangeButtonParent {
+  padding: 0.2em;
+}
+.rangeButton {
+  background-color: $--color-black;
+  color: darken($--color-white, 30%);
+  border-color: darken($--color-white, 30%);
+  width: 100%;
+}
+.rangeButton:not(.active):hover {
+  background-color: #000;//darken($--color-primary, 10%);
+  color: $--color-white;
+  border-color: $--color-white;
+}
+.rangeButton.active {
+  background-color: $--color-primary;
+  color: $--color-white;
+  border-color: $--color-white;
+}
+.rangeButton.active:hover {
+  background-color: $--color-primary;
+  color: $--color-white;
+  border-color: $--color-white;
+}
 .grid > .el-col {
+  padding: 1em;
+  padding-bottom: 3em;
 }
 </style>
