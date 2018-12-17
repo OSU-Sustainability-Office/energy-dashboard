@@ -1,3 +1,11 @@
+/**
+ * @Author: Brogan Miner <Brogan>
+ * @Date:   2018-12-13T17:14:29-08:00
+ * @Email:  brogan.miner@oregonstate.edu
+ * @Last modified by:   Brogan
+ * @Last modified time: 2018-12-17T12:28:51-08:00
+ */
+
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
@@ -272,7 +280,8 @@ export default new Vuex.Store({
             let chartPromises = []
             for (let meter of block.charts[chartIndex].meters) {
               let start = new Date(block.date_start)
-              start.setTime(start.getTime() + start.getTimezoneOffset() * 60 * 1000)
+              // Get One extra element
+              start.setTime(start.getTime() + start.getTimezoneOffset() * 60 * 1000 - (15 * 60 * 1000))
               let end = new Date(block.date_end)
               end.setTime(end.getTime() + end.getTimezoneOffset() * 60 * 1000)
               const paramString = '?id=' + meter.meter_id + '&startDate=' + start.toISOString() + '&endDate=' + end.toISOString() + '&point=' + block.charts[chartIndex].point
@@ -327,6 +336,12 @@ export default new Vuex.Store({
                   }
                 }
               }
+              if (block.charts[chartIndex].point === 'accumulated_real' || block.charts[chartIndex].point === 'total' || block.charts[chartIndex].point === 'cubic_feet') {
+                for (let i = finalData.length - 1; i > 0; i--) {
+                  finalData[i].y -= finalData[i - 1].y
+                }
+              }
+              finalData.splice(0, 1)
               block.charts[chartIndex].data = finalData
               resolve()
             }).catch(e => {
