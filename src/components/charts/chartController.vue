@@ -1,3 +1,10 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2018-12-13T17:14:29-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2018-12-17T19:13:53-08:00
+-->
 <template>
   <div element-loading-background="rgba(0, 0, 0, 0.8)">
     <linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
@@ -8,6 +15,7 @@
   </div>
 </template>
 <script>
+import moment from 'moment'
 import linechart from '@/components/charts/linechart.js'
 import barchart from '@/components/charts/barchart.js'
 import doughnutchart from '@/components/charts/doughnutchart.js'
@@ -116,14 +124,25 @@ export default {
         this.parseDataPieDoughnut()
       }
     },
-    checkInterval: function (date, unit, int) {
-      const ar = [date.slice(14, 16), date.slice(11, 13), date.slice(8, 10), date.slice(5, 7)]
-      for (let i = this.map[unit] - 1; i >= 0; i--) {
-        if (ar[i] !== '00') {
+    checkInterval: function (date, unit, int, start) {
+      if (int <= 15 && unit === 'minute') return false
+
+      const br = [start.getMinutes(), start.getHours(), moment(start).dayOfYear(), start.getMonth()]
+      const ar = [date.getMinutes(), date.getHours(), moment(date).dayOfYear(), date.getMonth()]
+      for (let i = this.map[unit]; i >= 0; i--) {
+        if (i === this.map[unit]) {
+          if ((ar[i] - br[i]) % int !== 0) {
+            return true
+          }
+        } else if (i === 0) {
+          if ((Math.floor(br[i] / 15) * 15 - ar[i]) !== 0) {
+            return true
+          }
+        } else if ((ar[i] - br[i]) !== 0) {
           return true
         }
       }
-      return (ar[this.map[unit]] % int)
+      return false
     },
     updateChart: function () {
       if (this.chart) { this.chart.update() }
@@ -149,7 +168,13 @@ export default {
           noDataCount++
           continue
         }
-        let value = piece.data[piece.data.length - 1].y - piece.data[0].y
+        let value = 0
+        for (let v of piece.data) {
+          value += v.y
+        }
+        if (piece.point !== 'accumulated_real' && piece.point !== 'total' && piece.point !== 'cubic_feet') {
+          value /= piece.data.length
+        }
         tempData.datasets[0].data.push(value)
         tempData.datasets[0].backgroundColor.push(this.colors[index])
         tempData.labels.push(piece.name)
@@ -181,50 +206,38 @@ export default {
 
         const unit = this.story.blocks[this.index].interval_unit
         const int = this.story.blocks[this.index].date_interval
+        const start = this.story.blocks[this.index].date_start
 
+        let lastIndex = 0
+        let runningTotal = 0
+        let newData = []
+        let startO = new Date(start)
         if (line.point === 'accumulated_real' || line.point === 'total' || line.point === 'cubic_feet') {
-          // Remove all elements from the end of data  that are within our interval
-          let offset = 0
-          while (this.checkInterval(data[data.length - (offset + 1)].x, unit, int)) {
-            offset++
-          }
-          data.splice(data.length - offset, offset)
-
-          // Set the offset to 1, the last element in the array is a valid date
-          offset = 1
-
-          // Loop through the array backwards, starting at length - 2 because that is the start of unchecked dates
-          for (let o = data.length - 2; o >= 0; o--) {
-            // if we find a valid date
-            if (!this.checkInterval(data[o].x, unit, int)) {
-              // get the difference from the last valid date to the current one
-              data[data.length - offset].y -= data[o].y
-
-              // increase the offset specifying that the number of valid dats has increased
-              offset++
-            } else {
-              // remove the element if it is not a valid date
-              data.splice(o, 1)
-            }
-          }
-
-          // remove the first element because we have nothing to compare it to
-          data.splice(0, 1)
-        } else {
-          let lastIndex = 0
-          let runningTotal = 0
-          let newData = []
           for (let i in data) {
-            if (!this.checkInterval(data[i].x, unit, int)) {
-              newData.push({ x: data[i].x, y: (data[i].y + runningTotal) / (i - lastIndex) })
+            let date = new Date(data[i].x)
+
+            if (!this.checkInterval(date, unit, int, startO)) {
+              if (date >= startO) newData.push({ x: data[i].x, y: (data[i].y + runningTotal) })
               lastIndex = i
               runningTotal = 0
             } else {
               runningTotal += data[i].y
             }
           }
-          data = newData
+        } else {
+          for (let i in data) {
+            let date = new Date(data[i].x)
+
+            if (!this.checkInterval(date, unit, int, start)) {
+              if (date >= startO) newData.push({ x: data[i].x, y: (data[i].y + runningTotal) / (i - lastIndex) })
+              lastIndex = i
+              runningTotal = 0
+            } else {
+              runningTotal += data[i].y
+            }
+          }
         }
+        data = newData
         tempData.datasets.push({
           label: line.name,
           data: data,

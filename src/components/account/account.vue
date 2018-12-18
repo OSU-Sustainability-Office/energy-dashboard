@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2018-12-17T14:07:35-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2018-12-17T16:35:24-08:00
+-->
+
 <template>
   <el-row class="stage">
     <el-col class='main'>
@@ -39,7 +47,6 @@ export default {
       get () {
         if (this.$route.path.search('public') > 0) {
           let d = new Date()
-          d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000)
           switch (parseInt(this.$route.params.range)) {
             case 0:
               d.setDate(d.getDate() - 7)
@@ -61,7 +68,6 @@ export default {
       get () {
         if (this.$route.path.search('public') > 0) {
           let d = new Date()
-          d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000)
           return d.toISOString()
         }
       }

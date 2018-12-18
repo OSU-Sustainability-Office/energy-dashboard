@@ -1,3 +1,11 @@
+/**
+ * @Author: Brogan Miner <Brogan>
+ * @Date:   2018-12-13T17:14:29-08:00
+ * @Email:  brogan.miner@oregonstate.edu
+ * @Last modified by:   Brogan
+ * @Last modified time: 2018-12-17T17:06:42-08:00
+ */
+
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
@@ -272,9 +280,23 @@ export default new Vuex.Store({
             let chartPromises = []
             for (let meter of block.charts[chartIndex].meters) {
               let start = new Date(block.date_start)
-              start.setTime(start.getTime() + start.getTimezoneOffset() * 60 * 1000)
+
+              // start.setTime(start.getTime() - start.getTimezoneOffset() * 120 * 1000)
+
+              // Get One extra element based on int and unit
+              start.setMinutes(start.getMinutes() - 15)
+              if (block.interval_unit === 'minute') {
+                start.setMinutes(start.getMinutes() - (block.date_interval - 15))
+              } else if (block.interval_unit === 'hour') {
+                start.setHours(start.getHours() - block.date_interval)
+              } else if (block.interval_unit === 'day') {
+                start.setDate(start.getDate() - block.date_interval)
+              } else if (block.interval_unit === 'month') {
+                start.setMonth(start.getMonth() - block.date_interval)
+              }
+
               let end = new Date(block.date_end)
-              end.setTime(end.getTime() + end.getTimezoneOffset() * 60 * 1000)
+              // end.setTime(end.getTime() + end.getTimezoneOffset() * 60 * 1000)
               const paramString = '?id=' + meter.meter_id + '&startDate=' + start.toISOString() + '&endDate=' + end.toISOString() + '&point=' + block.charts[chartIndex].point
               chartPromises.push(axios(process.env.ROOT_API + '/energy/data' + paramString, { method: 'get', data: null, withCredentials: true }))
             }
@@ -327,6 +349,12 @@ export default new Vuex.Store({
                   }
                 }
               }
+              if (block.charts[chartIndex].point === 'accumulated_real' || block.charts[chartIndex].point === 'total' || block.charts[chartIndex].point === 'cubic_feet') {
+                for (let i = finalData.length - 1; i > 0; i--) {
+                  finalData[i].y -= finalData[i - 1].y
+                }
+              }
+              finalData.splice(0, 1)
               block.charts[chartIndex].data = finalData
               resolve()
             }).catch(e => {
@@ -452,9 +480,9 @@ export default new Vuex.Store({
     createBlock: (context, payload) => {
       return new Promise((resolve, reject) => {
         let start = new Date(payload.date_start)
-        start.setTime(start.getTime() - start.getTimezoneOffset() * 60 * 1000)
+        // start.setTime(start.getTime() - start.getTimezoneOffset() * 60 * 1000)
         let end = new Date(payload.date_end)
-        end.setTime(end.getTime() - end.getTimezoneOffset() * 60 * 1000)
+        // end.setTime(end.getTime() - end.getTimezoneOffset() * 60 * 1000)
 
         axios(process.env.ROOT_API + '/energy/block', { method: 'post', data: { date_start: start.toISOString(), date_end: end.toISOString(), graph_type: payload.graph_type, story_id: payload.story_id, name: payload.name, date_interval: payload.date_interval, interval_unit: payload.interval_unit }, withCredentials: true }).then(res => {
           context.commit('setBlockId', { index: payload.index, id: res.data.id })
@@ -467,9 +495,9 @@ export default new Vuex.Store({
     updateBlock: (context, payload) => {
       return new Promise((resolve, reject) => {
         let start = new Date(payload.date_start)
-        start.setTime(start.getTime() - start.getTimezoneOffset() * 60 * 1000)
+        // start.setTime(start.getTime() - start.getTimezoneOffset() * 60 * 1000)
         let end = new Date(payload.date_end)
-        end.setTime(end.getTime() - end.getTimezoneOffset() * 60 * 1000)
+        // end.setTime(end.getTime() - end.getTimezoneOffset() * 60 * 1000)
 
         axios(process.env.ROOT_API + '/energy/block', { method: 'put', data: { id: payload.id, date_start: start.toISOString(), date_end: end.toISOString(), graph_type: payload.graph_type, story_id: payload.story_id, name: payload.name, date_interval: payload.date_interval, interval_unit: payload.interval_unit }, withCredentials: true }).then(res => {
           resolve()

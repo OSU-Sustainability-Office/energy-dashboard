@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2018-12-13T17:14:29-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2018-12-17T10:58:38-08:00
+-->
+
 <template>
   <el-container class='container'>
       <!-- Page Header -->
@@ -27,7 +35,7 @@
                   <storycard :name='story.name' :notools='(publicDir !== null)? 1:0' :media='story.media' :description='story.description' :story_id='story.id' class='storyCard' @click='$router.push({ path: (story.public)?`/public/${story.id}/1`:`/story/${story.id}`})' ref='card' />
                 </el-col>
                 <el-col v-if='!publicDir' :span='4' class='storyContainer'>
-                  <el-tooltip content="Create New Story" placement="top">
+                  <el-tooltip content="Create New View" placement="top">
                     <storycard :plus='true' :notools='1' class='storyCard' @click="openStoryEdit('', '', '', null)"/>
                   </el-tooltip>
                 </el-col>
