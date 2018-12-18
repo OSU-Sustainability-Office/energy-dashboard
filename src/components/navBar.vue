@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2018-11-29T12:53:21-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2018-12-17T19:18:42-08:00
+-->
+
 <template>
     <el-row class='sus-nav'>
       <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">
@@ -74,6 +82,7 @@ export default {
   z-index: 2000;
   padding-left: 2em;
   padding-right: 2em;
+  overflow: hidden;
 }
 .sus-nav-image {
   padding-top: ($--nav-height - 50) / 2;
@@ -92,6 +101,7 @@ export default {
 .el-menu-item {
   color: $--color-white !important;
   border: none !important;
+  height: 100% !important;
 }
 .sus-nav-menu > *:not(.is-active):hover {
   color: $--color-black !important;
@@ -117,6 +127,7 @@ export default {
   cursor: pointer;
   transition: color 0.2s ease;
   font-size: 1.1em;
+  text-overflow: ellipsis;
 }
 .sus-nav-sign:hover {
   color: #000000 !important;

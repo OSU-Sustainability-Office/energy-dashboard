@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2018-12-17T14:07:35-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2018-12-17T18:44:20-08:00
+-->
+
 <template>
     <el-row ref="controlArea">
       <el-row class="pad-bottom" ref="indexChooser" v-if='!story.public'>
@@ -16,6 +24,14 @@
         <el-form-item v-if='!story.public' prop='name' label='Set Name: ' :rules="{required: true, message: 'A set name is required', trigger: 'blur'}">
           <!-- <label class='col-4'>Name:</label> -->
           <el-input type="text" v-model="form[currentIndex].name" style='width: 100%;'></el-input>
+        </el-form-item>
+
+        <el-form-item prop='meter' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
+          <!-- <label class='col-4'>Meter: </label> -->
+          <el-select ref="submeters" v-model="form[currentIndex].meter" style='width: 100%;' @change='form[currentIndex].point = null; currentType = typeByMeter(form[currentIndex].meter)'>
+            <el-option :value='0' label='All'></el-option>
+            <el-option v-for='(item, index) in buildingMeters' :key='index' :label='item.name' :value='item.meter_id'></el-option>
+          </el-select>
         </el-form-item>
 
         <el-form-item :rules="{required: true, message: 'A measurement is required', trigger: 'blur'}" prop='point' label='Measurement: '>
@@ -54,14 +70,6 @@
             <!-- Steam Meter Options -->
             <el-option value="total" v-if="currentType === 's'" label='Accumulated Usage'></el-option>
 
-          </el-select>
-        </el-form-item>
-
-        <el-form-item prop='meter' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
-          <!-- <label class='col-4'>Meter: </label> -->
-          <el-select ref="submeters" v-model="form[currentIndex].meter" style='width: 100%;' @change='form[currentIndex].point = null; currentType = typeByMeter(form[currentIndex].meter)'>
-            <el-option :value='0' label='All'></el-option>
-            <el-option v-for='(item, index) in buildingMeters' :key='index' :label='item.name' :value='item.meter_id'></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -116,6 +124,7 @@ export default {
         })
       }
     } else {
+      this.form = []
       this.form.push({
         meter: null,
         name: null,

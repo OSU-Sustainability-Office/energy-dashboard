@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2018-12-17T12:54:45-08:00
+@Last modified time: 2018-12-17T19:13:53-08:00
 -->
 <template>
   <div element-loading-background="rgba(0, 0, 0, 0.8)">
@@ -15,6 +15,7 @@
   </div>
 </template>
 <script>
+import moment from 'moment'
 import linechart from '@/components/charts/linechart.js'
 import barchart from '@/components/charts/barchart.js'
 import doughnutchart from '@/components/charts/doughnutchart.js'
@@ -125,15 +126,16 @@ export default {
     },
     checkInterval: function (date, unit, int, start) {
       if (int <= 15 && unit === 'minute') return false
-      date = new Date(date)
 
-      start = new Date(start)
-      start.setTime(start.getTime() - 60 * 1000 * start.getTimezoneOffset())
-      const br = [start.getMinutes(), start.getHours(), start.getDate(), start.getMonth()]
-      const ar = [date.getMinutes(), date.getHours(), date.getDate(), date.getMonth()]
+      const br = [start.getMinutes(), start.getHours(), moment(start).dayOfYear(), start.getMonth()]
+      const ar = [date.getMinutes(), date.getHours(), moment(date).dayOfYear(), date.getMonth()]
       for (let i = this.map[unit]; i >= 0; i--) {
         if (i === this.map[unit]) {
           if ((ar[i] - br[i]) % int !== 0) {
+            return true
+          }
+        } else if (i === 0) {
+          if ((Math.floor(br[i] / 15) * 15 - ar[i]) !== 0) {
             return true
           }
         } else if ((ar[i] - br[i]) !== 0) {
@@ -166,7 +168,13 @@ export default {
           noDataCount++
           continue
         }
-        let value = piece.data[piece.data.length - 1].y - piece.data[0].y
+        let value = 0
+        for (let v of piece.data) {
+          value += v.y
+        }
+        if (piece.point !== 'accumulated_real' && piece.point !== 'total' && piece.point !== 'cubic_feet') {
+          value /= piece.data.length
+        }
         tempData.datasets[0].data.push(value)
         tempData.datasets[0].backgroundColor.push(this.colors[index])
         tempData.labels.push(piece.name)
@@ -203,10 +211,13 @@ export default {
         let lastIndex = 0
         let runningTotal = 0
         let newData = []
+        let startO = new Date(start)
         if (line.point === 'accumulated_real' || line.point === 'total' || line.point === 'cubic_feet') {
           for (let i in data) {
-            if (!this.checkInterval(data[i].x, unit, int, start)) {
-              newData.push({ x: data[i].x, y: (data[i].y + runningTotal) })
+            let date = new Date(data[i].x)
+
+            if (!this.checkInterval(date, unit, int, startO)) {
+              if (date >= startO) newData.push({ x: data[i].x, y: (data[i].y + runningTotal) })
               lastIndex = i
               runningTotal = 0
             } else {
@@ -215,8 +226,10 @@ export default {
           }
         } else {
           for (let i in data) {
-            if (!this.checkInterval(data[i].x, unit, int, start)) {
-              newData.push({ x: data[i].x, y: (data[i].y + runningTotal) / (i - lastIndex) })
+            let date = new Date(data[i].x)
+
+            if (!this.checkInterval(date, unit, int, start)) {
+              if (date >= startO) newData.push({ x: data[i].x, y: (data[i].y + runningTotal) / (i - lastIndex) })
               lastIndex = i
               runningTotal = 0
             } else {

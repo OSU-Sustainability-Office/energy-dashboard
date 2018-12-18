@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2018-12-17T14:07:35-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2018-12-17T19:39:50-08:00
+-->
+
 <template>
   <el-row class='stage'>
     <el-col class='main'>
@@ -106,14 +114,14 @@ export default {
           organizedData[0].push(chart.name + ' (' + map[chart.point] + ')')
           // Consider a better way for this
           let mappedData = organizedData.slice(1, organizedData.length).map(e => { return e[0] })
+          console.log(mappedData)
           for (let point of chart.data) {
-            if (mappedData.indexOf(point.x) < 0) {
-              let iDate = Date.parse(point.x)
+            let iDate = new Date(point.x)
+
+            if (mappedData.indexOf(iDate.toString()) < 0) {
               let index = 1
               if (!organizedData[index]) {
-                let d = new Date(point.x)
-                d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000)
-                organizedData.splice(index, 0, [d.toString(), point.y])
+                organizedData.splice(index, 0, [iDate.toString(), point.y])
                 continue
               }
               while (iDate > Date.parse(organizedData[index][0])) {
@@ -122,11 +130,9 @@ export default {
                 }
                 index++
               }
-              let d = new Date(point.x)
-              d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000)
-              organizedData.splice(index, 0, [d.toString(), point.y])
+              organizedData.splice(index, 0, [iDate.toString(), point.y])
             } else {
-              organizedData[mappedData.indexOf(point.x) + 1].push(point.y)
+              organizedData[mappedData.indexOf(iDate.toString()) + 1].push(point.y)
             }
           }
         }

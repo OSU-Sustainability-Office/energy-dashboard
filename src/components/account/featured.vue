@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2018-12-17T14:07:35-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2018-12-17T18:42:39-08:00
+-->
+
 <template>
 <el-row class='stage'>
 <el-col :span='1'>
@@ -19,12 +27,12 @@
         </el-form-item>
         <el-form-item label='From Date: ' :rules="[{validator: dateValidator, type: 'date', required: true, message: 'A from date is required', trigger: 'change'}]" prop='start'>
           <!-- <label class='col-4 text-left'>From Date: </label> -->
-          <el-date-picker v-model='form.start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z' style='width: 100%;'>
+          <el-date-picker v-model='form.start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" style='width: 100%;'>
           </el-date-picker>
         </el-form-item>
         <el-form-item label='To Date: ' :rules="{validator: dateValidator, type: 'date', required: true, message: 'A to date is required', trigger: 'change'}" prop='end'>
           <!-- <label class='col-4 text-left'>To Date: </label> -->
-          <el-date-picker v-model='form.end' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" value-format='yyyy-MM-ddTHH:mm:00.000Z' style='width: 100%;'>
+          <el-date-picker v-model='form.end' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" style='width: 100%;'>
           </el-date-picker>
         </el-form-item>
         <el-form-item label='Interval: ' :rules="{required: true, message: 'An interval is required', trigger: 'blur'}" prop='intUnit'>
@@ -48,13 +56,13 @@
       </el-form>
       <div v-if='!story.public'>
         <label>Datasets: </label>
-        <featureController :index='form.index' ref="featureController" />
+        <featureController :index='form.index' :key='form.index' ref="featureController" />
       </div>
-      <featureController v-if='story.public' :index='story.blocks.length' ref="featureController" />
+      <featureController v-if='story.public' :index='story.blocks.length' :key='story.blocks.length' ref="featureController" />
       <span slot='footer'>
             <el-button @click='cardDelete()' v-if='!story.public' type='danger'> Delete </el-button>
             <el-button @click='cardSave()' type='primary'> Ok </el-button>
-            <el-button @click='newCard = false' type='info'> Cancel </el-button>
+            <el-button @click='cancel()' type='info'> Cancel </el-button>
       </span>
   </el-dialog>
 </el-col>
@@ -125,8 +133,8 @@ export default {
       Promise.all(validators).then(async (r) => {
         const card = {
           name: this.form.name,
-          date_start: this.form.start,
-          date_end: this.form.end,
+          date_start: this.form.start.toISOString(),
+          date_end: this.form.end.toISOString(),
           date_interval: this.interval(this.form.intUnit),
           interval_unit: this.unit(this.form.intUnit),
           charts: [],
@@ -219,10 +227,28 @@ export default {
         return 5
       }
     },
+    cancel: function () {
+      this.form.name = null
+      this.form.end = null
+      this.form.start = null
+      this.form.intUnit = null
+      this.form.graphType = null
+      this.form.id = null
+      this.form.index = 0
+      this.$refs.featureController.form = [{
+        name: null,
+        meter: null,
+        point: null,
+        group: null,
+        id: null
+      }]
+
+      this.newCard = false
+    },
     editModal: function (index) {
       this.form.name = this.block(index).name
-      this.form.end = this.block(index).date_end
-      this.form.start = this.block(index).date_start
+      this.form.end = new Date(this.block(index).date_end)
+      this.form.start = new Date(this.block(index).date_start)
       this.form.intUnit = this.reverseInt(this.block(index).interval_unit, this.block(index).date_interval)
       this.form.graphType = this.block(index).graph_type
       this.form.id = this.block(index).id
@@ -230,6 +256,7 @@ export default {
       this.newCard = true
       this.$nextTick(() => {
         this.$refs.featureController.form = []
+        this.$refs.featureController.key = index
         for (const chart of this.block(index).charts) {
           const newChart = {
             meter: chart.meter,
