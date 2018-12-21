@@ -1,3 +1,9 @@
+# @Author: Brogan Miner <Brogan>
+# @Date:   2018-12-20T10:38:57-08:00
+# @Email:  brogan.miner@oregonstate.edu
+# @Last modified by:   Brogan
+# @Last modified time: 2018-12-21T15:02:39-08:00
+
 language: node_js
 python:
 - '2.7'
@@ -7,16 +13,14 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_3e7d443718a9_key -iv $encrypted_3e7d443718a9_iv
   -in .env.enc -out .env -d
 - mv .env tests/.env
-- pip install --user awscli
-- export PATH=$PATH:$HOME/.local/bin
 cache:
   directories:
   - node_modules
   - "$HOME/.local"
 script:
+- npm test
 - npm run build
 - echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
-- source pre_deploy.sh
 deploy:
 - provider: pages
   local-dir: dist/
