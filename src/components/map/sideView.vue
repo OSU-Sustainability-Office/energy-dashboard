@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2018-12-20T10:38:57-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2018-12-21T11:54:35-08:00
+-->
+
 <template>
   <el-container class='stage'>
     <el-main class='main'>
@@ -33,7 +41,13 @@
             </el-col>
           </el-row>
           <el-row class="buttons">
-            <el-col :span='24'>
+            <el-col :span='1'>
+              &nbsp;
+            </el-col>
+            <!-- <el-col :span='12'>
+              <el-button class='bigButton' @click="$emit('startCompare')">Compare</el-button>
+            </el-col> -->
+            <el-col :span='22'>
               <el-button class='bigButton' @click='$router.push({path: `/public/${storyId}/${currentRange}`})'>View Full Graph</el-button>
             </el-col>
           </el-row>
@@ -139,7 +153,7 @@ export default {
       }
       Promise.all(promises).then(() => {
         for (let controller of this.$refs.chartController) {
-          controller.parseDataBarLine()
+          controller.parse()
         }
       }).catch(e => {
         console.log(e.message)
@@ -162,7 +176,7 @@ export default {
 
       Promise.all(promises).then(() => {
         for (let controller of this.$refs.chartController) {
-          controller.parseDataBarLine()
+          controller.parse()
         }
       })
     })
@@ -273,12 +287,14 @@ export default {
   position: absolute;
   left: 8px;
 }
-
+.buttons > * {
+  text-align: center;
+}
 .bigButton {
   background-color: $--color-black;
   color: darken($--color-white, 30%);
   border-color: darken($--color-white, 30%);
-  width: 100%;
+  width: 98%;
 }
 .bigButton:hover {
   background-color: #000;

@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2018-12-17T19:13:53-08:00
+@Last modified time: 2018-12-21T11:23:45-08:00
 -->
 <template>
   <div element-loading-background="rgba(0, 0, 0, 0.8)">
@@ -15,7 +15,6 @@
   </div>
 </template>
 <script>
-import moment from 'moment'
 import linechart from '@/components/charts/linechart.js'
 import barchart from '@/components/charts/barchart.js'
 import doughnutchart from '@/components/charts/doughnutchart.js'
@@ -61,7 +60,7 @@ export default {
     }
   },
   created () {
-    this.$eventHub.$on('loadingData', (ind) => {
+    this.$eventHub.$on('loadingData', ind => {
 
       // this.loading = true
     })
@@ -126,16 +125,13 @@ export default {
     },
     checkInterval: function (date, unit, int, start) {
       if (int <= 15 && unit === 'minute') return false
-
-      const br = [start.getMinutes(), start.getHours(), moment(start).dayOfYear(), start.getMonth()]
-      const ar = [date.getMinutes(), date.getHours(), moment(date).dayOfYear(), date.getMonth()]
+      let startDay = Math.floor((start.getTime() - (new Date(start.getYear(), 0, 0, 0, 0, 0, 0)).getTime()) / 86400000)
+      let endDay = Math.floor((date.getTime() - (new Date(date.getYear(), 0, 0, 0, 0, 0, 0)).getTime()) / 86400000)
+      const br = [start.getMinutes(), start.getHours(), startDay, start.getMonth()]
+      const ar = [date.getMinutes(), date.getHours(), endDay, date.getMonth()]
       for (let i = this.map[unit]; i >= 0; i--) {
         if (i === this.map[unit]) {
           if ((ar[i] - br[i]) % int !== 0) {
-            return true
-          }
-        } else if (i === 0) {
-          if ((Math.floor(br[i] / 15) * 15 - ar[i]) !== 0) {
             return true
           }
         } else if ((ar[i] - br[i]) !== 0) {
@@ -212,10 +208,12 @@ export default {
         let runningTotal = 0
         let newData = []
         let startO = new Date(start)
+        startO.setMinutes(Math.floor(startO.getMinutes() / 15.0) * 15)
+        startO.setSeconds(0)
+        startO.setMilliseconds(0)
         if (line.point === 'accumulated_real' || line.point === 'total' || line.point === 'cubic_feet') {
           for (let i in data) {
             let date = new Date(data[i].x)
-
             if (!this.checkInterval(date, unit, int, startO)) {
               if (date >= startO) newData.push({ x: data[i].x, y: (data[i].y + runningTotal) })
               lastIndex = i

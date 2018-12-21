@@ -43,7 +43,6 @@ export default {
   methods: {
     select: function (image) {
       this.$emit('input', image)
-      console.log('hi')
     }
   }
 }

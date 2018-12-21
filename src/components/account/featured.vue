@@ -3,7 +3,7 @@
 @Date:   2018-12-17T14:07:35-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2018-12-17T18:42:39-08:00
+@Last modified time: 2018-12-21T11:51:35-08:00
 -->
 
 <template>
@@ -27,7 +27,7 @@
         </el-form-item>
         <el-form-item label='From Date: ' :rules="[{validator: dateValidator, type: 'date', required: true, message: 'A from date is required', trigger: 'change'}]" prop='start'>
           <!-- <label class='col-4 text-left'>From Date: </label> -->
-          <el-date-picker v-model='form.start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" style='width: 100%;'>
+          <el-date-picker v-model='form.start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a' }" style='width: 100%;'>
           </el-date-picker>
         </el-form-item>
         <el-form-item label='To Date: ' :rules="{validator: dateValidator, type: 'date', required: true, message: 'A to date is required', trigger: 'change'}" prop='end'>
@@ -130,7 +130,7 @@ export default {
       let validators = []
       validators.push(this.$refs.featureController.$refs.form.validate())
       validators.push(this.$refs.form.validate())
-      Promise.all(validators).then(async (r) => {
+      Promise.all(validators).then(async r => {
         const card = {
           name: this.form.name,
           date_start: this.form.start.toISOString(),
@@ -150,17 +150,16 @@ export default {
             name: chart.name,
             group_id: chart.group,
             point: chart.point,
-            meter: chart.meter,
-            meters: []
+            meters: [],
+            meter: chart.meter
           }
           if (chart.meter === 0) {
             newChart.meters = newChart.meters.concat(meters.filter(e => e.type === 'e'))
           } else {
-            newChart.meters.push(meters.find(e => e.meter_id === chart.meter))
+            newChart.meters = newChart.meters.concat(meters.filter(e => e.meter_id === chart.meter))
           }
           card.charts.push(newChart)
         }
-
         this.$store.dispatch('block', card).then(() => {
           this.newCard = false
           this.$refs.displayedCards[this.form.index].$refs.chartController.parse()

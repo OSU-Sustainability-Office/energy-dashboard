@@ -1,28 +1,41 @@
-language: node_js
-node_js:
-    - "10"
+# @Author: Brogan Miner <Brogan>
+# @Date:   2018-12-20T10:38:57-08:00
+# @Email:  brogan.miner@oregonstate.edu
+# @Last modified by:   Brogan
+# @Last modified time: 2018-12-21T15:02:39-08:00
 
+language: node_js
+python:
+- '2.7'
+node_js:
+- '10'
+before_install:
+- openssl aes-256-cbc -K $encrypted_3e7d443718a9_key -iv $encrypted_3e7d443718a9_iv
+  -in .env.enc -out .env -d
+- mv .env tests/.env
 cache:
   directories:
-      - node_modules
-
+  - node_modules
+  - "$HOME/.local"
 script:
-  - npm run build
-  - echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
-
+- npm test
+- npm run build
+- echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
 deploy:
 - provider: pages
   local-dir: dist/
   skip-cleanup: true
-  github-token: $GITHUB_TOKEN
+  github-token: "$GITHUB_TOKEN"
   keep-history: true
   on:
     branch: master
 - provider: s3
-  access_key_id: $S3_ACCESS_ID
-  secret_access_key: $S3_ACCESS_KEY
-  bucket: "energy-dashboard"
+  access_key_id: "$S3_ACCESS_ID"
+  secret_access_key: "$S3_ACCESS_KEY"
+  bucket: energy-dashboard
   skip_cleanup: true
   local_dir: dist
   on:
     all_branches: true
+after_deploy:
+- mocha tests/integration.js

@@ -4,7 +4,7 @@ import index from '@/components/home/index'
 import account from '@/components/account/account'
 import map from '@/components/map/map'
 import publicDirectory from '@/components/directory/directoryPublic.vue'
-import privateDirectory from '@/components/directory/directoryPrivate.vue'
+import privateDirectory from '@/components/dashboard/dashboard_main.vue'
 
 Vue.use(Router)
 

@@ -122,9 +122,9 @@ export default {
       }
     })
     // 0: id
-    this.$eventHub.$on('deleteStory', (event) => { this.deleteStory(event[0]) })
+    this.$eventHub.$on('deleteStory', event => { this.deleteStory(event[0]) })
     // 0: name, 1: description, 2: media, 3: name, 4: id
-    this.$eventHub.$on('openStoryEdit', (event) => { this.openStoryEdit(event[0], event[1], event[2], event[3], event[4]) })
+    this.$eventHub.$on('openStoryEdit', event => { this.openStoryEdit(event[0], event[1], event[2], event[3], event[4]) })
   },
   methods: {
     /* GROUP EDITING AND CREATING */

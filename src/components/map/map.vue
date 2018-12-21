@@ -19,8 +19,10 @@
           <l-geo-json :key='rKey' :geojson='this.polygonData' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
       </div>
+      <prompt v-if='askingForComparison' @cancel='stopCompare'/>
+      <compareSide v-if='showCompareSide' @hide='showCompareSide = false' :storyId='openStory' :compareStory='compareStory' />
       <transition name='side'>
-        <sideView :key='openStory' :storyId='openStory' ref='sideview' v-if='showSide' @hide='showSide = false'></sideView>
+        <sideView :key='openStory' :storyId='openStory' ref='sideview' v-if='showSide' @hide='showSide = false' @startCompare='startCompare()'></sideView>
       </transition>
     </el-col>
   </el-row>
@@ -28,6 +30,8 @@
 <script>
 import { LMap, LTileLayer, LMarker, LPolygon, LGeoJson } from 'vue2-leaflet'
 import sideView from '@/components/map/sideView'
+import prompt from '@/components/map/map_prompt'
+import compareSide from '@/components/map/map_compareside'
 import L from 'leaflet'
 
 export default {
@@ -38,7 +42,9 @@ export default {
     LMarker,
     LPolygon,
     sideView,
-    LGeoJson
+    LGeoJson,
+    prompt,
+    compareSide
   },
   data () {
     return {
@@ -49,9 +55,12 @@ export default {
       map: null,
       polygonData: null,
       openStory: 0,
+      compareStory: 0,
+      showCompareSide: 0,
       showSide: false,
       ele: [],
       rKey: 0,
+      askingForComparison: false,
       selected: ['Residence', 'Athletics', 'Dining', 'Academics', 'Admin'],
       show: false,
       buildingOptions: {
@@ -61,7 +70,7 @@ export default {
             e.target.setStyle({ fillColor: '#000', color: '#000' })
             e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
           })
-          layer.on('mouseout', (e) => { window.vue.$eventHub.$emit('resetPolygon', [e.target]) })
+          layer.on('mouseout', e => { window.vue.$eventHub.$emit('resetPolygon', [e.target]) })
         },
         style: function (feature) {
           var color = '#000'
@@ -97,10 +106,26 @@ export default {
   },
   methods: {
     polyClick: function (value) {
-      this.openStory = value
-      this.$nextTick(() => {
-        this.showSide = true
-      })
+      if (!this.askingForComparison) {
+        this.openStory = value
+        this.$nextTick(() => {
+          this.showSide = true
+        })
+      } else {
+        this.askingForComparison = false
+        this.compareStory = value
+        this.$nextTick(() => {
+          this.showCompareSide = true
+        })
+      }
+    },
+    startCompare: function () {
+      this.showSide = false
+      this.askingForComparison = true
+    },
+    stopCompare: function () {
+      this.askingForComparison = false
+      this.showSide = true
     },
     isDisplayed: function (v) {
       if (this.selected.indexOf(v) >= 0) {
@@ -121,8 +146,8 @@ export default {
     this.$store.dispatch('mapdata').then(r => {
       this.polygonData = r
     })
-    this.$eventHub.$on('clickedPolygon', (v) => (this.polyClick(v[0])))
-    this.$eventHub.$on('resetPolygon', (v) => { this.$refs.geoLayer.mapObject.resetStyle(v[0]) })
+    this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0])))
+    this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.mapObject.resetStyle(v[0]) })
   },
   mounted () {
     this.$nextTick(() => {
