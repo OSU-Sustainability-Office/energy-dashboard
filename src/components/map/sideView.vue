@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2018-12-20T10:38:57-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2018-12-21T11:54:35-08:00
+-->
+
 <template>
   <el-container class='stage'>
     <el-main class='main'>
@@ -33,10 +41,13 @@
             </el-col>
           </el-row>
           <el-row class="buttons">
-            <el-col :span='12'>
-              <el-button class='bigButton' @click="$emit('startCompare')">Compare</el-button>
+            <el-col :span='1'>
+              &nbsp;
             </el-col>
-            <el-col :span='12'>
+            <!-- <el-col :span='12'>
+              <el-button class='bigButton' @click="$emit('startCompare')">Compare</el-button>
+            </el-col> -->
+            <el-col :span='22'>
               <el-button class='bigButton' @click='$router.push({path: `/public/${storyId}/${currentRange}`})'>View Full Graph</el-button>
             </el-col>
           </el-row>

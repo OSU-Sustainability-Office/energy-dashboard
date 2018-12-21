@@ -1,0 +1,36 @@
+{
+  "id":95,
+  "user_id":1,
+  "name":"Tebeau Hall",
+  "description":"Electric",
+  "public":1,
+  "featured":1,
+  "media":"20150416_TebeauHall_HO3514.jpg",
+  "group_id":2,
+  "blocks":[{
+    "date_start":"2018-06-01T00:00:00.000Z",
+    "date_end":"2018-06-30T23:59:00.000Z",
+    "graph_type":1,
+    "story_id":95,
+    "id":190,
+    "name":"Total Electricity",
+    "date_interval":15,
+    "interval_unit":"minute"
+  }],
+  "openCharts":[{
+    "id":476,
+    "block_id":190,
+    "group_id":8,
+    "name":"Tebau Hall Electricty",
+    "point":"accumulated_real",
+    "meter":0}],
+    "openMeters":[{
+      "id":121,
+      "meter_id":1,
+      "group_id":8,
+      "operation":1,
+      "chart_id":476,
+      "type":"e",
+      "negate":null
+    }]
+  }

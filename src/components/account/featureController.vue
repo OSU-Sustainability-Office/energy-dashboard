@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2018-12-17T14:07:35-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2018-12-20T10:47:19-08:00
+-->
+
 <template>
     <el-row ref="controlArea">
       <el-row class="pad-bottom" ref="indexChooser" v-if='!story.public'>
@@ -16,19 +24,19 @@
           <el-input type="text" v-model="form[currentIndex].name" style='width: 100%;'></el-input>
         </el-form-item>
 
+        <el-form-item prop='meter' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
+          <el-select ref="submeters" v-model="form[currentIndex].meter" style='width: 100%;' @change='form[currentIndex].point = null'>
+            <el-option :value='0' label='All'></el-option>
+            <el-option v-for='(item, index) in buildingMeters' :key='index' :label='item.name' :value='item.meter_id'></el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item :rules="{required: true, message: 'A measurement is required', trigger: 'blur'}" prop='point' label='Measurement: '>
           <el-select v-model="form[currentIndex].point" style='width: 100%;'>
             <!-- Meter Measurements -->
             <el-option v-for='(point, index) in meterPoints' :value='point' :label='$store.getters.mapPoint(point)' :key='index'>
             </el-option>
 
-          </el-select>
-        </el-form-item>
-
-        <el-form-item prop='meter' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
-          <el-select ref="submeters" v-model="form[currentIndex].meter" style='width: 100%;' @change='form[currentIndex].point = null'>
-            <el-option :value='0' label='All'></el-option>
-            <el-option v-for='(item, index) in buildingMeters' :key='index' :label='item.name' :value='item.meter_id'></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -83,6 +91,7 @@ export default {
         })
       }
     } else {
+      this.form = []
       this.form.push({
         meter: null,
         name: null,
@@ -134,6 +143,11 @@ export default {
       }
     }
   },
+  watch: {
+    currentIndex: function (value) {
+      this.currentType = this.typeByMeter(this.form[this.currentIndex].meter)
+    }
+  },
   methods: {
     meters: function (i) {
       return new Promise((resolve, reject) => {
@@ -163,6 +177,15 @@ export default {
         }
       })
     },
+    typeByMeter: function (id) {
+      if (id === 7 || id === 29) {
+        return 's'
+      } else if (id === 52) {
+        return 'g'
+      } else {
+        return 'e'
+      }
+    },
     addGroup: function () {
       this.$refs.form.validate(valid => {
         if (valid) {
@@ -183,6 +206,7 @@ export default {
           point: this.form[i].point,
           group_id: this.form[i].group,
           name: this.form[i].name,
+          meter: this.form[i].meter,
           meters: await this.meters(i),
           id: this.form[i].id
         })
@@ -203,8 +227,6 @@ export default {
       }
 
       this.currentIndex = 0
-
-      // this.$parent.$refs.chartController.parse()
     }
   }
 }

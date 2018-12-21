@@ -1,10 +1,18 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2018-11-19T10:40:29-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2018-12-17T10:59:34-08:00
+-->
+
 <template>
   <div class="storyCard" ref='card' @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
     <div class="toolbox" ref="toolbox" v-if='parseInt(notools) === 0'>
-      <el-tooltip content="Edit Story" placement="top">
+      <el-tooltip content="Edit View" placement="top">
         <i class="fas fa-pencil-alt" @click.prevent='openEdit()'></i>
       </el-tooltip>
-      <el-tooltip content="Delete Story" placement="top">
+      <el-tooltip content="Delete View" placement="top">
         <i class="fas fa-times" @click="deleteStory()"></i>
       </el-tooltip>
     </div>

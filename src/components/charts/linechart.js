@@ -1,3 +1,11 @@
+/**
+ * @Author: Brogan Miner <Brogan>
+ * @Date:   2018-11-19T10:40:29-08:00
+ * @Email:  brogan.miner@oregonstate.edu
+ * @Last modified by:   Brogan
+ * @Last modified time: 2018-12-21T10:50:40-08:00
+ */
+
 import { Line, mixins } from 'vue-chartjs'
 
 export default {
@@ -17,7 +25,6 @@ export default {
           callbacks: {
             title: function (item, data) {
               let d = new Date(item[0].xLabel)
-              d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000)
               let meridiem = 'am'
               let hours = d.getHours()
               if (hours > 12) {
@@ -31,7 +38,16 @@ export default {
                 minutes = '0' + minutes
               }
               let year = d.getYear().toString().slice(1)
-              return (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem
+              const dayCodes = [
+                'Mon',
+                'Tues',
+                'Wed',
+                'Thur',
+                'Fri',
+                'Sat',
+                'Sun'
+              ]
+              return (dayCodes[d.getDay()] + ' ' + (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem)
             },
             label: (item, data) => {
               return item.yLabel + ' ' + this.$parent.unit()
