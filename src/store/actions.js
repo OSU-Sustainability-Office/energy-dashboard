@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2018-12-21T13:01:41-08:00
+ * @Last modified time: 2018-12-27T12:19:02-08:00
  */
 import api from './api.js'
 
@@ -145,7 +145,7 @@ export default {
         morePromises.push((async () => {
           let chartPromises = []
           for (let meter of block.charts[chartIndex].meters) {
-            let start = new Date(block.date_start)
+            let start = new Date((block.charts[chartIndex].date_start) ? block.charts[chartIndex].date_start : block.date_start)
             // Get One extra element based on int and unit
 
             start.setMinutes(Math.floor(start.getMinutes() / 15.0) * 15)
@@ -162,7 +162,7 @@ export default {
               start.setMonth(start.getMonth() - block.date_interval)
             }
 
-            chartPromises.push(api.data(meter.meter_id, start.toISOString(), block.date_end, block.charts[chartIndex].point))
+            chartPromises.push(api.data(meter.meter_id, start.toISOString(), (block.charts[chartIndex].date_end) ? block.charts[chartIndex].date_end : block.date_end, block.charts[chartIndex].point))
           }
           let r = await Promise.all(chartPromises)
           let finalData = []
@@ -258,7 +258,9 @@ export default {
           group_id: payload.group,
           point: payload.point,
           meter: payload.meter,
-          meters: payload.meters
+          meters: payload.meters,
+          date_start: payload.date_start,
+          date_end: payload.date_end
         }
       })
       await context.dispatch('block', { index: payload.index })
@@ -462,6 +464,56 @@ export default {
       return Promise.resolve()
     } catch (error) {
       return Promise.reject(error)
+    }
+  },
+  campaign: async (context, payload) => {
+    try {
+      let campaign = await api.campaign(payload)
+
+      /*
+        campaigns will use the default story structure.
+      */
+      const defaultStory = {
+        id: null,
+        media: null,
+        public: 0,
+        name: campaign.name,
+        blocks: []
+      }
+      context.commit('loadStory', defaultStory)
+      let concurrentChartAdding = []
+      for (let group of campaign.groups) {
+        const defaultBlock = {
+          index: campaign.groups.indexOf(group),
+          id: null,
+          name: group.name,
+          date_start: campaign.date_start,
+          date_end: campaign.date_end,
+          date_interval: 15,
+          interval_unit: 'minute',
+          graphType: 1,
+          goal: group.goal,
+          charts: []
+        }
+        context.commit('loadBlock', defaultBlock)
+        let meters = await context.dispatch('buildingMeters', { id: group.id })
+        for (let i = 0; i < 2; i++) {
+          const defaultChart = {
+            index: campaign.groups.indexOf(group),
+            point: 'accumulated_real',
+            name: group.name + ((i === 1) ? ' (comparison)' : ''),
+            meters: meters,
+            meter: 0,
+            date_start: (i === 1) ? campaign.compare_start : null,
+            date_end: (i === 1) ? campaign.compare_end : null
+          }
+          concurrentChartAdding.push(context.dispatch('addChart', defaultChart))
+        }
+      }
+
+      return Promise.all(concurrentChartAdding)
+    } catch (error) {
+      Promise.reject(error)
     }
   }
 }

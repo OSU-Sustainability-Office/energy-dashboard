@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T16:22:04-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2018-12-20T18:30:24-08:00
+ * @Last modified time: 2018-12-24T14:02:48-08:00
  */
 import axios from 'axios'
 
@@ -66,5 +66,8 @@ export default {
   },
   logout: async () => {
     return (await callAPI('logout')).data
+  },
+  campaign: async id => {
+    return (await callAPI('campaign?id=' + id)).data
   }
 }

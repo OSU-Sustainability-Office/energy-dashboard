@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:36:17-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2018-12-20T15:59:38-08:00
+ * @Last modified time: 2018-12-27T12:19:03-08:00
  */
 
 import Vue from 'vue'
