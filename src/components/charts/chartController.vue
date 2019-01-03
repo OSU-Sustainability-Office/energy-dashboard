@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2018-12-21T11:23:45-08:00
+@Last modified time: 2019-01-03T15:46:05-08:00
 -->
 <template>
   <div element-loading-background="rgba(0, 0, 0, 0.8)">
@@ -132,6 +132,10 @@ export default {
       for (let i = this.map[unit]; i >= 0; i--) {
         if (i === this.map[unit]) {
           if ((ar[i] - br[i]) % int !== 0) {
+            return true
+          }
+        } else if (this.map[unit] === 3 && i === 2) {
+          if (start.getDate() !== date.getDate()) {
             return true
           }
         } else if ((ar[i] - br[i]) !== 0) {
