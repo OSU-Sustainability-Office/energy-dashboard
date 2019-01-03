@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2018-12-27T12:19:02-08:00
+ * @Last modified time: 2018-12-28T15:00:34-08:00
  */
 import api from './api.js'
 
@@ -270,6 +270,36 @@ export default {
     }
   },
 
+  addChartAndCompare: async (context, payload) => {
+    try {
+      await context.dispatch('addChart', payload)
+      let now = Date.now()
+      // Zero indexed chart contains the most recent data
+      // One indexed data is the compared data
+      const dataArray = context.getters.story.blocks[payload.index].charts[0].data
+      const timeSeperation = (new Date(context.getters.story.blocks[payload.index].charts[0].data[0].x)).getTime() - (new Date(context.getters.story.blocks[payload.index].charts[1].data[0].x)).getTime()
+      let percentageData = []
+      for (let i in dataArray) {
+        let currentChartDate = Date(dataArray[i].x)
+        if (now < currentChartDate) {
+          const comparisonTime = (new Date(context.getters.story.blocks[payload.index].charts[1].data[0].x)).getTime()
+          if (currentChartDate.getTime() - comparisonTime > timeSeperation) {
+            i++
+          } else if (currentChartDate.getTime() === comparisonTime) {
+            const perc = dataArray[i].y / context.getters.story.blocks[payload.index].charts[1].data[i].y
+            percentageData.push({ x: currentChartDate.toISOString(), y: perc })
+          } else {
+            throw new Error('This is really bad')
+          }
+        } else {
+          break
+        }
+      }
+    } catch (err) {
+      Promise.reject(err)
+    }
+  },
+
   // Server side create/update/delete actions
   // GROUP
   createGroup: async (context, payload) => {
@@ -507,7 +537,7 @@ export default {
             date_start: (i === 1) ? campaign.compare_start : null,
             date_end: (i === 1) ? campaign.compare_end : null
           }
-          concurrentChartAdding.push(context.dispatch('addChart', defaultChart))
+          concurrentChartAdding.push((i === 0) ? context.dispatch('addChart', defaultChart) : context.dispatch('addChartAndCompare', defaultChart))
         }
       }
 
