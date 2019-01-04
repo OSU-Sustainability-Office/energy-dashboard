@@ -2,7 +2,7 @@
 # @Date:   2018-12-20T10:38:57-08:00
 # @Email:  brogan.miner@oregonstate.edu
 # @Last modified by:   Brogan
-# @Last modified time: 2019-01-04T13:21:10-08:00
+# @Last modified time: 2019-01-04T13:31:59-08:00
 
 language: node_js
 python:
@@ -19,7 +19,7 @@ cache:
   - "$HOME/.local"
 script:
 - npm run test:unit
-- if [ $TRAVIS_BRANCH == 'master' ]
+- if [ $TRAVIS_BRANCH -eq 'master' ]
   then
     npm run build
     echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
