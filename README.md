@@ -4,7 +4,7 @@
 
 # OSU Energy Dashboard
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=eGdPekhGQnBGWWtHSGJRK2pORVJKVnNhUEdLbmtIcHpXRzMvaEliS2E4UT0tLVNMcy85bE9uS1dYN3lTQzAza1lkOUE9PQ==--7b21bb45dd90d0a6579467798b97153019cb4d24)](https://www.browserstack.com/automate/public-build/eGdPekhGQnBGWWtHSGJRK2pORVJKVnNhUEdLbmtIcHpXRzMvaEliS2E4UT0tLVNMcy85bE9uS1dYN3lTQzAza1lkOUE9PQ==--7b21bb45dd90d0a6579467798b97153019cb4d24)
-[![Build Status](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard.svg?branch=master)](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard)
+[![Build Status](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard.svg?branch=master)](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard) [![Greenkeeper badge](https://badges.greenkeeper.io/OSU-Sustainability-Office/energy-dashboard.svg)](https://greenkeeper.io/)
 
 
 
