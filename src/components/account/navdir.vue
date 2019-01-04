@@ -3,7 +3,7 @@
 @Date:   2018-12-17T14:07:35-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-04T11:34:41-08:00
+@Last modified time: 2019-01-04T15:25:06-08:00
 -->
 
 <template>
@@ -132,7 +132,6 @@ export default {
           organizedData[0].push(chart.name + ' (' + map[chart.point] + ')')
           // Consider a better way for this
           let mappedData = organizedData.slice(1, organizedData.length).map(e => { return e[0] })
-          console.log(mappedData)
           for (let point of chart.data) {
             let iDate = new Date(point.x)
 
