@@ -3,7 +3,7 @@
  * @Date:   2018-11-19T10:40:29-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2018-12-21T10:50:40-08:00
+ * @Last modified time: 2019-01-04T23:09:07-08:00
  */
 
 import { Line, mixins } from 'vue-chartjs'
@@ -50,7 +50,7 @@ export default {
               return (dayCodes[d.getDay()] + ' ' + (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem)
             },
             label: (item, data) => {
-              return item.yLabel + ' ' + this.$parent.unit()
+              return parseFloat(item.yLabel).toFixed(2) + ' ' + this.$parent.unit()
             }
           }
         },

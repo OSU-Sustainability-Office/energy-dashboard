@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-04T12:38:07-08:00
+@Last modified time: 2019-01-04T23:04:30-08:00
 -->
 <template>
   <div element-loading-background="rgba(0, 0, 0, 0.8)">
@@ -230,7 +230,7 @@ export default {
           for (let i in data) {
             let date = new Date(data[i].x)
 
-            if (!this.checkInterval(date, unit, int, start)) {
+            if (!this.checkInterval(date, unit, int, startO)) {
               if (date >= startO) newData.push({ x: data[i].x, y: (data[i].y + runningTotal) / (i - lastIndex) })
               lastIndex = i
               runningTotal = 0
@@ -258,38 +258,7 @@ export default {
       this.chartData = tempData
     },
     unit: function () {
-      const map = {
-        accumulated_real: 'kWh',
-        real_power: 'W',
-        reactive_power: 'VAR',
-        apparent_power: 'VA',
-        real_a: 'kW',
-        real_b: 'kW',
-        real_c: 'kW',
-        reactive_a: 'VAR',
-        reactive_b: 'VAR',
-        reactive_c: 'VAR',
-        pf_a: '',
-        pf_b: '',
-        pf_c: '',
-        vphase_ab: 'V',
-        vphase_bc: 'V',
-        vphase_ac: 'V',
-        vphase_an: 'V',
-        vphase_bn: 'V',
-        vphase_cn: 'V',
-        cphase_a: 'A',
-        cphase_b: 'A',
-        cphase_c: 'A',
-        cubic_feet: 'CF',
-        maximum: 'CFm',
-        minimum: 'CFm',
-        instant: 'CFm',
-        rate: 'CFm',
-        total: 'lbs.',
-        input: ''
-      }
-      return map[this.story.blocks[this.index].charts[0].point]
+      return this.$store.getters.mapPointUnit(this.story.blocks[this.index].charts[0].point)
     },
     getStart: function () {
       return this.story.blocks[this.index].date_start

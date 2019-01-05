@@ -1,3 +1,11 @@
+/**
+ * @Author: Brogan Miner <Brogan>
+ * @Date:   2018-11-19T10:40:29-08:00
+ * @Email:  brogan.miner@oregonstate.edu
+ * @Last modified by:   Brogan
+ * @Last modified time: 2019-01-04T23:21:15-08:00
+ */
+
 import { Bar, mixins } from 'vue-chartjs'
 export default {
   name: 'barchart',
@@ -7,19 +15,15 @@ export default {
   data () {
     return {
       options: {
-        layout: {
-          padding: {
-            left: 0,
-            right: 0,
-            bottom: 0,
-            top: 0
+        elements: {
+          point: {
+            radius: 3
           }
         },
         tooltips: {
           callbacks: {
             title: function (item, data) {
               let d = new Date(item[0].xLabel)
-              d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000)
               let meridiem = 'am'
               let hours = d.getHours()
               if (hours > 12) {
@@ -33,11 +37,28 @@ export default {
                 minutes = '0' + minutes
               }
               let year = d.getYear().toString().slice(1)
-              return (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem
+              const dayCodes = [
+                'Mon',
+                'Tues',
+                'Wed',
+                'Thur',
+                'Fri',
+                'Sat',
+                'Sun'
+              ]
+              return (dayCodes[d.getDay()] + ' ' + (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem)
             },
             label: (item, data) => {
-              return item.yLabel + ' ' + this.$parent.unit()
+              return parseFloat(item.yLabel).toFixed(2) + ' ' + this.$parent.unit()
             }
+          }
+        },
+        layout: {
+          padding: {
+            left: 0,
+            right: 0,
+            bottom: 0,
+            top: 0
           }
         },
         legend: {
@@ -53,15 +74,15 @@ export default {
         scales: {
           yAxes: [{
             ticks: {
-              beginAtZero: false,
+              beginAtZero: true,
               fontColor: 'white'
+              // min: 20 Need to caclulate this value so there arent any blank lines
             },
             gridLines: {
-              display: true, // my new default options
-              color: 'rgba(255, 255, 255, 0.1)'
+              display: true // my new default options
             },
             scaleLabel: {
-              display: true,
+              display: (this.$parent.buildLabel('y') !== ''),
               labelString: this.$parent.buildLabel('y')
             }
           }],
@@ -74,17 +95,16 @@ export default {
               autoSkip: true,
               maxTicksLimit: 30
             },
+            scaleLabel: {
+              display: (this.$parent.buildLabel('y') !== ''),
+              labelString: this.$parent.buildLabel('x')
+            },
             type: 'time',
             time: {
               unit: 'hour',
-              unitStepSize: 12,
               displayFormats: {
-                'hour': 'M/DD h:00 a'
+                'hour': 'M/DD'
               }
-            },
-            scaleLabel: {
-              display: true,
-              labelString: this.$parent.buildLabel('x')
             }
           }]
         }
