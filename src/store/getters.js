@@ -3,7 +3,11 @@
  * @Date:   2018-12-20T15:36:17-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
+<<<<<<< HEAD
  * @Last modified time: 2019-01-04T12:35:45-08:00
+=======
+ * @Last modified time: 2018-12-20T16:04:12-08:00
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
  */
 export default {
   story: state => {
@@ -25,7 +29,11 @@ export default {
     return state.currentStory.blocks[blockIndex].charts[chartIndex].data
   },
   // COMMON FUNCTIONS
+<<<<<<< HEAD
   mapPoint: () => point => {
+=======
+  mapPoint: state => point => {
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     const map = {
       accumulated_real: 'Net Energy Usage (kWh)',
       real_power: 'Real Power (W)',
@@ -54,6 +62,7 @@ export default {
       minimum: 'Minimum',
       rate: 'Natural Gas Rate (CFm)',
       total: 'Steam (Lbs)',
+<<<<<<< HEAD
       input: 'Steam Input',
       apparent_a: 'Apparent Power, Phase A (VA)',
       apparent_b: 'Apparent Power, Phase B (VA)',
@@ -95,6 +104,9 @@ export default {
       apparent_a: 'VA',
       apparent_b: 'VA',
       apparent_c: 'VA'
+=======
+      input: 'Steam Input'
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     }
 
     return map[point]

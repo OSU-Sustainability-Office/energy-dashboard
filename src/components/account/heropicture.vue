@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!--
 @Author: Brogan Miner <Brogan>
 @Date:   2019-01-04T10:08:23-08:00
@@ -6,6 +7,8 @@
 @Last modified time: 2019-01-04T11:33:39-08:00
 -->
 
+=======
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 <template>
   <el-row class='stage'>
     <el-col :span='24' class='main'>
@@ -25,7 +28,11 @@ export default {
     media: function (value) {
       this.$refs.main.style.backgroundImage = ''
       if (value) {
+<<<<<<< HEAD
         this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.VUE_APP_ROOT_API + '/energy/images/' + value + '\')'
+=======
+        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.ROOT_API + '/energy/images/' + value + '\')'
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
       } else {
         this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
       }
@@ -34,7 +41,11 @@ export default {
   mounted () {
     this.$refs.main.style.backgroundImage = ''
     if (this.media) {
+<<<<<<< HEAD
       this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.media + '\')'
+=======
+      this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.ROOT_API + '/energy/images/' + this.media + '\')'
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     } else {
       this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
     }
@@ -44,12 +55,21 @@ export default {
 </script>
 <style scoped>
   .stage {
+<<<<<<< HEAD
     position: relative !important;
     top: 0 !important;
     left: 0 !important;
     padding: 0;
     margin: 0;
     height: 200px !important;
+=======
+    position: relative;
+    top: 0;
+    left: 0;
+    padding: 0;
+    margin: 0;
+    height: 200px;
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
   }
   .main {
     padding: 0;

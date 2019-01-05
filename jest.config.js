@@ -3,7 +3,11 @@
  * @Date:   2018-12-20T14:41:50-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
+<<<<<<< HEAD
  * @Last modified time: 2019-01-04T13:15:51-08:00
+=======
+ * @Last modified time: 2018-12-20T15:06:51-08:00
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
  */
 
 // For a detailed explanation regarding each configuration property, visit:
@@ -32,7 +36,11 @@ module.exports = {
   // collectCoverageFrom: null,
 
   // The directory where Jest should output its coverage files
+<<<<<<< HEAD
   coverageDirectory: 'coverage',
+=======
+  coverageDirectory: "coverage",
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -72,11 +80,19 @@ module.exports = {
 
   // An array of file extensions your modules use
   moduleFileExtensions: [
+<<<<<<< HEAD
     'js',
     'json',
     'jsx',
     'node',
     'vue'
+=======
+    "js",
+    "json",
+    "jsx",
+    "node",
+    "vue"
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
   ],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
@@ -133,7 +149,11 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
+<<<<<<< HEAD
   testEnvironment: 'node',
+=======
+  testEnvironment: "node",
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -168,10 +188,19 @@ module.exports = {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
+<<<<<<< HEAD
+=======
+  transform: {
+    "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+    ".*\\.(vue)$": "<rootDir>/node_modules/jest-vue-preprocessor"
+  }
+
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
   //   "/node_modules/"
   // ],
+<<<<<<< HEAD
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
   // Indicates whether each individual test should be reported during the run
@@ -202,3 +231,18 @@ module.exports = {
 
   testURL: 'http://localhost/'
 }
+=======
+
+  // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
+  // unmockedModulePathPatterns: undefined,
+
+  // Indicates whether each individual test should be reported during the run
+  // verbose: null,
+
+  // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
+  // watchPathIgnorePatterns: [],
+
+  // Whether to use watchman for file crawling
+  // watchman: true,
+};
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea

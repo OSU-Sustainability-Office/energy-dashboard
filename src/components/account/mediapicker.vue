@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!--
 @Author: Brogan Miner <Brogan>
 @Date:   2019-01-04T10:08:23-08:00
@@ -6,6 +7,8 @@
 @Last modified time: 2019-01-04T15:24:49-08:00
 -->
 
+=======
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 <template>
   <el-row class="container" ref="mainstage">
     <el-col :span='24' ref="imageNodes">
@@ -29,7 +32,11 @@ export default {
     return {
       images: [],
       selected: 0,
+<<<<<<< HEAD
       api: process.env.VUE_APP_ROOT_API
+=======
+      api: process.env.ROOT_API
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     }
   },
   created () {

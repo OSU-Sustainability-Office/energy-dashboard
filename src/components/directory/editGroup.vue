@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!--
 @Author: Brogan Miner <Brogan>
 @Date:   2019-01-04T10:08:23-08:00
@@ -6,6 +7,8 @@
 @Last modified time: 2019-01-04T15:36:32-08:00
 -->
 
+=======
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 <template>
   <el-dialog :visible.sync='toggle' :title='title' @open='form.name = name'>
     <el-form :model='form' ref='form'>
@@ -53,7 +56,11 @@ export default {
     checkDuplicate: function (rule, value, callback) {
       let b = false
       for (const g of this.$parent.$parent.groups) {
+<<<<<<< HEAD
         if (g.name === value && (g.id !== this.id || g.id === null)) {
+=======
+        if (g.name === value && g.id !== this.id) {
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
           b = true
           break
         }

@@ -3,7 +3,11 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
+<<<<<<< HEAD
  * @Last modified time: 2019-01-04T12:29:32-08:00
+=======
+ * @Last modified time: 2018-12-21T13:01:41-08:00
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
  */
 import api from './api.js'
 
@@ -81,7 +85,11 @@ export default {
     }
   },
 
+<<<<<<< HEAD
   buildings: async () => {
+=======
+  buildings: async (context, payload) => {
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     try {
       return Promise.resolve(await api.buildings())
     } catch (error) {
@@ -232,7 +240,11 @@ export default {
     }
   },
 
+<<<<<<< HEAD
   user: async (context) => {
+=======
+  user: async (context, payload) => {
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     try {
       if (context.getters.user.name !== '') {
         return Promise.resolve(context.getters.user)
@@ -378,14 +390,22 @@ export default {
   },
 
   // COMMANDS THAT DONT DO ANYTHING TO THE STORE
+<<<<<<< HEAD
   mapdata: async () => {
+=======
+  mapdata: async (context, payload) => {
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     try {
       return Promise.resolve(await api.mapData())
     } catch (error) {
       return Promise.reject(error)
     }
   },
+<<<<<<< HEAD
   media: async () => {
+=======
+  media: async (context, payload) => {
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     try {
       return Promise.resolve(await api.media())
     } catch (error) {
@@ -399,7 +419,11 @@ export default {
       return Promise.reject(error)
     }
   },
+<<<<<<< HEAD
   metersByBuilding: async () => {
+=======
+  metersByBuilding: async (context, payload) => {
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     try {
       let meters = await api.metersByBuilding()
       let returnedObject = {}
@@ -417,12 +441,20 @@ export default {
   },
   meterPoints: async (context, payload) => {
     try {
+<<<<<<< HEAD
       return Promise.resolve(await api.meterPoints(payload.id))
+=======
+      return Promise.resolve(await api.meterpoints(payload.id))
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     } catch (error) {
       return Promise.reject(error)
     }
   },
+<<<<<<< HEAD
   alerts: async () => {
+=======
+  alerts: async (context, payload) => {
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     try {
       return Promise.resolve(await api.alerts())
     } catch (error) {
@@ -453,7 +485,11 @@ export default {
       return Promise.reject(error)
     }
   },
+<<<<<<< HEAD
   logout: async (context) => {
+=======
+  logout: async (context, payload) => {
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     try {
       let link = await api.logout()
       context.commit('loadUser', { name: '', privilege: 0, id: null })

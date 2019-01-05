@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!--
 @Author: Brogan Miner <Brogan>
 @Date:   2019-01-04T10:08:23-08:00
@@ -6,6 +7,8 @@
 @Last modified time: 2019-01-04T11:16:58-08:00
 -->
 
+=======
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 <template>
   <el-container class="app">
     <el-header class='header'>
@@ -60,10 +63,17 @@ export default {
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 @font-face {
     font-family: 'StratumNo2';
+<<<<<<< HEAD
     src: url('/fonts/StratumNo2-Bold.woff2') format('woff2'),
         url('/fonts/StratumNo2-Bold.woff') format('woff'),
         url('/fonts/StratumNo2-Bold.ttf') format('truetype'),
         url('/fonts/StratumNo2-Bold.svg#StratumNo2-Bold') format('svg');
+=======
+    src: url('/static/fonts/StratumNo2-Bold.woff2') format('woff2'),
+        url('/static/fonts/StratumNo2-Bold.woff') format('woff'),
+        url('/static/fonts/StratumNo2-Bold.ttf') format('truetype'),
+        url('/static/fonts/StratumNo2-Bold.svg#StratumNo2-Bold') format('svg');
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     font-weight: bold;
     font-style: normal;
 }

@@ -3,12 +3,21 @@
 @Date:   2018-12-20T10:38:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
+<<<<<<< HEAD
 @Last modified time: 2019-01-04T11:29:32-08:00
 -->
 
 <template>
   <el-row class='stage'>
     <el-row class='main'>
+=======
+@Last modified time: 2018-12-21T11:54:35-08:00
+-->
+
+<template>
+  <el-container class='stage'>
+    <el-main class='main'>
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
       <el-row class="title">
         <el-col :span='23'>{{ story.name }}</el-col>
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="hide()"></i></el-col>
@@ -53,8 +62,13 @@
           </el-row>
         </el-col>
       </el-row>
+<<<<<<< HEAD
     </el-row>
   </el-row>
+=======
+    </el-main>
+  </el-container>
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 </template>
 <script>
 import chartController from '@/components/charts/chartController'
@@ -68,7 +82,11 @@ export default {
   },
   data () {
     return {
+<<<<<<< HEAD
       api: process.env.VUE_APP_ROOT_API,
+=======
+      api: process.env.ROOT_API,
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
       title: '',
       media: '',
       currentRange: 1,
@@ -102,7 +120,11 @@ export default {
     next: function () {
       if (this.index + 1 >= this.story.blocks.length) { return }
       this.index++
+<<<<<<< HEAD
       this.$refs.scrollBox.$children.forEach((child) => {
+=======
+      this.$refs.scrollBox.$children.forEach((child, index) => {
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
         child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
       })
       this.$refs.prevArrow.style.display = 'block'
@@ -155,8 +177,13 @@ export default {
         for (let controller of this.$refs.chartController) {
           controller.parse()
         }
+<<<<<<< HEAD
       }).catch(() => {
         // console.log(e.message)
+=======
+      }).catch(e => {
+        console.log(e.message)
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
       })
     }
   },
@@ -192,9 +219,15 @@ export default {
   position: absolute;
   left: 100%;
   top: 15%;
+<<<<<<< HEAD
   width: 450px !important;
   margin-left: -470px;
   height: 85% !important;
+=======
+  width: 450px;
+  margin-left: -470px;
+  height: 85%;
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 }
 .main {
   padding: 0;

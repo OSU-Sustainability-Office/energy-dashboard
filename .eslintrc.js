@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  * @Author: Brogan Miner <Brogan>
  * @Date:   2019-01-03T12:39:57-08:00
@@ -6,6 +7,8 @@
  * @Last modified time: 2019-01-04T13:12:47-08:00
  */
 
+=======
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 // https://eslint.org/docs/user-guide/configuring
 
 module.exports = {
@@ -19,6 +22,10 @@ module.exports = {
   extends: [
     // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
     // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
+<<<<<<< HEAD
+=======
+    'mocha/test',
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     'plugin:vue/essential',
     // https://github.com/standard/standard/blob/master/docs/RULES-en.md
     'standard',

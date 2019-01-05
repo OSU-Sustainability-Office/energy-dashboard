@@ -3,12 +3,20 @@
  * @Date:   2018-12-20T16:22:04-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
+<<<<<<< HEAD
  * @Last modified time: 2019-01-04T11:03:30-08:00
+=======
+ * @Last modified time: 2019-01-03T12:40:38-08:00
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
  */
 import axios from 'axios'
 
 function callAPI (route, data = null, method = 'get', base = '/energy/') {
+<<<<<<< HEAD
   return axios(process.env.VUE_APP_ROOT_API + base + route, { method: method, data: data, withCredentials: true })
+=======
+  return axios(process.env.ROOT_API + base + route, { method: method, data: data, withCredentials: true })
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 }
 
 export default {

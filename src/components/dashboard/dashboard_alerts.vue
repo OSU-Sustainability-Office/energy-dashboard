@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!--
 @Author: Brogan Miner <Brogan>
 @Date:   2019-01-04T10:08:23-08:00
@@ -8,6 +9,10 @@
 
 <template>
   <el-row class='row-stage'>
+=======
+<template>
+  <el-row class='stage'>
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     <el-col :span='24'>
       <el-row class='alertrow' v-for='(item, index) in alerts' :key='item.id' :span='24'>
         <el-col :span='4' class='alertmeter'>
@@ -125,6 +130,12 @@ export default {
     }
   },
   methods: {
+<<<<<<< HEAD
+=======
+    buildingName: function (meterId) {
+      return 'Test Building'
+    },
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
     meterSearch: function (input) {
       const filtered = Object.keys(this.meters).filter(name => name.toLowerCase().indexOf(input.toLowerCase()) >= 0)
       let r = {}
@@ -187,9 +198,14 @@ export default {
 <style lang='scss' scoped>
   @import '@/assets/style-variables.scss';
 
+<<<<<<< HEAD
   .row-stage {
     height: 100%;
     width: 100% !important;
+=======
+  .stage {
+    height: 100%;
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
   }
   .heading {
     position: relative;

@@ -3,7 +3,11 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
+<<<<<<< HEAD
 @Last modified time: 2019-01-04T12:38:07-08:00
+=======
+@Last modified time: 2019-01-03T15:46:05-08:00
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 -->
 <template>
   <div element-loading-background="rgba(0, 0, 0, 0.8)">
@@ -60,7 +64,11 @@ export default {
     }
   },
   created () {
+<<<<<<< HEAD
     this.$eventHub.$on('loadingData', () => {
+=======
+    this.$eventHub.$on('loadingData', ind => {
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 
       // this.loading = true
     })
@@ -309,7 +317,70 @@ export default {
         if (this.$parent.$options._componentTag === 'sideView') {
           return ''
         }
+<<<<<<< HEAD
         return this.$store.getters.mapPoint(point)
+=======
+        switch (point) {
+          case 'accumulated_real' :
+            return 'Net Energy Usage (kWh)'
+          case 'real_power':
+            return 'Real Power (W)'
+          case 'reactive_power':
+            return 'Reactive Power (VAR)'
+          case 'apparent_power':
+            return 'Apparent Power (VA)'
+          case 'real_a':
+            return 'Real Power, Phase A (kW)'
+          case 'real_b':
+            return 'Real Power, Phase B (kW)'
+          case 'real_c':
+            return 'Real Power, Phase C (kW)'
+          case 'reactive_a':
+            return 'Reactive Power, Phase A (kVAR)'
+          case 'reactive_b':
+            return 'Reactive Power, Phase B (kVAR)'
+          case 'reactive_c':
+            return 'Reactive Power, Phase C (kVAR)'
+          case 'pf_a':
+            return 'Power Factor, Phase A'
+          case 'pf_b':
+            return 'Power Factor, Phase B'
+          case 'pf_c':
+            return 'Power Factor, Phase C'
+          case 'vphase_ab':
+            return 'Voltage Phase, Phase A-B (V)'
+          case 'vphase_bc':
+            return 'Voltage Phase, Phase B-C (V)'
+          case 'vphase_ac':
+            return 'Voltage Phase, Phase A-C (V)'
+          case 'vphase_an':
+            return 'Voltage Phase, Phase A-N (V)'
+          case 'vphase_bn':
+            return 'Voltage Phase, Phase B-N (V)'
+          case 'vphase_cn':
+            return 'Voltage Phase, Phase C-N (V)'
+          case 'cphase_a':
+            return 'Current Phase, Phase A (A)'
+          case 'cphase_b':
+            return 'Current Phase, Phase B (A)'
+          case 'cphase_c':
+            return 'Current Phase, Phase C (A)'
+          case 'cubic_feet':
+            return 'Total Natural Gas (CF)'
+          case 'maximum':
+            return 'Peak Natural Gas Flow (CFm)'
+          case 'minimum':
+            return 'Minimum Natural Gas Flow (CFm)'
+          case 'instant':
+            return 'Natural Gas Instantaneous (CFm)'
+          case 'rate':
+            return 'Natural Gas Rate (CFm)'
+          case 'total':
+            return 'Steam (Pounds)'
+          case 'input':
+            return 'Steam Input'
+        }
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
       } else {
         const date1 = new Date(this.getStart())
         const date2 = new Date(this.getEnd())

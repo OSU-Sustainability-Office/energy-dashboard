@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!--
 @Author: Brogan Miner <Brogan>
 @Date:   2019-01-04T10:08:23-08:00
@@ -9,6 +10,11 @@
 <template>
   <el-row class='stage'>
     <el-col :span='4' class='full-height no-overflow' v-if='user.privilege >= 2'>
+=======
+<template>
+  <el-row class='stage'>
+    <el-col :span='4' class='full-height' v-if='user.privilege >= 2'>
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
       <sideview v-model='index'/>
     </el-col>
     <el-col :span='(user.privilege >= 2)?20:24' class='full-height'>
@@ -59,7 +65,10 @@ export default {
   .full-height {
     height: 100%;
   }
+<<<<<<< HEAD
   .no-overflow {
     overflow: hidden !important;
   }
+=======
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 </style>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  * @Author: Brogan Miner <Brogan>
  * @Date:   2019-01-04T10:08:23-08:00
@@ -6,6 +7,8 @@
  * @Last modified time: 2019-01-04T11:46:27-08:00
  */
 
+=======
+>>>>>>> 243757575dbfdcefe0d1addeb9f058f6eb2cafea
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
