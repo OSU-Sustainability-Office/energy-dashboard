@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2019-01-04T10:08:23-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2019-01-04T11:33:39-08:00
+-->
+
 <template>
   <el-row class='stage'>
     <el-col :span='24' class='main'>
@@ -17,7 +25,7 @@ export default {
     media: function (value) {
       this.$refs.main.style.backgroundImage = ''
       if (value) {
-        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.ROOT_API + '/energy/images/' + value + '\')'
+        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.VUE_APP_ROOT_API + '/energy/images/' + value + '\')'
       } else {
         this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
       }
@@ -26,7 +34,7 @@ export default {
   mounted () {
     this.$refs.main.style.backgroundImage = ''
     if (this.media) {
-      this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.ROOT_API + '/energy/images/' + this.media + '\')'
+      this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.media + '\')'
     } else {
       this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
     }
@@ -36,12 +44,12 @@ export default {
 </script>
 <style scoped>
   .stage {
-    position: relative;
-    top: 0;
-    left: 0;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
     padding: 0;
     margin: 0;
-    height: 200px;
+    height: 200px !important;
   }
   .main {
     padding: 0;

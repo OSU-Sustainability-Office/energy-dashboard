@@ -1,5 +1,13 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2019-01-04T10:08:23-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2019-01-04T12:18:32-08:00
+-->
+
 <template>
-  <el-menu class='stage' :default-active='index' mode='vertical' backgroundColor='#1A1A1A' @select='handleSelect'>
+  <el-menu class='menu-stage' :default-active='index' mode='vertical' backgroundColor='#1A1A1A' @select='handleSelect'>
     <el-menu-item index='views'><i class="fas fa-square"></i> Views</el-menu-item>
     <el-menu-item index='alerts'><i class="fas fa-bell"></i> Alerts</el-menu-item>
   </el-menu>
@@ -24,7 +32,7 @@ export default {
 <style lang='scss' scoped>
   @import '@/assets/style-variables.scss';
 
-  .stage {
+  .menu-stage {
     height: 100%;
   }
   .el-menu-item {

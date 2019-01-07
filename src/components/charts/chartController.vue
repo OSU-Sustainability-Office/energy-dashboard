@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2018-12-21T11:23:45-08:00
+@Last modified time: 2019-01-04T23:04:30-08:00
 -->
 <template>
   <div element-loading-background="rgba(0, 0, 0, 0.8)">
@@ -60,7 +60,7 @@ export default {
     }
   },
   created () {
-    this.$eventHub.$on('loadingData', ind => {
+    this.$eventHub.$on('loadingData', () => {
 
       // this.loading = true
     })
@@ -132,6 +132,10 @@ export default {
       for (let i = this.map[unit]; i >= 0; i--) {
         if (i === this.map[unit]) {
           if ((ar[i] - br[i]) % int !== 0) {
+            return true
+          }
+        } else if (this.map[unit] === 3 && i === 2) {
+          if (start.getDate() !== date.getDate()) {
             return true
           }
         } else if ((ar[i] - br[i]) !== 0) {
@@ -226,7 +230,7 @@ export default {
           for (let i in data) {
             let date = new Date(data[i].x)
 
-            if (!this.checkInterval(date, unit, int, start)) {
+            if (!this.checkInterval(date, unit, int, startO)) {
               if (date >= startO) newData.push({ x: data[i].x, y: (data[i].y + runningTotal) / (i - lastIndex) })
               lastIndex = i
               runningTotal = 0
@@ -254,38 +258,7 @@ export default {
       this.chartData = tempData
     },
     unit: function () {
-      const map = {
-        accumulated_real: 'kWh',
-        real_power: 'W',
-        reactive_power: 'VAR',
-        apparent_power: 'VA',
-        real_a: 'kW',
-        real_b: 'kW',
-        real_c: 'kW',
-        reactive_a: 'VAR',
-        reactive_b: 'VAR',
-        reactive_c: 'VAR',
-        pf_a: '',
-        pf_b: '',
-        pf_c: '',
-        vphase_ab: 'V',
-        vphase_bc: 'V',
-        vphase_ac: 'V',
-        vphase_an: 'V',
-        vphase_bn: 'V',
-        vphase_cn: 'V',
-        cphase_a: 'A',
-        cphase_b: 'A',
-        cphase_c: 'A',
-        cubic_feet: 'CF',
-        maximum: 'CFm',
-        minimum: 'CFm',
-        instant: 'CFm',
-        rate: 'CFm',
-        total: 'lbs.',
-        input: ''
-      }
-      return map[this.story.blocks[this.index].charts[0].point]
+      return this.$store.getters.mapPointUnit(this.story.blocks[this.index].charts[0].point)
     },
     getStart: function () {
       return this.story.blocks[this.index].date_start
@@ -305,66 +278,7 @@ export default {
         if (this.$parent.$options._componentTag === 'sideView') {
           return ''
         }
-        switch (point) {
-          case 'accumulated_real' :
-            return 'Net Energy Usage (kWh)'
-          case 'real_power':
-            return 'Real Power (W)'
-          case 'reactive_power':
-            return 'Reactive Power (VAR)'
-          case 'apparent_power':
-            return 'Apparent Power (VA)'
-          case 'real_a':
-            return 'Real Power, Phase A (kW)'
-          case 'real_b':
-            return 'Real Power, Phase B (kW)'
-          case 'real_c':
-            return 'Real Power, Phase C (kW)'
-          case 'reactive_a':
-            return 'Reactive Power, Phase A (kVAR)'
-          case 'reactive_b':
-            return 'Reactive Power, Phase B (kVAR)'
-          case 'reactive_c':
-            return 'Reactive Power, Phase C (kVAR)'
-          case 'pf_a':
-            return 'Power Factor, Phase A'
-          case 'pf_b':
-            return 'Power Factor, Phase B'
-          case 'pf_c':
-            return 'Power Factor, Phase C'
-          case 'vphase_ab':
-            return 'Voltage Phase, Phase A-B (V)'
-          case 'vphase_bc':
-            return 'Voltage Phase, Phase B-C (V)'
-          case 'vphase_ac':
-            return 'Voltage Phase, Phase A-C (V)'
-          case 'vphase_an':
-            return 'Voltage Phase, Phase A-N (V)'
-          case 'vphase_bn':
-            return 'Voltage Phase, Phase B-N (V)'
-          case 'vphase_cn':
-            return 'Voltage Phase, Phase C-N (V)'
-          case 'cphase_a':
-            return 'Current Phase, Phase A (A)'
-          case 'cphase_b':
-            return 'Current Phase, Phase B (A)'
-          case 'cphase_c':
-            return 'Current Phase, Phase C (A)'
-          case 'cubic_feet':
-            return 'Total Natural Gas (CF)'
-          case 'maximum':
-            return 'Peak Natural Gas Flow (CFm)'
-          case 'minimum':
-            return 'Minimum Natural Gas Flow (CFm)'
-          case 'instant':
-            return 'Natural Gas Instantaneous (CFm)'
-          case 'rate':
-            return 'Natural Gas Rate (CFm)'
-          case 'total':
-            return 'Steam (Pounds)'
-          case 'input':
-            return 'Steam Input'
-        }
+        return this.$store.getters.mapPoint(point)
       } else {
         const date1 = new Date(this.getStart())
         const date2 = new Date(this.getEnd())

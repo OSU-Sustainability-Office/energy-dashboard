@@ -2,7 +2,7 @@
 # @Date:   2018-12-20T10:38:57-08:00
 # @Email:  brogan.miner@oregonstate.edu
 # @Last modified by:   Brogan
-# @Last modified time: 2018-12-21T15:02:39-08:00
+# @Last modified time: 2019-01-04T13:44:38-08:00
 
 language: node_js
 python:
@@ -18,9 +18,15 @@ cache:
   - node_modules
   - "$HOME/.local"
 script:
-- npm test
-- npm run build
-- echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
+- npm run test:unit
+- |
+  if [ "$TRAVIS_BRANCH" == "master" ]; then
+    npm run build
+    echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
+  else
+    npm run build-stage
+  fi
+
 deploy:
 - provider: pages
   local-dir: dist/
@@ -37,5 +43,6 @@ deploy:
   local_dir: dist
   on:
     all_branches: true
-after_deploy:
-- mocha tests/integration.js
+    condition: $TRAVIS_BRANCH != master
+# after_deploy:
+# - mocha tests/integration.js

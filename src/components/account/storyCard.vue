@@ -3,7 +3,7 @@
 @Date:   2018-11-19T10:40:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2018-12-17T10:59:34-08:00
+@Last modified time: 2019-01-04T11:05:22-08:00
 -->
 
 <template>
@@ -34,7 +34,7 @@ export default {
   },
   mounted () {
     if (this.media) {
-      this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + process.env.ROOT_API + '/energy/images/' + this.media + '") center/cover no-repeat'
+      this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.media + '") center/cover no-repeat'
     } else {
       this.$refs.card.style.backgroundColor = 'rgb(26,26,26)'
     }
@@ -55,7 +55,7 @@ export default {
     },
     media: function (value) {
       if (value) {
-        this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + process.env.ROOT_API + '/energy/images/' + value + '") center/cover no-repeat'
+        this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + process.env.VUE_APP_ROOT_API + '/energy/images/' + value + '") center/cover no-repeat'
       } else {
         this.$refs.card.style.background = 'rgb(26,26,26)'
       }

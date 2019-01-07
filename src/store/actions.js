@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2018-12-28T15:00:34-08:00
+ * @Last modified time: 2019-01-07T10:33:19-08:00
  */
 import api from './api.js'
 
@@ -81,7 +81,7 @@ export default {
     }
   },
 
-  buildings: async (context, payload) => {
+  buildings: async () => {
     try {
       return Promise.resolve(await api.buildings())
     } catch (error) {
@@ -232,7 +232,7 @@ export default {
     }
   },
 
-  user: async (context, payload) => {
+  user: async (context) => {
     try {
       if (context.getters.user.name !== '') {
         return Promise.resolve(context.getters.user)
@@ -410,14 +410,14 @@ export default {
   },
 
   // COMMANDS THAT DONT DO ANYTHING TO THE STORE
-  mapdata: async (context, payload) => {
+  mapdata: async () => {
     try {
       return Promise.resolve(await api.mapData())
     } catch (error) {
       return Promise.reject(error)
     }
   },
-  media: async (context, payload) => {
+  media: async () => {
     try {
       return Promise.resolve(await api.media())
     } catch (error) {
@@ -431,7 +431,7 @@ export default {
       return Promise.reject(error)
     }
   },
-  metersByBuilding: async (context, payload) => {
+  metersByBuilding: async () => {
     try {
       let meters = await api.metersByBuilding()
       let returnedObject = {}
@@ -449,12 +449,12 @@ export default {
   },
   meterPoints: async (context, payload) => {
     try {
-      return Promise.resolve(await api.meterpoints(payload.id))
+      return Promise.resolve(await api.meterPoints(payload.id))
     } catch (error) {
       return Promise.reject(error)
     }
   },
-  alerts: async (context, payload) => {
+  alerts: async () => {
     try {
       return Promise.resolve(await api.alerts())
     } catch (error) {
@@ -485,7 +485,7 @@ export default {
       return Promise.reject(error)
     }
   },
-  logout: async (context, payload) => {
+  logout: async (context) => {
     try {
       let link = await api.logout()
       context.commit('loadUser', { name: '', privilege: 0, id: null })

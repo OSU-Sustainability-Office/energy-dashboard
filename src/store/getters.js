@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:36:17-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2018-12-20T16:04:12-08:00
+ * @Last modified time: 2019-01-04T12:35:45-08:00
  */
 export default {
   story: state => {
@@ -25,7 +25,7 @@ export default {
     return state.currentStory.blocks[blockIndex].charts[chartIndex].data
   },
   // COMMON FUNCTIONS
-  mapPoint: state => point => {
+  mapPoint: () => point => {
     const map = {
       accumulated_real: 'Net Energy Usage (kWh)',
       real_power: 'Real Power (W)',
@@ -54,7 +54,47 @@ export default {
       minimum: 'Minimum',
       rate: 'Natural Gas Rate (CFm)',
       total: 'Steam (Lbs)',
-      input: 'Steam Input'
+      input: 'Steam Input',
+      apparent_a: 'Apparent Power, Phase A (VA)',
+      apparent_b: 'Apparent Power, Phase B (VA)',
+      apparent_c: 'Apparent Power, Phase C (VA)'
+    }
+
+    return map[point]
+  },
+  mapPointUnit: () => point => {
+    const map = {
+      accumulated_real: 'kWh',
+      real_power: 'W',
+      reactive_power: 'VAR',
+      apparent_power: 'VA',
+      real_a: 'kW',
+      real_b: 'kW',
+      real_c: 'kW',
+      reactive_a: 'kVAR',
+      reactive_b: 'kVAR',
+      reactive_c: 'kVAR',
+      pf_a: 'kVAR',
+      pf_b: '',
+      pf_c: '',
+      vphase_ab: 'V',
+      vphase_bc: 'V',
+      vphase_ac: 'V',
+      vphase_an: 'V',
+      vphase_bn: 'V',
+      vphase_cn: 'V',
+      cphase_a: 'A',
+      cphase_b: 'A',
+      cphase_c: 'A',
+      cubic_feet: 'CF',
+      maximum: '',
+      minimum: '',
+      rate: 'CFm',
+      total: 'Lbs',
+      input: '',
+      apparent_a: 'VA',
+      apparent_b: 'VA',
+      apparent_c: 'VA'
     }
 
     return map[point]

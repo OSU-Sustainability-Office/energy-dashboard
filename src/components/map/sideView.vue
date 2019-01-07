@@ -3,12 +3,12 @@
 @Date:   2018-12-20T10:38:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2018-12-21T11:54:35-08:00
+@Last modified time: 2019-01-04T11:29:32-08:00
 -->
 
 <template>
-  <el-container class='stage'>
-    <el-main class='main'>
+  <el-row class='stage'>
+    <el-row class='main'>
       <el-row class="title">
         <el-col :span='23'>{{ story.name }}</el-col>
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="hide()"></i></el-col>
@@ -53,8 +53,8 @@
           </el-row>
         </el-col>
       </el-row>
-    </el-main>
-  </el-container>
+    </el-row>
+  </el-row>
 </template>
 <script>
 import chartController from '@/components/charts/chartController'
@@ -68,7 +68,7 @@ export default {
   },
   data () {
     return {
-      api: process.env.ROOT_API,
+      api: process.env.VUE_APP_ROOT_API,
       title: '',
       media: '',
       currentRange: 1,
@@ -102,7 +102,7 @@ export default {
     next: function () {
       if (this.index + 1 >= this.story.blocks.length) { return }
       this.index++
-      this.$refs.scrollBox.$children.forEach((child, index) => {
+      this.$refs.scrollBox.$children.forEach((child) => {
         child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
       })
       this.$refs.prevArrow.style.display = 'block'
@@ -155,8 +155,8 @@ export default {
         for (let controller of this.$refs.chartController) {
           controller.parse()
         }
-      }).catch(e => {
-        console.log(e.message)
+      }).catch(() => {
+        // console.log(e.message)
       })
     }
   },
@@ -192,9 +192,9 @@ export default {
   position: absolute;
   left: 100%;
   top: 15%;
-  width: 450px;
+  width: 450px !important;
   margin-left: -470px;
-  height: 85%;
+  height: 85% !important;
 }
 .main {
   padding: 0;

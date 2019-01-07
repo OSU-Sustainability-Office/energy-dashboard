@@ -3,13 +3,13 @@
 @Date:   2018-11-29T12:53:21-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2018-12-17T19:18:42-08:00
+@Last modified time: 2019-01-04T11:36:24-08:00
 -->
 
 <template>
     <el-row class='sus-nav'>
       <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">
-        <img src="static/images/logo.png" height=50 width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/"})'>
+        <img src="/images/logo.png" height=50 width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/"})'>
       </el-col>
       <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="20">
         <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='#00000000' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
@@ -32,7 +32,7 @@ export default {
   components: {},
   data () {
     return {
-      loginLink: process.env.ROOT_API + '/auth/login?returnURI=' + process.env.HOST_ADDRESS + '/#/map',
+      loginLink: process.env.VUE_APP_ROOT_API + '/auth/login?returnURI=' + process.env.VUE_APP_HOST_ADDRESS + '/#/map',
       activeIndex: ''
     }
   },

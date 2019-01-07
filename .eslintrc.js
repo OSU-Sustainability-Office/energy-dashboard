@@ -1,3 +1,11 @@
+/**
+ * @Author: Brogan Miner <Brogan>
+ * @Date:   2019-01-03T12:39:57-08:00
+ * @Email:  brogan.miner@oregonstate.edu
+ * @Last modified by:   Brogan
+ * @Last modified time: 2019-01-04T13:12:47-08:00
+ */
+
 // https://eslint.org/docs/user-guide/configuring
 
 module.exports = {
@@ -11,7 +19,6 @@ module.exports = {
   extends: [
     // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
     // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
-    'mocha/test',
     'plugin:vue/essential',
     // https://github.com/standard/standard/blob/master/docs/RULES-en.md
     'standard',

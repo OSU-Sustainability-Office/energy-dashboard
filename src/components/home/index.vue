@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2019-01-04T10:08:23-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2019-01-04T11:38:27-08:00
+-->
+
 <template>
   <el-container class='stage'>
     <el-main class="background">
@@ -53,7 +61,7 @@ export default {
   },
   methods: {
     login: function () {
-      window.location.href = process.env.ROOT_API + '/auth/login?returnURI=' + process.env.HOST_ADDRESS + '/#/map'
+      window.location.href = process.env.VUE_APP_ROOT_API + '/auth/login?returnURI=' + process.env.VUE_APP_HOST_ADDRESS + '/#/map'
     },
     explore: function () {
       this.$router.push('map')
@@ -74,7 +82,7 @@ export default {
   width: 100%;
 }
 .background {
-  background: url('/static/images/solar.jpg');
+  background: url('/images/solar.jpg');
   background-size: cover;
   background-position: center center;
   position: absolute;
