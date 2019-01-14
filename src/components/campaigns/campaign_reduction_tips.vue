@@ -3,7 +3,7 @@
 @Date:   2019-01-11T11:37:25-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-14T10:57:15-08:00
+@Last modified time: 2019-01-14T11:05:48-08:00
 -->
 
 <template>
@@ -156,11 +156,12 @@ export default {
 }
 
 .gridCardTitle {
-  color: $--color-black;
+  color: $--color-white;
   text-align: center;
   line-height: 28px;
   font-size: 28px;
-  top: 14px;
+  top: 18px;
+  font-family: 'StratumNO2';
 }
 .gridCard:hover .gridCardTitle {
   color: $--color-white;
@@ -177,7 +178,7 @@ export default {
 }
 .gridCardOverlay {
   position: relative;
-  background-color: rgba(255,255,255, 0.45);
+  background-color: rgba(255,255,255, 0.35);
   left: 0;
   width: 100%;
   height: 100%;
