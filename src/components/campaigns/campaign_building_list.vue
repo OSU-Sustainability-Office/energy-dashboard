@@ -3,7 +3,7 @@
 @Date:   2019-01-09T13:21:44-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-11T11:34:09-08:00
+@Last modified time: 2019-01-14T11:12:06-08:00
 -->
 <template>
   <el-col :span='24' class='buildingContainer'>
@@ -59,6 +59,7 @@ export default {
   }
   .buildingRow {
     padding: 0.5em;
+    padding-right: 1em;
   }
   .buildingCol {
     font-size: 24px;

@@ -3,7 +3,7 @@
 @Date:   2018-12-24T13:56:21-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-11T11:44:09-08:00
+@Last modified time: 2019-01-14T11:11:16-08:00
 -->
 <template>
   <el-row class='campaignView'>
@@ -95,6 +95,8 @@ export default {
 }
 .otherSide {
   padding: 2em;
+  padding-left: 1em;
+  padding-bottom: 1em;
 }
 .chartArea {
   padding: 2em;
@@ -103,15 +105,9 @@ export default {
 }
 .buildingContainer {
   padding: 2em;
+  padding-right: 1em;
+  padding-bottom: 1em;
   // min-height: calc(100vh - #{$--nav-height} - 200px);
   height: calc(400px + 5em);
-}
-.hexagonContainer {
-  background-image: url('~/images/hexagon.png');
-  background-color: rgba(255,255,255, 0.3);
-  padding-top: 3em;
-  background-size: 100px 100px;
-  min-height: calc(100vh - #{$--nav-height} - 200px);
-  width: 100%;
 }
 </style>

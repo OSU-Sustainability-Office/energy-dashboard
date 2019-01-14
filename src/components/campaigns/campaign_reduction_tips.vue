@@ -3,7 +3,7 @@
 @Date:   2019-01-11T11:37:25-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-14T11:05:48-08:00
+@Last modified time: 2019-01-14T11:12:33-08:00
 -->
 
 <template>
@@ -130,6 +130,7 @@ export default {
 <style scoped lang='scss'>
 .reductionBody {
   padding: 2em;
+  padding-top: 1em;
 }
 .reductionBackground {
   background-color: $--color-black;
