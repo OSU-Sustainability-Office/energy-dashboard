@@ -3,7 +3,7 @@
 @Date:   2019-01-04T10:08:23-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-04T12:18:32-08:00
+@Last modified time: 2019-01-09T13:36:34-08:00
 -->
 
 <template>
@@ -30,8 +30,6 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-  @import '@/assets/style-variables.scss';
-
   .menu-stage {
     height: 100%;
   }

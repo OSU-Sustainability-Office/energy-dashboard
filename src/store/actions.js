@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-07T10:33:19-08:00
+ * @Last modified time: 2019-01-11T11:20:52-08:00
  */
 import api from './api.js'
 
@@ -142,91 +142,105 @@ export default {
       let morePromises = []
       // Aqquire new data for the charts since they were manipulated
       for (let chartIndex in block.charts) {
-        morePromises.push((async () => {
-          let chartPromises = []
-          for (let meter of block.charts[chartIndex].meters) {
-            let start = new Date((block.charts[chartIndex].date_start) ? block.charts[chartIndex].date_start : block.date_start)
-            // Get One extra element based on int and unit
-
-            start.setMinutes(Math.floor(start.getMinutes() / 15.0) * 15)
-            start.setSeconds(0)
-            start.setMilliseconds(0)
-            start.setMinutes(start.getMinutes() - 15)
-            if (block.interval_unit === 'minute') {
-              start.setMinutes(start.getMinutes() - (block.date_interval - 15))
-            } else if (block.interval_unit === 'hour') {
-              start.setHours(start.getHours() - block.date_interval)
-            } else if (block.interval_unit === 'day') {
-              start.setDate(start.getDate() - block.date_interval)
-            } else if (block.interval_unit === 'month') {
-              start.setMonth(start.getMonth() - block.date_interval)
-            }
-
-            chartPromises.push(api.data(meter.meter_id, start.toISOString(), (block.charts[chartIndex].date_end) ? block.charts[chartIndex].date_end : block.date_end, block.charts[chartIndex].point))
-          }
-          let r = await Promise.all(chartPromises)
-          let finalData = []
-          const map = {
-            pf_a: 1,
-            pf_b: 1,
-            pf_c: 1,
-            reactive_a: 1,
-            reactive_b: 1,
-            reactive_c: 1,
-            default: 0
-          }
-          for (let set in r) {
-            if (!r[set] || r[set].length <= 0) {
-              // If we dont get any data in the set skip to the next set
-              continue
-            }
-            // get multiplier for oddly hooked up meters for points that can be negative
-            const multiplier = ((block.charts[chartIndex].meters[set].negate) ? -1 : 1) * (map[Object.keys(r[set][0])[1]] || map['default'])
-            // get negation factor for accumulated_real
-            let mu2 = (block.charts[chartIndex].meters[set].operation) ? 1 : -1
-            if (block.charts[chartIndex].meters.length === 1) {
-              mu2 = 1
-            }
-            if (multiplier === 0) {
-              let insert = 0
-              for (let data of r[set]) {
-                while (insert < finalData.length && data.time > finalData[insert].x) {
-                  insert++
-                }
-                if (insert === finalData.length) {
-                  finalData.push({x: data.time, y: Math.abs(data[Object.keys(data)[1]]) * mu2})
-                } else {
-                  finalData[insert].y += Math.abs(data[Object.keys(data)[1]]) * mu2
-                }
-              }
-            } else {
-              let insert = 0
-              for (let data of r[set]) {
-                while (insert < finalData.length && data.time > finalData[insert].x) {
-                  insert++
-                }
-                if (insert === finalData.length) {
-                  finalData.push({x: data.time, y: (data[Object.keys(data)[1]]) * multiplier})
-                } else {
-                  finalData[insert].y += (data[Object.keys(data)[1]]) * multiplier
-                }
-              }
-            }
-          }
-          if (block.charts[chartIndex].point === 'accumulated_real' || block.charts[chartIndex].point === 'total' || block.charts[chartIndex].point === 'cubic_feet') {
-            for (let i = finalData.length - 1; i > 0; i--) {
-              finalData[i].y -= finalData[i - 1].y
-            }
-          }
-          finalData.splice(0, 1)
-          block.charts[chartIndex].data = finalData
-          return Promise.resolve()
-        })())
+        morePromises.push(context.dispatch('data', { meters: block.charts[chartIndex].meters, point: block.charts[chartIndex].point, date_start: block.date_start, date_end: block.date_end, date_interval: block.date_interval, interval_unit: block.interval_unit }))
       }
-      await Promise.all(morePromises)
+      let data = await Promise.all(morePromises)
+      for (let i in data) {
+        block.charts[i].data = data[i]
+      }
 
       context.commit('loadBlock', block)
       return Promise.resolve(block)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  },
+
+  data: async (conetext, payload) => {
+    try {
+      const meters = payload.meters
+      const meteringPoint = payload.point
+      const startDate = payload.date_start
+      const endDate = payload.date_end
+      const intervalNum = payload.date_interval
+      const intervalUnit = payload.interval_unit
+
+      let start = new Date(startDate)
+      start.setMinutes(Math.floor(start.getMinutes() / 15.0) * 15)
+      start.setSeconds(0)
+      start.setMilliseconds(0)
+      start.setMinutes(start.getMinutes() - 15)
+      if (intervalUnit === 'minute') {
+        start.setMinutes(start.getMinutes() - (intervalNum - 15))
+      } else if (intervalUnit === 'hour') {
+        start.setHours(start.getHours() - intervalNum)
+      } else if (intervalUnit === 'day') {
+        start.setDate(start.getDate() - intervalNum)
+      } else if (intervalUnit === 'month') {
+        start.setMonth(start.getMonth() - intervalNum)
+      }
+
+      let chartPromises = []
+      for (let meter of meters) {
+        chartPromises.push(api.data(meter.meter_id, start.toISOString(), endDate, meteringPoint))
+      }
+      let r = await Promise.all(chartPromises)
+
+      let finalData = []
+      const map = {
+        pf_a: 1,
+        pf_b: 1,
+        pf_c: 1,
+        reactive_a: 1,
+        reactive_b: 1,
+        reactive_c: 1,
+        default: 0
+      }
+      for (let set in r) {
+        if (!r[set] || r[set].length <= 0) {
+          // If we dont get any data in the set skip to the next set
+          continue
+        }
+        // get multiplier for oddly hooked up meters for points that can be negative
+        const multiplier = ((meters[set].negate) ? -1 : 1) * (map[Object.keys(r[set][0])[1]] || map['default'])
+        // get negation factor for accumulated_real
+        let mu2 = (meters[set].operation) ? 1 : -1
+        if (meters.length === 1) {
+          mu2 = 1
+        }
+        if (multiplier === 0) {
+          let insert = 0
+          for (let data of r[set]) {
+            while (insert < finalData.length && data.time > finalData[insert].x) {
+              insert++
+            }
+            if (insert === finalData.length) {
+              finalData.push({x: data.time, y: Math.abs(data[Object.keys(data)[1]]) * mu2})
+            } else {
+              finalData[insert].y += Math.abs(data[Object.keys(data)[1]]) * mu2
+            }
+          }
+        } else {
+          let insert = 0
+          for (let data of r[set]) {
+            while (insert < finalData.length && data.time > finalData[insert].x) {
+              insert++
+            }
+            if (insert === finalData.length) {
+              finalData.push({x: data.time, y: (data[Object.keys(data)[1]]) * multiplier})
+            } else {
+              finalData[insert].y += (data[Object.keys(data)[1]]) * multiplier
+            }
+          }
+        }
+      }
+      if (meteringPoint === 'accumulated_real' || meteringPoint === 'total' || meteringPoint === 'cubic_feet') {
+        for (let i = finalData.length - 1; i > 0; i--) {
+          finalData[i].y -= finalData[i - 1].y
+        }
+      }
+      finalData.splice(0, 1)
+      return Promise.resolve(finalData)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -496,6 +510,50 @@ export default {
       return Promise.reject(error)
     }
   },
+  baseline: async (context, payload) => {
+    try {
+      let start = new Date(payload.date_start)
+      start.setMinutes(Math.floor(start.getMinutes() / 15) * 15)
+      start.setSeconds(0)
+      start.setMilliseconds(0)
+      start = start.getTime()
+      let weekcount = Math.round(((new Date(payload.date_end)).getTime() - start) / 604800000)
+      let data = await context.dispatch('data', payload)
+      let matrixBase = [new Array(96).fill(0), new Array(96).fill(0), new Array(96).fill(0), new Array(96).fill(0), new Array(96).fill(0), new Array(96).fill(0), new Array(96).fill(0)]
+      let badAverages = {}
+      // 672 Points in baseline data, averaged per weekcount
+      // return baseline data in 2d array form no dates
+      // 2d array dimensions are 7 by 96
+      let i = 0
+      for (let piece of data) {
+        if (i === data.length - 1) {
+          continue
+        }
+        // If this is ever less than zero something bad has happened
+        while ((new Date(piece.x)).getTime() - (start + i * 1440000) > 0) {
+          if (badAverages[(i / 96) + '-' + (i % 96)]) {
+            badAverages[(i / 96) + '-' + (i % 96)] += 1
+          } else {
+            badAverages[(i / 96) + '-' + (i % 96)] = 1
+          }
+          i++
+        }
+        matrixBase[Math.floor((i / 96) % 7)][i % 96] += piece.y / weekcount
+        i++
+      }
+      for (let key of Object.keys(badAverages)) {
+        const dashI = key.indexOf('-')
+        const dayOfWeek = parseInt(key.substring(0, dashI))
+        const timeOfDay = parseInt(key.substring(dashI + 1, key.length))
+
+        matrixBase[dayOfWeek][timeOfDay] *= weekcount
+        matrixBase[dayOfWeek][timeOfDay] /= (weekcount - badAverages[key])
+      }
+      return Promise.resolve(matrixBase)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  },
   campaign: async (context, payload) => {
     try {
       let campaign = await api.campaign(payload)
@@ -505,43 +563,94 @@ export default {
       */
       const defaultStory = {
         id: null,
-        media: null,
+        media: campaign.media,
         public: 0,
         name: campaign.name,
         blocks: []
       }
-      context.commit('loadStory', defaultStory)
-      let concurrentChartAdding = []
+      const topBlock = {
+        index: 0,
+        id: null,
+        name: '',
+        date_start: campaign.date_start,
+        date_end: campaign.date_end,
+        date_interval: 1,
+        interval_unit: 'day',
+        graphType: 1,
+        charts: []
+      }
+      defaultStory.blocks.push(topBlock)
       for (let group of campaign.groups) {
+        let meters = await context.dispatch('buildingMeters', { id: group.id })
+        let baseline = await context.dispatch('baseline', {
+          meters: meters,
+          point: 'accumulated_real',
+          date_start: campaign.compare_start,
+          date_end: campaign.compare_end,
+          date_interval: 'day',
+          interval_unit: 1
+        })
+        // Fetch current data
+        let currentData = await context.dispatch('data', {
+          meters: meters,
+          point: 'accumulated_real',
+          date_start: campaign.date_start,
+          date_end: campaign.date_end,
+          date_interval: 1,
+          interval_unit: 'day'
+        })
+
         const defaultBlock = {
-          index: campaign.groups.indexOf(group),
-          id: null,
+          index: campaign.groups.indexOf(group) + 1,
+          id: group.id,
           name: group.name,
           date_start: campaign.date_start,
           date_end: campaign.date_end,
-          date_interval: 15,
-          interval_unit: 'minute',
-          graphType: 1,
+          date_interval: 1,
+          interval_unit: 'day',
+          graphType: 5,
           goal: group.goal,
+          accumulatedPercentage: null,
           charts: []
         }
-        context.commit('loadBlock', defaultBlock)
-        let meters = await context.dispatch('buildingMeters', { id: group.id })
-        for (let i = 0; i < 2; i++) {
-          const defaultChart = {
-            index: campaign.groups.indexOf(group),
-            point: 'accumulated_real',
-            name: group.name + ((i === 1) ? ' (comparison)' : ''),
-            meters: meters,
-            meter: 0,
-            date_start: (i === 1) ? campaign.compare_start : null,
-            date_end: (i === 1) ? campaign.compare_end : null
-          }
-          concurrentChartAdding.push((i === 0) ? context.dispatch('addChart', defaultChart) : context.dispatch('addChartAndCompare', defaultChart))
-        }
-      }
+        defaultBlock.charts.push({
+          index: 1,
+          point: 'accumulated_real',
+          name: 'Current Data',
+          meters: meters,
+          meter: 0,
+          data: JSON.parse(JSON.stringify(currentData))
+        })
 
-      return Promise.all(concurrentChartAdding)
+        let fakeData = []
+        for (let i in currentData) {
+          currentData[i].y /= baseline[Math.floor((i / 96) % 7)][i % 96] / 100
+          fakeData.push({ x: currentData[i].x, y: baseline[Math.floor((i / 96) % 7)][i % 96] })
+        }
+
+        const totalPercent = currentData.reduce((total, value) => total + value.y, 0) / currentData.length
+        defaultBlock.accumulatedPercentage = totalPercent
+
+        defaultBlock.charts.splice(0, 0, {
+          index: 0,
+          point: 'accumulated_real',
+          name: 'Baseline Data',
+          meters: meters,
+          meter: 0,
+          data: fakeData
+        })
+        topBlock.charts.push({
+          index: campaign.groups.indexOf(group),
+          point: 'baseline_percentage',
+          name: group.name,
+          meters: meters,
+          meter: 0,
+          data: currentData
+        })
+        defaultStory.blocks.push(defaultBlock)
+      }
+      await context.commit('loadStory', defaultStory)
+      Promise.resolve()
     } catch (error) {
       Promise.reject(error)
     }

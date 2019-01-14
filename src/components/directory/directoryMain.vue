@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2018-12-17T10:58:38-08:00
+@Last modified time: 2019-01-09T13:36:39-08:00
 -->
 
 <template>
@@ -219,7 +219,6 @@ export default {
 }
 </script>
 <style scoped lang='scss'>
-@import '@/assets/style-variables.scss';
 /*--- top level ---*/
 .container {
   position: absolute;

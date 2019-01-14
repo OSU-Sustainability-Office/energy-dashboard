@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2019-01-03T12:39:57-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2019-01-09T13:37:07-08:00
+-->
+
 <template>
   <el-row class='stage'>
     <el-col :span='24' class='innerContent'>
@@ -134,8 +142,6 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-@import '@/assets/style-variables.scss';
-
 .stage {
   position: absolute;
   top: 0;

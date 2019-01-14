@@ -1,3 +1,11 @@
+<!--
+@Author: Brogan Miner <Brogan>
+@Date:   2019-01-03T12:39:57-08:00
+@Email:  brogan.miner@oregonstate.edu
+@Last modified by:   Brogan
+@Last modified time: 2019-01-09T13:37:15-08:00
+-->
+
 <template>
   <el-row class='stage'>
     <el-col :span='24'>
@@ -185,7 +193,6 @@ export default {
 @import "../../../node_modules/leaflet/dist/leaflet.css";
 </style>
 <style scoped lang='scss'>
-@import '@/assets/style-variables.scss';
 $sideMenu-width: 250px;
 .main {
 

@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-04T23:04:30-08:00
+@Last modified time: 2019-01-09T13:36:21-08:00
 -->
 <template>
   <div element-loading-background="rgba(0, 0, 0, 0.8)">
@@ -11,6 +11,7 @@
     <barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <piechart v-if="graphType == 4" ref="piechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <barchart v-if="graphType == 5" ref="barlinechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <el-col :span='24' class='NoData' :style='`height:${height}px;line-height:${height}px;`' v-if="graphType == 100">Data Unavailable</el-col>
   </div>
 </template>
@@ -37,6 +38,9 @@ export default {
         break
       case 3:
         this.chart = this.$refs.doughnutchart
+        break
+      case 5:
+        this.chart = this.$refs.barlinechart
         break
       default:
         this.chart = this.$refs.piechart
@@ -93,6 +97,9 @@ export default {
         case 3:
           this.chart = this.$refs.doughnutchart
           break
+        case 5:
+          this.chart = this.$refs.barlinechart
+          break
         default:
           this.chart = this.$refs.piechart
       }
@@ -113,11 +120,14 @@ export default {
           case 3:
             this.chart = this.$refs.doughnutchart
             break
+          case 5:
+            this.chart = this.$refs.barlinechart
+            break
           default:
             this.chart = null
         }
       }
-      if (this.graphType === 1 || this.graphType === 2) {
+      if (this.graphType === 1 || this.graphType === 2 || this.graphType === 5) {
         this.parseDataBarLine()
       } else if (this.graphType === 3 || this.graphType === 4) {
         this.parseDataPieDoughnut()
@@ -247,7 +257,8 @@ export default {
           borderColor: this.colors[i],
           fill: false,
           showLine: true,
-          spanGaps: false
+          spanGaps: false,
+          type: (this.graphType === 5 && i === 1) ? 'bar' : 'line'
         })
         i++
       }
@@ -270,6 +281,9 @@ export default {
     buildLabel: function (axis) {
       if (axis === 'y') {
         // This axis must contain the units for the given chart.point
+        if (this.story.blocks.length <= this.index) {
+          return ''
+        }
         const point = this.story.blocks[this.index].charts[0].point
         if (!point) {
           return ''
@@ -293,8 +307,6 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-@import '@/assets/style-variables.scss';
-
   .NoData {
     text-align: center;
     color: $--color-white;

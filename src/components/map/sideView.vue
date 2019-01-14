@@ -3,7 +3,7 @@
 @Date:   2018-12-20T10:38:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-04T11:29:32-08:00
+@Last modified time: 2019-01-09T13:37:22-08:00
 -->
 
 <template>
@@ -184,8 +184,6 @@ export default {
 }
 </script>
 <style scoped lang='scss'>
-@import '@/assets/style-variables.scss';
-
 .stage {
   z-index: 401;
   display: block;
