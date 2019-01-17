@@ -3,7 +3,7 @@
 @Date:   2019-01-11T11:37:25-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-14T11:12:33-08:00
+@Last modified time: 2019-01-15T13:45:41-08:00
 -->
 
 <template>
@@ -44,7 +44,7 @@
         <el-col class='gridCard' v-for='(tip, index) in tips' :key='index' :span='8' :style='"background-image:" + gradients[index % gradients.length] + ";"' >
           <div @mouseenter='hoverShow = index' @mouseleave='hoverShow = null' style='height: 100%;'>
             <el-col :span='24' class='gridCardOverlay'>
-              <div class='gridCardIcon' :style='"clip-path: url(#" + tip.icon + ");" + "background-image:" + gradients[index % gradients.length] + ";"'>
+              <div class='gridCardIcon' :style='"clip-path: url(#" + tip.icon + "); -webkit-clip-path: url(#" + tip.icon + "); background-image:" + gradients[index % gradients.length] + ";"'>
               </div>
               <el-row class='gridCardTitle'>
                 {{ tip.title }}
@@ -95,7 +95,7 @@ export default {
         {
           title: 'Community Spaces',
           description: [
-            'Make sure your refrigerator door always closes completely and don’t hold it open for long .',
+            'Make sure your refrigerator door always closes completely and don’t hold it open for long.',
             'Hang out in common areas instead of your room. This allows you to turn off your lights and share with others (and build community).',
             'Use the microwave instead of the stovetop or oven.',
             'Ensure fridge coils (the warm parts) are clean of dust and that air can freely flow around.'
