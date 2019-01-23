@@ -3,7 +3,7 @@
 @Date:   2018-12-17T14:07:35-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-04T15:25:06-08:00
+@Last modified time: 2019-01-09T14:28:34-08:00
 -->
 
 <template>
@@ -196,7 +196,6 @@ export default {
 }
 </script>
 <style lang='scss'>
-@import '@/assets/style-variables.scss';
 .el-menu--horizontal > .el-submenu.is-active .el-submenu__title {
   border: none !important;
 }
@@ -210,7 +209,6 @@ export default {
 }
 </style>
 <style scoped lang='scss'>
-@import '@/assets/style-variables.scss';
   .stage {
     position: relative !important;
     top: 0 !important;

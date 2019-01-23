@@ -3,7 +3,7 @@
 @Date:   2018-11-29T12:53:21-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-04T11:36:24-08:00
+@Last modified time: 2019-01-09T13:37:26-08:00
 -->
 
 <template>
@@ -73,8 +73,6 @@ export default {
 }
 </script>
 <style scoped lang='scss'>
-@import '@/assets/style-variables.scss';
-
 .sus-nav {
   background-color: $--color-primary;
   border-bottom: solid 1px $--color-white;

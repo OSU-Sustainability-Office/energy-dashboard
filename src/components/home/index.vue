@@ -3,7 +3,7 @@
 @Date:   2019-01-04T10:08:23-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-04T11:38:27-08:00
+@Last modified time: 2019-01-09T13:37:00-08:00
 -->
 
 <template>
@@ -72,8 +72,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang='scss'>
-@import '@/assets/style-variables.scss';
-
 .stage {
   position: relative;
   top: 0;

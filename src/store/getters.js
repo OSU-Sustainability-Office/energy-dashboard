@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:36:17-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-04T12:35:45-08:00
+ * @Last modified time: 2019-01-09T13:21:22-08:00
  */
 export default {
   story: state => {
@@ -57,7 +57,8 @@ export default {
       input: 'Steam Input',
       apparent_a: 'Apparent Power, Phase A (VA)',
       apparent_b: 'Apparent Power, Phase B (VA)',
-      apparent_c: 'Apparent Power, Phase C (VA)'
+      apparent_c: 'Apparent Power, Phase C (VA)',
+      baseline_percentage: 'Percentage (%)'
     }
 
     return map[point]
@@ -94,7 +95,8 @@ export default {
       input: '',
       apparent_a: 'VA',
       apparent_b: 'VA',
-      apparent_c: 'VA'
+      apparent_c: 'VA',
+      baseline_percentage: '%'
     }
 
     return map[point]
