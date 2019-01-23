@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-11T11:20:52-08:00
+ * @Last modified time: 2019-01-23T10:19:24-08:00
  */
 import api from './api.js'
 
@@ -182,6 +182,9 @@ export default {
 
       let chartPromises = []
       for (let meter of meters) {
+        if (meter.operation > 1 && meters.length > 1) {
+          continue
+        }
         chartPromises.push(api.data(meter.meter_id, start.toISOString(), endDate, meteringPoint))
       }
       let r = await Promise.all(chartPromises)
