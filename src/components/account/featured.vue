@@ -3,7 +3,7 @@
 @Date:   2018-12-17T14:07:35-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-09T13:35:52-08:00
+@Last modified time: 2019-01-29T12:46:06-08:00
 -->
 
 <template>
@@ -58,7 +58,7 @@
         <label>Datasets: </label>
         <featureController :index='form.index' :key='form.index' ref="featureController" />
       </div>
-      <featureController v-if='story.public' :index='story.blocks.length' :key='story.blocks.length' ref="featureController" />
+      <featureController v-if='story.public && !compareMode' :index='story.blocks.length' :key='story.blocks.length' ref="featureController" />
       <span slot='footer'>
             <el-button @click='cardDelete()' v-if='!story.public' type='danger'> Delete </el-button>
             <el-button @click='cardSave()' type='primary'> Ok </el-button>
@@ -80,7 +80,7 @@ export default {
     card,
     featureController
   },
-  props: ['cards', 'fromMap'],
+  props: ['cards', 'fromMap', 'compareMode'],
   data () {
     return {
       dialogVisible: false,
@@ -128,37 +128,41 @@ export default {
     },
     cardSave: function () {
       let validators = []
-      validators.push(this.$refs.featureController.$refs.form.validate())
+      if (this.$refs.featureController) {
+        validators.push(this.$refs.featureController.$refs.form.validate())
+      }
       validators.push(this.$refs.form.validate())
       Promise.all(validators).then(async r => {
-        const card = {
+        let card = {
           name: this.form.name,
           date_start: this.form.start.toISOString(),
           date_end: this.form.end.toISOString(),
           date_interval: this.interval(this.form.intUnit),
           interval_unit: this.unit(this.form.intUnit),
-          charts: [],
           story_id: this.story.id,
           index: this.form.index,
           graph_type: this.form.graphType,
           id: this.form.id
         }
-        for (const chart of this.$refs.featureController.form) {
-          const meters = await this.$store.dispatch('buildingMeters', { id: chart.group })
-          const newChart = {
-            id: chart.id,
-            name: chart.name,
-            group_id: chart.group,
-            point: chart.point,
-            meters: [],
-            meter: chart.meter
+        if (this.$refs.featureController) {
+          card.charts = []
+          for (const chart of this.$refs.featureController.form) {
+            const meters = await this.$store.dispatch('buildingMeters', { id: chart.group })
+            const newChart = {
+              id: chart.id,
+              name: chart.name,
+              group_id: chart.group,
+              point: chart.point,
+              meters: [],
+              meter: chart.meter
+            }
+            if (chart.meter === 0) {
+              newChart.meters = newChart.meters.concat(meters.filter(e => e.type === 'e'))
+            } else {
+              newChart.meters = newChart.meters.concat(meters.filter(e => e.meter_id === chart.meter))
+            }
+            card.charts.push(newChart)
           }
-          if (chart.meter === 0) {
-            newChart.meters = newChart.meters.concat(meters.filter(e => e.type === 'e'))
-          } else {
-            newChart.meters = newChart.meters.concat(meters.filter(e => e.meter_id === chart.meter))
-          }
-          card.charts.push(newChart)
         }
         this.$store.dispatch('block', card).then(() => {
           this.newCard = false
@@ -203,15 +207,17 @@ export default {
       this.form.id = null
       this.form.index = this.story.blocks.length
       this.newCard = true
-      this.$nextTick(() => {
-        this.$refs.featureController.form = [{
-          name: null,
-          meter: null,
-          point: null,
-          group: null,
-          id: null
-        }]
-      })
+      if (this.$refs.featureController) {
+        this.$nextTick(() => {
+          this.$refs.featureController.form = [{
+            name: null,
+            meter: null,
+            point: null,
+            group: null,
+            id: null
+          }]
+        })
+      }
     },
     reverseInt: function (unit, interval) {
       if (interval === 15 && unit === 'minute') {
@@ -234,13 +240,15 @@ export default {
       this.form.graphType = null
       this.form.id = null
       this.form.index = 0
-      this.$refs.featureController.form = [{
-        name: null,
-        meter: null,
-        point: null,
-        group: null,
-        id: null
-      }]
+      if (this.$refs.featureController) {
+        this.$refs.featureController.form = [{
+          name: null,
+          meter: null,
+          point: null,
+          group: null,
+          id: null
+        }]
+      }
 
       this.newCard = false
     },

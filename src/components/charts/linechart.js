@@ -3,7 +3,7 @@
  * @Date:   2018-11-19T10:40:29-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-04T23:09:07-08:00
+ * @Last modified time: 2019-01-29T13:43:37-08:00
  */
 
 import { Line, mixins } from 'vue-chartjs'
@@ -64,11 +64,23 @@ export default {
         },
         legend: {
           labels: {
-            fontColor: 'white'
+            fontSize: 12,
+            fontColor: '#FFF',
+            fontFamily: 'Open Sans'
+          },
+          onHover: function (e) {
+            e.target.style.cursor = 'pointer'
+          }
+        },
+        hover: {
+          onHover: function (e) {
+            e.target.style.cursor = 'default'
           }
         },
         title: {
-          fontColor: 'white'
+          fontSize: 12,
+          fontColor: '#FFF',
+          fontFamily: 'Open Sans'
         },
         responsive: true, // my new default options
         maintainAspectRatio: false, // my new default options
@@ -76,14 +88,19 @@ export default {
           yAxes: [{
             ticks: {
               beginAtZero: false,
-              fontColor: 'white'
+              fontSize: 12,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans'
             },
             gridLines: {
               display: true // my new default options
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),
-              labelString: this.$parent.buildLabel('y')
+              labelString: this.$parent.buildLabel('y'),
+              fontSize: 12,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans'
             }
           }],
           xAxes: [{
@@ -91,19 +108,28 @@ export default {
               display: false
             },
             ticks: {
-              fontColor: 'white',
-              autoSkip: true,
-              maxTicksLimit: 30
+              fontSize: 14,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans',
+              autoskip: true,
+              autoSkipPadding: 30,
+              maxTicksLimit: 30,
+              stepSize: 5,
+              unitStepSize: 6
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),
-              labelString: this.$parent.buildLabel('x')
+              labelString: this.$parent.buildLabel('x'),
+              fontSize: 12,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans'
             },
             type: 'time',
             time: {
-              unit: 'hour',
+              unit: 'day',
               displayFormats: {
-                'hour': 'M/DD'
+                'day': 'M/DD',
+                'hour': 'h:mm a'
               }
             }
           }]

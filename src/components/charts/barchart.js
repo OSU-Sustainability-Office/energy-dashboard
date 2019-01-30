@@ -3,7 +3,7 @@
  * @Date:   2018-11-19T10:40:29-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-04T23:21:15-08:00
+ * @Last modified time: 2019-01-29T13:26:26-08:00
  */
 
 import { Bar, mixins } from 'vue-chartjs'
@@ -63,11 +63,15 @@ export default {
         },
         legend: {
           labels: {
-            fontColor: 'white'
+            fontSize: 12,
+            fontColor: '#FFF',
+            fontFamily: 'Open Sans'
           }
         },
         title: {
-          fontColor: 'white'
+          fontSize: 12,
+          fontColor: '#FFF',
+          fontFamily: 'Open Sans'
         },
         responsive: true, // my new default options
         maintainAspectRatio: false, // my new default options
@@ -75,7 +79,9 @@ export default {
           yAxes: [{
             ticks: {
               beginAtZero: true,
-              fontColor: 'white'
+              fontSize: 12,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans'
               // min: 20 Need to caclulate this value so there arent any blank lines
             },
             gridLines: {
@@ -83,7 +89,10 @@ export default {
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),
-              labelString: this.$parent.buildLabel('y')
+              labelString: this.$parent.buildLabel('y'),
+              fontSize: 12,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans'
             }
           }],
           xAxes: [{
@@ -91,19 +100,25 @@ export default {
               display: false
             },
             ticks: {
-              fontColor: 'white',
+              fontSize: 12,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans',
               autoSkip: true,
               maxTicksLimit: 30
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),
-              labelString: this.$parent.buildLabel('x')
+              labelString: this.$parent.buildLabel('x'),
+              fontSize: 12,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans'
             },
             type: 'time',
             time: {
-              unit: 'hour',
+              unit: 'day',
               displayFormats: {
-                'hour': 'M/DD'
+                'day': 'M/DD',
+                'hour': 'DD h:mm'
               }
             }
           }]

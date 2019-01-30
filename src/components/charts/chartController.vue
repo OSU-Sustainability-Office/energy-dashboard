@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-09T13:36:21-08:00
+@Last modified time: 2019-01-29T13:40:38-08:00
 -->
 <template>
   <div element-loading-background="rgba(0, 0, 0, 0.8)">
@@ -276,6 +276,14 @@ export default {
     },
     getEnd: function () {
       return this.story.blocks[this.index].date_end
+    },
+    timeUnit: function () {
+      if ((new Date(this.story.blocks[this.index].date_end)) - (new Date(this.story.blocks[this.index].date_start)) <= 86400000) {
+        if (this.story.blocks[this.index].interval_unit === 'minute' && this.story.blocks[this.index].date_interval === 15) {
+          return 'hour'
+        }
+      }
+      return 'day'
     },
     // Creates either an X or a Y axis label for a chart, depending on the parameters.
     buildLabel: function (axis) {

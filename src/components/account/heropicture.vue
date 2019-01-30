@@ -3,7 +3,7 @@
 @Date:   2019-01-04T10:08:23-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-04T11:33:39-08:00
+@Last modified time: 2019-01-29T13:09:19-08:00
 -->
 
 <template>
@@ -24,6 +24,9 @@ export default {
   watch: {
     media: function (value) {
       this.$refs.main.style.backgroundImage = ''
+      if (Array.isArray(value)) {
+        value = null
+      }
       if (value) {
         this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.VUE_APP_ROOT_API + '/energy/images/' + value + '\')'
       } else {

@@ -3,7 +3,7 @@
 @Date:   2018-12-17T14:07:35-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-17T15:13:09-08:00
+@Last modified time: 2019-01-29T12:25:13-08:00
 -->
 
 <template>
@@ -40,7 +40,7 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <el-row class="deletebutton" v-if='this.form.length > 1'>
+      <el-row class="deletebutton" v-if='this.form.length > 1 && !story.public'>
         <el-col :span='10'>
           <el-button @click='deleteChart()' type='danger'>Delete Dataset</el-button>
         </el-col>

@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T10:38:57-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2018-12-24T13:57:44-08:00
+ * @Last modified time: 2019-01-29T11:34:22-08:00
  */
 
 import Vue from 'vue'
@@ -32,6 +32,10 @@ export default new Router({
     {
       path: '/story/:id',
       name: 'private',
+      component: account
+    },
+    {
+      path: '/compare/:ids/:range',
       component: account
     },
     {

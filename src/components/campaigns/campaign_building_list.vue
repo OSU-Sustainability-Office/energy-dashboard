@@ -3,7 +3,7 @@
 @Date:   2019-01-09T13:21:44-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-14T11:12:06-08:00
+@Last modified time: 2019-01-27T16:08:20-08:00
 -->
 <template>
   <el-col :span='24' class='buildingContainer'>
@@ -46,7 +46,7 @@ export default {
     font-size: 34px;
     color: $--color-white;
     font-family: "StratumNo2";
-    text-align: center;
+    text-align: left;
     padding-bottom: 1em;
   }
   .buildingContainer {
@@ -56,6 +56,7 @@ export default {
   }
   .buildingScroll {
     overflow-y: scroll;
+    max-height: calc(100% - 5em);
   }
   .buildingRow {
     padding: 0.5em;

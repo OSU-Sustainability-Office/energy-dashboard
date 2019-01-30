@@ -3,7 +3,7 @@
 @Date:   2018-12-24T13:56:21-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-14T11:11:16-08:00
+@Last modified time: 2019-01-27T16:11:07-08:00
 -->
 <template>
   <el-row class='campaignView'>
@@ -18,7 +18,12 @@
       </el-coL>
       <el-col :span='16' class='otherSide'>
         <div class='chartArea'>
-          <chartController :randomColors='1' :graphType='1' :index='0' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '400px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='400' v-if='loaded'/>
+          <el-row class='title'>
+            <el-col :span='24'>
+              Percent Use of Baseline
+            </el-col>
+          </el-row>
+          <chartController :randomColors='1' :graphType='1' :index='0' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '332px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='332' v-if='loaded'/>
         </div>
       </el-col>
     </el-row>
@@ -90,6 +95,13 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+.title {
+  font-size: 34px;
+  color: $--color-white;
+  font-family: "StratumNo2";
+  text-align: left;
+  padding-bottom: 1em;
+}
 .herorow {
   box-shadow: 0px 2px 4px -2px rgba(0,0,0,0.5);
 }

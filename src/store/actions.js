@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-23T10:19:24-08:00
+ * @Last modified time: 2019-01-29T13:06:14-08:00
  */
 import api from './api.js'
 
@@ -579,7 +579,7 @@ export default {
         date_end: campaign.date_end,
         date_interval: 1,
         interval_unit: 'day',
-        graphType: 1,
+        graph_type: 1,
         charts: []
       }
       defaultStory.blocks.push(topBlock)
@@ -611,7 +611,7 @@ export default {
           date_end: campaign.date_end,
           date_interval: 1,
           interval_unit: 'day',
-          graphType: 5,
+          graph_type: 5,
           goal: group.goal,
           accumulatedPercentage: null,
           charts: []
@@ -657,5 +657,64 @@ export default {
     } catch (error) {
       Promise.reject(error)
     }
+  },
+  compare: async (context, payload) => {
+    const defaultBlock = {
+      index: 0,
+      id: null,
+      name: 'Energy Consumption',
+      date_start: (new Date()).toISOString(),
+      date_end: (new Date()).toISOString(),
+      date_interval: 1,
+      interval_unit: 'day',
+      graph_type: 1,
+      charts: []
+    }
+    let indexCount = 0
+    let media = []
+    for (let story of payload.stories) {
+      let storyData = await api.story(story)
+      media.push(storyData.media)
+      let defaultChart = {
+        index: indexCount,
+        group_id: storyData.openCharts[0].group_id,
+        point: 'accumulated_real',
+        name: storyData.name,
+        meters: [],
+        meter: 0,
+        data: null
+      }
+      for (let meter of storyData.openMeters) {
+        if (meter.type === 'e') {
+          defaultChart.meters.push(meter)
+        }
+      }
+      defaultBlock.charts.push(defaultChart)
+      indexCount++
+    }
+    let defaultStory = {
+      id: null,
+      media: media,
+      public: 1,
+      name: '',
+      blocks: [defaultBlock]
+    }
+    let index = 0
+    for (let chart of defaultStory.blocks[0].charts) {
+      defaultStory.name += chart.name
+      if (defaultStory.blocks[0].charts.length - 1 !== index) {
+        defaultStory.name += ', '
+      }
+      index++
+    }
+    await context.commit('loadStory', defaultStory)
+    let obj = { index: 0, date_start: payload.dateStart, date_end: payload.dateEnd }
+    if (payload.interval) {
+      obj['date_interval'] = payload.interval
+    }
+    if (payload.unit) {
+      obj['interval_unit'] = payload.unit
+    }
+    return context.dispatch('block', obj)
   }
 }

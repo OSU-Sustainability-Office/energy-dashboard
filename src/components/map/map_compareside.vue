@@ -3,40 +3,32 @@
 @Date:   2019-01-03T12:39:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-09T13:37:07-08:00
+@Last modified time: 2019-01-29T16:07:03-08:00
 -->
 
 <template>
-  <el-row class='stage'>
+  <el-row class='stage_compareside'>
     <el-col :span='24' class='innerContent'>
       <el-row class='title'>
         <el-col :span='23'>
-          {{oldName}} Vs {{newName}}
+          <span v-for='(title, index) in titles' :key='title'>{{ title }}{{ (index !== titles.length - 1)? ',':'' }} </span>
         </el-col>
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="$emit('hide')"></i></el-col>
       </el-row>
       <el-row class='pics'>
-        <el-col :span='24'>
-          <div class='rightSlopeUp' :style='`background-image: url("https://api.sustainability.oregonstate.edu/energy/images/${oldMedia}");`'></div><div class='leftSlopeDown' :style='`background-image: url("https://api.sustainability.oregonstate.edu/energy/images/${newMedia}");`'></div>
+        <el-col :span='24' class='nowrap'>
+          <div v-for='(media, index) in mediaArray' :class='classForIndex(index)' :style='`background-image: url("https://api.sustainability.oregonstate.edu/energy/images/${media}"); width:calc(${100 / ((mediaArray.length < 4) ? mediaArray.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' v-if='index < 4' :key='index'></div>
         </el-col>
       </el-row>
-      <el-row class='buttons'>
-        <el-col :span='8' class='rangeButtonParent'>
-          <el-button class='rangeButton' @click='currentRange = 0' v-bind:class="{ active: currentRange == 0 }">Week</el-button>
-        </el-col>
-        <el-col :span='8' class='rangeButtonParent'>
-          <el-button class='rangeButton' @click='currentRange = 1' v-bind:class="{ active: currentRange == 1 }">Month</el-button>
-        </el-col>
-        <el-col :span='8' class='rangeButtonParent'>
-          <el-button class='rangeButton' @click='currentRange = 2' v-bind:class="{ active: currentRange == 2 }">Year</el-button>
-        </el-col>
-      </el-row>
+      <switchButtons @update='$refs.lineChartController.parse()' />
       <el-row class='grid'>
-        <el-col :span='16'>
-          <chartController :randomColors='1' :graphType='1' :index='0' ref="lineChartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='400'/>
+        <el-col :span='24'>
+          <chartController :randomColors='1' :graphType='1' :index='0' ref="lineChartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='300'/>
         </el-col>
-        <el-col :span='8'>
-          <chartController :randomColors='1' :graphType='3' :index='0' ref="pieChartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='400'/>
+      </el-row>
+      <el-row>
+        <el-col :span='20' :offset='2' class='buttonParent'>
+          <el-button class='bigButton' @click='$router.push({path: `/compare/${encodeURI(JSON.stringify(compareStories))}/1`})'>View Full Graph</el-button>
         </el-col>
       </el-row>
     </el-col>
@@ -44,54 +36,19 @@
 </template>
 <script>
 import chartController from '@/components/charts/chartController'
+import switchButtons from '@/components/map/time_switch_buttons_big'
 import { mapGetters } from 'vuex'
 
 export default {
   components: {
-    chartController
+    chartController, switchButtons
   },
-  props: ['compareStory', 'storyId'],
+  props: ['compareStories', 'storyId'],
   data () {
     return {
       currentRange: 1,
-      oldName: null,
-      oldMedia: null,
-      newMedia: null,
-      newName: null
-    }
-  },
-  watch: {
-    currentRange: function (value) {
-      value = parseInt(value)
-      let i = 0
-      let u = 0
-      if (value === 0) {
-        i = 6
-        u = 'hour'
-      } else if (value === 1) {
-        i = 1
-        u = 'day'
-      } else if (value === 2) {
-        i = 15
-        u = 'day'
-      }
-      let promises = []
-      for (let b of this.$store.getters.story.blocks) {
-        let c = {
-          index: b.index,
-          date_interval: i,
-          interval_unit: u,
-          date_start: this.dateOffset()
-        }
-
-        promises.push(this.$store.dispatch('block', c))
-      }
-      Promise.all(promises).then(() => {
-        this.$refs.pieChartController.parse()
-        this.$refs.lineChartController.parse()
-      }).catch(e => {
-        console.log(e.message)
-      })
+      mediaArray: [],
+      titles: []
     }
   },
   computed: {
@@ -101,29 +58,12 @@ export default {
     ])
   },
   mounted () {
-    this.$nextTick(() => {
-      this.$refs.pieChartController.colors = this.$refs.lineChartController.colors
-    })
-    this.$store.dispatch('story', this.storyId).then(async () => {
-      this.oldName = this.story.name
-      this.oldMedia = this.story.media
-      let chartCopy = JSON.parse(JSON.stringify(this.story.blocks[0].charts[0]))
-      await this.$store.dispatch('story', this.compareStory)
-      this.newName = this.story.name
-      this.newMedia = this.story.media
-      await this.$store.dispatch('addChart', {
-        index: 0,
-        name: chartCopy.name,
-        group: chartCopy.group_id,
-        point: chartCopy.point,
-        meter: chartCopy.meter,
-        meters: chartCopy.meters
-      })
-      await this.$store.dispatch('block', { index: 0, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' })
-
+    this.$store.dispatch('compare', { stories: this.compareStories, dateStart: this.dateOffset(), dateEnd: (new Date()).toISOString() }).then((v) => {
+      this.mediaArray = this.story.media
+      for (let chart of this.story.blocks[0].charts) {
+        this.titles.push(chart.name)
+      }
       this.$refs.lineChartController.parse()
-      this.$refs.pieChartController.parse()
-      Promise.resolve()
     })
   },
   methods: {
@@ -137,18 +77,28 @@ export default {
         d.setYear(d.getYear() - 1)
       }
       return d.toISOString()
+    },
+    classForIndex: function (index) {
+      if (this.mediaArray.length === 1) {
+        return 'slantImage unCut'
+      } else if (index === 0) {
+        return 'slantImage leftEnd'
+      } else if (index + 1 === this.mediaArray.length || index >= 3) {
+        return 'slantImage rightEnd'
+      } else {
+        return 'slantImage'
+      }
     }
   }
 }
 </script>
 <style lang='scss' scoped>
-.stage {
+.stage_compareside {
   position: absolute;
   top: 0;
   left: 250px;
   width: calc(100% - 250px);
   z-index: 401;
-  height: 100%;
   padding-left: 200px;
   padding-right: 20px;
   padding-top: 50px;
@@ -173,44 +123,56 @@ export default {
   top: 0;
   left: 0;
 }
+.title > .el-col {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
 .close-box {
   cursor: pointer;
-}
-.pics > .el-col {
-  position: relative;
-  height: 220px;
-  background-color: $--color-white;
 }
 .pics {
   border-bottom: solid 1px $--color-white;
 }
-$slope: 100px;
+$slope: 160px / 4;
 $border-width: 3px;
-.rightSlopeUp {
-  height: 100%;
-  width: calc(50% + #{($slope / 2) - $border-width});
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: inline-block;
-  clip-path: polygon(0% 0%, 0% 100%, 100% 100%, calc(100% - #{$slope}) 0%);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-
+.nowrap {
+  white-space: nowrap;
+  overflow: hidden;
+  height: 160px !important;
+  background-color: $--color-white;
 }
-.leftSlopeDown {
+.slantImage {
   height: 100%;
-  width: calc(50% + #{($slope / 2) - $border-width});
-  position: absolute;
-  left: calc(50% - #{($slope / 2) - ($border-width)});
+  position: relative;
   top: 0;
   display: inline-block;
-  clip-path: polygon(0% 0%, $slope 100%, 100% 100%, 100% 0%);
-  background-image: url("https://api.sustainability.oregonstate.edu/energy/images/April13OSU2429.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  clip-path: polygon(0% 100%, $slope 0%, 100% 0%, calc(100% - #{$slope}) 100%);
+}
+.slantImage:nth-child(1) {
+  left: 0px;
+}
+.slantImage:nth-child(2) {
+  left: -1 * $slope + $border-width;
+}
+.slantImage:nth-child(3) {
+  left: -2 * $slope + 2*$border-width;
+}
+.slantImage:nth-child(4) {
+  left: -3 * $slope + 3*$border-width;
+}
+.slantImage.rightEnd {
+  clip-path: polygon(0% 100%, $slope 0%, 100% 0%, 100% 100%);
+}
+.slantImage.leftEnd {
+  clip-path: polygon(0% 100%, 0% 0%, 100% 0%, calc(100% - #{$slope}) 100%);
+}
+.slantImage.unCut {
+  clip-path: polygon(0% 100%, 0% 0%, 100% 0%, 100% 100%);
 }
 .buttons {
   padding: 1em;
@@ -242,6 +204,25 @@ $border-width: 3px;
 }
 .grid > .el-col {
   padding: 1em;
-  padding-bottom: 3em;
+}
+.bigButton {
+  background-color: $--color-black;
+  color: darken($--color-white, 30%);
+  border-color: darken($--color-white, 30%);
+  width: 98%;
+  margin-bottom: 1em;
+}
+.bigButton:hover {
+  background-color: #000;
+  color: $--color-white;
+  border-color: $--color-white;
+}
+.bigButton:active {
+  background-color: $--color-black;
+  color: $--color-white;
+  border-color: $--color-white;
+}
+.buttonParent {
+  padding: 1em;
 }
 </style>
