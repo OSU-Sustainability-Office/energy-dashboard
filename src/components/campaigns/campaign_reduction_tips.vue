@@ -3,7 +3,7 @@
 @Date:   2019-01-11T11:37:25-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-15T13:45:41-08:00
+@Last modified time: 2019-01-31T23:16:58-08:00
 -->
 
 <template>
@@ -49,11 +49,13 @@
               <el-row class='gridCardTitle'>
                 {{ tip.title }}
               </el-row>
-              <el-row class='gridCardDescription' v-if='hoverShow === index'>
-                <ul>
-                  <li v-for='l in tip.description' :key='l'> {{ l }}</li>
-                </ul>
-              </el-row>
+              <transition name='fade'>
+                <el-row class='gridCardDescription' v-if='hoverShow === index'>
+                  <ul>
+                    <li v-for='l in tip.description' :key='l'> {{ l }}</li>
+                  </ul>
+                </el-row>
+              </transition>
             </el-col>
           </div>
         </el-col>
@@ -129,20 +131,17 @@ export default {
 </script>
 <style scoped lang='scss'>
 .reductionBody {
-  padding: 2em;
-  padding-top: 1em;
+  padding-top: 2em;
 }
 .reductionBackground {
-  background-color: $--color-black;
   border-radius: 5px;
   overflow: hidden;
-  padding: 2em;
 }
 .title {
-  color: $--color-white;
+  padding-left: 2em;
+  color: $--color-black;
   font-family: "StratumNO2";
   font-size: 34px;
-  padding-bottom: 1em;
 }
 .reductionGrid{
   padding: 1em;
@@ -151,7 +150,7 @@ export default {
 .gridCard {
   height: 400px;
   border-radius: 5px;
-  margin-right: 1em;
+  margin: 1em;
   overflow: hidden;
   flex: 0 0 500px;
 }
@@ -186,6 +185,7 @@ export default {
   // border-right: solid 2px $--color-white;
   // clip-path: polygon(100% 0, 100% 80%, 80% 100%, 0 100%, 0 0);
   overflow: hidden;
+  transition: background-color 0.45s;
 }
 .gridCard:hover .gridCardOverlay {
   background-color: rgba(0, 0, 0, 0.4);
@@ -197,8 +197,25 @@ export default {
   width: 100%;
   top: 0;
   left: 0;
+  transition: opacity 0.4s;
 }
 .gridCard:hover .gridCardIcon {
+  opacity: 0;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: all 0.4s;
+}
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-to {
+  opacity: 1;
+}
+.fade-leave {
+  opacity: 1;
+}
+.fade-leave-to {
   opacity: 0;
 }
 </style>

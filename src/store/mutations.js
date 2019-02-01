@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:36:17-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2018-12-27T12:19:03-08:00
+ * @Last modified time: 2019-01-31T18:37:51-08:00
  */
 
 import Vue from 'vue'
@@ -53,8 +53,20 @@ export default {
   loadBlock: (state, payload) => {
     Vue.set(state.currentStory.blocks, parseInt(payload.index), payload)
   },
+  updateBlockInterval: (state, payload) => {
+    let block = state.currentStory.blocks[payload.index]
+    block.date_start = payload.date_start
+    block.interval_unit = payload.interval_unit
+    block.date_interval = payload.date_interval
+  },
+  invalidateBlock: (state, payload) => {
+    state.currentStory.blocks[payload].loaded = false
+  },
   changeBlockName: (state, payload) => {
     state.currentStory.blocks[payload.index].name = payload.name
+  },
+  updateBlockAverage: (state, payload) => {
+    state.currentStory.blocks[payload.index].accumulatedPercentage = payload.avg
   },
   setBlockId: (state, payload) => {
     state.currentStory.blocks[payload.index].id = payload.id

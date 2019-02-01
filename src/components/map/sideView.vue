@@ -3,7 +3,7 @@
 @Date:   2018-12-20T10:38:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-24T12:14:24-08:00
+@Last modified time: 2019-01-31T16:02:00-08:00
 -->
 
 <template>
@@ -14,7 +14,7 @@
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="hide()"></i></el-col>
       </el-row>
       <el-row>
-        <el-col :span='24'>
+        <el-col :span='24' v-loading='(story)? !story.loaded : true'>
           <div class="media" ref='media'></div>
         </el-col>
       </el-row>
@@ -48,7 +48,7 @@
 <script>
 import chartController from '@/components/charts/chartController'
 import { mapGetters } from 'vuex'
-import switchButtons from '@/components/map/time_switch_buttons_small'
+import switchButtons from '@/components/map/time_switch_buttons_big'
 
 export default {
   name: 'sideView',
@@ -230,6 +230,7 @@ export default {
   font-size: 3em;
   width: 100%;
   left: 0;
+  z-index: 4;
 }
 .graphslide > * {
   cursor: pointer;

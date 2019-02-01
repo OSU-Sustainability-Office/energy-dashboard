@@ -3,7 +3,7 @@
 @Date:   2019-01-23T10:51:08-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-23T13:39:25-08:00
+@Last modified time: 2019-01-31T16:00:15-08:00
 -->
 <template>
   <el-row class='buttons'>
@@ -97,6 +97,8 @@ $clipInset: 8.75px;
   position: relative;
   width: 33.33%;
   padding: $parentPadding;
+  padding-left: 2 * $parentPadding;
+  padding-right: 2 * $parentPadding;
   background-color: darken($--color-white, 30%);
   clip-path: polygon(#{$clipInset/$buttonHeight * ($buttonHeight + 2*$parentPadding)} 0%, 0% 100%, calc(100% - #{$clipInset/$buttonHeight * ($buttonHeight + 2*$parentPadding)}) 100%, 100% 0%);
   margin: 0!important;
@@ -109,10 +111,10 @@ $clipInset: 8.75px;
   clip-path: polygon(0% 0%, 0% 100%, calc(100% - #{$clipInset/$buttonHeight * ($buttonHeight + 2*$parentPadding)}) 100%, 100% 0%);
 }
 .rangeButtonParent:nth-child(2) {
-  left: -10px;
+  left: -11px;
 }
 .rangeButtonParent:nth-child(3) {
-  left: -20px;
+  left: -22px;
   border-radius: 0px 5px 5px 0px;
   clip-path: polygon(#{$clipInset/$buttonHeight * ($buttonHeight + 2*$parentPadding)} 0%, 0% 100%, 100% 100%, 100% 0%);
 }
@@ -123,6 +125,8 @@ $clipInset: 8.75px;
   color: darken($--color-white, 30%);
   border: 0px !important;
   width: 100%;
+  position: relative;
+  top: -1px;
   height: $buttonHeight;
 }
 .rangeButtonParent:nth-child(1) .rangeButton {

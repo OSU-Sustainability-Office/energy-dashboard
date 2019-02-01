@@ -3,13 +3,13 @@
 @Date:   2019-01-04T10:08:23-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-29T13:09:19-08:00
+@Last modified time: 2019-01-31T13:44:50-08:00
 -->
 
 <template>
   <el-row class='stage'>
     <el-col :span='24' class='main'>
-      <div  class="background" ref='main'>
+      <div v-loading='(story)? !story.loaded : true' element-loading-background="rgba(0, 0, 0, 0.3)" class="background" ref='main'>
         <div class='title'>{{name}}</div>
         <div class='subtitle'>{{description}}</div>
       </div>
@@ -17,10 +17,16 @@
   </el-row>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'heropicture',
   props: ['media', 'name', 'description'],
+  computed: {
+    ...mapGetters([
+      'story'
+    ])
+  },
   watch: {
     media: function (value) {
       this.$refs.main.style.backgroundImage = ''

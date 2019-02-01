@@ -3,7 +3,7 @@
  * @Date:   2019-01-03T12:39:57-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-04T13:12:47-08:00
+ * @Last modified time: 2019-01-31T11:54:51-08:00
  */
 
 // https://eslint.org/docs/user-guide/configuring
@@ -32,6 +32,7 @@ module.exports = {
   rules: {
     // allow async-await
     'generator-star-spacing': 'off',
+    'camelcase' : [0, { 'properties': 'never' }],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   }

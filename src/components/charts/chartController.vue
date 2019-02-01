@@ -3,10 +3,10 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-29T13:40:38-08:00
+@Last modified time: 2019-01-31T15:44:38-08:00
 -->
 <template>
-  <div element-loading-background="rgba(0, 0, 0, 0.8)">
+  <div v-loading='(block(index))? !block(index).loaded : true' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
     <linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
@@ -54,7 +54,7 @@ export default {
         datasets: [],
         labels: []
       },
-      colors: ['#4A773C', '#00859B', '#FFB500', '#006A8E', '#C4D6A4', '#B8DDE1', '#FDD26E', '#C6DAE7', '#AA9D2E', '#0D5257', '#D3832B', '#003B5C', '#B7A99A', '#A7ACA2', '#7A6855', '#8E9089'],
+      colors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4'],
       map: {
         minute: 0,
         hour: 1,
@@ -253,8 +253,9 @@ export default {
         tempData.datasets.push({
           label: line.name,
           data: data,
-          backgroundColor: this.colors[i],
-          borderColor: this.colors[i],
+          backgroundColor: this.colors[i % 8],
+          borderColor: this.colors[i % 8],
+          borderDash: [(i >= 8) ? 8 : 0, (i >= 8) ? 10 : 0],
           fill: false,
           showLine: true,
           spanGaps: false,
@@ -287,9 +288,12 @@ export default {
     },
     // Creates either an X or a Y axis label for a chart, depending on the parameters.
     buildLabel: function (axis) {
+      if (this.story.blocks.length <= this.index) {
+        return ''
+      }
       if (axis === 'y') {
         // This axis must contain the units for the given chart.point
-        if (this.story.blocks.length <= this.index) {
+        if (this.story.blocks[this.index].charts.length <= this.index) {
           return ''
         }
         const point = this.story.blocks[this.index].charts[0].point

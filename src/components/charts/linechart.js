@@ -3,7 +3,7 @@
  * @Date:   2018-11-19T10:40:29-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-29T13:43:37-08:00
+ * @Last modified time: 2019-01-31T23:00:31-08:00
  */
 
 import { Line, mixins } from 'vue-chartjs'
@@ -39,18 +39,18 @@ export default {
               }
               let year = d.getYear().toString().slice(1)
               const dayCodes = [
+                'Sun',
                 'Mon',
                 'Tues',
                 'Wed',
                 'Thur',
                 'Fri',
-                'Sat',
-                'Sun'
+                'Sat'
               ]
               return (dayCodes[d.getDay()] + ' ' + (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem)
             },
             label: (item, data) => {
-              return parseFloat(item.yLabel).toFixed(2) + ' ' + this.$parent.unit()
+              return this.$parent.chartData.datasets[item.datasetIndex].label + ': ' + parseFloat(item.yLabel).toFixed(2) + ' ' + this.$parent.unit()
             }
           }
         },

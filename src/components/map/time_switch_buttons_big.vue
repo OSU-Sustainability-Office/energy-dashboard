@@ -3,18 +3,18 @@
 @Date:   2019-01-23T10:51:08-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-23T13:16:31-08:00
+@Last modified time: 2019-01-31T16:33:30-08:00
 -->
 <template>
   <el-row class='buttons'>
     <el-col class='rangeButtonParent' v-bind:class="{ active: currentRange == 0 }">
-      <el-button class='rangeButton' @click='currentRange = 0'>Week</el-button>
+      <el-button class='rangeButton' @click='currentRange = 0'>{{ (campaign) ? 'Past 6 Hours' : 'Week' }}</el-button>
     </el-col>
     <el-col class='rangeButtonParent' v-bind:class="{ active: currentRange == 1 }">
-      <el-button class='rangeButton' @click='currentRange = 1'>Month</el-button>
+      <el-button class='rangeButton' @click='currentRange = 1'>{{(campaign) ? 'Past Day' : 'Month'}}</el-button>
     </el-col>
     <el-col class='rangeButtonParent' v-bind:class="{ active: currentRange == 2 }">
-      <el-button class='rangeButton' @click='currentRange = 2'>Year</el-button>
+      <el-button class='rangeButton' @click='currentRange = 2'>{{(campaign) ? 'Campaign Length' : 'Year'}}</el-button>
     </el-col>
   </el-row>
 </template>
@@ -22,10 +22,10 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  props: ['height'],
+  props: ['height', 'campaign'],
   data () {
     return {
-      currentRange: 1
+      currentRange: (this.campaign) ? 2 : 1
     }
   },
   computed: {
@@ -40,13 +40,13 @@ export default {
       let i = 0
       let u = 0
       if (value === 0) {
-        i = 6
-        u = 'hour'
+        i = (this.campaign) ? 15 : 6
+        u = (this.campaign) ? 'minute' : 'hour'
       } else if (value === 1) {
         i = 1
-        u = 'day'
+        u = (this.campaign) ? 'hour' : 'day'
       } else if (value === 2) {
-        i = 15
+        i = (this.campaign) ? 1 : 15
         u = 'day'
       }
       let promises = []
@@ -57,8 +57,12 @@ export default {
           interval_unit: u,
           date_start: this.dateOffset()
         }
-
-        promises.push(this.$store.dispatch('block', c))
+        if (this.campaign) {
+          this.$store.commit('updateBlockInterval', c)
+          promises.push(Promise.resolve())
+        } else {
+          promises.push(this.$store.dispatch('block', c))
+        }
       }
       Promise.all(promises).then(() => {
         this.$emit('update')
@@ -68,13 +72,18 @@ export default {
   },
   methods: {
     dateOffset: function () {
-      var d = new Date()
+      let dateS = new Date(this.story.date_end)
+      let dateN = new Date()
+      let d = dateN
+      if (this.campaign && dateN > dateS) {
+        d = dateS
+      }
       if (this.currentRange === 0) {
-        d.setDate(d.getDate() - 7)
+        (this.campaign) ? d.setHours(d.getHours() - 6) : d.setDate(d.getDate() - 7)
       } else if (this.currentRange === 1) {
-        d.setMonth(d.getMonth() - 1)
+        (this.campaign) ? d.setDate(d.getDate() - 1) : d.setMonth(d.getMonth() - 1)
       } else if (this.currentRange === 2) {
-        d.setYear(d.getYear() - 1)
+        (this.campaign) ? d = new Date(this.story.date_start) : d.setYear(d.getYear() - 1)
       }
       return d.toISOString()
     }
@@ -83,7 +92,6 @@ export default {
 </script>
 <style scoped lang='scss'>
 .buttons {
-  padding: 2em;
   left: 19.5px;
   height: 80px !important;
 }
@@ -124,6 +132,9 @@ $clipInset: 10px;
   border: 0px !important;
   width: 100%;
   height: $buttonHeight;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .rangeButtonParent:nth-child(1) .rangeButton {
   border-radius: 5px 0px 0px 5px;

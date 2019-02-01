@@ -3,7 +3,7 @@
 @Date:   2019-01-03T12:39:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-29T16:07:03-08:00
+@Last modified time: 2019-01-31T13:32:37-08:00
 -->
 
 <template>
@@ -11,11 +11,11 @@
     <el-col :span='24' class='innerContent'>
       <el-row class='title'>
         <el-col :span='23'>
-          <span v-for='(title, index) in titles' :key='title'>{{ title }}{{ (index !== titles.length - 1)? ',':'' }} </span>
+          <span>{{ story.name }} </span>
         </el-col>
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="$emit('hide')"></i></el-col>
       </el-row>
-      <el-row class='pics'>
+      <el-row class='pics' v-loading='(story)? !story.loaded : true' element-loading-background="rgba(0, 0, 0, 0.8)">
         <el-col :span='24' class='nowrap'>
           <div v-for='(media, index) in mediaArray' :class='classForIndex(index)' :style='`background-image: url("https://api.sustainability.oregonstate.edu/energy/images/${media}"); width:calc(${100 / ((mediaArray.length < 4) ? mediaArray.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' v-if='index < 4' :key='index'></div>
         </el-col>
@@ -58,11 +58,9 @@ export default {
     ])
   },
   mounted () {
-    this.$store.dispatch('compare', { stories: this.compareStories, dateStart: this.dateOffset(), dateEnd: (new Date()).toISOString() }).then((v) => {
+    this.$store.dispatch('compare', { stories: this.compareStories, dateStart: this.dateOffset(), dateEnd: (new Date()).toISOString(), interval: 1, unit: 'day' }).then(async callback => {
       this.mediaArray = this.story.media
-      for (let chart of this.story.blocks[0].charts) {
-        this.titles.push(chart.name)
-      }
+      await callback()
       this.$refs.lineChartController.parse()
     })
   },
@@ -109,6 +107,8 @@ export default {
   background-color: $--color-black;
   height: 100%;
   width: 100%;
+  border-radius: 5px;
+  overflow: hidden;
 }
 .title {
   background-color: $--color-primary;
