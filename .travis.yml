@@ -2,7 +2,7 @@
 # @Date:   2018-12-20T10:38:57-08:00
 # @Email:  brogan.miner@oregonstate.edu
 # @Last modified by:   Brogan
-# @Last modified time: 2019-01-04T13:44:38-08:00
+# @Last modified time: 2019-02-01T13:55:46-08:00
 
 language: node_js
 python:
@@ -15,8 +15,8 @@ before_install:
 - mv .env tests/.env
 cache:
   directories:
-  - node_modules
   - "$HOME/.local"
+  - ".cache-loader"
 script:
 - npm run test:unit
 - |
