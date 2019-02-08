@@ -3,7 +3,7 @@
 @Date:   2019-01-09T13:21:44-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-31T22:43:45-08:00
+@Last modified time: 2019-02-05T11:18:22-08:00
 -->
 <template>
   <el-col :span='24' class='buildingContainer'>
@@ -44,13 +44,13 @@ export default {
       const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]
       const greenInt = [parseInt('0x19', 16), parseInt('0xa2', 16), parseInt('0x3a', 16)]
       const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
-      const compare = Math.abs(percentage) / 5
+      const compare = Math.abs(percentage) / 7.5
       const result = []
-      if (percentage < -5) {
+      if (percentage < -7.5) {
         result.push(greenInt[0])
         result.push(greenInt[1])
         result.push(greenInt[2])
-      } else if (percentage > 5) {
+      } else if (percentage > 7.5) {
         result.push(redInt[0])
         result.push(redInt[1])
         result.push(redInt[2])

@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-31T22:40:37-08:00
+ * @Last modified time: 2019-02-08T14:08:07-08:00
  */
 import api from './api.js'
 
@@ -432,6 +432,13 @@ export default {
   media: async () => {
     try {
       return Promise.resolve(await api.media())
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  },
+  campaigns: async () => {
+    try {
+      return Promise.resolve(await api.campaigns())
     } catch (error) {
       return Promise.reject(error)
     }

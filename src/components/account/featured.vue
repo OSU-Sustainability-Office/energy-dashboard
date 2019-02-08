@@ -3,7 +3,7 @@
 @Date:   2018-12-17T14:07:35-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-29T12:46:06-08:00
+@Last modified time: 2019-02-04T11:36:10-08:00
 -->
 
 <template>
@@ -133,6 +133,7 @@ export default {
       }
       validators.push(this.$refs.form.validate())
       Promise.all(validators).then(async r => {
+        this.newCard = false
         let card = {
           name: this.form.name,
           date_start: this.form.start.toISOString(),
@@ -165,7 +166,6 @@ export default {
           }
         }
         this.$store.dispatch('block', card).then(() => {
-          this.newCard = false
           this.$refs.displayedCards[this.form.index].$refs.chartController.parse()
         })
       }).catch(() => {})

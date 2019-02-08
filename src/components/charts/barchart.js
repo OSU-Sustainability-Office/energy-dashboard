@@ -3,7 +3,7 @@
  * @Date:   2018-11-19T10:40:29-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-29T13:26:26-08:00
+ * @Last modified time: 2019-02-04T11:32:29-08:00
  */
 
 import { Bar, mixins } from 'vue-chartjs'
@@ -38,13 +38,13 @@ export default {
               }
               let year = d.getYear().toString().slice(1)
               const dayCodes = [
+                'Sun',
                 'Mon',
                 'Tues',
                 'Wed',
                 'Thur',
                 'Fri',
-                'Sat',
-                'Sun'
+                'Sat'
               ]
               return (dayCodes[d.getDay()] + ' ' + (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem)
             },
@@ -103,8 +103,7 @@ export default {
               fontSize: 12,
               fontColor: '#FFF',
               fontFamily: 'Open Sans',
-              autoSkip: true,
-              maxTicksLimit: 30
+              autoSkip: true
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),
@@ -118,7 +117,8 @@ export default {
               unit: 'day',
               displayFormats: {
                 'day': 'M/DD',
-                'hour': 'DD h:mm'
+                'hour': 'dd h:mm a',
+                'minute': 'h:mm a'
               }
             }
           }]

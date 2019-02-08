@@ -3,7 +3,7 @@
  * @Date:   2018-11-19T10:40:29-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-31T23:00:31-08:00
+ * @Last modified time: 2019-02-04T11:32:14-08:00
  */
 
 import { Line, mixins } from 'vue-chartjs'
@@ -104,6 +104,7 @@ export default {
             }
           }],
           xAxes: [{
+            type: 'time',
             gridLines: {
               display: false
             },
@@ -111,11 +112,8 @@ export default {
               fontSize: 14,
               fontColor: '#FFF',
               fontFamily: 'Open Sans',
-              autoskip: true,
-              autoSkipPadding: 30,
-              maxTicksLimit: 30,
-              stepSize: 5,
-              unitStepSize: 6
+              autoSkip: true,
+              stepSize: 10
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),
@@ -124,12 +122,12 @@ export default {
               fontColor: '#FFF',
               fontFamily: 'Open Sans'
             },
-            type: 'time',
             time: {
               unit: 'day',
               displayFormats: {
                 'day': 'M/DD',
-                'hour': 'h:mm a'
+                'hour': 'dd h:mm a',
+                'minute': 'h:mm a'
               }
             }
           }]

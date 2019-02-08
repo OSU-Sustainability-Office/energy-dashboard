@@ -3,7 +3,7 @@
 @Date:   2018-12-20T10:38:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-31T16:02:00-08:00
+@Last modified time: 2019-02-04T12:03:38-08:00
 -->
 
 <template>
@@ -77,9 +77,11 @@ export default {
   methods: {
     updateCharts: function (value) {
       this.currentRange = value[0]
-      for (let controller of this.$refs.chartController) {
-        controller.parse()
-      }
+      this.$nextTick(() => {
+        for (let controller of this.$refs.chartController) {
+          controller.parse()
+        }
+      })
     },
     hide: function () {
       this.$emit('hide')
@@ -156,9 +158,12 @@ export default {
   width: 450px !important;
   margin-left: -470px;
   height: 85% !important;
+
 }
 .main {
   padding: 0;
+  border-radius: 5px;
+  overflow: hidden;
   background-color: rgb(26,26,26);
   box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
 }
@@ -226,7 +231,7 @@ export default {
 .graphslide {
   position: absolute;
   color: rgba($--color-white, 0.4);
-  top: 130px;
+  bottom: 180px;
   font-size: 3em;
   width: 100%;
   left: 0;

@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-31T15:44:38-08:00
+@Last modified time: 2019-02-05T11:19:42-08:00
 -->
 <template>
   <div v-loading='(block(index))? !block(index).loaded : true' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
@@ -160,6 +160,15 @@ export default {
     dataUnavailable: function () {
       this.graphType = 100
     },
+    displayFormat: function () {
+      if (this.block(this.index).interval_unit === 'minute') {
+        return 'minute'
+      } else if (this.block(this.index).interval_unit === 'hour') {
+        return 'hour'
+      } else {
+        return 'day'
+      }
+    },
     parseDataPieDoughnut: function () {
       if (!this.block(this.index)) {
         return
@@ -250,11 +259,12 @@ export default {
           }
         }
         data = newData
+        let color = (this.graphType === 5 && this.block(this.index).charts.indexOf(line) === 1) ? this.colorCodedColor(tempData.datasets[0].data, data) : this.colors[i % 8]
         tempData.datasets.push({
           label: line.name,
           data: data,
-          backgroundColor: this.colors[i % 8],
-          borderColor: this.colors[i % 8],
+          backgroundColor: (this.graphType === 5 && this.block(this.index).charts.indexOf(line) !== 1) ? '#000' : color,
+          borderColor: (this.graphType === 5) ? '#FFFFFF' : color,
           borderDash: [(i >= 8) ? 8 : 0, (i >= 8) ? 10 : 0],
           fill: false,
           showLine: true,
@@ -267,6 +277,8 @@ export default {
         this.dataUnavailable()
         return
       }
+      this.chart.options.scales.xAxes[0].time.unit = this.displayFormat()
+      this.chart.$data._chart.options.scales.xAxes[0].time.unit = this.displayFormat()
       this.chartData = tempData
     },
     unit: function () {
@@ -275,16 +287,38 @@ export default {
     getStart: function () {
       return this.story.blocks[this.index].date_start
     },
+    colorCodedColor: function (baseline, current) {
+      let colors = []
+      for (let i in current) {
+        const percentage = (current[i].y / baseline[i].y) * 100 - 100
+        const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]
+        const greenInt = [parseInt('0x19', 16), parseInt('0xa2', 16), parseInt('0x3a', 16)]
+        const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
+        const compare = Math.abs(percentage) / 7.5
+        const result = []
+        if (percentage < -7.5) {
+          result.push(greenInt[0])
+          result.push(greenInt[1])
+          result.push(greenInt[2])
+        } else if (percentage > 7.5) {
+          result.push(redInt[0])
+          result.push(redInt[1])
+          result.push(redInt[2])
+        } else if (percentage < 0) {
+          result.push(Math.round(typicalColor[0] - redInt[0] * compare))
+          result.push(Math.round(typicalColor[1] + redInt[1] * compare))
+          result.push(Math.round(typicalColor[2] + redInt[2] * compare))
+        } else {
+          result.push(Math.round(typicalColor[0] + greenInt[0] * (compare)))
+          result.push(Math.round(typicalColor[1] - greenInt[1] * (compare)))
+          result.push(Math.round(typicalColor[2] - greenInt[2] * (compare)))
+        }
+        colors.push('rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')')
+      }
+      return colors
+    },
     getEnd: function () {
       return this.story.blocks[this.index].date_end
-    },
-    timeUnit: function () {
-      if ((new Date(this.story.blocks[this.index].date_end)) - (new Date(this.story.blocks[this.index].date_start)) <= 86400000) {
-        if (this.story.blocks[this.index].interval_unit === 'minute' && this.story.blocks[this.index].date_interval === 15) {
-          return 'hour'
-        }
-      }
-      return 'day'
     },
     // Creates either an X or a Y axis label for a chart, depending on the parameters.
     buildLabel: function (axis) {

@@ -4,9 +4,9 @@
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
 <<<<<<< HEAD
- * @Last modified time: 2019-01-07T10:33:24-08:00
+ * @Last modified time: 2019-02-08T14:06:27-08:00
 =======
- * @Last modified time: 2019-01-07T10:33:24-08:00
+ * @Last modified time: 2019-02-08T14:06:27-08:00
 >>>>>>> master
  */
 import axios from 'axios'
@@ -73,5 +73,8 @@ export default {
   },
   campaign: async id => {
     return (await callAPI('campaign?id=' + id)).data
+  },
+  campaigns: async () => {
+    return (await callAPI('campaigns')).data
   }
 }

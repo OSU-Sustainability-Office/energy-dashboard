@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-09T13:36:39-08:00
+@Last modified time: 2019-02-04T13:13:43-08:00
 -->
 
 <template>
@@ -28,22 +28,23 @@
       <!-- Main Page Content -->
       <el-main class='main'>
           <el-tabs v-model='openName' class='tab-row'>
-            <el-tab-pane v-for='item in groups' :key='item.id' :name='item.name' >
+            <el-tab-pane v-for='item in groups' :key='item.id' :name='item.name' lazy>
               <span slot='label' class='tab-label'>{{item.name}}</span>
-              <el-row type='flex' justify='left' class='story-flex'>
-                <el-col v-for='story in item.stories' :key='story.id' :span='4' class='storyContainer'>
-                  <storycard :name='story.name' :notools='(publicDir !== null)? 1:0' :media='story.media' :description='story.description' :story_id='story.id' class='storyCard' @click='$router.push({ path: (story.public)?`/public/${story.id}/1`:`/story/${story.id}`})' ref='card' />
-                </el-col>
-                <el-col v-if='!publicDir' :span='4' class='storyContainer'>
-                  <el-tooltip content="Create New View" placement="top">
-                    <storycard :plus='true' :notools='1' class='storyCard' @click="openStoryEdit('', '', '', null)"/>
-                  </el-tooltip>
-                </el-col>
-                <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
-                <el-col v-for='n in 10' :key='n' :span='4' class='blankSlate'>
-                  &nbsp;
-                </el-col>
-              </el-row>
+
+                <el-row type='flex' justify='left' class='story-flex'>
+                  <el-col v-for='story in item.stories' :key='story.id' :span='4' class='storyContainer'>
+                    <storycard :name='story.name' :notools='(publicDir !== null)? 1:0' :media='story.media' :description='story.description' :story_id='story.id' class='storyCard' @click='$router.push({ path: (story.public)?`/public/${story.id}/1`:`/view/${story.id}`})' ref='card' />
+                  </el-col>
+                  <el-col v-if='!publicDir' :span='4' class='storyContainer'>
+                    <el-tooltip content="Create New View" placement="top">
+                      <storycard :plus='true' :notools='1' class='storyCard' @click="openStoryEdit('', '', '', null)"/>
+                    </el-tooltip>
+                  </el-col>
+                  <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
+                  <el-col v-for='n in 10' :key='n' :span='4' class='blankSlate'>
+                    &nbsp;
+                  </el-col>
+                </el-row>
             </el-tab-pane>
           </el-tabs>
       </el-main>
@@ -273,5 +274,4 @@ export default {
   padding-right: 0.5em;
   padding-left: 0.5em;
 }
-
 </style>

@@ -3,7 +3,7 @@
 @Date:   2019-01-04T10:08:23-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-31T12:55:35-08:00
+@Last modified time: 2019-02-04T13:30:37-08:00
 -->
 
 <template>
@@ -119,6 +119,9 @@ body {
 /* .pageTransition-leave-actiev {
 
 } */
+</style>
+<style lang='scss'>
+
 </style>
 
 <style scoped lang='scss'>

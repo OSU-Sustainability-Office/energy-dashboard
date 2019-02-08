@@ -3,36 +3,38 @@
 @Date:   2018-12-24T13:56:21-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-31T22:41:55-08:00
+@Last modified time: 2019-02-05T11:23:48-08:00
 -->
 <template>
-  <el-row class='campaignView'>
-    <el-row class='herorow'>
-      <el-col :span='24'>
-        <heropicture :media='story.media' :description='story.description' :name='story.name' />
-      </el-col>
-    </el-row>
-    <el-row class='controlRow'>
-      <el-col :span='8' class='buildingContainer'>
-        <buildingList :loaded='loaded' :buildings='buildings' @clickedBuilding='changeChartIndex'/>
-      </el-coL>
-      <el-col :span='16' class='otherSide'>
-        <div class='chartArea'>
-          <el-row class='title'>
-            <el-col :span='12'>
-              {{ currentTitle }}
-            </el-col>
-            <el-col :span='12' class='timeSwitchButtons'>
-              <switchButtons @update='updateAccumulated()' :campaign='true' />
-            </el-col>
-          </el-row>
-          <chartController :randomColors='1' :graphType='graphType' :index='currentIndex' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '100%','height': '332px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='332'/>
-        </div>
-      </el-col>
-    </el-row>
-    <el-row>
-      <reductionTips />
-    </el-row>
+  <el-row class='stage'>
+    <el-col :span='24' class='main'>
+      <el-row class='herorow'>
+        <el-col :span='24'>
+          <heropicture :media='story.media' :description='story.description' :name='story.name' />
+        </el-col>
+      </el-row>
+      <el-row class='controlRow'>
+        <el-col :span='8' class='buildingContainer'>
+          <buildingList :loaded='loaded' :buildings='buildings' @clickedBuilding='changeChartIndex'/>
+        </el-coL>
+        <el-col :span='16' class='otherSide'>
+          <div class='chartArea'>
+            <el-row class='title'>
+              <el-col :span='12'>
+                {{ currentTitle }}
+              </el-col>
+              <el-col :span='12' class='timeSwitchButtons'>
+                <switchButtons @update='updateAccumulated()' :campaign='true' />
+              </el-col>
+            </el-row>
+            <chartController :randomColors='1' :graphType='graphType' :index='currentIndex' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '332px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='332'/>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <reductionTips />
+      </el-row>
+    </el-col>
   </el-row>
 </template>
 
@@ -88,14 +90,13 @@ export default {
       const compareDate = new Date(this.story.blocks[0].date_start).getTime()
       for (let chart of this.story.blocks[0].charts) {
         let index = chart.data.length - 1
-        console.log(chart)
         let accm = 0
         while (new Date(chart.data[index].x).getTime() >= compareDate) {
           accm += chart.data[index].y
           index--
         }
         accm /= chart.data.length - index
-        this.$store.commit('updateBlockAverage', { index: this.story.blocks[0].charts.indexOf(chart), avg: accm })
+        this.$store.commit('updateBlockAverage', { index: (this.story.blocks[0].charts.indexOf(chart) + 1), avg: accm })
       }
       this.buildings.sort((a, b) => {
         return a.accumulatedPercentage - b.accumulatedPercentage
@@ -119,8 +120,41 @@ export default {
   }
 }
 </script>
+<style lang='scss'>
+.buildingContainer ::-webkit-scrollbar {
+  width: 10px;
+  border-radius: 10px !important;
+}
 
+/* Track */
+.buildingContainer ::-webkit-scrollbar-track {
+  background: #00000088;
+}
+
+/* Handle */
+.buildingContainer ::-webkit-scrollbar-thumb {
+  background: $--color-primary;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.buildingContainer ::-webkit-scrollbar-thumb:hover {
+  background: darken($--color-primary, 10%);
+}
+</style>
 <style scoped lang='scss'>
+.stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: calc(100vh - #{$--nav-height});
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.main {
+  padding: 0;
+}
 .title {
   font-size: 34px;
   color: $--color-white;

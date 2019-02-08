@@ -3,7 +3,7 @@
 @Date:   2019-01-03T12:39:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-27T15:41:56-08:00
+@Last modified time: 2019-02-04T12:04:50-08:00
 -->
 
 <template>
@@ -28,8 +28,9 @@
         </l-map>
       </div>
       <prompt v-if='askingForComparison' @cancel='stopCompare' @compare='showComparison' />
-      <compareSide v-if='showCompareSide' @hide='showCompareSide = false' :compareStories='compareStories' />
       <transition name='side'>
+        <compareSide v-if='showCompareSide' @hide='showCompareSide = false' :compareStories='compareStories' />
+
         <sideView :key='openStory' :storyId='openStory' ref='sideview' v-if='showSide' @hide='showSide = false' @startCompare='startCompare()'></sideView>
       </transition>
     </el-col>
