@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-05T11:19:42-08:00
+@Last modified time: 2019-02-08T14:45:45-08:00
 -->
 <template>
   <div v-loading='(block(index))? !block(index).loaded : true' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
@@ -263,7 +263,7 @@ export default {
         tempData.datasets.push({
           label: line.name,
           data: data,
-          backgroundColor: (this.graphType === 5 && this.block(this.index).charts.indexOf(line) !== 1) ? '#000' : color,
+          backgroundColor: (this.graphType === 5 && this.block(this.index).charts.indexOf(line) !== 1) ? '#FFF' : color,
           borderColor: (this.graphType === 5) ? '#FFFFFF' : color,
           borderDash: [(i >= 8) ? 8 : 0, (i >= 8) ? 10 : 0],
           fill: false,
