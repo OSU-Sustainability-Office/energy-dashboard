@@ -3,20 +3,20 @@
 @Date:   2019-02-04T11:40:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-08T14:43:11-08:00
+@Last modified time: 2019-02-11T09:06:12-08:00
 -->
 <template>
   <el-row class='campaignlistview'>
     <el-tabs v-model="activePane">
       <el-tab-pane label="Current Campaigns" name="new" ref='currentTab' class='list'>
         <campaignBlock v-for='campaign in currentCampaigns' :name='campaign.name' :media='campaign.media' :start='campaign.date_start' :end='campaign.date_end' :key='campaign.id' @click='$router.push("/campaign/" + campaign.id)'/>
-        <span v-if='currentCampaigns.length <= 0'>
+        <span class='noText' v-if='currentCampaigns.length <= 0'>
           No Current Campaigns
         </span>
       </el-tab-pane>
       <el-tab-pane label="Past Campaigns" name="old" ref='pastTab' class='list'>
         <campaignBlock v-for='campaign in pastCampaigns' :name='campaign.name' :media='campaign.media' :start='campaign.date_start' :end='campaign.date_end' :key='campaign.id' @click='$router.push("/campaign/" + campaign.id)'/>
-        <span v-if='pastCampaigns.length <= 0'>
+        <span class='noText' v-if='pastCampaigns.length <= 0'>
           No Past Campaigns
         </span>
       </el-tab-pane>
@@ -45,6 +45,8 @@ export default {
           this.pastCampaigns.push(camp)
         }
       }
+      this.currentCampaigns.sort((a, b) => { return (new Date(b.date_end)).getTime() - (new Date(a.date_end)).getTime() })
+      this.pastCampaigns.sort((a, b) => { return (new Date(b.date_end)).getTime() - (new Date(a.date_end)).getTime() })
     })
   },
   methods: {
@@ -61,5 +63,9 @@ export default {
 }
 .list {
   padding: 1em;
+  text-align: center;
+}
+.noText {
+  font-size: 24px;
 }
 </style>

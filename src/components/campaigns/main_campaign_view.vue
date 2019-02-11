@@ -3,7 +3,7 @@
 @Date:   2018-12-24T13:56:21-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-05T11:23:48-08:00
+@Last modified time: 2019-02-11T10:13:24-08:00
 -->
 <template>
   <el-row class='stage'>
@@ -24,7 +24,7 @@
                 {{ currentTitle }}
               </el-col>
               <el-col :span='12' class='timeSwitchButtons'>
-                <switchButtons @update='updateAccumulated()' :campaign='true' />
+                <switchButtons @update='updateAccumulated()' :campaign='true' :days='days' />
               </el-col>
             </el-row>
             <chartController :randomColors='1' :graphType='graphType' :index='currentIndex' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '332px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='332'/>
@@ -60,7 +60,8 @@ export default {
       loaded: false,
       currentTitle: 'Energy Saved',
       graphType: 1,
-      currentIndex: 0
+      currentIndex: 0,
+      days: 0
     }
   },
   computed: {
@@ -72,6 +73,14 @@ export default {
   },
   mounted () {
     this.$store.dispatch('campaign', this.$route.params.id).then(() => {
+      const startDate = new Date(this.story.blocks[0].date_start).getTime()
+      const compareDate = new Date(this.story.blocks[0].date_end).getTime()
+      const nowDate = new Date().getTime()
+      if (compareDate < nowDate) {
+        this.days = Math.round((compareDate - startDate) / 86400000) + 1
+      } else {
+        this.days = Math.round((nowDate - startDate) / 86400000) + 1
+      }
       for (let index in this.story.blocks) {
         if (index > 0) {
           this.buildings.push(this.story.blocks[index])
@@ -80,6 +89,10 @@ export default {
 
       this.$nextTick(() => {
         this.updateAccumulated()
+        for (let i in this.buildings) {
+          // JS thought i should be a string and would concat it with 1...
+          this.buildings[i].place = (parseInt(i) + 1).toString()
+        }
         this.loaded = true
       })
     })

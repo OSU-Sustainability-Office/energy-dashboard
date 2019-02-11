@@ -3,7 +3,7 @@
 @Date:   2019-01-09T13:21:44-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-05T11:18:22-08:00
+@Last modified time: 2019-02-11T09:19:09-08:00
 -->
 <template>
   <el-col :span='24' class='buildingContainer'>
@@ -13,11 +13,11 @@
       </el-col>
     </el-row>
     <el-row class='buildingScroll' v-loading='!loaded' element-loading-background="rgba(0, 0, 0, 0.8)">
-      <el-row class='buildingRow' v-for='(building, index) in buildings' :key='building.id' ref='buildingRows'>
+      <el-row class='buildingRow' v-for='building in buildings' :key='building.id' ref='buildingRows'>
         <el-col :class='[(activeId === building.id) ? "buildingCol selected" : "buildingCol"]' :span='24'>
           <div :class='[(activeId === building.id) ? "outerClip selected" : "outerClip"]'>
             <div :class='[(activeId === building.id) ? "innerClip selected" : "innerClip"]' :style='`background-color:${ computedColor(building.accumulatedPercentage) };`' @click='buildingClick(building)'>
-              <i class="fas fa-trophy" v-if='index < 3'><span :class='[(activeId === building.id) ? "innerTrophy selected" : "innerTrophy"]'>{{ index + 1 }}</span></i> {{ building.name }} {{ ((building.accumulatedPercentage > 0) ? '+' : '') + (Math.round(100 * building.accumulatedPercentage) / 100).toString() + '%' }}
+              <i class="fas fa-trophy" v-if='building.place <= 3'><span :class='[(activeId === building.id) ? "innerTrophy selected" : "innerTrophy"]'>{{ building.place }}</span></i> {{ building.name }} {{ ((building.accumulatedPercentage > 0) ? '+' : '') + (Math.round(100 * building.accumulatedPercentage) / 100).toString() + '%' }}
             </div>
           </div>
         </el-col>

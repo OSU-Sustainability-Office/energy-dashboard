@@ -3,7 +3,7 @@
 @Date:   2019-02-04T11:40:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-08T14:41:50-08:00
+@Last modified time: 2019-02-11T09:03:16-08:00
 -->
 <template>
   <div class='block' ref='block' @click='$emit("click")'>
@@ -50,6 +50,7 @@ export default {
   background-color: $--color-black;
   border-radius: 5px;
   overflow: hidden;
+  text-align: left;
 }
 .block:hover {
   cursor: pointer;

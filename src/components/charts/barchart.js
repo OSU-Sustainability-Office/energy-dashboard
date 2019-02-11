@@ -3,7 +3,7 @@
  * @Date:   2018-11-19T10:40:29-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-02-04T11:32:29-08:00
+ * @Last modified time: 2019-02-11T10:04:11-08:00
  */
 
 import { Bar, mixins } from 'vue-chartjs'
@@ -96,6 +96,7 @@ export default {
             }
           }],
           xAxes: [{
+            offset: true,
             gridLines: {
               display: false
             },

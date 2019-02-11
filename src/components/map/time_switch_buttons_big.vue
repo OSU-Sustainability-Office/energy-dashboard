@@ -3,7 +3,7 @@
 @Date:   2019-01-23T10:51:08-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-05T11:11:16-08:00
+@Last modified time: 2019-02-11T09:14:17-08:00
 -->
 <template>
   <el-row class='buttons'>
@@ -14,7 +14,7 @@
       <el-button class='rangeButton' @click='currentRange = 1'>{{(campaign) ? 'Past Day' : 'Month'}}</el-button>
     </el-col>
     <el-col class='rangeButtonParent' v-bind:class="{ active: currentRange == 2 }">
-      <el-button class='rangeButton' @click='currentRange = 2'>{{(campaign) ? 'Past 14 Days' : 'Year'}}</el-button>
+      <el-button class='rangeButton' @click='currentRange = 2'>{{(campaign) ? 'Past ' + days + ' Days' : 'Year'}}</el-button>
     </el-col>
   </el-row>
 </template>
@@ -22,7 +22,7 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  props: ['height', 'campaign'],
+  props: ['height', 'campaign', 'days'],
   data () {
     return {
       currentRange: (this.campaign) ? 2 : 1
