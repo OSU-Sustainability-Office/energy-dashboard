@@ -3,7 +3,7 @@
 @Date:   2019-01-04T10:08:23-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-04T13:30:37-08:00
+@Last modified time: 2019-02-11T20:41:56-08:00
 -->
 
 <template>
@@ -121,7 +121,7 @@ body {
 } */
 </style>
 <style lang='scss'>
-
+@import "~element-ui/packages/theme-chalk/src/index";
 </style>
 
 <style scoped lang='scss'>
