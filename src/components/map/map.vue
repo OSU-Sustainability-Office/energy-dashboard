@@ -3,7 +3,7 @@
 @Date:   2019-01-03T12:39:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-04T12:04:50-08:00
+@Last modified time: 2019-02-13T11:01:49-08:00
 -->
 
 <template>
@@ -76,27 +76,7 @@ export default {
       buildingOptions: {
         onEachFeature: (feature, layer) => {
           layer.on('click', e => {
-            if (this.askingForComparison && this.compareStories.indexOf(feature.properties.story_id) < 0) {
-              const data = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/><path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"
-              const formed = encodeURI('data:image/svg+xml,' + data).replace('#', '%23')
-              const checkIcon = L.icon({
-                iconUrl: formed,
-                iconSize: [20, 20],
-                shadowUrl: ''
-              })
-              const center = layer.getBounds().getCenter()
-              const marker = L.marker(center, { icon: checkIcon, bubblingMouseEvents: true, interactive: false }).addTo(this.map)
-              marker.storyId = feature.properties.story_id
-              this.compareMarkers.push(marker)
-            } else if (this.askingForComparison) {
-              const removingMarkerIndex = this.compareMarkers.findIndex(e => e.storyId === feature.properties.story_id)
-              if (removingMarkerIndex === -1) {
-                return
-              }
-              const marker = this.compareMarkers.splice(removingMarkerIndex, 1)[0]
-              this.map.removeLayer(marker)
-            }
-            window.vue.$eventHub.$emit('clickedPolygon', [feature.properties.story_id])
+            window.vue.$eventHub.$emit('clickedPolygon', [feature.properties.story_id, layer.getBounds().getCenter(), feature])
           })
           layer.on('mouseover', function (e) {
             e.target.setStyle({ fillColor: '#000', color: '#000' })
@@ -137,17 +117,33 @@ export default {
     }
   },
   methods: {
-    polyClick: function (value) {
+    polyClick: function (id, feature, center) {
       if (!this.askingForComparison) {
-        this.openStory = value
+        this.openStory = id
         this.$nextTick(() => {
           this.showSide = true
         })
       } else {
-        if (this.compareStories.indexOf(value) < 0) {
-          this.compareStories.push(value)
-        } else {
-          this.compareStories.splice(this.compareStories.indexOf(value), 1)
+        if (this.askingForComparison && this.compareStories.indexOf(id) < 0) {
+          const data = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/><path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"
+          const formed = encodeURI('data:image/svg+xml,' + data).replace('#', '%23')
+          const checkIcon = L.icon({
+            iconUrl: formed,
+            iconSize: [20, 20],
+            shadowUrl: ''
+          })
+          const marker = L.marker(center, { icon: checkIcon, bubblingMouseEvents: true, interactive: false }).addTo(this.map)
+          marker.storyId = feature.properties.story_id
+          this.compareMarkers.push(marker)
+          this.compareStories.push(id)
+        } else if (this.askingForComparison) {
+          const removingMarkerIndex = this.compareMarkers.findIndex(e => e.storyId === feature.properties.story_id)
+          if (removingMarkerIndex === -1) {
+            return
+          }
+          const marker = this.compareMarkers.splice(removingMarkerIndex, 1)[0]
+          this.map.removeLayer(marker)
+          this.compareStories.splice(this.compareStories.indexOf(id), 1)
         }
       }
     },
@@ -216,7 +212,7 @@ export default {
     this.$store.dispatch('mapdata').then(r => {
       this.polygonData = r
     })
-    this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0])))
+    this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
     this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.mapObject.resetStyle(v[0]) })
   },
   mounted () {

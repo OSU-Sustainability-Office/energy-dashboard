@@ -3,7 +3,7 @@
 @Date:   2018-11-29T12:53:21-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-04T11:41:34-08:00
+@Last modified time: 2019-02-13T11:06:31-08:00
 -->
 
 <template>
@@ -12,7 +12,7 @@
         <img src="/images/logo.png" height=50 width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/"})'>
       </el-col>
       <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="20">
-        <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='#00000000' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
+        <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='rgba(0,0,0,0)' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
           <el-menu-item index="map" :route='{path: "/map"}' ref='mapItem'>Map</el-menu-item>
           <el-menu-item index="buildinglist" :route='{path: "/buildinglist"}' ref='buildingItem'>Building List</el-menu-item>
           <el-menu-item index="campaigns" :route='{path: "/campaigns"}' ref='buildingItem'>Campaigns</el-menu-item>
@@ -75,7 +75,7 @@ export default {
 </script>
 <style scoped lang='scss'>
 .sus-nav {
-  background-color: $--color-primary;
+  background-color: $--color-primary !important;
   border-bottom: solid 1px $--color-white;
   height: $--nav-height !important;
   z-index: 2000;
