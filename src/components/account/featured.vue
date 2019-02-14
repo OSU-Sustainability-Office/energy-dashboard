@@ -143,7 +143,8 @@ export default {
           story_id: this.story.id,
           index: this.form.index,
           graph_type: this.form.graphType,
-          id: this.form.id
+          id: this.form.id,
+          loaded: false
         }
         if (this.$refs.featureController) {
           card.charts = []

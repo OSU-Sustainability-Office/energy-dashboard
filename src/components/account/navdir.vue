@@ -21,7 +21,7 @@
               </el-submenu>
               <el-submenu index='2' :router='false'>
                 <template class='menu-title' slot="title"><i class="fas fa-building"></i>{{ story.name }}</template>
-                <el-menu-item class='story-item' v-for='(storyS, index) in navStories' :key='storyS.id' :index='"2-"+index' :route='{path: (group.public)?`/public/${storyS.id}/1`:`/story/${storyS.id}`}'>
+                <el-menu-item class='story-item' v-for='(storyS, index) in navStories' :key='storyS.id' :index='"2-"+index' :route='{path: (group.public)?`/public/${storyS.id}/1`:`/view/${storyS.id}`}'>
                   <i class="fas fa-building"></i>{{ storyS.name }}
                 </el-menu-item>
               </el-submenu>

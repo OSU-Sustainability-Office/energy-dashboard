@@ -7,8 +7,8 @@
 -->
 <template>
   <div class='block' ref='block' @click='$emit("click")'>
-    <el-row>
-      <el-col :span='24'>
+    <el-row style="padding:0">
+      <el-col :span='24' ref='imageContainer' class='imageContainer'>
         <span class='campaignName'>{{ name }}</span>
       </el-col>
     </el-row>
@@ -31,7 +31,7 @@ export default {
     }
   },
   mounted () {
-    this.$refs.block.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.media + '") center/cover no-repeat'
+    this.$refs.imageContainer.$el.style.backgroundImage = 'url("' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.media + '")'
   },
   filters: {
     trunc: function (val) {
@@ -43,6 +43,15 @@ export default {
 
 </script>
 <style scoped lang='scss'>
+.imageContainer {
+  height: 180px;
+  width: 100%;
+  left: 0px;
+  margin: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 .block {
   margin: 1em;
   position: relative;

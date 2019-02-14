@@ -110,9 +110,10 @@ export default {
       if (payload.index === null) {
         throw new Error('Block action needs index')
       }
-      context.commit('invalidateBlock', payload.index)
+
       let block = {}
       if (context.getters.block(payload.index)) {
+        context.commit('invalidateBlock', payload.index)
         // Deep copy prevents callbacks to data changing on computed variables
         block = JSON.parse(JSON.stringify(context.getters.block(payload.index)))
       }
