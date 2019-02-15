@@ -20,7 +20,7 @@
           <div v-for='(media, index) in mediaArray' :class='classForIndex(index)' :style='`background-image: url("https://api.sustainability.oregonstate.edu/energy/images/${media}"); width:calc(${100 / ((mediaArray.length < 4) ? mediaArray.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' v-if='index < 4' :key='index'></div>
         </el-col>
       </el-row>
-      <switchButtons @update='$refs.lineChartController.parse()' />
+      <switchButtons @update='update()' />
       <el-row class='grid'>
         <el-col :span='24'>
           <chartController :randomColors='1' :graphType='1' :index='0' ref="lineChartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='300'/>
@@ -72,9 +72,12 @@ export default {
       } else if (this.currentRange === 1) {
         d.setMonth(d.getMonth() - 1)
       } else if (this.currentRange === 2) {
-        d.setYear(d.getYear() - 1)
+        d.setFullYear(d.getFullYear() - 1)
       }
       return d.toISOString()
+    },
+    update: function () {
+      this.$refs.lineChartController.parse()
     },
     classForIndex: function (index) {
       if (this.mediaArray.length === 1) {

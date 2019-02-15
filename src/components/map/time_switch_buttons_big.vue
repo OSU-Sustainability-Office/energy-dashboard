@@ -83,7 +83,7 @@ export default {
       } else if (this.currentRange === 1) {
         (this.campaign) ? d.setDate(d.getDate() - 1) : d.setMonth(d.getMonth() - 1)
       } else if (this.currentRange === 2) {
-        (this.campaign) ? d = new Date(this.story.date_start) : d.setYear(d.getYear() - 1)
+        (this.campaign) ? d = new Date(this.story.date_start) : d.setFullYear(d.getFullYear() - 1)
       }
       return d.toISOString()
     }

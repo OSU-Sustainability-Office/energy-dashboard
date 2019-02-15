@@ -135,13 +135,14 @@ export default {
     },
     checkInterval: function (date, unit, int, start) {
       if (int <= 15 && unit === 'minute') return false
-      let startDay = Math.floor((start.getTime() - (new Date(start.getYear(), 0, 0, 0, 0, 0, 0)).getTime()) / 86400000)
-      let endDay = Math.floor((date.getTime() - (new Date(date.getYear(), 0, 0, 0, 0, 0, 0)).getTime()) / 86400000)
+      let startDay = Math.floor((start.getTime() - (new Date(start.getFullYear(), 0, 0, 0, 0, 0, 0)).getTime()) / 86400000)
+      let endDay = Math.floor((date.getTime() - (new Date(start.getFullYear(), 0, 0, 0, 0, 0, 0)).getTime()) / 86400000)
+
       const br = [start.getMinutes(), start.getHours(), startDay, start.getMonth()]
       const ar = [date.getMinutes(), date.getHours(), endDay, date.getMonth()]
       for (let i = this.map[unit]; i >= 0; i--) {
         if (i === this.map[unit]) {
-          if ((ar[i] - br[i]) % int !== 0) {
+          if ((ar[i] - br[i]) % int !== 0 || ar[i] === 0) {
             return true
           }
         } else if (this.map[unit] === 3 && i === 2) {
@@ -278,7 +279,9 @@ export default {
         return
       }
       this.chart.options.scales.xAxes[0].time.unit = this.displayFormat()
-      this.chart.$data._chart.options.scales.xAxes[0].time.unit = this.displayFormat()
+      this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+      this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+      this.chart.setOptions(this.chart.options)
       this.chartData = tempData
     },
     unit: function () {
