@@ -142,7 +142,7 @@ export default {
       const ar = [date.getMinutes(), date.getHours(), endDay, date.getMonth()]
       for (let i = this.map[unit]; i >= 0; i--) {
         if (i === this.map[unit]) {
-          if ((ar[i] - br[i]) % int !== 0 || ar[i] === 0) {
+          if ((ar[i] - br[i]) % int !== 0 || (ar[i] === 0 && i === 3)) {
             return true
           }
         } else if (this.map[unit] === 3 && i === 2) {

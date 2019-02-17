@@ -187,11 +187,12 @@ export default {
         })
       } else if (this.$route.path.search('compare') > 0) {
         let ids = JSON.parse(decodeURI(this.$route.params.ids))
-        this.$store.dispatch('compare', { stories: ids, dateStart: this.start, dateEnd: this.end, interval: this.int, unit: this.unit }).then((v) => {
+        this.$store.dispatch('compare', { stories: ids, dateStart: this.start, dateEnd: this.end, interval: this.interval, unit: this.unit }).then(async v => {
           // this.mediaArray = this.story.media
           // for (let chart of this.story.blocks[0].charts) {
           //   this.titles.push(chart.name)
           // }
+          await v()
           this.$refs.featureBox.updateCards()
           if (this.$refs.navdir) {
             // this.$refs.navdir.populate()

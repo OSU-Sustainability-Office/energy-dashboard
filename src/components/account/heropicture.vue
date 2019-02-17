@@ -43,7 +43,11 @@ export default {
   mounted () {
     this.$refs.main.style.backgroundImage = ''
     if (this.media) {
-      this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.media + '\')'
+      if (Array.isArray(this.media)) {
+        this.media = null
+      } else {
+        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.media + '\')'
+      }
     } else {
       this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
     }
