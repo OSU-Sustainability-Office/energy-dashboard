@@ -3,7 +3,7 @@
  * @Date:   2018-11-19T10:40:29-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-04T23:09:07-08:00
+ * @Last modified time: 2019-02-04T11:32:14-08:00
  */
 
 import { Line, mixins } from 'vue-chartjs'
@@ -39,18 +39,18 @@ export default {
               }
               let year = d.getYear().toString().slice(1)
               const dayCodes = [
+                'Sun',
                 'Mon',
                 'Tues',
                 'Wed',
                 'Thur',
                 'Fri',
-                'Sat',
-                'Sun'
+                'Sat'
               ]
               return (dayCodes[d.getDay()] + ' ' + (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem)
             },
             label: (item, data) => {
-              return parseFloat(item.yLabel).toFixed(2) + ' ' + this.$parent.unit()
+              return this.$parent.chartData.datasets[item.datasetIndex].label + ': ' + parseFloat(item.yLabel).toFixed(2) + ' ' + this.$parent.unit()
             }
           }
         },
@@ -64,11 +64,23 @@ export default {
         },
         legend: {
           labels: {
-            fontColor: 'white'
+            fontSize: 12,
+            fontColor: '#FFF',
+            fontFamily: 'Open Sans'
+          },
+          onHover: function (e) {
+            e.target.style.cursor = 'pointer'
+          }
+        },
+        hover: {
+          onHover: function (e) {
+            e.target.style.cursor = 'default'
           }
         },
         title: {
-          fontColor: 'white'
+          fontSize: 12,
+          fontColor: '#FFF',
+          fontFamily: 'Open Sans'
         },
         responsive: true, // my new default options
         maintainAspectRatio: false, // my new default options
@@ -76,34 +88,46 @@ export default {
           yAxes: [{
             ticks: {
               beginAtZero: false,
-              fontColor: 'white'
+              fontSize: 12,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans'
             },
             gridLines: {
               display: true // my new default options
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),
-              labelString: this.$parent.buildLabel('y')
+              labelString: this.$parent.buildLabel('y'),
+              fontSize: 12,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans'
             }
           }],
           xAxes: [{
+            type: 'time',
             gridLines: {
               display: false
             },
             ticks: {
-              fontColor: 'white',
+              fontSize: 14,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans',
               autoSkip: true,
-              maxTicksLimit: 30
+              stepSize: 10
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),
-              labelString: this.$parent.buildLabel('x')
+              labelString: this.$parent.buildLabel('x'),
+              fontSize: 12,
+              fontColor: '#FFF',
+              fontFamily: 'Open Sans'
             },
-            type: 'time',
             time: {
-              unit: 'hour',
+              unit: 'day',
               displayFormats: {
-                'hour': 'M/DD'
+                'day': 'M/DD',
+                'hour': 'dd h:mm a',
+                'minute': 'h:mm a'
               }
             }
           }]

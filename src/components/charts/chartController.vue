@@ -3,10 +3,10 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-09T13:36:21-08:00
+@Last modified time: 2019-02-11T10:04:49-08:00
 -->
 <template>
-  <div element-loading-background="rgba(0, 0, 0, 0.8)">
+  <div v-loading='(block(index))? !block(index).loaded : true' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
     <linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
@@ -54,7 +54,7 @@ export default {
         datasets: [],
         labels: []
       },
-      colors: ['#4A773C', '#00859B', '#FFB500', '#006A8E', '#C4D6A4', '#B8DDE1', '#FDD26E', '#C6DAE7', '#AA9D2E', '#0D5257', '#D3832B', '#003B5C', '#B7A99A', '#A7ACA2', '#7A6855', '#8E9089'],
+      colors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4'],
       map: {
         minute: 0,
         hour: 1,
@@ -135,13 +135,14 @@ export default {
     },
     checkInterval: function (date, unit, int, start) {
       if (int <= 15 && unit === 'minute') return false
-      let startDay = Math.floor((start.getTime() - (new Date(start.getYear(), 0, 0, 0, 0, 0, 0)).getTime()) / 86400000)
-      let endDay = Math.floor((date.getTime() - (new Date(date.getYear(), 0, 0, 0, 0, 0, 0)).getTime()) / 86400000)
+      let startDay = Math.floor((start.getTime() - (new Date(start.getFullYear(), 0, 0, 0, 0, 0, 0)).getTime()) / 86400000)
+      let endDay = Math.floor((date.getTime() - (new Date(start.getFullYear(), 0, 0, 0, 0, 0, 0)).getTime()) / 86400000)
+
       const br = [start.getMinutes(), start.getHours(), startDay, start.getMonth()]
       const ar = [date.getMinutes(), date.getHours(), endDay, date.getMonth()]
       for (let i = this.map[unit]; i >= 0; i--) {
         if (i === this.map[unit]) {
-          if ((ar[i] - br[i]) % int !== 0) {
+          if ((ar[i] - br[i]) % int !== 0 || (ar[i] === 0 && i === 3)) {
             return true
           }
         } else if (this.map[unit] === 3 && i === 2) {
@@ -159,6 +160,15 @@ export default {
     },
     dataUnavailable: function () {
       this.graphType = 100
+    },
+    displayFormat: function () {
+      if (this.block(this.index).interval_unit === 'minute') {
+        return 'minute'
+      } else if (this.block(this.index).interval_unit === 'hour') {
+        return 'hour'
+      } else {
+        return 'day'
+      }
     },
     parseDataPieDoughnut: function () {
       if (!this.block(this.index)) {
@@ -250,11 +260,13 @@ export default {
           }
         }
         data = newData
+        let color = (this.graphType === 5 && this.block(this.index).charts.indexOf(line) === 1) ? this.colorCodedColor(tempData.datasets[0].data, data) : this.colors[i % 8]
         tempData.datasets.push({
           label: line.name,
           data: data,
-          backgroundColor: this.colors[i],
-          borderColor: this.colors[i],
+          backgroundColor: (this.graphType === 5 && this.block(this.index).charts.indexOf(line) !== 1) ? '#FFF' : color,
+          borderColor: (this.graphType === 5) ? '#FFFFFF' : color,
+          borderDash: [(i >= 8) ? 8 : 0, (i >= 8) ? 10 : 0],
           fill: false,
           showLine: true,
           spanGaps: false,
@@ -266,6 +278,10 @@ export default {
         this.dataUnavailable()
         return
       }
+      this.chart.options.scales.xAxes[0].time.unit = this.displayFormat()
+      this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+      this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+      this.chart.setOptions(this.chart.options)
       this.chartData = tempData
     },
     unit: function () {
@@ -274,14 +290,47 @@ export default {
     getStart: function () {
       return this.story.blocks[this.index].date_start
     },
+    colorCodedColor: function (baseline, current) {
+      let colors = []
+      for (let i in current) {
+        const percentage = (current[i].y / baseline[i].y) * 100 - 100
+        const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]
+        const greenInt = [parseInt('0x19', 16), parseInt('0xa2', 16), parseInt('0x3a', 16)]
+        const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
+        const compare = Math.abs(percentage) / 7.5
+        const result = []
+        if (percentage < -7.5) {
+          result.push(greenInt[0])
+          result.push(greenInt[1])
+          result.push(greenInt[2])
+        } else if (percentage > 7.5) {
+          result.push(redInt[0])
+          result.push(redInt[1])
+          result.push(redInt[2])
+        } else if (percentage < 0) {
+          result.push(Math.round(typicalColor[0] - redInt[0] * compare))
+          result.push(Math.round(typicalColor[1] + redInt[1] * compare))
+          result.push(Math.round(typicalColor[2] + redInt[2] * compare))
+        } else {
+          result.push(Math.round(typicalColor[0] + greenInt[0] * (compare)))
+          result.push(Math.round(typicalColor[1] - greenInt[1] * (compare)))
+          result.push(Math.round(typicalColor[2] - greenInt[2] * (compare)))
+        }
+        colors.push('rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')')
+      }
+      return colors
+    },
     getEnd: function () {
       return this.story.blocks[this.index].date_end
     },
     // Creates either an X or a Y axis label for a chart, depending on the parameters.
     buildLabel: function (axis) {
+      if (this.story.blocks.length <= this.index) {
+        return ''
+      }
       if (axis === 'y') {
         // This axis must contain the units for the given chart.point
-        if (this.story.blocks.length <= this.index) {
+        if (this.story.blocks[this.index].charts.length <= this.index) {
           return ''
         }
         const point = this.story.blocks[this.index].charts[0].point

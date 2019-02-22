@@ -3,7 +3,7 @@
 @Date:   2018-12-17T14:07:35-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-17T15:13:09-08:00
+@Last modified time: 2019-01-29T12:25:13-08:00
 -->
 
 <template>
@@ -20,18 +20,18 @@
             <el-option v-for='(item, index) in buildings' :key='index' :label='item.name' :value='item.id'></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if='!story.public' prop='name' label='Set Name: ' :rules="{required: true, message: 'A set name is required', trigger: 'blur'}">
+        <el-form-item v-if='!story.public && !story.comparison' prop='name' label='Set Name: ' :rules="{required: true, message: 'A set name is required', trigger: 'blur'}">
           <el-input type="text" v-model="form[currentIndex].name" style='width: 100%;'></el-input>
         </el-form-item>
 
-        <el-form-item prop='meter' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
+        <el-form-item prop='meter' v-if='!story.comparison' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
           <el-select ref="submeters" v-model="form[currentIndex].meter" style='width: 100%;' @change='form[currentIndex].point = null'>
             <el-option :value='0' label='All'></el-option>
             <el-option v-for='(item, index) in buildingMeters' :key='index' :label='item.name' :value='item.meter_id'></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item :rules="{required: true, message: 'A measurement is required', trigger: 'blur'}" prop='point' label='Measurement: '>
+        <el-form-item v-if='!story.comparison' :rules="{required: true, message: 'A measurement is required', trigger: 'blur'}" prop='point' label='Measurement: '>
           <el-select v-model="form[currentIndex].point" style='width: 100%;'>
             <!-- Meter Measurements -->
             <el-option v-for='(point, index) in meterPoints' :value='point' :label='$store.getters.mapPoint(point)' :key='index'>
@@ -40,7 +40,7 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <el-row class="deletebutton" v-if='this.form.length > 1'>
+      <el-row class="deletebutton" v-if='this.form.length > 1 && !story.public'>
         <el-col :span='10'>
           <el-button @click='deleteChart()' type='danger'>Delete Dataset</el-button>
         </el-col>

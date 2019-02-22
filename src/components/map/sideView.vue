@@ -3,7 +3,7 @@
 @Date:   2018-12-20T10:38:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-09T13:37:22-08:00
+@Last modified time: 2019-02-04T12:03:38-08:00
 -->
 
 <template>
@@ -14,23 +14,15 @@
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="hide()"></i></el-col>
       </el-row>
       <el-row>
-        <el-col :span='24'>
+        <el-col :span='24' v-loading='(story)? !story.loaded : true'>
           <div class="media" ref='media'></div>
         </el-col>
       </el-row>
       <el-row class="graphcontrol">
         <el-col :span='24'>
-          <el-row class="buttons">
-            <el-col :span='8' class='rangeButtonParent'>
-              <el-button class='rangeButton' @click='currentRange = 0' v-bind:class="{ active: currentRange == 0 }">Week</el-button>
-            </el-col>
-            <el-col :span='8' class='rangeButtonParent'>
-              <el-button class='rangeButton' @click='currentRange = 1' v-bind:class="{ active: currentRange == 1 }">Month</el-button>
-            </el-col>
-            <el-col :span='8' class='rangeButtonParent'>
-              <el-button class='rangeButton' @click='currentRange = 2' v-bind:class="{ active: currentRange == 2 }">Year</el-button>
-            </el-col>
-          </el-row>
+          <el-col :span='24' class='buttonContainer'>
+            <switchButtons @update='updateCharts($event)' />
+          </el-col>
           <el-row class='graphslide'>
             <i class="left fas fa-angle-left" @click='prev()' ref="prevArrow"></i>
             <i class="right fas fa-angle-right" @click='next()' ref="nextArrow"></i>
@@ -41,13 +33,10 @@
             </el-col>
           </el-row>
           <el-row class="buttons">
-            <el-col :span='1'>
-              &nbsp;
-            </el-col>
-            <!-- <el-col :span='12'>
+            <el-col :span='12'>
               <el-button class='bigButton' @click="$emit('startCompare')">Compare</el-button>
-            </el-col> -->
-            <el-col :span='22'>
+            </el-col>
+            <el-col :span='12'>
               <el-button class='bigButton' @click='$router.push({path: `/public/${storyId}/${currentRange}`})'>View Full Graph</el-button>
             </el-col>
           </el-row>
@@ -59,12 +48,13 @@
 <script>
 import chartController from '@/components/charts/chartController'
 import { mapGetters } from 'vuex'
+import switchButtons from '@/components/map/time_switch_buttons_big'
 
 export default {
   name: 'sideView',
   props: ['storyId'],
   components: {
-    chartController
+    chartController, switchButtons
   },
   data () {
     return {
@@ -85,6 +75,14 @@ export default {
     ])
   },
   methods: {
+    updateCharts: function (value) {
+      this.currentRange = value[0]
+      this.$nextTick(() => {
+        for (let controller of this.$refs.chartController) {
+          controller.parse()
+        }
+      })
+    },
     hide: function () {
       this.$emit('hide')
     },
@@ -125,39 +123,6 @@ export default {
   watch: {
     media: function (value) {
       this.$refs.media.style.backgroundImage = 'url(' + this.api + '/energy/images/' + value + ')'
-    },
-    currentRange: function (value) {
-      value = parseInt(value)
-      let i = 0
-      let u = 0
-      if (value === 0) {
-        i = 6
-        u = 'hour'
-      } else if (value === 1) {
-        i = 1
-        u = 'day'
-      } else if (value === 2) {
-        i = 15
-        u = 'day'
-      }
-      let promises = []
-      for (let b of this.$store.getters.story.blocks) {
-        let c = {
-          index: b.index,
-          date_interval: i,
-          interval_unit: u,
-          date_start: this.dateOffset()
-        }
-
-        promises.push(this.$store.dispatch('block', c))
-      }
-      Promise.all(promises).then(() => {
-        for (let controller of this.$refs.chartController) {
-          controller.parse()
-        }
-      }).catch(() => {
-        // console.log(e.message)
-      })
     }
   },
   mounted () {
@@ -193,9 +158,12 @@ export default {
   width: 450px !important;
   margin-left: -470px;
   height: 85% !important;
+
 }
 .main {
   padding: 0;
+  border-radius: 5px;
+  overflow: hidden;
   background-color: rgb(26,26,26);
   box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
 }
@@ -222,9 +190,6 @@ export default {
 }
 .graphcontrol {
   padding: 1.5em;
-}
-.buttons {
-  padding-bottom: 1.5em;
 }
 
 .rangeButtonParent {
@@ -266,10 +231,11 @@ export default {
 .graphslide {
   position: absolute;
   color: rgba($--color-white, 0.4);
-  top: 155px;
+  bottom: 180px;
   font-size: 3em;
   width: 100%;
   left: 0;
+  z-index: 4;
 }
 .graphslide > * {
   cursor: pointer;

@@ -3,7 +3,7 @@
 @Date:   2019-01-03T12:39:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-09T13:37:15-08:00
+@Last modified time: 2019-02-13T12:09:10-08:00
 -->
 
 <template>
@@ -27,9 +27,10 @@
           <l-geo-json :key='rKey' :geojson='this.polygonData' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
       </div>
-      <prompt v-if='askingForComparison' @cancel='stopCompare'/>
-      <compareSide v-if='showCompareSide' @hide='showCompareSide = false' :storyId='openStory' :compareStory='compareStory' />
+      <prompt v-if='askingForComparison' @cancel='stopCompare' @compare='showComparison' />
       <transition name='side'>
+        <compareSide v-if='showCompareSide' @hide='showCompareSide = false' :compareStories='compareStories' />
+
         <sideView :key='openStory' :storyId='openStory' ref='sideview' v-if='showSide' @hide='showSide = false' @startCompare='startCompare()'></sideView>
       </transition>
     </el-col>
@@ -63,17 +64,20 @@ export default {
       map: null,
       polygonData: null,
       openStory: 0,
-      compareStory: 0,
+      compareStories: [],
       showCompareSide: 0,
       showSide: false,
       ele: [],
+      compareMarkers: [],
       rKey: 0,
       askingForComparison: false,
       selected: ['Residence', 'Athletics', 'Dining', 'Academics', 'Admin'],
       show: false,
       buildingOptions: {
-        onEachFeature: function (feature, layer) {
-          layer.on('click', function (e) { window.vue.$eventHub.$emit('clickedPolygon', [feature.properties.story_id]) })
+        onEachFeature: (feature, layer) => {
+          layer.on('click', e => {
+            window.vue.$eventHub.$emit('clickedPolygon', [feature.properties.story_id, layer.getBounds().getCenter(), feature])
+          })
           layer.on('mouseover', function (e) {
             e.target.setStyle({ fillColor: '#000', color: '#000' })
             e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
@@ -113,27 +117,81 @@ export default {
     }
   },
   methods: {
-    polyClick: function (value) {
+    polyClick: function (id, feature, center) {
       if (!this.askingForComparison) {
-        this.openStory = value
+        this.openStory = id
         this.$nextTick(() => {
           this.showSide = true
         })
       } else {
-        this.askingForComparison = false
-        this.compareStory = value
-        this.$nextTick(() => {
-          this.showCompareSide = true
-        })
+        if (this.askingForComparison && this.compareStories.indexOf(id) < 0) {
+          const data = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/><path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"
+          const formed = encodeURI('data:image/svg+xml,' + data).replace(/#/g, '%23')
+          const checkIcon = L.icon({
+            iconUrl: formed,
+            iconSize: [20, 20],
+            shadowUrl: ''
+          })
+          const marker = L.marker(center, { icon: checkIcon, bubblingMouseEvents: true, interactive: false }).addTo(this.map)
+          marker.storyId = feature.properties.story_id
+          this.compareMarkers.push(marker)
+          this.compareStories.push(id)
+        } else if (this.askingForComparison) {
+          const removingMarkerIndex = this.compareMarkers.findIndex(e => e.storyId === feature.properties.story_id)
+          if (removingMarkerIndex === -1) {
+            return
+          }
+          const marker = this.compareMarkers.splice(removingMarkerIndex, 1)[0]
+          this.map.removeLayer(marker)
+          this.compareStories.splice(this.compareStories.indexOf(id), 1)
+        }
+      }
+    },
+    removeAllMarkers: function () {
+      for (let marker of this.compareMarkers) {
+        this.map.removeLayer(marker)
+      }
+    },
+    showComparison: function (target) {
+      this.askingForComparison = false
+      this.removeAllMarkers()
+      if (target === 'q') {
+        this.showCompareSide = true
+      } else {
+        this.$router.push({path: `/compare/${encodeURI(JSON.stringify(this.compareStories))}/1`})
       }
     },
     startCompare: function () {
       this.showSide = false
       this.askingForComparison = true
+      this.compareStories = []
+      this.compareStories.push(this.openStory)
+
+      const data = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/> <path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"
+      const formed = encodeURI('data:image/svg+xml,' + data).replace(/#/g, '%23')
+      const checkIcon = L.icon({
+        iconUrl: formed,
+        iconSize: [20, 20],
+        shadowUrl: ''
+      })
+      let center = null
+      for (let layer of Object.values(this.map._layers)) {
+        if (layer.feature && layer.feature.properties.story_id === this.openStory) {
+          center = layer.getBounds().getCenter()
+        }
+      }
+      if (!center) {
+        return
+      }
+      const marker = L.marker(center, { icon: checkIcon, bubblingMouseEvents: true, interactive: false }).addTo(this.map)
+      marker.storyId = this.openStory
+      this.compareMarkers.push(marker)
     },
     stopCompare: function () {
       this.askingForComparison = false
       this.showSide = true
+      this.compareStories = []
+      this.removeAllMarkers()
     },
     isDisplayed: function (v) {
       if (this.selected.indexOf(v) >= 0) {
@@ -154,7 +212,7 @@ export default {
     this.$store.dispatch('mapdata').then(r => {
       this.polygonData = r
     })
-    this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0])))
+    this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
     this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.mapObject.resetStyle(v[0]) })
   },
   mounted () {
@@ -205,7 +263,7 @@ $sideMenu-width: 250px;
 }
 .sideMenu {
   background-color: $--color-black;
-  height: 100%;
+  height: calc(100% - 1em);
   position: absolute;
   top: 0;
   left: 0;

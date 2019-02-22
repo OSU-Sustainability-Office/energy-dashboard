@@ -3,7 +3,7 @@
 @Date:   2019-01-04T10:08:23-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-09T13:36:31-08:00
+@Last modified time: 2019-02-11T11:26:01-08:00
 -->
 
 <template>
@@ -14,6 +14,7 @@
     <el-col :span='(user.privilege >= 2)?20:24' class='full-height'>
       <directory v-if='index === "views"'/>
       <alerts v-if='index === "alerts" && user.privilege >= 2'/>
+      <admin v-if='index === "admin" && user.privilege >= 5'/>
     </el-col>
   </el-row>
 </template>
@@ -22,14 +23,15 @@
 import sideview from '@/components/dashboard/dashboard_sideview.vue'
 import alerts from '@/components/dashboard/dashboard_alerts.vue'
 import directory from '@/components/directory/directoryPrivate.vue'
-
+import admin from '@/components/admin/admin.vue'
 import { mapGetters } from 'vuex'
 
 export default {
   components: {
     sideview,
     directory,
-    alerts
+    alerts,
+    admin
   },
   computed: {
     ...mapGetters([
@@ -56,6 +58,7 @@ export default {
   }
   .full-height {
     height: 100%;
+    overflow: scroll;
   }
   .no-overflow {
     overflow: hidden !important;

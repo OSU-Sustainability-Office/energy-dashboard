@@ -3,7 +3,7 @@
 @Date:   2018-12-17T14:07:35-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-09T13:35:34-08:00
+@Last modified time: 2019-01-29T12:26:21-08:00
 -->
 
 <template>
@@ -11,7 +11,7 @@
     <el-col class='main'>
       <heropicture :media='story.media' :description='story.description' :name='story.name'></heropicture>
       <navdir ref='navdir' @update='update' @save='save'></navdir>
-      <featured ref='featureBox' />
+      <featured ref='featureBox' :compareMode="$route.path.search('compare') > 0"/>
     </el-col>
   </el-row>
 </template>
@@ -45,7 +45,7 @@ export default {
     ]),
     start: {
       get () {
-        if (this.$route.path.search('public') > 0) {
+        if (this.$route.path.search('public') > 0 || this.$route.path.search('compare') > 0) {
           let d = new Date()
           switch (parseInt(this.$route.params.range)) {
             case 0:
@@ -66,7 +66,7 @@ export default {
     },
     end: {
       get () {
-        if (this.$route.path.search('public') > 0) {
+        if (this.$route.path.search('public') > 0 || this.$route.path.search('compare') > 0) {
           let d = new Date()
           return d.toISOString()
         }
@@ -74,7 +74,7 @@ export default {
     },
     unit: {
       get () {
-        if (this.$route.path.search('public') > 0) {
+        if (this.$route.path.search('public') > 0 || this.$route.path.search('compare') > 0) {
           switch (parseInt(this.$route.params.range)) {
             case 0:
               return 'hour'
@@ -90,7 +90,7 @@ export default {
     },
     interval: {
       get () {
-        if (this.$route.path.search('public') > 0) {
+        if (this.$route.path.search('public') > 0 || this.$route.path.search('compare') > 0) {
           switch (parseInt(this.$route.params.range)) {
             case 0:
               return 1
@@ -184,6 +184,19 @@ export default {
             this.$refs.featureBox.updateCards()
             this.$refs.navdir.populate()
           })
+        })
+      } else if (this.$route.path.search('compare') > 0) {
+        let ids = JSON.parse(decodeURI(this.$route.params.ids))
+        this.$store.dispatch('compare', { stories: ids, dateStart: this.start, dateEnd: this.end, interval: this.interval, unit: this.unit }).then(async v => {
+          // this.mediaArray = this.story.media
+          // for (let chart of this.story.blocks[0].charts) {
+          //   this.titles.push(chart.name)
+          // }
+          await v()
+          this.$refs.featureBox.updateCards()
+          if (this.$refs.navdir) {
+            // this.$refs.navdir.populate()
+          }
         })
       } else {
         if (this.$route.params.id) {

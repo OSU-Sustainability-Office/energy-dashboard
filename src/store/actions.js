@@ -3,9 +3,12 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-23T10:19:24-08:00
+ * @Last modified time: 2019-02-11T12:01:01-08:00
  */
 import api from './api.js'
+
+// eslint-disable-next-line
+import { Story, Group, GroupStory, Block, Chart, Meter } from './objectDefs.js'
 
 export default {
   story: async (context, id) => {
@@ -13,16 +16,7 @@ export default {
       if (context.getters.currentStory && id === context.getters.currentStory.id) {
         return Promise.resolve(context.getters.currentStory)
       } else {
-        context.commit('loadStory', {
-          name: '',
-          id: null,
-          description: '',
-          public: false,
-          media: '',
-          blocks: [],
-          modified: false,
-          removed: []
-        })
+        context.commit('loadStory', new Story())
         let story = await api.story(id)
 
         for (let chart of story.openCharts) {
@@ -48,7 +42,7 @@ export default {
         // Clean Boy
         delete story.openCharts
         delete story.openMeters
-
+        story.loaded = true
         context.commit('loadStory', story)
         for (let b in story.blocks) {
           await context.dispatch('block', { index: b })
@@ -116,8 +110,10 @@ export default {
       if (payload.index === null) {
         throw new Error('Block action needs index')
       }
+
       let block = {}
       if (context.getters.block(payload.index)) {
+        context.commit('invalidateBlock', payload.index)
         // Deep copy prevents callbacks to data changing on computed variables
         block = JSON.parse(JSON.stringify(context.getters.block(payload.index)))
       }
@@ -148,7 +144,7 @@ export default {
       for (let i in data) {
         block.charts[i].data = data[i]
       }
-
+      block.loaded = true
       context.commit('loadBlock', block)
       return Promise.resolve(block)
     } catch (error) {
@@ -441,6 +437,27 @@ export default {
       return Promise.reject(error)
     }
   },
+  allUsers: async () => {
+    try {
+      return Promise.resolve(await api.allusers())
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  },
+  updateUser: async (context, payload) => {
+    try {
+      return Promise.resolve(await api.updateuser(payload.privilege, payload.id))
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  },
+  campaigns: async () => {
+    try {
+      return Promise.resolve(await api.campaigns())
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  },
   buildingMeters: async (context, payload) => {
     try {
       return Promise.resolve(await api.meters(payload.id))
@@ -564,25 +581,22 @@ export default {
       /*
         campaigns will use the default story structure.
       */
-      const defaultStory = {
-        id: null,
-        media: campaign.media,
-        public: 0,
-        name: campaign.name,
-        blocks: []
-      }
-      const topBlock = {
-        index: 0,
-        id: null,
-        name: '',
-        date_start: campaign.date_start,
-        date_end: campaign.date_end,
-        date_interval: 1,
-        interval_unit: 'day',
-        graphType: 1,
-        charts: []
-      }
+      let defaultStory = new Story()
+      defaultStory.media = campaign.media
+      defaultStory.name = campaign.name
+      defaultStory.loaded = true
+      defaultStory.date_start = campaign.date_start
+      defaultStory.date_end = campaign.date_end
+
+      let topBlock = new Block()
+      topBlock.date_start = campaign.date_start
+      topBlock.date_end = campaign.date_end
+      topBlock.date_interval = 1
+      topBlock.interval_unit = 'day'
+      topBlock.index = 0
       defaultStory.blocks.push(topBlock)
+      context.commit('loadStory', defaultStory)
+
       for (let group of campaign.groups) {
         let meters = await context.dispatch('buildingMeters', { id: group.id })
         let baseline = await context.dispatch('baseline', {
@@ -603,59 +617,78 @@ export default {
           interval_unit: 'day'
         })
 
-        const defaultBlock = {
-          index: campaign.groups.indexOf(group) + 1,
-          id: group.id,
-          name: group.name,
-          date_start: campaign.date_start,
-          date_end: campaign.date_end,
-          date_interval: 1,
-          interval_unit: 'day',
-          graphType: 5,
-          goal: group.goal,
-          accumulatedPercentage: null,
-          charts: []
-        }
-        defaultBlock.charts.push({
-          index: 1,
-          point: 'accumulated_real',
-          name: 'Current Data',
-          meters: meters,
-          meter: 0,
-          data: JSON.parse(JSON.stringify(currentData))
-        })
+        let defaultBlock = new Block(group.id, campaign.groups.indexOf(group) + 1, group.name, campaign.date_start, campaign.date_end, 5, 1, 'day')
+        defaultBlock.goal = group.goal
+        defaultBlock.accumulatedPercentage = null
+        defaultBlock.loaded = true
+
+        defaultBlock.charts.push(new Chart(null, null, null, 1, meters, 'accumulated_real', 'Current Data', 0, JSON.parse(JSON.stringify(currentData))))
 
         let fakeData = []
         for (let i in currentData) {
           currentData[i].y /= baseline[Math.floor((i / 96) % 7)][i % 96] / 100
+          currentData[i].y -= 100
           fakeData.push({ x: currentData[i].x, y: baseline[Math.floor((i / 96) % 7)][i % 96] })
         }
 
-        const totalPercent = currentData.reduce((total, value) => total + value.y, 0) / currentData.length
-        defaultBlock.accumulatedPercentage = totalPercent
+        // const totalPercent = currentData.reduce((total, value) => total + value.y, 0) / currentData.length
+        defaultBlock.accumulatedPercentage = 0
 
-        defaultBlock.charts.splice(0, 0, {
-          index: 0,
-          point: 'accumulated_real',
-          name: 'Baseline Data',
-          meters: meters,
-          meter: 0,
-          data: fakeData
-        })
-        topBlock.charts.push({
-          index: campaign.groups.indexOf(group),
-          point: 'baseline_percentage',
-          name: group.name,
-          meters: meters,
-          meter: 0,
-          data: currentData
-        })
+        defaultBlock.charts.splice(0, 0, new Chart(null, null, null, 0, meters, 'accumulated_real', 'Baseline Data', 0, fakeData))
+        topBlock.charts.push(new Chart(null, null, null, campaign.groups.indexOf(group), meters, 'baseline_percentage', group.name, 0, currentData))
         defaultStory.blocks.push(defaultBlock)
       }
+      topBlock.loaded = true
       await context.commit('loadStory', defaultStory)
       Promise.resolve()
     } catch (error) {
       Promise.reject(error)
     }
+  },
+  compare: async (context, payload) => {
+    context.commit('loadStory', new Story()) // Load blank story to invalidate current story
+    let defaultBlock = new Block(null, 0, 'Energy Consumption')
+    let indexCount = 0
+    let media = []
+    for (let story of payload.stories) {
+      let storyData = await api.story(story)
+      media.push(storyData.media)
+
+      let defaultChart = new Chart()
+      defaultChart.index = indexCount
+      defaultChart.group_id = storyData.openCharts[0].group_id
+      defaultChart.name = storyData.name
+
+      for (let meter of storyData.openMeters) {
+        if (meter.type === 'e') {
+          defaultChart.meters.push(meter)
+        }
+      }
+      defaultBlock.charts.push(defaultChart)
+      indexCount++
+    }
+
+    let defaultStory = new Story()
+    defaultStory.media = media
+    defaultStory.blocks.push(defaultBlock)
+    defaultStory.loaded = true
+    defaultStory.comparison = true
+    let index = 0
+    for (let chart of defaultStory.blocks[0].charts) {
+      defaultStory.name += chart.name
+      if (defaultStory.blocks[0].charts.length - 1 !== index) {
+        defaultStory.name += ', '
+      }
+      index++
+    }
+    context.commit('loadStory', defaultStory)
+    let obj = { index: 0, date_start: payload.dateStart, date_end: payload.dateEnd }
+    if (payload.interval) {
+      obj['date_interval'] = payload.interval
+    }
+    if (payload.unit) {
+      obj['interval_unit'] = payload.unit
+    }
+    return async () => { await context.dispatch('block', obj) }
   }
 }

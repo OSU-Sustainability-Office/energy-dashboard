@@ -3,7 +3,7 @@
  * @Date:   2019-01-04T10:08:23-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-01-04T11:46:27-08:00
+ * @Last modified time: 2019-01-31T12:58:55-08:00
  */
 
 // The Vue build version to load with the `import` command
@@ -41,5 +41,4 @@ var v = new Vue({
   render: h => h(App)
 })
 Vue.config.devtools = true
-
 window.vue = v

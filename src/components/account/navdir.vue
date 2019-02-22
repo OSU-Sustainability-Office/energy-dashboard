@@ -3,7 +3,7 @@
 @Date:   2018-12-17T14:07:35-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-09T14:28:34-08:00
+@Last modified time: 2019-01-29T12:43:12-08:00
 -->
 
 <template>
@@ -11,8 +11,8 @@
     <el-col class='main'>
         <el-row class='bar'>
           <el-col :span='20'>
-            <span v-if='story.user_id !== user.id && !story.public'>&nbsp;</span>
-            <el-menu mode='horizontal' class='menu' background-color='#FFF' text-color='#1a1a1a' :router='true' @select='handleSelect' v-if='story.user_id === user.id || story.public'>
+            <span v-if='(story.user_id !== user.id && !story.public) || story.id === null'>&nbsp;</span>
+            <el-menu mode='horizontal' class='menu' background-color='#FFF' text-color='#1a1a1a' :router='true' @select='handleSelect' v-if='(story.user_id === user.id || story.public) && story.id !== null'>
               <el-submenu index='1' :router='true'>
                 <template slot="title" class='menu-title'><i class="fas fa-th-large"></i>{{ group.group }}</template>
                 <el-menu-item class='group-item' v-for='(groupS, index) in filteredGroups' :key='groupS.id' :index='"1-"+index' :route='{path: ((group.public)?"/buildinglist/":"/dashboard/") + groupS.id}'>
@@ -21,7 +21,7 @@
               </el-submenu>
               <el-submenu index='2' :router='false'>
                 <template class='menu-title' slot="title"><i class="fas fa-building"></i>{{ story.name }}</template>
-                <el-menu-item class='story-item' v-for='(storyS, index) in navStories' :key='storyS.id' :index='"2-"+index' :route='{path: (group.public)?`/public/${storyS.id}/1`:`/story/${storyS.id}`}'>
+                <el-menu-item class='story-item' v-for='(storyS, index) in navStories' :key='storyS.id' :index='"2-"+index' :route='{path: (group.public)?`/public/${storyS.id}/1`:`/view/${storyS.id}`}'>
                   <i class="fas fa-building"></i>{{ storyS.name }}
                 </el-menu-item>
               </el-submenu>

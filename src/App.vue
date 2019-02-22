@@ -3,7 +3,7 @@
 @Date:   2019-01-04T10:08:23-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-01-04T11:16:58-08:00
+@Last modified time: 2019-02-11T20:41:56-08:00
 -->
 
 <template>
@@ -26,6 +26,9 @@ export default {
   name: 'App',
   components: {
     navigbar
+  },
+  created () {
+
   },
   data () {
     return {
@@ -116,6 +119,9 @@ body {
 /* .pageTransition-leave-actiev {
 
 } */
+</style>
+<style lang='scss'>
+@import "~element-ui/packages/theme-chalk/src/index";
 </style>
 
 <style scoped lang='scss'>
