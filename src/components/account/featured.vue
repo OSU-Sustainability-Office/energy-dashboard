@@ -21,7 +21,7 @@
 
   <el-dialog size='lg' :visible.sync='newCard' :title='(!form.name)? "New Block" : "Edit Block"' width="80%">
       <el-form label-width='120px' label-position='left' :model='form' ref='form'>
-        <el-form-item label='Name: ' v-if='!story.public' :rules="{required: true, message: 'A name is required', trigger: 'blur'}" prop='name'>
+        <el-form-item label='Name: ' v-if='!story.public && !story.comparison' :rules="{required: true, message: 'A name is required', trigger: 'blur'}" prop='name'>
           <!-- <label class='col-4'>Name:</label> -->
           <el-input type="text" v-model='form.name' style='width: 100%;'></el-input>
         </el-form-item>
@@ -45,7 +45,7 @@
             <el-option :value="5" label='1 Month'></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if='!story.public' label='Graph Type: ' :rules="{required: true, message: 'A graph type is required', trigger: 'blur'}" prop='graphType'>
+        <el-form-item v-if='!story.public && !story.comparison' label='Graph Type: ' :rules="{required: true, message: 'A graph type is required', trigger: 'blur'}" prop='graphType'>
           <!-- <label class='col-4'>Graph Type: </label> -->
           <el-select v-model="form.graphType" style='width: 100%;'>
             <el-option :value='1' label='Line Chart'></el-option>
@@ -97,6 +97,13 @@ export default {
       },
 
       newCard: false
+    }
+  },
+  asyncComputed: {
+    buildings: {
+      get: function () {
+        return this.$store.dispatch('buildings')
+      }
     }
   },
   computed: {
@@ -152,11 +159,11 @@ export default {
             const meters = await this.$store.dispatch('buildingMeters', { id: chart.group })
             const newChart = {
               id: chart.id,
-              name: chart.name,
+              name: (this.story.comparison) ? await this.buildings.find(e => { return e.id === chart.group }).name : chart.name,
               group_id: chart.group,
-              point: chart.point,
+              point: (this.story.comparison) ? 'accumulated_real' : chart.point,
               meters: [],
-              meter: chart.meter
+              meter: (this.story.comparison) ? 0 : chart.meter
             }
             if (chart.meter === 0) {
               newChart.meters = newChart.meters.concat(meters.filter(e => e.type === 'e'))

@@ -10,6 +10,9 @@
   <el-row class='stage'>
     <el-col :span='24' class='main'>
       <div v-loading='(story)? !story.loaded : true' element-loading-background="rgba(0, 0, 0, 0.3)" class="background" ref='main'>
+
+        <div v-for='(pic, index) in media' :class='classForIndex(index)' :style='`background-image: url("${rootAPI}/energy/images/${pic}"); width:calc(${100 / ((media.length < 4) ? media.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' v-if='arrayType && index < 4' :key='index'></div>
+        <div v-if='arrayType' class='gradientOverlay'> </div>
         <div class='title'>{{name}}</div>
         <div class='subtitle'>{{description}}</div>
       </div>
@@ -27,11 +30,20 @@ export default {
       'story'
     ])
   },
+  data () {
+    return {
+      arrayType: false,
+      rootAPI: process.env.VUE_APP_ROOT_API
+    }
+  },
   watch: {
     media: function (value) {
       this.$refs.main.style.backgroundImage = ''
       if (Array.isArray(value)) {
-        value = null
+        this.arrayType = true
+        this.$refs.main.style.backgroundColor = 'rgb(255,255,255)'
+        this.$refs.main.style.borderBottom = 'solid 2px rgb(26,26,26)'
+        return
       }
       if (value) {
         this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.VUE_APP_ROOT_API + '/energy/images/' + value + '\')'
@@ -44,18 +56,32 @@ export default {
     this.$refs.main.style.backgroundImage = ''
     if (this.media) {
       if (Array.isArray(this.media)) {
-        this.media = null
+        this.arrayType = true
+        this.$refs.main.style.backgroundColor = 'rgb(255,255,255)'
+        this.$refs.main.style.borderBottom = 'solid 2px rgb(26,26,26)'
       } else {
         this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.media + '\')'
       }
     } else {
       this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
     }
+  },
+  methods: {
+    classForIndex: function (index) {
+      if (this.media.length === 1) {
+        return 'slantImage unCut'
+      } else if (index === 0) {
+        return 'slantImage leftEnd'
+      } else if (index + 1 === this.media.length || index >= 3) {
+        return 'slantImage rightEnd'
+      } else {
+        return 'slantImage'
+      }
+    }
   }
-
 }
 </script>
-<style scoped>
+<style lang='scss' scoped>
   .stage {
     position: relative !important;
     top: 0 !important;
@@ -72,23 +98,67 @@ export default {
     top: 0px;
     left: 0px;
     height: 100%;
-    width:100%;
+    width: 100%;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-
+    white-space: nowrap;
+    overflow: hidden;
   }
   .title {
     font-family: "StratumNo2";
     color: #D73F09;
     font-size: 3.2em;
-    padding-left: 0.5em;
-    padding-top: 0.4em;
+    z-index: 5;
+    position: absolute;
+    top: 0.4em;
+    left: 0.5em;
   }
   .subtitle {
     font-family: "StratumNo2";
     color: #FFF;
     font-size: 1.8em;
     padding-left: 1.5em;
+  }
+  $slope: 160px / 4;
+  $border-width: 3px;
+  .slantImage {
+    height: 100%;
+    position: relative;
+    top: 0;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    clip-path: polygon(0% 100%, $slope 0%, 100% 0%, calc(100% - #{$slope}) 100%);
+  }
+  .slantImage:nth-child(1) {
+    left: 0px;
+  }
+  .slantImage:nth-child(2) {
+    left: -1 * $slope + $border-width;
+  }
+  .slantImage:nth-child(3) {
+    left: -2 * $slope + 2*$border-width;
+  }
+  .slantImage:nth-child(4) {
+    left: -3 * $slope + 3*$border-width;
+  }
+  .slantImage.rightEnd {
+    clip-path: polygon(0% 100%, $slope 0%, 100% 0%, 100% 100%);
+  }
+  .slantImage.leftEnd {
+    clip-path: polygon(0% 100%, 0% 0%, 100% 0%, calc(100% - #{$slope}) 100%);
+  }
+  .slantImage.unCut {
+    clip-path: polygon(0% 100%, 0% 0%, 100% 0%, 100% 100%);
+  }
+  .gradientOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2));
   }
 </style>

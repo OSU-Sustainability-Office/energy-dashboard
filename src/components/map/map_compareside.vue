@@ -205,9 +205,6 @@ $border-width: 3px;
   color: $--color-white;
   border-color: $--color-white;
 }
-.grid > .el-col {
-  padding: 1em;
-}
 .bigButton {
   background-color: $--color-black;
   color: darken($--color-white, 30%);

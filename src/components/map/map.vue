@@ -158,7 +158,7 @@ export default {
       if (target === 'q') {
         this.showCompareSide = true
       } else {
-        this.$router.push('compare')
+        this.$router.push({path: `/compare/${encodeURI(JSON.stringify(this.compareStories))}/1`})
       }
     },
     startCompare: function () {

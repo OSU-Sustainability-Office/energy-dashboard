@@ -11,7 +11,7 @@
     <el-col :span='24'>
       <el-row class='title' ref='title'>
         <el-col :span='20'>{{block(index).name}}</el-col>
-        <el-col :span='4' class='right' v-if='story.user_id === user.id || story.public'>&nbsp;<i class="fas fa-sliders-h" @click='$emit("editModal",index)'></i></el-col>
+        <el-col :span='4' class='right' v-if='story.user_id === user.id || story.public || story.comparison'>&nbsp;<i class="fas fa-sliders-h" @click='$emit("editModal",index)'></i></el-col>
       </el-row>
       <el-row>
         <chartController :randomColors='1' :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC='style' :height='400'/>

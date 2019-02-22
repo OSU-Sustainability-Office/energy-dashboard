@@ -646,7 +646,7 @@ export default {
     }
   },
   compare: async (context, payload) => {
-    context.commit('loadStory', new Story()) // Load blank story
+    context.commit('loadStory', new Story()) // Load blank story to invalidate current story
     let defaultBlock = new Block(null, 0, 'Energy Consumption')
     let indexCount = 0
     let media = []
@@ -672,6 +672,7 @@ export default {
     defaultStory.media = media
     defaultStory.blocks.push(defaultBlock)
     defaultStory.loaded = true
+    defaultStory.comparison = true
     let index = 0
     for (let chart of defaultStory.blocks[0].charts) {
       defaultStory.name += chart.name
