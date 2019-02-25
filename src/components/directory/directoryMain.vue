@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-04T13:13:43-08:00
+@Last modified time: 2019-02-24T13:13:48-08:00
 -->
 
 <template>
@@ -27,8 +27,8 @@
       </el-header>
       <!-- Main Page Content -->
       <el-main class='main'>
-          <el-tabs v-model='openName' class='tab-row'>
-            <el-tab-pane v-for='item in groups' :key='item.id' :name='item.name' lazy>
+          <el-tabs v-model='openName' class='tab-row' v-if='groups.length > 0'>
+            <el-tab-pane v-for='item in groups' :key='item.id' :name='item.name'>
               <span slot='label' class='tab-label'>{{item.name}}</span>
 
                 <el-row type='flex' justify='left' class='story-flex'>
@@ -47,6 +47,9 @@
                 </el-row>
             </el-tab-pane>
           </el-tabs>
+          <div class='blankGroups' v-if='groups.length === 0'>
+            Create a new group to add views
+          </div>
       </el-main>
 
       <!-- Modal Views -->
@@ -116,7 +119,9 @@ export default {
         allStories.sort((a, b) => { return (a.name > b.name) ? 1 : -1 })
         this.groups.splice(0, 0, {name: 'All', stories: allStories, id: 0})
       }
-      this.openName = this.groups[0].name
+      if (this.groups.length > 0) {
+        this.openName = this.groups[0].name
+      }
       if (this.$route.params.group) {
         let name = this.groups.find(e => { return e.id === parseInt(this.$route.params.group) }).name
         this.openName = name
@@ -167,7 +172,7 @@ export default {
       storyEditor.form.description = description
       storyEditor.form.media = media
       storyEditor.id = id
-      storyEditor.title = (id === null) ? 'Create Story' : 'Edit Story'
+      storyEditor.title = (id === null) ? 'Create View' : 'Edit View'
       storyEditor.toggle = true
     },
     storySave: function (name, description, media, id) {
@@ -224,7 +229,7 @@ export default {
 .container {
   position: absolute;
   margin: 0;
-  max-width: 100%;
+  width: 100vw;
   padding: 0;
 }
 
@@ -232,6 +237,7 @@ export default {
 .header {
   margin: 0;
   padding-top: 1em;
+  width: 100%;
 }
 .header-col {
   padding: 0.5em;
@@ -239,6 +245,7 @@ export default {
 
 /* MAIN */
 .main {
+  width: 100%;
 }
 /*--- Tabs   ---*/
 .tab-label {
@@ -273,5 +280,12 @@ export default {
 .blankSlate {
   padding-right: 0.5em;
   padding-left: 0.5em;
+}
+.blankGroups {
+  font-size: 22px;
+  position: relative;
+  top: 1em;
+  width: 100%;
+  text-align: center;
 }
 </style>
