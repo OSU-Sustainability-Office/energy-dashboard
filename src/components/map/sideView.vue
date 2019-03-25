@@ -3,7 +3,7 @@
 @Date:   2018-12-20T10:38:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-04T12:03:38-08:00
+@Last modified time: 2019-03-11T13:01:28-07:00
 -->
 
 <template>
@@ -171,7 +171,7 @@ export default {
   padding: 0.3em;
   padding-left: 0.8em;
   padding-right: 0.8em;
-  font-size: 3.2ch;
+  font-size: 32px;
   height: auto;
   background-color: rgb(215,63,9);
   color: #FFF;

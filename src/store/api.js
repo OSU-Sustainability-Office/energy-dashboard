@@ -4,9 +4,9 @@
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
 <<<<<<< HEAD
- * @Last modified time: 2019-02-11T11:55:02-08:00
+ * @Last modified time: 2019-03-25T15:36:20-07:00
 =======
- * @Last modified time: 2019-02-11T11:55:02-08:00
+ * @Last modified time: 2019-03-25T15:36:20-07:00
 >>>>>>> master
  */
 import axios from 'axios'
@@ -48,13 +48,16 @@ export default {
     return (await callAPI('chart', data, method)).data
   },
   mapData: async () => {
-    return (await callAPI('map')).data
+    return (await callAPI('buildings', null, 'get', '/map/')).data
   },
   media: async () => {
     return (await callAPI('media')).data
   },
   buildingMeters: async id => {
     return (await callAPI('meters?id=' + id)).data
+  },
+  buildingForStory: async id => {
+    return (await callAPI('buildingForStory?story=' + id)).data
   },
   metersByBuilding: async () => {
     return (await callAPI('metersByBuilding')).data
@@ -82,5 +85,8 @@ export default {
   },
   updateuser: async (privilege, id) => {
     return (callAPI('user', {privilege: privilege, id: id}, 'put'))
+  },
+  allMeters: async () => {
+    return (await callAPI('allMeters')).data
   }
 }

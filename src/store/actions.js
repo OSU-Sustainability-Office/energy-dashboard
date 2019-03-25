@@ -3,9 +3,10 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-02-11T12:01:01-08:00
+ * @Last modified time: 2019-03-25T16:00:25-07:00
  */
 import api from './api.js'
+import L from 'leaflet'
 
 // eslint-disable-next-line
 import { Story, Group, GroupStory, Block, Chart, Meter } from './objectDefs.js'
@@ -425,7 +426,68 @@ export default {
   // COMMANDS THAT DONT DO ANYTHING TO THE STORE
   mapdata: async () => {
     try {
-      return Promise.resolve(await api.mapData())
+      const data = (await api.mapData()).data
+      const buildings = await api.buildings()
+      let yarra = []
+      for (let building of data) {
+        let index = buildings.map(e => { return e.building_id }).indexOf(building.id)
+        if (index >= 0) {
+          yarra.push({
+            type: 'Feature',
+            properties: {
+              name: building.attributes.name,
+              affiliation: buildings[index].affiliation,
+              story_id: buildings[index].story_id,
+              id: building.id
+            },
+            geometry: building.attributes.geometry
+          })
+        }
+      }
+      // const r = {
+      //   type: 'FeatureCollection',
+      //   name: 'buildings',
+      //   crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+      //   features: yarra
+      // }
+      return Promise.resolve(yarra)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  },
+  buildingIDForStory: async (context, id) => {
+    try {
+      const data = (await api.buildingForStory(id))
+      return Promise.resolve(data.building_id)
+    } catch (e) {
+      return Promise.reject(e)
+    }
+  },
+  allmapdata: async () => {
+    try {
+      const data = (await api.mapData()).data
+      let yarra = []
+      // let badObjects = []
+      for (let building of data) {
+        const gJSON = {
+          type: 'Feature',
+          properties: {
+            name: building.attributes.name,
+            id: building.id
+          },
+          geometry: building.attributes.geometry
+        }
+        try {
+          L.geoJSON(gJSON)
+          yarra.push(gJSON)
+        } catch (e) {
+          // Surpress errors about invalid geojson. We should email OSU about these errors
+          // About 402 objects have no geometry
+          // badObjects.push(gJSON)
+          continue
+        }
+      }
+      return Promise.resolve(yarra)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -690,5 +752,29 @@ export default {
       obj['interval_unit'] = payload.unit
     }
     return async () => { await context.dispatch('block', obj) }
+  },
+  allDevices: async (context, payload) => {
+    const meters = await api.allMeters()
+    let devices = meters.reduce((accm, current) => {
+      const deviceName = current.address.substr(0, 12)
+      let DACIndex = accm.map(o => o.name).indexOf(deviceName)
+      const newMeter = {
+        name: current.name,
+        id: current.id,
+        port: current.address.replace(deviceName + '_', ''),
+        class: current.class
+      }
+      if (DACIndex >= 0) {
+        accm[DACIndex].meters.push(newMeter)
+      } else {
+        const newDAC = {
+          name: deviceName,
+          meters: [newMeter]
+        }
+        accm.push(newDAC)
+      }
+      return accm
+    }, [])
+    return devices
   }
 }
