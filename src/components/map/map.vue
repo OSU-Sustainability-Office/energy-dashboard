@@ -3,7 +3,7 @@
 @Date:   2019-01-03T12:39:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-03-21T12:44:50-07:00
+@Last modified time: 2019-03-26T19:18:06-07:00
 -->
 
 <template>
@@ -85,7 +85,6 @@ export default {
           layer.on('mouseout', e => { window.vue.$eventHub.$emit('resetPolygon', [e.target]) })
         },
         style: function (feature) {
-          console.log(feature)
           var color = '#000'
           switch (feature.properties.affiliation) {
             case 'Residence':
