@@ -3,7 +3,7 @@
 @Date:   2019-01-03T12:39:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-13T12:09:10-08:00
+@Last modified time: 2019-03-26T19:18:06-07:00
 -->
 
 <template>
@@ -21,10 +21,10 @@
           <el-menu-item index='Residence' :class="[(isDisplayed('Residence') ? 'active' : 'notactive')]"><span class='res swatch'></span>Residence</el-menu-item>
         </el-menu-item-group>
       </el-menu>
-      <div class='mapContainer' ref='mapContainer'>
+      <div class='mapContainer' ref='mapContainer' v-loading='mapLoaded'>
         <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-          <l-geo-json :key='rKey' :geojson='this.polygonData' :options='buildingOptions' ref="geoLayer"></l-geo-json>
+          <l-geo-json v-for='(building, index) of this.polygonData' :key='index' :geojson='building' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
       </div>
       <prompt v-if='askingForComparison' @cancel='stopCompare' @compare='showComparison' />
@@ -37,7 +37,7 @@
   </el-row>
 </template>
 <script>
-import { LMap, LTileLayer, LMarker, LPolygon, LGeoJson } from 'vue2-leaflet'
+import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
 import sideView from '@/components/map/sideView'
 import prompt from '@/components/map/map_prompt'
 import compareSide from '@/components/map/map_compareside'
@@ -48,8 +48,6 @@ export default {
   components: {
     LMap,
     LTileLayer,
-    LMarker,
-    LPolygon,
     sideView,
     LGeoJson,
     prompt,
@@ -73,10 +71,12 @@ export default {
       askingForComparison: false,
       selected: ['Residence', 'Athletics', 'Dining', 'Academics', 'Admin'],
       show: false,
+      mapLoaded: true,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
           layer.on('click', e => {
             window.vue.$eventHub.$emit('clickedPolygon', [feature.properties.story_id, layer.getBounds().getCenter(), feature])
+            // document.execCommand('copy')
           })
           layer.on('mouseover', function (e) {
             e.target.setStyle({ fillColor: '#000', color: '#000' })
@@ -90,13 +90,13 @@ export default {
             case 'Residence':
               color = '#D3832B'
               break
-            case 'Academics':
+            case 'Education':
               color = '#0D5257'
               break
-            case 'Admin':
+            case 'Common':
               color = '#7A6855'
               break
-            case 'Athletics':
+            case 'Athletic':
               color = '#FFB500'
               break
             case 'Dining':
@@ -158,7 +158,7 @@ export default {
       if (target === 'q') {
         this.showCompareSide = true
       } else {
-        this.$router.push({path: `/compare/${encodeURI(JSON.stringify(this.compareStories))}/1`})
+        this.$router.push({ path: `/compare/${encodeURI(JSON.stringify(this.compareStories))}/1` })
       }
     },
     startCompare: function () {
@@ -211,9 +211,10 @@ export default {
   created () {
     this.$store.dispatch('mapdata').then(r => {
       this.polygonData = r
+      this.mapLoaded = false
     })
     this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
-    this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.mapObject.resetStyle(v[0]) })
+    this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.forEach(e => { e.mapObject.resetStyle(v[0]) }) })
   },
   mounted () {
     this.$nextTick(() => {

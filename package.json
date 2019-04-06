@@ -10,6 +10,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "ajv": "^6.10.0",
     "axios": "^0.18.0",
     "chart.js": "^2.7.3",
     "element-ui": "^2.4.11",
@@ -26,12 +27,12 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.2.0",
     "@vue/cli-plugin-eslint": "^3.2.0",
-    "@vue/cli-plugin-unit-jest": "^3.2.3",
+    "@vue/cli-plugin-unit-jest": "^3.5.1",
     "@vue/cli-service": "^3.2.0",
     "@vue/test-utils": "^1.0.0-beta.28",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^24.5.0",
     "browserify": "^16.2.3",
     "css-loader": "^2.1.0",
     "envify": "^4.1.0",
@@ -41,8 +42,9 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-strict-vue": "^1.0.0",
     "eslint-plugin-vue": "^5.0.0",
-    "jest": "^23.6.0",
+    "jest": "^24.5.0",
     "jest-vue-preprocessor": "^1.4.0",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
