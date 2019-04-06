@@ -2,7 +2,7 @@
 # @Date:   2018-12-20T10:38:57-08:00
 # @Email:  brogan.miner@oregonstate.edu
 # @Last modified by:   Brogan
-# @Last modified time: 2019-02-11T20:36:14-08:00
+# @Last modified time: 2019-04-06T10:09:28-07:00
 
 language: node_js
 python:
@@ -18,7 +18,6 @@ cache:
   - "$HOME/.local"
   - ".cache-loader"
 script:
-- npm run test:unit
 - |
   if [ "$TRAVIS_BRANCH" == "master" ]; then
     npm run build

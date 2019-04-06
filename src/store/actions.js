@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-03-25T16:00:25-07:00
+ * @Last modified time: 2019-04-01T14:56:02-07:00
  */
 import api from './api.js'
 import L from 'leaflet'
@@ -458,7 +458,7 @@ export default {
   buildingIDForStory: async (context, id) => {
     try {
       const data = (await api.buildingForStory(id))
-      return Promise.resolve(data.building_id)
+      return Promise.resolve({ building: data.building_id, group: data.id })
     } catch (e) {
       return Promise.reject(e)
     }
