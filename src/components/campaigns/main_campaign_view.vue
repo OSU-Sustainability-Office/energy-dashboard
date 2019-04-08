@@ -3,7 +3,7 @@
 @Date:   2018-12-24T13:56:21-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-11T10:13:24-08:00
+@Last modified time: 2019-04-08T13:35:49-07:00
 -->
 <template>
   <el-row class='stage'>
@@ -103,6 +103,9 @@ export default {
       const compareDate = new Date(this.story.blocks[0].date_start).getTime()
       for (let chart of this.story.blocks[0].charts) {
         let index = chart.data.length - 1
+        if (index < 0) {
+          continue
+        }
         let accm = 0
         while (new Date(chart.data[index].x).getTime() >= compareDate) {
           accm += chart.data[index].y
