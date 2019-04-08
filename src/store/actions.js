@@ -3,7 +3,7 @@
  * @Date:   2018-12-20T15:35:53-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
- * @Last modified time: 2019-04-01T14:56:02-07:00
+ * @Last modified time: 2019-04-08T13:28:52-07:00
  */
 import api from './api.js'
 import L from 'leaflet'
@@ -612,11 +612,11 @@ export default {
           continue
         }
         // If this is ever less than zero something bad has happened
-        while ((new Date(piece.x)).getTime() - (start + i * 1440000) > 0) {
-          if (badAverages[(i / 96) + '-' + (i % 96)]) {
-            badAverages[(i / 96) + '-' + (i % 96)] += 1
+        while (((new Date(piece.x)).getTime() - start) - (i * 900000) > 0) {
+          if (badAverages[((i / 96) % 7) + '-' + (i % 96)]) {
+            badAverages[((i / 96) % 7) + '-' + (i % 96)] += 1
           } else {
-            badAverages[(i / 96) + '-' + (i % 96)] = 1
+            badAverages[((i / 96) % 7) + '-' + (i % 96)] = 1
           }
           i++
         }
@@ -627,7 +627,9 @@ export default {
         const dashI = key.indexOf('-')
         const dayOfWeek = parseInt(key.substring(0, dashI))
         const timeOfDay = parseInt(key.substring(dashI + 1, key.length))
-
+        if (dayOfWeek >= 7) {
+          continue
+        }
         matrixBase[dayOfWeek][timeOfDay] *= weekcount
         matrixBase[dayOfWeek][timeOfDay] /= (weekcount - badAverages[key])
       }

@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-24T13:19:10-08:00
+@Last modified time: 2019-04-08T12:50:08-07:00
 -->
 <template>
   <div v-loading='(block(index))? !block(index).loaded : true' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
@@ -270,7 +270,7 @@ export default {
           fill: false,
           showLine: true,
           spanGaps: false,
-          type: (this.graphType === 5 && i === 1) ? 'bar' : 'line'
+          type: ((this.graphType === 5 && i === 1) || this.graphType === 2) ? 'bar' : 'line'
         })
         i++
       }
