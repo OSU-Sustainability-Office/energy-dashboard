@@ -3,7 +3,7 @@
 @Date:   2018-12-13T17:14:29-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-04-08T12:50:08-07:00
+@Last modified time: 2019-04-09T11:43:22-07:00
 -->
 <template>
   <div v-loading='(block(index))? !block(index).loaded : true' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
@@ -326,20 +326,20 @@ export default {
     // Creates either an X or a Y axis label for a chart, depending on the parameters.
     buildLabel: function (axis) {
       if (this.story.blocks.length <= this.index) {
-        return ''
+        return ' '
       }
       if (axis === 'y') {
         // This axis must contain the units for the given chart.point
-        if (this.story.blocks[this.index].charts.length <= this.index) {
-          return ''
+        if (this.story.blocks[this.index].charts.length <= 0) {
+          return ' '
         }
         const point = this.story.blocks[this.index].charts[0].point
         if (!point) {
-          return ''
+          return ' '
         }
 
         if (this.$parent.$options._componentTag === 'sideView') {
-          return ''
+          return ' '
         }
         return this.$store.getters.mapPoint(point)
       } else {
@@ -348,7 +348,7 @@ export default {
         if (date1 && date2) {
           return date1.toDateString() + ' to ' + date2.toDateString()
         } else {
-          return ''
+          return ' '
         }
       }
     }
