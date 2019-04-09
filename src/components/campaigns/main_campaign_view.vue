@@ -3,7 +3,7 @@
 @Date:   2018-12-24T13:56:21-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-04-08T13:35:49-07:00
+@Last modified time: 2019-04-09T11:33:36-07:00
 -->
 <template>
   <el-row class='stage'>
@@ -99,7 +99,6 @@ export default {
   },
   methods: {
     updateAccumulated: function () {
-      this.$refs.chartController.parse()
       const compareDate = new Date(this.story.blocks[0].date_start).getTime()
       for (let chart of this.story.blocks[0].charts) {
         let index = chart.data.length - 1
@@ -116,6 +115,9 @@ export default {
       }
       this.buildings.sort((a, b) => {
         return a.accumulatedPercentage - b.accumulatedPercentage
+      })
+      this.$nextTick(() => {
+        this.$refs.chartController.parse()
       })
     },
     changeChartIndex: function (index) {
