@@ -3,7 +3,7 @@
 @Date:   2019-01-11T11:37:25-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-02-13T13:21:23-08:00
+@Last modified time: 2019-04-16T11:17:53-07:00
 -->
 
 <template>
@@ -118,6 +118,9 @@ export default {
 }
 .reductionGrid{
   padding: 1em;
+  padding-right: 2em;
+  padding-left: 2em;
+  flex-wrap: wrap;
   overflow-x: scroll;
 }
 .gridCard {
@@ -125,7 +128,7 @@ export default {
   border-radius: 5px;
   margin: 1em;
   overflow: hidden;
-  flex: 0 0 500px;
+  flex: 0 0 calc(50% - 2em);
   background-color: #FCB248;
 }
 
