@@ -3,7 +3,7 @@
 @Date:   2019-01-03T12:39:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-03-26T19:18:06-07:00
+@Last modified time: 2019-04-30T18:20:58-07:00
 -->
 
 <template>
@@ -22,7 +22,7 @@
         </el-menu-item-group>
       </el-menu>
       <div class='mapContainer' ref='mapContainer' v-loading='mapLoaded'>
-        <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
+        <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map' :key='rKey'>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json v-for='(building, index) of this.polygonData' :key='index' :geojson='building' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
@@ -90,13 +90,13 @@ export default {
             case 'Residence':
               color = '#D3832B'
               break
-            case 'Education':
+            case 'Academics':
               color = '#0D5257'
               break
-            case 'Common':
+            case 'Admin':
               color = '#7A6855'
               break
-            case 'Athletic':
+            case 'Athletics':
               color = '#FFB500'
               break
             case 'Dining':
@@ -232,10 +232,10 @@ export default {
   watch: {
     selected: function (val) {
       this.rKey++
-      //  L.geoJSON(this.polygonData).addTo(this.map);
       this.$nextTick(() => {
+        this.map = this.$refs.map.mapObject
         for (var layerKey of Object.keys(this.map._layers)) {
-          var layer = this.map._layers[layerKey]
+          let layer = this.map._layers[layerKey]
           if (layer.feature) {
             if (!val.includes(layer.feature.properties.affiliation)) {
               this.map.removeLayer(layer)
