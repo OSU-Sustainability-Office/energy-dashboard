@@ -3,7 +3,7 @@
 @Date:   2019-01-03T12:39:57-08:00
 @Email:  brogan.miner@oregonstate.edu
 @Last modified by:   Brogan
-@Last modified time: 2019-04-30T18:20:58-07:00
+@Last modified time: 2019-05-01T18:35:17-07:00
 -->
 
 <template>
@@ -22,9 +22,9 @@
         </el-menu-item-group>
       </el-menu>
       <div class='mapContainer' ref='mapContainer' v-loading='mapLoaded'>
-        <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map' :key='rKey'>
+        <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-          <l-geo-json v-for='(building, index) of this.polygonData' :key='index' :geojson='building' :options='buildingOptions' ref="geoLayer"></l-geo-json>
+          <l-geo-json v-for='(building, index) of this.polygonData' :key='index.toString() + rKey.toString()' :geojson='building' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
       </div>
       <prompt v-if='askingForComparison' @cancel='stopCompare' @compare='showComparison' />
