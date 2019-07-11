@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Energy Dashboard
+
+  Backend routes used by the OSU Energy Dashboard
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+    Runtime: nodejs8.10
+Resources:
+  RootApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionUri:
+        Fn::GetAtt:
+        - OSUSORootApp
+        - Outputs.ApiGateway
+  Login:
+    Type: AWS::Serverless::Function
+    Properties:
+      Layers:
+      - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:11
+      CodeUri: s3://osu-so-serverless-builds/ada67270e3afc0c570f5ddcf0f444857
+      Handler: app.rds
+      Runtime: nodejs8.10
+      Policies:
+      - AmazonDynamoDBFullAccess
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+  OSUSORootApp:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location:
+        ApplicationId: arn:aws:serverlessrepo:us-west-2:005937143026:applications/OSUSORootApp
+        SemanticVersion: 1.0.0

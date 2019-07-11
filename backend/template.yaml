@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Energy Dashboard
+
+  Backend routes used by the OSU Energy Dashboard
+  
+Globals:
+  Function:
+    Timeout: 3
+    Runtime: nodejs8.10
+Resources:
+  
