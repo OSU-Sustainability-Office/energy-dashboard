@@ -3,11 +3,7 @@
  * @Date:   2018-12-20T16:22:04-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
-<<<<<<< HEAD
  * @Last modified time: 2019-03-25T15:36:20-07:00
-=======
- * @Last modified time: 2019-03-25T15:36:20-07:00
->>>>>>> master
  */
 import axios from 'axios'
 

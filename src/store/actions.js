@@ -203,10 +203,15 @@ export default {
         }
         // get multiplier for oddly hooked up meters for points that can be negative
         const multiplier = ((meters[set].negate) ? -1 : 1) * (map[Object.keys(r[set][0])[1]] || map['default'])
+
         // get negation factor for accumulated_real
         let mu2 = (meters[set].operation) ? 1 : -1
         if (meters.length === 1) {
           mu2 = 1
+        }
+        /* Fix for steam meter measurement in 100s of lbs */
+        if (meters[set].class === 4444) {
+          mu2 *= 100
         }
         if (multiplier === 0) {
           let insert = 0
