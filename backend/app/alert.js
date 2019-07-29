@@ -3,16 +3,16 @@
  * @Date:   Saturday July 13th 2019
  * @Last Modified By:  Brogan
  * @Last Modified Time:  Saturday July 13th 2019
- * @Copyright:  (c) Oregon State University 2019
+ * @Copyright:  Oregon State University 2019
  */
 
-const Campaign = require('/opt/nodejs/models/campaign.js')
+const Alert = require('/opt/nodejs/models/alert.js')
 const Response = require('/opt/nodejs/response.js')
 const User = require('/opt/nodejs/user.js')
 
 exports.get = async (event, context) => {
   let response = new Response()
-  response.body = JSON.stringify((await (new Campaign(event.queryStringParameters['id'])).get()).data)
+  response.body = JSON.stringify((await (new Alert(event.queryStringParameters['id'])).get()).data)
   return response
 }
 
@@ -20,14 +20,11 @@ exports.post = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
   try {
-    response.body = JSON.stringify((await Campaign.create(
-      event.body.name,
-      event.body.dateStart,
-      event.body.dateEnd,
-      event.body.compareStart,
-      event.body.compareEnd,
-      event.body.media,
-      event.body.buildings,
+    response.body = JSON.stringify((await Alert.create(
+      event.body.lowThreshold,
+      event.body.highThreshold,
+      event.body.point,
+      event.body.meterId,
       user
     )).data)
   } catch (err) {
@@ -40,14 +37,11 @@ exports.put = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
   try {
-    await Campaign(event.body.id).update(
-      event.body.name,
-      event.body.dateStart,
-      event.body.dateEnd,
-      event.body.compareStart,
-      event.body.compareEnd,
-      event.body.media,
-      event.body.buildings,
+    await Alert(event.body.id).update(
+      event.body.lowThreshold,
+      event.body.highThreshold,
+      event.body.point,
+      event.body.meterId,
       user
     )
   } catch (error) {
@@ -61,7 +55,7 @@ exports.delete = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
   try {
-    await Campaign(event.body.id).delete(user)
+    await Alert(event.body.id).delete(user)
   } catch (error) {
     response.body = error.message
     response.status = 400

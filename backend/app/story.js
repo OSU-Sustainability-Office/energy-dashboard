@@ -3,7 +3,7 @@
  * @Date:   Saturday July 13th 2019
  * @Last Modified By:  Brogan
  * @Last Modified Time:  Saturday July 13th 2019
- * @Copyright:  (c) Your Company 2019
+ * @Copyright:  (c) Oregon State University 2019
  */
 
 const Story = require('/opt/nodejs/models/story.js')
@@ -39,9 +39,29 @@ exports.post = async (event, context) => {
 }
 
 exports.put = async (event, context) => {
-
+  let response = new Response()
+  let user = new User(event, response)
+  try {
+    await Story(event.body.id).update(
+      event.body.name,
+      event.body.media,
+      user
+    )
+  } catch (error) {
+    response.body = error.message
+    response.status = 400
+  }
+  return response
 }
 
 exports.delete = async (event, context) => {
-
+  let response = new Response()
+  let user = new User(event, response)
+  try {
+    await Story(event.body.id).delete(user)
+  } catch (error) {
+    response.body = error.message
+    response.status = 400
+  }
+  return response
 }

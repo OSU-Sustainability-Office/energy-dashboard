@@ -47,9 +47,17 @@ class Block {
     return this
   }
 
-  async update (dateStart, dateEnd, graphType, name, dateInterval, intervalUnit) {
+  async update (dateStart, dateEnd, graphType, name, dateInterval, intervalUnit, user) {
     await DB.connect()
-    await DB.query('UPDATE blocks SET date_start = ?, date_end = ?, graph_type = ?, name = ?, date_interval = ?, interval_unit = ? WHERE id = ?', [dateStart, dateEnd, graphType, name, dateInterval, intervalUnit, this.id])
+    let responseQuery
+    if (user.data.privilege < 3) {
+      responseQuery = await DB.query('UPDATE blocks SET date_start = ?, date_end = ?, graph_type = ?, name = ?, date_interval = ?, interval_unit = ? RIGHT JOIN stories on blocks.story_id = stories.id WHERE blocks.id = ? AND stories.user = ?', [dateStart, dateEnd, graphType, name, dateInterval, intervalUnit, this.id, user.data.onid])
+    } else {
+      responseQuery = await DB.query('UPDATE blocks SET date_start = ?, date_end = ?, graph_type = ?, name = ?, date_interval = ?, interval_unit = ? WHERE blocks.id = ?', [dateStart, dateEnd, graphType, name, dateInterval, intervalUnit, this.id])
+    }
+    if (responseQuery['affectedRows'] === 0) {
+      throw new Error('Could not update block')
+    }
     this.dateStart = dateStart
     this.dateEnd = dateEnd
     this.graphType = graphType
@@ -60,17 +68,28 @@ class Block {
   }
 
   async delete (user) {
-    // Should probably return error/success
-    if (user.privilege > 3) {
-      await DB.query('DELETE blocks WHERE id = ?', [this.id])
+    await DB.connect()
+    let responseQuery
+    if (user.data.privilege > 3) {
+      responseQuery = await DB.query('DELETE blocks WHERE id = ?', [this.id])
     } else {
-      await DB.query('DELETE blocks RIGHT JOIN stories on blocks.story_id = stories.id WHERE stories.user = ? AND blocks.id = ?', [user.onid, this.id])
+      responseQuery = await DB.query('DELETE blocks RIGHT JOIN stories on blocks.story_id = stories.id WHERE stories.user = ? AND blocks.id = ?', [user.onid, this.id])
+    }
+    if (responseQuery['affectedRows'] === 0) {
+      throw new Error('Could not delete Block')
     }
   }
 
-  static async create (dateStart, dateEnd, graphType, name, dateInterval, intervalUnit) {
+  static async create (dateStart, dateEnd, graphType, name, dateInterval, intervalUnit, storyId, user) {
     await DB.connect()
-    let insertRow = await DB.query('INSERT INTO blocks (date_start, date_end, graph_type, name, date_interval, interval_unit) VALUES (?, ?, ?, ?, ?, ?)', [dateStart, dateEnd, graphType, name, dateInterval, intervalUnit])
+    let userCheck = await DB.query('SELECT user FROM stories WHERE id = ?', [storyId])
+    if (userCheck[0]['user'] !== user.data.onid && user.data.privilege < 3) {
+      throw new Error('User can not create story for another user')
+    }
+    let insertRow = await DB.query('INSERT INTO blocks (date_start, date_end, graph_type, name, date_interval, interval_unit, story_id) VALUES (?, ?, ?, ?, ?, ?, ?)', [dateStart, dateEnd, graphType, name, dateInterval, intervalUnit, storyId])
+    if (insertRow['affectedRows'] === 0) {
+      throw new Error('Unable to create new story')
+    }
     let block = Block(insertRow['insert_id'])
     block.dateStart = dateStart
     block.dateEnd = dateEnd

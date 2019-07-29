@@ -67,7 +67,7 @@ class MeterGroup {
   }
 
   async delete (user) {
-    if (user.privilege > 3) {
+    if (user.data.privilege > 3) {
       await DB.query('DELETE meter_groups WHERE id = ?', [this.id])
     } else {
       throw new Error('Need escalated permissions')

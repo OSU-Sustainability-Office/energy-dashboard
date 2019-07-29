@@ -20,7 +20,10 @@ class Campaign {
     this.media = ''
   }
 
-  static async create (name, dateStart, dateEnd, compareStart, compareEnd, media, buildings) {
+  static async create (name, dateStart, dateEnd, compareStart, compareEnd, media, buildings, user) {
+    if (user.data.privilege <= 3) {
+      throw new Error('User does not have privelege to create campaigns')
+    }
     await DB.connect()
     let insertRow = await DB.query('INSERT INTO campaigns (date_start, date_end, compare_start, compare_end, media, name) VALUES (?, ?, ?, ?, ?, ?)', [dateStart, dateEnd, compareStart, compareEnd, media, name])
     let campaign = Campaign(insertRow[0]['insert_id'])
@@ -62,10 +65,15 @@ class Campaign {
   async delete (user) {
     if (user.privilege > 3) {
       await DB.query('DELETE campaigns WHERE id = ?', [this.id])
+    } else {
+      throw new Error('User can not delete campaign')
     }
   }
 
-  async update (name, dateStart, dateEnd, compareStart, compareEnd, media, buildings) {
+  async update (name, dateStart, dateEnd, compareStart, compareEnd, media, buildings, user) {
+    if (user.data.privilege <= 3) {
+      throw new Error('User does not have privelege to create campaigns')
+    }
     await DB.connect()
     this.dateStart = dateStart
     this.dateEnd = dateEnd

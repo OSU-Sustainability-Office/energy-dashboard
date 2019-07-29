@@ -65,7 +65,7 @@ class Meter {
   }
 
   async delete (user) {
-    if (user.privilege > 3) {
+    if (user.data.privilege > 3) {
       await DB.connect()
       await DB.query('DELETE meters WHERE id = ?', [this.id])
     } else {

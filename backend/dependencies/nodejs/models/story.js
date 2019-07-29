@@ -36,9 +36,17 @@ class Story {
     return this
   }
 
-  async update (name, media) {
+  async update (name, media, user) {
     await DB.connect()
-    await DB.query('UPDATE stories SET name = ?, media = ? WHERE id = ?', [name, media, this.id])
+    let queryResponse
+    if (user.data.privilege > 3) {
+      queryResponse = await DB.query('DELETE stories WHERE id = ?', [this.id])
+    } else {
+      queryResponse = await DB.query('UPDATE stories SET name = ?, media = ? WHERE id = ? AND user = ?', [name, media, this.id, user.data.onid])
+    }
+    if (queryResponse['affectedRows'] === 0) {
+      throw new Error('Story not found')
+    }
     this.name = name
     this.media = media
     return this
@@ -60,14 +68,21 @@ class Story {
   }
 
   async delete (user) {
-    if (user.onid === this.user || user.privilege > 3) {
-      await DB.query('DELETE stories WHERE id = ?', [this.id])
+    await DB.connect()
+    let queryResponse
+    if (user.data.privilege > 3) {
+      queryResponse = await DB.query('DELETE stories WHERE id = ?', [this.id])
+    } else {
+      queryResponse = await DB.query('DELETE stories WHERE id = ? AND user = ?', [this.id, user.data.onid])
+    }
+    if (queryResponse['affectedRows'] === 0) {
+      throw new Error('Story not found')
     }
   }
 
   static async create (name, media, user) {
     await DB.connect()
-    let insertRow = DB.query('INSERT INTO stories (name, media, user) VALUES (?, ?, ?)', [name, media, user])
+    let insertRow = DB.query('INSERT INTO stories (name, media, user) VALUES (?, ?, ?)', [name, media, user.data.onid])
     let story = Story(insertRow[0]['insert_id'])
     story.name = name
     story.media = media

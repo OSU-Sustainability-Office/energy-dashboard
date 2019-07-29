@@ -3,7 +3,7 @@
  * @Date:   Saturday July 13th 2019
  * @Last Modified By:  Brogan
  * @Last Modified Time:  Saturday July 13th 2019
- * @Copyright:  (c) Your Company 2019
+ * @Copyright:  (c) Oregon State University 2019
  */
 
 const MeterGroup = require('/opt/nodejs/models/meter_group.js')

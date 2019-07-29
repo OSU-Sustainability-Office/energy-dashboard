@@ -18,6 +18,7 @@ class Alert {
     this.lowThreshold = null
     this.highThreshold = null
     this.point = null
+    this.meter = null
   }
 
   async get () {
@@ -27,29 +28,46 @@ class Alert {
     this.lowThreshold = alertRow[0]['low']
     this.highThreshold = alertRow[0]['high']
     this.point = alertRow[0]['point']
+    this.meter = alertRow[0]['meter_id']
     return this
   }
 
-  async update (lowThreshold, highThreshold, point) {
+  async update (lowThreshold, highThreshold, point, meterId, user) {
     await DB.connect()
-    await DB.query('UPDATE alerts SET low = ?, high = ?, point = ? WHERE id = ?', [lowThreshold, highThreshold, point, this.id])
+    let responseQuery
+    if (user.data.privilege > 3) {
+      responseQuery = await DB.query('UPDATE alerts SET low = ?, high = ?, point = ?, meter_id = ? WHERE id = ?', [lowThreshold, highThreshold, point, meterId, this.id])
+    } else {
+      responseQuery = await DB.query('UPDATE alerts SET low = ?, high = ?, point = ?, meter_id = ? WHERE id = ? AND user = ?', [lowThreshold, highThreshold, point, meterId, this.id, user.data.onid])
+    }
+    if (responseQuery['affectedRows'] === 0) {
+      throw new Error('Could not update Alert')
+    }
     this.low = lowThreshold
     this.high = highThreshold
     this.point = point
+    this.meter = meterId
     return this
   }
 
   async delete (user) {
-    if (user.onid === user || user.privilege > 3) {
-      await DB.query('DELETE alerts WHERE id = ?', [this.id])
+    await DB.connect()
+    let responseQuery
+    if (user.privilege > 3) {
+      responseQuery = await DB.query('DELETE alerts WHERE id = ?', [this.id])
+    } else {
+      responseQuery = await DB.query('DELETE alerts WHERE id = ? AND user = ?', [this.id, user.data.onid])
+    }
+    if (responseQuery['affectedRows'] === 0) {
+      throw new Error('Could not delete Alert')
     }
   }
 
-  static async create (user, lowThreshold, highThreshold, point) {
+  static async create (lowThreshold, highThreshold, point, meterId, user) {
     await DB.connect()
-    let insertRow = await DB.query('INSERT INTO alerts (user, low, high, point) VALUES (?, ?, ?, ?)', [user, lowThreshold, highThreshold, point])
+    let insertRow = await DB.query('INSERT INTO alerts (user, low, high, point, meter_id) VALUES (?, ?, ?, ?, ?)', [user.data.onid, lowThreshold, highThreshold, point, meterId])
     let alert = Alert(insertRow[0]['insert_id'])
-    alert.user = user
+    alert.user = user.data.onid
     alert.lowThreshold = lowThreshold
     alert.highThreshold = highThreshold
     alert.point = point
