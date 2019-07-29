@@ -60,9 +60,11 @@ class Block {
   }
 
   async delete (user) {
-    let storyUser = 'TODO'
-    if (user.onid === storyUser || user.privilege > 3) {
-      await DB.query('DELETE block_groups WHERE id = ?', [this.id])
+    // Should probably return error/success
+    if (user.privilege > 3) {
+      await DB.query('DELETE blocks WHERE id = ?', [this.id])
+    } else {
+      await DB.query('DELETE blocks RIGHT JOIN stories on blocks.story_id = stories.id WHERE stories.user = ? AND blocks.id = ?', [user.onid, this.id])
     }
   }
 

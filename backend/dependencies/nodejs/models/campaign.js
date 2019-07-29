@@ -84,4 +84,4 @@ class Campaign {
   }
 }
 
-exports = Campaign
+module.exports = Campaign

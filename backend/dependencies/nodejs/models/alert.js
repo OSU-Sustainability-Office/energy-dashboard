@@ -72,4 +72,4 @@ class Alert {
   }
 }
 
-exports = Alert
+module.exports = Alert

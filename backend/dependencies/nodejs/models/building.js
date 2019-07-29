@@ -27,9 +27,9 @@ class Building {
     let meterGroupRows = await DB.query('SELECT id FROM meter_groups where building_id = ?', [this.id])
     if (expand) {
       for (let row of meterGroupRows) {
-        this.meterGroups.push(MeterGroup(row['id']).get())
+        this.meterGroups.push((new MeterGroup(row['id'])).get())
       }
-      await Promise.all(this.meterGroups)
+      this.meterGroups = await Promise.all(this.meterGroups)
     } else {
       for (let row of meterGroupRows) {
         this.meterGroups.push(row['id'])
@@ -38,9 +38,28 @@ class Building {
     return this
   }
 
-  async update (mapId, image, group) {
+  get
+  data () {
+    let meterGroups = this.meterGroups
+    if (meterGroups.length > 0 && meterGroups[0] instanceof MeterGroup) {
+      meterGroups = meterGroups.map(o => o.data)
+    }
+    return {
+      id: this.id,
+      meterGroups: meterGroups,
+      mapId: this.mapId,
+      image: this.image,
+      group: this.group
+    }
+  }
+
+  async update (mapId, image, group, user) {
     await DB.connect()
-    await DB.query('UPDATE buildings SET map_id = ?, image = ?, group = ? WHERE id = ?', [mapId, image, group, this.id])
+    if (user.data.privilege > 3) {
+      await DB.query('UPDATE buildings SET map_id = ?, image = ?, group = ? WHERE id = ?', [mapId, image, group, this.id])
+    } else {
+      throw new Error('Need escalated permissions')
+    }
     this.mapId = mapId
     this.image = image
     this.group = group
@@ -48,12 +67,18 @@ class Building {
   }
 
   async delete (user) {
-    if (user.privilege > 3) {
+    await DB.connect()
+    if (user.data.privilege > 3) {
       await DB.query('DELETE buildings WHERE id = ?', [this.id])
+    } else {
+      throw new Error('Need escalated permissions')
     }
   }
 
-  static async create (mapId, image, group) {
+  static async create (mapId, image, group, user) {
+    if (user.data.privilege <= 3) {
+      throw new Error('Need escalated permissions')
+    }
     await DB.connect()
     let buildingRow = await DB.query('INSERT INTO buildings (map_id, image) VALUES (?, ?)', [mapId, image])
     let building = Building(buildingRow['insert_id'])
@@ -66,9 +91,9 @@ class Building {
   static async all () {
     await DB.connect()
     let buildings = []
-    let buildingRows = DB.query('SELECT * FROM buildings')
+    let buildingRows = await DB.query('SELECT * FROM buildings')
     for (let buildingRow of buildingRows) {
-      let building = Building(buildingRow['id'])
+      let building = new Building(buildingRow['id'])
       building.mapId = buildingRow['map_id']
       building.image = buildingRow['image']
       building.group = buildingRow['group']
@@ -78,4 +103,4 @@ class Building {
   }
 }
 
-exports = Building
+module.exports = Building

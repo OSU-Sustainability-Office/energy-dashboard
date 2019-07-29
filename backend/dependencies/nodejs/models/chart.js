@@ -43,9 +43,11 @@ class Chart {
   }
 
   async delete (user) {
-    let storyUser = 'TODO'
-    if (user.onid === storyUser || user.privilege > 3) {
+    // Should probably return error/success
+    if (user.privilege > 3) {
       await DB.query('DELETE block_groups WHERE id = ?', [this.id])
+    } else {
+      await DB.query('DELETE block_groups RIGHT JOIN (SELECT stories.user AS user, blocks.id as id FROM blocks RIGHT JOIN stories ON stories.id = blocks.story_id) AS q1 ON q1.id = block_groups.block_id WHERE user = ? AND block_groups.id = ?', [user.onid, this.id])
     }
   }
 

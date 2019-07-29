@@ -7,7 +7,7 @@
  */
 
 const DB = require('/opt/nodejs/sql-access.js')
-const Meter = require('/opt/nodejs/models/Meter.js')
+const Meter = require('/opt/nodejs/models/meter.js')
 
 class MeterGroup {
   constructor (id) {
@@ -23,9 +23,9 @@ class MeterGroup {
     let metersRow = await DB.query('SELECT meter_id FROM meter_group_relation WHERE group_id = ?', [this.id])
     if (expand) {
       for (let row of metersRow) {
-        this.meters.push(Meter(row['id']).get())
+        this.meters.push((new Meter(row['meter_id'])).get())
       }
-      await Promise.all(this.meters)
+      this.meters = await Promise.all(this.meters)
     } else {
       for (let row of metersRow) {
         this.meters.push(row['id'])
@@ -34,7 +34,10 @@ class MeterGroup {
     return this
   }
 
-  async update (name, meters) {
+  async update (name, meters, user) {
+    if (user.data.privilege <= 3) {
+      throw new Error('Need escalated permissions')
+    }
     await DB.connect()
     await Promise.all([
       DB.query('UPDATE meter_groups SET name = ? WHERE id = ?', [name, this.id]),
@@ -43,20 +46,38 @@ class MeterGroup {
     this.name = name
     this.meters = []
     for (let meter of meters) {
-      this.meters.push(Meter(meter).get())
+      this.meters.push((new Meter(meter)).get())
       DB.query('INSERT INTO meter_group_relation (meter_id, group_id) VALUES (?, ?)', [meter, this.id])
     }
-    await Promise.all(this.meters)
+    this.meters = await Promise.all(this.meters)
     return this
+  }
+
+  get
+  data () {
+    let meters = this.meters
+    if (meters.length > 0 && meters[0] instanceof Promise) {
+      meters = meters.map(o => o.data)
+    }
+    return {
+      name: this.name,
+      id: this.id,
+      meters: meters
+    }
   }
 
   async delete (user) {
     if (user.privilege > 3) {
       await DB.query('DELETE meter_groups WHERE id = ?', [this.id])
+    } else {
+      throw new Error('Need escalated permissions')
     }
   }
 
-  static async create (name, meters) {
+  static async create (name, meters, user) {
+    if (user.data.privilege <= 3) {
+      throw new Error('Need escalated permissions')
+    }
     await DB.connect()
     let insertRow = await DB.query('INSERT INTO meter_groups (name) VALUES (?)', [name])
     let meterPromises = []
@@ -65,7 +86,7 @@ class MeterGroup {
         DB.query('INSERT INTO meter_group_relation (meter_id, group_id) VALUES (?, ?)', [meter, insertRow[0]['insert_id']])
       )
     }
-    let meterGroup = MeterGroup(insertRow[0]['insert_id'])
+    let meterGroup = new MeterGroup(insertRow[0]['insert_id'])
     meterGroup.name = name
     meterGroup.meters = meters
     await Promise.all(meterPromises)
@@ -73,4 +94,4 @@ class MeterGroup {
   }
 }
 
-exports = MeterGroup
+module.exports = MeterGroup

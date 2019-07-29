@@ -23,6 +23,7 @@ class Story {
     let storyRow = await DB.query('SELECT * FROM stories WHERE id = ?', [this.id])
     this.name = storyRow[0]['name']
     this.media = storyRow[0]['media']
+    this.user = storyRow[0]['user']
     let blockRows = await DB.query('SELECT * FROM blocks WHERE story_id = ?', [this.id])
     if (expand) {
       for (let row of blockRows) {
@@ -43,6 +44,21 @@ class Story {
     return this
   }
 
+  get
+  data () {
+    let blocks = this.blocks
+    if (blocks.length > 0 && blocks[0] instanceof Block) {
+      blocks = blocks.map(o => o.data)
+    }
+    return {
+      id: this.id,
+      name: this.name,
+      media: this.media,
+      blocks: blocks,
+      user: this.user
+    }
+  }
+
   async delete (user) {
     if (user.onid === this.user || user.privilege > 3) {
       await DB.query('DELETE stories WHERE id = ?', [this.id])
@@ -58,6 +74,19 @@ class Story {
     story.user = user
     return story
   }
+
+  static async storiesForUser (user) {
+    await DB.connect()
+    let storyRows = await DB.connect('SELECT * FROM stories WHERE user = ?', user.data.onid)
+    let stories = []
+    for (let row of storyRows) {
+      let story = new Story(row['id'])
+      story.name = row['name']
+      story.media = row['media']
+      story.user = row['user']
+    }
+    return stories
+  }
 }
 
-exports = Story
+module.exports = Story
