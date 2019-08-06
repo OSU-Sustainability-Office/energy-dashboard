@@ -32,6 +32,7 @@ module.exports = {
   // add your custom rules here
   rules: {
     // allow async-await
+    'no-multi-spaces': 'off',
     'generator-star-spacing': 'off',
     'camelcase' : [0, { 'properties': 'never' }],
     "strict-vue/require-jsdoc": "off",

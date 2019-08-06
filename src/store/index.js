@@ -8,9 +8,20 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
-
-import createStoreConfig from './storeconfig.js'
+import Story from './story.module.js'
+import Campaign from './campaign.module.js'
+import EDMap from './map.module.js'
+import User from './user.module.js'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store(createStoreConfig())
+const store = {
+  modules: {
+    story: Story,
+    campaign: Campaign,
+    map: EDMap,
+    user: User
+  }
+}
+
+export default new Vuex.Store(store)

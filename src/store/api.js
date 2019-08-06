@@ -7,8 +7,8 @@
  */
 import axios from 'axios'
 
-function callAPI (route, data = null, method = 'get', base = '/energy/') {
-  return axios(process.env.VUE_APP_ROOT_API + base + route, { method: method, data: data, withCredentials: true })
+function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP_ROOT_API) {
+  return axios(base + route, { method: method, data: data, withCredentials: true })
 }
 
 export default {
@@ -23,7 +23,7 @@ export default {
     return (await callAPI('stories')).data
   },
   buildings: async () => {
-    return (await callAPI('buildings')).data
+    return (await callAPI('allBuildings')).data
   },
   meters: async id => {
     return (await callAPI('meters?id=' + id)).data

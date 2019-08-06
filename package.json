@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "start": "bash start_service.sh",
     "serve": "vue-cli-service serve",
     "build": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service build",
     "lint": "vue-cli-service lint",
