@@ -24,8 +24,30 @@ const actions = {
     store.dispatch('MeterGroup/changeGroup', id)
   },
 
-  async loadData (store, id) {
-
+  async getData (store, payload) {
+    let allData = await store.dispatch('MeterGroup/getData', payload)
+    let delta = 1
+    switch (payload.intervalUnit) {
+      case 'minute':
+        delta = 1
+        break
+      case 'hour':
+        delta = 4
+        break
+      case 'day':
+        delta = 96
+        break
+    }
+    if (payload.intervalUnit === 'minute') {
+      payload.dateInterval /= 15
+    }
+    delta *= payload.dateInterval
+    let returnData = []
+    // Leave out first point as it contains non subtracted data for totals
+    for (let i = 0; i < allData.size - 1; i += delta) {
+      returnData.push({ x: allData.keys()[i], y: allData.values()[i] })
+    }
+    return returnData
   },
 
   async changeChart (store, id) {

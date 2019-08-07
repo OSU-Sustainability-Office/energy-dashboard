@@ -58,7 +58,7 @@ class Meter {
   async download (point, startTime, endTime, meterClass) {
     await DB.connect()
     if (Object.values(meterClasses[meterClass]).inlcudes(point)) {
-      return DB.query('SELECT ? FROM data WHERE meter_id = ? AND time <= ? AND time >= ?', [point, this.id, startTime, endTime])
+      return DB.query('SELECT ?, UNIX_TIMESTAMP(time) AS time FROM data WHERE meter_id = ? AND time <= ? AND time >= ? ORDER BY time ASC', [point, this.id, startTime, endTime])
     } else {
       throw new Error('Point is not available for given meter class')
     }
