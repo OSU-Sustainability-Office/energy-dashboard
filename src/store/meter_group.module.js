@@ -17,11 +17,14 @@ const state = () => {
 
 const actions = {
 
-  async changeGroup (store, id) {
-    let group = await API.meter_group(id)
-    store.commit('id', id)
+  async changeGroup (store, payload) {
+    let group = await API.meterGroup(payload.id)
+    store.commit('id', payload.id)
+    store.commit('name', group.name)
+    console.log(group)
     for (let meterId of group.meters) {
-      store.registerModule(meterId, Meter)
+      let base = [].concat(payload.base, [meterId])
+      this.registerModule(base, Meter)
       store.dispatch(meterId + '/changeMeter', meterId)
     }
   },
@@ -69,6 +72,28 @@ const actions = {
         resultDataObject.set(currentIndex, resultDataObject.get(currentIndex) - resultDataObject.get(i))
       }
     }
+    let delta = 1
+    switch (payload.intervalUnit) {
+      case 'minute':
+        delta = 1
+        break
+      case 'hour':
+        delta = 4
+        break
+      case 'day':
+        delta = 96
+        break
+    }
+    if (payload.intervalUnit === 'minute') {
+      payload.dateInterval /= 15
+    }
+    delta *= payload.dateInterval
+    let returnData = []
+    // Leave out first point as it contains non subtracted data for totals
+    for (let i = 0; i < resultDataObject.size - 1; i += delta) {
+      returnData.push({ x: resultDataObject.keys()[i], y: resultDataObject.values()[i] })
+    }
+    return returnData
   }
 }
 

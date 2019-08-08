@@ -28,7 +28,6 @@ export default {
     navigbar
   },
   created () {
-    console.log(this.$store)
   },
   data () {
     return {

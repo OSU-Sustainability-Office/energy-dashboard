@@ -7,7 +7,9 @@
  */
 
 const DB = require('/opt/nodejs/sql-access.js')
+const APIToken = require('/opt/nodejs/api.js')
 const MeterGroup = require('/opt/nodejs/models/meter_group.js')
+const axios = require('axios')
 
 class Building {
   constructor (id) {
@@ -16,6 +18,8 @@ class Building {
     this.image = ''
     this.meterGroups = []
     this.group = ''
+    this.geoJSON = ''
+    this.name = ''
   }
 
   async get (expand = true) {
@@ -49,7 +53,9 @@ class Building {
       meterGroups: meterGroups,
       mapId: this.mapId,
       image: this.image,
-      group: this.group
+      group: this.group,
+      geoJSON: this.geoJSON,
+      name: this.name
     }
   }
 
@@ -90,16 +96,29 @@ class Building {
 
   static async all () {
     await DB.connect()
-    let buildings = []
-    let buildingRows = await DB.query('SELECT * FROM buildings')
+    let buildings = {}
+    let promiseChain1 = await Promise.all([DB.query('SELECT buildings.id, buildings.group, buildings.map_id, meter_groups.id as meter_group_id FROM buildings LEFT JOIN meter_groups on buildings.id = meter_groups.building_id_2'), APIToken()])
+    const buildingRows = promiseChain1[0]
+    const token = promiseChain1[1]
+    const promiseChain2 = []
     for (let buildingRow of buildingRows) {
-      let building = new Building(buildingRow['id'])
-      building.mapId = buildingRow['map_id']
-      building.image = buildingRow['image']
-      building.group = buildingRow['group']
-      buildings.push(building)
+      if (buildings[buildingRow['id']]) {
+        buildings[buildingRow['id']].meterGroups.push(buildingRow['meter_group_id'])
+      } else {
+        let building = new Building(buildingRow['id'])
+        building.mapId = buildingRow['map_id']
+        building.group = buildingRow['group']
+        building.meterGroups = [buildingRow['meter_group_id']]
+        promiseChain2.push(axios('https://api.oregonstate.edu/v1/locations/' + buildingRow['map_id'], { method: 'get', headers: { Authorization: 'Bearer ' + token } }).then(mapData => {
+          building.geoJSON = mapData.data.data.attributes.geometry
+          building.image = mapData.data.data.attributes.images[0]
+          building.name = mapData.data.data.attributes.name
+        }))
+        buildings[buildingRow['id']] = building
+      }
     }
-    return buildings
+    await Promise.all(promiseChain2)
+    return Object.values(buildings)
   }
 }
 

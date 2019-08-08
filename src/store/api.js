@@ -8,7 +8,7 @@
 import axios from 'axios'
 
 function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP_ROOT_API) {
-  return axios(base + route, { method: method, data: data, withCredentials: true })
+  return axios(base + '/' + route, { method: method, data: data, withCredentials: true, timeout: 72000 })
 }
 
 export default {
@@ -23,10 +23,13 @@ export default {
     return (await callAPI('stories')).data
   },
   buildings: async () => {
-    return (await callAPI('allBuildings')).data
+    return (await callAPI('allbuildings')).data
   },
-  meters: async id => {
-    return (await callAPI('meters?id=' + id)).data
+  meterGroup: async id => {
+    return (await callAPI('metergroup?id=' + id)).data
+  },
+  meter: async id => {
+    return (await callAPI('meter?id=' + id)).data
   },
   data: async (id, start, end, point) => {
     return (await callAPI('data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point)).data

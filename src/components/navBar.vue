@@ -38,12 +38,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'user'
-    ])
+    // ...mapGetters([
+    //   'user'
+    // ])
   },
   mounted () {
-    this.$store.dispatch('user')
+    // this.$store.dispatch('user')
     this.activeIndex = this.$route.path.split('/')[1]
   },
   watch: {
@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     logOut: function () {
-      this.$store.dispatch('logout')
+      // this.$store.dispatch('logout')
     },
     handleSelect: function (select) {
       this.$router.push({ path: '/' + select })

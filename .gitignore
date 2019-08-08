@@ -3,6 +3,7 @@ node_modules
 /dist
 
 # local env files
+.env.api
 .env.local
 .env.*.local
 tests/.env

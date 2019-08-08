@@ -209,9 +209,15 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('mapdata').then(r => {
-      this.polygonData = r
+    // this.$store.dispatch('mapdata').then(r => {
+    //   this.polygonData = r
+    //   this.mapLoaded = false
+    // })
+    this.$store.dispatch('map/loadMap').then(() => {
+      this.polygonData = Object.values(this.$store.state.map).map(o => o.geoJSON)
       this.mapLoaded = false
+    }).catch(e => {
+      console.log(e)
     })
     this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
     this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.forEach(e => { e.mapObject.resetStyle(v[0]) }) })

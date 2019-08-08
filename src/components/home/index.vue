@@ -55,7 +55,7 @@ export default {
     }
   },
   mounted () {
-    this.$store.dispatch('user').then(r => { this.user = r })
+    // this.$store.dispatch('user').then(r => { this.user = r })
   },
   created () {
   },

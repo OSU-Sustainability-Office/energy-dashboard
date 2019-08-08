@@ -16,7 +16,7 @@ class MeterGroup {
     this.id = id
   }
 
-  async get (expand = true) {
+  async get (expand = false) {
     await DB.connect()
     let meterGroupRow = await DB.query('SELECT * FROM meter_groups WHERE id = ?', [this.id])
     this.name = meterGroupRow[0]['name']
@@ -28,7 +28,7 @@ class MeterGroup {
       this.meters = await Promise.all(this.meters)
     } else {
       for (let row of metersRow) {
-        this.meters.push(row['id'])
+        this.meters.push(row['meter_id'])
       }
     }
     return this
