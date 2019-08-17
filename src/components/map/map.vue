@@ -24,14 +24,14 @@
       <div class='mapContainer' ref='mapContainer' v-loading='mapLoaded'>
         <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-          <l-geo-json v-for='(building, index) of this.polygonData' :key='index.toString() + rKey.toString()' :geojson='building' :options='buildingOptions' ref="geoLayer"></l-geo-json>
+          <l-geo-json v-for='building of Object.values(this.$store.state.map)' :key='building.id' :geojson='building.geoJSON' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
       </div>
       <prompt v-if='askingForComparison' @cancel='stopCompare' @compare='showComparison' />
       <transition name='side'>
         <compareSide v-if='showCompareSide' @hide='showCompareSide = false' :compareStories='compareStories' />
 
-        <sideView :key='openStory' :storyId='openStory' ref='sideview' v-if='showSide' @hide='showSide = false' @startCompare='startCompare()'></sideView>
+        <sideView :key='openBuilding' :buildingId='openBuilding' ref='sideview' v-if='showSide' @hide='showSide = false' @startCompare='startCompare()'></sideView>
       </transition>
     </el-col>
   </el-row>
@@ -61,7 +61,7 @@ export default {
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       map: null,
       polygonData: null,
-      openStory: 0,
+      openBuilding: 0,
       compareStories: [],
       showCompareSide: 0,
       showSide: false,
@@ -75,31 +75,31 @@ export default {
       buildingOptions: {
         onEachFeature: (feature, layer) => {
           layer.on('click', e => {
-            window.vue.$eventHub.$emit('clickedPolygon', [feature.properties.story_id, layer.getBounds().getCenter(), feature])
+            window.vue.$eventHub.$emit('clickedPolygon', [e.target.feature.geometry.properties.id, layer.getBounds().getCenter(), feature])
             // document.execCommand('copy')
           })
           layer.on('mouseover', function (e) {
             e.target.setStyle({ fillColor: '#000', color: '#000' })
-            e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
+            e.target.bindTooltip(e.target.feature.geometry.properties.name).openTooltip()
           })
           layer.on('mouseout', e => { window.vue.$eventHub.$emit('resetPolygon', [e.target]) })
         },
-        style: function (feature) {
+        style: feature => {
           var color = '#000'
-          switch (feature.properties.affiliation) {
-            case 'Residence':
+          switch (feature.geometry.properties.group) {
+            case 'residence':
               color = '#D3832B'
               break
-            case 'Academics':
+            case 'academics':
               color = '#0D5257'
               break
-            case 'Admin':
+            case 'admin':
               color = '#7A6855'
               break
-            case 'Athletics':
+            case 'athletics':
               color = '#FFB500'
               break
-            case 'Dining':
+            case 'dining':
               color = '#4A773C'
               break
             default:
@@ -119,7 +119,7 @@ export default {
   methods: {
     polyClick: function (id, feature, center) {
       if (!this.askingForComparison) {
-        this.openStory = id
+        this.openBuilding = id
         this.$nextTick(() => {
           this.showSide = true
         })
@@ -214,7 +214,7 @@ export default {
     //   this.mapLoaded = false
     // })
     this.$store.dispatch('map/loadMap').then(() => {
-      this.polygonData = Object.values(this.$store.state.map).map(o => o.geoJSON)
+      //this.polygonData = Object.values(this.$store.state.map).map(o => o.geoJSON)
       this.mapLoaded = false
     }).catch(e => {
       console.log(e)
@@ -225,10 +225,10 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject
-      // this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
-      // window.addEventListener('resize', () => {
-      //   this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
-      // })
+      this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
+      window.addEventListener('resize', () => {
+        this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
+      })
     })
   },
   beforeDestroy () {

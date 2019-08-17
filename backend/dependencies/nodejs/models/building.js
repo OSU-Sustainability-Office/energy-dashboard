@@ -111,6 +111,10 @@ class Building {
         building.meterGroups = [buildingRow['meter_group_id']]
         promiseChain2.push(axios('https://api.oregonstate.edu/v1/locations/' + buildingRow['map_id'], { method: 'get', headers: { Authorization: 'Bearer ' + token } }).then(mapData => {
           building.geoJSON = mapData.data.data.attributes.geometry
+          building.geoJSON.properties = {}
+          building.geoJSON.properties.name = mapData.data.data.attributes.name
+          building.geoJSON.properties.group = buildingRow['group']
+          building.geoJSON.properties.id = building.id
           building.image = mapData.data.data.attributes.images[0]
           building.name = mapData.data.data.attributes.name
         }))

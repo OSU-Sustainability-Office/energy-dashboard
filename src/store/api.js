@@ -35,7 +35,7 @@ export default {
     return (await callAPI('data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point)).data
   },
   user: async () => {
-    return (await callAPI('user')).data
+    return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth/')).data
   },
   group: async (data, method) => {
     return (await callAPI('group', data, method)).data
@@ -83,7 +83,7 @@ export default {
     return (await callAPI('allusers')).data
   },
   updateuser: async (privilege, id) => {
-    return (callAPI('user', {privilege: privilege, id: id}, 'put'))
+    return (callAPI('user', { privilege: privilege, id: id }, 'put'))
   },
   allMeters: async () => {
     return (await callAPI('allMeters')).data

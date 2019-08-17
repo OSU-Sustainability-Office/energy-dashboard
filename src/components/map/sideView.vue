@@ -10,11 +10,11 @@
   <el-row class='stage'>
     <el-row class='main'>
       <el-row class="title">
-        <el-col :span='23'>{{ story.name }}</el-col>
+        <el-col :span='23'>{{ building(buildingId).name }}</el-col>
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="hide()"></i></el-col>
       </el-row>
       <el-row>
-        <el-col :span='24' v-loading='(story)? !story.loaded : true'>
+        <el-col :span='24' v-loading='(building(buildingId)) ? false : true'>
           <div class="media" ref='media'></div>
         </el-col>
       </el-row>
@@ -28,7 +28,7 @@
             <i class="right fas fa-angle-right" @click='next()' ref="nextArrow"></i>
           </el-row>
           <el-row type='flex' class="graph" ref='scrollBox'>
-            <el-col class='inline' v-for='(block,index) in story.blocks' :key='index' :span='24'>
+            <el-col class='inline' v-for='(group, index) in building(buildingId).meterGroups' :key='index' :span='24'>
               <chartController :randomColors=1 :graphType='1' :index=index ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
             </el-col>
           </el-row>
@@ -47,12 +47,13 @@
 </template>
 <script>
 import chartController from '@/components/charts/chartController'
-import { mapGetters } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters } = createNamespacedHelpers('map')
 import switchButtons from '@/components/map/time_switch_buttons_big'
 
 export default {
   name: 'sideView',
-  props: ['storyId'],
+  props: ['buildingId'],
   components: {
     chartController, switchButtons
   },
@@ -70,8 +71,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'story',
-      'block'
+      'building'
     ])
   },
   methods: {
@@ -122,29 +122,29 @@ export default {
   },
   watch: {
     media: function (value) {
-      this.$refs.media.style.backgroundImage = 'url(' + this.api + '/energy/images/' + value + ')'
+      this.$refs.media.style.backgroundImage = 'url(' + value + ')'
     }
   },
   mounted () {
-    this.$refs.prevArrow.style.display = 'none'
-    this.$store.dispatch('story', this.storyId).then(() => {
-      let promises = []
-      if (this.story.blocks.length <= 1) {
-        this.$refs.nextArrow.style.display = 'none'
-      } else {
-        this.$refs.nextArrow.style.display = 'block'
-      }
-      this.media = this.story.media
-      for (let block in this.story.blocks) {
-        promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
-      }
+  //   this.$refs.prevArrow.style.display = 'none'
+  //   this.$store.dispatch('story', this.storyId).then(() => {
+  //     let promises = []
+  //     if (this.story.blocks.length <= 1) {
+  //       this.$refs.nextArrow.style.display = 'none'
+  //     } else {
+  //       this.$refs.nextArrow.style.display = 'block'
+  //     }
+      this.media = this.building(this.buildingId).image
+  //     for (let block in this.story.blocks) {
+  //       promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
+  //     }
 
-      Promise.all(promises).then(() => {
-        for (let controller of this.$refs.chartController) {
-          controller.parse()
-        }
-      })
-    })
+  //     Promise.all(promises).then(() => {
+  //       for (let controller of this.$refs.chartController) {
+  //         controller.parse()
+  //       }
+  //     })
+  //   })
   }
 }
 </script>

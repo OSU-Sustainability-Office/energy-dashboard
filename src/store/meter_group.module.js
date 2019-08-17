@@ -21,7 +21,6 @@ const actions = {
     let group = await API.meterGroup(payload.id)
     store.commit('id', payload.id)
     store.commit('name', group.name)
-    console.log(group)
     for (let meterId of group.meters) {
       let base = [].concat(payload.base, [meterId])
       this.registerModule(base, Meter)
@@ -115,6 +114,14 @@ const getters = {
 
   id (state) {
     return state.id
+  },
+
+  meters (state) {
+    return Object.keys(state).reduce((r, c) => {
+      if (!c.search(/id|name/)) {
+        r.push(state[c])
+      }
+    }, [])
   }
 }
 

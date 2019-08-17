@@ -15,7 +15,6 @@ const state = () => {
 
 const actions = {
   async loadBuilding (store, payload) {
-    console.log(store)
     let moduleSpace = ['map', payload.id.toString()]
     this.registerModule(moduleSpace, Building)
     store.commit(payload.id.toString() + '/geoJSON', payload.geoJSON)
@@ -26,6 +25,7 @@ const actions = {
     for (let meterGroupId of payload.meterGroups) {
       store.dispatch(payload.id.toString() + '/loadMeterGroup', { id: meterGroupId, base: moduleSpace })
     }
+    store.dispatch(payload.id.toString() + '/buildDefaultBlocks', { base: moduleSpace })
   },
 
   async loadMap (store) {
@@ -44,7 +44,17 @@ const mutations = {
 }
 
 const getters = {
+  building: (state) => (id) => {
+    return state[id]
+  },
 
+  meterGroup: (state) => (id) => {
+    return Object.values(state).map(building => building.getters.meterGroups).reduce((meterGroupsObject, meterGroups, index) => {
+      for (let group of meterGroups) {
+        meterGroupsObject[group.getters.id] = group
+      }
+    }, {})[id]
+  }
 }
 /*
   Nested Modules Populated with Buildings

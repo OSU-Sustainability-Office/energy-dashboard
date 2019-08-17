@@ -12,8 +12,6 @@ const User = require('/opt/nodejs/user.js')
 
 exports.all = async (event, context) => {
   let response = new Response()
-  response.headers['Access-Control-Allow-Origin'] = 'http://localhost:8080'
-  response.headers['Access-Control-Allow-Credentials'] = 'true'
   response.body = JSON.stringify((await Building.all()).map(o => o.data))
   return response
 }

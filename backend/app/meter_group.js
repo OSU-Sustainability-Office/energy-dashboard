@@ -12,8 +12,6 @@ const User = require('/opt/nodejs/user.js')
 
 exports.get = async (event, context) => {
   let response = new Response()
-  response.headers['Access-Control-Allow-Origin'] = 'http://localhost:8080'
-  response.headers['Access-Control-Allow-Credentials'] = 'true'
   response.body = JSON.stringify((await (new MeterGroup(event.queryStringParameters['id'])).get()).data)
   return response
 }

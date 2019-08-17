@@ -6,25 +6,21 @@
  * @Copyright:  Oregon State University 2019
  */
 import API from './api.js'
-import meterGroup from './meter_group.module.js'
 
 const state = () => {
   return {
     name: null,               // String
     point: null,              // String (See metering points)
     building: null,           // String buildingId
-    id: null                  // Integer DB ID
+    id: null,                 // Integer DB ID
+    meterGroup: null
   }
 }
 
 const actions = {
 
-  async changeMeterGroup (store, id) {
-    store.dispatch('MeterGroup/changeGroup', id)
-  },
-
   async getData (store, payload) {
-    return store.dispatch('MeterGroup/getData', payload)
+    return store.getters.meterGroup.dispatch('getData', payload)
   },
 
   async changeChart (store, id) {
@@ -33,6 +29,7 @@ const actions = {
     store.commit('point', chart.point)
     store.commit('building', chart.building)
     store.commit('id', id)
+    store.commit('meterGroup', store.map.getters.meterGroup(chart.meterGroup))
   }
 
 }
@@ -52,6 +49,10 @@ const mutations = {
 
   id (state, id) {
     state.id = id
+  },
+
+  meterGroup (state, meterGroup) {
+    state.meterGroup = meterGroup
   }
 
 }
@@ -71,11 +72,14 @@ const getters = {
 
   id (state) {
     return state.id
+  },
+
+  meterGroup (state) {
+    return state.meterGroup
   }
 }
 
 const modules = {
-  meterGroup: meterGroup
 }
 
 export default {

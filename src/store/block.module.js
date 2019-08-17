@@ -41,6 +41,29 @@ const actions = {
     for (let chart of block.charts) {
       store.dispatch('loadChart', chart)
     }
+  },
+
+  loadDefault (store, payload) {
+    let base = [].concat(payload.base, [payload.group.id.toString()])
+    this.registerModule(base, Chart)
+    store.commit(payload.group.id.toString() + '/name', 'Total ' + payload.group.getters.meters[0].type)
+    const pointMap = {
+      'Electric': 'accumulated_real',
+      'Gas': 'total',
+      'Steam': 'total'
+    }
+    store.commit(payload.group.id.toString() + '/point', pointMap[payload.group.getters.meters[0].type])
+    store.commit(payload.group.id.toString() + '/building', payload.building)
+    store.commit(payload.group.id.toString() + '/meterGroup', payload.group)
+
+    store.commit('name', payload.group.getters.meters[0].type)
+    store.commit('dateInterval', 1)
+    store.commit('intervalUnit', 'day')
+    store.commit('graphType', 1)
+    let currentEpoch = ((new Date()).getTime() / 1000)
+    currentEpoch = currentEpoch - (currentEpoch % 900)
+    store.commit('dateStart', currentEpoch - (900 * 96 * 7)) // 15 minutes, 96 times a day, 7 days
+    store.commit('dateEnd', currentEpoch)
   }
 }
 

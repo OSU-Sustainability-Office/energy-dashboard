@@ -12,7 +12,7 @@ Globals:
 Parameters:
   LambdaCommonLayer:
     Type: String
-    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:11
+    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:20
 Resources:
   BuildingAll:
     Type: AWS::Serverless::Function
