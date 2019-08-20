@@ -13,7 +13,8 @@ const state = () => {
     point: null,              // String (See metering points)
     building: null,           // String buildingId
     id: null,                 // Integer DB ID
-    meterGroup: null
+    meterGroup: null,
+    path: null
   }
 }
 
@@ -35,6 +36,10 @@ const actions = {
 }
 
 const mutations = {
+  path (state, path) {
+    state.path = path
+  },
+
   name (state, name) {
     state.name = name
   },
@@ -58,6 +63,10 @@ const mutations = {
 }
 
 const getters = {
+  path (state) {
+    return state.path
+  },
+
   name (state) {
     return state.name
   },

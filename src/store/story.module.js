@@ -13,13 +13,15 @@ const state = () => {
     name: null,       // String
     user: null,       // String
     media: null,      // URL String
-    id: null          // Integer DB ID
+    id: null,          // Integer DB ID
+    path: null
   }
 }
 
 const actions = {
   loadBlock (store, id) {
     store.registerModule(id, Block)
+    store.commit(id.toString() + '/path', store.getters.path + '/' + id.toString())
     store.dispatch(id.toString() + '/changeBlock', id)
   },
 
@@ -39,6 +41,10 @@ const actions = {
 }
 
 const mutations = {
+  path (state, path) {
+    state.path = path
+  },
+
   name (state, name) {
     state.name = name
   },
@@ -58,6 +64,10 @@ const mutations = {
 }
 
 const getters = {
+  path (state) {
+    return state.path
+  },
+
   name (state) {
     return state.name
   },

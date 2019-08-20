@@ -13,6 +13,7 @@ class MeterGroup {
   constructor (id) {
     this.meters = []
     this.name = ''
+    this.default = false
     this.id = id
   }
 
@@ -20,6 +21,8 @@ class MeterGroup {
     await DB.connect()
     let meterGroupRow = await DB.query('SELECT * FROM meter_groups WHERE id = ?', [this.id])
     this.name = meterGroupRow[0]['name']
+    this.default = (meterGroupRow[0]['default'] === 1)
+    console.log(this.default)
     let metersRow = await DB.query('SELECT meter_id FROM meter_group_relation WHERE group_id = ?', [this.id])
     if (expand) {
       for (let row of metersRow) {
@@ -62,6 +65,7 @@ class MeterGroup {
     return {
       name: this.name,
       id: this.id,
+      default: this.default,
       meters: meters
     }
   }

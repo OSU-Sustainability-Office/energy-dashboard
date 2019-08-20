@@ -11,7 +11,10 @@ import Meter from './meter.module.js'
 const state = () => {
   return {
     id: null,     // Integer DB ID
-    name: null    // String
+    name: null,    // String
+    default: false,
+    path: null,
+    promise: null
   }
 }
 
@@ -19,13 +22,20 @@ const actions = {
 
   async changeGroup (store, payload) {
     let group = await API.meterGroup(payload.id)
+    
     store.commit('id', payload.id)
     store.commit('name', group.name)
+    store.commit('default', group.default)
+    let meterPromises = []
     for (let meterId of group.meters) {
       let base = [].concat(payload.base, [meterId])
       this.registerModule(base, Meter)
-      store.dispatch(meterId + '/changeMeter', meterId)
+      store.commit(meterId.toString() + '/path', store.getters.path + '/' + meterId.toString())
+      meterPromises.push(store.dispatch(meterId.toString() + '/changeMeter', meterId))
     }
+    let meters = Promise.all(meterPromises)
+    store.commit('promise', meters)
+    await meters
   },
 
   async getData (store, payload) {
@@ -97,17 +107,37 @@ const actions = {
 }
 
 const mutations = {
+  path (state, path) {
+    state.path = path
+  },
+
+  promise (state, promise) {
+    state.promise = promise
+  },
+
   name (state, name) {
     state.name = name
   },
 
   id (state, id) {
     state.id = id
+  },
+
+  default (state, value) {
+    state.default = value
   }
 
 }
 
 const getters = {
+  path (state) {
+    return state.path
+  },
+
+  promise (state) {
+    return state.promise
+  },
+
   name (state) {
     return state.name
   },
@@ -117,11 +147,17 @@ const getters = {
   },
 
   meters (state) {
-    return Object.keys(state).reduce((r, c) => {
-      if (!c.search(/id|name/)) {
+    let r = []
+    for (let c of Object.keys(state)) {
+      if (c.search(/id|name|default|path|promise/) < 0) {
         r.push(state[c])
       }
-    }, [])
+    }
+    return r
+  },
+
+  default (state) {
+    return state.default
   }
 }
 

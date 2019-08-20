@@ -10,6 +10,7 @@ import Chart from './chart.module.js'
 
 const state = () => {
   return {
+    path: null,
     name: null,               // String
     dateInterval: null,       // Int
     intervalUnit: null,       // String (minute, hour, day)
@@ -23,6 +24,7 @@ const state = () => {
 const actions = {
   loadChart (store, id) {
     store.registerModule(id, Chart)
+    store.commit(id.toString() + '/path', store.getters.path + '/' + id.toString())
     store.dispatch(id.toString() + '/changeChart', id)
   },
 
@@ -43,20 +45,23 @@ const actions = {
     }
   },
 
-  loadDefault (store, payload) {
+  async loadDefault (store, payload) {
     let base = [].concat(payload.base, [payload.group.id.toString()])
     this.registerModule(base, Chart)
-    store.commit(payload.group.id.toString() + '/name', 'Total ' + payload.group.getters.meters[0].type)
+    await this.getters[payload.group.path + '/promise']
+    console.log(this.getters[payload.group.path + '/meters'][0])
+    let utilityType = this.getters[this.getters[payload.group.path + '/meters'][0].path + '/type']
+    store.commit(payload.group.id.toString() + '/name', 'Total ' + utilityType)
     const pointMap = {
-      'Electric': 'accumulated_real',
-      'Gas': 'total',
+      'Electricity': 'accumulated_real',
+      'Gas': 'cubic_feet',
       'Steam': 'total'
     }
-    store.commit(payload.group.id.toString() + '/point', pointMap[payload.group.getters.meters[0].type])
+    store.commit(payload.group.id.toString() + '/point', pointMap[utilityType])
     store.commit(payload.group.id.toString() + '/building', payload.building)
     store.commit(payload.group.id.toString() + '/meterGroup', payload.group)
 
-    store.commit('name', payload.group.getters.meters[0].type)
+    store.commit('name', utilityType)
     store.commit('dateInterval', 1)
     store.commit('intervalUnit', 'day')
     store.commit('graphType', 1)
@@ -68,6 +73,10 @@ const actions = {
 }
 
 const mutations = {
+  path (state, path) {
+    state.path = path
+  },
+
   name (state, name) {
     state.name = name
   },

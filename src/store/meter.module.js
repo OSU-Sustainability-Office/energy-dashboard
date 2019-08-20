@@ -13,7 +13,8 @@ const state = () => {
     name: null,         // String
     address: null,      // String
     classInt: null,     // Int
-    negate: null        // Bool
+    negate: null,        // Bool
+    path: null
   }
 }
 
@@ -35,6 +36,10 @@ const actions = {
 }
 
 const mutations = {
+  path (state, path) {
+    state.path = path
+  },
+
   name (state, name) {
     state.name = name
   },
@@ -58,6 +63,10 @@ const mutations = {
 }
 
 const getters = {
+  path (state) {
+    return state.path
+  },
+
   name (state) {
     return state.name
   },
@@ -76,6 +85,17 @@ const getters = {
 
   id (state) {
     return state.id
+  },
+
+  type (state) {
+    switch (state.class) {
+      case 17:
+        return 'Gas'
+      case 4444:
+        return 'Steam'
+      default:
+        return 'Electricity'
+    }
   }
 }
 

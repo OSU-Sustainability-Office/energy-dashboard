@@ -24,27 +24,28 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'card',
-  props: ['index', 'graphType', 'styleC', 'randomColors', 'height'],
+  props: ['index', 'graphType', 'styleC', 'randomColors', 'height', 'block'],
   components: {
     linechart, barchart, doughnutchart, piechart
   },
   mounted () {
-    switch (parseInt(this.graphType)) {
-      case 1:
-        this.chart = this.$refs.linechart
-        break
-      case 2:
-        this.chart = this.$refs.barchart
-        break
-      case 3:
-        this.chart = this.$refs.doughnutchart
-        break
-      case 5:
-        this.chart = this.$refs.barlinechart
-        break
-      default:
-        this.chart = this.$refs.piechart
-    }
+    console.log(block)
+    // switch (parseInt(this.graphType)) {
+    //   case 1:
+    //     this.chart = this.$refs.linechart
+    //     break
+    //   case 2:
+    //     this.chart = this.$refs.barchart
+    //     break
+    //   case 3:
+    //     this.chart = this.$refs.doughnutchart
+    //     break
+    //   case 5:
+    //     this.chart = this.$refs.barlinechart
+    //     break
+    //   default:
+    //     this.chart = this.$refs.piechart
+    // }
   },
   data () {
     return {

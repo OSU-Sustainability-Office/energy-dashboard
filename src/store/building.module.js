@@ -10,6 +10,7 @@ import Block from './block.module.js'
 
 const state = () => {
   return {
+    path: null,
     name: null,
     group: null,
     image: null,
@@ -19,18 +20,20 @@ const state = () => {
 }
 
 const actions = {
-  loadMeterGroup (store, payload) {
+  async loadMeterGroup (store, payload) {
     let base = [].concat(payload.base, ['meterGroup_' + payload.id.toString()])
     this.registerModule(base, MeterGroup)
-    store.dispatch('meterGroup_' + payload.id.toString() + '/changeGroup', { id: payload.id, base: base })
+    store.commit('meterGroup_' + payload.id.toString() + '/path', store.getters.path + '/' + 'meterGroup_' + payload.id.toString())
+    await store.dispatch('meterGroup_' + payload.id.toString() + '/changeGroup', { id: payload.id, base: base })
   },
 
-  buildDefaultBlocks (store, payload) {
+  async buildDefaultBlocks (store, payload) {
     for (let group of store.getters.meterGroups) {
-      if (group.getters.default) {
-        let base = [].concat(payload.base, ['block_' + group.getters.id.toString()])
+      if (group.default) {
+        let base = [].concat(payload.base, ['block_' + group.id.toString()])
         this.registerModule(base, Block)
-        store.dispatch('block_' + group.id.toString() + '/loadDefault', { base: base, group: group })
+        store.commit('block_' + group.id.toString() + '/path', store.getters.path + '/' + 'block_' + group.id.toString())
+        await store.dispatch('block_' + group.id.toString() + '/loadDefault', { base: base, group: group })
       }
     }
   }
@@ -55,6 +58,10 @@ const mutations = {
 
   id (state, id) {
     state.id = id
+  },
+
+  path (state, path) {
+    state.path = path
   }
 }
 
@@ -79,10 +86,14 @@ const getters = {
     return state.id
   },
 
+  path (state) {
+    return state.path
+  },
+
   meterGroups (state) {
     let r = []
     for (let key of Object.keys(state)) {
-      if (key.search(/meterGroup_[0-9]+/)) {
+      if (key.search(/meterGroup_[0-9]+/) >= 0) {
         r.push(state[key])
       }
     }
@@ -92,7 +103,7 @@ const getters = {
   blocks (state) {
     let r = []
     for (let key of Object.keys(state)) {
-      if (key.search(/block_[0-9]+/)) {
+      if (key.search(/block_[0-9]+/) >= 0) {
         r.push(state[key])
       }
     }

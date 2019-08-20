@@ -28,8 +28,8 @@
             <i class="right fas fa-angle-right" @click='next()' ref="nextArrow"></i>
           </el-row>
           <el-row type='flex' class="graph" ref='scrollBox'>
-            <el-col class='inline' v-for='(group, index) in building(buildingId).meterGroups' :key='index' :span='24'>
-              <chartController :randomColors=1 :graphType='1' :index=index ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
+            <el-col class='inline' v-for='(block, index) in building(buildingId).blocks' :key='index' :span='24'>
+              <chartController :randomColors=1 :graphType='1' :block=block ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
             </el-col>
           </el-row>
           <el-row class="buttons">
@@ -135,6 +135,7 @@ export default {
   //       this.$refs.nextArrow.style.display = 'block'
   //     }
       this.media = this.building(this.buildingId).image
+      console.log(this.building(this.buildingId))
   //     for (let block in this.story.blocks) {
   //       promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
   //     }
