@@ -21,10 +21,10 @@
           <el-menu-item index='Residence' :class="[(isDisplayed('Residence') ? 'active' : 'notactive')]"><span class='res swatch'></span>Residence</el-menu-item>
         </el-menu-item-group>
       </el-menu>
-      <div class='mapContainer' ref='mapContainer' v-loading='mapLoaded'>
+      <div class='mapContainer' ref='mapContainer' v-loading='!mapLoaded'>
         <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-          <l-geo-json v-for='building of Object.values(this.$store.state.map)' :key='building.id' :geojson='building.geoJSON' :options='buildingOptions' ref="geoLayer"></l-geo-json>
+          <l-geo-json v-for='building of this.$store.getters["map/buildings"]' :key='building.id' :geojson='building.geoJSON' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
       </div>
       <prompt v-if='askingForComparison' @cancel='stopCompare' @compare='showComparison' />
@@ -71,7 +71,7 @@ export default {
       askingForComparison: false,
       selected: ['Residence', 'Athletics', 'Dining', 'Academics', 'Admin'],
       show: false,
-      mapLoaded: true,
+      mapLoaded: false,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
           layer.on('click', e => {
@@ -213,12 +213,11 @@ export default {
     //   this.polygonData = r
     //   this.mapLoaded = false
     // })
-    this.$store.dispatch('map/loadMap').then(() => {
-      //this.polygonData = Object.values(this.$store.state.map).map(o => o.geoJSON)
-      this.mapLoaded = false
-    }).catch(e => {
-      console.log(e)
+    let mapPromise = this.$store.dispatch('map/loadMap').then(() => {
+      this.mapLoaded = true
     })
+    this.$store.commit('map/promise', mapPromise)
+
     this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
     this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.forEach(e => { e.mapObject.resetStyle(v[0]) }) })
   },

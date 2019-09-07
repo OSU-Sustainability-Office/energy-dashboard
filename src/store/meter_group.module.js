@@ -21,36 +21,35 @@ const state = () => {
 const actions = {
 
   async changeGroup (store, payload) {
-    let group = await API.meterGroup(payload.id)
-    
+    let group = API.meterGroup(payload.id)
+    store.commit('promise', group)
+    group = await group
     store.commit('id', payload.id)
     store.commit('name', group.name)
     store.commit('default', group.default)
-    let meterPromises = []
     for (let meterId of group.meters) {
-      let base = [].concat(payload.base, [meterId])
-      this.registerModule(base, Meter)
-      store.commit(meterId.toString() + '/path', store.getters.path + '/' + meterId.toString())
-      meterPromises.push(store.dispatch(meterId.toString() + '/changeMeter', meterId))
+      let meterSpace = 'meter_' + meterId.toString()
+      let moduleSpace = store.getters.path + '/' + meterSpace
+      this.registerModule(moduleSpace.split('/'), Meter)
+      store.commit(meterSpace + '/path', moduleSpace)
+      store.dispatch(meterSpace + '/changeMeter', meterId)
     }
-    let meters = Promise.all(meterPromises)
-    store.commit('promise', meters)
-    await meters
   },
 
   async getData (store, payload) {
     let resultDataObject = new Map()
-    if (payload.point !== 'accumulated_real' && payload.point !== 'total' && payload.point !== 'cubic_feet' && Object.values(store.modules).length > 1) {
+    console.log(payload)
+    if (payload.point !== 'accumulated_real' && payload.point !== 'total' && payload.point !== 'cubic_feet') {
       /*
         To decide if this should allow more points later, but there are a lot that do not make sense or can not be directly added together
       */
       throw new Error('Can not add together non-total metering points')
     }
-    for (let meter of Object.values(store.modules)) {
-      let data = await meter.dispatch('getData', payload)
+    for (let meter of store.getters.meters) {
+      let data = await this.dispatch(meter.path + '/getData', payload)
       for (let dataPoint of data) {
         if (resultDataObject[dataPoint['time']]) {
-          if (meter.getters.negate) {
+          if (meter.negate) {
             resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) - dataPoint[payload.point])
           } else {
             resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) + dataPoint[payload.point])
@@ -149,7 +148,7 @@ const getters = {
   meters (state) {
     let r = []
     for (let c of Object.keys(state)) {
-      if (c.search(/id|name|default|path|promise/) < 0) {
+      if (c.search(/meter_/) >= 0) {
         r.push(state[c])
       }
     }

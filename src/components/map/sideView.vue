@@ -10,11 +10,11 @@
   <el-row class='stage'>
     <el-row class='main'>
       <el-row class="title">
-        <el-col :span='23'>{{ building(buildingId).name }}</el-col>
+        <el-col :span='23'>{{ building.name }}</el-col>
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="hide()"></i></el-col>
       </el-row>
       <el-row>
-        <el-col :span='24' v-loading='(building(buildingId)) ? false : true'>
+        <el-col :span='24' v-loading='building ? false : true'>
           <div class="media" ref='media'></div>
         </el-col>
       </el-row>
@@ -28,7 +28,7 @@
             <i class="right fas fa-angle-right" @click='next()' ref="nextArrow"></i>
           </el-row>
           <el-row type='flex' class="graph" ref='scrollBox'>
-            <el-col class='inline' v-for='(block, index) in building(buildingId).blocks' :key='index' :span='24'>
+            <el-col class='inline' v-for='block in buildingBlocks' :key='block.id' :span='24'>
               <chartController :randomColors=1 :graphType='1' :block=block ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
             </el-col>
           </el-row>
@@ -70,9 +70,18 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'building'
-    ])
+
+    buildingBlocks: {
+      get () {
+        return this.$store.getters[this.building.path + '/blocks']
+      }
+    },
+
+    building: {
+      get () {
+        return this.$store.getters['map/building'](this.buildingId)
+      }
+    }
   },
   methods: {
     updateCharts: function (value) {
@@ -134,8 +143,8 @@ export default {
   //     } else {
   //       this.$refs.nextArrow.style.display = 'block'
   //     }
-      this.media = this.building(this.buildingId).image
-      console.log(this.building(this.buildingId))
+      this.media = this.building.image
+      console.log(this.building)
   //     for (let block in this.story.blocks) {
   //       promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
   //     }

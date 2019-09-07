@@ -13,14 +13,24 @@ Globals:
     # enable CORS; to make more specific, change the origin wildcard
     # to a particular domain name, e.g. "'www.example.com'"
     Cors: 
-      AllowMethods: "'*'"
-      AllowHeaders: "'*'"
       AllowOrigin: "'http://localhost:8080'"
 Parameters:
   LambdaCommonLayer:
     Type: String
-    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:20
+    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:21
 Resources:
+  test:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: test.test
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /test
+            Method: get
   BuildingAll:
     Type: AWS::Serverless::Function
     Properties:

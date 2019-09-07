@@ -6,7 +6,7 @@
 @Last modified time: 2019-04-09T11:43:22-07:00
 -->
 <template>
-  <div v-loading='(block(index))? !block(index).loaded : true' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
+  <div v-loading='loading' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
     <linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
@@ -29,7 +29,17 @@ export default {
     linechart, barchart, doughnutchart, piechart
   },
   mounted () {
-    console.log(block)
+    console.log(this.block)
+    if (this.block.promise === null){
+      this.loading = false
+    } else {
+      this.block.promise.then(() => {
+        this.loading = false
+      })
+    }
+    this.$store.dispatch(this.block.path + '/getData').then(r => {
+      console.log(r)
+    })
     // switch (parseInt(this.graphType)) {
     //   case 1:
     //     this.chart = this.$refs.linechart
@@ -51,10 +61,6 @@ export default {
     return {
       chart: null,
       loading: true,
-      chartData: {
-        datasets: [],
-        labels: []
-      },
       colors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4'],
       map: {
         minute: 0,
@@ -79,11 +85,12 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters([
-      'story',
-      'block'
-    ])
+  asyncComputed: {
+    chartData: {
+      get: () => {
+        return this.$store.dispatch(this.block.path + '/getData')
+      }
+    }
   },
   watch: {
     graphType: function (value) {
@@ -163,18 +170,18 @@ export default {
       this.graphType = 100
     },
     displayFormat: function () {
-      if (this.block(this.index).interval_unit === 'minute') {
-        return 'minute'
-      } else if (this.block(this.index).interval_unit === 'hour') {
-        return 'hour'
-      } else {
-        return 'day'
-      }
+      // if (this.block(this.index).interval_unit === 'minute') {
+      //   return 'minute'
+      // } else if (this.block(this.index).interval_unit === 'hour') {
+      //   return 'hour'
+      // } else {
+      //   return 'day'
+      // }
     },
     parseDataPieDoughnut: function () {
-      if (!this.block(this.index)) {
-        return
-      }
+      // if (!this.block(this.index)) {
+      //   return
+      // }
       let tempData = {
         datasets: [{
           data: [],

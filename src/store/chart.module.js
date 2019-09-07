@@ -13,7 +13,7 @@ const state = () => {
     point: null,              // String (See metering points)
     building: null,           // String buildingId
     id: null,                 // Integer DB ID
-    meterGroup: null,
+    meterGroupPath: null,
     path: null
   }
 }
@@ -21,16 +21,19 @@ const state = () => {
 const actions = {
 
   async getData (store, payload) {
-    return store.getters.meterGroup.dispatch('getData', payload)
+    payload['point'] = store.getters.point
+    return this.dispatch(store.getters.meterGroupPath + '/getData', payload)
   },
 
   async changeChart (store, id) {
-    let chart = await API.chart(id)
+    let chart = API.chart(id)
+    store.commit('promise', chart)
+    store.commit('id', id)
+    await chart
     store.commit('name', chart.name)
     store.commit('point', chart.point)
     store.commit('building', chart.building)
-    store.commit('id', id)
-    store.commit('meterGroup', store.map.getters.meterGroup(chart.meterGroup))
+    store.commit('meterGroupPath', this.getters.meterGroup(chart.meterGroup).path)
   }
 
 }
@@ -56,13 +59,21 @@ const mutations = {
     state.id = id
   },
 
-  meterGroup (state, meterGroup) {
-    state.meterGroup = meterGroup
+  meterGroupPath (state, meterGroupPath) {
+    state.meterGroupPath = meterGroupPath
+  },
+
+  promise (state, promise) {
+    state.promise = promise
   }
 
 }
 
 const getters = {
+  promise (state) {
+    return state.promise
+  },
+
   path (state) {
     return state.path
   },
@@ -83,8 +94,8 @@ const getters = {
     return state.id
   },
 
-  meterGroup (state) {
-    return state.meterGroup
+  meterGroupPath (state) {
+    return state.meterGroupPath
   }
 }
 

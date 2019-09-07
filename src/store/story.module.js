@@ -14,7 +14,8 @@ const state = () => {
     user: null,       // String
     media: null,      // URL String
     id: null,          // Integer DB ID
-    path: null
+    path: null,
+    promise: null
   }
 }
 
@@ -45,6 +46,10 @@ const mutations = {
     state.path = path
   },
 
+  promise (state, promise) {
+    state.promise = promise
+  },
+
   name (state, name) {
     state.name = name
   },
@@ -66,6 +71,10 @@ const mutations = {
 const getters = {
   path (state) {
     return state.path
+  },
+
+  promise (state) {
+    return state.promise
   },
 
   name (state) {

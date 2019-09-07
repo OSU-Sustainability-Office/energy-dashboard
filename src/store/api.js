@@ -31,8 +31,8 @@ export default {
   meter: async id => {
     return (await callAPI('meter?id=' + id)).data
   },
-  data: async (id, start, end, point) => {
-    return (await callAPI('data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point)).data
+  data: async (id, start, end, point, classInt) => {
+    return (await callAPI('data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point + '&meterClass=' + classInt)).data
   },
   user: async () => {
     return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth/')).data

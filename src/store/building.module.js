@@ -10,6 +10,7 @@ import Block from './block.module.js'
 
 const state = () => {
   return {
+    promise: null,
     path: null,
     name: null,
     group: null,
@@ -21,25 +22,32 @@ const state = () => {
 
 const actions = {
   async loadMeterGroup (store, payload) {
-    let base = [].concat(payload.base, ['meterGroup_' + payload.id.toString()])
-    this.registerModule(base, MeterGroup)
-    store.commit('meterGroup_' + payload.id.toString() + '/path', store.getters.path + '/' + 'meterGroup_' + payload.id.toString())
-    await store.dispatch('meterGroup_' + payload.id.toString() + '/changeGroup', { id: payload.id, base: base })
+    let meterGroupSpace = 'meterGroup_' + payload.id.toString()
+    let moduleSpace = store.getters.path + '/' + meterGroupSpace
+    this.registerModule(moduleSpace.split('/'), MeterGroup)
+    store.commit(meterGroupSpace + '/path', moduleSpace)
+    store.dispatch(meterGroupSpace + '/changeGroup', { id: payload.id })
   },
 
   async buildDefaultBlocks (store, payload) {
     for (let group of store.getters.meterGroups) {
+      await group.promise
       if (group.default) {
-        let base = [].concat(payload.base, ['block_' + group.id.toString()])
-        this.registerModule(base, Block)
-        store.commit('block_' + group.id.toString() + '/path', store.getters.path + '/' + 'block_' + group.id.toString())
-        await store.dispatch('block_' + group.id.toString() + '/loadDefault', { base: base, group: group })
+        let blockSpace = 'block_' + group.id.toString()
+        let moduleSpace = store.getters.path + '/' + blockSpace
+        this.registerModule(moduleSpace.split('/'), Block)
+        store.commit(blockSpace + '/path', moduleSpace)
+        store.dispatch(blockSpace + '/loadDefault', { group: group, id: group.id })
       }
     }
   }
 }
 
 const mutations = {
+  promise (state, promise) {
+    state.promise = promise
+  },
+
   name (state, name) {
     state.name = name
   },
@@ -66,6 +74,10 @@ const mutations = {
 }
 
 const getters = {
+  promise (state) {
+    return state.promise
+  },
+
   name (state) {
     return state.name
   },

@@ -14,14 +14,17 @@ const state = () => {
     address: null,      // String
     classInt: null,     // Int
     negate: null,        // Bool
-    path: null
+    path: null,
+    promise: null
   }
 }
 
 const actions = {
 
   async changeMeter (store, id) {
-    let meter = await API.meter(id)
+    let meter = API.meter(id)
+    store.commit('promise', meter)
+    meter = await meter
     store.commit('id', id)
     store.commit('name', meter.name)
     store.commit('address', meter.address)
@@ -30,7 +33,9 @@ const actions = {
   },
 
   async getData (store, payload) {
-    return API.data(store.getters.id, payload.dateStart, payload.dateEnd, payload.point)
+    let start = new Date(payload.dateStart * 1000)
+    let end = new Date(payload.dateEnd * 1000)
+    return API.data(store.getters.id, start.toISOString(), end.toISOString(), payload.point, store.getters.classInt)
   }
 
 }
@@ -58,6 +63,10 @@ const mutations = {
 
   id (state, id) {
     state.id = id
+  },
+
+  promise (state, promise) {
+    state.promise = promise
   }
 
 }
@@ -65,6 +74,10 @@ const mutations = {
 const getters = {
   path (state) {
     return state.path
+  },
+
+  promise (state) {
+    return state.promise
   },
 
   name (state) {

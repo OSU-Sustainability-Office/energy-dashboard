@@ -22,8 +22,8 @@ exports.data = async (event, context) => {
   let response = new Response()
   response.body = JSON.stringify((await (new Meter(event.queryStringParameters['id'])).download(
     event.queryStringParameters['point'],
-    event.queryStringParameters['startTime'],
-    event.queryStringParameters['endTime'],
+    event.queryStringParameters['startDate'],
+    event.queryStringParameters['endDate'],
     event.queryStringParameters['meterClass']
   )))
   return response
@@ -52,7 +52,7 @@ exports.post = async (event, context) => {
       }
     }
     let table = await new Promise((resolve, reject) => {
-      ZLib.unpack(file.file.content.data, (error, result) => {
+      ZLib.unzip(file.file.content.data, (error, result) => {
         if (error) {
           reject(error)
         } else {
