@@ -84,36 +84,36 @@ export default {
     }
   },
   methods: {
-    updateCharts: function (value) {
-      this.currentRange = value[0]
-      this.$nextTick(() => {
-        for (let controller of this.$refs.chartController) {
-          controller.parse()
-        }
-      })
-    },
+    // updateCharts: function (value) {
+    //   this.currentRange = value[0]
+    //   this.$nextTick(() => {
+    //     for (let controller of this.$refs.chartController) {
+    //       controller.parse()
+    //     }
+    //   })
+    // },
     hide: function () {
       this.$emit('hide')
     },
-    dateOffset: function () {
-      var d = new Date()
-      if (this.currentRange === 0) {
-        d.setDate(d.getDate() - 7)
-      } else if (this.currentRange === 1) {
-        d.setMonth(d.getMonth() - 1)
-      } else if (this.currentRange === 2) {
-        d.setYear(d.getYear() - 1)
-      }
-      return d.toISOString()
-    },
+    // dateOffset: function () {
+    //   var d = new Date()
+    //   if (this.currentRange === 0) {
+    //     d.setDate(d.getDate() - 7)
+    //   } else if (this.currentRange === 1) {
+    //     d.setMonth(d.getMonth() - 1)
+    //   } else if (this.currentRange === 2) {
+    //     d.setYear(d.getYear() - 1)
+    //   }
+    //   return d.toISOString()
+    // },
     next: function () {
-      if (this.index + 1 >= this.story.blocks.length) { return }
+      if (this.index + 1 >= this.buildingBlocks.length) { return }
       this.index++
       this.$refs.scrollBox.$children.forEach((child) => {
         child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
       })
       this.$refs.prevArrow.style.display = 'block'
-      if (this.index + 1 === this.story.blocks.length) {
+      if (this.index + 1 === this.buildingBlocks.length) {
         this.$refs.nextArrow.style.display = 'none'
       }
     },
@@ -135,16 +135,15 @@ export default {
     }
   },
   mounted () {
-  //   this.$refs.prevArrow.style.display = 'none'
+    this.$refs.prevArrow.style.display = 'none'
   //   this.$store.dispatch('story', this.storyId).then(() => {
   //     let promises = []
-  //     if (this.story.blocks.length <= 1) {
-  //       this.$refs.nextArrow.style.display = 'none'
-  //     } else {
-  //       this.$refs.nextArrow.style.display = 'block'
-  //     }
-      this.media = this.building.image
-      console.log(this.building)
+    if (this.buildingBlocks.length <= 1) {
+      this.$refs.nextArrow.style.display = 'none'
+    } else {
+      this.$refs.nextArrow.style.display = 'block'
+    }
+    this.media = this.building.image
   //     for (let block in this.story.blocks) {
   //       promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
   //     }

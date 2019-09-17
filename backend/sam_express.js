@@ -60,9 +60,15 @@
         const codePath = resource.Properties.Handler.split('.')
         const fullModPath = './' + resource.Properties.CodeUri + codePath[0] + '.js'
         const moduleName = require(fullModPath)
-        // This needs to be fixed to conform to AWS event
         const event = {
-          ...req
+          body: (req.body) ? req.body : '',
+          httpMethod: req.method,
+          queryStringParameters: {
+            ...req.query
+          },
+          headers: {
+
+          }
         }
         res.send(
           (await moduleName[codePath[1]](event)).body

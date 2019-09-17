@@ -105,6 +105,7 @@ export default {
           }],
           xAxes: [{
             type: 'time',
+            bounds: 'data',
             gridLines: {
               display: false
             },
@@ -113,7 +114,8 @@ export default {
               fontColor: '#FFF',
               fontFamily: 'Open Sans',
               autoSkip: true,
-              stepSize: 10
+              stepSize: 10,
+              source: 'auto'
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),

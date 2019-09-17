@@ -38,8 +38,7 @@ const actions = {
 
   async getData (store, payload) {
     let resultDataObject = new Map()
-    console.log(payload)
-    if (payload.point !== 'accumulated_real' && payload.point !== 'total' && payload.point !== 'cubic_feet') {
+    if (payload.point !== 'accumulated_real' && payload.point !== 'total' && payload.point !== 'cubic_feet' && store.getters.meters.length > 1) {
       /*
         To decide if this should allow more points later, but there are a lot that do not make sense or can not be directly added together
       */
@@ -59,9 +58,9 @@ const actions = {
         }
       }
     }
-    if (payload.point === 'accumulated_real' && payload.point === 'total' && payload.point === 'cubic_feet') {
-      let startTime = resultDataObject.values()[0]['time']
-      let endTime = resultDataObject.values()[resultDataObject.size - 1]['time']
+    if (payload.point === 'accumulated_real' || payload.point === 'total' || payload.point === 'cubic_feet') {
+      let startTime = Array.from(resultDataObject.keys())[0]
+      let endTime = Array.from(resultDataObject.keys())[resultDataObject.size - 1]
       for (let i = endTime - 900; i >= startTime; i -= 900) {
         let currentIndex = i + 900
         let nextValidValue = null
@@ -97,9 +96,14 @@ const actions = {
     }
     delta *= payload.dateInterval
     let returnData = []
+    let accumulator = 0
     // Leave out first point as it contains non subtracted data for totals
-    for (let i = 0; i < resultDataObject.size - 1; i += delta) {
-      returnData.push({ x: resultDataObject.keys()[i], y: resultDataObject.values()[i] })
+    for (let i = resultDataObject.size - 1; i > 0; i--) {
+      accumulator += Array.from(resultDataObject.values())[i]
+      if (i % delta === 0) {
+        returnData.push({ x: (new Date(Array.from(resultDataObject.keys())[i] * 1000)), y: accumulator })
+        accumulator = 0
+      }
     }
     return returnData
   }

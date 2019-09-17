@@ -18,7 +18,8 @@ const state = () => {
     graphType: null,          // Int (1: Line, 2: Bar, 3: Doughnut, 4: Piechart, 5: LineBar)
     dateStart: null,          // String ISO date format UTC
     dateEnd: null,            // String ISO date format UTC
-    id: null                  // Integer DB ID
+    id: null,                  // Integer DB ID
+    chartColors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4']
   }
 }
 
@@ -28,10 +29,12 @@ const actions = {
     let moduleSpace = store.getters.path + chartSpace
     store.registerModule(moduleSpace.split('/'), Chart)
     store.commit(chartSpace + '/path', moduleSpace)
+    store.commit(chartSpace + '/color', store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length])
     store.dispatch(chartSpace + '/changeChart', id)
   },
 
   async changeBlock (store, id) {
+    store.commit('shuffleChartColors')
     for (let chart of store.getters.charts) {
       let chartKey = chart.path.split('/').pop()
       store.unregisterModule(chartKey)
@@ -39,7 +42,7 @@ const actions = {
     store.commit('id', id)
     let block = API.block(id)
     store.commit('promise', block)
-    await block
+    block = await block
     store.commit('name', block.name)
     store.commit('dateInterval', block.user)
     store.commit('intervalUnit', block.media)
@@ -53,6 +56,7 @@ const actions = {
   },
 
   async loadDefault (store, payload) {
+    store.commit('shuffleChartColors')
     let chartSpace = 'chart_' + payload.id.toString()
     let moduleSpace = (store.getters.path + '/' + chartSpace)
     this.registerModule(moduleSpace.split('/'), Chart)
@@ -66,6 +70,7 @@ const actions = {
     }
     store.commit(chartSpace + '/path', moduleSpace)
     store.commit(chartSpace + '/point', pointMap[utilityType])
+    store.commit(chartSpace + '/color', store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length])
     let buildingPath = store.getters.path.split('/')
     buildingPath.pop()
     buildingPath = buildingPath.join('/')
@@ -76,17 +81,17 @@ const actions = {
     store.commit('dateInterval', 1)
     store.commit('intervalUnit', 'day')
     store.commit('graphType', 1)
-    let currentEpoch = ((new Date()).getTime() / 1000)
+    let currentEpoch = ((new Date()).getTime())
     currentEpoch = currentEpoch - (currentEpoch % 900)
-    store.commit('dateStart', currentEpoch - (900 * 96 * 7)) // 15 minutes, 96 times a day, 7 days
+    store.commit('dateStart', currentEpoch - (900 * 96 * 7 * 1000)) // 15 minutes, 96 times a day, 7 days
     store.commit('dateEnd', currentEpoch)
   },
 
   async getData (store) {
     const reqPayload = {
       point: store.getters.point,
-      dateStart: store.getters.dateStart,
-      dateEnd: store.getters.dateEnd,
+      dateStart: store.getters.dateStart / 1000,
+      dateEnd: store.getters.dateEnd / 1000,
       intervalUnit: store.getters.intervalUnit,
       dateInterval: store.getters.dateInterval
     }
@@ -99,24 +104,27 @@ const actions = {
       data.labels.push(this.getters[chart.path + '/name'])
       chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
     }
-    await Promise.all(chartDataPromises)
+    let chartData = await Promise.all(chartDataPromises)
 
     if (store.getters.graphType === 1) {
-      let index = 0
-      for (let chartData of chartDataPromises) {
-        data.datasets.push({
-          label: data.labels[index],
-          data: chartData
-        })
-        index++
-      }
+      data.datasets = chartData
     }
+    return data
   }
 }
 
 const mutations = {
   path (state, path) {
     state.path = path
+  },
+
+  shuffleChartColors (state) {
+    for (var i = state.chartColors.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1))
+      var temp = state.chartColors[i]
+      state.chartColors[i] = state.chartColors[j]
+      state.chartColors[j] = temp
+    }
   },
 
   promise (state, promise) {
@@ -188,6 +196,10 @@ const getters = {
 
   id (state) {
     return state.id
+  },
+
+  chartColors (state) {
+    return state.chartColors
   },
 
   charts (state) {
