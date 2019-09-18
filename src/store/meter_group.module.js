@@ -47,14 +47,14 @@ const actions = {
     for (let meter of store.getters.meters) {
       let data = await this.dispatch(meter.path + '/getData', payload)
       for (let dataPoint of data) {
-        if (resultDataObject[dataPoint['time']]) {
+        if (resultDataObject.get(dataPoint['time'])) {
           if (meter.negate) {
             resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) - dataPoint[payload.point])
-          } else {
+          } else { 
             resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) + dataPoint[payload.point])
           }
         } else {
-          resultDataObject.set(dataPoint['time'], dataPoint[payload.point])
+          resultDataObject.set(dataPoint['time'], dataPoint[payload.point] * ((meter.negate) ? -1 : 1))
         }
       }
     }

@@ -58,7 +58,6 @@ export default {
       }
     }
     this.$store.dispatch(this.block.path + '/getData').then(data => {
-      console.log(data)
       this.chartData = data
       this.loading = false
     })

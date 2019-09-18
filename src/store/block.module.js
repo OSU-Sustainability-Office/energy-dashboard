@@ -82,7 +82,7 @@ const actions = {
     store.commit('intervalUnit', 'day')
     store.commit('graphType', 1)
     let currentEpoch = ((new Date()).getTime())
-    currentEpoch = currentEpoch - (currentEpoch % 900)
+    currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
     store.commit('dateStart', currentEpoch - (900 * 96 * 7 * 1000)) // 15 minutes, 96 times a day, 7 days
     store.commit('dateEnd', currentEpoch)
   },
@@ -101,7 +101,6 @@ const actions = {
       datasets: []
     }
     for (let chart of store.getters.charts) {
-      data.labels.push(this.getters[chart.path + '/name'])
       chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
     }
     let chartData = await Promise.all(chartDataPromises)

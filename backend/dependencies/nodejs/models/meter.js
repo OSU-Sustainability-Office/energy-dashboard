@@ -40,7 +40,7 @@ class Meter {
     this.name = row[0]['name']
     this.address = row[0]['address']
     this.classInt = row[0]['class']
-    this.negate = row[0]['negate']
+    this.negate = (row[0]['negate'] === 1)
     return this
   }
 
