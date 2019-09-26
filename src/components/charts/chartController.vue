@@ -44,6 +44,7 @@ export default {
       chart: null,
       loading: true,
       chartData: null,
+      watchTimeout: null,
       colors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4']
     }
   },
@@ -57,17 +58,23 @@ export default {
         this.colors[j] = temp
       }
     }
-    this.$store.dispatch(this.block.path + '/getData').then(data => {
-      this.chartData = data
-      this.loading = false
-    })
+    // this.$store.dispatch(this.block.path + '/getData').then(data => {
+    //   this.chartData = data
+    //   this.loading = false
+    // })
     this.$store.subscribe((mutation, state) => {
-      if (state.path === this.blocks.path && this.loading === false) {
-        this.loading = true 
-        this.$store.dispatch(this.block.path + '/getData').then(data => {
-          this.chartData = data
-          this.loading = false
-        })
+      let mutationPath = mutation.type.split('/')
+      mutationPath.pop()
+      mutationPath = mutationPath.join('/')
+      if (mutationPath === this.block.path) {
+        this.loading = true
+        clearTimeout(this.watchTimeout)
+        this.watchTimeout = setTimeout(() => {
+          this.$store.dispatch(this.block.path + '/getData').then(data => {
+            this.chartData = data
+            this.loading = false
+          })
+        }, 200)
       }
     })
   },

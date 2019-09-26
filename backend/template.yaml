@@ -571,6 +571,21 @@ Resources:
           Properties:
             Path: /chart
             Method: delete
+  User:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: user.user
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /user
+            Method: get 
   EnergyModelLayer:
         Type: AWS::Serverless::LayerVersion
         Properties:

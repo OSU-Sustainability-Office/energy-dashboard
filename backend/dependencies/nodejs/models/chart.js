@@ -79,6 +79,17 @@ class Chart {
     chart.building = building
     return chart
   }
+
+  get
+  data () {
+    return {
+      id: this.id,
+      meters: this.meters,
+      name: this.name,
+      point: this.point,
+      building: this.building
+    }
+  }
 }
 
 exports = Chart

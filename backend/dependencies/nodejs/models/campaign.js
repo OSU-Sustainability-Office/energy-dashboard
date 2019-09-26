@@ -90,6 +90,20 @@ class Campaign {
     await Promise.all(promises)
     return this
   }
+
+  get
+  data () {
+    return {
+      id: this.id,
+      buildings: this.buildings,
+      dateState: this.dateStart,
+      dateEnd: this.dateEnd,
+      compareStart: this.compareStart,
+      compareEnd: this.compareEnd,
+      name: this.name,
+      media: this.media
+    }
+  }
 }
 
 module.exports = Campaign

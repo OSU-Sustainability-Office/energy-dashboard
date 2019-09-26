@@ -22,11 +22,14 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  props: ['height', 'campaign', 'days'],
+  props: ['height', 'campaign', 'days', 'blocks'],
   data () {
     return {
-      currentRange: (this.campaign) ? 2 : 1
+      currentRange: null
     }
+  },
+  mounted () {
+    this.currentRange = 1
   },
   computed: {
     ...mapGetters([
@@ -36,39 +39,65 @@ export default {
   },
   watch: {
     currentRange: function (value) {
-      value = parseInt(value)
-      let i = 0
-      let u = 0
+      let intervalUnit = 'minute'
+      let dateInterval = 15
+      let time = (new Date()).getTime()
+      let dateEnd = time - (time % (900 * 1000))
+      let startModifier = 96 * 7
       if (value === 0) {
-        i = (this.campaign) ? 15 : 6
-        u = (this.campaign) ? 'minute' : 'hour'
+        intervalUnit = 'hour'
+        dateInterval = 6
+        startModifier = 96 * 7
       } else if (value === 1) {
-        i = 1
-        u = (this.campaign) ? 'hour' : 'day'
-      } else if (value === 2) {
-        i = (this.campaign) ? 1 : 15
-        u = 'day'
+        intervalUnit = 'day'
+        dateInterval = 1
+        startModifier = 96 * 30
+      } else {
+        intervalUnit = 'day'
+        dateInterval = 15
+        startModifier = 96 * 365
       }
-      let promises = []
-      for (let b of this.$store.getters.story.blocks) {
-        let c = {
-          index: b.index,
-          date_interval: i,
-          interval_unit: u,
-          date_start: this.dateOffset()
-        }
-        if (this.campaign) {
-          this.$store.commit('updateBlockInterval', c)
-          promises.push(Promise.resolve())
-        } else {
-          promises.push(this.$store.dispatch('block', c))
-        }
+      let dateStart = (new Date(dateEnd)).getTime() - startModifier * 900 * 1000
+      for (let block of this.blocks) {
+        this.$store.commit(block.path + '/dateInterval', dateInterval)
+        this.$store.commit(block.path + '/intervalUnit', intervalUnit)
+        this.$store.commit(block.path + '/dateStart', dateStart)
+        this.$store.commit(block.path + '/dateEnd', dateEnd)
       }
-      Promise.all(promises).then(() => {
-        this.$emit('update', [value])
-      }).catch(e => {
-      })
     }
+      // value = parseInt(value)
+      // let i = 0
+      // let u = 0
+      // if (value === 0) {
+      //   i = (this.campaign) ? 15 : 6
+      //   u = (this.campaign) ? 'minute' : 'hour'
+      // } else if (value === 1) {
+      //   i = 1
+      //   u = (this.campaign) ? 'hour' : 'day'
+      // } else if (value === 2) {
+      //   i = (this.campaign) ? 1 : 15
+      //   u = 'day'
+      // }
+      // let promises = []
+      // for (let b of this.$store.getters.story.blocks) {
+      //   let c = {
+      //     index: b.index,
+      //     date_interval: i,
+      //     interval_unit: u,
+      //     date_start: this.dateOffset()
+      //   }
+      //   if (this.campaign) {
+      //     this.$store.commit('updateBlockInterval', c)
+      //     promises.push(Promise.resolve())
+      //   } else {
+      //     promises.push(this.$store.dispatch('block', c))
+      //   }
+      // }
+      // Promise.all(promises).then(() => {
+      //   this.$emit('update', [value])
+      // }).catch(e => {
+      // })
+    // }
   },
   methods: {
     dateOffset: function () {

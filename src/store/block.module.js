@@ -16,8 +16,8 @@ const state = () => {
     dateInterval: null,       // Int
     intervalUnit: null,       // String (minute, hour, day)
     graphType: null,          // Int (1: Line, 2: Bar, 3: Doughnut, 4: Piechart, 5: LineBar)
-    dateStart: null,          // String ISO date format UTC
-    dateEnd: null,            // String ISO date format UTC
+    dateStart: null,          // Epoch time
+    dateEnd: null,            // Epoch time
     id: null,                  // Integer DB ID
     chartColors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4']
   }
@@ -89,7 +89,7 @@ const actions = {
 
   async getData (store) {
     const reqPayload = {
-      point: store.getters.point,
+      point: null,
       dateStart: store.getters.dateStart / 1000,
       dateEnd: store.getters.dateEnd / 1000,
       intervalUnit: store.getters.intervalUnit,

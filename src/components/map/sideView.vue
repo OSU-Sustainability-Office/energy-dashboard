@@ -21,7 +21,7 @@
       <el-row class="graphcontrol">
         <el-col :span='24'>
           <el-col :span='24' class='buttonContainer'>
-            <switchButtons @update='updateCharts($event)' />
+            <switchButtons @update='updateCharts($event)' :blocks=buildingBlocks />
           </el-col>
           <el-row class='graphslide'>
             <i class="left fas fa-angle-left" @click='prev()' ref="prevArrow"></i>
@@ -144,6 +144,7 @@ export default {
       this.$refs.nextArrow.style.display = 'block'
     }
     this.media = this.building.image
+    let date = new Date()
   //     for (let block in this.story.blocks) {
   //       promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
   //     }

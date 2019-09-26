@@ -99,6 +99,20 @@ class Block {
     block.intervalUnit = intervalUnit
     return block
   }
+
+  get
+  data () {
+    return {
+      id: this.id,
+      charts: this.charts,
+      dateStart: this.dateStart,
+      dateEnd: this.dateEnd,
+      graphType: this.graphType,
+      name: this.name,
+      dateInterval: this.dateInterval,
+      intervalUnit: this.intervalUnit
+    }
+  }
 }
 
 exports = Block

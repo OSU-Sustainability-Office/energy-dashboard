@@ -74,6 +74,11 @@ class Alert {
     return alert
   }
 
+  static async getAlertsForUser (userId) {
+    await DB.connect()
+    return DB.query('SELECT id FROM alerts WHERE user_id = ?', [userId])
+  }
+
   static async forMeter (meter) {
     await DB.connect()
     let alertRows = await DB.query('SELECT * FROM alerts WHERE meter_id = ?', [meter.id])

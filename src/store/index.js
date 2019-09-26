@@ -9,6 +9,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Story from './story.module.js'
+import User from './user.module.js'
 import EDMap from './map.module.js'
 
 Vue.use(Vuex)
@@ -17,8 +18,8 @@ const store = {
   modules: {
     story: Story,
     // campaign: Campaign,
-    map: EDMap
-    // user: User
+    map: EDMap,
+    user: User
   }
 }
 

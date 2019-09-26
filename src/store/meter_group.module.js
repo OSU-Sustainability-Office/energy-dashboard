@@ -50,7 +50,7 @@ const actions = {
         if (resultDataObject.get(dataPoint['time'])) {
           if (meter.negate) {
             resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) - dataPoint[payload.point])
-          } else { 
+          } else {
             resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) + dataPoint[payload.point])
           }
         } else {
@@ -58,51 +58,32 @@ const actions = {
         }
       }
     }
-    if (payload.point === 'accumulated_real' || payload.point === 'total' || payload.point === 'cubic_feet') {
-      let startTime = Array.from(resultDataObject.keys())[0]
-      let endTime = Array.from(resultDataObject.keys())[resultDataObject.size - 1]
-      for (let i = endTime - 900; i >= startTime; i -= 900) {
-        let currentIndex = i + 900
-        let nextValidValue = null
-        while (nextValidValue === null) {
-          try {
-            nextValidValue = resultDataObject.get(i)
-            if (nextValidValue === 0) {
-              nextValidValue = null
-            }
-          } catch {
-            nextValidValue = null
-            resultDataObject.set(i, 0)
-            i -= 900
-          }
-        }
-        resultDataObject.set(currentIndex, resultDataObject.get(currentIndex) - resultDataObject.get(i))
-      }
-    }
+
     let delta = 1
     switch (payload.intervalUnit) {
       case 'minute':
-        delta = 1
+        delta = 60
         break
       case 'hour':
-        delta = 4
+        delta = 3600
         break
       case 'day':
-        delta = 96
+        delta = 86400
         break
     }
-    if (payload.intervalUnit === 'minute') {
-      payload.dateInterval /= 15
-    }
+
     delta *= payload.dateInterval
     let returnData = []
-    let accumulator = 0
-    // Leave out first point as it contains non subtracted data for totals
-    for (let i = resultDataObject.size - 1; i > 0; i--) {
-      accumulator += Array.from(resultDataObject.values())[i]
-      if (i % delta === 0) {
-        returnData.push({ x: (new Date(Array.from(resultDataObject.keys())[i] * 1000)), y: accumulator })
-        accumulator = 0
+    for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
+      try {
+        let accumulator = 0
+        if (payload.point === 'accumulated_real' || payload.point === 'total' || payload.point === 'cubic_feet') {
+          accumulator = resultDataObject.get(i + delta) - resultDataObject.get(i)
+        } else {
+          accumulator = resultDataObject.get(i + delta)
+        }
+        returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
+      } catch (error) {
       }
     }
     return returnData

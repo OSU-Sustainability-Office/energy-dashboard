@@ -33,8 +33,9 @@ const actions = {
   },
 
   async getData (store, payload) {
-    let start = new Date(payload.dateStart * 1000)
+    let start = new Date(payload.dateStart * 1000 - 900)
     let end = new Date(payload.dateEnd * 1000)
+    console.log(payload)
     return API.data(store.getters.id, start.toISOString(), end.toISOString(), payload.point, store.getters.classInt)
   }
 
