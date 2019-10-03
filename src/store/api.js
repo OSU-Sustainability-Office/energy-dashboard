@@ -20,10 +20,10 @@ export default {
     }
   },
   login: async () => {
-    return (await callAPI('login', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth/')).data
+    return (await callAPI('login', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
   },
   logout: async () => {
-    return (await callAPI('logout', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth/')).data
+    return (await callAPI('logout', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
   },
   stories: async () => {
     return (await callAPI('stories')).data
@@ -41,7 +41,10 @@ export default {
     return (await callAPI('data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point + '&meterClass=' + classInt)).data
   },
   user: async () => {
-    return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth/')).data
+    return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
+  },
+  edashUser: async (onid) => {
+    return (await callAPI('user?onid=' + onid)).data
   },
   group: async (data, method) => {
     return (await callAPI('group', data, method)).data

@@ -14,6 +14,7 @@ exports.user = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
   let userModel = await (new UserModel(user.onid)).get()
-  response.body = JSON.stringify(userModel.data)
+  user.appData['energyDashboard'] = userModel.data
+  response.body = JSON.stringify(user.data)
   return response
 }

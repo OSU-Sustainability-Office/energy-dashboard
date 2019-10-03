@@ -56,7 +56,7 @@
     const resource = template.Resources[resourceKey]
     if (resource.Type === 'AWS::Serverless::Function') {
       const routeProperties = Object.values(resource.Properties.Events)[0].Properties
-      app[routeProperties.Method](routeProperties.Path, async (req, res) => {
+      app[routeProperties.Method](routeProperties.Path, Cors({ origin: 'http://localhost:8080', credentials: true }), async (req, res) => {
         const codePath = resource.Properties.Handler.split('.')
         const fullModPath = './' + resource.Properties.CodeUri + codePath[0] + '.js'
         const moduleName = require(fullModPath)
@@ -130,7 +130,7 @@
 
   await Promise.all(layerPromises)
 
-  app.use(Cors({ origin: true, credentials: true }))
+  app.use(Cors())
   app.listen(3000, function () {
     console.log('Server Running')
   })

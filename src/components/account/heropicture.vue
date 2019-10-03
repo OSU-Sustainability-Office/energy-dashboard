@@ -11,7 +11,7 @@
     <el-col :span='24' class='main'>
       <div v-loading='(story)? !story.loaded : true' element-loading-background="rgba(0, 0, 0, 0.3)" class="background" ref='main'>
 
-        <div v-for='(pic, index) in media' :class='classForIndex(index)' :style='`background-image: url("${rootAPI}/energy/images/${pic}"); width:calc(${100 / ((media.length < 4) ? media.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' v-if='arrayType && index < 4' :key='index'></div>
+        <div v-for='(pic, index) in media' :class='classForIndex(index)' :style='`background-image: url("${pic}"); width:calc(${100 / ((media.length < 4) ? media.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' v-if='arrayType && index < 4' :key='index'></div>
         <div v-if='arrayType' class='gradientOverlay'> </div>
         <div class='title'>{{name}}</div>
         <div class='subtitle'>{{description}}</div>

@@ -21,20 +21,25 @@ const actions = {
 
   async login (store) {
     let data = await API.login()
-    store.commit('onid', data.onid)
-    let edashData = await API.edsashUser(data.onid)
-    store.commit('privilege', edashData.privilege)
-    store.commit('stories', edashData.stories)
-    store.commit('alerts', edashData.alerts)
+    if (data.onid !== '') {
+      store.commit('onid', data.onid)
+      let edashData = await API.edsashUser(data.onid)
+      store.commit('privilege', edashData.privilege)
+      store.commit('stories', edashData.stories)
+      store.commit('alerts', edashData.alerts)
+    }
   },
 
   async user (store) {
     let data = await API.user()
-    store.commit('onid', data.onid)
-    let edashData = await API.edashUser(data.onid)
-    store.commit('privilege', edashData.privilege)
-    store.commit('stories', edashData.stories)
-    store.commit('alerts', edashData.alerts)
+    if (data.onid !== '') {
+      store.commit('onid', data.onid)
+      // let edashData = await API.edashUser(data.onid)
+      // store.commit('privilege', edashData.privilege)
+      // store.commit('stories', edashData.stories)
+      // store.commit('alerts', edashData.alerts)
+    }
+    return store.getters
   },
 
   async logout (store) {

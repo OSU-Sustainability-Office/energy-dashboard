@@ -209,14 +209,9 @@ export default {
     }
   },
   created () {
-    // this.$store.dispatch('mapdata').then(r => {
-    //   this.polygonData = r
-    //   this.mapLoaded = false
-    // })
-    let mapPromise = this.$store.dispatch('map/loadMap').then(() => {
+    this.$store.getters['map/promise'].then(() => {
       this.mapLoaded = true
     })
-    this.$store.commit('map/promise', mapPromise)
 
     this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
     this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.forEach(e => { e.mapObject.resetStyle(v[0]) }) })
@@ -224,10 +219,10 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject
-      this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
-      window.addEventListener('resize', () => {
-        this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
-      })
+      // this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
+      // window.addEventListener('resize', () => {
+      //   this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
+      // })
     })
   },
   beforeDestroy () {

@@ -10,6 +10,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import index from '@/components/home/index'
 import account from '@/components/account/account'
+import building from '@/components/buildings/building'
 import map from '@/components/map/map'
 import campaigns from '@/components/campaigns/campaign_list'
 import publicDirectory from '@/components/directory/directoryPublic.vue'
@@ -26,9 +27,9 @@ export default new Router({
       component: index
     },
     {
-      path: '/public/:id/:range',
-      name: 'public',
-      component: account
+      path: '/building/:id/:range',
+      name: 'building',
+      component: building
     },
     {
       path: '/view/:id',

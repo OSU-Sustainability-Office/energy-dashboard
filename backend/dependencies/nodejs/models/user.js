@@ -19,13 +19,15 @@ class User {
   }
 
   async get () {
+    if (this.onid === '') return this
     await DB.connect()
-    let userRow = await DB.query('SELECT * FROM users WHERE onid = ?', [this.onid])
+    let userRow = await DB.query('SELECT * FROM users WHERE name = ?', [this.onid])
     if (userRow.length === 1) {
       this.privilege = userRow[0].privilege
       this.stories = await Story.storiesForUser(userRow[0].id)
       this.alerts = await Alert.alertsForUser(userRow[0].id)
     }
+    return this
   }
 
   get

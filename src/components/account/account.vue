@@ -45,7 +45,7 @@ export default {
     ]),
     start: {
       get () {
-        if (this.$route.path.search('public') > 0 || this.$route.path.search('compare') > 0) {
+        if (this.$route.path.search('building') > 0 || this.$route.path.search('compare') > 0) {
           let d = new Date()
           switch (parseInt(this.$route.params.range)) {
             case 0:
@@ -66,7 +66,7 @@ export default {
     },
     end: {
       get () {
-        if (this.$route.path.search('public') > 0 || this.$route.path.search('compare') > 0) {
+        if (this.$route.path.search('building') > 0 || this.$route.path.search('compare') > 0) {
           let d = new Date()
           return d.toISOString()
         }
@@ -74,7 +74,7 @@ export default {
     },
     unit: {
       get () {
-        if (this.$route.path.search('public') > 0 || this.$route.path.search('compare') > 0) {
+        if (this.$route.path.search('building') > 0 || this.$route.path.search('compare') > 0) {
           switch (parseInt(this.$route.params.range)) {
             case 0:
               return 'hour'
@@ -90,7 +90,7 @@ export default {
     },
     interval: {
       get () {
-        if (this.$route.path.search('public') > 0 || this.$route.path.search('compare') > 0) {
+        if (this.$route.path.search('building') > 0 || this.$route.path.search('compare') > 0) {
           switch (parseInt(this.$route.params.range)) {
             case 0:
               return 1
@@ -165,7 +165,7 @@ export default {
       })
     },
     update: function () {
-      if (this.$route.path.search('public') > 0) {
+      if (this.$route.path.search('building') > 0) {
         this.path = ['Public']
         this.$store.dispatch('story', this.$route.params.id).then(r => {
           let promises = []

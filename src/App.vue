@@ -28,6 +28,8 @@ export default {
     navigbar
   },
   created () {
+    let mapPromise = this.$store.dispatch('map/loadMap')
+    this.$store.commit('map/promise', mapPromise)
   },
   data () {
     return {
