@@ -101,6 +101,7 @@ const actions = {
       datasets: []
     }
     for (let chart of store.getters.charts) {
+      if (!chart.path) continue
       chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
     }
     let chartData = await Promise.all(chartDataPromises)

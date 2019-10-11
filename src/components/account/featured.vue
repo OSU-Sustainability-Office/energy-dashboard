@@ -12,48 +12,48 @@
   &nbsp;
 </el-col>
 <el-col class='main' ref="feature" :span='22'>
-    <card v-for="(card, index) in story.blocks" v-bind:key="index" v-bind:index="index" ref="displayedCards" @editModal='editModal'/>
+    <card v-for="(card, index) in blocks" v-bind:key="index" :block="card" ref="displayedCards" @editModal='editModal'/>
 
-    <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()">
+    <!-- <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()">
       <i class="fas fa-plus"></i>
       <div class='hiddenAddChart'>Click To Add Block</div>
-    </div>
+    </div> -->
 
-  <el-dialog size='lg' :visible.sync='newCard' :title='(!form.name)? "New Block" : "Edit Block"' width="80%">
+  <!-- <el-dialog size='lg' :visible.sync='newCard' :title='(!form.name)? "New Block" : "Edit Block"' width="80%">
       <el-form label-width='120px' label-position='left' :model='form' ref='form'>
         <el-form-item label='Name: ' v-if='!story.public && !story.comparison' :rules="{required: true, message: 'A name is required', trigger: 'blur'}" prop='name'>
           <!-- <label class='col-4'>Name:</label> -->
-          <el-input type="text" v-model='form.name' style='width: 100%;'></el-input>
+          <!-- <el-input type="text" v-model='form.name' style='width: 100%;'></el-input>
         </el-form-item>
-        <el-form-item label='From Date: ' :rules="[{validator: dateValidator, type: 'date', required: true, message: 'A from date is required', trigger: 'change'}]" prop='start'>
+        <el-form-item label='From Date: ' :rules="[{validator: dateValidator, type: 'date', required: true, message: 'A from date is required', trigger: 'change'}]" prop='start'> -->
           <!-- <label class='col-4 text-left'>From Date: </label> -->
-          <el-date-picker v-model='form.start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a' }" style='width: 100%;'>
+          <!-- <el-date-picker v-model='form.start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a' }" style='width: 100%;'>
           </el-date-picker>
         </el-form-item>
-        <el-form-item label='To Date: ' :rules="{validator: dateValidator, type: 'date', required: true, message: 'A to date is required', trigger: 'change'}" prop='end'>
+        <el-form-item label='To Date: ' :rules="{validator: dateValidator, type: 'date', required: true, message: 'A to date is required', trigger: 'change'}" prop='end'> -->
           <!-- <label class='col-4 text-left'>To Date: </label> -->
-          <el-date-picker v-model='form.end' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" style='width: 100%;'>
+          <!-- <el-date-picker v-model='form.end' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" style='width: 100%;'>
           </el-date-picker>
         </el-form-item>
-        <el-form-item label='Interval: ' :rules="{required: true, message: 'An interval is required', trigger: 'blur'}" prop='intUnit'>
+        <el-form-item label='Interval: ' :rules="{required: true, message: 'An interval is required', trigger: 'blur'}" prop='intUnit'> -->
           <!-- <label class='col-4'>Interval: </label> -->
-          <el-select v-model="form.intUnit" style='width: 100%;'>
+          <!-- <el-select v-model="form.intUnit" style='width: 100%;'>
             <el-option :value="1" label='15 Minutes'></el-option>
             <el-option :value="2" label='1 Hour'></el-option>
             <el-option :value="3" label='1 Day'></el-option>
             <el-option :value="4" label='1 week'></el-option>
             <el-option :value="5" label='1 Month'></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item v-if='!story.public && !story.comparison' label='Graph Type: ' :rules="{required: true, message: 'A graph type is required', trigger: 'blur'}" prop='graphType'>
+        </el-form-item> -->
+        <!-- <el-form-item v-if='!story.public && !story.comparison' label='Graph Type: ' :rules="{required: true, message: 'A graph type is required', trigger: 'blur'}" prop='graphType'> -->
           <!-- <label class='col-4'>Graph Type: </label> -->
-          <el-select v-model="form.graphType" style='width: 100%;'>
+          <!-- <el-select v-model="form.graphType" style='width: 100%;'>
             <el-option :value='1' label='Line Chart'></el-option>
             <el-option :value='2' label='Bar Chart'></el-option>
             <el-option :value='3' label='Doughnut Chart'></el-option>
           </el-select>
-        </el-form-item>
-      </el-form>
+        </el-form-item> -->
+      <!-- </el-form>
       <div v-if='!story.public'>
         <label>Datasets: </label>
         <featureController :index='form.index' :key='form.index' ref="featureController" />
@@ -63,8 +63,8 @@
             <el-button @click='cardDelete()' v-if='!story.public' type='danger'> Delete </el-button>
             <el-button @click='cardSave()' type='primary'> Ok </el-button>
             <el-button @click='cancel()' type='info'> Cancel </el-button>
-      </span>
-  </el-dialog>
+      </span> -->
+  <!-- </el-dialog> -->
 </el-col>
 </el-row>
 </template>
@@ -80,7 +80,7 @@ export default {
     card,
     featureController
   },
-  props: ['cards', 'fromMap', 'compareMode'],
+  props: ['cards', 'fromMap', 'compareMode', 'blocks'],
   data () {
     return {
       dialogVisible: false,
@@ -102,7 +102,7 @@ export default {
   asyncComputed: {
     buildings: {
       get: function () {
-        return this.$store.dispatch('buildings')
+        // return this.$store.dispatch('buildings')
       }
     }
   },

@@ -10,10 +10,10 @@
 <template>
   <el-row class="stage">
     <el-col class='main'>
-      <heropicture :media='building.image' description='' :name='building.name'></heropicture>
+      <heropicture v-loading='!building' :media='(building && building.image) ? building.image : ""' description='' :name='(building && building.name) ? building.name : ""'></heropicture>
       <!-- <navdir ref='navdir' @update='update' @save='save'></navdir> -->
-      <featured ref='featureBox' :compareMode="$route.path.search('compare') > 0"/>
     </el-col>
+      <featured ref='featureBox' :compareMode="$route.path.search('compare') > 0" :blocks='(building && building.path) ? this.$store.getters[building.path + "/blocks"] : ""' />
   </el-row>
 </template>
 
@@ -30,12 +30,19 @@ export default {
     navdir
   },
   mounted () {
-    for (let block of this.$store.getters[this.building.path + '/blocks']) {
-      this.$store.commit(block.path + '/dateStart', this.dateStart)
-      this.$store.commit(block.path + '/dateEnd', this.dateEnd)
-      this.$store.commit(block.path + '/dateInterval', this.dateInterval)
-      this.$store.commit(block.path + '/intervalUnit', this.intervalUnit)
-    }
+    this.$nextTick(() => {
+      // if (!this.building) return
+      console.log(this.building.path)
+      for (let block of this.$store.getters[this.building.path + '/blocks']) {
+        if (!block.path) return
+        
+        this.$store.commit(block.path + '/dateStart', this.dateStart)
+        this.$store.commit(block.path + '/dateEnd', this.dateEnd)
+        this.$store.commit(block.path + '/dateInterval', this.dateInterval)
+        this.$store.commit(block.path + '/intervalUnit', this.intervalUnit)
+      }
+    })
+    
   },
   computed: {
     building: {

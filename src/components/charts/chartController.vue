@@ -7,11 +7,11 @@
 -->
 <template>
   <div v-loading='loading' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
-    <linechart v-if="graphType == 1" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
-    <barchart v-if="graphType == 2" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
-    <doughnutchart v-if="graphType == 3" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
-    <piechart v-if="graphType == 4" ref="piechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
-    <barchart v-if="graphType == 5" ref="barlinechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <linechart v-if="graphType == 1 && chartData" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <barchart v-if="graphType == 2 && chartData" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <doughnutchart v-if="graphType == 3 && chartData" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <piechart v-if="graphType == 4 && chartData" ref="piechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <barchart v-if="graphType == 5 && chartData" ref="barlinechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <el-col :span='24' class='NoData' :style='`height:${height}px;line-height:${height}px;`' v-if="graphType == 100">Data Unavailable</el-col>
   </div>
 </template>
@@ -29,6 +29,7 @@ export default {
     linechart, barchart, doughnutchart, piechart
   },
   mounted () {
+    console.log(this.block)
     if (this.block.promise === null){
       this.loading = false
     } else {
@@ -36,8 +37,7 @@ export default {
         this.loading = false
       })
     }
-    this.$store.dispatch(this.block.path + '/getData').then(r => {
-    })
+    this.$store.dispatch(this.block.path + '/getData').then(r => {})
   },
   data () {
     return {

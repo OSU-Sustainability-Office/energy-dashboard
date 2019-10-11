@@ -1,0 +1,309 @@
+@startuml VuexStore
+
+class Alert {
+  --State--
+  + id: integer
+  + path: string
+  + promise: Promise
+  + lowThreshold: float
+  + highThreshold: float
+  + meterGroup: string
+  --Getters--
+  + id()
+  + path()
+  + promise()
+  + lowThreshold()
+  + highThreshold()
+  + meterGroup()
+  --Mutations--
+  + id(integer)
+  + path(string)
+  + promise(Promise)
+  + lowThreshold(integer)
+  + highThreshold(integer)
+  + meterGroup(string)
+  --Actions--
+  + changeAlert(Object)
+}
+
+class Block {
+  --State--
+  + path: string
+  + promise: Promise
+  + name: string
+  + dateInterval: integer
+  + intervalUnit: string
+  + graphType: intger 
+  + dateStart: integer
+  + dateEnd: integer
+  + id: integer
+  + chartColors: array
+  --Getters--
+  + path()
+  + promise()
+  + name()
+  + dateInterval()
+  + intervalUnit()
+  + graphType() 
+  + dateStart()
+  + dateEnd()
+  + id()
+  + chartColors()
+  ....
+  + charts()
+  --Mutations--
+  + path(string)
+  + promise(Promise)
+  + name(string)
+  + dateInterval(integer)
+  + intervalUnit(string)
+  + graphType(integer) 
+  + dateStart(integer)
+  + dateEnd(integer)
+  + id(integer)
+  + chartColors(array)
+  --Actions--
+  + loadChart(integer)
+  + changeBlock(integer)
+  + loadDefault(Object)
+  + getData()
+}
+
+class Building {
+  --State--
+  + path: string
+  + promise: Promise
+  + name: string
+  + group: string
+  + image: string
+  + geoJSON: Object
+  + id: integer
+  --Getters--
+  + path()
+  + promise()
+  + name()
+  + group()
+  + image()
+  + geoJSON()
+  + id()
+  ....
+  + meterGroups()
+  + blocks()
+  --Mutations--
+  + path(string)
+  + promise(Promise)
+  + name(string)
+  + group(string)
+  + image(string)
+  + geoJSON(Object)
+  + id(integer)
+  --Actions--
+  + loadMeterGroup(Object)
+  + loadDefaultBlocks()
+}
+
+class Campaign {
+  --State--
+  + path: string
+  + promise: Promise
+  + buildings: array
+  + name: string
+  + id: integer
+  + image: string
+  + dateStart: integer
+  + dateEnd: integer
+  + compareStart: integer
+  + compareEnd: integer
+  --Getters--
+  + path()
+  + promise()
+  + buildings()
+  + dateStart()
+  + dateEnd()
+  + compareStart()
+  + compareEnd()
+  --Mutations--
+  + path(string)
+  + promise(Promise)
+  + addBuilding(string)
+  + name(string)
+  + id(integer)
+  + image(string)
+  --Actions--
+  + changeCampaign(integer)
+}
+
+class Chart {
+  --State--
+  + name: string
+  + point: string 
+  + building: string
+  + id: integer
+  + meterGroupPath: string
+  + path: string
+  + color: hexcode
+  --Getters--
+  + name()
+  + point()
+  + building()
+  + id()
+  + meterGroupPath()
+  + path()
+  + color()
+  ....
+  + pointString()
+  + unitString()
+  --Mutations--
+  + name(string)
+  + point(string)
+  + building(string)
+  + id(integer)
+  + meterGroupPath(string)
+  + path(string)
+  + color(integer)
+  --Actions--
+  + getData(Object)
+  + changeChart(integer)
+}
+
+class Map {
+  --State--
+  + path: string
+  + promise: Promise
+  --Getters--
+  + path()
+  + promise()
+  ....
+  + building(integer)
+  + buildings()
+  + campaigns()
+  + meterGroup(integer)
+  --Mutations--
+  + path(string)
+  + promise(Promise)
+  --Actions--
+  + loadBuilding(Object)
+  + loadCampaign(Object)
+  + loadMap()
+}
+
+class MeterGroup {
+  --State--
+  + path: string
+  + promise: Promise
+  + name: string
+  + default: boolean
+  + id: integer
+  --Getters--
+  + path()
+  + promise()
+  + name()
+  + default()
+  + id()
+  ....
+  + meters()
+  --Mutations--
+  + path(string)
+  + promise(Promise)
+  + name(string)
+  + default(boolean)
+  + id(integer)
+  --Actions--
+  + getData(Object)
+  + changeGroup(integer)
+}
+
+class Meter {
+  --State--
+  + id: integer
+  + path: string
+  + promise: Promise
+  + classInt: integer
+  + address: string
+  + negate: boolean
+  --Getters--
+  + id()
+  + path()
+  + promise()
+  + classInt()
+  + address()
+  + negate()
+  ....
+  + type()
+  --Mutations--
+  + id(integer)
+  + path(string)
+  + promise(Promise)
+  + classInt(integer)
+  + address(string)
+  + negate(boolean)
+  --Actions--
+  + changeMeter(integr)
+  + getData(Object)
+}
+
+class View {
+  --State--
+  + path: string
+  + promise: Promise
+  + name: string
+  + id: integer
+  + media: string
+  + description: string
+  --Getters--
+  + path()
+  + promise()
+  + name()
+  + id()
+  + media()
+  + description()
+  ....
+  + blocks()
+  --Mutations--
+  + path()
+  + promise()
+  + name()
+  + id()
+  + media()
+  + description()
+  --Actions--
+  + loadBlocks(Object)
+  + changeView(integer)
+}
+
+class User {
+  --State--
+  + onid: integer
+  + privilege: integer
+  --Getters--
+  + onid()
+  + privilege()
+  ....
+  + alerts()
+  + views()
+  --Mutations--
+  + onid(string)
+  + privilege(integer)
+  --Actions--
+  + login()
+  + user()
+  + loadAlerts(Object)
+  + loadViews(Object)
+}
+
+Map -down-> Building
+Map -down-> Campaign
+Building -down-> MeterGroup
+
+View -down-> Block
+Block -down-> Chart
+Chart -up-> MeterGroup
+Building -down-> Block
+
+MeterGroup -down-> Meter
+User -down-> View
+User -down-> Alert
+Campaign -right-> Building
+Alert -down-> MeterGroup
+Chart -up->Building
+@enduml

@@ -1,51 +1,56 @@
 @startuml RDS
 
 entity "Alerts" as alerts {
-  id : integer
-  point : string
-  lower_bounds : integer
-  upper_bounds : integer
+  id: integer <<primary key>>
+  onid: string
+  point: string
+  lower_bounds: integer
+  upper_bounds: integer
 }
 
-entity "Block Groups" as block_groups {
-  name : string
-  point : string
-  meter : integer
+entity "Charts" as charts {
+  id: integer <<primary key>>
+  block_id: integer <<foreign key>>
+  group_id: integer <<foreign key>>
+  name: string
+  point: string
+  meter: integer
 }
 
 entity "Blocks" as blocks {
-  date_start : datetime
-  date_end : datetime
-  graph_type : integer
-  name : string
-  date_interval : integer
-  interval_unit : string
+  id: integer <<primary key>>
+  date_start: datetime
+  date_end: datetime
+  graph_type: integer
+  name: string
+  date_interval: integer
+  interval_unit: string
 } 
 
 entity "Buildings" as buildings {
-  id : integer
-  building_id : hash
-  group : string
+  id: integer <<primary key>>
+  building_id: hash
+  group: string
 }
 
 entity "Campaign Groups" as campaign_groups {
-  id : integer
-  goal : integer
-  group_id : integer
-  campaign_id : integer
+  id: integer <<primary key>>
+  goal: integer
+  building_id: integer
+  campaign_id: integer
 }
 
 entity "Campaigns" as campaigns {
-  id : integer
-  date_start : string
-  date_end : string
-  compare_start : string
-  compare_end : string
-  media : string
+  id: integer <<primary key>>
+  date_start: string
+  date_end: string
+  compare_start: string
+  compare_end: string
+  media: string
 }
 
 entity "Data" as data {
-  id: integer
+  id: integer <<primary key>>
   time: datettime
   meter_id: integer
   accumulated_real: integer
@@ -92,10 +97,28 @@ entity "Meter Group Relation" as meter_group_relation {
 entity "Meter Groups" as meter_groups {
   id: integer <<primary key>>
   name: string
-  user_id: integer
-  is_building: integer
-  affiliation: string
   building_id: integer <<foreign key>>
 
 }
+
+entity "Meters" as meters {
+  id: integer <<primary key>>
+  name: string
+  address: string
+  class: integer
+}
+
+
+
+meter_group_relation -up-> meter_groups
+meter_group_relation -> meters
+meters -> data
+buildings <- meter_groups
+
+campaign_groups -down-> campaigns
+buildings -down-> campaign_groups
+
+blocks -> charts
+charts -> meter_groups
+
 @enduml

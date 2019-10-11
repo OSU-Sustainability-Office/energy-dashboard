@@ -10,11 +10,11 @@
   <el-row class="card" ref='card'>
     <el-col :span='24'>
       <el-row class='title' ref='title'>
-        <el-col :span='20'>{{block(index).name}}</el-col>
-        <el-col :span='4' class='right' v-if='story.user_id === user.id || story.public || story.comparison'>&nbsp;<i class="fas fa-sliders-h" @click='$emit("editModal",index)'></i></el-col>
+        <el-col :span='20'>{{ block.name }}</el-col>
+        <el-col :span='4' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='$emit("editModal",index)'></i></el-col>
       </el-row>
       <el-row>
-        <chartController :randomColors='1' :index='index' :graphType='block(index).graph_type' ref="chartController"  class="chart" :styleC='style' :height='400'/>
+        <chartController :randomColors='1' :block='block' :graphType='parseInt(block.graphType)' ref="chartController"  class="chart" :styleC='style' :height='400'/>
       </el-row>
   </el-col>
   </el-row>
@@ -28,7 +28,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'card',
-  props: ['index', 'featured'],
+  props: ['block', 'featured'],
   components: {
     chartController, featureController
   },
@@ -54,7 +54,6 @@ export default {
   computed: {
     ...mapGetters([
       'story',
-      'block',
       'user'
     ]),
     intunit: {
