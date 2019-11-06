@@ -16,6 +16,7 @@ const state = () => {
     group: null,
     image: null,
     geoJSON: null,
+    types: [],
     id: null
   }
 }
@@ -33,6 +34,7 @@ const actions = {
     for (let group of store.getters.meterGroups) {
       await group.promise
       if (group.default) {
+        store.commit('addType', group.type)
         let blockSpace = 'block_' + group.id.toString()
         let moduleSpace = store.getters.path + '/' + blockSpace
         this.registerModule(moduleSpace.split('/'), Block)
@@ -40,6 +42,19 @@ const actions = {
         store.dispatch(blockSpace + '/loadDefault', { group: group, id: group.id })
       }
     }
+  },
+
+  async meterTypes (store, payload) {
+    let r = {}
+    for (let group of store.getters.meterGroups) {
+      await group.promise
+      let groupSpace = 'meterGroup_' + group.id
+      let firstMeter = store.getters[groupSpace + '/meters'][0]
+      let meterSpace = groupSpace + '/meter_' + firstMeter.id
+      let meterType = store.getters[meterSpace + '/type']
+      r[meterType] = 0
+    }
+    return Object.keys(r)
   }
 }
 
@@ -70,6 +85,10 @@ const mutations = {
 
   path (state, path) {
     state.path = path
+  },
+
+  addType (state, type) {
+    state.types.push(type)
   }
 }
 

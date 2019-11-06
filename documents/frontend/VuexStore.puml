@@ -1,4 +1,5 @@
 @startuml VuexStore
+allow_mixing
 
 class Alert {
   --State--
@@ -297,13 +298,14 @@ Building -down-> MeterGroup
 
 View -down-> Block
 Block -down-> Chart
-Chart -up-> MeterGroup
+Chart -up[dashed]-> MeterGroup
 Building -down-> Block
 
 MeterGroup -down-> Meter
 User -down-> View
 User -down-> Alert
 Campaign -right-> Building
-Alert -down-> MeterGroup
-Chart -up->Building
+Alert -down[dashed]-> MeterGroup
+Chart -up[dashed]->Building
+
 @enduml

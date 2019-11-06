@@ -15,7 +15,8 @@ const state = () => {
     classInt: null,     // Int
     negate: null,        // Bool
     path: null,
-    promise: null
+    promise: null,
+    type: ''
   }
 }
 
@@ -30,6 +31,19 @@ const actions = {
     store.commit('address', meter.address)
     store.commit('classInt', meter.classInt)
     store.commit('negate', meter.negate)
+    let type = ''
+    switch (meter.classInt) {
+      case 17:
+        type = 'Gas'
+        break
+      case 4444:
+        type = 'Steam'
+        break
+      default:
+        type = 'Electricity'
+        break
+    }
+    store.commit('type', type)
   },
 
   async getData (store, payload) {
@@ -68,6 +82,10 @@ const mutations = {
 
   promise (state, promise) {
     state.promise = promise
+  },
+
+  type (state, type) {
+    state.type = type
   }
 
 }
@@ -102,14 +120,7 @@ const getters = {
   },
 
   type (state) {
-    switch (state.class) {
-      case 17:
-        return 'Gas'
-      case 4444:
-        return 'Steam'
-      default:
-        return 'Electricity'
-    }
+    return state.type
   }
 }
 

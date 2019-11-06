@@ -14,7 +14,8 @@ const state = () => {
     name: null,    // String
     default: false,
     path: null,
-    promise: null
+    promise: null,
+    type: null
   }
 }
 
@@ -109,6 +110,10 @@ const mutations = {
 
   default (state, value) {
     state.default = value
+  },
+
+  type (state, value) {
+    state.type = value
   }
 
 }

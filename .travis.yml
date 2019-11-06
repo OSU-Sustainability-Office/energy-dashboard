@@ -17,6 +17,8 @@ cache:
   directories:
   - "$HOME/.local"
   - ".cache-loader"
+install:
+  - 'pip install plantuml'
 script:
 - |
   if [ "$TRAVIS_BRANCH" == "master" ]; then
@@ -25,6 +27,8 @@ script:
   else
     npm run build-stage
   fi
+  plantuml -tsvg $(find documents | grep .puml) 
+  mv $(find documents | grep .svg) dist/*
 
 deploy:
 - provider: pages
