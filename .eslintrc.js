@@ -37,7 +37,8 @@ module.exports = {
     'camelcase' : [0, { 'properties': 'never' }],
     "strict-vue/require-jsdoc": "off",
 		"strict-vue/no-root-store-calls": "error",
-		"strict-vue/no-root-store-assets": "error",
+    "strict-vue/no-root-store-assets": "error",
+    "vue/no-use-v-if-with-v-for": 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   }

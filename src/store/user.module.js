@@ -12,7 +12,7 @@ const state = () => {
   return {
     onid: '',
     privilege: 0,
-    stories: [],
+    views: [],
     alerts: []
   }
 }
@@ -31,13 +31,17 @@ const actions = {
   },
 
   async user (store) {
-    let data = await API.user()
-    if (data.onid !== '') {
-      store.commit('onid', data.onid)
-      // let edashData = await API.edashUser(data.onid)
-      // store.commit('privilege', edashData.privilege)
-      // store.commit('stories', edashData.stories)
-      // store.commit('alerts', edashData.alerts)
+    try {
+      let data = await API.user()
+      if (data.onid !== '') {
+        store.commit('onid', data.onid)
+        // let edashData = await API.edashUser(data.onid)
+        // store.commit('privilege', edashData.privilege)
+        // store.commit('stories', edashData.stories)
+        // store.commit('alerts', edashData.alerts)
+      }
+    } catch (error) {
+      // Do nothing, likely failed because no cookie has been made yet (user not logged in)
     }
     return store.getters
   },
@@ -58,8 +62,8 @@ const mutations = {
     state.privilege = privilege
   },
 
-  stories (state, stories) {
-    state.stories = stories
+  views (state, views) {
+    state.views = views
   },
 
   alerts (state, alerts) {
@@ -76,8 +80,8 @@ const getters = {
     return state.privilege
   },
 
-  stories (state) {
-    return state.stories
+  views (state) {
+    return state.views
   },
 
   alerts (state) {

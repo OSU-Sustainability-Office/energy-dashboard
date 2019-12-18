@@ -1,5 +1,5 @@
 /*
- * @Author: Brogan
+ * @Author: Brogan.Miner@oregonstate.edu
  * @Date:   Saturday August 3rd 2019
  * @Last Modified By:  Brogan
  * @Last Modified Time:  Saturday August 3rd 2019

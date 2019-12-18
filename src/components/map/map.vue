@@ -17,14 +17,14 @@
           </el-tooltip>
           <el-menu-item index='Athletics' :class="[(isDisplayed('Athletics') ? 'active' : 'notactive')]"><span class='ath swatch'></span>Athletics & Rec</el-menu-item>
           <el-menu-item index='Dining' :class="[(isDisplayed('Dining') ? 'active' : 'notactive')]"><span class='din swatch'></span>Dining</el-menu-item>
-          <el-menu-item index='Admin' :class="[(isDisplayed('Admin') ? 'active' : 'notactive')]"><span class='com swatch'></span>Events & Admin</el-menu-item>
+          <el-menu-item index='Events & Admin' :class="[(isDisplayed('Events & Admin') ? 'active' : 'notactive')]"><span class='com swatch'></span>Events & Admin</el-menu-item>
           <el-menu-item index='Residence' :class="[(isDisplayed('Residence') ? 'active' : 'notactive')]"><span class='res swatch'></span>Residence</el-menu-item>
         </el-menu-item-group>
       </el-menu>
       <div class='mapContainer' ref='mapContainer' v-loading='!mapLoaded'>
         <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-          <l-geo-json v-for='building of this.$store.getters["map/buildings"]' :key='building.id' :geojson='building.geoJSON' :options='buildingOptions' ref="geoLayer"></l-geo-json>
+          <l-geo-json v-for='building of this.$store.getters["map/buildings"]' :key='building.id * rKey' :geojson='building.geoJSON' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
       </div>
       <prompt v-if='askingForComparison' @cancel='stopCompare' @compare='showComparison' />
@@ -67,39 +67,40 @@ export default {
       showSide: false,
       ele: [],
       compareMarkers: [],
-      rKey: 0,
+      rKey: 1,
       askingForComparison: false,
-      selected: ['Residence', 'Athletics', 'Dining', 'Academics', 'Admin'],
+      selected: ['Residence', 'Athletics', 'Dining', 'Academics', 'Events & Admin'],
       show: false,
       mapLoaded: false,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
+          console.log(feature)
           layer.on('click', e => {
-            window.vue.$eventHub.$emit('clickedPolygon', [e.target.feature.geometry.properties.id, layer.getBounds().getCenter(), feature])
+            window.vue.$eventHub.$emit('clickedPolygon', [e.target.feature.properties.id, layer.getBounds().getCenter(), feature])
             // document.execCommand('copy')
           })
           layer.on('mouseover', function (e) {
             e.target.setStyle({ fillColor: '#000', color: '#000' })
-            e.target.bindTooltip(e.target.feature.geometry.properties.name).openTooltip()
+            e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
           })
           layer.on('mouseout', e => { window.vue.$eventHub.$emit('resetPolygon', [e.target]) })
         },
         style: feature => {
           var color = '#000'
-          switch (feature.geometry.properties.group) {
-            case 'residence':
+          switch (feature.properties.group) {
+            case 'Residence':
               color = '#D3832B'
               break
-            case 'academics':
+            case 'Academics':
               color = '#0D5257'
               break
-            case 'admin':
+            case 'Events & Admin':
               color = '#7A6855'
               break
-            case 'athletics':
+            case 'Athletics & Rec':
               color = '#FFB500'
               break
-            case 'dining':
+            case 'Dining':
               color = '#4A773C'
               break
             default:
@@ -211,8 +212,8 @@ export default {
   created () {
     this.$store.getters['map/promise'].then(() => {
       this.mapLoaded = true
+      console.log(this.$store.getters["map/buildings"])
     })
-
     this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
     this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.forEach(e => { e.mapObject.resetStyle(v[0]) }) })
   },
@@ -237,7 +238,7 @@ export default {
         for (var layerKey of Object.keys(this.map._layers)) {
           let layer = this.map._layers[layerKey]
           if (layer.feature) {
-            if (!val.includes(layer.feature.properties.affiliation)) {
+            if (!val.includes(layer.feature.properties.group)) {
               this.map.removeLayer(layer)
             }
           }
@@ -253,9 +254,6 @@ export default {
 </style>
 <style scoped lang='scss'>
 $sideMenu-width: 250px;
-.main {
-
-}
 .stage {
   padding: 0;
   position: absolute;

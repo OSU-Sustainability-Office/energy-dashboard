@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import heropicture from '@/components/account/heropicture.vue'
+import heropicture from '@/components/extras/heropicture.vue'
 import { mapGetters } from 'vuex'
 import chartController from '@/components/charts/chartController'
 import buildingList from '@/components/campaigns/campaign_building_list'

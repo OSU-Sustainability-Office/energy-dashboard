@@ -6,7 +6,7 @@
 @Last modified time: 2019-04-09T11:43:22-07:00
 -->
 <template>
-  <div v-loading='loading' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
+  <div v-loading='loading || !chartData' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
     <linechart v-if="graphType == 1 && chartData" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <barchart v-if="graphType == 2 && chartData" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <doughnutchart v-if="graphType == 3 && chartData" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
@@ -20,24 +20,25 @@ import linechart from '@/components/charts/linechart.js'
 import barchart from '@/components/charts/barchart.js'
 import doughnutchart from '@/components/charts/doughnutchart.js'
 import piechart from '@/components/charts/piechart.js'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'card',
-  props: ['index', 'graphType', 'styleC', 'randomColors', 'height', 'block'],
+  props: ['styleC', 'randomColors', 'height', 'path'],
   components: {
     linechart, barchart, doughnutchart, piechart
   },
   mounted () {
-    console.log(this.block)
-    if (this.block.promise === null){
+    if (this.promise === null) {
       this.loading = false
     } else {
-      this.block.promise.then(() => {
+      this.promise.then(() => {
         this.loading = false
       })
     }
-    this.$store.dispatch(this.block.path + '/getData').then(r => {})
+    this.$store.dispatch(this.path + '/getData').then(r => {
+      this.chartData = r
+      this.loading = false
+    })
   },
   data () {
     return {
@@ -66,11 +67,11 @@ export default {
       let mutationPath = mutation.type.split('/')
       mutationPath.pop()
       mutationPath = mutationPath.join('/')
-      if (mutationPath === this.block.path) {
+      if (mutationPath === this.path) {
         this.loading = true
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
-          this.$store.dispatch(this.block.path + '/getData').then(data => {
+          this.$store.dispatch(this.path + '/getData').then(data => {
             this.chartData = data
             this.loading = false
           })
@@ -79,8 +80,25 @@ export default {
     })
   },
   computed: {
-    blockUpdate () {
-
+    promise: {
+      get () {
+        return this.$store.getters[this.path + '/promise']
+      }
+    },
+    dateStart: {
+      get () {
+        return this.$store.getters[this.path + '/dateStart']
+      }
+    },
+    dateEnd: {
+      get () {
+        return this.$store.getters[this.path + '/dateEnd']
+      }
+    },
+    graphType: {
+      get () {
+        return this.$store.getters[this.path + '/graphType']
+      }
     }
   },
   watch: {
@@ -108,7 +126,7 @@ export default {
   },
   methods: {
     unit: function () {
-      const charts = this.$store.getters[this.block.path + '/charts']
+      const charts = this.$store.getters[this.path + '/charts']
       const unit = this.$store.getters[charts[0].path + '/unitString']
       return unit
     },
@@ -147,7 +165,7 @@ export default {
     },
     // Creates either an X or a Y axis label for a chart, depending on the parameters.
     buildLabel: function (axis) {
-      const charts = this.$store.getters[this.block.path + '/charts']
+      const charts = this.$store.getters[this.path + '/charts']
       if (axis === 'y') {
         // This axis must contain the units for the given chart.point
         if (charts.length <= 0) {
@@ -163,8 +181,8 @@ export default {
         }
         return point
       } else {
-        const date1 = new Date(this.block.dateStart)
-        const date2 = new Date(this.block.dateEnd)
+        const date1 = new Date(this.dateStart)
+        const date2 = new Date(this.dateEnd)
         if (date1 && date2) {
           return date1.toDateString() + ' to ' + date2.toDateString()
         } else {

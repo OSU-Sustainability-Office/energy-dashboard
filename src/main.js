@@ -32,8 +32,6 @@ Vue.use(AsyncComputed)
 Vue.config.lang = 'en'
 
 /* eslint-disable no-new */
-Vue.prototype.$eventHub = new Vue()
-
 var v = new Vue({
   el: '#app',
   router,

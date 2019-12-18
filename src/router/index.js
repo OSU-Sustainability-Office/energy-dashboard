@@ -10,12 +10,13 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import index from '@/components/home/index'
 import account from '@/components/account/account'
-import building from '@/components/buildings/building'
+import view from '@/components/view/view'
 import map from '@/components/map/map'
 import campaigns from '@/components/campaigns/campaign_list'
 import publicDirectory from '@/components/directory/directoryPublic.vue'
 import privateDirectory from '@/components/dashboard/dashboard_main.vue'
 import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
+import buildingList from '@/components/building_list/building_list.vue'
 
 Vue.use(Router)
 
@@ -29,7 +30,7 @@ export default new Router({
     {
       path: '/building/:id/:range',
       name: 'building',
-      component: building
+      component: view
     },
     {
       path: '/view/:id',
@@ -68,6 +69,10 @@ export default new Router({
     {
       path: '/campaigns',
       component: campaigns
+    },
+    {
+      path: '/buildings',
+      component: buildingList
     }
   ]
 })

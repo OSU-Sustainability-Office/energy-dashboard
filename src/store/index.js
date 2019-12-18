@@ -8,18 +8,20 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
-import Story from './story.module.js'
+import View from './view.module.js'
 import User from './user.module.js'
 import EDMap from './map.module.js'
+import ModalController from './modal_controller.module.js'
 
 Vue.use(Vuex)
 
 const store = {
   modules: {
-    story: Story,
+    view: View,
     // campaign: Campaign,
     map: EDMap,
-    user: User
+    user: User,
+    modalController: ModalController
   }
 }
 

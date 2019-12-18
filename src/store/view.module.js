@@ -26,16 +26,16 @@ const actions = {
     store.dispatch(id.toString() + '/changeBlock', id)
   },
 
-  async changeStory (store, id) {
+  async changeView (store, id) {
     for (let blockId of Object.keys(store.modules)) {
       store.unregisterModule(blockId)
     }
-    let story = await API.story(id)
-    store.commit('name', story.name)
-    store.commit('user', story.user)
-    store.commit('media', story.media)
+    let view = await API.view(id)
+    store.commit('name', view.name)
+    store.commit('user', view.user)
+    store.commit('media', view.media)
     store.commit('id', id)
-    for (let block of story.blocks) {
+    for (let block of view.blocks) {
       store.dispatch('loadBlock', block)
     }
   }

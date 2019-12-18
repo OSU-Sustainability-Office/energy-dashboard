@@ -7,9 +7,10 @@
  */
 
 const DB = require('/opt/nodejs/sql-access.js')
-const APIToken = require('/opt/nodejs/api.js')
 const MeterGroup = require('/opt/nodejs/models/meter_group.js')
 const axios = require('axios')
+const Geo = require('osmtogeojson')
+const XMLDom = require('xmldom')
 
 class Building {
   constructor (id) {
@@ -97,9 +98,9 @@ class Building {
   static async all () {
     await DB.connect()
     let buildings = {}
-    let promiseChain1 = await Promise.all([DB.query('SELECT buildings.id, buildings.group, buildings.map_id, meter_groups.id as meter_group_id FROM buildings LEFT JOIN meter_groups on buildings.id = meter_groups.building_id_2'), APIToken()])
+    let promiseChain1 = await Promise.all([DB.query('SELECT buildings.id, buildings.group, buildings.map_id, buildings.image, meter_groups.id as meter_group_id FROM buildings LEFT JOIN meter_groups on buildings.id = meter_groups.building_id_2')])
     const buildingRows = promiseChain1[0]
-    const token = promiseChain1[1]
+    // const token = promiseChain1[1]
     const promiseChain2 = []
     for (let buildingRow of buildingRows) {
       if (buildings[buildingRow['id']]) {
@@ -109,14 +110,13 @@ class Building {
         building.mapId = buildingRow['map_id']
         building.group = buildingRow['group']
         building.meterGroups = [buildingRow['meter_group_id']]
-        promiseChain2.push(axios('https://api.oregonstate.edu/v1/locations/' + buildingRow['map_id'], { method: 'get', headers: { Authorization: 'Bearer ' + token } }).then(mapData => {
-          building.geoJSON = mapData.data.data.attributes.geometry
-          building.geoJSON.properties = {}
-          building.geoJSON.properties.name = mapData.data.data.attributes.name
-          building.geoJSON.properties.group = buildingRow['group']
+        promiseChain2.push(axios('https://api.openstreetmap.org/api/0.6/way/' + buildingRow['map_id'] + '/full', { method: 'get' }).then(data => {
+          let xmlData = (new XMLDom.DOMParser()).parseFromString(data.data)
+          building.geoJSON = Geo(xmlData).features[0]
+          building.name = building.geoJSON.properties.name
+          building.image = buildingRow['image']
           building.geoJSON.properties.id = building.id
-          building.image = mapData.data.data.attributes.images[0]
-          building.name = mapData.data.data.attributes.name
+          building.geoJSON.properties.group = buildingRow['group']
         }))
         buildings[buildingRow['id']] = building
       }

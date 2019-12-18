@@ -1,3 +1,10 @@
+/*
+ * @Author: you@you.you
+ * @Date:   Tuesday December 17th 2019
+ * @Last Modified By:  Brogan Miner
+ * @Last Modified Time:  Tuesday December 17th 2019
+ * @Copyright:  (c) Oregon State University 2019
+ */
 <!--
 @Author: Brogan Miner <Brogan>
 @Date:   2018-11-29T12:53:21-08:00
@@ -10,11 +17,11 @@
   <el-row class="card" ref='card'>
     <el-col :span='24'>
       <el-row class='title' ref='title'>
-        <el-col :span='20'>{{ block.name }}</el-col>
+        <el-col :span='20'>{{ name }}</el-col>
         <el-col :span='4' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='$emit("editModal",index)'></i></el-col>
       </el-row>
       <el-row>
-        <chartController :randomColors='1' :block='block' :graphType='parseInt(block.graphType)' ref="chartController"  class="chart" :styleC='style' :height='"500px"'/>
+        <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='"500px"'/>
       </el-row>
   </el-col>
   </el-row>
@@ -23,14 +30,12 @@
 <script>
 
 import chartController from '@/components/charts/chartController'
-import featureController from '@/components/account/featureController'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'card',
-  props: ['block', 'featured'],
+  props: ['path'],
   components: {
-    chartController, featureController
+    chartController
   },
   data () {
     return {
@@ -52,6 +57,11 @@ export default {
     }
   },
   computed: {
+    name: {
+      get () {
+        return this.$store.getters[this.path + '/name']
+      }
+    },
     intunit: {
       // 1 15 Minutes
       // 2 1 hour
@@ -69,6 +79,8 @@ export default {
           return 4
         } else if (this.interval === 1 && this.interval_unit === 'month') {
           return 5
+        } else {
+          return 1
         }
       },
       set: function (v) {
@@ -99,18 +111,18 @@ export default {
   },
   methods: {
     cardSave: async function () {
-      this.editcard = false
-      let charts = await this.$refs.featureController.saveCharts()
-      let block = {
-        name: this.tempName,
-        index: this.index,
-        date_interval: this.interval,
-        interval_unit: this.interval_unit,
-        date_start: this.date_start,
-        date_end: this.date_end,
-        graph_type: this.graphtype,
-        charts: charts
-      }
+      // this.editcard = false
+      // let charts = await this.$refs.featureController.saveCharts()
+      // let block = {
+      //   name: this.tempName,
+      //   index: this.index,
+      //   date_interval: this.interval,
+      //   interval_unit: this.interval_unit,
+      //   date_start: this.date_start,
+      //   date_end: this.date_end,
+      //   graph_type: this.graphtype,
+      //   charts: charts
+      // }
       // this.$store.dispatch('block', block).then(() => {
       //   this.$refs.chartController.parse()
       // })

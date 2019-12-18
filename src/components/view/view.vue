@@ -6,48 +6,61 @@
  * @Copyright:  Oregon State University 2019
  */
 
-
 <template>
   <el-row class="stage">
     <el-col class='main'>
-      <heropicture v-loading='!building' :media='(building && building.image) ? building.image : ""' description='' :name='(building && building.name) ? building.name : ""'></heropicture>
-      <!-- <navdir ref='navdir' @update='update' @save='save'></navdir> -->
+      <heropicture v-loading='!view' :media='(view && view.image) ? view.image : ""' :description='(view && view.description) ? view.description : ""' :name='(view && view.name) ? view.name : ""' />
+      <navdir ref='navdir'></navdir>
+      <el-row>
+        <el-col :span='24' class='card_area'>
+          <card v-for='(card, index) in cards' :key='index' :path='card.path' />
+        </el-col>
+      </el-row>
     </el-col>
-      <featured ref='featureBox' :compareMode="$route.path.search('compare') > 0" :blocks='(building && building.path) ? this.$store.getters[building.path + "/blocks"] : ""' />
+      <!-- <featured ref='featureBox' :compareMode="$route.path.search('compare') > 0" :blocks='(building && building.path) ? this.$store.getters[building.path + "/blocks"] : ""' /> -->
   </el-row>
 </template>
 
 <script>
-import featured from '@/components/account/featured'
-import heropicture from '@/components/account/heropicture'
-import navdir from '@/components/account/navdir'
+import card from '@/components/view/card'
+import heropicture from '@/components/extras/heropicture'
+import navdir from '@/components/view/navdir'
 
 export default {
-  name: 'building',
   components: {
-    featured,
+    card,
     heropicture,
     navdir
   },
-  mounted () {
+  async mounted () {
     this.$nextTick(() => {
-      // if (!this.building) return
-      console.log(this.building.path)
-      for (let block of this.$store.getters[this.building.path + '/blocks']) {
-        if (!block.path) return
-        
-        this.$store.commit(block.path + '/dateStart', this.dateStart)
-        this.$store.commit(block.path + '/dateEnd', this.dateEnd)
-        this.$store.commit(block.path + '/dateInterval', this.dateInterval)
-        this.$store.commit(block.path + '/intervalUnit', this.intervalUnit)
+      if (!this.view || this.view.path || !this.$route.path.includes('building')) return
+      for (let card of this.cards) {
+        if (!card.path) return
+        this.$store.commit(card.path + '/dateStart', this.dateStart)
+        this.$store.commit(card.path + '/dateEnd', this.dateEnd)
+        this.$store.commit(card.path + '/dateInterval', this.dateInterval)
+        this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
       }
     })
-    
+    if (!this.$route.path.includes('building')) {
+      // May want to move this await to use the promise thing
+      await this.$store.dispatch('view/changeView', this.$route.params.id)
+    }
   },
   computed: {
-    building: {
+    view: {
       get () {
-        return this.$store.getters['map/buildings'].find(building => { return building.id === parseInt(this.$route.params.id) })
+        if (this.$route.path.includes('building')) {
+          return this.$store.getters['map/building'](this.$route.params.id)
+        } else {
+          return this.$store.getters['view/state']
+        }
+      }
+    },
+    cards: {
+      get () {
+        return this.$store.getters[this.view.path + '/blocks']
       }
     },
     dateStart: {
@@ -120,5 +133,8 @@ export default {
 }
 .main {
   padding: 0;
+}
+.card_area {
+  padding: 2em;
 }
 </style>

@@ -33,8 +33,11 @@ const actions = {
       let moduleSpace = store.getters.path + '/' + meterSpace
       this.registerModule(moduleSpace.split('/'), Meter)
       store.commit(meterSpace + '/path', moduleSpace)
-      store.dispatch(meterSpace + '/changeMeter', meterId)
+      store.dispatch(meterSpace + '/changeMeter', meterId).then(meter => {
+        store.commit('type', meter.type)
+      })
     }
+    return store.state
   },
 
   async getData (store, payload) {

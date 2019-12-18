@@ -16,7 +16,7 @@ const state = () => {
     group: null,
     image: null,
     geoJSON: null,
-    types: [],
+    description: '',
     id: null
   }
 }
@@ -27,14 +27,17 @@ const actions = {
     let moduleSpace = store.getters.path + '/' + meterGroupSpace
     this.registerModule(moduleSpace.split('/'), MeterGroup)
     store.commit(meterGroupSpace + '/path', moduleSpace)
-    store.dispatch(meterGroupSpace + '/changeGroup', { id: payload.id })
+    store.dispatch(meterGroupSpace + '/changeGroup', { id: payload.id }).then(async group => {
+      await this.getters[group.path + '/meters'][0].promise
+      // This needs to be the meter type as the changing of the group path is scheduled after this call
+      store.commit('addType', this.getters[group.path + '/meters'][0].type)
+    })
   },
 
   async buildDefaultBlocks (store, payload) {
     for (let group of store.getters.meterGroups) {
       await group.promise
       if (group.default) {
-        store.commit('addType', group.type)
         let blockSpace = 'block_' + group.id.toString()
         let moduleSpace = store.getters.path + '/' + blockSpace
         this.registerModule(moduleSpace.split('/'), Block)
@@ -42,19 +45,6 @@ const actions = {
         store.dispatch(blockSpace + '/loadDefault', { group: group, id: group.id })
       }
     }
-  },
-
-  async meterTypes (store, payload) {
-    let r = {}
-    for (let group of store.getters.meterGroups) {
-      await group.promise
-      let groupSpace = 'meterGroup_' + group.id
-      let firstMeter = store.getters[groupSpace + '/meters'][0]
-      let meterSpace = groupSpace + '/meter_' + firstMeter.id
-      let meterType = store.getters[meterSpace + '/type']
-      r[meterType] = 0
-    }
-    return Object.keys(r)
   }
 }
 
@@ -88,7 +78,13 @@ const mutations = {
   },
 
   addType (state, type) {
-    state.types.push(type)
+    if (state.description.search(`/${type}/gi`) < 0) {
+      if (state.description === '') {
+        state.description += type
+      } else {
+        state.description += ', ' + type
+      }
+    }
   }
 }
 

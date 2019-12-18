@@ -44,6 +44,7 @@ const actions = {
         break
     }
     store.commit('type', type)
+    return store.state
   },
 
   async getData (store, payload) {

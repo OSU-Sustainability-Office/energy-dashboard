@@ -1,5 +1,5 @@
 /**
- * @Author: Brogan Miner <Brogan>
+ * @Author: Brogan Miner <Brogan.Miner@oregonstate.edu>
  * @Date:   2018-12-20T16:22:04-08:00
  * @Email:  brogan.miner@oregonstate.edu
  * @Last modified by:   Brogan
@@ -12,11 +12,11 @@ function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP
 }
 
 export default {
-  story: async (id, data = null, method = 'get') => {
+  view: async (id, data = null, method = 'get') => {
     if (method === 'get') {
-      return (await callAPI('story?id=' + id)).data
+      return (await callAPI('view?id=' + id)).data
     } else {
-      return (await callAPI('story', data, method)).data
+      return (await callAPI('view', data, method)).data
     }
   },
   login: async () => {

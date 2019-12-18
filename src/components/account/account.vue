@@ -19,7 +19,7 @@
 <script>
 
 import featured from '@/components/account/featured'
-import heropicture from '@/components/account/heropicture'
+import heropicture from '@/components/extras/heropicture'
 import navdir from '@/components/account/navdir'
 import { mapGetters } from 'vuex'
 
