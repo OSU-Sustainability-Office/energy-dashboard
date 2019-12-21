@@ -105,7 +105,6 @@ const actions = {
       chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
     }
     let chartData = await Promise.all(chartDataPromises)
-
     if (store.getters.graphType === 1) {
       data.datasets = chartData
     }

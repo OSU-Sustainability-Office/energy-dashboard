@@ -57,7 +57,7 @@ export default {
       publicDir: true
     }
   },
-  async mounted() {
+  async mounted () {
     if (!this.buildingList) {
       // Need to retrieve personal stories or show login prompt
     } else {
@@ -70,12 +70,11 @@ export default {
           this.groups[building.group] = [building]
         }
       }
-      if (this.$route.params.group) {
-        let name = this.groups.find(e => { return e.id === parseInt(this.$route.params.group) }).name
-        this.openName = name
+      if (this.$route.params.group && this.groups[this.$route.params.group]) {
+        this.openName = this.$route.params.group
       } else {
         this.openName = Object.keys(this.groups)[0]
-      }    
+      }
     }
   },
   computed: {

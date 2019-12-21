@@ -18,23 +18,22 @@
     <el-col class='main'>
         <el-row class='bar'>
           <el-col :span='20'>
-            <span v-if='dontShow'>&nbsp;</span>
-            <el-menu mode='horizontal' class='menu' background-color='#FFF' text-color='#1a1a1a' :router='true' @select='handleSelect' v-if='!dontShow'>
-              <el-submenu index='1' :router='true' v-if='public'>
-                <template slot="title" class='menu-title'><i class="fas fa-th-large"></i>{{ group.group }}</template>
-                <el-menu-item class='group-item' v-for='(groupS, index) in filteredGroups' :key='groupS.id' :index='"1-"+index' :route='{path: ((group.public)?"/buildinglist/":"/dashboard/") + groupS.id}'>
-                  <i class="fas fa-th-large"></i>{{ groupS.group }}
+            <el-menu mode='horizontal' class='menu' background-color='#FFF' text-color='#1a1a1a' :router='true' @select='handleSelect'>
+              <el-submenu index='1' :router='true'>
+                <template slot="title" class='menu-title'><i class="fas fa-th-large"></i>{{ group1Name }}</template>
+                <el-menu-item class='group-item' v-for='(groupS, index) in group1' :key='groupS.id' :index='"1-"+index' :route='{path: ((publicView)?"/buildings/":"/view/") + groupS.id}'>
+                  <i class="fas fa-th-large"></i>{{ groupS.name }}
                 </el-menu-item>
               </el-submenu>
-              <el-submenu index='2' :router='false'>
-                <template class='menu-title' slot="title"><i class="fas fa-building"></i>{{ story.name }}</template>
-                <el-menu-item class='story-item' v-for='(storyS, index) in navStories' :key='storyS.id' :index='"2-"+index' :route='{path: (group.public)?`/public/${storyS.id}/1`:`/view/${storyS.id}`}'>
+              <el-submenu index='2' :router='false' v-if='publicView'>
+                <template class='menu-title' slot="title"><i class="fas fa-building"></i>{{ group2Name }}</template>
+                <el-menu-item class='story-item' v-for='(storyS, index) in group2' :key='storyS.id' :index='"2-"+index' :route='{ path: `/building/${storyS.id}/1` }'>
                   <i class="fas fa-building"></i>{{ storyS.name }}
                 </el-menu-item>
               </el-submenu>
             </el-menu>
           </el-col>
-          <el-col :span='4' class='buttons'>
+          <!-- <el-col :span='4' class='buttons'>
             <el-tooltip content='Click to copy share link'>
               <i class="fas fa-share-square" @click='copyUrl()'></i>
             </el-tooltip>
@@ -44,7 +43,7 @@
             <el-tooltip content='Click to download data' placement='top'>
               <i class="fas fa-download" @click="download()"></i>
             </el-tooltip>
-          </el-col>
+          </el-col> -->
       </el-row>
     </el-col>
   </el-row>
@@ -59,8 +58,6 @@ export default {
   up: 0,
   data () {
     return {
-      public: false,
-      dontShow: true,
       groupName: '',
       filteredGroups: [],
       navStories: [],
@@ -77,13 +74,62 @@ export default {
   computed: {
     viewOrBuilding: {
       get () {
-        if (this.$route.path.includes('building')) {
+        if (this.publicView) {
           return this.$store.getters['map/building'](this.$route.params.id)
         } else {
           let view = this.$store.getters['user/view'](this.$route.params.id)
           if (!view) view = this.$store.getters['view/state']
           return view
         }
+      }
+    },
+    group1: {
+      get () {
+        if (this.publicView) {
+          let groups = this.$store.getters['map/buildingGroups']
+          let rValue = []
+
+          for (let group of groups) {
+            rValue.push({ name: group, id: group })
+          }
+          return rValue
+        } else {
+          return this.$store.getters['user/views']
+        }
+      }
+    },
+    group2: {
+      get () {
+        if (this.publicView) {
+          let buildings = this.$store.getters['map/buildingsForGroup'](this.viewOrBuilding.group)
+          let rValue = []
+
+          for (let building of buildings) {
+            rValue.push({ name: building.name, id: building.id })
+          }
+          return rValue
+        } else {
+          return []
+        }
+      }
+    },
+    group1Name: {
+      get () {
+        if (this.publicView) {
+          return this.viewOrBuilding.group
+        } else {
+          return this.viewOrBuilding.name
+        }
+      }
+    },
+    group2Name: {
+      get () {
+        return this.viewOrBuilding.name
+      }
+    },
+    publicView: {
+      get () {
+        return this.$route.path.includes('building')
       }
     }
   },
@@ -254,7 +300,7 @@ export default {
     box-shadow: 0px 2px 4px -2px rgba(0,0,0,0.5);
   }
   .menu {
-    border: none;
+    margin: 0;
   }
 
   .fas {

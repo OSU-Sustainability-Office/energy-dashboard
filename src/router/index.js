@@ -73,6 +73,10 @@ export default new Router({
     {
       path: '/buildings',
       component: buildingList
+    },
+    {
+      path: '/buildings/:group',
+      component: buildingList
     }
   ]
 })

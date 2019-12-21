@@ -66,6 +66,26 @@ const getters = {
     return state['building_' + id.toString()]
   },
 
+  buildingGroups: (state) => {
+    let groups = new Set()
+    for (let key of Object.keys(state)) {
+      if (key.search(/building_/) >= 0) {
+        groups.add(state[key].group)
+      }
+    }
+    return groups
+  },
+
+  buildingsForGroup: (state) => (group) => {
+    let buildings = []
+    for (let key of Object.keys(state)) {
+      if (key.search(/building_/) >= 0 && state[key].group === group) {
+        buildings.push(state[key])
+      }
+    }
+    return buildings
+  },
+
   buildings: (state) => {
     let buildings = []
     for (let key of Object.keys(state)) {

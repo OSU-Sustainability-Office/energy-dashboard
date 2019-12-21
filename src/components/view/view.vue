@@ -13,7 +13,7 @@
       <navdir ref='navdir'></navdir>
       <el-row>
         <el-col :span='24' class='card_area'>
-          <card v-for='(card, index) in cards' :key='index' :path='card.path' />
+          <card v-for='(card, index) in cards' :key='index + "-" + view.id' :path='card.path' />
         </el-col>
       </el-row>
     </el-col>

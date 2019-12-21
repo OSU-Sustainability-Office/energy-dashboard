@@ -48,8 +48,17 @@ const actions = {
       */
       throw new Error('Can not add together non-total metering points')
     }
+    let promiseObject = {}
     for (let meter of store.getters.meters) {
-      let data = await this.dispatch(meter.path + '/getData', payload)
+      let promise = this.dispatch(meter.path + '/getData', payload)
+      promiseObject[meter.id] = promise
+    }
+    for (let meter of store.getters.meters) {
+      let data = await promiseObject[meter.id]
+      // For some reason if the array is empty it sometimes forgets it is an array
+      if (!Array.isArray(data) || data.length === 0) {
+        continue
+      }
       for (let dataPoint of data) {
         if (resultDataObject.get(dataPoint['time'])) {
           if (meter.negate) {
@@ -81,6 +90,9 @@ const actions = {
     for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
       try {
         let accumulator = 0
+        if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
+          continue
+        }
         if (payload.point === 'accumulated_real' || payload.point === 'total' || payload.point === 'cubic_feet') {
           accumulator = resultDataObject.get(i + delta) - resultDataObject.get(i)
         } else {
@@ -88,6 +100,7 @@ const actions = {
         }
         returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
       } catch (error) {
+        console.log(error)
       }
     }
     return returnData

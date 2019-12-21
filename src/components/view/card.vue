@@ -20,8 +20,8 @@
         <el-col :span='20'>{{ name }}</el-col>
         <el-col :span='4' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='$emit("editModal",index)'></i></el-col>
       </el-row>
-      <el-row>
-        <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='"500px"'/>
+      <el-row style='overflow: hidden;'>
+        <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='"430px"'/>
       </el-row>
   </el-col>
   </el-row>
@@ -48,10 +48,12 @@ export default {
       graphtype: 1,
       style: {
         'display': 'inline-block',
-        'width': '100%',
+        'width': 'calc(100% - 3em)',
         'height': '400px',
-        'padding-right': '0.5em',
-        'padding-left': '0.5em',
+        'margin-right': '0.5em',
+        'margin-left': '0.5em',
+        'padding-right': '1em',
+        'padding-left': '1em',
         'padding-top': '1em'
       }
     }
