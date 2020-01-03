@@ -35,16 +35,18 @@ const mutations = {
   },
 
   data (state, data) {
-    state.data = {
-      ...state.data,
-      ...data
-    }
+    state.data = JSON.parse(JSON.stringify(data))
   }
 }
 
 const getters = {
   modalName (state) {
     return state.modalName
+  },
+
+  data (state) {
+    console.log(state.data)
+    return state.data
   }
 }
 

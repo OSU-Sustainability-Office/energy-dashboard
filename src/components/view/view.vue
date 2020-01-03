@@ -91,11 +91,11 @@ export default {
     intervalUnit: {
       get () {
         switch (parseInt(this.$route.params.range)) {
-          case 0:
-            return 'hour'
           case 1:
-            return 'day'
+            return 'hour'
           case 2:
+            return 'day'
+          case 3:
             return 'day'
           default:
             return 'minute'
@@ -105,11 +105,11 @@ export default {
     dateInterval: {
       get () {
         switch (parseInt(this.$route.params.range)) {
-          case 0:
-            return 1
           case 1:
             return 1
           case 2:
+            return 1
+          case 3:
             return 7
           default:
             return 15

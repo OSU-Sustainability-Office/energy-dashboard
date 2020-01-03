@@ -106,6 +106,7 @@ export default {
     position: absolute;
     top: 0.4em;
     left: 0.5em;
+    -webkit-text-stroke: 0.6px black;
   }
   .subtitle {
     font-family: "StratumNo2";
@@ -113,6 +114,7 @@ export default {
     font-size: 1.8em;
     padding-left: 1.5em;
     padding-top: 2.5em;
+    -webkit-text-stroke: 0.6px black;
   }
   $slope: 160px / 4;
   $border-width: 3px;

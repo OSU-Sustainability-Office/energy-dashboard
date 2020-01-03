@@ -15,7 +15,8 @@ const state = () => {
     default: false,
     path: null,
     promise: null,
-    type: null
+    type: null,
+    building: null
   }
 }
 
@@ -23,7 +24,17 @@ const actions = {
 
   async changeGroup (store, payload) {
     let group = API.meterGroup(payload.id)
-    store.commit('promise', group)
+    let wait = true
+    store.commit('promise', new Promise((resolve, reject) => {
+      let fn = () => {
+        if (wait) {
+          setTimeout(fn, 100)
+        } else {
+          resolve()
+        }
+      }
+      fn()
+    }))
     group = await group
     store.commit('id', payload.id)
     store.commit('name', group.name)
@@ -37,6 +48,7 @@ const actions = {
         store.commit('type', meter.type)
       })
     }
+    wait = false
     return store.state
   },
 
@@ -112,6 +124,10 @@ const mutations = {
     state.path = path
   },
 
+  building (state, building) {
+    state.building = building
+  },
+
   promise (state, promise) {
     state.promise = promise
   },
@@ -151,6 +167,10 @@ const getters = {
     return state.id
   },
 
+  building (state) {
+    return state.building
+  },
+
   meters (state) {
     let r = []
     for (let c of Object.keys(state)) {
@@ -159,6 +179,20 @@ const getters = {
       }
     }
     return r
+  },
+
+  points (state) {
+    let r = []
+    for (let c of Object.keys(state)) {
+      if (c.search(/meter_/) >= 0) {
+        r.push(state[c])
+      }
+    }
+    if (r.length > 1) {
+      return [{ label: 'Net Energy Usage (kWh)', value: 'accumulated_real' }]
+    } else {
+      return r[0].points
+    }
   },
 
   default (state) {

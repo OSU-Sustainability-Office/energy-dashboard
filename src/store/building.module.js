@@ -27,9 +27,9 @@ const actions = {
     let moduleSpace = store.getters.path + '/' + meterGroupSpace
     this.registerModule(moduleSpace.split('/'), MeterGroup)
     store.commit(meterGroupSpace + '/path', moduleSpace)
+    store.commit(meterGroupSpace + '/building', store.getters.path)
     store.dispatch(meterGroupSpace + '/changeGroup', { id: payload.id }).then(async group => {
       await this.getters[group.path + '/meters'][0].promise
-      // This needs to be the meter type as the changing of the group path is scheduled after this call
       store.commit('addType', this.getters[group.path + '/meters'][0].type)
     })
   },
@@ -111,6 +111,10 @@ const getters = {
 
   id (state) {
     return state.id
+  },
+
+  description (state) {
+    return state.description
   },
 
   path (state) {

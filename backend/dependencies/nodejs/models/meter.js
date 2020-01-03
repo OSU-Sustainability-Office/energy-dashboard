@@ -19,6 +19,8 @@ class Meter {
     this.address = address
     this.classInt = 0
     this.negate = 0
+    this.type = ''
+    this.points = []
   }
 
   async get () {
@@ -41,6 +43,57 @@ class Meter {
     this.address = row[0]['address']
     this.classInt = row[0]['class']
     this.negate = (row[0]['negate'] === 1)
+
+    switch (this.classInt) {
+      case 17:
+        this.type = 'Gas'
+        break
+      case 4444:
+        this.type = 'Steam'
+        break
+      default:
+        this.type = 'Electricity'
+        break
+    }
+
+    const map = {
+      accumulated_real: 'Net Energy Usage (kWh)',
+      real_power: 'Real Power (W)',
+      reactive_power: 'Reactive Power (VAR)',
+      apparent_power: 'Apparent Power (VA)',
+      real_a: 'Real Power, Phase A (kW)',
+      real_b: 'Real Power, Phase B (kW)',
+      real_c: 'Real Power, Phase C (kW)',
+      reactive_a: 'Reactive Power, Phase A (kVAR)',
+      reactive_b: 'Reactive Power, Phase B (kVAR)',
+      reactive_c: 'Reactive Power, Phase C (kVAR)',
+      pf_a: 'Power Factor, Phase A',
+      pf_b: 'Power Factor, Phase B',
+      pf_c: 'Power Factor, Phase C',
+      vphase_ab: 'Voltage, Phase A-B (V)',
+      vphase_bc: 'Voltage, Phase B-C (V)',
+      vphase_ac: 'Voltage, Phase A-C (V)',
+      vphase_an: 'Voltage, Phase A-N (V)',
+      vphase_bn: 'Voltage, Phase B-N (V)',
+      vphase_cn: 'Voltage, Phase C-N (V)',
+      cphase_a: 'Current, Phase A (A)',
+      cphase_b: 'Current, Phase B (A)',
+      cphase_c: 'Current, Phase C (A)',
+      cubic_feet: 'Total Natural Gas (CF)',
+      maximum: 'Maximum',
+      minimum: 'Minimum',
+      rate: 'Natural Gas Rate (CFm)',
+      total: 'Steam (Lbs)',
+      input: 'Steam Input',
+      apparent_a: 'Apparent Power, Phase A (VA)',
+      apparent_b: 'Apparent Power, Phase B (VA)',
+      apparent_c: 'Apparent Power, Phase C (VA)',
+      baseline_percentage: 'Percentage (%)'
+    }
+
+    for (let point of Object.values(meterClasses[this.classInt])) {
+      this.points.push({ label: map[point], value: point })
+    }
     return this
   }
 
@@ -51,7 +104,9 @@ class Meter {
       name: this.name,
       address: this.address,
       classInt: this.classInt,
-      negate: this.negate
+      negate: this.negate,
+      type: this.type,
+      points: this.points
     }
   }
 

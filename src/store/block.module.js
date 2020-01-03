@@ -10,6 +10,7 @@ import Chart from './chart.module.js'
 
 const state = () => {
   return {
+    tempChartCounter: 0,
     path: null,
     promise: null,
     name: null,               // String
@@ -26,8 +27,8 @@ const state = () => {
 const actions = {
   loadChart (store, id) {
     let chartSpace = 'chart_' + id.toString()
-    let moduleSpace = store.getters.path + chartSpace
-    store.registerModule(moduleSpace.split('/'), Chart)
+    let moduleSpace = store.getters.path + '/' + chartSpace
+    this.registerModule(moduleSpace.split('/'), Chart)
     store.commit(chartSpace + '/path', moduleSpace)
     store.commit(chartSpace + '/color', store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length])
     store.dispatch(chartSpace + '/changeChart', id)
@@ -36,16 +37,15 @@ const actions = {
   async changeBlock (store, id) {
     store.commit('shuffleChartColors')
     for (let chart of store.getters.charts) {
-      let chartKey = chart.path.split('/').pop()
-      store.unregisterModule(chartKey)
+      this.unregisterModule(chart.path.split('/'))
     }
     store.commit('id', id)
     let block = API.block(id)
     store.commit('promise', block)
     block = await block
     store.commit('name', block.name)
-    store.commit('dateInterval', block.user)
-    store.commit('intervalUnit', block.media)
+    store.commit('dateInterval', block.dateInterval)
+    store.commit('intervalUnit', block.intervalUnit)
     store.commit('graphType', block.graphType)
     store.commit('dateStart', block.dateStart)
     store.commit('dateEnd', block.dateStart)
@@ -53,6 +53,30 @@ const actions = {
     for (let chart of block.charts) {
       store.dispatch('loadChart', chart)
     }
+  },
+
+  async newChart (store, payload) {
+    let chartSpace = 'chart_temp_' + store.getters.tempChartCounter
+    store.commit('increaseTempCount')
+    let moduleSpace = store.getters.path + '/' + chartSpace
+    await this.registerModule(moduleSpace.split('/'), Chart)
+    store.commit(chartSpace + '/path', moduleSpace)
+    store.commit(chartSpace + '/color', store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length])
+    store.commit(chartSpace + '/name', payload.name)
+    store.commit(chartSpace + '/building', payload.building)
+    store.commit(chartSpace + '/point', payload.point)
+    store.commit(chartSpace + '/meterGroupPath', payload.meter)
+  },
+
+  removeChart (store, name) {
+    for (let chart of store.getters.charts) {
+      let chartKey = chart.path.split('/').pop()
+      if (chartKey === name) {
+        this.unregisterModule(chart.path.split('/'))
+      }
+    }
+    // Force reload by committing something
+    store.commit('dateInterval', store.getters.dateInterval)
   },
 
   async loadDefault (store, payload) {
@@ -88,13 +112,6 @@ const actions = {
   },
 
   async getData (store) {
-    const reqPayload = {
-      point: null,
-      dateStart: store.getters.dateStart / 1000,
-      dateEnd: store.getters.dateEnd / 1000,
-      intervalUnit: store.getters.intervalUnit,
-      dateInterval: store.getters.dateInterval
-    }
     let chartDataPromises = []
     let data = {
       labels: [],
@@ -102,10 +119,18 @@ const actions = {
     }
     for (let chart of store.getters.charts) {
       if (!chart.path) continue
+      const reqPayload = {
+        point: null,
+        dateStart: store.getters.dateStart / 1000,
+        dateEnd: store.getters.dateEnd / 1000,
+        intervalUnit: store.getters.intervalUnit,
+        dateInterval: store.getters.dateInterval
+      }
       chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
     }
     let chartData = await Promise.all(chartDataPromises)
     if (store.getters.graphType === 1) {
+      console.log(chartData)
       data.datasets = chartData
     }
     return data
@@ -115,6 +140,10 @@ const actions = {
 const mutations = {
   path (state, path) {
     state.path = path
+  },
+
+  increaseTempCount (state) {
+    state.tempChartCounter++
   },
 
   shuffleChartColors (state) {
@@ -161,6 +190,15 @@ const mutations = {
 }
 
 const getters = {
+
+  state (state) {
+    return state
+  },
+
+  tempChartCounter (state) {
+    return state.tempChartCounter
+  },
+
   name (state) {
     return state.name
   },

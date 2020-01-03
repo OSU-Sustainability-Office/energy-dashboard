@@ -16,7 +16,8 @@ const state = () => {
     negate: null,        // Bool
     path: null,
     promise: null,
-    type: ''
+    type: '',
+    points: null
   }
 }
 
@@ -24,26 +25,26 @@ const actions = {
 
   async changeMeter (store, id) {
     let meter = API.meter(id)
-    store.commit('promise', meter)
+    let wait = true
+    store.commit('promise', new Promise((resolve, reject) => {
+      let fn = () => {
+        if (wait) {
+          setTimeout(fn, 100)
+        } else {
+          resolve()
+        }
+      }
+      fn()
+    }))
     meter = await meter
     store.commit('id', id)
     store.commit('name', meter.name)
     store.commit('address', meter.address)
     store.commit('classInt', meter.classInt)
     store.commit('negate', meter.negate)
-    let type = ''
-    switch (meter.classInt) {
-      case 17:
-        type = 'Gas'
-        break
-      case 4444:
-        type = 'Steam'
-        break
-      default:
-        type = 'Electricity'
-        break
-    }
-    store.commit('type', type)
+    store.commit('points', meter.points)
+    store.commit('type', meter.type)
+    wait = false
     return store.state
   },
 
@@ -87,6 +88,10 @@ const mutations = {
 
   type (state, type) {
     state.type = type
+  },
+
+  points (state, points) {
+    state.points = points
   }
 
 }
@@ -122,6 +127,10 @@ const getters = {
 
   type (state) {
     return state.type
+  },
+
+  points (state) {
+    return state.points
   }
 }
 

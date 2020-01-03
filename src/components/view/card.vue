@@ -18,24 +18,26 @@
     <el-col :span='24'>
       <el-row class='title' ref='title'>
         <el-col :span='20'>{{ name }}</el-col>
-        <el-col :span='4' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='$emit("editModal",index)'></i></el-col>
+        <el-col :span='4' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='openModal()'></i></el-col>
       </el-row>
       <el-row style='overflow: hidden;'>
-        <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='"430px"'/>
+        <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430'/>
       </el-row>
   </el-col>
+  <editCard />
   </el-row>
 </template>
 
 <script>
-
+import editCard from '@/components/view/modals/edit_card'
 import chartController from '@/components/charts/chartController'
 
 export default {
   name: 'card',
   props: ['path'],
   components: {
-    chartController
+    chartController,
+    editCard
   },
   data () {
     return {
@@ -61,7 +63,12 @@ export default {
   computed: {
     name: {
       get () {
-        return this.$store.getters[this.path + '/name']
+        let name = this.$store.getters[this.path + '/name']
+        if (name && name !== '') {
+          return name
+        } else {
+          return '\xa0'
+        }
       }
     },
     intunit: {
@@ -112,6 +119,12 @@ export default {
     }
   },
   methods: {
+    openModal: function () {
+      this.$store.dispatch('modalController/openModal', {
+        name: 'edit_card',
+        path: this.path
+      })
+    },
     cardSave: async function () {
       // this.editcard = false
       // let charts = await this.$refs.featureController.saveCharts()
@@ -147,6 +160,7 @@ export default {
 .title {
   font-family: 'StratumNO2';
   font-size: 2em;
+  padding-bottom: 0.35em;
 }
 .title .fas {
   transition: color 0.2s ease;

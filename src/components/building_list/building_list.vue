@@ -31,7 +31,7 @@
                   </el-tooltip>
                 </el-col>
                 <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
-                <el-col v-for='n in 10' :key='n' :span='4' class='blankSlate'>
+                <el-col v-for='n in 10' :key='key + n' :span='4' class='blankSlate'>
                   &nbsp;
                 </el-col>
               </el-row>

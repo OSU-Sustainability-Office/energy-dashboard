@@ -29,7 +29,7 @@
           </el-row>
           <el-row type='flex' class="graph" ref='scrollBox'>
             <el-col class='inline' v-for='block in buildingBlocks' :key='block.id' :span='24'>
-              <chartController :randomColors=1 :graphType='1' :block=block ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
+              <chartController :path='block.path' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
             </el-col>
           </el-row>
           <el-row class="buttons">
@@ -37,7 +37,7 @@
               <el-button class='bigButton' @click="$emit('startCompare')">Compare</el-button>
             </el-col>
             <el-col :span='12'>
-              <el-button class='bigButton' @click='$router.push({path: `/public/${storyId}/${currentRange}`})'>View Full Graph</el-button>
+              <el-button class='bigButton' @click='$router.push({path: `/building/${building.id}/${currentRange}`})'>View Full Graph</el-button>
             </el-col>
           </el-row>
         </el-col>
@@ -47,13 +47,11 @@
 </template>
 <script>
 import chartController from '@/components/charts/chartController'
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('map')
 import switchButtons from '@/components/map/time_switch_buttons_big'
 
 export default {
   name: 'sideView',
-  props: ['buildingId'],
+  props: [],
   components: {
     chartController, switchButtons
   },
@@ -61,7 +59,6 @@ export default {
     return {
       api: process.env.VUE_APP_ROOT_API,
       title: '',
-      media: '',
       currentRange: 1,
       unit: 'day',
       int: 1,
@@ -71,6 +68,12 @@ export default {
   },
   computed: {
 
+    media: {
+      get () {
+        return this.building.image
+      }
+    },
+
     buildingBlocks: {
       get () {
         return this.$store.getters[this.building.path + '/blocks']
@@ -79,7 +82,7 @@ export default {
 
     building: {
       get () {
-        return this.$store.getters['map/building'](this.buildingId)
+        return this.$store.getters['map/building'](this.$store.getters['modalController/data'].id)
       }
     }
   },
@@ -143,8 +146,8 @@ export default {
     } else {
       this.$refs.nextArrow.style.display = 'block'
     }
-    this.media = this.building.image
     let date = new Date()
+    this.$refs.media.style.backgroundImage = 'url(' + this.media + ')'
   //     for (let block in this.story.blocks) {
   //       promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
   //     }
@@ -230,9 +233,10 @@ export default {
 .graph {
   width: 100%;
   overflow: hidden;
+  padding-bottom: 1em;
 }
 .inline {
-  margin-right: 20px;
+  // margin-right: 20px;
   transition: transform 1s;
   display: inline-block;
   float: left;

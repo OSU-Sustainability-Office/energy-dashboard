@@ -15,8 +15,8 @@
         <i class="fas fa-times" @click="deleteView()"></i>
       </el-tooltip>
     </div>
-    <span class="name">{{this.name}}</span>
-    <span class="description">{{this.description}}</span>
+    <span class="name">{{name}}</span>
+    <span class="description">{{description}}</span>
     <div class='plus' v-if='plus'>
       <i class="fas fa-plus"></i>
     </div>
@@ -130,6 +130,8 @@ export default {
   font-size: 1.7em;
   display: block;
   z-index: 1;
+  -webkit-text-stroke: 0.3px black;
+  // -webkit-text-fill-color: white;
 }
 .card {
   position: relative;
@@ -163,6 +165,7 @@ export default {
   display: block;
   padding-left: 0.3em;
   z-index: 1;
+  -webkit-text-stroke: 0.3px black;
 }
 .plus {
   text-align: center;

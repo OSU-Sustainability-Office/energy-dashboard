@@ -6,7 +6,7 @@
 @Last modified time: 2019-04-09T11:43:22-07:00
 -->
 <template>
-  <div v-loading='loading || !chartData' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}; border-radius: 5px; overflow: hidden;`'>
+  <div v-loading='loading || !chartData' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}px; border-radius: 5px; overflow: hidden;`'>
     <linechart v-if="graphType == 1 && chartData" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <barchart v-if="graphType == 2 && chartData" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <doughnutchart v-if="graphType == 3 && chartData" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
@@ -36,13 +36,29 @@ export default {
       })
     }
     this.$store.dispatch(this.path + '/getData').then(r => {
+      if (this.chart) {
+        this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+        this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+      }
       this.chartData = r
       this.loading = false
     })
   },
+  watch: {
+    path: function (value) {
+      this.loading = true
+      this.$store.dispatch(this.path + '/getData').then(r => {
+        if (this.chart) {
+          this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+          this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+        }
+        this.chartData = r
+        this.loading = false
+      })
+    }
+  },
   data () {
     return {
-      chart: null,
       loading: true,
       chartData: null,
       watchTimeout: null,
@@ -59,19 +75,28 @@ export default {
         this.colors[j] = temp
       }
     }
+
     // this.$store.dispatch(this.block.path + '/getData').then(data => {
     //   this.chartData = data
     //   this.loading = false
     // })
     this.$store.subscribe((mutation, state) => {
       let mutationPath = mutation.type.split('/')
-      mutationPath.pop()
+      let call = mutationPath.pop()
       mutationPath = mutationPath.join('/')
-      if (mutationPath === this.path) {
+      if (mutationPath.includes(this.path)) {
+        if (call === 'name') {
+          return
+        }
         this.loading = true
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
           this.$store.dispatch(this.path + '/getData').then(data => {
+            if (this.chart) {
+              this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+              this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+              this.chart.setOptions(this.chart.options)
+            }
             this.chartData = data
             this.loading = false
           })
@@ -99,35 +124,28 @@ export default {
       get () {
         return this.$store.getters[this.path + '/graphType']
       }
-    }
-  },
-  watch: {
-    graphType: function (value) {
-      value = parseInt(value)
-      switch (value) {
-        case 1:
-          this.chart = this.$refs.linechart
-          break
-        case 2:
-          this.chart = this.$refs.barchart
-          break
-        case 3:
-          this.chart = this.$refs.doughnutchart
-          break
-        case 5:
-          this.chart = this.$refs.barlinechart
-          break
-        default:
-          this.chart = this.$refs.piechart
+    },
+    chart: {
+      get () {
+        switch (this.graphType) {
+          case 1:
+            return this.$refs.linechart
+          case 2:
+            return this.$refs.barchart
+          case 3:
+            return this.$refs.doughnutchart
+          case 5:
+            return this.$refs.barlinechart
+          default:
+            return this.$refs.piechart
+        }
       }
-      // this.parse()
-      // this.updateChart()
     }
   },
   methods: {
-    unit: function () {
+    unit: function (index) {
       const charts = this.$store.getters[this.path + '/charts']
-      const unit = this.$store.getters[charts[0].path + '/unitString']
+      const unit = this.$store.getters[charts[index].path + '/unitString']
       return unit
     },
     dataUnavailable: function () {
@@ -171,13 +189,25 @@ export default {
         if (charts.length <= 0) {
           return ' '
         }
-        const point = this.$store.getters[charts[0].path + '/pointString']
+        let point = ''
+        for (let index in charts) {
+          const chartPoint = this.$store.getters[charts[index].path + '/pointString']
+          if (!point.includes(chartPoint)) {
+            if (Number(index) !== 0) {
+              point += ' / '
+            }
+            point += chartPoint
+          }
+        }
         if (!point) {
           return ' '
         }
 
         if (this.$parent.$options._componentTag === 'sideView') {
           return ' '
+        }
+        if (point.length > 50) {
+          point = point.substring(0, 50) + '...'
         }
         return point
       } else {

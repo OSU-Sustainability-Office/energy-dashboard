@@ -30,8 +30,7 @@
       <prompt v-if='askingForComparison' @cancel='stopCompare' @compare='showComparison' />
       <transition name='side'>
         <compareSide v-if='showCompareSide' @hide='showCompareSide = false' :compareStories='compareStories' />
-
-        <sideView :key='openBuilding' :buildingId='openBuilding' ref='sideview' v-if='showSide' @hide='showSide = false' @startCompare='startCompare()'></sideView>
+        <sideView ref='sideview' v-if='showSide' @hide='showSide = false' @startCompare='startCompare()'></sideView>
       </transition>
     </el-col>
   </el-row>
@@ -53,6 +52,17 @@ export default {
     prompt,
     compareSide
   },
+  computed: {
+    showSide: {
+      get () {
+        return (this.$store.getters['modalController/modalName'] === 'map_side_view')
+      },
+
+      set (value) {
+        this.$store.dispatch('modalController/closeModal')
+      }
+    }
+  },
   data () {
     return {
       zoom: 15.5,
@@ -64,7 +74,6 @@ export default {
       openBuilding: 0,
       compareStories: [],
       showCompareSide: 0,
-      showSide: false,
       ele: [],
       compareMarkers: [],
       rKey: 1,
@@ -74,10 +83,13 @@ export default {
       mapLoaded: false,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
-          console.log(feature)
           layer.on('click', e => {
-            window.vue.$eventHub.$emit('clickedPolygon', [e.target.feature.properties.id, layer.getBounds().getCenter(), feature])
-            // document.execCommand('copy')
+            // window.vue.$store.dispatch('modalController/closeModal').then(() => {
+            window.vue.$store.dispatch('modalController/openModal', {
+              name: 'map_side_view',
+              id: e.target.feature.properties.id
+            })
+            // })
           })
           layer.on('mouseover', function (e) {
             e.target.setStyle({ fillColor: '#000', color: '#000' })
@@ -212,7 +224,6 @@ export default {
   created () {
     this.$store.getters['map/promise'].then(() => {
       this.mapLoaded = true
-      console.log(this.$store.getters["map/buildings"])
     })
     this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
     this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.forEach(e => { e.mapObject.resetStyle(v[0]) }) })
