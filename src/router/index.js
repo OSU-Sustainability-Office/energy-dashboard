@@ -52,7 +52,7 @@ export default new Router({
     },
     {
       path: '/dashboard/',
-      component: privateDirectory
+      component: buildingList
     },
     {
       path: '/buildingList/:group',

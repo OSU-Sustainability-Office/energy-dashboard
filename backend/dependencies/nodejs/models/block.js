@@ -36,9 +36,9 @@ class Block {
     let chartRows = await DB.query('SELECT id FROM block_groups WHERE block_id = ?', [this.id])
     if (expand) {
       for (let row of chartRows) {
-        this.charts.push(Chart(row['id']).init())
+        this.charts.push((new Chart(row['id'])).get())
       }
-      await Promise.all(this.charts)
+      this.charts = await Promise.all(this.charts)
     } else {
       for (let row of chartRows) {
         this.charts.push(row['id'])
@@ -90,7 +90,7 @@ class Block {
     if (insertRow['affectedRows'] === 0) {
       throw new Error('Unable to create new story')
     }
-    let block = Block(insertRow['insert_id'])
+    let block = new Block(insertRow['insert_id'])
     block.dateStart = dateStart
     block.dateEnd = dateEnd
     block.graphType = graphType
@@ -102,9 +102,13 @@ class Block {
 
   get
   data () {
+    let charts = this.charts
+    if (charts.length > 0 && charts[0] instanceof Chart) {
+      charts = charts.map(o => o.data)
+    }
     return {
       id: this.id,
-      charts: this.charts,
+      charts: charts,
       dateStart: this.dateStart,
       dateEnd: this.dateEnd,
       graphType: this.graphType,
@@ -115,4 +119,4 @@ class Block {
   }
 }
 
-exports = Block
+module.exports = Block

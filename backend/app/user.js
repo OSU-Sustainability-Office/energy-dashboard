@@ -12,9 +12,12 @@ const UserModel = require('/opt/nodejs/models/user.js')
 
 exports.user = async (event, context) => {
   let response = new Response()
-  let user = new User(event, response)
+  // Running into issues being able to test this (multi-domain cookies). Gonna just use my onid for now.
+  let user = new User({ onid: 'minerb' }, response)
+  await user.resolved
   let userModel = await (new UserModel(user.onid)).get()
-  user.appData['energyDashboard'] = userModel.data
+  console.log(userModel.data)
+  await user.set('energyDashboard', userModel.data)
   response.body = JSON.stringify(user.data)
   return response
 }

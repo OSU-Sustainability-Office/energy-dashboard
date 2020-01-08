@@ -19,7 +19,6 @@
   </el-row>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 
 export default {
   props: ['height', 'campaign', 'days', 'blocks'],
@@ -29,40 +28,75 @@ export default {
     }
   },
   mounted () {
-    this.currentRange = 1
+    
   },
   computed: {
-    ...mapGetters([
-      'story',
-      'block'
-    ])
   },
   watch: {
-    currentRange: function (value) {
-      let intervalUnit = 'minute'
-      let dateInterval = 15
-      let time = (new Date()).getTime()
-      let dateEnd = time - (time % (900 * 1000))
-      let startModifier = 96 * 7
-      if (value === 0) {
-        intervalUnit = 'hour'
-        dateInterval = 6
-        startModifier = 96 * 7
-      } else if (value === 1) {
-        intervalUnit = 'day'
-        dateInterval = 1
-        startModifier = 96 * 30
-      } else {
-        intervalUnit = 'day'
-        dateInterval = 15
-        startModifier = 96 * 365
+    blocks: {
+      immediate: true,
+      handler: async function (value) {
+        if (this.currentRange === 1) {
+          let intervalUnit = 'minute'
+          let dateInterval = 15
+          let time = (new Date()).getTime()
+          let dateEnd = time - (time % (900 * 1000))
+          let startModifier = 96 * 7
+          if (value === 0) {
+            intervalUnit = 'hour'
+            dateInterval = 6
+            startModifier = 96 * 7
+          } else if (value === 1) {
+            intervalUnit = 'day'
+            dateInterval = 1
+            startModifier = 96 * 30
+          } else {
+            intervalUnit = 'day'
+            dateInterval = 15
+            startModifier = 96 * 365
+          }
+          let dateStart = (new Date(dateEnd)).getTime() - startModifier * 900 * 1000
+          for (let block of this.blocks) {
+            await block.promise
+            this.$store.commit(block.path + '/dateInterval', dateInterval)
+            this.$store.commit(block.path + '/intervalUnit', intervalUnit)
+            this.$store.commit(block.path + '/dateStart', dateStart)
+            this.$store.commit(block.path + '/dateEnd', dateEnd)
+          }
+        } else {
+          this.currentRange = 1
+        }
       }
-      let dateStart = (new Date(dateEnd)).getTime() - startModifier * 900 * 1000
-      for (let block of this.blocks) {
-        this.$store.commit(block.path + '/dateInterval', dateInterval)
-        this.$store.commit(block.path + '/intervalUnit', intervalUnit)
-        this.$store.commit(block.path + '/dateStart', dateStart)
-        this.$store.commit(block.path + '/dateEnd', dateEnd)
+    },
+    currentRange: {
+      immediate: true,
+      handler: async function (value) {
+        let intervalUnit = 'minute'
+        let dateInterval = 15
+        let time = (new Date()).getTime()
+        let dateEnd = time - (time % (900 * 1000))
+        let startModifier = 96 * 7
+        if (value === 0) {
+          intervalUnit = 'hour'
+          dateInterval = 6
+          startModifier = 96 * 7
+        } else if (value === 1) {
+          intervalUnit = 'day'
+          dateInterval = 1
+          startModifier = 96 * 30
+        } else {
+          intervalUnit = 'day'
+          dateInterval = 15
+          startModifier = 96 * 365
+        }
+        let dateStart = (new Date(dateEnd)).getTime() - startModifier * 900 * 1000
+        for (let block of this.blocks) {
+          await block.promise
+          this.$store.commit(block.path + '/dateInterval', dateInterval)
+          this.$store.commit(block.path + '/intervalUnit', intervalUnit)
+          this.$store.commit(block.path + '/dateStart', dateStart)
+          this.$store.commit(block.path + '/dateEnd', dateEnd)
+        }
       }
     }
       // value = parseInt(value)

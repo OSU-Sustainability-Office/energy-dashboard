@@ -20,7 +20,7 @@ export default {
     }
   },
   login: async () => {
-    return (await callAPI('login', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
+    return (await callAPI('login?returnURI=' + encodeURI('http://localhost:8080'), null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
   },
   logout: async () => {
     return (await callAPI('logout', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data

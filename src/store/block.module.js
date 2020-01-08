@@ -34,6 +34,25 @@ const actions = {
     store.dispatch(chartSpace + '/changeChart', id)
   },
 
+  async loadCharts (store, charts) {
+    for (let chart of charts) {
+      let chartSpace = 'chart_' + chart.id
+      let moduleSpace = store.getters.path + '/' + chartSpace
+      this.registerModule(moduleSpace.split('/'), Chart)
+      store.commit(chartSpace + '/path', moduleSpace)
+
+      store.commit(chartSpace + '/name', chart.name)
+      store.commit(chartSpace + '/point', chart.point)
+      store.commit(chartSpace + '/id', chart.id)
+      store.commit(chartSpace + '/color', store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length])
+      await this.getters['map/promise']
+      await this.getters['map/allBuildingPromise']
+      store.commit(chartSpace + '/building', this.getters['map/meterGroup'](chart.meters).building)
+      store.commit(chartSpace + '/meterGroupPath', this.getters['map/meterGroup'](chart.meters).path)
+      store.commit(chartSpace + '/promise', Promise.resolve())
+    }
+  },
+
   async changeBlock (store, id) {
     store.commit('shuffleChartColors')
     for (let chart of store.getters.charts) {
@@ -80,6 +99,17 @@ const actions = {
   },
 
   async loadDefault (store, payload) {
+    let wait = true
+    store.commit('promise', new Promise((resolve, reject) => {
+      let fn = () => {
+        if (wait) {
+          setTimeout(fn, 100)
+        } else {
+          resolve()
+        }
+      }
+      fn()
+    }))
     store.commit('shuffleChartColors')
     let chartSpace = 'chart_' + payload.id.toString()
     let moduleSpace = (store.getters.path + '/' + chartSpace)
@@ -109,6 +139,7 @@ const actions = {
     currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
     store.commit('dateStart', currentEpoch - (900 * 96 * 7 * 1000)) // 15 minutes, 96 times a day, 7 days
     store.commit('dateEnd', currentEpoch)
+    wait = false
   },
 
   async getData (store) {
@@ -121,8 +152,8 @@ const actions = {
       if (!chart.path) continue
       const reqPayload = {
         point: null,
-        dateStart: store.getters.dateStart / 1000,
-        dateEnd: store.getters.dateEnd / 1000,
+        dateStart: parseInt(store.getters.dateStart / 1000),
+        dateEnd: parseInt(store.getters.dateEnd / 1000),
         intervalUnit: store.getters.intervalUnit,
         dateInterval: store.getters.dateInterval
       }
@@ -176,11 +207,32 @@ const mutations = {
   },
 
   dateStart (state, dateStart) {
-    state.dateStart = dateStart
+    console.log(state.path)
+    if (typeof dateStart === 'string') {
+      state.dateStart = (new Date(dateStart)).getTime()
+    } else if (typeof dateStart === 'number') {
+      state.dateStart = dateStart
+    } else if (dateStart instanceof Date) {
+      state.dateStart = dateStart.getTime()
+    } else {
+      throw new Error('Unrecognized format sent to dateStart')
+    }
   },
 
   dateEnd (state, dateEnd) {
-    state.dateEnd = dateEnd
+    if (typeof dateEnd === 'string') {
+      console.log('stroing')
+      state.dateEnd = (new Date(dateEnd)).getTime()
+    } else if (typeof dateEnd === 'number') {
+      console.log('number')
+      state.dateEnd = dateEnd
+    } else if (dateEnd instanceof Date) {
+      console.log('date')
+      state.dateEnd = dateEnd.getTime()
+    } else {
+      throw new Error('Unrecognized format sent to dateEnd')
+    }
+    console.log(state.dateEnd)
   },
 
   id (state, id) {

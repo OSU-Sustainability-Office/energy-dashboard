@@ -7,27 +7,37 @@
  */
 
 import API from './api.js'
+import View from './view.module.js'
 
 const state = () => {
   return {
     onid: '',
     privilege: 0,
     views: [],
-    alerts: []
+    alerts: [],
+    promise: null,
+    path: 'user'
   }
 }
 
 const actions = {
 
-  async login (store) {
-    let data = await API.login()
-    if (data.onid !== '') {
-      store.commit('onid', data.onid)
-      let edashData = await API.edsashUser(data.onid)
-      store.commit('privilege', edashData.privilege)
-      store.commit('stories', edashData.stories)
-      store.commit('alerts', edashData.alerts)
+  async loadViews (store, views) {
+    // let promises = []
+    for (let view of views) {
+      let viewSpace = 'view_' + view.id
+      let moduleSpace = store.getters.path + '/' + viewSpace
+      console.log(moduleSpace)
+      this.registerModule(moduleSpace.split('/'), View)
+      store.commit(viewSpace + '/path', moduleSpace)
+      let userViewPromise = store.dispatch(viewSpace + '/loadBlocks', view.blocks)
+      store.commit(viewSpace + '/promise', userViewPromise)
+
+      store.commit(viewSpace + '/name', view.name)
+      store.commit(viewSpace + '/media', view.media)
+      store.commit(viewSpace + '/id', view.id)
     }
+    // await Promise.all(promises)
   },
 
   async user (store) {
@@ -35,9 +45,9 @@ const actions = {
       let data = await API.user()
       if (data.onid !== '') {
         store.commit('onid', data.onid)
-        // let edashData = await API.edashUser(data.onid)
-        // store.commit('privilege', edashData.privilege)
-        // store.commit('stories', edashData.stories)
+        let edashData = await API.edashUser(data.onid)
+        store.commit('privilege', edashData.privilege)
+        await store.dispatch('loadViews', edashData.appData['energyDashboard'].views)
         // store.commit('alerts', edashData.alerts)
       }
     } catch (error) {
@@ -68,12 +78,20 @@ const mutations = {
 
   alerts (state, alerts) {
     state.alerts = alerts
+  },
+
+  promise (state, promise) {
+    state.promise = promise
   }
 }
 
 const getters = {
   onid (state) {
     return state.onid
+  },
+
+  promise (state) {
+    return state.promise
   },
 
   privilege (state) {
@@ -86,6 +104,10 @@ const getters = {
 
   alerts (state) {
     return state.alerts
+  },
+
+  path (state) {
+    return state.path
   }
 }
 

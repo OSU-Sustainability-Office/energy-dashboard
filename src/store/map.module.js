@@ -11,7 +11,8 @@ import Building from './building.module.js'
 const state = () => {
   return {
     path: 'map',
-    promise: null
+    promise: null,
+    allBuildingPromise: null
   }
 }
 
@@ -40,16 +41,22 @@ const actions = {
     }
     let buildings = API.buildings()
     store.commit('promise', buildings)
-    buildings = await buildings
-    for (let building of buildings) {
-      store.dispatch('loadBuilding', building)
+    let buildingsResolved = await buildings
+    let buildingPromises = []
+    for (let building of buildingsResolved) {
+      buildingPromises.push(store.dispatch('loadBuilding', building))
     }
+    store.commit('allBuildingPromise', Promise.all(buildingPromises))
   }
 }
 
 const mutations = {
   promise (state, promise) {
     state.promise = promise
+  },
+
+  allBuildingPromise: (state, promise) => {
+    state.allBuildingPromise = promise
   }
 }
 
@@ -64,6 +71,10 @@ const getters = {
 
   building: (state) => (id) => {
     return state['building_' + id.toString()]
+  },
+
+  allBuildingPromise: (state) => {
+    return state.allBuildingPromise
   },
 
   buildingGroups: (state) => {
@@ -97,17 +108,17 @@ const getters = {
   },
 
   meterGroup: (state) => (id) => {
-    let meterGroups = []
+    let meterGroups = {}
     for (let key of Object.keys(state)) {
       if (key.search(/building_/) >= 0) {
         for (let buildingKey of Object.keys(state[key])) {
           if (buildingKey.search(/meterGroup_/ >= 0)) {
-            meterGroups.push(state[key][buildingKey])
+            meterGroups[buildingKey.replace('meterGroup_', '')] = state[key][buildingKey]
           }
         }
       }
     }
-    return meterGroups
+    return meterGroups[id]
   }
 }
 /*

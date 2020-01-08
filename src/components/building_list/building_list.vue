@@ -18,18 +18,18 @@
       </el-row>
       <el-row>
         <el-col :span='24' class='cards_col'>
-          <el-tabs v-model='openName' class='tab_row'>
+          <el-tabs v-model='openName' class='tab_row' v-if='buildingList'>
             <el-tab-pane v-for='(item, key) in groups' :key='key' :name='key'>
               <span slot='label' class='tab_label'>{{ key }}</span>
               <el-row type='flex' justify='left' class='card_flex'>
                 <el-col v-for='building in item' :key='building.name' :span='4' class='card_container'>
                   <viewCard :plus='false' :building='buildingList' :id='building.id' class='card' @click='$router.push({ path: `/building/${building.id}/1` })' ref='card' />
                 </el-col>
-                <el-col v-if='!publicDir' :span='4' class='card_container'>
+                <!-- <el-col v-if='!publicDir' :span='4' class='card_container'>
                   <el-tooltip content="Create New View" placement="top">
-                    <!-- <viewCard :plus='true' :notools='1' class='storyCard' @click="openStoryEdit('', '', '', null)"/> -->
+                    <viewCard :plus='true' :notools='1' class='storyCard' @click="openStoryEdit('', '', '', null)"/>
                   </el-tooltip>
-                </el-col>
+                </el-col> -->
                 <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
                 <el-col v-for='n in 10' :key='key + n' :span='4' class='blankSlate'>
                   &nbsp;
@@ -37,6 +37,11 @@
               </el-row>
             </el-tab-pane>
           </el-tabs>
+          <el-row type='flex' justify='left' class='card_flex' v-if='!buildingList'>
+            <el-col v-for='view in groups' :key='view.name' :span='4' class='card_container'>
+              <viewCard :plus='false' :building='buildingList' :id='view.id' class='card' @click='$router.push({ path: `/view/${view.id}/1` })' ref='card' />
+            </el-col>
+          </el-row>
         </el-col>
       </el-row>
     </el-col>
@@ -59,7 +64,8 @@ export default {
   },
   async mounted () {
     if (!this.buildingList) {
-      // Need to retrieve personal stories or show login prompt
+      await this.$store['user/promise']
+      this.groups = this.$store.getters['user/views']
     } else {
       await this.$store.getters['map/promise']
       let buildings = this.$store.getters['map/buildings']
@@ -76,6 +82,9 @@ export default {
         this.openName = Object.keys(this.groups)[0]
       }
     }
+    // this.$nextTick(() => {
+      console.log(this.$store.state)
+    // })
   },
   computed: {
     buildingList: {

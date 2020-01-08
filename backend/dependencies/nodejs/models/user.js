@@ -13,30 +13,27 @@ const Alert = require('/opt/nodejs/models/alert.js')
 class User {
   constructor (onid) {
     this.onid = onid
-    this.privilege = 0
-    this.stories = []
+    this.views = []
     this.alerts = []
   }
 
   async get () {
     if (this.onid === '') return this
     await DB.connect()
-    let userRow = await DB.query('SELECT * FROM users WHERE name = ?', [this.onid])
-    if (userRow.length === 1) {
-      this.privilege = userRow[0].privilege
-      this.stories = await Story.storiesForUser(userRow[0].id)
-      this.alerts = await Alert.alertsForUser(userRow[0].id)
-    }
+    // let userRow = await DB.query('SELECT * FROM users WHERE name = ?', [this.onid])
+    // if (userRow.length === 1) {
+    // this.privilege = userRow[0].privilege
+    this.views = await Story.storiesForUser(this.onid)
+    this.alerts = await Alert.alertsForUser(this.onid)
+    // }
     return this
   }
 
   get
   data () {
     return {
-      onid: this.onid,
-      privilege: this.privilege,
-      stories: this.stories,
-      alerts: this.alerts
+      views: this.views.map(o => o.data),
+      alerts: this.alerts.map(o => o.data)
     }
   }
 }

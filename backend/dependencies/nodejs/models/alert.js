@@ -35,10 +35,10 @@ class Alert {
   async update (lowThreshold, highThreshold, point, meterId, user) {
     await DB.connect()
     let responseQuery
-    if (user.data.privilege > 3) {
+    if (user.privilege > 3) {
       responseQuery = await DB.query('UPDATE alerts SET low = ?, high = ?, point = ?, meter_id = ? WHERE id = ?', [lowThreshold, highThreshold, point, meterId, this.id])
     } else {
-      responseQuery = await DB.query('UPDATE alerts SET low = ?, high = ?, point = ?, meter_id = ? WHERE id = ? AND user = ?', [lowThreshold, highThreshold, point, meterId, this.id, user.data.onid])
+      responseQuery = await DB.query('UPDATE alerts SET low = ?, high = ?, point = ?, meter_id = ? WHERE id = ? AND user = ?', [lowThreshold, highThreshold, point, meterId, this.id, user.onid])
     }
     if (responseQuery['affectedRows'] === 0) {
       throw new Error('Could not update Alert')
@@ -56,7 +56,7 @@ class Alert {
     if (user.privilege > 3) {
       responseQuery = await DB.query('DELETE alerts WHERE id = ?', [this.id])
     } else {
-      responseQuery = await DB.query('DELETE alerts WHERE id = ? AND user = ?', [this.id, user.data.onid])
+      responseQuery = await DB.query('DELETE alerts WHERE id = ? AND user = ?', [this.id, user.onid])
     }
     if (responseQuery['affectedRows'] === 0) {
       throw new Error('Could not delete Alert')
@@ -65,18 +65,18 @@ class Alert {
 
   static async create (lowThreshold, highThreshold, point, meterId, user) {
     await DB.connect()
-    let insertRow = await DB.query('INSERT INTO alerts (user, low, high, point, meter_id) VALUES (?, ?, ?, ?, ?)', [user.data.onid, lowThreshold, highThreshold, point, meterId])
+    let insertRow = await DB.query('INSERT INTO alerts (user, low, high, point, meter_id) VALUES (?, ?, ?, ?, ?)', [user.onid, lowThreshold, highThreshold, point, meterId])
     let alert = Alert(insertRow[0]['insert_id'])
-    alert.user = user.data.onid
+    alert.user = user.onid
     alert.lowThreshold = lowThreshold
     alert.highThreshold = highThreshold
     alert.point = point
     return alert
   }
 
-  static async getAlertsForUser (userId) {
+  static async alertsForUser (user) {
     await DB.connect()
-    return DB.query('SELECT id FROM alerts WHERE user_id = ?', [userId])
+    return DB.query('SELECT id FROM alerts WHERE user = ?', [user])
   }
 
   static async forMeter (meter) {

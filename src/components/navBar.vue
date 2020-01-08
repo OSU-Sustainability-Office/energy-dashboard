@@ -16,17 +16,16 @@
           <el-menu-item index="map" :route='{path: "/map"}' ref='mapItem'>Map</el-menu-item>
           <el-menu-item index="buildings" :route='{path: "/buildings"}' ref='buildingItem'>Building List</el-menu-item>
           <el-menu-item index="campaigns" :route='{path: "/campaigns"}' ref='buildingItem'>Campaigns</el-menu-item>
-          <el-menu-item v-if='(user !== null && user.onid !== "") ' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
+          <el-menu-item v-if='onid' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
         </el-menu>
       </el-col>
       <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
-        <a class='sus-nav-sign' v-if='(user !== null && user.onid !== "") && $route.path !== "/"' @click='logOut()'>Sign Out</a>
-        <a class='sus-nav-sign' v-if='(user === null || user.onid === "") && $route.path !== "/"' :href='loginLink'>Sign In</a>
+        <a class='sus-nav-sign' v-if='onid && $route.path !== "/"' @click='logOut()'>Sign Out</a>
+        <a class='sus-nav-sign' v-if='!onid && $route.path !== "/"' :href='loginLink'>Sign In</a>
       </el-col>
     </el-row>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'navigbar',
@@ -34,20 +33,24 @@ export default {
   data () {
     return {
       loginLink: 'https://api.sustainability.oregonstate.edu/v2/auth/login?returnURI=' + process.env.VUE_APP_HOST_ADDRESS + '/#/map',
-      activeIndex: '',
-      user: null
+      activeIndex: ''
     }
   },
   computed: {
     // ...mapGetters([
     //   'user'
     // ])
+    onid: {
+      get () {
+        return this.$store.getters['user/onid']
+      }
+    }
   },
   created () {
-    this.$store.dispatch('user/user').then( user => {
-      console.log(user)
-      this.user = user
-    })
+    // this.$store.dispatch('user/user').then( user => {
+    //   console.log(user)
+    //   this.user = user
+    // })
   },
   mounted () {
     this.activeIndex = this.$route.path.split('/')[1]

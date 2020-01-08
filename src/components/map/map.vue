@@ -92,10 +92,12 @@ export default {
             // })
           })
           layer.on('mouseover', function (e) {
+            console.log(e.target)
+            e.target.oldStyle = { fillColor: e.target.options.fillColor, color: e.target.options.color }
             e.target.setStyle({ fillColor: '#000', color: '#000' })
             e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
           })
-          layer.on('mouseout', e => { window.vue.$eventHub.$emit('resetPolygon', [e.target]) })
+          layer.on('mouseout', e => { e.target.style = e.target.setStyle({ ...e.target.oldStyle }) })
         },
         style: feature => {
           var color = '#000'
@@ -225,8 +227,8 @@ export default {
     this.$store.getters['map/promise'].then(() => {
       this.mapLoaded = true
     })
-    this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
-    this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.forEach(e => { e.mapObject.resetStyle(v[0]) }) })
+    // this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
+    // this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.forEach(e => { e.mapObject.resetStyle(v[0]) }) })
   },
   mounted () {
     this.$nextTick(() => {
@@ -238,8 +240,8 @@ export default {
     })
   },
   beforeDestroy () {
-    this.$eventHub.$off('clickedPolygon')
-    this.$eventHub.$off('resetPolygon')
+    // this.$eventHub.$off('clickedPolygon')
+    // this.$eventHub.$off('resetPolygon')
   },
   watch: {
     selected: function (val) {

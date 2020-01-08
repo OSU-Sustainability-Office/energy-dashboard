@@ -60,6 +60,10 @@ const actions = {
       */
       throw new Error('Can not add together non-total metering points')
     }
+
+    payload.dateStart = payload.dateStart - (payload.dateStart % 900)
+    payload.dateEnd = payload.dateEnd  - (payload.dateEnd % 900)
+
     let promiseObject = {}
     for (let meter of store.getters.meters) {
       let promise = this.dispatch(meter.path + '/getData', payload)

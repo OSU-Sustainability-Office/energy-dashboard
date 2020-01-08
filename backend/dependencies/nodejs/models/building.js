@@ -26,6 +26,7 @@ class Building {
   async get (expand = true) {
     await DB.connect()
     let buildingRow = await DB.query('SELECT * FROM buildings WHERE id = ?', [this.id])
+    if (buildingRow.length <= 0) return this
     this.mapId = buildingRow[0]['map_id']
     this.image = buildingRow[0]['image']
     this.group = buildingRow[0]['group']

@@ -13,17 +13,43 @@ const state = () => {
     name: null,       // String
     user: null,       // String
     media: null,      // URL String
-    id: null,          // Integer DB ID
+    id: null,         // Integer DB ID
     path: null,
-    promise: null
+    promise: null,
+    description: ''
   }
 }
 
 const actions = {
-  loadBlock (store, id) {
-    store.registerModule(id, Block)
-    store.commit(id.toString() + '/path', store.getters.path + '/' + id.toString())
-    store.dispatch(id.toString() + '/changeBlock', id)
+  loadBlock (store, payload) {
+    let blockSpace = 'block_' + payload.id.toString()
+    let moduleSpace = store.getters.path + '/' + blockSpace
+
+    this.registerModule(moduleSpace.split('/'), Block)
+
+    store.commit(blockSpace + '/path', moduleSpace)
+    store.dispatch(blockSpace + '/changeBlock', payload.id)
+  },
+
+  async loadBlocks (store, blocks) {
+    console.log(blocks)
+    for (let block of blocks) {
+      let blockSpace = 'block_' + block.id
+      let moduleSpace = store.getters.path + '/' + blockSpace
+      this.registerModule(moduleSpace.split('/'), Block)
+      store.commit(blockSpace + '/path', moduleSpace)
+      let viewBlockPromise = store.dispatch(blockSpace + '/loadCharts', block.charts)
+      store.commit(blockSpace + '/promise', viewBlockPromise)
+
+      store.commit(blockSpace + '/name', block.name)
+      store.commit(blockSpace + '/dateInterval', block.dateInterval)
+      store.commit(blockSpace + '/intervalUnit', block.intervalUnit)
+      store.commit(blockSpace + '/graphType', block.graphType)
+      store.commit(blockSpace + '/dateStart', block.dateStart)
+      store.commit(blockSpace + '/dateEnd', block.dateEnd)
+      store.commit(blockSpace + '/id', block.id)
+      store.commit(blockSpace + '/shuffleChartColors')
+    }
   },
 
   async changeView (store, id) {
@@ -91,6 +117,10 @@ const getters = {
 
   id (state) {
     return state.id
+  },
+
+  description (state) {
+    return state.description
   }
 }
 /*

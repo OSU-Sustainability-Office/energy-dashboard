@@ -19,7 +19,8 @@ exports.get = async (event, context) => {
 exports.user = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
-  response.body = JSON.stringify(await (Story.storiesForUser(user)).map(o => o.data))
+  let stories = await Story.storiesForUser(user)
+  response.body = JSON.stringify(stories.map(o => o.data))
   return response
 }
 

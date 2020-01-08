@@ -32,20 +32,37 @@ export default {
     heropicture,
     navdir
   },
-  async mounted () {
-    this.$nextTick(() => {
-      if (!this.view || this.view.path || !this.$route.path.includes('building')) return
-      for (let card of this.cards) {
-        if (!card.path) return
-        this.$store.commit(card.path + '/dateStart', this.dateStart)
-        this.$store.commit(card.path + '/dateEnd', this.dateEnd)
-        this.$store.commit(card.path + '/dateInterval', this.dateInterval)
-        this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
+  // mounted () {
+  //   this.$nextTick(() => {
+  //     if (!this.view || !this.view.path || !this.$route.path.includes('building')) {
+  //       return
+  //     }
+  //     for (let card of this.cards) {
+  //       if (!card.path) return
+  //       this.$store.commit(card.path + '/dateStart', this.dateStart)
+  //       this.$store.commit(card.path + '/dateEnd', this.dateEnd)
+  //       this.$store.commit(card.path + '/dateInterval', this.dateInterval)
+  //       this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
+  //     }
+  //   })
+  //   if (!this.$route.path.includes('building')) {
+  //     // May want to move this await to use the promise thing
+  //     this.$store.dispatch('view/changeView', this.$route.params.id)
+  //   }
+  // },
+  watch: {
+    view: {
+      immediate: true,
+      handler: async function (value) {
+        for (let card of this.cards) {
+          if (!card.path) return
+          await card.promise
+          this.$store.commit(card.path + '/dateStart', this.dateStart)
+          this.$store.commit(card.path + '/dateEnd', this.dateEnd)
+          this.$store.commit(card.path + '/dateInterval', this.dateInterval)
+          this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
+        }
       }
-    })
-    if (!this.$route.path.includes('building')) {
-      // May want to move this await to use the promise thing
-      await this.$store.dispatch('view/changeView', this.$route.params.id)
     }
   },
   computed: {
@@ -66,14 +83,15 @@ export default {
     dateStart: {
       get () {
         let d = new Date()
+        console.log(this.$route.params.range)
         switch (parseInt(this.$route.params.range)) {
-          case 0:
+          case 1:
             d.setDate(d.getDate() - 7)
             break
-          case 1:
+          case 2:
             d.setMonth(d.getMonth() - 1)
             break
-          case 2:
+          case 3:
             d.setFullYear(d.getFullYear() - 1)
             break
           default:

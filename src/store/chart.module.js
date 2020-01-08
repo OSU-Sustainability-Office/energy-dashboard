@@ -15,7 +15,8 @@ const state = () => {
     id: null,                 // Integer DB ID
     meterGroupPath: null,
     path: null,
-    color: '#000000'
+    color: '#000000',
+    promise: null
   }
 }
 
@@ -53,6 +54,10 @@ const mutations = {
     state.path = path
   },
 
+  promise (state, promise) {
+    state.promise = promise
+  },
+
   color (state, color) {
     state.color = color
   },
@@ -75,12 +80,7 @@ const mutations = {
 
   meterGroupPath (state, meterGroupPath) {
     state.meterGroupPath = meterGroupPath
-  },
-
-  promise (state, promise) {
-    state.promise = promise
   }
-
 }
 
 const getters = {

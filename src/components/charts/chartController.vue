@@ -28,37 +28,41 @@ export default {
     linechart, barchart, doughnutchart, piechart
   },
   mounted () {
-    if (this.promise === null) {
-      this.loading = false
-    } else {
-      this.promise.then(() => {
-        this.loading = false
-      })
-    }
-    this.$store.dispatch(this.path + '/getData').then(r => {
-      if (this.chart) {
-        this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
-        this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
-      }
-      this.chartData = r
-      this.loading = false
-    })
+    // if (this.promise === null) {
+    //   this.loading = false
+    // } else {
+    //   this.promise.then(() => {
+    //     this.loading = false
+    //   })
+    // }
+    // this.loading = true
+    // console.log('mounted data')
+    // this.$store.dispatch(this.path + '/getData').then(r => {
+    //   if (this.chart) {
+    //     this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+    //     this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+    //   }
+    //   this.chartData = r
+    //   this.loading = false
+    // })
   },
   watch: {
-    path: function (value) {
-      this.loading = true
-      this.$store.dispatch(this.path + '/getData').then(r => {
-        if (this.chart) {
-          this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
-          this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
-        }
-        this.chartData = r
-        this.loading = false
-      })
-    }
+    // path: function (value) {
+    //   this.loading = true
+    //   console.log('PATH data')
+    //   this.$store.dispatch(this.path + '/getData').then(r => {
+    //     if (this.chart) {
+    //       this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+    //       this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+    //     }
+    //     this.chartData = r
+    //     this.loading = false
+    //   })
+    // }
   },
   data () {
     return {
+      unsubscribe: null,
       loading: true,
       chartData: null,
       watchTimeout: null,
@@ -75,12 +79,14 @@ export default {
         this.colors[j] = temp
       }
     }
+    console.log('created')
 
     // this.$store.dispatch(this.block.path + '/getData').then(data => {
     //   this.chartData = data
     //   this.loading = false
     // })
-    this.$store.subscribe((mutation, state) => {
+    this.unsubscribe = this.$store.subscribe((mutation, state) => {
+      if (this.$el.style.display === 'none') return
       let mutationPath = mutation.type.split('/')
       let call = mutationPath.pop()
       mutationPath = mutationPath.join('/')
@@ -91,6 +97,8 @@ export default {
         this.loading = true
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
+          console.log('watch data')
+          console.log(this.path)
           this.$store.dispatch(this.path + '/getData').then(data => {
             if (this.chart) {
               this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
@@ -100,7 +108,7 @@ export default {
             this.chartData = data
             this.loading = false
           })
-        }, 200)
+        }, 300)
       }
     })
   },
@@ -141,6 +149,9 @@ export default {
         }
       }
     }
+  },
+  beforeDestroy () {
+    this.unsubscribe()
   },
   methods: {
     unit: function (index) {

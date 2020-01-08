@@ -7,8 +7,8 @@
  */
 
 const DB = require('/opt/nodejs/sql-access.js')
-const MeterGroup = require('/opt/nodejs/models/meter_group.js')
-const Building = require('/opt/nodejs/models/building.js')
+// const MeterGroup = require('/opt/nodejs/models/meter_group.js')
+// const Building = require('/opt/nodejs/models/building.js')
 
 class Chart {
   constructor (id) {
@@ -27,8 +27,9 @@ class Chart {
     let chartRow = await DB.query('SELECT * FROM block_groups WHERE id = ?', [this.id])
     this.name = chartRow[0]['name']
     this.point = chartRow[0]['point']
-    this.meters = await MeterGroup(chartRow[0]['group_id']).get()
-    this.building = await Building(chartRow[0]['building_id']).get()
+    this.meters = chartRow[0]['group_id']
+    // Leaving this here for now but it is not right (column does not exist in this table)
+    this.building = chartRow[0]['building_id_2']
     return this
   }
 
@@ -73,7 +74,7 @@ class Chart {
     if (insertRow['affectedRows'] === 0) {
       throw new Error('Could not create chart')
     }
-    let chart = Chart(insertRow.insertId)
+    let chart = new Chart(insertRow.insertId)
     chart.name = name
     chart.meters = meterGroup
     chart.building = building
@@ -92,4 +93,4 @@ class Chart {
   }
 }
 
-exports = Chart
+module.exports = Chart
