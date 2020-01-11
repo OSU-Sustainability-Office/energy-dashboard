@@ -13,8 +13,6 @@ const state = () => {
   return {
     onid: '',
     privilege: 0,
-    views: [],
-    alerts: [],
     promise: null,
     path: 'user'
   }
@@ -23,37 +21,39 @@ const state = () => {
 const actions = {
 
   async loadViews (store, views) {
-    // let promises = []
+    let promises = []
     for (let view of views) {
       let viewSpace = 'view_' + view.id
       let moduleSpace = store.getters.path + '/' + viewSpace
-      console.log(moduleSpace)
       this.registerModule(moduleSpace.split('/'), View)
       store.commit(viewSpace + '/path', moduleSpace)
       let userViewPromise = store.dispatch(viewSpace + '/loadBlocks', view.blocks)
       store.commit(viewSpace + '/promise', userViewPromise)
-
+      promises.push(userViewPromise)
       store.commit(viewSpace + '/name', view.name)
-      store.commit(viewSpace + '/media', view.media)
+      store.commit(viewSpace + '/image', view.media)
       store.commit(viewSpace + '/id', view.id)
     }
-    // await Promise.all(promises)
+    await Promise.all(promises)
   },
 
   async user (store) {
-    try {
-      let data = await API.user()
-      if (data.onid !== '') {
-        store.commit('onid', data.onid)
-        let edashData = await API.edashUser(data.onid)
-        store.commit('privilege', edashData.privilege)
-        await store.dispatch('loadViews', edashData.appData['energyDashboard'].views)
-        // store.commit('alerts', edashData.alerts)
+    store.commit('promise', new Promise(async (resolve, reject) => {
+      try {
+        let data = await API.user()
+        if (data.onid !== '') {
+          store.commit('onid', data.onid)
+          let edashData = await API.edashUser(data.onid)
+          store.commit('privilege', edashData.privilege)
+          await store.dispatch('loadViews', edashData.appData['energyDashboard'].views)
+          // store.commit('alerts', edashData.alerts)
+        }
+        resolve(store.getters)
+      } catch (error) {
+        reject(error)
+        // Do nothing, likely failed because no cookie has been made yet (user not logged in)
       }
-    } catch (error) {
-      // Do nothing, likely failed because no cookie has been made yet (user not logged in)
-    }
-    return store.getters
+    }))
   },
 
   async logout (store) {
@@ -90,6 +90,16 @@ const getters = {
     return state.onid
   },
 
+  view: (state) => (id) => {
+    let r = {}
+    for (let key of Object.keys(state)) {
+      if (key.search(/view_[0-9]+/) >= 0) {
+        r[key.replace('view_', '')] = state[key]
+      }
+    }
+    return r[id]
+  },
+
   promise (state) {
     return state.promise
   },
@@ -99,7 +109,13 @@ const getters = {
   },
 
   views (state) {
-    return state.views
+    let r = []
+    for (let key of Object.keys(state)) {
+      if (key.search(/view_[0-9]+/) >= 0) {
+        r.push(state[key])
+      }
+    }
+    return r
   },
 
   alerts (state) {

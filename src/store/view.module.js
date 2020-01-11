@@ -12,7 +12,7 @@ const state = () => {
   return {
     name: null,       // String
     user: null,       // String
-    media: null,      // URL String
+    image: null,      // URL String
     id: null,         // Integer DB ID
     path: null,
     promise: null,
@@ -32,7 +32,7 @@ const actions = {
   },
 
   async loadBlocks (store, blocks) {
-    console.log(blocks)
+    let promises = []
     for (let block of blocks) {
       let blockSpace = 'block_' + block.id
       let moduleSpace = store.getters.path + '/' + blockSpace
@@ -40,7 +40,7 @@ const actions = {
       store.commit(blockSpace + '/path', moduleSpace)
       let viewBlockPromise = store.dispatch(blockSpace + '/loadCharts', block.charts)
       store.commit(blockSpace + '/promise', viewBlockPromise)
-
+      promises.push(viewBlockPromise)
       store.commit(blockSpace + '/name', block.name)
       store.commit(blockSpace + '/dateInterval', block.dateInterval)
       store.commit(blockSpace + '/intervalUnit', block.intervalUnit)
@@ -50,6 +50,8 @@ const actions = {
       store.commit(blockSpace + '/id', block.id)
       store.commit(blockSpace + '/shuffleChartColors')
     }
+
+    await Promise.all(promises)
   },
 
   async changeView (store, id) {
@@ -59,7 +61,7 @@ const actions = {
     let view = await API.view(id)
     store.commit('name', view.name)
     store.commit('user', view.user)
-    store.commit('media', view.media)
+    store.commit('image', view.image)
     store.commit('id', id)
     for (let block of view.blocks) {
       store.dispatch('loadBlock', block)
@@ -84,8 +86,8 @@ const mutations = {
     state.user = user
   },
 
-  media (state, media) {
-    state.media = media
+  image (state, image) {
+    state.image = image
   },
 
   id (state, id) {
@@ -111,8 +113,8 @@ const getters = {
     return state.user
   },
 
-  media (state) {
-    return state.media
+  image (state) {
+    return state.image
   },
 
   id (state) {

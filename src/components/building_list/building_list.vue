@@ -37,9 +37,17 @@
               </el-row>
             </el-tab-pane>
           </el-tabs>
-          <el-row type='flex' justify='left' class='card_flex' v-if='!buildingList'>
+          <el-row type='flex' justify='left' class='card_flex' v-if='!buildingList' v-loading='this.groups.length === 0'>
             <el-col v-for='view in groups' :key='view.name' :span='4' class='card_container'>
               <viewCard :plus='false' :building='buildingList' :id='view.id' class='card' @click='$router.push({ path: `/view/${view.id}/1` })' ref='card' />
+            </el-col>
+            <el-col :span='4' class='card_container'>
+              <!-- <el-tooltip content="Create New View" placement="top"> -->
+                <viewCard :plus='true' :notools='1' class='card' :building='false' :id='1' />
+              <!-- </el-tooltip> -->
+            </el-col>
+            <el-col v-for='n in 10' :key='n' :span='4' class='blankSlate'>
+              &nbsp;
             </el-col>
           </el-row>
         </el-col>
@@ -63,8 +71,10 @@ export default {
     }
   },
   async mounted () {
+    console.log(this.$store.getters['user/promise'])
     if (!this.buildingList) {
-      await this.$store['user/promise']
+      this.groups = []
+      await this.$store.getters['user/promise']
       this.groups = this.$store.getters['user/views']
     } else {
       await this.$store.getters['map/promise']
@@ -82,9 +92,6 @@ export default {
         this.openName = Object.keys(this.groups)[0]
       }
     }
-    // this.$nextTick(() => {
-      console.log(this.$store.state)
-    // })
   },
   computed: {
     buildingList: {
