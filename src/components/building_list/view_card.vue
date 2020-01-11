@@ -7,7 +7,7 @@
  */
 <template>
   <div class="card" ref='card' @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
-    <div class="toolbox" ref="toolbox" v-if='!plus && parseInt(building) === 0'>
+    <div class="toolbox" ref="toolbox" v-if='!plus && !building'>
       <el-tooltip content="Edit View" placement="top">
         <i class="fas fa-pencil-alt" @click.prevent='openEdit()'></i>
       </el-tooltip>
@@ -82,6 +82,12 @@ export default {
         return
       }
       this.$emit('click')
+    },
+    deleteView: function () {
+      this.$store.dispatch('modalController/openModal', {
+        name: 'confirm_delete',
+        id: this.id
+      })
     }
   },
 
@@ -102,8 +108,7 @@ export default {
         this.$refs.card.style.background = 'rgb(26,26,26)'
       }
     }
-  },
-
+  }
 }
 </script>
 
@@ -149,7 +154,7 @@ export default {
   border-width: '4px';
 }
 .card:hover .plus .fas {
-  color: #FFF !important;
+  color: $--color-black !important;
 }
 .image {
   position: absolute;

@@ -19,6 +19,7 @@ exports.get = async (event, context) => {
 exports.user = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
+  await user.resolved
   let stories = await Story.storiesForUser(user)
   response.body = JSON.stringify(stories.map(o => o.data))
   return response
@@ -27,6 +28,7 @@ exports.user = async (event, context) => {
 exports.post = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
+  await user.resolved
   try {
     response.body = JSON.stringify((await Story.create(
       event.body.name,
@@ -37,13 +39,15 @@ exports.post = async (event, context) => {
     response.body = err.message
     response.status = 400
   }
+  return response
 }
 
 exports.put = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
+  await user.resolved
   try {
-    await Story(event.body.id).update(
+    await (new Story(event.body.id)).update(
       event.body.name,
       event.body.media,
       user
@@ -58,8 +62,9 @@ exports.put = async (event, context) => {
 exports.delete = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
+  await user.resolved
   try {
-    await Story(event.body.id).delete(user)
+    await (new Story(event.body.id)).delete(user)
   } catch (error) {
     response.body = error.message
     response.status = 400

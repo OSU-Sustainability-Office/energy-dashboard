@@ -389,7 +389,7 @@ Resources:
         Building:
           Type: Api
           Properties:
-            Path: /userstories
+            Path: /userviews
             Method: get
   StoryGet:
     Type: AWS::Serverless::Function
@@ -404,7 +404,7 @@ Resources:
         Building:
           Type: Api
           Properties:
-            Path: /story
+            Path: /view
             Method: get
   StoryPut:
     Type: AWS::Serverless::Function
@@ -419,7 +419,7 @@ Resources:
         Building:
           Type: Api
           Properties:
-            Path: /story
+            Path: /view
             Method: put
   StoryPost:
     Type: AWS::Serverless::Function
@@ -434,7 +434,7 @@ Resources:
         Building:
           Type: Api
           Properties:
-            Path: /story
+            Path: /view
             Method: post
   StoryDelete:
     Type: AWS::Serverless::Function
@@ -449,7 +449,7 @@ Resources:
         Building:
           Type: Api
           Properties:
-            Path: /story
+            Path: /view
             Method: delete
   BlockGet:
     Type: AWS::Serverless::Function

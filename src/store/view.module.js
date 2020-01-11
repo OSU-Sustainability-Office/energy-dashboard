@@ -31,6 +31,20 @@ const actions = {
     store.dispatch(blockSpace + '/changeBlock', payload.id)
   },
 
+  async delete (store) {
+    await API.view(null, { id: store.getters.id }, 'delete')
+  },
+
+  async save (store, payload) {
+    store.commit('name', payload.name)
+    store.commit('image', payload.image)
+    await API.view(store.getters.id, {
+      name: payload.name,
+      media: payload.image,
+      id: store.getters.id
+    }, 'put')
+  },
+
   async loadBlocks (store, blocks) {
     let promises = []
     for (let block of blocks) {

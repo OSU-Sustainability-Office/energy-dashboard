@@ -13,6 +13,7 @@
   const HTTPS = require('https')
   const Unzip = require('unzip')
   const Cors = require('cors')
+  const BodyParser = require('body-parser')
 
   const awsKeys = (() => {
     const fileContents = FileSystem.readFileSync(require('os').homedir() + '/.aws/credentials').toString()
@@ -56,7 +57,7 @@
     const resource = template.Resources[resourceKey]
     if (resource.Type === 'AWS::Serverless::Function') {
       const routeProperties = Object.values(resource.Properties.Events)[0].Properties
-      app[routeProperties.Method](routeProperties.Path, Cors({ origin: 'http://localhost:8080', credentials: true }), async (req, res) => {
+      app[routeProperties.Method](routeProperties.Path, Cors({ origin: 'http://localhost:8080', credentials: true }), Express.json(), async (req, res) => {
         const codePath = resource.Properties.Handler.split('.')
         const fullModPath = './' + resource.Properties.CodeUri + codePath[0] + '.js'
         const moduleName = require(fullModPath)
@@ -67,7 +68,7 @@
             ...req.query
           },
           headers: {
-
+            Cookie: req.headers.cookie
           }
         }
         res.send(
@@ -130,7 +131,9 @@
 
   await Promise.all(layerPromises)
 
-  app.use(Cors())
+  app.use(Cors({ origin: 'http://localhost:8080', credentials: true }))
+  app.use(Express.urlencoded({ extended: true }))
+  app.use(Express.json())
   app.listen(3000, function () {
     console.log('Server Running')
   })

@@ -37,6 +37,24 @@ const actions = {
     await Promise.all(promises)
   },
 
+  async newView (store, payload) {
+    let id = (await API.view(null, { media: payload.image, name: payload.name }, 'post')).id
+    console.log(id)
+    let viewSpace = 'view_' + id
+    let moduleSpace = store.getters.path + '/' + viewSpace
+    this.registerModule(moduleSpace.split('/'), View)
+    store.commit(viewSpace + '/path', moduleSpace)
+    store.commit(viewSpace + '/name', payload.name)
+    store.commit(viewSpace + '/image', payload.image)
+    store.commit(viewSpace + '/id', id)
+  },
+
+  async deleteView (store, id) {
+    let view = store.getters.view(id)
+    await this.dispatch(view.path + '/delete')
+    this.unregisterModule(view.path.split('/'))
+  },
+
   async user (store) {
     store.commit('promise', new Promise(async (resolve, reject) => {
       try {

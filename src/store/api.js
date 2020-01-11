@@ -8,15 +8,17 @@
 import axios from 'axios'
 
 function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP_ROOT_API) {
+  console.log(method + ' ' + route + ' ' + data)
   return axios(base + '/' + route, { method: method, data: data, withCredentials: true, timeout: 72000 })
 }
 
 export default {
-  view: async (id, data = null, method = 'get') => {
+  view: async (id, payload = null, method = 'get') => {
+    console.log(payload)
     if (method === 'get') {
       return (await callAPI('view?id=' + id)).data
     } else {
-      return (await callAPI('view', data, method)).data
+      return (await callAPI('view', payload, method)).data
     }
   },
   login: async () => {

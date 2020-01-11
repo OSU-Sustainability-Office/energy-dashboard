@@ -37,14 +37,14 @@
               </el-row>
             </el-tab-pane>
           </el-tabs>
-          <el-row type='flex' justify='left' class='card_flex' v-if='!buildingList' v-loading='this.groups.length === 0'>
-            <el-col v-for='view in groups' :key='view.name' :span='4' class='card_container'>
+          <el-row type='flex' justify='left' class='card_flex' v-if='!buildingList' v-loading='this.loading'>
+            <el-col v-for='view in groups' :key='view.id' :span='4' class='card_container'>
               <viewCard :plus='false' :building='buildingList' :id='view.id' class='card' @click='$router.push({ path: `/view/${view.id}/1` })' ref='card' />
             </el-col>
             <el-col :span='4' class='card_container'>
-              <!-- <el-tooltip content="Create New View" placement="top"> -->
-                <viewCard :plus='true' :notools='1' class='card' :building='false' :id='1' />
-              <!-- </el-tooltip> -->
+              <el-tooltip content="Create New View" placement="top">
+                <viewCard :plus='true' :notools='1' class='card' :building='false' :id='1' @click='newView()'/>
+              </el-tooltip>
             </el-col>
             <el-col v-for='n in 10' :key='n' :span='4' class='blankSlate'>
               &nbsp;
@@ -53,50 +53,68 @@
         </el-col>
       </el-row>
     </el-col>
+    <deleteView />
+    <editView />
   </el-row>
 </template>
 
 <script>
 import viewCard from '@/components/building_list/view_card.vue'
+import deleteView from '@/components/building_list/modals/confirm_delete.vue'
+import editView from '@/components/building_list/modals/edit_view.vue'
+
 export default {
   components: {
-    viewCard
+    viewCard,
+    deleteView,
+    editView
   },
   data () {
     return {
-      groups: {},
       search: '',
       openName: '',
-      publicDir: true
+      publicDir: true,
+      loading: true
     }
   },
   async mounted () {
-    console.log(this.$store.getters['user/promise'])
-    if (!this.buildingList) {
-      this.groups = []
-      await this.$store.getters['user/promise']
-      this.groups = this.$store.getters['user/views']
+    if (this.$route.params.group && this.groups[this.$route.params.group]) {
+      this.openName = this.$route.params.group
     } else {
+      this.openName = Object.keys(this.groups)[0]
+    }
+    if (this.buildingList) {
       await this.$store.getters['map/promise']
-      let buildings = this.$store.getters['map/buildings']
-      for (let building of buildings) {
-        if (this.groups[building.group]) {
-          this.groups[building.group].push(building)
-        } else {
-          this.groups[building.group] = [building]
-        }
-      }
-      if (this.$route.params.group && this.groups[this.$route.params.group]) {
-        this.openName = this.$route.params.group
-      } else {
-        this.openName = Object.keys(this.groups)[0]
-      }
+      this.loading = false
+    } else {
+      await this.$store.getters['user/promise']
+      this.loading = false
     }
   },
   computed: {
     buildingList: {
       get () {
         return this.$route.path.includes('buildings')
+      }
+    },
+
+    groups: {
+      get () {
+        if (this.buildingList) {
+          let r = {}
+          // await this.$store.getters['map/promise']
+          let buildings = this.$store.getters['map/buildings']
+          for (let building of buildings) {
+            if (r[building.group]) {
+              r[building.group].push(building)
+            } else {
+              r[building.group] = [building]
+            }
+          }
+          return r
+        } else {
+          return this.$store.getters['user/views']
+        }
       }
     }
   },
@@ -117,6 +135,13 @@ export default {
           card.$el.parentNode.style.display = 'block'
         }
       }
+    }
+  },
+  methods: {
+    newView: function () {
+      this.$store.dispatch('modalController/openModal', {
+        name: 'edit_view'
+      })
     }
   }
 }
