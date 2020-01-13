@@ -16,6 +16,12 @@ import ModalController from './modal_controller.module.js'
 Vue.use(Vuex)
 
 const store = {
+  getters: {
+    view: (state) => {
+      return state['view']
+    }
+  },
+
   modules: {
     view: View,
     // campaign: Campaign,

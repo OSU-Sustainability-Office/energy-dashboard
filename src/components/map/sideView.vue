@@ -134,7 +134,7 @@ export default {
   },
   watch: {
     media: function (value) {
-      this.$refs.media.style.backgroundImage = 'url(' + value + ')'
+      this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + value + ')'
     }
   },
   mounted () {
@@ -147,7 +147,7 @@ export default {
       this.$refs.nextArrow.style.display = 'block'
     }
     let date = new Date()
-    this.$refs.media.style.backgroundImage = 'url(' + this.media + ')'
+    this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + this.media + ')'
   //     for (let block in this.story.blocks) {
   //       promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
   //     }

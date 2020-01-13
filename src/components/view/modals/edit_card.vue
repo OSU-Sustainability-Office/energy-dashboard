@@ -135,22 +135,53 @@ export default {
   },
 
   methods: {
-    cardSave: function () {
-      const blockPath = this.$store.getters['modalController/data'].path
-      if (this.$store.getters[blockPath + '/dateStart'] !== this.form.start) {
-        this.$store.commit(blockPath + '/dateStart', this.form.start)
-      }
-      if (this.$store.getters[blockPath + '/dateEnd'] !== this.form.end) {
-        this.$store.commit(blockPath + '/dateEnd', this.form.end)
-      }
-      if (this.$store.getters[blockPath + '/name'] !== this.form.name) {
-        this.$store.commit(blockPath + '/name', this.form.name)
-      }
-      if (this.$store.getters[blockPath + '/intervalUnit'] !== this.interval(this.form.intUnit)) {
-        this.$store.commit(blockPath + '/intervalUnit', this.interval(this.form.intUnit))
-      }
-      if (this.$store.getters[blockPath + '/dateInterval'] !== this.date(this.form.intUnit)) {
-        this.$store.commit(blockPath + '/dateInterval', this.date(this.form.intUnit))
+    cardDelete: async function () {
+      let blockPath = this.$store.getters['modalController/data'].path
+      let blockId = this.$store.getters[blockPath + '/id']
+      let viewPath = blockPath.split('/')
+      viewPath.pop()
+      viewPath = viewPath.join('/')
+
+      this.$store.dispatch(viewPath + '/deleteBlock', blockId)
+      this.visible = false
+    },
+
+    cardSave: async function () {
+      let blockPath = this.$store.getters['modalController/data'].path
+      if (!blockPath) {
+        let view = this.$store.getters['modalController/data'].view
+        blockPath = await this.$store.dispatch(view + '/newBlock', {
+          dateStart: this.form.start,
+          dateEnd: this.form.end,
+          graphType: this.form.graphType,
+          name: this.form.name,
+          dateInterval: this.date(this.form.intUnit),
+          intervalUnit: this.interval(this.form.intUnit)
+        })
+      } else {
+        // if (this.$store.getters[blockPath + '/dateStart'] !== this.form.start) {
+        //   this.$store.commit(blockPath + '/dateStart', this.form.start)
+        // }
+        // if (this.$store.getters[blockPath + '/dateEnd'] !== this.form.end) {
+        //   this.$store.commit(blockPath + '/dateEnd', this.form.end)
+        // }
+        // if (this.$store.getters[blockPath + '/name'] !== this.form.name) {
+        //   this.$store.commit(blockPath + '/name', this.form.name)
+        // }
+        // if (this.$store.getters[blockPath + '/intervalUnit'] !== this.interval(this.form.intUnit)) {
+        //   this.$store.commit(blockPath + '/intervalUnit', this.interval(this.form.intUnit))
+        // }
+        // if (this.$store.getters[blockPath + '/dateInterval'] !== this.date(this.form.intUnit)) {
+        //   this.$store.commit(blockPath + '/dateInterval', this.date(this.form.intUnit))
+        // }
+        this.$store.dispatch(blockPath + '/update', {
+          dateStart: this.form.start,
+          dateEnd: this.form.end,
+          graphType: this.form.graphType,
+          name: this.form.name,
+          dateInterval: this.date(this.form.intUnit),
+          intervalUnit: this.interval(this.form.intUnit)
+        })
       }
 
       const charts = this.$store.getters[blockPath + '/charts']
@@ -158,19 +189,26 @@ export default {
       for (let index in this.form.sets) {
         if (index < charts.length) {
           const chartPath = charts[index].path
-
-          if (this.$store.getters[chartPath + '/name'] !== this.form.sets[index].name) {
-            this.$store.commit(chartPath + '/name', this.form.sets[index].name)
-          }
-          if (this.$store.getters[chartPath + '/point'] !== this.form.sets[index].point) {
-            this.$store.commit(chartPath + '/point', this.form.sets[index].point)
-          }
-          if (this.$store.getters[chartPath + '/building'] !== this.form.sets[index].building) {
-            this.$store.commit(chartPath + '/building', this.form.sets[index].building)
-          }
-          if (this.$store.getters[chartPath + '/meterGroupPath'] !== this.form.sets[index].meter) {
-            this.$store.commit(chartPath + '/meterGroupPath', this.form.sets[index].meter)
-          }
+          // let saveChart = false
+          // if (this.$store.getters[chartPath + '/name'] !== this.form.sets[index].name) {
+          //   this.$store.commit(chartPath + '/name', this.form.sets[index].name)
+          //   saveChart = true
+          // }
+          // if (this.$store.getters[chartPath + '/point'] !== this.form.sets[index].point) {
+          //   this.$store.commit(chartPath + '/point', this.form.sets[index].point)
+          //   saveChart = true
+          // }
+          // if (this.$store.getters[chartPath + '/building'] !== this.form.sets[index].building) {
+          //   this.$store.commit(chartPath + '/building', this.form.sets[index].building)
+          //   saveChart = true
+          // }
+          // if (this.$store.getters[chartPath + '/meterGroupPath'] !== this.form.sets[index].meter) {
+          //   this.$store.commit(chartPath + '/meterGroupPath', this.form.sets[index].meter)
+          //   saveChart = true
+          // }
+          // if (saveChart) {
+          this.$store.dispatch(chartPath + '/update', this.form.sets[index])
+          // }
         } else {
           this.$store.dispatch(blockPath + '/newChart', this.form.sets[index])
         }
@@ -212,6 +250,17 @@ export default {
         }
       } else {
         this.form.new = true
+        this.form.name = ''
+        this.form.start = ''
+        this.form.end = ''
+        this.form.intUnit = 1
+        this.form.graphType = 1
+        this.form.sets = [{
+          name: '',
+          building: '',
+          meter: '',
+          point: ''
+        }]
       }
     },
     dateValidator: function (rule, value, callback) {

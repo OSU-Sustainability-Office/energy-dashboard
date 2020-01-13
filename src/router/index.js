@@ -34,8 +34,7 @@ export default new Router({
     },
     {
       path: '/view/:id',
-      name: 'private',
-      component: account
+      component: view
     },
     {
       path: '/compare/:ids/:range',

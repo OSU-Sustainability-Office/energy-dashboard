@@ -33,19 +33,19 @@ const actions = {
       store.commit(viewSpace + '/name', view.name)
       store.commit(viewSpace + '/image', view.media)
       store.commit(viewSpace + '/id', view.id)
+      store.commit(viewSpace + '/user', store.getters.onid)
     }
     await Promise.all(promises)
   },
 
   async newView (store, payload) {
-    let id = (await API.view(null, { media: payload.image, name: payload.name }, 'post')).id
-    console.log(id)
+    let id = (await API.view(null, { media: payload.media, name: payload.name }, 'post')).id
     let viewSpace = 'view_' + id
     let moduleSpace = store.getters.path + '/' + viewSpace
     this.registerModule(moduleSpace.split('/'), View)
     store.commit(viewSpace + '/path', moduleSpace)
     store.commit(viewSpace + '/name', payload.name)
-    store.commit(viewSpace + '/image', payload.image)
+    store.commit(viewSpace + '/image', payload.media)
     store.commit(viewSpace + '/id', id)
   },
 

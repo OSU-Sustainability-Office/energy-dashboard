@@ -45,6 +45,19 @@ const actions = {
     store.commit('point', chart.point)
     store.commit('building', chart.building)
     store.commit('meterGroupPath', this.getters.meterGroup(chart.meterGroup).path)
+  },
+
+  async update (store, payload) {
+    await API.chart({
+      name: payload.name,
+      point: payload.point,
+      meterGroup: this.getters[payload.meterGroup + '/id'],
+      building: this.getetrs[payload.building + '/id']
+    }, 'put')
+    store.commit('name', payload.name)
+    store.commit('point', payload.point)
+    store.commit('building', payload.building)
+    store.commit('meterGroupPath', payload.meterGroup)
   }
 
 }

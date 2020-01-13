@@ -34,6 +34,10 @@ const actions = {
     store.dispatch(buildingSpace + '/buildDefaultBlocks')
   },
 
+  async imageList (store) {
+    return API.images()
+  },
+
   async loadMap (store) {
     for (let building of store.getters.buildings) {
       let buildingKey = building.path.split('/').pop()

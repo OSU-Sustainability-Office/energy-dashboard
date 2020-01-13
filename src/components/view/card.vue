@@ -24,20 +24,17 @@
         <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430'/>
       </el-row>
   </el-col>
-  <editCard />
   </el-row>
 </template>
 
 <script>
-import editCard from '@/components/view/modals/edit_card'
 import chartController from '@/components/charts/chartController'
 
 export default {
   name: 'card',
   props: ['path'],
   components: {
-    chartController,
-    editCard
+    chartController
   },
   data () {
     return {

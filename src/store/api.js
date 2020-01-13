@@ -14,12 +14,14 @@ function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP
 
 export default {
   view: async (id, payload = null, method = 'get') => {
-    console.log(payload)
     if (method === 'get') {
       return (await callAPI('view?id=' + id)).data
     } else {
       return (await callAPI('view', payload, method)).data
     }
+  },
+  images: async () => {
+    return (await callAPI('images')).data
   },
   login: async () => {
     return (await callAPI('login?returnURI=' + encodeURI('http://localhost:8080'), null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data

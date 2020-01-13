@@ -67,10 +67,10 @@ class Chart {
   static async create (name, point, meterGroup, building, blockId, user) {
     await DB.connect()
     let userCheck = await DB.query('SELECT stories.user AS user FROM blocks RIGHT JOIN stories ON blocks.story_id = stories.id WHERE blocks.id = ?', [blockId])
-    if (userCheck[0['user']] !== user.data.onid && user.data.privilege < 3) {
+    if (userCheck[0]['user'] !== user.data.onid && user.data.privilege < 3) {
       throw new Error('Cant create a chart on that block for that user')
     }
-    let insertRow = await DB.query('INSERT INTO block_groups (name, point, group_id, building_id, block_id) VALUES (?, ?, ?, ?, ?)', [name, point, meterGroup, building, blockId])
+    let insertRow = await DB.query('INSERT INTO block_groups (name, point, group_id, block_id) VALUES (?, ?, ?, ?)', [name, point, meterGroup, blockId])
     if (insertRow['affectedRows'] === 0) {
       throw new Error('Could not create chart')
     }

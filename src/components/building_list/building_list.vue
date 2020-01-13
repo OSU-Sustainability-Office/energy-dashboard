@@ -18,7 +18,7 @@
       </el-row>
       <el-row>
         <el-col :span='24' class='cards_col'>
-          <el-tabs v-model='openName' class='tab_row' v-if='buildingList'>
+          <el-tabs v-model='openName' class='tab_row' v-if='buildingList' v-loading='this.loading'>
             <el-tab-pane v-for='(item, key) in groups' :key='key' :name='key'>
               <span slot='label' class='tab_label'>{{ key }}</span>
               <el-row type='flex' justify='left' class='card_flex'>
@@ -39,7 +39,7 @@
           </el-tabs>
           <el-row type='flex' justify='left' class='card_flex' v-if='!buildingList' v-loading='this.loading'>
             <el-col v-for='view in groups' :key='view.id' :span='4' class='card_container'>
-              <viewCard :plus='false' :building='buildingList' :id='view.id' class='card' @click='$router.push({ path: `/view/${view.id}/1` })' ref='card' />
+              <viewCard :plus='false' :building='buildingList' :id='view.id' class='card' @click='$router.push({ path: `/view/${view.id}` })' ref='card' />
             </el-col>
             <el-col :span='4' class='card_container'>
               <el-tooltip content="Create New View" placement="top">
@@ -78,13 +78,13 @@ export default {
     }
   },
   async mounted () {
-    if (this.$route.params.group && this.groups[this.$route.params.group]) {
-      this.openName = this.$route.params.group
-    } else {
-      this.openName = Object.keys(this.groups)[0]
-    }
     if (this.buildingList) {
       await this.$store.getters['map/promise']
+      if (this.$route.params.group && this.groups[this.$route.params.group]) {
+        this.openName = this.$route.params.group
+      } else {
+        this.openName = Object.keys(this.groups)[0]
+      }
       this.loading = false
     } else {
       await this.$store.getters['user/promise']
@@ -119,6 +119,13 @@ export default {
     }
   },
   watch: {
+    groups: function (value) {
+      if (this.$route.params.group && this.groups[this.$route.params.group]) {
+        this.openName = this.$route.params.group
+      } else {
+        this.openName = Object.keys(this.groups)[0]
+      }
+    },
     search: function (v) {
       let values = this.groups[this.openName].filter((card, index, arr) => (
         // Check that the item's name includes query

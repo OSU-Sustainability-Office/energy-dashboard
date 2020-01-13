@@ -10,7 +10,7 @@
   <el-row class='stage'>
     <el-col :span='24' class='main'>
       <div element-loading-background="rgba(0, 0, 0, 0.3)" class="background" ref='main'>
-        <div v-for='(pic, index) in media' :class='classForIndex(index)' :style='`background-image: url("${pic}"); width:calc(${100 / ((media.length < 4) ? media.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' v-if='arrayType && index < 4' :key='index'></div>
+        <div v-for='(pic, index) in media' :class='classForIndex(index)' :style='`background-image: url("${this.api}/image?name=${pic}"); width:calc(${100 / ((media.length < 4) ? media.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' v-if='arrayType && index < 4' :key='index'></div>
         <div v-if='arrayType' class='gradientOverlay'> </div>
         <div class='title'>{{name}}</div>
         <div class='subtitle'>{{description}}</div>
@@ -26,7 +26,7 @@ export default {
   data () {
     return {
       arrayType: false,
-      rootAPI: process.env.VUE_APP_ROOT_API
+      api: process.env.VUE_APP_ROOT_API
     }
   },
   watch: {
@@ -39,7 +39,7 @@ export default {
         return
       }
       if (value) {
-        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + value + '\')'
+        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + this.api + '/image?name=' + value + '\')'
       } else {
         this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
       }
@@ -53,7 +53,7 @@ export default {
         this.$refs.main.style.backgroundColor = 'rgb(255,255,255)'
         this.$refs.main.style.borderBottom = 'solid 2px rgb(26,26,26)'
       } else {
-        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + this.media + '\')'
+        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + this.api + '/image?name=' + this.media + '\')'
       }
     } else {
       this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'

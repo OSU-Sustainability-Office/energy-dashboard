@@ -13,7 +13,6 @@
   const HTTPS = require('https')
   const Unzip = require('unzip')
   const Cors = require('cors')
-  const BodyParser = require('body-parser')
 
   const awsKeys = (() => {
     const fileContents = FileSystem.readFileSync(require('os').homedir() + '/.aws/credentials').toString()
@@ -71,9 +70,17 @@
             Cookie: req.headers.cookie
           }
         }
-        res.send(
-          (await moduleName[codePath[1]](event)).body
-        )
+        let response = (await moduleName[codePath[1]](event))
+        if (response.isBase64Encoded) {
+          let img = Buffer.from(response.body, 'base64')
+          res.writeHead(200, {
+            'Content-Type': response.headers['Content-Type']
+            // 'Content-Length': response.body.length - 1
+          })
+          res.end(img)
+        } else {
+          res.send(response.body)
+        }
         delete require.cache[require.resolve(fullModPath)]
       })
       if (resource.Properties.Layers) {
