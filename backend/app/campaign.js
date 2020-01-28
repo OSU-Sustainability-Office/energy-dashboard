@@ -1,9 +1,9 @@
 /*
- * @Author: Brogan
- * @Date:   Saturday July 13th 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday July 13th 2019
- * @Copyright:  (c) Oregon State University 2019
+ * @Author: Brogan & Jack Woods
+ * @Date:   Tuesday January 28 2020
+ * @Last Modified By:  Jack Woods
+ * @Last Modified Time:  Tuesday January 28 2020
+ * @Copyright:  (c) Oregon State University 2020
  */
 
 const Campaign = require('/opt/nodejs/models/campaign.js')
