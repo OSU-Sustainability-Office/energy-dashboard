@@ -21,18 +21,20 @@ exports.all = async (event, context) => {
 
   // Construct a list of campaign IDs
   let campaignIDList = (await DB.query('SELECT id FROM campaigns'))
-  console.log(campaignIDList)
 
   // Construct an array of campaigns using the campaign class
   let campaigns = []
   for (let i = 0; i < campaignIDList.length; i++) {
-    campaigns.push(await (new Campaign(campaignIDList[i].id)))
+    let camp = await (new Campaign(campaignIDList[i].id))
+    await camp.get(false) // Calling get() with FALSE prevents the campaign class from expanding building data.
+    delete camp.buildings // When FALSE is used (as above), the campaign object has an array of null building objects. This cleans that up.
+    campaigns.push(camp.data) // Finally add the campaign to the array
   }
 
   // JSON stringify the array of campaigns and return a response
   response.body = JSON.stringify(campaigns)
   response.headers = {
-    'Access-Control-Allow-Origin': event.headers.origin ? event.headers.origin : 'https://myco2.sustainability.oregonstate.edu',
+    'Access-Control-Allow-Origin': event.headers.Origin ? event.headers.Origin : 'http://dashboard.sustainability.oregonstate.edu/', // Specifically approve any origin
     'Access-Control-Allow-Credentials': 'true'
   }
   return response
