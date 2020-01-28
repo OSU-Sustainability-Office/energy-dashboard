@@ -4,7 +4,7 @@ Description: >
   Energy Dashboard
 
   Backend routes used by the OSU Energy Dashboard
-  
+
 Globals:
   Function:
     Timeout: 3
@@ -12,7 +12,7 @@ Globals:
   Api:
     # enable CORS; to make more specific, change the origin wildcard
     # to a particular domain name, e.g. "'www.example.com'"
-    Cors: 
+    Cors:
       AllowOrigin: "'http://localhost:8080'"
     BinaryMediaTypes:
       - image~1gif
@@ -335,6 +335,21 @@ Resources:
           Properties:
             Path: /campaign
             Method: get
+  CampaignGetAll:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: campaign.all
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /campaigns
+            Method: get
   CampaignPut:
     Type: AWS::Serverless::Function
     Properties:
@@ -604,7 +619,7 @@ Resources:
           Type: Api
           Properties:
             Path: /image
-            Method: get 
+            Method: get
   ImageAll:
     Type: AWS::Serverless::Function
     Properties:
@@ -619,7 +634,7 @@ Resources:
           Type: Api
           Properties:
             Path: /images
-            Method: get 
+            Method: get
   adminUsers:
     Type: AWS::Serverless::Function
     Properties:
@@ -649,7 +664,7 @@ Resources:
           Type: Api
           Properties:
             Path: /admin/devices
-            Method: get 
+            Method: get
   EnergyModelLayer:
         Type: AWS::Serverless::LayerVersion
         Properties:

@@ -9,10 +9,42 @@
 const Campaign = require('/opt/nodejs/models/campaign.js')
 const Response = require('/opt/nodejs/response.js')
 const User = require('/opt/nodejs/user.js')
+const DB = require('/opt/nodejs/sql-access.js')
+
+// Retrieves a listing of all campaigns from the database, constructs an array of database class instances, and returns the array.
+exports.all = async (event, context) => {
+  // Create the response object
+  let response = new Response()
+
+  // Connect to the database
+  await DB.connect()
+
+  // Construct a list of campaign IDs
+  let campaignIDList = (await DB.query('SELECT id FROM campaigns'))
+  console.log(campaignIDList)
+
+  // Construct an array of campaigns using the campaign class
+  let campaigns = []
+  for (let i = 0; i < campaignIDList.length; i++) {
+    campaigns.push(await (new Campaign(campaignIDList[i].id)))
+  }
+
+  // JSON stringify the array of campaigns and return a response
+  response.body = JSON.stringify(campaigns)
+  response.headers = {
+    'Access-Control-Allow-Origin': event.headers.origin ? event.headers.origin : 'https://myco2.sustainability.oregonstate.edu',
+    'Access-Control-Allow-Credentials': 'true'
+  }
+  return response
+}
 
 exports.get = async (event, context) => {
   let response = new Response()
   response.body = JSON.stringify((await (new Campaign(event.queryStringParameters['id'])).get()).data)
+  response.headers = {
+    'Access-Control-Allow-Origin': event.headers.origin ? event.headers.origin : 'https://myco2.sustainability.oregonstate.edu',
+    'Access-Control-Allow-Credentials': 'true'
+  }
   return response
 }
 
