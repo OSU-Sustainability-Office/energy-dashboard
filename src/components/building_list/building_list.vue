@@ -120,6 +120,7 @@ export default {
   },
   watch: {
     groups: function (value) {
+      this.search = ''
       if (this.$route.params.group && this.groups[this.$route.params.group]) {
         this.openName = this.$route.params.group
       } else {
@@ -136,7 +137,6 @@ export default {
       } else {
         groups = this.groups
       }
-      console.log(groups)
       let values = groups.filter((card, index, arr) => (
         // Check that the item's name includes query
         (card.name && card.name.toLowerCase().includes(v.toLowerCase())) ||
