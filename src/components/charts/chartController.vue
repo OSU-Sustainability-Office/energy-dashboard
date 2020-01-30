@@ -79,12 +79,16 @@ export default {
         this.colors[j] = temp
       }
     }
-    console.log('created')
-
-    // this.$store.dispatch(this.block.path + '/getData').then(data => {
-    //   this.chartData = data
-    //   this.loading = false
-    // })
+    if (this.path && (this.path.split('/').splice(0, 1)[0] === 'view' || this.path.split('/').splice(0, 1)[0] === 'user')) {
+      /*
+        Building views set the date once the page is loaded.
+        User views need to grab data immediately.
+      */
+      this.$store.dispatch(this.path + '/getData').then(data => {
+        this.chartData = data
+        this.loading = false
+      })
+    }
     this.unsubscribe = this.$store.subscribe((mutation, state) => {
       if (this.$el.style.display === 'none') return
       let mutationPath = mutation.type.split('/')
@@ -97,8 +101,6 @@ export default {
         this.loading = true
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
-          console.log('watch data')
-          console.log(this.path)
           this.$store.dispatch(this.path + '/getData').then(data => {
             if (this.chart) {
               this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
@@ -130,6 +132,18 @@ export default {
     },
     graphType: {
       get () {
+        if (this.chartData) {
+          let noData = true
+          for (let set of this.chartData.datasets) {
+            if (set.data && set.data.length !== 0) {
+              noData = false
+              break
+            }
+          }
+          if (noData) {
+            return 100
+          }
+        }
         return this.$store.getters[this.path + '/graphType']
       }
     },
@@ -158,9 +172,6 @@ export default {
       const charts = this.$store.getters[this.path + '/charts']
       const unit = this.$store.getters[charts[index].path + '/unitString']
       return unit
-    },
-    dataUnavailable: function () {
-      this.graphType = 100
     },
     colorCodedColor: function (baseline, current) {
       let colors = []

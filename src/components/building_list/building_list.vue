@@ -127,16 +127,26 @@ export default {
       }
     },
     search: function (v) {
-      let values = this.groups[this.openName].filter((card, index, arr) => (
+      let groups
+      if (this.buildingList) {
+        groups = Object.values(this.groups).reduce((a, c) => {
+          for (let d of c) a.push(d)
+          return a
+        }, [])
+      } else {
+        groups = this.groups
+      }
+      console.log(groups)
+      let values = groups.filter((card, index, arr) => (
         // Check that the item's name includes query
         (card.name && card.name.toLowerCase().includes(v.toLowerCase())) ||
         // Check that description includes query
         (card.description && card.description.toLowerCase().includes(v.toLowerCase()))
       )).map(e => {
-        return e.name
+        return e.id
       })
       for (let card of this.$refs.card) {
-        if (values.indexOf(card.name) < 0) {
+        if (values.indexOf(card.id) < 0) {
           card.$el.parentNode.style.display = 'none'
         } else {
           card.$el.parentNode.style.display = 'block'
