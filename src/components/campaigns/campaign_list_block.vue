@@ -25,12 +25,23 @@
 <script>
 
 export default {
-  props: ['name', 'media', 'start', 'end'],
+  props: ['id'],
   data () {
     return {
+      name: '',
+      media: '',
+      start: null,
+      end: null
     }
   },
   mounted () {
+    // Retrieve campaign data from the vuex store
+    this.name = this.$store.getters['campaigns/campaign_' + this.id + '/name']
+    this.media = this.$store.getters['campaigns/campaign_' + this.id + '/media']
+    this.start = this.$store.getters['campaigns/campaign_' + this.id + '/date_start']
+    this.end = this.$store.getters['campaigns/campaign_' + this.id + '/date_end']
+
+    // Load the media content
     this.$refs.imageContainer.$el.style.backgroundImage = 'url("' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.media + '")'
   },
   filters: {

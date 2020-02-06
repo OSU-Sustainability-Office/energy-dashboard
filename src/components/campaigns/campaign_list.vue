@@ -9,13 +9,13 @@
   <el-row class='campaignlistview'>
     <el-tabs v-model="activePane">
       <el-tab-pane label="Current Campaigns" name="new" ref='currentTab' class='list'>
-        <campaignBlock v-for='campaign in currentCampaigns' :name='campaign.name' :media='campaign.media' :start='campaign.date_start' :end='campaign.date_end' :key='campaign.id' @click='$router.push("/campaign/" + campaign.id)'/>
+        <campaignBlock v-for='campaign in currentCampaigns' :id='campaign.id' @click='$router.push("/campaign/" + campaign.id)'/>
         <span class='noText' v-if='currentCampaigns.length <= 0'>
           No Current Campaigns
         </span>
       </el-tab-pane>
       <el-tab-pane label="Past Campaigns" name="old" ref='pastTab' class='list'>
-        <campaignBlock v-for='campaign in pastCampaigns' :name='campaign.name' :media='campaign.media' :start='campaign.date_start' :end='campaign.date_end' :key='campaign.id' @click='$router.push("/campaign/" + campaign.id)'/>
+        <campaignBlock v-for='campaign in pastCampaigns' :id='campaign.id' @click='$router.push("/campaign/" + campaign.id)'/>
         <span class='noText' v-if='pastCampaigns.length <= 0'>
           No Past Campaigns
         </span>
@@ -37,16 +37,16 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('campaigns').then(r => {
+    this.$store.dispatch('campaigns/getCampaigns').then(r => {
       for (let camp of r) {
-        if (this.checkDate(camp.date_end)) {
+        if (this.checkDate(camp.dateEnd)) {
           this.currentCampaigns.push(camp)
         } else {
           this.pastCampaigns.push(camp)
         }
       }
-      this.currentCampaigns.sort((a, b) => { return (new Date(b.date_end)).getTime() - (new Date(a.date_end)).getTime() })
-      this.pastCampaigns.sort((a, b) => { return (new Date(b.date_end)).getTime() - (new Date(a.date_end)).getTime() })
+      this.currentCampaigns.sort((a, b) => { return (new Date(b.dateEnd)).getTime() - (new Date(a.dateEnd)).getTime() })
+      this.pastCampaigns.sort((a, b) => { return (new Date(b.dateEnd)).getTime() - (new Date(a.dateEnd)).getTime() })
     })
   },
   methods: {
