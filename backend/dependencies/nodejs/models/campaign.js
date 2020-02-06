@@ -12,7 +12,7 @@ class Campaign {
   constructor (id) {
     this.id = id
     this.buildings = []
-    this.dateState = ''
+    this.dateStart = ''
     this.dateEnd = ''
     this.compareStart = ''
     this.compareEnd = ''
@@ -53,9 +53,9 @@ class Campaign {
     this.media = campaignRows[0]['media']
     if (expand === true) {
       for (let row of campaignRows) {
-        this.buildings.push((new Building(row['building_id'])).get())
+        this.buildings.push(new Building(row['building_id']).get())
       }
-      this.buildings = await this.buildings
+      this.buildings = await this.buildings // Brogans suggestion is to make the route in the campaign object. Run queries in here and not in lambda code
     } else {
       this.buildings = campaignRows.map(row => row['building_id'])
     }
@@ -96,7 +96,7 @@ class Campaign {
     return {
       id: this.id,
       buildings: this.buildings,
-      dateState: this.dateStart,
+      dateStart: this.dateStart,
       dateEnd: this.dateEnd,
       compareStart: this.compareStart,
       compareEnd: this.compareEnd,
