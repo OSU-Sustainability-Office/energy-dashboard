@@ -22,9 +22,11 @@ install:
 script:
 - |
   if [ "$TRAVIS_BRANCH" == "master" ]; then
+    npm install
     npm run build
     echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
   else
+    npm install
     npm run build-stage
   fi
   plantuml -tsvg $(find documents | grep .puml) 
