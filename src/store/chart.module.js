@@ -48,16 +48,27 @@ const actions = {
   },
 
   async update (store, payload) {
-    await API.chart({
-      name: payload.name,
-      point: payload.point,
-      meterGroup: this.getters[payload.meterGroup + '/id'],
-      building: this.getetrs[payload.building + '/id']
-    }, 'put')
+    if (payload.name === store.getters.name && payload.point === store.getters.point && payload.building === store.getters.building && payload.meter === store.getters.meterGroupPath) {
+      return
+    }
+    let viewPath = store.getters.path.split('/')
+    viewPath.pop()
+    viewPath.pop()
+    viewPath = viewPath.join('/')
+    let viewUser = this.getters[viewPath + '/user']
+    if (viewUser && viewUser === this.getters['user/onid']) {
+      await API.chart({
+        id: store.getters.id,
+        name: payload.name,
+        point: payload.point,
+        meterGroup: this.getters[payload.meter + '/id'],
+        building: this.getters[payload.building + '/id']
+      }, 'put')
+    }
     store.commit('name', payload.name)
     store.commit('point', payload.point)
     store.commit('building', payload.building)
-    store.commit('meterGroupPath', payload.meterGroup)
+    store.commit('meterGroupPath', payload.meter)
   }
 
 }

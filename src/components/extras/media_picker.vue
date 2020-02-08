@@ -21,7 +21,7 @@
           <div class='col' @click="select('')" style='backgroundColor: rgb(26,26,26)' v-bind:class="[selected === 0 ? 'selected' : 'e']"></div>
         </el-col>
         <el-col :span='6' v-for='(image,index) in images' :key='index'>
-          <div class='col' @click="select(image)" :style='"background-image:url(\"" + api + "/image?name=" + image + "\")"' v-bind:class="[selected === (index + 1) ? 'selected' : 'e']"></div>
+          <div class='col' @click="select(image)" :style='"background-image:url(\"" + api + "/image?name=" + image + "&size=0.5\")"' v-bind:class="[selected === (index + 1) ? 'selected' : 'e']"></div>
         </el-col>
         <el-col v-for='n in 10' :key='n+"bad"' :span='6' class='noHeight'></el-col>
       </el-row>

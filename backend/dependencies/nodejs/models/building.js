@@ -64,7 +64,7 @@ class Building {
   async update (mapId, image, group, user) {
     await DB.connect()
     if (user.data.privilege > 3) {
-      await DB.query('UPDATE buildings SET map_id = ?, image = ?, group = ? WHERE id = ?', [mapId, image, group, this.id])
+      await DB.query('UPDATE buildings SET map_id = ?, image = ?, `group` = ? WHERE id = ?', [mapId, image, group, this.id])
     } else {
       throw new Error('Need escalated permissions')
     }

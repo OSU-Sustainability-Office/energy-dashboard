@@ -41,7 +41,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      if (!this.view || this.view.id !== parseInt(this.$route.params.id)) {
+      if (!this.$route.path.includes('building') && (!this.view || this.view.id !== parseInt(this.$route.params.id))) {
         this.$store.dispatch('view/changeView', this.$route.params.id)
       }
     })
@@ -72,7 +72,7 @@ export default {
   },
   watch: {
     $route (to, from) {
-      if (!this.view || this.view.id !== parseInt(this.$route.params.id)) {
+      if (!this.$route.path.includes('building') && (!this.view || this.view.id !== parseInt(this.$route.params.id))) {
         this.$store.dispatch('view/changeView', this.$route.params.id)
       }
     },
@@ -80,10 +80,6 @@ export default {
       immediate: true,
       handler: async function (value) {
         if (!this.$route.path.includes('building')) {
-          // Poor solution for making sure getData is called
-          // for (let card of this.cards) {
-          //   this.$store.commit(card.path + '/dateStart', card.dateStart)
-          // }
           return
         }
         for (let card of this.cards) {

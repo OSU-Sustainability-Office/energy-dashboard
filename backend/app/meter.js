@@ -18,6 +18,16 @@ exports.get = async (event, context) => {
   return response
 }
 
+exports.all = async (event, context) => {
+  let response = new Response()
+  let user = new User(event, response)
+  await user.resolved
+
+  response.body = JSON.stringify(await Meter.all(user))
+
+  return response
+}
+
 exports.data = async (event, context) => {
   let response = new Response()
   response.body = JSON.stringify((await (new Meter(event.queryStringParameters['id'])).download(

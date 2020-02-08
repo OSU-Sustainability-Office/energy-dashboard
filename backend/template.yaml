@@ -21,7 +21,7 @@ Globals:
 Parameters:
   LambdaCommonLayer:
     Type: String
-    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:68
+    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:69
 Resources:
   test:
     Type: AWS::Serverless::Function
@@ -619,6 +619,36 @@ Resources:
           Type: Api
           Properties:
             Path: /images
+            Method: get 
+  adminUsers:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: admin.users
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /admin/users
+            Method: get
+  adminDevices:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: meter.all
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /admin/devices
             Method: get 
   EnergyModelLayer:
         Type: AWS::Serverless::LayerVersion

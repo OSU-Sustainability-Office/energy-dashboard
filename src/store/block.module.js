@@ -58,13 +58,24 @@ const actions = {
         payload.dateStart === store.getters.dateStart && payload.dateEnd === store.getters.dateEnd) {
       return
     }
-    await API.block(payload, 'put')
+    let viewPath = store.getters.path.split('/')
+    viewPath.pop()
+    viewPath = viewPath.join('/')
+    let user = this.getters[viewPath + '/user']
+
     store.commit('name', payload.name)
     store.commit('dateInterval', payload.dateInterval)
     store.commit('intervalUnit', payload.intervalUnit)
     store.commit('graphType', payload.graphType)
     store.commit('dateStart', payload.dateStart)
     store.commit('dateEnd', payload.dateEnd)
+
+    if (user && user === this.getters['user/onid']) {
+      payload.id = store.getters.id
+      payload.dateStart = (new Date(store.getters.dateStart)).toISOString()
+      payload.dateEnd = (new Date(store.getters.dateEnd)).toISOString()
+      await API.block(payload, 'put')
+    }
   },
 
   async changeBlock (store, id) {
@@ -194,7 +205,6 @@ const mutations = {
   },
 
   shuffleChartColors (state) {
-    console.log('shufel')
     for (var i = state.chartColors.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1))
       var temp = state.chartColors[i]
@@ -237,18 +247,14 @@ const mutations = {
 
   dateEnd (state, dateEnd) {
     if (typeof dateEnd === 'string') {
-      console.log('stroing')
       state.dateEnd = (new Date(dateEnd)).getTime()
     } else if (typeof dateEnd === 'number') {
-      console.log('number')
       state.dateEnd = dateEnd
     } else if (dateEnd instanceof Date) {
-      console.log('date')
       state.dateEnd = dateEnd.getTime()
     } else {
       throw new Error('Unrecognized format sent to dateEnd')
     }
-    console.log(state.dateEnd)
   },
 
   id (state, id) {

@@ -51,6 +51,7 @@ const actions = {
       intervalUnit: payload.intervalUnit,
       storyId: store.getters.id
     }, 'post')).id
+
     let blockSpace = 'block_' + id.toString()
     let moduleSpace = store.getters.path + '/' + blockSpace
     this.registerModule(moduleSpace.split('/'), Block)
@@ -83,6 +84,7 @@ const actions = {
       let moduleSpace = store.getters.path + '/' + blockSpace
       this.registerModule(moduleSpace.split('/'), Block)
       store.commit(blockSpace + '/path', moduleSpace)
+      store.commit(blockSpace + '/shuffleChartColors')
       let viewBlockPromise = store.dispatch(blockSpace + '/loadCharts', block.charts)
       store.commit(blockSpace + '/promise', viewBlockPromise)
       promises.push(viewBlockPromise)
@@ -93,7 +95,6 @@ const actions = {
       store.commit(blockSpace + '/dateStart', block.dateStart)
       store.commit(blockSpace + '/dateEnd', block.dateEnd)
       store.commit(blockSpace + '/id', block.id)
-      store.commit(blockSpace + '/shuffleChartColors')
     }
 
     await Promise.all(promises)
@@ -103,6 +104,7 @@ const actions = {
     for (let block of store.getters.blocks) {
       this.unregisterModule(block.path.split('/'))
     }
+
     let view = API.view(id)
     store.commit('promise', view)
     view = await view

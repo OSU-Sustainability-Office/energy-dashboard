@@ -17,6 +17,7 @@ import publicDirectory from '@/components/directory/directoryPublic.vue'
 import privateDirectory from '@/components/dashboard/dashboard_main.vue'
 import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
 import buildingList from '@/components/building_list/building_list.vue'
+import admin from '@/components/admin/admin.vue'
 
 Vue.use(Router)
 
@@ -26,6 +27,10 @@ export default new Router({
       path: '/',
       name: 'index',
       component: index
+    },
+    {
+      path: '/admin',
+      component: admin
     },
     {
       path: '/building/:id/:range',

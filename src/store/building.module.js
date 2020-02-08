@@ -7,6 +7,7 @@
  */
 import MeterGroup from './meter_group.module.js'
 import Block from './block.module.js'
+import API from './api.js'
 
 const state = () => {
   return {
@@ -17,6 +18,7 @@ const state = () => {
     image: null,
     geoJSON: null,
     description: '',
+    mapId: null,
     id: null
   }
 }
@@ -32,6 +34,31 @@ const actions = {
       await this.getters[group.path + '/meters'][0].promise
       store.commit('addType', this.getters[group.path + '/meters'][0].type)
     })
+  },
+
+  async update (store, payload) {
+    let reqPayload = {
+      ...payload,
+      id: store.getters.id
+    }
+    if (!reqPayload.image) {
+      reqPayload.image = store.getters.image
+    }
+    if (!reqPayload.mapId) {
+      reqPayload.mapId = store.getters.mapId
+    }
+    if (!reqPayload.group) {
+      reqPayload.group = store.getters.group
+    }
+    if (!reqPayload.meters) {
+      //TODO
+    }
+    let status = await API.building('put', reqPayload)
+    if (status === 200) {
+      store.commit('image', reqPayload.image)
+      store.commit('mapId', reqPayload.mapId)
+      store.commit('group', reqPayload.group)
+    }
   },
 
   async buildDefaultBlocks (store, payload) {
@@ -51,6 +78,10 @@ const actions = {
 const mutations = {
   promise (state, promise) {
     state.promise = promise
+  },
+
+  mapId (state, mapId) {
+    state.mapId = mapId
   },
 
   name (state, name) {
@@ -92,7 +123,9 @@ const getters = {
   promise (state) {
     return state.promise
   },
-
+  mapId (state) {
+    return state.mapId
+  },
   name (state) {
     return state.name
   },
