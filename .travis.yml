@@ -18,7 +18,7 @@ cache:
   - "$HOME/.local"
   - ".cache-loader"
 install:
-  - 'pip install plantuml'
+  - 'pip install plantuml --user'
 script:
 - |
   if [ "$TRAVIS_BRANCH" == "master" ]; then
