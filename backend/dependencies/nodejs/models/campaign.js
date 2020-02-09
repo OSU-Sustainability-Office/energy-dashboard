@@ -42,22 +42,31 @@ class Campaign {
     return campaign
   }
 
+  // Queries the database for this campaign's data, and returns the data.
   async get (expand = true) {
     await DB.connect()
-    let campaignRows = await DB.query('SELECT * FROM campaigns RIGHT JOIN campaign_groups ON campaigns.id = campaign_groups.campaign_id WHERE campaigns.id = ?', [this.id])
+    // Query for all campaigns
+    let campaignRows = await DB.query('SELECT * FROM campaigns RIGHT JOIN campaign_groups ON campaigns.id = campaign_groups.campaign_id WHERE campaigns.id = ?;', [this.id])
     this.dateStart = campaignRows[0]['date_start']
     this.dateEnd = campaignRows[0]['date_end']
     this.compareEnd = campaignRows[0]['compare_end']
     this.compareStart = campaignRows[0]['compare_start']
     this.name = campaignRows[0]['name']
     this.media = campaignRows[0]['media']
+
+    // If expand is true, include building information
     if (expand === true) {
+      // Iterate over each building in the campaign, and retrieve the building's
+      // data by instantiating a Building object.
       for (let row of campaignRows) {
-        this.buildings.push(new Building(row['building_id']).get())
+        // Each instance of the building class is a promise that is resolved async
+        this.buildings.push(new Building(row['group_id']).get())
       }
-      this.buildings = await this.buildings // Brogans suggestion is to make the route in the campaign object. Run queries in here and not in lambda code
+      // await all of the building promises
+      this.buildings = await Promise.all(this.buildings)
     } else {
-      this.buildings = campaignRows.map(row => row['building_id'])
+      // If the user does not wish to expand, just return the building's id
+      this.buildings = campaignRows.map(row => row['group_id'])
     }
     return this
   }
