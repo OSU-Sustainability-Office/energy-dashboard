@@ -28,12 +28,14 @@ exports.put = async (event, context) => {
   let user = new User(event, response)
   await user.resolved
   try {
-    await (new Building(event.body.id)).update(
+    let building = await (new Building(event.body.id)).update(
       event.body.mapId,
       event.body.image,
       event.body.group,
+      event.body.meters,
       user
     )
+    response.body = building.data
   } catch (error) {
     response.body = error.message
     response.status = 400
@@ -50,6 +52,7 @@ exports.post = async (event, context) => {
       event.body.mapId,
       event.body.image,
       event.body.group,
+      event.body.meters,
       user
     )).data)
   } catch (error) {

@@ -36,6 +36,16 @@ const actions = {
     store.dispatch(buildingSpace + '/buildDefaultBlocks')
   },
 
+  async newBuilding (store, payload) {
+    let building = await API.building('post', {
+      image: payload.image,
+      group: payload.group,
+      mapId: payload.mapId,
+      meters: payload.meters
+    })
+    store.dispatch('loadBuilding', { id: building.data.id })
+  },
+
   async allDevices (store, payload) {
     return API.devices()
   },

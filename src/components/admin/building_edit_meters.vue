@@ -14,7 +14,7 @@
             <template slot="title">
               <el-col :span='8'>
                 <el-button @click.stop='' class='invisible-button'>
-                  <el-input v-model='meter.name' placeholder='Name' @focus.stop='test'>
+                  <el-input v-model='meter.name' placeholder='Name'>
                   </el-input>
                 </el-button>
               </el-col>
@@ -73,10 +73,10 @@
                 </span>
               </el-col>
               <el-col :span='2'>
-                <el-checkbox v-model='checkedBoxes[device.id][meter.id].include'></el-checkbox>
+                <el-checkbox v-model='checkedBoxes[device.id][meter.id].include' @change="updateModel"></el-checkbox>
               </el-col>
               <el-col :span='2'>
-                <el-checkbox v-model="checkedBoxes[device.id][meter.id].negate" :disabled='!checkedBoxes[device.id][meter.id].include'></el-checkbox>
+                <el-checkbox v-model="checkedBoxes[device.id][meter.id].negate" :disabled='!checkedBoxes[device.id][meter.id].include' @change="updateModel"></el-checkbox>
               </el-col>
             </el-row>
           </el-collapse-item>
@@ -107,19 +107,32 @@ export default {
   watch: {
     value: {
       handler: function (value) {
+        console.log(value)
         this.updateCheckBoxes()
       }
     }
   },
   methods: {
-    test (value, event) {
-      this.activeName = ''
+    updateModel (value, event) {
+      let copiedValue = JSON.parse(JSON.stringify(this.value))
+      for (let group of copiedValue) {
+        group.meters = []
+        for (let meter of Object.keys(this.checkedBoxes)) {
+          if (this.checkedBoxes[meter][group.id].include) {
+            group.meters.push({
+              id: parseInt(meter),
+              operation: (this.checkedBoxes[meter][group.id].negate) ? 0 : 1
+            })
+          }
+        }
+      }
+      this.$emit('input', copiedValue)
     },
     newGroup () {
       let copiedValue = JSON.parse(JSON.stringify(this.value))
       let newMeter = {
         name: '',
-        meters: {},
+        meters: [],
         id: 'newgroup_' + this.newCounter
       }
       this.newCounter++
@@ -132,8 +145,8 @@ export default {
         this.$set(this.checkedBoxes, device.id, {})
         for (let meter of this.value) {
           this.$set(this.checkedBoxes[device.id], meter.id, { include: false, negate: false })
-          this.checkedBoxes[device.id][meter.id].include = (meter.meters[device.id] !== undefined)
-          this.checkedBoxes[device.id][meter.id].negate = (meter.meters[device.id] !== undefined && meter.meters[device.id].operation)
+          this.checkedBoxes[device.id][meter.id].include = (meter.meters.find(m => m.id === device.id) !== undefined)
+          this.checkedBoxes[device.id][meter.id].negate = (meter.meters.find(m => m.id === device.id) !== undefined && meter.meters.find(m => m.id === device.id).operation === 0)
         }
       }
     },

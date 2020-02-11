@@ -32,6 +32,7 @@ script:
   python plantuml.py -tsvg $(find documents | grep .puml) 
   mv $(find documents | grep .svg) dist/*
 
+
 deploy:
 - provider: pages
   local-dir: dist/

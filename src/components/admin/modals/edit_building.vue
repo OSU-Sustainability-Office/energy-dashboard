@@ -117,8 +117,15 @@ export default {
           mapId: this.form.mapId,
           meters: this.form.meters
         })
-        this.visible = false
+      } else {
+        this.$store.dispatch('map/newBuilding', {
+          image: this.form.media,
+          group: this.form.group,
+          mapId: this.form.mapId,
+          meters: this.form.meters
+        })
       }
+      this.visible = false
     },
     checkMap (value) {
       if (value === 'map') {
@@ -139,13 +146,13 @@ export default {
           let formGroup = {
             id: group.id,
             name: this.$store.getters[group.path + '/name'],
-            meters: {}
+            meters: []
           }
           for (let meter of this.$store.getters[group.path + '/meters']) {
-            formGroup.meters[meter.id] = {
-              name: meter.name,
-              operation: meter.negate
-            }
+            formGroup.meters.push({
+              id: meter.id,
+              operation: (meter.negate) ? 0 : 1
+            })
           }
           this.form.meters.push(formGroup)
         }

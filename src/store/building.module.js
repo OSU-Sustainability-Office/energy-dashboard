@@ -36,6 +36,12 @@ const actions = {
     })
   },
 
+  async removeAllMeterGroups (store) {
+    for (let meterGroup of store.getters.meterGroups) {
+      this.unregisterModule(meterGroup.path.split('/'))
+    }
+  },
+
   async update (store, payload) {
     let reqPayload = {
       ...payload,
@@ -51,13 +57,29 @@ const actions = {
       reqPayload.group = store.getters.group
     }
     if (!reqPayload.meters) {
-      //TODO
+      reqPayload.meters = []
+      for (let group of store.getters.meterGroups) {
+        let payloadGroup = {
+          name: this.getters[group.path + '/name'],
+          id: this.getters[group.path + '/id'],
+          meters: {}
+        }
+        for (let meter of this.getters[group.path + '/meters']) {
+          payloadGroup.meters[meter.id] = { operation: parseInt(!meter.negate) }
+        }
+        reqPayload.reqPayload.meters.push(payloadGroup)
+      }
     }
-    let status = await API.building('put', reqPayload)
-    if (status === 200) {
+    let res = await API.building('put', reqPayload)
+    if (res.status === 200) {
       store.commit('image', reqPayload.image)
       store.commit('mapId', reqPayload.mapId)
       store.commit('group', reqPayload.group)
+      // Reload with API calls, inefficient but buildings rarely updated
+      await store.dispatch('removeAllMeterGroups')
+      for (let meterGroup of res.data.meterGroups) {
+        store.dispatch('loadMeterGroup', { id: meterGroup })
+      }
     }
   },
 
@@ -109,7 +131,7 @@ const mutations = {
   },
 
   addType (state, type) {
-    if (state.description.search(`/${type}/gi`) < 0) {
+    if (state.description.search(new RegExp(`${type}`, 'gi')) < 0) {
       if (state.description === '') {
         state.description += type
       } else {
