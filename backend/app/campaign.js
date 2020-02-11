@@ -27,7 +27,6 @@ exports.all = async (event, context) => {
   for (let i = 0; i < campaignIDList.length; i++) {
     let camp = await (new Campaign(campaignIDList[i].id))
     await camp.get(false) // Calling get() with FALSE prevents the campaign class from expanding building data.
-    delete camp.buildings // When FALSE is used (as above), the campaign object has an array of null building objects. This cleans that up.
     campaigns.push(camp.data) // Finally add the campaign to the array
   }
 
