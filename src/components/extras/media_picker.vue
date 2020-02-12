@@ -1,3 +1,10 @@
+/*
+ * @Author: you@you.you
+ * @Date:   Saturday January 11th 2020
+ * @Last Modified By:  Brogan Miner
+ * @Last Modified Time:  Saturday January 11th 2020
+ * @Copyright:  (c) Oregon State University 2020
+ */
 <!--
 @Author: Brogan Miner <Brogan>
 @Date:   2019-01-04T10:08:23-08:00
@@ -14,7 +21,7 @@
           <div class='col' @click="select('')" style='backgroundColor: rgb(26,26,26)' v-bind:class="[selected === 0 ? 'selected' : 'e']"></div>
         </el-col>
         <el-col :span='6' v-for='(image,index) in images' :key='index'>
-          <div class='col' @click="select(image)" :style='"background-image:url(\"" + api + "/energy/images/" + image + "&size=0.1\")"' v-bind:class="[selected === (index + 1) ? 'selected' : 'e']"></div>
+          <div class='col' @click="select(image)" :style='"background-image:url(\"" + api + "/image?name=" + image + "&size=0.5\")"' v-bind:class="[selected === (index + 1) ? 'selected' : 'e']"></div>
         </el-col>
         <el-col v-for='n in 10' :key='n+"bad"' :span='6' class='noHeight'></el-col>
       </el-row>
@@ -33,12 +40,11 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('media').then(r => {
+    this.$store.dispatch('map/imageList').then(r => {
       this.images = []
       var index = 0
       for (var i of r) {
         this.images.push(i)
-        console.log(i)
         if (i === this.value) { this.selected = index }
         index++
       }

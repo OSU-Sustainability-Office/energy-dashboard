@@ -37,9 +37,9 @@ class Chart {
     await DB.connect()
     let responseQuery
     if (user.data.privilege > 3) {
-      responseQuery = await DB.query('UPDATE block_groups SET name = ?, point = ?, group_id = ? building_id = ? WHERE id = ?', [this.id])
+      responseQuery = await DB.query('UPDATE block_groups SET name = ?, point = ?, group_id = ? WHERE id = ?', [name, point, meterGroup, this.id])
     } else {
-      responseQuery = await DB.query('UPDATE block_groups SET name = ?, point = ?, group_id = ? building_id = ? RIGHT JOIN (SELECT stories.user AS user, blocks.id as id FROM blocks RIGHT JOIN stories ON stories.id = blocks.story_id) AS q1 ON q1.id = block_groups.block_id WHERE q1.user = ? AND block_groups.id = ?', [name, point, meterGroup, building, user.data.onid, this.id])
+      responseQuery = await DB.query('UPDATE block_groups SET name = ?, point = ?, group_id = ? RIGHT JOIN (SELECT stories.user AS user, blocks.id as id FROM blocks RIGHT JOIN stories ON stories.id = blocks.story_id) AS q1 ON q1.id = block_groups.block_id WHERE q1.user = ? AND block_groups.id = ?', [name, point, meterGroup, user.data.onid, this.id])
     }
     if (responseQuery['affectedRows'] === 0) {
       throw new Error('Could not update chart')
@@ -67,10 +67,10 @@ class Chart {
   static async create (name, point, meterGroup, building, blockId, user) {
     await DB.connect()
     let userCheck = await DB.query('SELECT stories.user AS user FROM blocks RIGHT JOIN stories ON blocks.story_id = stories.id WHERE blocks.id = ?', [blockId])
-    if (userCheck[0['user']] !== user.data.onid && user.data.privilege < 3) {
+    if (userCheck[0]['user'] !== user.data.onid && user.data.privilege < 3) {
       throw new Error('Cant create a chart on that block for that user')
     }
-    let insertRow = await DB.query('INSERT INTO block_groups (name, point, group_id, building_id, block_id) VALUES (?, ?, ?, ?, ?)', [name, point, meterGroup, building, blockId])
+    let insertRow = await DB.query('INSERT INTO block_groups (name, point, group_id, block_id) VALUES (?, ?, ?, ?)', [name, point, meterGroup, blockId])
     if (insertRow['affectedRows'] === 0) {
       throw new Error('Could not create chart')
     }

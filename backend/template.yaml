@@ -14,10 +14,14 @@ Globals:
     # to a particular domain name, e.g. "'www.example.com'"
     Cors: 
       AllowOrigin: "'http://localhost:8080'"
+    BinaryMediaTypes:
+      - image~1gif
+      - image~1png
+      - image~1jpeg
 Parameters:
   LambdaCommonLayer:
     Type: String
-    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:67
+    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:69
 Resources:
   test:
     Type: AWS::Serverless::Function
@@ -585,6 +589,66 @@ Resources:
           Type: Api
           Properties:
             Path: /user
+            Method: get
+  ImageGet:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: images.get
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /image
+            Method: get 
+  ImageAll:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: images.all
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /images
+            Method: get 
+  adminUsers:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: admin.users
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /admin/users
+            Method: get
+  adminDevices:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: meter.all
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /admin/devices
             Method: get 
   EnergyModelLayer:
         Type: AWS::Serverless::LayerVersion

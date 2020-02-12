@@ -26,9 +26,14 @@
 <script>
 export default {
   props: ['id', 'building', 'plus'],
+  data () {
+    return {
+      api: process.env.VUE_APP_ROOT_API
+    }
+  },
   mounted () {
     if (this.media) {
-      this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + this.media + '") center/cover no-repeat'
+      this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + this.api + '/image?name=' + this.media + '") center/cover no-repeat'
     } else {
       this.$refs.card.style.backgroundColor = 'rgb(26,26,26)'
     }
@@ -103,7 +108,7 @@ export default {
     },
     media: function (value) {
       if (value) {
-        this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + value + '") center/cover no-repeat'
+        this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("' + this.api + '/image?name=' + value + '") center/cover no-repeat'
       } else {
         this.$refs.card.style.background = 'rgb(26,26,26)'
       }

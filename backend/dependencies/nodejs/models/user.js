@@ -6,7 +6,8 @@
  * @Copyright:  (c) Oregon State University 2019
  */
 
-const DB = require('/opt/nodejs/sql-access.js')
+const DDB = require('/opt/nodejs/dynamo-access.js')
+// const DB = require('/opt/nodejs/sql-access.js')
 const Story = require('/opt/nodejs/models/story.js')
 const Alert = require('/opt/nodejs/models/alert.js')
 
@@ -19,7 +20,7 @@ class User {
 
   async get () {
     if (this.onid === '') return this
-    await DB.connect()
+    // await DB.connect()
     // let userRow = await DB.query('SELECT * FROM users WHERE name = ?', [this.onid])
     // if (userRow.length === 1) {
     // this.privilege = userRow[0].privilege
@@ -27,6 +28,15 @@ class User {
     this.alerts = await Alert.alertsForUser(this.onid)
     // }
     return this
+  }
+
+  static async all (user) {
+    if (user.privilege > 3) {
+      DDB.initialize()
+      let users = (await DDB.query('lambda-users').scan({})).Items
+      return users
+    }
+    return ''
   }
 
   get

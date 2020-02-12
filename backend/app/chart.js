@@ -32,13 +32,14 @@ exports.post = async (event, context) => {
     response.body = err.message
     response.status = 400
   }
+  return response
 }
 
 exports.put = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
   try {
-    await Chart(event.body.id).update(
+    await (new Chart(event.body.id)).update(
       event.body.name,
       event.body.point,
       event.body.meterGroup,
@@ -55,8 +56,9 @@ exports.put = async (event, context) => {
 exports.delete = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
+  await user.resolved
   try {
-    await Chart(event.body.id).delete(user)
+    await (new Chart(event.body.id)).delete(user)
   } catch (error) {
     response.body = error.message
     response.status = 400

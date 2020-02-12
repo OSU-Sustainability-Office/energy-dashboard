@@ -8,13 +8,14 @@
 
 <template>
   <el-tabs v-model='tab' class='tab-control'>
-    <el-tab-pane label="Users" name="users" class='tab-pane'>
-      <users />
-    </el-tab-pane>
     <el-tab-pane label="Buildings" name="buildings" class='tab-pane'>
       <buildings />
     </el-tab-pane>
     <el-tab-pane label="Campaigns" name="campaigns" class='tab-pane'>
+      <campaigns />
+    </el-tab-pane>
+    <el-tab-pane label="Users" name="users" class='tab-pane'>
+      <users />
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -34,11 +35,11 @@ export default {
   props: [],
   data () {
     return {
-      tab: 'users'
+      tab: 'buildings'
     }
   },
   created () {
-
+    this.$store.dispatch('admin/users')
   },
   methods: {
     newUser: function () {
@@ -57,7 +58,6 @@ export default {
       } else {
         this.meterGroups[group].is_building = 0
       }
-      console.log(this.meterGroups[group])
     },
     newMeterGroup: function () {
       this.meterGroups.push({ meters: [] })
@@ -84,5 +84,4 @@ export default {
 .tab-pane {
   padding: 1em;
 }
-
 </style>

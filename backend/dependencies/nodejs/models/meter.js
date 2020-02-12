@@ -44,6 +44,14 @@ class Meter {
     this.classInt = row[0]['class']
     this.negate = (row[0]['negate'] === 1)
 
+    this.calcProps()
+    return this
+  }
+
+  calcProps () {
+    if (this.classInt === null) {
+      return
+    }
     switch (this.classInt) {
       case 17:
         this.type = 'Gas'
@@ -194,6 +202,25 @@ class Meter {
     meter.class = classInt
     meter.negate = negate
     return meter
+  }
+
+  static async all (user) {
+    if (user.privilege > 3) {
+      await DB.connect()
+      let meters = await DB.query('SELECT * FROM meters')
+      let r = []
+      for (let meterQ of meters) {
+        let meter = new Meter(meterQ.id)
+        meter.id = meterQ['id']
+        meter.name = meterQ['name']
+        meter.address = meterQ['address']
+        meter.classInt = meterQ['class']
+        meter.negate = (meterQ['negate'] === 1)
+        meter.calcProps()
+        r.push(meter.data)
+      }
+      return r
+    }
   }
 }
 

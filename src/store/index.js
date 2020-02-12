@@ -12,13 +12,21 @@ import View from './view.module.js'
 import User from './user.module.js'
 import EDMap from './map.module.js'
 import ModalController from './modal_controller.module.js'
+import Admin from './admin.module.js'
 
 Vue.use(Vuex)
 
 const store = {
+  getters: {
+    view: (state) => {
+      return state['view']
+    }
+  },
+
   modules: {
     view: View,
     // campaign: Campaign,
+    admin: Admin,
     map: EDMap,
     user: User,
     modalController: ModalController

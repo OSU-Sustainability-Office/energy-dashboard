@@ -78,7 +78,7 @@ export default {
           return this.$store.getters['map/building'](this.$route.params.id)
         } else {
           let view = this.$store.getters['user/view'](this.$route.params.id)
-          if (!view) view = this.$store.getters['view/state']
+          if (!view) view = this.$store.getters['view']
           return view
         }
       }

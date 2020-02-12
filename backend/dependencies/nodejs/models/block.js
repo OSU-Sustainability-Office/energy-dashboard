@@ -71,9 +71,9 @@ class Block {
     await DB.connect()
     let responseQuery
     if (user.data.privilege > 3) {
-      responseQuery = await DB.query('DELETE blocks WHERE id = ?', [this.id])
+      responseQuery = await DB.query('DELETE FROM blocks WHERE id = ?', [this.id])
     } else {
-      responseQuery = await DB.query('DELETE blocks RIGHT JOIN stories on blocks.story_id = stories.id WHERE stories.user = ? AND blocks.id = ?', [user.onid, this.id])
+      responseQuery = await DB.query('DELETE FROM blocks RIGHT JOIN stories on blocks.story_id = stories.id WHERE stories.user = ? AND blocks.id = ?', [user.onid, this.id])
     }
     if (responseQuery['affectedRows'] === 0) {
       throw new Error('Could not delete Block')
@@ -90,7 +90,7 @@ class Block {
     if (insertRow['affectedRows'] === 0) {
       throw new Error('Unable to create new story')
     }
-    let block = new Block(insertRow['insert_id'])
+    let block = new Block(insertRow['insertId'])
     block.dateStart = dateStart
     block.dateEnd = dateEnd
     block.graphType = graphType

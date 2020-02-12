@@ -8,8 +8,8 @@
 
 <template>
   <el-dialog size='lg' :visible.sync="visible" :title='(form.new)? "New Block" : "Edit Block"' width="80%" @open='updateForm()'>
-      <el-form label-width='120px' label-position='left' :model='form' ref='form'>
-        <el-form-item label='Name: ' :rules="{required: true, message: 'A name is required', trigger: 'blur'}" prop='name'>
+      <el-form label-width='150px' label-position='left' :model='form' ref='form'>
+        <el-form-item label='Name: ' :rules="{required: true, message: 'A name is required', trigger: 'blur'}" prop='name' v-if='personalView'>
             <!-- <label class='col-4'>Name:</label> -->
             <el-input type="text" v-model='form.name' style='width: 100%;'></el-input>
         </el-form-item>
@@ -33,7 +33,7 @@
             <el-option :value="5" label='1 Month'></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label='Graph Type: ' :rules="{required: true, message: 'A graph type is required', trigger: 'blur'}" prop='graphType'>
+        <el-form-item label='Graph Type: ' :rules="{required: true, message: 'A graph type is required', trigger: 'blur'}" prop='graphType' v-if="personalView">
           <!-- <label class='col-4'>Graph Type: </label> -->
           <el-select v-model="form.graphType" style='width: 100%;'>
             <el-option :value='1' label='Line Chart'></el-option>
@@ -41,8 +41,18 @@
             <el-option :value='3' label='Doughnut Chart'></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item v-if='currentIndex < form.sets.length && !personalView' prop='meter' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
+          <el-select ref="submeters" v-model="form.sets[currentIndex].meter" style='width: 100%;' @change='form[currentIndex].point = null'>
+            <el-option v-for='item in meters' :key='item.path' :label='item.name' :value='item.path'></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if='currentIndex < form.sets.length && !personalView' :rules="{required: true, message: 'A measurement is required', trigger: 'blur'}" prop='point' label='Measurement: '>
+          <el-select v-model="form.sets[currentIndex].point" style='width: 100%;'>
+            <el-option v-for='(point, index) in meterPoints' :value='point.value' :label='point.label' :key='index'></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
-      <div >
+      <div v-if='personalView'>
         <label>Datasets: </label>
         <el-row ref="controlArea">
           <el-row class="pad-bottom" ref="indexChooser">
@@ -51,7 +61,7 @@
               <el-button class="indexButton" @click="addGroup()">+</el-button>
             </el-col>
           </el-row>
-          <el-form ref='form' :model='form.sets[currentIndex]' label-width="120px" size='large' label-position='left'>
+          <el-form ref='form' :model='form.sets[currentIndex]' label-width="150px" size='large' label-position='left'>
             <el-form-item v-if='currentIndex < form.sets.length' prop='building' label='Building: ' :rules="{required: true, message: 'A building is required', trigger: 'blur'}">
               <el-select ref="groups" v-model="form.sets[currentIndex].building" filterable placeholder="Building" style='width: 100%;' @change='form.sets[currentIndex].meter = null; form.sets[currentIndex].point = null'>
                 <el-option v-for='(item, index) in buildings' :key='index' :label='item.name' :value='item.path'></el-option>
@@ -79,7 +89,7 @@
         </el-row>
       </div>
       <span slot='footer'>
-        <el-button @click='cardDelete()' type='danger'> Delete </el-button>
+        <el-button @click='cardDelete()' type='danger' v-if="personalView && $store.getters['modalController/data'].path"> Delete </el-button>
         <el-button @click='cardSave()' type='primary'> Ok </el-button>
         <el-button @click='visible = false' type='info'> Cancel </el-button>
       </span>
@@ -114,6 +124,24 @@ export default {
         }
       }
     },
+    personalView: {
+      get () {
+        let viewPath = this.$store.getters['modalController/data'].path
+        if (!viewPath) {
+          viewPath = this.$store.getters['modalController/data'].view
+        } else {
+          viewPath = viewPath.split('/')
+          viewPath.pop()
+          viewPath = viewPath.join('/')
+        }
+        if (viewPath) {
+          if (this.$store.getters[viewPath + '/user'] === this.$store.getters['user/onid']) {
+            return true
+          }
+        }
+        return false
+      }
+    },
 
     buildings: {
       get () {
@@ -135,22 +163,53 @@ export default {
   },
 
   methods: {
-    cardSave: function () {
-      const blockPath = this.$store.getters['modalController/data'].path
-      if (this.$store.getters[blockPath + '/dateStart'] !== this.form.start) {
-        this.$store.commit(blockPath + '/dateStart', this.form.start)
-      }
-      if (this.$store.getters[blockPath + '/dateEnd'] !== this.form.end) {
-        this.$store.commit(blockPath + '/dateEnd', this.form.end)
-      }
-      if (this.$store.getters[blockPath + '/name'] !== this.form.name) {
-        this.$store.commit(blockPath + '/name', this.form.name)
-      }
-      if (this.$store.getters[blockPath + '/intervalUnit'] !== this.interval(this.form.intUnit)) {
-        this.$store.commit(blockPath + '/intervalUnit', this.interval(this.form.intUnit))
-      }
-      if (this.$store.getters[blockPath + '/dateInterval'] !== this.date(this.form.intUnit)) {
-        this.$store.commit(blockPath + '/dateInterval', this.date(this.form.intUnit))
+    cardDelete: async function () {
+      let blockPath = this.$store.getters['modalController/data'].path
+      let blockId = this.$store.getters[blockPath + '/id']
+      let viewPath = blockPath.split('/')
+      viewPath.pop()
+      viewPath = viewPath.join('/')
+
+      this.$store.dispatch(viewPath + '/deleteBlock', blockId)
+      this.visible = false
+    },
+
+    cardSave: async function () {
+      let blockPath = this.$store.getters['modalController/data'].path
+      if (!blockPath) {
+        let view = this.$store.getters['modalController/data'].view
+        blockPath = await this.$store.dispatch(view + '/newBlock', {
+          dateStart: this.form.start,
+          dateEnd: this.form.end,
+          graphType: this.form.graphType,
+          name: this.form.name,
+          dateInterval: this.date(this.form.intUnit),
+          intervalUnit: this.interval(this.form.intUnit)
+        })
+      } else {
+        // if (this.$store.getters[blockPath + '/dateStart'] !== this.form.start) {
+        //   this.$store.commit(blockPath + '/dateStart', this.form.start)
+        // }
+        // if (this.$store.getters[blockPath + '/dateEnd'] !== this.form.end) {
+        //   this.$store.commit(blockPath + '/dateEnd', this.form.end)
+        // }
+        // if (this.$store.getters[blockPath + '/name'] !== this.form.name) {
+        //   this.$store.commit(blockPath + '/name', this.form.name)
+        // }
+        // if (this.$store.getters[blockPath + '/intervalUnit'] !== this.interval(this.form.intUnit)) {
+        //   this.$store.commit(blockPath + '/intervalUnit', this.interval(this.form.intUnit))
+        // }
+        // if (this.$store.getters[blockPath + '/dateInterval'] !== this.date(this.form.intUnit)) {
+        //   this.$store.commit(blockPath + '/dateInterval', this.date(this.form.intUnit))
+        // }
+        this.$store.dispatch(blockPath + '/update', {
+          dateStart: this.form.start,
+          dateEnd: this.form.end,
+          graphType: this.form.graphType,
+          name: this.form.name,
+          dateInterval: this.date(this.form.intUnit),
+          intervalUnit: this.interval(this.form.intUnit)
+        })
       }
 
       const charts = this.$store.getters[blockPath + '/charts']
@@ -158,19 +217,26 @@ export default {
       for (let index in this.form.sets) {
         if (index < charts.length) {
           const chartPath = charts[index].path
-
-          if (this.$store.getters[chartPath + '/name'] !== this.form.sets[index].name) {
-            this.$store.commit(chartPath + '/name', this.form.sets[index].name)
-          }
-          if (this.$store.getters[chartPath + '/point'] !== this.form.sets[index].point) {
-            this.$store.commit(chartPath + '/point', this.form.sets[index].point)
-          }
-          if (this.$store.getters[chartPath + '/building'] !== this.form.sets[index].building) {
-            this.$store.commit(chartPath + '/building', this.form.sets[index].building)
-          }
-          if (this.$store.getters[chartPath + '/meterGroupPath'] !== this.form.sets[index].meter) {
-            this.$store.commit(chartPath + '/meterGroupPath', this.form.sets[index].meter)
-          }
+          // let saveChart = false
+          // if (this.$store.getters[chartPath + '/name'] !== this.form.sets[index].name) {
+          //   this.$store.commit(chartPath + '/name', this.form.sets[index].name)
+          //   saveChart = true
+          // }
+          // if (this.$store.getters[chartPath + '/point'] !== this.form.sets[index].point) {
+          //   this.$store.commit(chartPath + '/point', this.form.sets[index].point)
+          //   saveChart = true
+          // }
+          // if (this.$store.getters[chartPath + '/building'] !== this.form.sets[index].building) {
+          //   this.$store.commit(chartPath + '/building', this.form.sets[index].building)
+          //   saveChart = true
+          // }
+          // if (this.$store.getters[chartPath + '/meterGroupPath'] !== this.form.sets[index].meter) {
+          //   this.$store.commit(chartPath + '/meterGroupPath', this.form.sets[index].meter)
+          //   saveChart = true
+          // }
+          // if (saveChart) {
+          this.$store.dispatch(chartPath + '/update', this.form.sets[index])
+          // }
         } else {
           this.$store.dispatch(blockPath + '/newChart', this.form.sets[index])
         }
@@ -212,6 +278,17 @@ export default {
         }
       } else {
         this.form.new = true
+        this.form.name = ''
+        this.form.start = ''
+        this.form.end = ''
+        this.form.intUnit = 1
+        this.form.graphType = 1
+        this.form.sets = [{
+          name: '',
+          building: '',
+          meter: '',
+          point: ''
+        }]
       }
     },
     dateValidator: function (rule, value, callback) {

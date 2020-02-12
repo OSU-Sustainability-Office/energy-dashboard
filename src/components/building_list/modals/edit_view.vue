@@ -15,7 +15,7 @@
         <el-input type='text' v-model='form.description' ></el-input>
       </el-form-item> -->
     </el-form>
-    <!-- <mediapicker v-model='form.media' ref='picker'/> -->
+    <mediapicker v-model='form.media' ref='picker'/>
     <span slot='footer'>
       <el-button @click='deleteView()' type='danger' v-if='viewId'>Delete</el-button>
       <el-button @click='saveView()' type='primary'>{{ saveButtonText }}</el-button>
@@ -25,10 +25,10 @@
 </template>
 
 <script>
-// import mediapicker from '@/components/extras/media_picker.vue'
+import mediapicker from '@/components/extras/media_picker.vue'
 export default {
-  comonents: {
-    // mediapicker
+  components: {
+    mediapicker
   },
   data () {
     return {
@@ -76,15 +76,15 @@ export default {
       if (this.viewId) {
         this.form.name = this.$store.getters[this.view.path + '/name']
         this.form.description = this.$store.getters[this.view.path + '/description']
-        this.form.image = this.$store.getters[this.view.path + '/image']
+        this.form.media = this.$store.getters[this.view.path + '/image']
       } else {
         this.form.name = ''
-        this.form.image = ''
+        this.form.media = ''
         this.form.description = ''
       }
     },
     deleteView: function () {
-      if (!this.viewId) {
+      if (this.viewId) {
         this.$store.dispatch('user/deleteView', this.viewId)
       }
       this.visible = false

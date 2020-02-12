@@ -53,9 +53,9 @@ class Campaign {
     this.media = campaignRows[0]['media']
     if (expand === true) {
       for (let row of campaignRows) {
-        this.buildings.push(Building(row['building_id']).get())
+        this.buildings.push((new Building(row['building_id'])).get())
       }
-      await this.buildings
+      this.buildings = await this.buildings
     } else {
       this.buildings = campaignRows.map(row => row['building_id'])
     }

@@ -7,6 +7,7 @@
  */
 import MeterGroup from './meter_group.module.js'
 import Block from './block.module.js'
+import API from './api.js'
 
 const state = () => {
   return {
@@ -17,6 +18,7 @@ const state = () => {
     image: null,
     geoJSON: null,
     description: '',
+    mapId: null,
     id: null
   }
 }
@@ -32,6 +34,53 @@ const actions = {
       await this.getters[group.path + '/meters'][0].promise
       store.commit('addType', this.getters[group.path + '/meters'][0].type)
     })
+  },
+
+  async removeAllMeterGroups (store) {
+    for (let meterGroup of store.getters.meterGroups) {
+      this.unregisterModule(meterGroup.path.split('/'))
+    }
+  },
+
+  async update (store, payload) {
+    let reqPayload = {
+      ...payload,
+      id: store.getters.id
+    }
+    if (!reqPayload.image) {
+      reqPayload.image = store.getters.image
+    }
+    if (!reqPayload.mapId) {
+      reqPayload.mapId = store.getters.mapId
+    }
+    if (!reqPayload.group) {
+      reqPayload.group = store.getters.group
+    }
+    if (!reqPayload.meters) {
+      reqPayload.meters = []
+      for (let group of store.getters.meterGroups) {
+        let payloadGroup = {
+          name: this.getters[group.path + '/name'],
+          id: this.getters[group.path + '/id'],
+          meters: {}
+        }
+        for (let meter of this.getters[group.path + '/meters']) {
+          payloadGroup.meters[meter.id] = { operation: parseInt(!meter.negate) }
+        }
+        reqPayload.reqPayload.meters.push(payloadGroup)
+      }
+    }
+    let res = await API.building('put', reqPayload)
+    if (res.status === 200) {
+      store.commit('image', reqPayload.image)
+      store.commit('mapId', reqPayload.mapId)
+      store.commit('group', reqPayload.group)
+      // Reload with API calls, inefficient but buildings rarely updated
+      await store.dispatch('removeAllMeterGroups')
+      for (let meterGroup of res.data.meterGroups) {
+        store.dispatch('loadMeterGroup', { id: meterGroup })
+      }
+    }
   },
 
   async buildDefaultBlocks (store, payload) {
@@ -51,6 +100,10 @@ const actions = {
 const mutations = {
   promise (state, promise) {
     state.promise = promise
+  },
+
+  mapId (state, mapId) {
+    state.mapId = mapId
   },
 
   name (state, name) {
@@ -78,7 +131,7 @@ const mutations = {
   },
 
   addType (state, type) {
-    if (state.description.search(`/${type}/gi`) < 0) {
+    if (state.description.search(new RegExp(`${type}`, 'gi')) < 0) {
       if (state.description === '') {
         state.description += type
       } else {
@@ -92,7 +145,9 @@ const getters = {
   promise (state) {
     return state.promise
   },
-
+  mapId (state) {
+    return state.mapId
+  },
   name (state) {
     return state.name
   },

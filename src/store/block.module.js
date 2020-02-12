@@ -10,7 +10,6 @@ import Chart from './chart.module.js'
 
 const state = () => {
   return {
-    tempChartCounter: 0,
     path: null,
     promise: null,
     name: null,               // String
@@ -53,6 +52,32 @@ const actions = {
     }
   },
 
+  async update (store, payload) {
+    if (payload.name === store.getters.name && payload.dateInterval === store.getters.dateInterval &&
+        payload.intervalUnit === store.getters.intervalUnit && payload.graphType === store.getters.graphType &&
+        payload.dateStart === store.getters.dateStart && payload.dateEnd === store.getters.dateEnd) {
+      return
+    }
+    let viewPath = store.getters.path.split('/')
+    viewPath.pop()
+    viewPath = viewPath.join('/')
+    let user = this.getters[viewPath + '/user']
+
+    store.commit('name', payload.name)
+    store.commit('dateInterval', payload.dateInterval)
+    store.commit('intervalUnit', payload.intervalUnit)
+    store.commit('graphType', payload.graphType)
+    store.commit('dateStart', payload.dateStart)
+    store.commit('dateEnd', payload.dateEnd)
+
+    if (user && user === this.getters['user/onid']) {
+      payload.id = store.getters.id
+      payload.dateStart = (new Date(store.getters.dateStart)).toISOString()
+      payload.dateEnd = (new Date(store.getters.dateEnd)).toISOString()
+      await API.block(payload, 'put')
+    }
+  },
+
   async changeBlock (store, id) {
     store.commit('shuffleChartColors')
     for (let chart of store.getters.charts) {
@@ -67,7 +92,7 @@ const actions = {
     store.commit('intervalUnit', block.intervalUnit)
     store.commit('graphType', block.graphType)
     store.commit('dateStart', block.dateStart)
-    store.commit('dateEnd', block.dateStart)
+    store.commit('dateEnd', block.dateEnd)
 
     for (let chart of block.charts) {
       store.dispatch('loadChart', chart)
@@ -75,8 +100,14 @@ const actions = {
   },
 
   async newChart (store, payload) {
-    let chartSpace = 'chart_temp_' + store.getters.tempChartCounter
-    store.commit('increaseTempCount')
+    let id = (await API.chart({
+      name: payload.name,
+      point: payload.point,
+      meterGroup: this.getters[payload.meter + '/id'],
+      building: this.getters[payload.building + '/id'],
+      blockId: store.getters.id
+    }, 'post')).id
+    let chartSpace = 'chart_' + id
     let moduleSpace = store.getters.path + '/' + chartSpace
     await this.registerModule(moduleSpace.split('/'), Chart)
     store.commit(chartSpace + '/path', moduleSpace)
@@ -87,10 +118,11 @@ const actions = {
     store.commit(chartSpace + '/meterGroupPath', payload.meter)
   },
 
-  removeChart (store, name) {
+  async removeChart (store, name) {
     for (let chart of store.getters.charts) {
       let chartKey = chart.path.split('/').pop()
       if (chartKey === name) {
+        await API.chart({ id: chart.id }, 'delete')
         this.unregisterModule(chart.path.split('/'))
       }
     }
@@ -161,7 +193,6 @@ const actions = {
     }
     let chartData = await Promise.all(chartDataPromises)
     if (store.getters.graphType === 1) {
-      console.log(chartData)
       data.datasets = chartData
     }
     return data
@@ -171,10 +202,6 @@ const actions = {
 const mutations = {
   path (state, path) {
     state.path = path
-  },
-
-  increaseTempCount (state) {
-    state.tempChartCounter++
   },
 
   shuffleChartColors (state) {
@@ -207,7 +234,6 @@ const mutations = {
   },
 
   dateStart (state, dateStart) {
-    console.log(state.path)
     if (typeof dateStart === 'string') {
       state.dateStart = (new Date(dateStart)).getTime()
     } else if (typeof dateStart === 'number') {
@@ -221,18 +247,14 @@ const mutations = {
 
   dateEnd (state, dateEnd) {
     if (typeof dateEnd === 'string') {
-      console.log('stroing')
       state.dateEnd = (new Date(dateEnd)).getTime()
     } else if (typeof dateEnd === 'number') {
-      console.log('number')
       state.dateEnd = dateEnd
     } else if (dateEnd instanceof Date) {
-      console.log('date')
       state.dateEnd = dateEnd.getTime()
     } else {
       throw new Error('Unrecognized format sent to dateEnd')
     }
-    console.log(state.dateEnd)
   },
 
   id (state, id) {
@@ -245,10 +267,6 @@ const getters = {
 
   state (state) {
     return state
-  },
-
-  tempChartCounter (state) {
-    return state.tempChartCounter
   },
 
   name (state) {

@@ -26,13 +26,16 @@ exports.get = async (event, context) => {
 exports.put = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
+  await user.resolved
   try {
-    await Building(event.body.id).update(
+    let building = await (new Building(event.body.id)).update(
       event.body.mapId,
       event.body.image,
       event.body.group,
+      event.body.meters,
       user
     )
+    response.body = building.data
   } catch (error) {
     response.body = error.message
     response.status = 400
@@ -43,11 +46,13 @@ exports.put = async (event, context) => {
 exports.post = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
+  await user.resolved
   try {
     response.body = JSON.stringify((await Building.create(
       event.body.mapId,
       event.body.image,
       event.body.group,
+      event.body.meters,
       user
     )).data)
   } catch (error) {

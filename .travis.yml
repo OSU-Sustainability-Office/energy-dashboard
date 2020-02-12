@@ -18,17 +18,20 @@ cache:
   - "$HOME/.local"
   - ".cache-loader"
 install:
-  - 'pip install plantuml'
+  - 'pip install plantuml --user'
 script:
 - |
   if [ "$TRAVIS_BRANCH" == "master" ]; then
+    npm install
     npm run build
     echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
   else
+    npm install
     npm run build-stage
   fi
-  plantuml -tsvg $(find documents | grep .puml) 
+  python plantuml.py -tsvg $(find documents | grep .puml) 
   mv $(find documents | grep .svg) dist/*
+
 
 deploy:
 - provider: pages
