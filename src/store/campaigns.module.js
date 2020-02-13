@@ -30,6 +30,7 @@ const actions = {
 
         // Register a VueX campaign module for each campaign.
         // Campaigns are registered under the VueX path campaigns/campaign_1, campaigns/campaign_2, etc, where the integer is the ID of the campaign
+        console.log(completeCampaigns)
         completeCampaigns.forEach(c => {
           const campaign = 'campaign_' + c.id.toString()
           const campaignPath = store.getters.path + '/' + campaign

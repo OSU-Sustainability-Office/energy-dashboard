@@ -63,5 +63,8 @@ export default {
   },
   edashUser: async (onid) => {
     return (await callAPI('user?onid=' + onid)).data
+  },
+  campaigns: async () => {
+    return (await callAPI('campaigns')).data
   }
 }
