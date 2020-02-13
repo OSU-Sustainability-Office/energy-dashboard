@@ -37,16 +37,17 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('campaigns/getCampaigns').then(r => {
-      for (let camp of r) {
-        if (this.checkDate(camp.dateEnd)) {
+    this.$store.dispatch('campaigns/getCampaigns').then(campaignIDs => {
+      for (let id of campaignIDs) {
+        let camp = this.$store.state['campaigns']['campaign_' + id]
+        if (this.checkDate(camp.date_end)) {
           this.currentCampaigns.push(camp)
         } else {
           this.pastCampaigns.push(camp)
         }
       }
-      this.currentCampaigns.sort((a, b) => { return (new Date(b.dateEnd)).getTime() - (new Date(a.dateEnd)).getTime() })
-      this.pastCampaigns.sort((a, b) => { return (new Date(b.dateEnd)).getTime() - (new Date(a.dateEnd)).getTime() })
+      this.currentCampaigns.sort((a, b) => { return (new Date(b.date_end)).getTime() - (new Date(a.date_end)).getTime() })
+      this.pastCampaigns.sort((a, b) => { return (new Date(b.date_end)).getTime() - (new Date(a.date_end)).getTime() })
     })
   },
   methods: {

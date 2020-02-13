@@ -18,6 +18,7 @@ const state = () => {
     date_end: null,
     compare_start: null,
     compare_end: null,
+    buildings: [],
     media: null
   }
 }
@@ -62,48 +63,56 @@ const mutations = {
 
   media (state, media) {
     state.media = media
+  },
+
+  addBuilding (state, b) {
+    state.buildings.push(b)
   }
 }
 
 const getters = {
-  promise (state, promise) {
+  promise (state) {
     return state.promise
   },
 
-  name (state, name) {
+  name (state) {
     return state.name
   },
 
-  id (state, id) {
+  id (state) {
     return state.id
   },
 
-  path (state, path) {
+  path (state) {
     return state.path
   },
 
-  date_start (state, date_start) {
+  date_start (state) {
     return state.date_start
   },
 
-  date_end (state, date_end) {
+  date_end (state) {
     return state.date_end
   },
 
-  compare_start (state, compare_start) {
+  compare_start (state) {
     return state.compare_start
   },
 
-  compare_end (state, compare_end) {
+  compare_end (state) {
     return state.compare_end
   },
 
-  media (state, media) {
+  media (state) {
     return state.media
   },
 
-  getAllData (state, media) {
+  getAllData (state) {
     return state
+  },
+
+  buildings (state) {
+    return state.buildings
   }
 
 }
