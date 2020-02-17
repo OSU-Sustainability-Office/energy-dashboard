@@ -626,6 +626,9 @@ export default {
           i++
         }
         matrixBase[Math.floor((i / 96) % 7)][i % 96] += piece.y / weekcount
+        if (payload.goal !== null) {
+          matrixBase[Math.floor((i / 96) % 7)][i % 96] *= payload.goal / 100.0
+        }
         i++
       }
       for (let key of Object.keys(badAverages)) {
@@ -669,6 +672,7 @@ export default {
       for (let group of campaign.groups) {
         let meters = await context.dispatch('buildingMeters', { id: group.id })
         let baseline = await context.dispatch('baseline', {
+          goal: group.goal,
           meters: meters,
           point: 'accumulated_real',
           date_start: campaign.compare_start,
