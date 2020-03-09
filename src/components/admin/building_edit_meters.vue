@@ -53,7 +53,7 @@
                 Negate
               </el-col>
             </el-row>
-            <el-row v-for='device of allDevices' :key='device.id'>
+            <el-row v-for='device of allDevices' :key='device.id' :id='device.id' ref='device_row'>
               <el-col :span='10'>
                 {{ device.name }}
                 <span v-if='!device.name'>
@@ -109,6 +109,21 @@ export default {
       handler: function (value) {
         console.log(value)
         this.updateCheckBoxes()
+      }
+    },
+    search: function (v) {
+      let values = this.allDevices.filter(obj => (
+        // Check that the item's name includes query
+        (obj.name && obj.name.toLowerCase().includes(v.toLowerCase())))
+      ).map(e => {
+        return e.id
+      })
+      for (let row of this.$refs.device_row) {
+        if (values.indexOf(row.$attrs.id) < 0) {
+          row.$el.style.display = 'none'
+        } else {
+          row.$el.style.display = 'block'
+        }
       }
     }
   },

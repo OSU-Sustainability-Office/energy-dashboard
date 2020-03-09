@@ -69,7 +69,6 @@ const actions = {
     store.commit('graphType', payload.graphType)
     store.commit('dateStart', payload.dateStart)
     store.commit('dateEnd', payload.dateEnd)
-
     if (user && user === this.getters['user/onid']) {
       payload.id = store.getters.id
       payload.dateStart = (new Date(store.getters.dateStart)).toISOString()
@@ -187,13 +186,22 @@ const actions = {
         dateStart: parseInt(store.getters.dateStart / 1000),
         dateEnd: parseInt(store.getters.dateEnd / 1000),
         intervalUnit: store.getters.intervalUnit,
-        dateInterval: store.getters.dateInterval
+        dateInterval: store.getters.dateInterval,
+        graphType: store.getters.graphType
       }
       chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
     }
     let chartData = await Promise.all(chartDataPromises)
-    if (store.getters.graphType === 1) {
-      data.datasets = chartData
+    if (store.getters.graphType !== 100) {
+      if (store.getters.graphType === 3 || store.getters.graphType === 4) {
+        data.datasets.push({
+          data: chartData.map(o => o.data[0]),
+          backgroundColor: chartData.map(o => o.backgroundColor)
+        })
+        data.labels = chartData.map(o => o.label)
+      } else {
+        data.datasets = chartData
+      }
     }
     return data
   }

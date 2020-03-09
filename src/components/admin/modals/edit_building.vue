@@ -80,8 +80,13 @@ export default {
     },
     buildingName: {
       get () {
-        let buildingPath = this.$store.getters['map/building'](this.buildingId).path
-        return this.$store.getters[buildingPath + '/name']
+        // This is wrapped because deleting a building will cause an error here
+        try {
+          let buildingPath = this.$store.getters['map/building'](this.buildingId).path
+          return this.$store.getters[buildingPath + '/name']
+        } catch (error) {
+          return ''
+        }
       }
     },
     visible: {
@@ -133,6 +138,10 @@ export default {
           this.$refs.mappicker.map.invalidateSize()
         })
       }
+    },
+    async deleteBuilding () {
+      this.visible = false
+      this.$store.dispatch('map/deleteBuilding', { id: this.buildingId })
     },
     updateForm () {
       if (this.buildingId) {

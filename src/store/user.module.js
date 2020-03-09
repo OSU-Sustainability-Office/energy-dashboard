@@ -61,7 +61,7 @@ const actions = {
         let data = await API.user()
         if (data.onid !== '') {
           store.commit('onid', data.onid)
-          let edashData = await API.edashUser(data.onid)
+          let edashData = await API.edashUser()
           store.commit('privilege', edashData.privilege)
           await store.dispatch('loadViews', edashData.appData['energyDashboard'].views)
           // store.commit('alerts', edashData.alerts)

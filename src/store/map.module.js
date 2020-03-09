@@ -36,6 +36,12 @@ const actions = {
     store.dispatch(buildingSpace + '/buildDefaultBlocks')
   },
 
+  async deleteBuilding (store, payload) {
+    let buildingPath = ['map', 'building_' + payload.id]
+    this.unregisterModule(buildingPath)
+    API.building('delete', payload)
+  },
+
   async newBuilding (store, payload) {
     let building = await API.building('post', {
       image: payload.image,
@@ -76,7 +82,7 @@ const actions = {
   },
 
   async loadMap (store) {
-    for (let building of store.getters.buildings) {
+    for (let building of store.getters.buildings()) {
       let buildingKey = building.path.split('/').pop()
       this.unregisterModule(buildingKey)
     }
@@ -138,7 +144,7 @@ const getters = {
     return buildings
   },
 
-  buildings: (state) => {
+  buildings: (state) => () => {
     let buildings = []
     for (let key of Object.keys(state)) {
       if (key.search(/building_/) >= 0) {

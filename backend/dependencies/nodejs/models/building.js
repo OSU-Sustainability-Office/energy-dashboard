@@ -104,7 +104,7 @@ class Building {
   async delete (user) {
     await DB.connect()
     if (user.data.privilege > 3) {
-      await DB.query('DELETE buildings WHERE id = ?', [this.id])
+      await DB.query('DELETE FROM buildings WHERE id = ?', [this.id])
     } else {
       throw new Error('Need escalated permissions')
     }
@@ -152,7 +152,8 @@ class Building {
         building.mapId = buildingRow['map_id']
         building.group = buildingRow['group']
         building.meterGroups = [buildingRow['meter_group_id']]
-        promiseChain2.push(axios('https://api.openstreetmap.org/api/0.6/way/' + buildingRow['map_id'] + '/full', { method: 'get' }).then(data => {
+        // OSM API now sends OSM Json format if application/json is in the request header
+        promiseChain2.push(axios('https://api.openstreetmap.org/api/0.6/way/' + buildingRow['map_id'] + '/full', { headers: { 'Accept': 'text/xml' }, method: 'get' }).then(data => {
           let xmlData = (new XMLDom.DOMParser()).parseFromString(data.data)
           building.geoJSON = Geo(xmlData).features[0]
           building.name = building.geoJSON.properties.name

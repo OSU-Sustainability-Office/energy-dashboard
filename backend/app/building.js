@@ -66,7 +66,7 @@ exports.delete = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
   try {
-    await Building(event.body.id).delete(user)
+    await (new Building(event.body.id)).delete(user)
   } catch (error) {
     response.body = error.message
     response.status = 400

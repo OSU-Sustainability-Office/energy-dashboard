@@ -102,7 +102,7 @@ export default {
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
           this.$store.dispatch(this.path + '/getData').then(data => {
-            if (this.chart) {
+            if (this.chart && (this.graphType === 1 || this.graphType === 2 || this.graphType === 5)) {
               this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
               this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
               this.chart.setOptions(this.chart.options)

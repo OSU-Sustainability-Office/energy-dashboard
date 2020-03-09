@@ -20,13 +20,14 @@ export default {
           callbacks: {
             title: (item, data) => {
               return data.labels[item[0].index]
+              // return ''
             },
             label: (item, data) => {
-              return data.datasets[0].data[item.index] + ' ' + this.$parent.unit()
+              return data.datasets[0].data[item.index] + ' ' + this.$parent.unit(item.index)
             },
             footer: (item, data) => {
-              let start = new Date(this.$parent.getStart())
-              let end = new Date(this.$parent.getEnd())
+              let start = new Date(this.$parent.dateStart)
+              let end = new Date(this.$parent.dateEnd)
 
               return this.formatDate(start) + ' - ' + this.formatDate(end)
             }

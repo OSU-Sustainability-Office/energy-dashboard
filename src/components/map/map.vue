@@ -15,7 +15,7 @@
           <el-tooltip content="Click to toggle visibility" placement="right">
             <el-menu-item index='Academics' :class="[(isDisplayed('Academics') ? 'active' : 'notactive')]"><span class='edu swatch'></span>Academics</el-menu-item>
           </el-tooltip>
-          <el-menu-item index='Athletics' :class="[(isDisplayed('Athletics') ? 'active' : 'notactive')]"><span class='ath swatch'></span>Athletics & Rec</el-menu-item>
+          <el-menu-item index='Athletics & Rec' :class="[(isDisplayed('Athletics & Rec') ? 'active' : 'notactive')]"><span class='ath swatch'></span>Athletics & Rec</el-menu-item>
           <el-menu-item index='Dining' :class="[(isDisplayed('Dining') ? 'active' : 'notactive')]"><span class='din swatch'></span>Dining</el-menu-item>
           <el-menu-item index='Events & Admin' :class="[(isDisplayed('Events & Admin') ? 'active' : 'notactive')]"><span class='com swatch'></span>Events & Admin</el-menu-item>
           <el-menu-item index='Residence' :class="[(isDisplayed('Residence') ? 'active' : 'notactive')]"><span class='res swatch'></span>Residence</el-menu-item>
@@ -24,7 +24,7 @@
       <div class='mapContainer' ref='mapContainer' v-loading='!mapLoaded'>
         <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-          <l-geo-json v-for='building of this.$store.getters["map/buildings"]' :key='building.id * rKey' :geojson='building.geoJSON' :options='buildingOptions' ref="geoLayer"></l-geo-json>
+          <l-geo-json v-for='building of this.$store.getters["map/buildings"]()' :key='building.id * rKey' :geojson='building.geoJSON' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
       </div>
       <prompt v-if='askingForComparison' @cancel='stopCompare' @compare='showComparison' />
@@ -78,7 +78,7 @@ export default {
       compareMarkers: [],
       rKey: 1,
       askingForComparison: false,
-      selected: ['Residence', 'Athletics', 'Dining', 'Academics', 'Events & Admin'],
+      selected: ['Residence', 'Athletics & Rec', 'Dining', 'Academics', 'Events & Admin'],
       show: false,
       mapLoaded: false,
       buildingOptions: {

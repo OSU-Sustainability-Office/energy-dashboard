@@ -7,7 +7,10 @@
  */
 import axios from 'axios'
 
-function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP_ROOT_API) {
+function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP_ROOT_API, headers = null) {
+  if (headers) {
+    return axios(base + '/' + route, { method: method, data: data, withCredentials: true, timeout: 72000, headers: headers })
+  }
   return axios(base + '/' + route, { method: method, data: data, withCredentials: true, timeout: 72000 })
 }
 
@@ -17,11 +20,25 @@ export default {
   },
 
   boundedFeatures: async (payload) => {
-    return (await callAPI(`map?bbox=${payload.left},${payload.bottom},${payload.right},${payload.top}`, null, 'get', 'https://api.openstreetmap.org/api/0.6')).data
+    return (await callAPI(
+      `map?bbox=${payload.left},${payload.bottom},${payload.right},${payload.top}`,
+      null,
+      'get',
+      'https://api.openstreetmap.org/api/0.6',
+      {
+        'Accept': 'text/xml'
+      })).data
     // return (await callAPI(`way/40535383/full`, null, 'get', 'https://api.openstreetmap.org/api/0.6')).data
   },
   buildingFeature: async (payload) => {
-    return (await callAPI(`way/${payload}/full`, null, 'get', 'https://api.openstreetmap.org/api/0.6')).data
+    return (await callAPI(
+      `way/${payload}/full`,
+      null,
+      'get',
+      'https://api.openstreetmap.org/api/0.6',
+      {
+        'Accept': 'text/xml'
+      })).data
   },
   users: async () => {
     return (await callAPI('admin/users')).data
@@ -61,7 +78,13 @@ export default {
   user: async () => {
     return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
   },
-  edashUser: async (onid) => {
-    return (await callAPI('user?onid=' + onid)).data
+  edashUser: async () => {
+    return (await callAPI('user')).data
+  },
+  block: async (data, method) => {
+    return (await callAPI('block', data, method)).data
+  },
+  chart: async (data, method) => {
+    return (await callAPI('chart', data, method)).data
   }
 }

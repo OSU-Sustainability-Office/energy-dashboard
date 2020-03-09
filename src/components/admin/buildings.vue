@@ -21,7 +21,7 @@
       <el-row>
         <el-col :span='24' class='cards_col'>
           <el-row type='flex' justify='left' class='card_flex' v-loading='this.loading'>
-            <el-col v-for='building in buildings' :key='building.name' :span='4' class='card_container'>
+            <el-col v-for='building in buildings' :key='building.name' :id='building.id' :span='4' class='card_container' ref='card_container'>
               <viewCard :plus='false' :building='true' :id='building.id' class='card' @click='editBuilding(building.id)' ref='card' />
             </el-col>
             <el-col v-for='n in 10' :key='n' :span='4' class='blankSlate'>
@@ -73,7 +73,7 @@ export default {
       ).map(e => {
         return e.id
       })
-      for (let row of this.$refs.card) {
+      for (let row of this.$refs.card_container) {
         if (values.indexOf(row.$attrs.id) < 0) {
           row.$el.style.display = 'none'
         } else {
@@ -85,7 +85,7 @@ export default {
   computed: {
     buildings: {
       get () {
-        return this.$store.getters['map/buildings']
+        return this.$store.getters['map/buildings']()
       }
     }
   }

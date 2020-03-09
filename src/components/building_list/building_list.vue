@@ -103,7 +103,7 @@ export default {
         if (this.buildingList) {
           let r = {}
           // await this.$store.getters['map/promise']
-          let buildings = this.$store.getters['map/buildings']
+          let buildings = this.$store.getters['map/buildings']()
           for (let building of buildings) {
             if (r[building.group]) {
               r[building.group].push(building)
