@@ -30,7 +30,6 @@ const actions = {
   // Then, retrieves building data from the api and creates buildings that don't
   // already exist in VueX
   async loadBuilding(store, payload) { // Payload contains .buildingID
-
     // Create a promise for this building
     store.commit('addBuildingPromise', new Promise(async (resolve, reject) => {
       // Add the building's ID to the buildings array
