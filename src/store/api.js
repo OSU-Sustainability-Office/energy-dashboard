@@ -49,6 +49,10 @@ export default {
     let call = (await callAPI('building', data, method))
     return { status: call.status, data: call.data }
   },
+  getBuildingByID: async (id) => {
+    let call = (await callAPI('building?id=' + id, null, 'GET'))
+    return { status: call.status, data: call.data }
+  },
   meterGroup: async id => {
     return (await callAPI('metergroup?id=' + id)).data
   },

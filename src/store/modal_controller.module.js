@@ -45,7 +45,6 @@ const getters = {
   },
 
   data (state) {
-    console.log(state.data)
     return state.data
   }
 }

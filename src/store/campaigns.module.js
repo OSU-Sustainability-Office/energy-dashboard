@@ -18,25 +18,25 @@ const state = () => {
 }
 
 const actions = {
-  // Retrieves an array of campaigns
-  async getCampaigns (store, payload) {
-    // Don't get the campaigns again if they have already been downloaded.
-    if (store.getters['promise'] === null) {
+  // Retrieves campaign information from the API and controls the global campaigns promise
+  async loadCampaigns (store, payload) {
+    store.commit('promise', new Promise(async (resolve, reject) => {
       // Attempt to retrieve campaigns from the api
       try {
         let campaigns = api.campaigns() // Make async api call
-        store.commit('promise', campaigns) // Commit a promise to the store, to conform to Brogan's design pattern for VueX
         let completeCampaigns = await campaigns // Wait until the promise resolves before continuing.
 
         // Register a VueX campaign module for each campaign.
         // Campaigns are registered under the VueX path campaigns/campaign_1, campaigns/campaign_2, etc, where the integer is the ID of the campaign
-        console.log(completeCampaigns)
         completeCampaigns.forEach(c => {
           const campaign = 'campaign_' + c.id.toString()
           const campaignPath = store.getters.path + '/' + campaign
 
           // Create a vueX campaign module in a really verbose way
           this.registerModule(campaignPath.split('/'), Campaign)
+          c.buildings.forEach(b => {
+            store.commit(campaign + '/addBuildingPromise', store.dispatch(campaign + '/loadBuilding', { buildingID: b }))
+          })
           store.commit(campaign + '/path', campaignPath)
           store.commit(campaign + '/id', c.id)
           store.commit(campaign + '/path', campaignPath)
@@ -45,17 +45,28 @@ const actions = {
           store.commit(campaign + '/compare_start', c.compareStart)
           store.commit(campaign + '/compare_end', c.compareEnd)
           store.commit(campaign + '/media', c.media)
-          c.buildings.forEach(b => {
-            store.commit(campaign + '/addBuilding', b)
-          })
+
+          // Add the campaign to the campaign list
+          store.commit('addCampaign', c.id)
         })
-        return Promise.resolve(completeCampaigns.map(c => c.id))
+
+        return resolve()
       } catch (error) {
-        return Promise.reject(error)
+        return reject(error)
       }
-    } else {
-      return Promise.resolve(store.getters['allCampaigns'])
+    }))
+    return store.getters['promise']
+  },
+
+
+  // Retrieves an array of campaigns
+  async getCampaigns (store, payload) {
+    // Don't get the campaigns again if they have already been downloaded.
+    if (store.getters['promise'] === null) {
+      store.dispatch('loadCampaigns')
     }
+    await store.getters['promise']
+    return Promise.resolve(store.getters['allCampaigns'])
   }
 
 }

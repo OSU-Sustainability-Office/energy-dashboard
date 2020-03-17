@@ -7,10 +7,11 @@
  */
 
 import api from './api.js'
+import Building from './building.module.js'
 
 const state = () => {
   return {
-    promise: null,
+    promises: [],
     path: null,
     id: null,
     name: null,
@@ -25,12 +26,56 @@ const state = () => {
 
 const actions = {
 
+  // Waits for the VueX store to finish downloading building data.
+  // Then, retrieves building data from the api and creates buildings that don't
+  // already exist in VueX
+  async loadBuilding(store, payload) { // Payload contains .buildingID
 
+    // Create a promise for this building
+    store.commit('addBuildingPromise', new Promise(async (resolve, reject) => {
+      // Add the building's ID to the buildings array
+      store.commit('addBuilding', payload.buildingID)
+
+      // Wait for all buildings to finish loading
+      await store.rootState['map']['promise']
+      await store.rootState['map']['allBuildingPromise']
+
+      // If the building doesn't exist, create the building in VueX
+      if (store.rootState['map']['building_' + payload.buildingID.toString()] === undefined) {
+        // Create the building in the VueX store (if it doesn't already exist)
+        // Construct namespaces
+        const buildingSpace = 'building_' + payload.buildingID.toString()
+        const moduleSpace = 'map' + '/' + buildingSpace
+
+        // Register the module - this prevents other async functions from creating the building
+        this.registerModule(moduleSpace.split('/'), Building)
+
+        // Make an API call to retrieve this building's data
+        let building = api.getBuildingByID(payload.buildingID)
+        let buildingResolved = (await building).data
+
+        // Commit building data
+        store.commit(moduleSpace + '/path', moduleSpace, { root: true })
+        store.commit(moduleSpace + '/geoJSON', buildingResolved.geoJSON, { root: true })
+        store.commit(moduleSpace + '/mapId', buildingResolved.mapId, { root: true })
+        store.commit(moduleSpace + '/name', buildingResolved.name, { root: true })
+        store.commit(moduleSpace + '/group', buildingResolved.group, { root: true })
+        store.commit(moduleSpace + '/image', buildingResolved.image, { root: true })
+        store.commit(moduleSpace + '/id', buildingResolved.id, { root: true })
+        store.commit(moduleSpace + '/promise', Promise.resolve(), { root: true })
+        for (let meterGroupId of buildingResolved.meterGroups) {
+          store.dispatch(moduleSpace + '/loadMeterGroup', { id: meterGroupId }, { root: true })
+        }
+        store.dispatch(moduleSpace + '/buildDefaultBlocks', {}, { root: true })
+      }
+      resolve(payload.buildingID)
+    }))
+  }
 }
 
 const mutations = {
-  promise (state, promise) {
-    state.promise = promise
+  addBuildingPromise (state, promise) {
+    state.promises.push(promise)
   },
 
   name (state, name) {
@@ -65,14 +110,16 @@ const mutations = {
     state.media = media
   },
 
-  addBuilding (state, b) {
-    state.buildings.push(b)
+  async addBuilding (state, buildingID) {
+    // Add to building ID list
+    state.buildings.push(buildingID)
   }
+
 }
 
 const getters = {
-  promise (state) {
-    return state.promise
+  promises (state) {
+    return state.promises
   },
 
   name (state) {
