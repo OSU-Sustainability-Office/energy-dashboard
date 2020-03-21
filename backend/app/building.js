@@ -29,6 +29,7 @@ exports.put = async (event, context) => {
   await user.resolved
   try {
     let building = await (new Building(event.body.id)).update(
+      event.body.name,
       event.body.mapId,
       event.body.image,
       event.body.group,
@@ -49,6 +50,7 @@ exports.post = async (event, context) => {
   await user.resolved
   try {
     response.body = JSON.stringify((await Building.create(
+      event.body.name,
       event.body.mapId,
       event.body.image,
       event.body.group,

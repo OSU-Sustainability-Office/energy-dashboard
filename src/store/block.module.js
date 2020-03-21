@@ -147,6 +147,7 @@ const actions = {
     this.registerModule(moduleSpace.split('/'), Chart)
     await this.getters[payload.group.path + '/meters'][0].promise
     let utilityType = this.getters[this.getters[payload.group.path + '/meters'][0].path + '/type']
+
     store.commit(chartSpace + '/name', 'Total ' + utilityType)
     const pointMap = {
       'Electricity': 'accumulated_real',

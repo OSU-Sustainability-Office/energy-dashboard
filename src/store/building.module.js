@@ -72,6 +72,7 @@ const actions = {
     }
     let res = await API.building('put', reqPayload)
     if (res.status === 200) {
+      store.commit('name', reqPayload.name)
       store.commit('image', reqPayload.image)
       store.commit('mapId', reqPayload.mapId)
       store.commit('group', reqPayload.group)

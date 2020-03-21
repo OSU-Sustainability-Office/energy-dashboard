@@ -52,17 +52,17 @@ class Meter {
     if (this.classInt === null) {
       return
     }
-    switch (this.classInt) {
-      case 17:
-        this.type = 'Gas'
-        break
-      case 4444:
-        this.type = 'Steam'
-        break
-      default:
-        this.type = 'Electricity'
-        break
-    }
+    // switch (this.classInt) {
+    //   case 17:
+    //     this.type = 'Gas'
+    //     break
+    //   case 4444:
+    //     this.type = 'Steam'
+    //     break
+    //   default:
+    //     this.type = 'Electricity'
+    //     break
+    // }
 
     const map = {
       accumulated_real: 'Net Energy Usage (kWh)',
@@ -98,9 +98,16 @@ class Meter {
       apparent_c: 'Apparent Power, Phase C (VA)',
       baseline_percentage: 'Percentage (%)'
     }
-
-    for (let point of Object.values(meterClasses[this.classInt])) {
+    const points = Object.values(meterClasses[this.classInt])
+    for (let point of points) {
       this.points.push({ label: map[point], value: point })
+    }
+    if (points.indexOf('total') >= 0) {
+      this.type = 'Steam'
+    } else if (points.indexOf('cubic_feet') >= 0) {
+      this.type = 'Gas'
+    } else if (points.indexOf('accumulated_real') >= 0) {
+      this.type = 'Electricity'
     }
     return this
   }

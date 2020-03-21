@@ -61,11 +61,11 @@ class Building {
     }
   }
 
-  async update (mapId, image, group, meters, user) {
+  async update (name, mapId, image, group, meters, user) {
     await DB.connect()
     let keepList = []
     if (user.data.privilege > 3) {
-      await DB.query('UPDATE buildings SET map_id = ?, image = ?, `group` = ? WHERE id = ?', [mapId, image, group, this.id])
+      await DB.query('UPDATE buildings SET map_id = ?, image = ?, `group` = ?, name = ? WHERE id = ?', [mapId, image, group, name, this.id])
       let first = true
       for (let meter of meters) {
         let mg
@@ -94,6 +94,7 @@ class Building {
     } else {
       throw new Error('Need escalated permissions')
     }
+    this.name = name
     this.mapId = mapId
     this.image = image
     this.group = group
@@ -110,12 +111,12 @@ class Building {
     }
   }
 
-  static async create (mapId, image, group, meters, user) {
+  static async create (name, mapId, image, group, meters, user) {
     if (user.data.privilege <= 3) {
       throw new Error('Need escalated permissions')
     }
     await DB.connect()
-    let buildingRow = await DB.query('INSERT INTO buildings (map_id, image, `group`) VALUES (?, ?, ?)', [mapId, image, group])
+    let buildingRow = await DB.query('INSERT INTO buildings (map_id, image, `group`, name) VALUES (?, ?, ?, ?)', [mapId, image, group, name])
     let meterList = []
     let first = true
     for (let meter of meters) {
@@ -130,6 +131,7 @@ class Building {
       meterList.push(id)
     }
     let building = new Building(buildingRow['insertId'])
+    building.name = name
     building.mapId = mapId
     building.image = image
     building.group = group
@@ -140,7 +142,7 @@ class Building {
   static async all () {
     await DB.connect()
     let buildings = {}
-    let promiseChain1 = await Promise.all([DB.query('SELECT buildings.id, buildings.group, buildings.map_id, buildings.image, meter_groups.id as meter_group_id FROM buildings LEFT JOIN meter_groups on buildings.id = meter_groups.building_id_2')])
+    let promiseChain1 = await Promise.all([DB.query('SELECT buildings.name, buildings.id, buildings.group, buildings.map_id, buildings.image, meter_groups.id as meter_group_id FROM buildings LEFT JOIN meter_groups on buildings.id = meter_groups.building_id_2')])
     const buildingRows = promiseChain1[0]
     // const token = promiseChain1[1]
     const promiseChain2 = []
@@ -156,7 +158,7 @@ class Building {
         promiseChain2.push(axios('https://api.openstreetmap.org/api/0.6/way/' + buildingRow['map_id'] + '/full', { headers: { 'Accept': 'text/xml' }, method: 'get' }).then(data => {
           let xmlData = (new XMLDom.DOMParser()).parseFromString(data.data)
           building.geoJSON = Geo(xmlData).features[0]
-          building.name = building.geoJSON.properties.name
+          building.name = buildingRow['name']
           building.image = buildingRow['image']
           building.geoJSON.properties.id = building.id
           building.geoJSON.properties.group = buildingRow['group']

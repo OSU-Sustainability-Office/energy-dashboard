@@ -8,9 +8,9 @@
 <template>
   <el-dialog size='lg' :visible.sync="visible" :title='(!buildingId) ? "New Building" : `Edit ${buildingName}`' width="80%" @open='updateForm()'>
     <el-form :model='form' ref='form'>
-      <!-- <el-form-item label='Name: ' prop='name' :rules="{required: true, message: 'A name is required', trigger: 'blur'}">
+      <el-form-item label='Name: ' prop='name' :rules="{required: true, message: 'A name is required', trigger: 'blur'}">
         <el-input type='text' v-model='form.name' ></el-input>
-      </el-form-item> -->
+      </el-form-item>
       <!-- <el-form-item label='Sub-Title: ' prop='description' :rules="{required: false, message: 'A name is required', trigger: 'blur'}">
         <el-input type='text' v-model='form.description' ></el-input>
       </el-form-item> -->
@@ -65,6 +65,7 @@ export default {
     return {
       activeName: '',
       form: {
+        name: '',
         media: '',
         group: '',
         mapId: null,
@@ -117,6 +118,7 @@ export default {
         //   }
         // }
         this.$store.dispatch(buildingPath + '/update', {
+          name: this.form.name,
           image: this.form.media,
           group: this.form.group,
           mapId: this.form.mapId,
@@ -124,6 +126,7 @@ export default {
         })
       } else {
         this.$store.dispatch('map/newBuilding', {
+          name: this.form.name,
           image: this.form.media,
           group: this.form.group,
           mapId: this.form.mapId,
@@ -146,6 +149,7 @@ export default {
     updateForm () {
       if (this.buildingId) {
         let buildingPath = this.$store.getters['map/building'](this.buildingId).path
+        this.form.name = this.buildingName
         this.form.media = this.$store.getters[buildingPath + '/image']
         this.form.group = this.$store.getters[buildingPath + '/group']
         this.form.mapId = this.$store.getters[buildingPath + '/mapId']
@@ -155,7 +159,8 @@ export default {
           let formGroup = {
             id: group.id,
             name: this.$store.getters[group.path + '/name'],
-            meters: []
+            meters: [],
+            default: group.default
           }
           for (let meter of this.$store.getters[group.path + '/meters']) {
             formGroup.meters.push({
@@ -166,6 +171,7 @@ export default {
           this.form.meters.push(formGroup)
         }
       } else {
+        this.form.name = ''
         this.form.media = ''
         this.form.group = ''
         this.form.mapId = null
