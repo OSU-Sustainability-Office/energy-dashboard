@@ -18,7 +18,6 @@ exports.all = async (event, context) => {
 
 exports.get = async (event, context) => {
   let response = new Response()
-  // response.headers['Access-Control-Allow-Origin'] = '*'
   response.body = JSON.stringify((await (new Building(event.queryStringParameters['id'])).get()).data)
   return response
 }

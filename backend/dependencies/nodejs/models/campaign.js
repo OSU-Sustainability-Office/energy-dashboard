@@ -18,6 +18,7 @@ class Campaign {
     this.compareEnd = ''
     this.name = ''
     this.media = ''
+    this.meterGroupIDs = []
   }
 
   static async create (name, dateStart, dateEnd, compareStart, compareEnd, media, buildings, user) {
@@ -45,14 +46,15 @@ class Campaign {
   // Queries the database for this campaign's data, and returns the data.
   async get (expand = true) {
     await DB.connect()
-    // Query for all campaigns
-    let campaignRows = await DB.query('SELECT * FROM campaigns RIGHT JOIN campaign_groups ON campaigns.id = campaign_groups.campaign_id WHERE campaigns.id = ?;', [this.id])
+    // Query for this particular campaign, groups, and buildings
+    let campaignRows = await DB.query('SELECT * FROM campaigns RIGHT JOIN campaign_groups ON campaigns.id = campaign_groups.campaign_id RIGHT JOIN meter_groups ON campaign_groups.group_id = meter_groups.id WHERE campaigns.id = ?;', [this.id])
     this.dateStart = campaignRows[0]['date_start']
     this.dateEnd = campaignRows[0]['date_end']
     this.compareEnd = campaignRows[0]['compare_end']
     this.compareStart = campaignRows[0]['compare_start']
     this.name = campaignRows[0]['name']
     this.media = campaignRows[0]['media']
+    for (let row of campaignRows) this.meterGroupIDs.push(row['group_id'])
 
     // If expand is true, include building information
     if (expand === true) {
@@ -60,13 +62,13 @@ class Campaign {
       // data by instantiating a Building object.
       for (let row of campaignRows) {
         // Each instance of the building class is a promise that is resolved async
-        this.buildings.push(new Building(row['group_id']).get())
+        this.buildings.push(new Building(row['building_id_2']).get())
       }
       // await all of the building promises
       this.buildings = await Promise.all(this.buildings)
     } else {
       // If the user does not wish to expand, just return the building's id
-      this.buildings = campaignRows.map(row => row['group_id'])
+      this.buildings = campaignRows.map(row => row['building_id_2'])
     }
     return this
   }
@@ -110,7 +112,8 @@ class Campaign {
       compareStart: this.compareStart,
       compareEnd: this.compareEnd,
       name: this.name,
-      media: this.media
+      media: this.media,
+      meterGroupIDs: this.meterGroupIDs
     }
   }
 }

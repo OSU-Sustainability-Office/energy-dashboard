@@ -152,7 +152,7 @@ class Building {
         building.mapId = buildingRow['map_id']
         building.group = buildingRow['group']
         building.meterGroups = [buildingRow['meter_group_id']]
-        promiseChain2.push(axios('https://api.openstreetmap.org/api/0.6/way/' + buildingRow['map_id'] + '/full', { method: 'get' }).then(data => {
+        promiseChain2.push(axios('https://api.openstreetmap.org/api/0.6/way/' + buildingRow['map_id'] + '/full', { headers: { 'Accept': 'text/xml' }, method: 'get' }).then(data => {
           let xmlData = (new XMLDom.DOMParser()).parseFromString(data.data)
           building.geoJSON = Geo(xmlData).features[0]
           building.name = building.geoJSON.properties.name

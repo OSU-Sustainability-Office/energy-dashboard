@@ -32,10 +32,6 @@ exports.all = async (event, context) => {
 
   // JSON stringify the array of campaigns and return a response
   response.body = JSON.stringify(campaigns)
-  response.headers = {
-    'Access-Control-Allow-Origin': event.headers.Origin ? event.headers.Origin : 'http://dashboard.sustainability.oregonstate.edu/', // Specifically approve any origin
-    'Access-Control-Allow-Credentials': 'true'
-  }
   return response
 }
 
