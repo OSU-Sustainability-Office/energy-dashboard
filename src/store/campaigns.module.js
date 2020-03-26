@@ -34,6 +34,7 @@ const actions = {
           c.buildings.forEach(b => {
             store.commit(campaign + '/addBuildingPromise', store.dispatch(campaign + '/loadBuilding', { buildingID: b }))
           })
+          store.dispatch(campaign + '/buildBlocks') // Create the graph blocks for this campaign
           store.commit(campaign + '/path', campaignPath)
           store.commit(campaign + '/id', c.id)
           store.commit(campaign + '/path', campaignPath)
@@ -42,6 +43,7 @@ const actions = {
           store.commit(campaign + '/compare_start', c.compareStart)
           store.commit(campaign + '/compare_end', c.compareEnd)
           store.commit(campaign + '/media', c.media)
+          store.commit(campaign + '/meterGroupIDs', c.meterGroupIDs)
         })
 
         return resolve()
@@ -79,6 +81,9 @@ const actions = {
     c.buildings.forEach(b => {
       store.dispatch(campaign + '/loadBuilding', { buildingID: b })
     })
+    console.log(c)
+
+    store.dispatch(campaign + '/buildBlocks') // Create the graph blocks for this campaign
     store.commit(campaign + '/path', campaignPath)
     store.commit(campaign + '/id', c.id)
     store.commit(campaign + '/path', campaignPath)
@@ -87,6 +92,7 @@ const actions = {
     store.commit(campaign + '/compare_start', c.compareStart)
     store.commit(campaign + '/compare_end', c.compareEnd)
     store.commit(campaign + '/media', c.media)
+    store.commit(campaign + '/meterGroupIDs', c.meterGroupIDs)
     return Promise.resolve(store.state[campaign])
   }
 

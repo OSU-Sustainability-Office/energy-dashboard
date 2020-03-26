@@ -9,7 +9,7 @@
   <div class='block' ref='block' @click='$emit("click")'>
     <el-row style="padding:0">
       <el-col :span='24' ref='imageContainer' class='imageContainer'>
-        <span class='campaignName'>{{ name }}</span>
+        <span class='campaignName'>{{ camp.name }}</span>
       </el-col>
     </el-row>
     <el-row class='popped'>
@@ -17,7 +17,7 @@
         <!-- 1. Finley -20.00%  2. Bloss -15.00%  3. Kelley Engineering Center +115.00% -->
       </el-col>
       <el-col :span='6' class='dates'>
-        {{ start | trunc }} - {{ end | trunc }}
+        {{ camp.dateStart | trunc }} - {{ camp.dateEnd | trunc }}
       </el-col>
     </el-row>
   </div>
@@ -25,24 +25,10 @@
 <script>
 
 export default {
-  props: ['id'],
-  data () {
-    return {
-      name: '',
-      media: '',
-      start: null,
-      end: null
-    }
-  },
+  props: ['camp'],
   mounted () {
-    // Retrieve campaign data from the vuex store
-    this.name = this.$store.getters['campaigns/campaign_' + this.id + '/name']
-    this.media = this.$store.getters['campaigns/campaign_' + this.id + '/media']
-    this.start = this.$store.getters['campaigns/campaign_' + this.id + '/date_start']
-    this.end = this.$store.getters['campaigns/campaign_' + this.id + '/date_end']
-
     // Load the media content
-    this.$refs.imageContainer.$el.style.backgroundImage = 'url("' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.media + '")'
+    this.$refs.imageContainer.$el.style.backgroundImage = 'url("' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.camp.media + '")'
   },
   filters: {
     trunc: function (val) {
