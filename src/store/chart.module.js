@@ -6,6 +6,7 @@
  * @Copyright:  Oregon State University 2019
  */
 import API from './api.js'
+import ChartModifiers from './chart_modifiers/index.js'
 
 const state = () => {
   return {
@@ -24,8 +25,11 @@ const actions = {
 
   async getData (store, payload) {
     payload['point'] = store.getters.point
+    const chartModifier = ChartModifiers(payload.graphType, payload.point)
+    await chartModifier.preGetData(payload, this, store)
+
     let data = await this.dispatch(store.getters.meterGroupPath + '/getData', payload)
-    return {
+    let chartData = {
       label: store.getters.name,
       backgroundColor: store.getters.color,
       borderColor: store.getters.color,
@@ -34,6 +38,9 @@ const actions = {
       spanGaps: false,
       data: data
     }
+
+    await chartModifier.postGetData(chartData, payload, this, store)
+    return chartData
   },
 
   async changeChart (store, id) {
