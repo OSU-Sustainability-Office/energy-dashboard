@@ -9,7 +9,7 @@
   <div class='block' ref='block' @click='$emit("click")'>
     <el-row style="padding:0">
       <el-col :span='24' ref='imageContainer' class='imageContainer'>
-        <span class='campaignName'>{{ name }}</span>
+        <span class='campaignName'>{{ camp.name }}</span>
       </el-col>
     </el-row>
     <el-row class='popped'>
@@ -17,7 +17,7 @@
         <!-- 1. Finley -20.00%  2. Bloss -15.00%  3. Kelley Engineering Center +115.00% -->
       </el-col>
       <el-col :span='6' class='dates'>
-        {{ start | trunc }} - {{ end | trunc }}
+        {{ camp.dateStart | trunc }} - {{ camp.dateEnd | trunc }}
       </el-col>
     </el-row>
   </div>
@@ -25,13 +25,10 @@
 <script>
 
 export default {
-  props: ['name', 'media', 'start', 'end'],
-  data () {
-    return {
-    }
-  },
+  props: ['camp'],
   mounted () {
-    this.$refs.imageContainer.$el.style.backgroundImage = 'url("' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.media + '")'
+    // Load the media content
+    this.$refs.imageContainer.$el.style.backgroundImage = 'url("' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.camp.media + '")'
   },
   filters: {
     trunc: function (val) {

@@ -8,11 +8,14 @@
 <template>
   <el-row class='stage'>
     <el-col :span='24' class='main'>
+      <!-- Large logo at the top of the page -->
       <el-row class='herorow'>
         <el-col :span='24'>
-          <heropicture :media='story.media' :description='story.description' :name='story.name' />
+          <heropicture :media='media' :description='description' :name='name' />
         </el-col>
       </el-row>
+
+      <!-- Charts and the building selection list -->
       <el-row class='controlRow'>
         <el-col :span='8' class='buildingContainer'>
           <buildingList :loaded='loaded' :buildings='buildings' @clickedBuilding='changeChartIndex'/>
@@ -24,13 +27,15 @@
                 {{ currentTitle }}
               </el-col>
               <el-col :span='12' class='timeSwitchButtons'>
-                <switchButtons @update='updateAccumulated()' :campaign='true' :days='days' />
+                <switchButtons :blocks='blocks' :campaign='true' :days='days' />
               </el-col>
             </el-row>
-            <chartController :randomColors='1' :graphType='graphType' :index='currentIndex' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '332px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='332'/>
+            <chartController :path='blockPath' :randomColors='1' class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '332px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='332'/>
           </div>
         </el-col>
       </el-row>
+
+      <!-- Reduction tips at the bottom of the page -->
       <el-row>
         <reductionTips />
       </el-row>
@@ -56,57 +61,86 @@ export default {
   },
   data () {
     return {
-      buildings: [],
-      loaded: false,
+      buildings: [], // Lists the buildings involved with this competition
+      blocks: [],
+      loaded: false, // Toggles the spinning circle loading animation on the graph and building list
       currentTitle: 'Energy Saved',
-      graphType: 1,
-      currentIndex: 0,
-      days: 0
+      blockPath: '', // This is the path to the block currently diplayed on the main graph
+      media: '', // URL of the photo along the top bar
+      name: '', // Displays the name of the competition above the graph
+      description: '',
+      startDate: null, // Start and End dates for the competition
+      endDate: null, // Formatted like this: "2020-02-02T15:00:00.000Z"
+      days: 0 // The number of days that have elapsed during the competition
     }
   },
-  computed: {
-    ...mapGetters([
-      'story',
-      'block',
-      'user'
-    ])
-  },
   mounted () {
-    this.$store.dispatch('campaign', this.$route.params.id).then(() => {
-      const startDate = new Date(this.story.blocks[0].date_start).getTime()
-      const compareDate = new Date(this.story.blocks[0].date_end).getTime()
-      const nowDate = new Date().getTime()
-      if (compareDate < nowDate) {
-        this.days = Math.round((compareDate - startDate) / 86400000) + 1
-      } else {
-        this.days = Math.round((nowDate - startDate) / 86400000) + 1
-      }
-      for (let index in this.story.blocks) {
-        if (index > 0) {
-          this.buildings.push(this.story.blocks[index])
+    // Download the campaigns
+    // If they have already been downloaded, the VueX store won't make extaneous API calls
+    this.$store.dispatch('campaigns/getCampaigns').then(campaigns => {
+      campaigns.forEach(campaign => {
+        if (campaign.id === parseInt(this.$route.params.id)) {
+          this.$store.dispatch('campaigns/getCampaign', campaign.id).then(camp => {
+            this.setCampaign(camp)
+          })
         }
-      }
-
-      this.$nextTick(() => {
-        this.updateAccumulated()
-        for (let i in this.buildings) {
-          // JS thought i should be a string and would concat it with 1...
-          this.buildings[i].place = (parseInt(i) + 1).toString()
-        }
-        this.loaded = true
       })
     })
   },
   methods: {
+    // Retrieves campaign information from the vuex store
+    setCampaign: async function(camp) {
+      // Set the heropicture logo url
+      this.media = camp.media
+
+      // Set the campaign name
+      this.name = camp.name
+
+      // Set the number of days that have elapsed since the campaign started
+      // The number of days is displayed on the frontend
+      this.startDate = new Date(camp.date_start).getTime()
+      this.endDate = new Date(camp.date_end).getTime()
+      const nowDate = new Date().getTime()
+      // If the competition ended, set the number of days to the difference between the start and end dates
+      // Otherwise, calculate the difference between the current date and the start date
+      this.days = this.endDate < nowDate ? Math.round((this.endDate - this.startDate) / 86400000) + 1 : Math.round((nowDate - this.startDate) / 86400000) + 1
+
+      // Retrieve the buildings from the campaign
+      camp.buildings.forEach(async b => {
+        await Promise.all(this.$store.state['campaigns']['campaign_' + camp.id]['promises'])
+        const bdg = this.$store.state['map']['building_' + b.toString()]
+        this.buildings.push({
+          id: b,
+          accumulatedPercentage: 0,
+          name: bdg.name
+        })
+      })
+
+      // Save references to this campaign's blocks locally
+      await Promise.all(this.$store.state['campaigns']['campaign_' + camp.id]['blockPromises'])
+      this.blocks = camp.blocks
+      this.blockPath = camp.blocks[0].path
+
+      // this.$nextTick(() => {
+      //   this.updateAccumulated()
+      //   for (let i in this.buildings) {
+      //     // JS thought i should be a string and would concat it with 1...
+      //     this.buildings[i].place = (parseInt(i) + 1).toString()
+      //   }
+      //   this.loaded = true
+      // })
+    },
+
+    // Retrieve data from VueX
     updateAccumulated: function () {
-      const compareDate = new Date(this.story.blocks[0].date_start).getTime()
+      const endDate = new Date(this.dateStart).getTime()
       for (let chart of this.story.blocks[0].charts) {
         let index = chart.data.length - 1
         if (index < 0) {
           continue
         }
         let accm = 0
-        while (new Date(chart.data[index].x).getTime() >= compareDate) {
+        while (new Date(chart.data[index].x).getTime() >= endDate) {
           accm += chart.data[index].y
           index--
         }
@@ -120,7 +154,10 @@ export default {
         this.$refs.chartController.parse()
       })
     },
+
+    // Change which chart is displayed when a chart selection button is pressed
     changeChartIndex: function (index) {
+      console.log(index)
       if (this.currentIndex !== index) {
         this.currentTitle = this.block(index).name
         this.currentIndex = index
