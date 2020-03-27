@@ -28,7 +28,7 @@ export default {
   props: ['camp'],
   mounted () {
     // Load the media content
-    this.$refs.imageContainer.$el.style.backgroundImage = 'url("' + process.env.VUE_APP_ROOT_API + '/energy/images/' + this.camp.media + '")'
+    this.$refs.imageContainer.$el.style.backgroundImage = 'url("' + process.env.VUE_APP_ROOT_API + '/image?name=' + this.camp.media + '")'
   },
   filters: {
     trunc: function (val) {

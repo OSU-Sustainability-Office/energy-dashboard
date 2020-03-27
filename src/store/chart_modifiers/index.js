@@ -8,6 +8,7 @@
 
 import LineAccumulatedReal from './line_bar/accumulated_real.js'
 import LineBaselinePerc from './line_bar/baseline_perc.js'
+import LineBaselineAvg from './line_bar/avg_accumulated_real.js'
 import LineBase from './line_bar/base.js'
 import PieBase from './pie_doughnut/base.js'
 
@@ -27,6 +28,8 @@ export default function (graphType, point) {
         return new LineAccumulatedReal()
       case 'baseline_percentage':
         return new LineBaselinePerc()
+      case 'avg_accumulated_real':
+        return new LineBaselineAvg()
       default:
         return new LineBase()
     }

@@ -25,8 +25,7 @@ exports.all = async (event, context) => {
   // Construct an array of campaigns using the campaign class
   let campaigns = []
   for (let i = 0; i < campaignIDList.length; i++) {
-    let camp = await (new Campaign(campaignIDList[i].id))
-    await camp.get(false) // Calling get() with FALSE prevents the campaign class from expanding building data.
+    let camp = await (new Campaign(campaignIDList[i].id)).get(false)
     campaigns.push(camp.data) // Finally add the campaign to the array
   }
 

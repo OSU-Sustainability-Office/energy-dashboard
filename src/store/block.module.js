@@ -7,9 +7,11 @@
  */
 import API from './api.js'
 import Chart from './chart.module.js'
+import BlockModifiers from './block_modifiers/index.js'
 
 const state = () => {
   return {
+    modifiers: [],
     path: null,
     promise: null,
     name: null,               // String
@@ -31,6 +33,46 @@ const actions = {
     store.commit(chartSpace + '/path', moduleSpace)
     store.commit(chartSpace + '/color', store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length])
     store.dispatch(chartSpace + '/changeChart', id)
+  },
+
+  async addModifier (store, modifierName) {
+    const currentModNames = store.getters.modifiers.map(o => o.name)
+
+    if (currentModNames.indexOf(modifierName) < 0) {
+      const ModClass = BlockModifiers[modifierName]
+      if (!ModClass) {
+        throw new Error('Modifier not found')
+      }
+      const newMod = new ModClass(this, store)
+      await newMod.onAdd(this, store)
+      store.commit('addMod', newMod)
+    } else {
+      throw new Error('Modifier already exists on block')
+    }
+  },
+
+  async removeModifier (store, modifierName) {
+    const currentModNames = store.getters.modifiers.map(o => o.name)
+    const modIndex = currentModNames.indexOf(modifierName)
+    if (modIndex < 0) {
+      throw new Error('Modifier not found on block')
+    } else {
+      const removingMod = store.getters.modifiers[modIndex]
+      await removingMod.onRemove(this, store)
+      store.commit('removeMod', removingMod)
+    }
+  },
+
+  async updateModifier (store, payload) {
+    // eslint-disable-next-line no-proto
+    const currentModNames = store.getters.modifiers.map(o => o.__proto__.constructor.name)
+    const modIndex = currentModNames.indexOf(payload.name)
+    if (modIndex < 0) {
+      throw new Error('Modifier not found on block')
+    } else {
+      const updatingMod = store.getters.modifiers[modIndex]
+      await updatingMod.updateData(this, module, payload.data)
+    }
   },
 
   async loadCharts (store, charts) {
@@ -130,48 +172,46 @@ const actions = {
   },
 
   async loadDefault (store, payload) {
-    let wait = true
-    store.commit('promise', new Promise((resolve, reject) => {
-      let fn = () => {
-        if (wait) {
-          setTimeout(fn, 100)
-        } else {
-          resolve()
-        }
+    store.commit('promise', new Promise(async (resolve, reject) => {
+      store.commit('shuffleChartColors')
+      let chartSpace = 'chart_' + payload.id.toString()
+      let moduleSpace = (store.getters.path + '/' + chartSpace)
+      this.registerModule(moduleSpace.split('/'), Chart)
+      let utilityType = ''
+      if (this.getters[payload.group.path + '/meters'].length > 0) {
+        await this.getters[payload.group.path + '/meters'][0].promise
+        utilityType = this.getters[this.getters[payload.group.path + '/meters'][0].path + '/type']
       }
-      fn()
+      store.commit(chartSpace + '/name', 'Total ' + utilityType)
+      const pointMap = {
+        'Electricity': 'accumulated_real',
+        'Gas': 'cubic_feet',
+        'Steam': 'total'
+      }
+      store.commit(chartSpace + '/path', moduleSpace)
+      if (utilityType !== '') {
+        store.commit(chartSpace + '/point', pointMap[utilityType])
+      } else {
+        store.commit(chartSpace + '/point', '')
+      }
+      store.commit(chartSpace + '/color', store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length])
+      let buildingPath = store.getters.path.split('/')
+      buildingPath.pop()
+      buildingPath = buildingPath.join('/')
+      store.commit(chartSpace + '/building', buildingPath)
+      store.commit(chartSpace + '/meterGroupPath', payload.group.path)
+
+      store.commit('name', utilityType)
+      store.commit('dateInterval', 1)
+      store.commit('intervalUnit', 'day')
+      store.commit('graphType', 1)
+      let currentEpoch = ((new Date()).getTime())
+      currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
+      store.commit('dateStart', currentEpoch - (900 * 96 * 7 * 1000)) // 15 minutes, 96 times a day, 7 days
+      store.commit('dateEnd', currentEpoch)
+      resolve()
     }))
-    store.commit('shuffleChartColors')
-    let chartSpace = 'chart_' + payload.id.toString()
-    let moduleSpace = (store.getters.path + '/' + chartSpace)
-    this.registerModule(moduleSpace.split('/'), Chart)
-    await this.getters[payload.group.path + '/meters'][0].promise
-    let utilityType = this.getters[this.getters[payload.group.path + '/meters'][0].path + '/type']
-
-    store.commit(chartSpace + '/name', 'Total ' + utilityType)
-    const pointMap = {
-      'Electricity': 'accumulated_real',
-      'Gas': 'cubic_feet',
-      'Steam': 'total'
-    }
-    store.commit(chartSpace + '/path', moduleSpace)
-    store.commit(chartSpace + '/point', pointMap[utilityType])
-    store.commit(chartSpace + '/color', store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length])
-    let buildingPath = store.getters.path.split('/')
-    buildingPath.pop()
-    buildingPath = buildingPath.join('/')
-    store.commit(chartSpace + '/building', buildingPath)
-    store.commit(chartSpace + '/meterGroupPath', payload.group.path)
-
-    store.commit('name', utilityType)
-    store.commit('dateInterval', 1)
-    store.commit('intervalUnit', 'day')
-    store.commit('graphType', 1)
-    let currentEpoch = ((new Date()).getTime())
-    currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
-    store.commit('dateStart', currentEpoch - (900 * 96 * 7 * 1000)) // 15 minutes, 96 times a day, 7 days
-    store.commit('dateEnd', currentEpoch)
-    wait = false
+    return store.getters.promise
   },
 
   async getData (store) {
@@ -180,10 +220,12 @@ const actions = {
       labels: [],
       datasets: []
     }
+    for (let mod of store.getters.modifiers) {
+      await mod.preData(this, store)
+    }
     for (let chart of store.getters.charts) {
       if (!chart.path) continue
       const reqPayload = {
-        point: null,
         dateStart: parseInt(store.getters.dateStart / 1000),
         dateEnd: parseInt(store.getters.dateEnd / 1000),
         intervalUnit: store.getters.intervalUnit,
@@ -204,6 +246,9 @@ const actions = {
         data.datasets = chartData
       }
     }
+    for (let mod of store.getters.modifiers) {
+      await mod.postData(this, store, data)
+    }
     return data
   }
 }
@@ -220,6 +265,15 @@ const mutations = {
       state.chartColors[i] = state.chartColors[j]
       state.chartColors[j] = temp
     }
+  },
+
+  addMod (state, mod) {
+    state.modifiers.push(mod)
+  },
+
+  removeMod (state, mod) {
+    const modIndex = state.modifiers.map(o => o.name).indexOf(mod.nam)
+    state.modifiers.splice(modIndex, 1)
   },
 
   promise (state, promise) {
@@ -274,51 +328,64 @@ const mutations = {
 
 const getters = {
 
-  state (state) {
+  state: (state) => {
     return state
   },
 
-  name (state) {
+  modifierData: (state) => (modifierName) => {
+    for (let modifier of state.modifiers) {
+      // eslint-disable-next-line no-proto
+      if (modifier.__proto__.constructor.name === modifierName) {
+        return modifier.data
+      }
+    }
+  },
+
+  modifiers: (state) => {
+    return state.modifiers
+  },
+
+  name: (state) => {
     return state.name
   },
 
-  path (state) {
+  path: (state) => {
     return state.path
   },
 
-  promise (state) {
+  promise: (state) => {
     return state.promise
   },
 
-  dateInterval (state) {
+  dateInterval: (state) => {
     return state.dateInterval
   },
 
-  intervalUnit (state) {
+  intervalUnit: (state) => {
     return state.intervalUnit
   },
 
-  graphType (state) {
+  graphType: (state) => {
     return state.graphType
   },
 
-  dateStart (state) {
+  dateStart: (state) => {
     return state.dateStart
   },
 
-  dateEnd (state) {
+  dateEnd: (state) => {
     return state.dateEnd
   },
 
-  id (state) {
+  id: (state) => {
     return state.id
   },
 
-  chartColors (state) {
+  chartColors: (state) => {
     return state.chartColors
   },
 
-  charts (state) {
+  charts: (state) => {
     let charts = []
     for (let key of Object.keys(state)) {
       if (key.search(/chart_/) >= 0) {

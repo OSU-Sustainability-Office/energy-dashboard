@@ -91,6 +91,7 @@ export default class LinePercModifier {
         avgbins[dow].push(value)
       }
     }
+    console.log(avgbins)
     for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
       let accumulator = 0
       try {
@@ -98,8 +99,10 @@ export default class LinePercModifier {
           continue
         }
         let baselinePoint = avgbins[(new Date((i + delta) * 1000)).getDay()][((i + delta) % ((60 * 60 * 24) / delta))]
-        accumulator = (resultDataObject.get(i + delta) - resultDataObject.get(i)) / baselinePoint
-        returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
+        if (baselinePoint !== -1) {
+          accumulator = (resultDataObject.get(i + delta) - resultDataObject.get(i)) / baselinePoint * 100 - 100
+          returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
+        }
       } catch (error) {
         console.log(error)
       }
@@ -130,6 +133,7 @@ export default class LinePercModifier {
     if (payload.intervalUnit === 'day' && payload.dateInterval > 1) {
       throw new Error('Time difference interval to large to work correctly')
     }
+    payload.point = 'accumulated_real'
     const meterGroupPath = module.getters.meterGroupPath
     const baselinePayload = {
       ...payload,

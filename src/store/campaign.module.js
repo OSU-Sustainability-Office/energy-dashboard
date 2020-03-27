@@ -6,345 +6,202 @@
  * @Copyright:  Oregon State University 2019
  */
 
-import api from './api.js'
-import Building from './building.module.js' // For creating buildings in VueX
+// import API from './api.js'
+// import Building from './building.module.js' // For creating buildings in VueX
 import Block from './block.module.js' // For building the blocks for this campaign
-import Chart from './chart.module.js' // Used during the block building process
+// import Chart from './chart.module.js' // Used during the block building process
 
 const state = () => {
   return {
-    promises: [],
-    blockPromises: [],
+    promise: null,
     path: null,
     id: null,
     name: null,
-    date_start: null,
-    date_end: null,
-    compare_start: null,
-    compare_end: null,
-    buildings: [],
-    blocks: [],
-    media: null,
-    meterGroupIDs: []
+    dateStart: null,
+    dateEnd: null,
+    compareStart: null,
+    compareEnd: null,
+    media: null
   }
 }
 
 const actions = {
+  async buildBlocks (store, meterGroups) {
+    if (store.getters.promise === null) {
+      store.commit('promise', new Promise(async (resolve, reject) => {
+        await this.getters['map/promise'] // Make sure building promises have been queued
+        await this.getters['map/allBuildingPromise'] // Make sure buildings exist, this loads all MGs
+        let defaultBlockSpace = 'block_default'
+        let defaultModuleSpace = (store.getters.path + '/' + defaultBlockSpace)
+        this.registerModule(defaultModuleSpace.split('/'), Block)
+        store.commit(defaultBlockSpace + '/path', defaultModuleSpace)
+        store.commit(defaultBlockSpace + '/shuffleChartColors')
 
-  // Waits for the VueX store to finish downloading building data.
-  // Then, retrieves building data from the api and creates buildings that don't
-  // already exist in VueX
-  async loadBuilding(store, payload) { // Payload contains .buildingID
-    // Crea
-  // The blocks contain the charts for each campaign
-  // This function builds blocks in the VueX store for the campaign. These include:
-  //      - 1 Block for each building
-  //      - 1 Block which has data for all buildings in the contest
-  // Payload is emptyte a promise for this building
-    store.commit('addBuildingPromise', new Promise(async (resolve, reject) => {
-      // Add the building's ID to the buildings array
-      store.commit('addBuilding', payload.buildingID)
-
-      // Wait for all buildings to finish loading
-      await store.rootState['map']['promise']
-      await store.rootState['map']['allBuildingPromise']
-
-      // If the building doesn't exist, create the building in VueX
-      if (store.rootState['map']['building_' + payload.buildingID.toString()] === undefined) {
-        // Create the building in the VueX store (if it doesn't already exist)
-        // Construct namespaces
-        const buildingSpace = 'building_' + payload.buildingID.toString()
-        const moduleSpace = 'map' + '/' + buildingSpace
-
-        // Register the module - this prevents other async functions from creating the building
-        this.registerModule(moduleSpace.split('/'), Building)
-
-        // Make an API call to retrieve this building's data
-        let building = api.getBuildingByID(payload.buildingID)
-        let buildingResolved = (await building).data
-
-        // Commit building data
-        store.commit(moduleSpace + '/path', moduleSpace, {
-          root: true
-        })
-        store.commit(moduleSpace + '/geoJSON', buildingResolved.geoJSON, {
-          root: true
-        })
-        store.commit(moduleSpace + '/mapId', buildingResolved.mapId, {
-          root: true
-        })
-        store.commit(moduleSpace + '/name', buildingResolved.name, {
-          root: true
-        })
-        store.commit(moduleSpace + '/group', buildingResolved.group, {
-          root: true
-        })
-        store.commit(moduleSpace + '/image', buildingResolved.image, {
-          root: true
-        })
-        store.commit(moduleSpace + '/id', buildingResolved.id, {
-          root: true
-        })
-        store.commit(moduleSpace + '/promise', Promise.resolve(), {
-          root: true
-        })
-        for (let meterGroupId of buildingResolved.meterGroups) {
-          store.dispatch(moduleSpace + '/loadMeterGroup', {
-            id: meterGroupId
-          }, {
-            root: true
+        let charts = []
+        let blockPromises = []
+        for (let group of meterGroups) {
+          let groupModule = this.getters['map/meterGroup'](group)
+          if (groupModule) {
+            charts.push({
+              id: group,
+              point: 'baseline_percentage',
+              name: this.getters[groupModule.building + '/name'],
+              meters: group
+            })
+            blockPromises.push(new Promise(async (resolve, reject) => {
+              await groupModule.promise
+              const payload = {
+                id: group,
+                group: groupModule
+              }
+              let blockSpace = 'block_' + group.toString()
+              let moduleSpace = (store.getters.path + '/' + blockSpace)
+              this.registerModule(moduleSpace.split('/'), Block)
+              store.commit(blockSpace + '/path', moduleSpace)
+              await store.dispatch(blockSpace + '/loadDefault', payload)
+              store.commit(blockSpace + '/dateStart', store.getters.dateStart)
+              store.commit(blockSpace + '/dateEnd', store.getters.dateEnd)
+              store.commit(blockSpace + '/graphType', 2)
+              store.commit(blockSpace + '/name', this.getters[groupModule.building + '/name'])
+              await store.dispatch(blockSpace + '/addModifier', 'campaign_linebar')
+              await store.dispatch(blockSpace + '/updateModifier', {
+                name: 'campaign_linebar',
+                data: {
+                  compareStart: store.getters.compareStart,
+                  compareEnd: store.getters.compareEnd
+                }
+              })
+              resolve()
+            }))
+          }
+        }
+        await store.dispatch(defaultBlockSpace + '/loadCharts', charts)
+        for (let chart of this.getters[defaultModuleSpace + '/charts']) {
+          let oldModifierData = this.getters[chart.path + '/modifierData']
+          this.commit(chart.path + '/modifierData', {
+            ...oldModifierData,
+            compareStart: store.getters.compareStart / 1000,
+            compareEnd: store.getters.compareEnd / 1000
           })
         }
-      }
-      resolve(payload.buildingID)
-    }))
-  },
-
-  // The blocks contain the charts for each campaign
-  // This function builds blocks in the VueX store for the campaign. These include:
-  //      - 1 Block for each building
-  //      - 1 Block which has data for all buildings in the contest
-  // Payload is empty
-  async buildBlocks(store, payload) {
-    store.commit('addBlockPromise', new Promise(async (resolve, reject) => {
-      // Build 3 charts for each building
-      //      1. 15 minute interval data for the previous 6 hours
-      //      2. Hourly interval data for the previous 24 hours
-      //      3. Daily interval data for the previous n days (depending on the current date and the length of the competition)
-      store.getters['buildings'].forEach(async (buildingID, index) => {
-        // Calculate epoch times
-        const endCompetitionEpoch = new Date(store.getters.date_end).getTime()
-        const currentEpoch = new Date().getTime()
-
-        // Retrieve the building data
-        await Promise.all(store.state['promises'])
-        let building = store.rootState['map']['building_' + buildingID.toString()]
-
-        // Retrieve paths to all of the meter groups for the current building
-        const meterGroupPath = building.path + '/meterGroup_' + store.getters['meterGroupIDs'][index]
-
-        // Iterate over each interval and build the blocks
-        const intervals = ['minute', 'hour', 'day']
-        intervals.forEach(interval => {
-          if(store.state['block_' + interval + '_' + buildingID] == undefined) {
-            store.dispatch('createBlock', {
-              blockName: interval + '_' + buildingID,
-              intervalUnit: interval,
-              name: building.name,
-              dateInterval: 1,
-              graphType: 5,
-              dateStart: new Date(store.getters.date_start).getTime(),
-              dateEnd: endCompetitionEpoch > currentEpoch ? currentEpoch : endCompetitionEpoch,
-              charts: [
-                // line chart with baseline data
-                {
-                  id: 1,
-                  name: 'Baseline Data',
-                  point: 'accumulated_real',
-                  meterGroupPath: meterGroupPath,
-                  building: building.path
-                },
-                // bar chart with current data
-                {
-                  id: 2,
-                  name: 'Current Data',
-                  point: 'accumulated_real',
-                  meterGroupPath: meterGroupPath,
-                  building: building.path
-                }
-              ]
-            })
-          }
-        })
-      })
-    }))
-  },
-
-  // Creates one block that matches the specifications outlined in payload
-  // payload contains:
-  //      blockName - Used for generating the block's path
-  //      intervalUnit - minute, hour, or day - specifies what type of interval data to display on the graph
-  //      name - id/name used for the block's path
-  //      dateInterval - An integer, it is the number that forms the interval that your interval unit is (15 + minute = 15 minute, 2 + hour = 2 hours etc)
-  //      graphType - An integer (1: Line, 2: Bar, 3: Doughnut, 4: Piechart, 5: LineBar)
-  //      dateStart - Epoch time
-  //      dateEnd - Epoch time
-  //      charts - array of data for creating multiple charts in this block
-  //        a chart object contains
-  //             id - used to create the chart's path
-  //             name - a name for the chart
-  //             point - which metering point to display
-  //             meterGroupPath (vuex path) - metergroup used for retrieving the data
-  //             building (vuex path) - a reference to the building this data belongs to
-  async createBlock(store, payload) {
-    store.commit('addBlockPromise', new Promise(async (resolve, reject) => {
-      // Compute the block's path
-      let blockSpace = 'block_' + payload.blockName
-      let moduleSpace = store.getters.path + '/' + blockSpace
-
-      store.commit('addBlock', store.state['/' + blockSpace]) // Commit the block's path to the array of blocks
-
-      // Register a new block module
-      this.registerModule(moduleSpace.split('/'), Block)
-      store.commit(blockSpace + '/path', moduleSpace)
-
-      // Manually create the block
-      store.commit(blockSpace + '/intervalUnit', payload.intervalUnit)
-      store.commit(blockSpace + '/name', payload.name)
-      store.commit(blockSpace + '/dateInterval', payload.dateInterval)
-      store.commit(blockSpace + '/graphType', payload.graphType)
-      store.commit(blockSpace + '/dateStart', payload.dateStart)
-      store.commit(blockSpace + '/dateEnd', payload.dateEnd)
-
-      // Create the charts
-      payload.charts.forEach(async chart => {
-        chart['blockSpace'] = blockSpace
-        chart['moduleSpace'] = moduleSpace
-        store.dispatch('createChart', chart)
-      })
-      store.dispatch(blockSpace + '/getData') // Download the chart data
-      resolve()
-    }))
-  },
-
-  // Creates one block that matches the specifications outlined in payload
-  // payload contains:
-  //      blockSpace - the parent block's vuex path
-  //      moduleSpace - the parent block's module space
-  //      name - a name for the chart
-  //      point - which metering point to display
-  //      meter (vuex path) - metergroup used for retrieving the data
-  //      building (vuex path) - a reference to the building this data belongs to
-  async createChart(store, payload) {
-    // We add chart promises to the block promise list for convenience
-    store.commit('addBlockPromise', new Promise(async (resolve, reject) => {
-      // Compute the block's path
-      let chartSpace = 'chart_' + payload.id
-      let moduleSpace = payload.moduleSpace + '/' + chartSpace
-
-      // Register a new chart module
-      this.registerModule(moduleSpace.split('/'), Chart)
-      store.commit(payload.blockSpace + '/' + chartSpace + '/path', moduleSpace)
-
-      // Manually create the chart
-      store.commit(payload.blockSpace + '/' + chartSpace + '/name', payload.name)
-      store.commit(payload.blockSpace + '/' + chartSpace + '/point', payload.point)
-      store.commit(payload.blockSpace + '/' + chartSpace + '/color', payload.color)
-      store.commit(payload.blockSpace + '/' + chartSpace + '/meterGroupPath', payload.meterGroupPath)
-      resolve()
-    }))
+        await Promise.all(blockPromises)
+        store.commit(defaultBlockSpace + '/dateInterval', 1)
+        store.commit(defaultBlockSpace + '/intervalUnit', 'day')
+        store.commit(defaultBlockSpace + '/graphType', 1)
+        store.commit(defaultBlockSpace + '/dateStart', store.getters.dateStart)
+        store.commit(defaultBlockSpace + '/dateEnd', store.getters.dateEnd)
+        const sortList = []
+        for (let block of store.getters.blocks) {
+          await this.dispatch(block.path + '/getData')
+          sortList.push({ path: block.path, value: this.getters[block.path + '/modifierData']('campaign_linebar').accumulatedPercentage })
+        }
+        sortList.sort((a, b) => (a.value > b.value) ? 1 : -1)
+        for (let i = 0; i < 3; i++) {
+          if (i >= sortList.length) break
+          this.dispatch(sortList[i].path + '/updateModifier', {
+            name: 'campaign_linebar',
+            data: {
+              rank: i
+            }
+          })
+        }
+        resolve()
+      }))
+    }
+    return store.getters.promise
   }
 }
 
 const mutations = {
-  addBuildingPromise(state, promise) {
-    state.promises.push(promise)
+  promise: (state, promise) => {
+    state.promise = promise
   },
 
-  addBlockPromise(state, promise) {
-    state.blockPromises.push(promise)
-  },
-
-  name(state, name) {
+  name: (state, name) => {
     state.name = name
   },
 
-  id(state, id) {
+  id: (state, id) => {
     state.id = id
   },
 
-  path(state, path) {
+  path: (state, path) => {
     state.path = path
   },
 
-  date_start(state, date_start) {
-    state.date_start = date_start
+  dateStart: (state, dateStart) => {
+    state.dateStart = dateStart
   },
 
-  date_end(state, date_end) {
-    state.date_end = date_end
+  dateEnd: (state, dateEnd) => {
+    state.dateEnd = dateEnd
   },
 
-  compare_start(state, compare_start) {
-    state.compare_start = compare_start
+  compareStart: (state, compareStart) => {
+    state.compareStart = compareStart
   },
 
-  compare_end(state, compare_end) {
-    state.compare_end = compare_end
+  compareEnd: (state, compareEnd) => {
+    state.compareEnd = compareEnd
   },
 
-  media(state, media) {
+  media: (state, media) => {
     state.media = media
-  },
-
-  meterGroupIDs(state, meterGroupIDs) {
-    state.meterGroupIDs = meterGroupIDs
-  },
-
-  async addBuilding(state, buildingID) {
-    // Add to building ID list
-    state.buildings.push(buildingID)
-  },
-
-  addBlock(state, block) {
-    state.blocks.push(block)
   }
-
 }
 
 const getters = {
-  promises(state) {
-    return state.promises
+  promise: (state) => {
+    return state.promise
   },
 
-  blockPromises(state) {
-    return state.blockPromises
-  },
-
-  name(state) {
+  name: (state) => {
     return state.name
   },
 
-  meterGroupIDs(state) {
-    return state.meterGroupIDs
-  },
-
-  id(state) {
+  id: (state) => {
     return state.id
   },
 
-  path(state) {
+  path: (state) => {
     return state.path
   },
 
-  date_start(state) {
-    return state.date_start
+  dateStart: (state) => {
+    return state.dateStart
   },
 
-  date_end(state) {
-    return state.date_end
+  dateEnd: (state) => {
+    let currentEpoch = ((new Date()).getTime())
+    currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
+    if (state.dateEnd > currentEpoch) {
+      return currentEpoch
+    } else {
+      return state.dateEnd
+    }
   },
 
-  compare_start(state) {
-    return state.compare_start
+  compareStart: (state) => {
+    return state.compareStart
   },
 
-  compare_end(state) {
-    return state.compare_end
+  compareEnd: (state) => {
+    return state.compareEnd
   },
 
-  media(state) {
+  media: (state) => {
     return state.media
   },
 
-  getAllData(state) {
-    return state
-  },
-
-  buildings(state) {
-    return state.buildings
+  blocks: (state) => {
+    let blocks = []
+    for (let key of Object.keys(state)) {
+      if (key.search(/block_[0-9]+/) >= 0) {
+        blocks.push(state[key])
+      }
+    }
+    return blocks
   }
-
 }
 
 export default {

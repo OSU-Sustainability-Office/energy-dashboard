@@ -17,18 +17,24 @@ const state = () => {
     meterGroupPath: null,
     path: null,
     color: '#000000',
-    promise: null
+    promise: null,
+    modifierData: {}
   }
 }
 
 const actions = {
 
   async getData (store, payload) {
-    payload['point'] = store.getters.point
-    const chartModifier = ChartModifiers(payload.graphType, payload.point)
-    await chartModifier.preGetData(payload, this, store)
+    const reqPayload = {
+      point: store.getters.point,
+      ...payload,
+      ...store.getters.modifierData
+    }
+    console.log(reqPayload)
+    const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
+    await chartModifier.preGetData(reqPayload, this, store)
 
-    let data = await this.dispatch(store.getters.meterGroupPath + '/getData', payload)
+    let data = await this.dispatch(store.getters.meterGroupPath + '/getData', reqPayload)
     let chartData = {
       label: store.getters.name,
       backgroundColor: store.getters.color,
@@ -39,7 +45,7 @@ const actions = {
       data: data
     }
 
-    await chartModifier.postGetData(chartData, payload, this, store)
+    await chartModifier.postGetData(chartData, reqPayload, this, store)
     return chartData
   },
 
@@ -85,6 +91,10 @@ const mutations = {
     state.path = path
   },
 
+  modifierData (state, data) {
+    state.modifierData = data
+  },
+
   promise (state, promise) {
     state.promise = promise
   },
@@ -117,6 +127,10 @@ const mutations = {
 const getters = {
   promise (state) {
     return state.promise
+  },
+
+  modifierData (state) {
+    return state.modifierData
   },
 
   color (state) {

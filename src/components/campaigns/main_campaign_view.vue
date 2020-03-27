@@ -18,7 +18,7 @@
       <!-- Charts and the building selection list -->
       <el-row class='controlRow'>
         <el-col :span='8' class='buildingContainer'>
-          <buildingList :loaded='loaded' :buildings='buildings' @clickedBuilding='changeChartIndex'/>
+          <buildingList v-model='blockPath' :loaded='loaded' :path='campaignPath' @clickedBuilding='changeChartIndex'/>
         </el-coL>
         <el-col :span='16' class='otherSide'>
           <div class='chartArea'>
@@ -27,7 +27,7 @@
                 {{ currentTitle }}
               </el-col>
               <el-col :span='12' class='timeSwitchButtons'>
-                <switchButtons :blocks='blocks' :campaign='true' :days='days' />
+                <!-- <switchButtons :blocks='blocks' :campaign='true' :days='days' /> -->
               </el-col>
             </el-row>
             <chartController :path='blockPath' :randomColors='1' class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '332px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='332'/>
@@ -45,51 +45,59 @@
 
 <script>
 import heropicture from '@/components/extras/heropicture.vue'
-import { mapGetters } from 'vuex'
 import chartController from '@/components/charts/chartController'
 import buildingList from '@/components/campaigns/campaign_building_list'
 import reductionTips from '@/components/campaigns/campaign_reduction_tips'
-import switchButtons from '@/components/map/time_switch_buttons_big'
+// import switchButtons from '@/components/map/time_switch_buttons_big'
 
 export default {
   components: {
     heropicture,
     chartController,
     buildingList,
-    reductionTips,
-    switchButtons
+    reductionTips
+    // switchButtons
   },
   data () {
     return {
-      buildings: [], // Lists the buildings involved with this competition
-      blocks: [],
+      blockPath: '',
       loaded: false, // Toggles the spinning circle loading animation on the graph and building list
       currentTitle: 'Energy Saved',
-      blockPath: '', // This is the path to the block currently diplayed on the main graph
-      media: '', // URL of the photo along the top bar
-      name: '', // Displays the name of the competition above the graph
       description: '',
       startDate: null, // Start and End dates for the competition
       endDate: null, // Formatted like this: "2020-02-02T15:00:00.000Z"
       days: 0 // The number of days that have elapsed during the competition
     }
   },
-  mounted () {
-    // Download the campaigns
-    // If they have already been downloaded, the VueX store won't make extaneous API calls
-    this.$store.dispatch('campaigns/getCampaigns').then(campaigns => {
-      campaigns.forEach(campaign => {
-        if (campaign.id === parseInt(this.$route.params.id)) {
-          this.$store.dispatch('campaigns/getCampaign', campaign.id).then(camp => {
-            this.setCampaign(camp)
-          })
-        }
-      })
-    })
+  computed: {
+    campaignPath: {
+      get () {
+        if (!this.$store.getters['campaigns/campaign'](this.$route.params.id)) return null
+        return this.$store.getters['campaigns/campaign'](this.$route.params.id).path
+      }
+    },
+    media: {
+      get () {
+        if (!this.campaignPath) return ''
+        return this.$store.getters[this.campaignPath + '/media']
+      }
+    },
+    name: {
+      get () {
+        if (!this.campaignPath) return ''
+        return this.$store.getters[this.campaignPath + '/name']
+      }
+    }
+  },
+  async mounted () {
+    this.loaded = false
+    await this.$store.getters['campaigns/promise']
+    this.blockPath = this.campaignPath + '/block_default'
+    this.loaded = true
   },
   methods: {
     // Retrieves campaign information from the vuex store
-    setCampaign: async function(camp) {
+    setCampaign: async function (camp) {
       // Set the heropicture logo url
       this.media = camp.media
 

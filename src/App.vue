@@ -31,6 +31,7 @@ export default {
     let mapPromise = this.$store.dispatch('map/loadMap')
     this.$store.commit('map/promise', mapPromise)
     this.$store.dispatch('user/user')
+    this.$store.dispatch('campaigns/loadCampaigns')
     // this.$store.commit('user/promise', userPromise)
   },
   data () {

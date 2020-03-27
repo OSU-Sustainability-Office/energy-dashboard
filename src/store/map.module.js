@@ -82,12 +82,12 @@ const actions = {
   },
 
   async loadMap (store) {
+    let buildings = API.buildings()
+    store.commit('promise', buildings)
     for (let building of store.getters.buildings()) {
       let buildingKey = building.path.split('/').pop()
       this.unregisterModule(buildingKey)
     }
-    let buildings = API.buildings()
-    store.commit('promise', buildings)
     let buildingsResolved = await buildings
     let buildingPromises = []
     for (let building of buildingsResolved) {

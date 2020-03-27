@@ -47,18 +47,18 @@ export default {
     // })
   },
   watch: {
-    // path: function (value) {
-    //   this.loading = true
-    //   console.log('PATH data')
-    //   this.$store.dispatch(this.path + '/getData').then(r => {
-    //     if (this.chart) {
-    //       this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
-    //       this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
-    //     }
-    //     this.chartData = r
-    //     this.loading = false
-    //   })
-    // }
+    path: function (value) {
+      this.loading = true
+      console.log('PATH data')
+      this.$store.dispatch(this.path + '/getData').then(r => {
+        if (this.chart) {
+          this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+          this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+        }
+        this.chartData = r
+        this.loading = false
+      })
+    }
   },
   data () {
     return {

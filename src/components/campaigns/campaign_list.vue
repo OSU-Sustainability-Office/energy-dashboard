@@ -9,13 +9,13 @@
   <el-row class='campaignlistview'>
     <el-tabs v-model="activePane">
       <el-tab-pane label="Current Campaigns" name="new" ref='currentTab' class='list'>
-        <campaignBlock v-for='campaign in currentCampaigns' :camp='campaign' @click='$router.push("/campaign/" + campaign.id)'/>
+        <campaignBlock v-for='campaign in currentCampaigns' :camp='campaign' :key='campaign.id' @click='$router.push("/campaign/" + campaign.id)'/>
         <span class='noText' v-if='currentCampaigns.length <= 0'>
           No Current Campaigns
         </span>
       </el-tab-pane>
       <el-tab-pane label="Past Campaigns" name="old" ref='pastTab' class='list'>
-        <campaignBlock v-for='campaign in pastCampaigns' :camp='campaign' @click='$router.push("/campaign/" + campaign.id)'/>
+        <campaignBlock v-for='campaign in pastCampaigns' :camp='campaign' :key='campaign.id' @click='$router.push("/campaign/" + campaign.id)'/>
         <span class='noText' v-if='pastCampaigns.length <= 0'>
           No Past Campaigns
         </span>
@@ -36,18 +36,20 @@ export default {
       pastCampaigns: []
     }
   },
-  created () {
-    this.$store.dispatch('campaigns/getCampaigns').then(campaigns => {
-      for (let camp of campaigns) {
-        if (this.checkDate(camp.dateEnd)) {
-          this.currentCampaigns.push(camp)
-        } else {
-          this.pastCampaigns.push(camp)
-        }
+  async mounted () {
+    // await this.$store.dispatch('map/allBuildingPromise')
+    await this.$store.dispatch('campaigns/loadCampaigns')
+    // this.$store.dispatch('campaigns/getCampaigns').then(campaigns => {
+    for (let camp of this.$store.getters['campaigns/campaigns']) {
+      if (this.checkDate(camp.dateEnd)) {
+        this.currentCampaigns.push(camp)
+      } else {
+        this.pastCampaigns.push(camp)
       }
-      this.currentCampaigns.sort((a, b) => { return (new Date(b.dateEnd)).getTime() - (new Date(a.dateEnd)).getTime() })
-      this.pastCampaigns.sort((a, b) => { return (new Date(b.dateEnd)).getTime() - (new Date(a.dateEnd)).getTime() })
-    })
+    }
+    this.currentCampaigns.sort((a, b) => { return (new Date(b.dateEnd)).getTime() - (new Date(a.dateEnd)).getTime() })
+    this.pastCampaigns.sort((a, b) => { return (new Date(b.dateEnd)).getTime() - (new Date(a.dateEnd)).getTime() })
+    // })
   },
   methods: {
     checkDate: function (end) {
