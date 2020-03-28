@@ -99,6 +99,7 @@ export default {
           return
         }
         this.loading = true
+        // this.chartData = null
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
           this.$store.dispatch(this.path + '/getData').then(data => {

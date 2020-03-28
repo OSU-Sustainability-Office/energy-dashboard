@@ -7,6 +7,7 @@
  */
 import API from './api.js'
 import ChartModifiers from './chart_modifiers/index.js'
+import ChartCacher from './chart_cacher.js'
 
 const state = () => {
   return {
@@ -30,7 +31,10 @@ const actions = {
       ...payload,
       ...store.getters.modifierData
     }
-    console.log(reqPayload)
+    let reqPayloadCopy = JSON.parse(JSON.stringify(reqPayload))
+    let cached = ChartCacher.retrieveEntry(reqPayloadCopy, store.getters.meterGroupPath)
+    if (cached) return cached
+
     const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
     await chartModifier.preGetData(reqPayload, this, store)
 
@@ -46,6 +50,9 @@ const actions = {
     }
 
     await chartModifier.postGetData(chartData, reqPayload, this, store)
+
+    ChartCacher.addEntry(reqPayloadCopy, store.getters.meterGroupPath, chartData)
+
     return chartData
   },
 
