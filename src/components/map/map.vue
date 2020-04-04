@@ -24,13 +24,13 @@
       <div class='mapContainer' ref='mapContainer' v-loading='!mapLoaded'>
         <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-          <l-geo-json v-for='building of this.$store.getters["map/buildings"]()' :key='building.id * rKey' :geojson='building.geoJSON' :options='buildingOptions' ref="geoLayer"></l-geo-json>
+          <l-geo-json v-for='building of this.$store.getters["map/buildings"]' :key='building.id * rKey' :geojson='building.geoJSON' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
       </div>
       <prompt v-if='askingForComparison' @cancel='stopCompare' @compare='showComparison' />
       <transition name='side'>
         <compareSide v-if='showCompareSide' @hide='showCompareSide = false' :compareStories='compareStories' />
-        <sideView ref='sideview' v-if='showSide' @hide='showSide = false' @startCompare='startCompare()'></sideView>
+        <sideView ref='sideview' v-if='showSide' @hide='showSide = false' @startCompare='startCompare'></sideView>
       </transition>
     </el-col>
   </el-row>
@@ -61,6 +61,15 @@ export default {
       set (value) {
         this.$store.dispatch('modalController/closeModal')
       }
+    },
+    showCompareSide: {
+      get () {
+        return (this.$store.getters['modalController/modalName'] === 'map_compare_side')
+      },
+
+      set (value) {
+        this.$store.dispatch('modalController/closeModal')
+      }
     }
   },
   data () {
@@ -73,7 +82,6 @@ export default {
       polygonData: null,
       openBuilding: 0,
       compareStories: [],
-      showCompareSide: 0,
       ele: [],
       compareMarkers: [],
       rKey: 1,
@@ -84,19 +92,18 @@ export default {
       buildingOptions: {
         onEachFeature: (feature, layer) => {
           layer.on('click', e => {
-            // window.vue.$store.dispatch('modalController/closeModal').then(() => {
-            window.vue.$store.dispatch('modalController/openModal', {
-              name: 'map_side_view',
-              id: e.target.feature.properties.id
-            })
-            // })
+            this.polyClick(e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter())
           })
           layer.on('mouseover', function (e) {
+            if (!e.target.setStyle) return
             e.target.oldStyle = { fillColor: e.target.options.fillColor, color: e.target.options.color }
             e.target.setStyle({ fillColor: '#000', color: '#000' })
             e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
           })
-          layer.on('mouseout', e => { e.target.style = e.target.setStyle({ ...e.target.oldStyle }) })
+          layer.on('mouseout', e => {
+            if (!e.target.setStyle) return
+            e.target.setStyle({ ...e.target.oldStyle })
+          })
         },
         style: feature => {
           var color = '#000'
@@ -133,9 +140,9 @@ export default {
   methods: {
     polyClick: function (id, feature, center) {
       if (!this.askingForComparison) {
-        this.openBuilding = id
-        this.$nextTick(() => {
-          this.showSide = true
+        window.vue.$store.dispatch('modalController/openModal', {
+          name: 'map_side_view',
+          id: id
         })
       } else {
         if (this.askingForComparison && this.compareStories.indexOf(id) < 0) {
@@ -147,11 +154,11 @@ export default {
             shadowUrl: ''
           })
           const marker = L.marker(center, { icon: checkIcon, bubblingMouseEvents: true, interactive: false }).addTo(this.map)
-          marker.storyId = feature.properties.story_id
+          marker.buildingId = id
           this.compareMarkers.push(marker)
           this.compareStories.push(id)
         } else if (this.askingForComparison) {
-          const removingMarkerIndex = this.compareMarkers.findIndex(e => e.storyId === feature.properties.story_id)
+          const removingMarkerIndex = this.compareMarkers.findIndex(e => e.buildingId === id)
           if (removingMarkerIndex === -1) {
             return
           }
@@ -166,20 +173,35 @@ export default {
         this.map.removeLayer(marker)
       }
     },
-    showComparison: function (target) {
+    showComparison: async function (target) {
       this.askingForComparison = false
       this.removeAllMarkers()
+      let path = this.$store.getters['map/building'](this.compareStories[0]).path
       if (target === 'q') {
-        this.showCompareSide = true
+        let mgId = this.$store.getters[path + '/primaryGroup']('Electricity').id
+
+        let blockSpace = this.$store.getters[path + '/block'](mgId).path
+        await this.$store.dispatch(blockSpace + '/removeAllModifiers')
+        await this.$store.dispatch(blockSpace + '/addModifier', 'building_compare')
+        await this.$store.dispatch(blockSpace + '/updateModifier', {
+          name: 'building_compare',
+          data: {
+            buildingIds: this.compareStories
+          }
+        })
+        window.vue.$store.dispatch('modalController/openModal', {
+          name: 'map_compare_side',
+          path: path
+        })
       } else {
         this.$router.push({ path: `/compare/${encodeURI(JSON.stringify(this.compareStories))}/1` })
       }
     },
-    startCompare: function () {
+    startCompare: function (buildingId) {
       this.showSide = false
       this.askingForComparison = true
       this.compareStories = []
-      this.compareStories.push(this.openStory)
+      this.compareStories.push(buildingId)
 
       const data = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/> <path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"
       const formed = encodeURI('data:image/svg+xml,' + data).replace(/#/g, '%23')
@@ -190,7 +212,7 @@ export default {
       })
       let center = null
       for (let layer of Object.values(this.map._layers)) {
-        if (layer.feature && layer.feature.properties.story_id === this.openStory) {
+        if (layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon' && layer.feature.properties.id === buildingId) {
           center = layer.getBounds().getCenter()
         }
       }
@@ -198,7 +220,7 @@ export default {
         return
       }
       const marker = L.marker(center, { icon: checkIcon, bubblingMouseEvents: true, interactive: false }).addTo(this.map)
-      marker.storyId = this.openStory
+      marker.buildingId = buildingId
       this.compareMarkers.push(marker)
     },
     stopCompare: function () {
@@ -222,25 +244,14 @@ export default {
       }
     }
   },
-  created () {
-    this.$store.getters['map/promise'].then(() => {
-      this.mapLoaded = true
-    })
-    // this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
-    // this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.forEach(e => { e.mapObject.resetStyle(v[0]) }) })
+  async created () {
+    await this.$store.dispatch('map/loadGeometry')
+    this.mapLoaded = true
   },
   mounted () {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject
-      // this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
-      // window.addEventListener('resize', () => {
-      //   this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
-      // })
     })
-  },
-  beforeDestroy () {
-    // this.$eventHub.$off('clickedPolygon')
-    // this.$eventHub.$off('resetPolygon')
   },
   watch: {
     selected: function (val) {

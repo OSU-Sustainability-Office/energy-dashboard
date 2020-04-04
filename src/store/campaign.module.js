@@ -21,12 +21,13 @@ const state = () => {
     dateEnd: null,
     compareStart: null,
     compareEnd: null,
-    media: null
+    media: null,
+    meterGroupIDs: null
   }
 }
 
 const actions = {
-  async buildBlocks (store, meterGroups) {
+  async buildBlocks (store) {
     if (store.getters.promise === null) {
       store.commit('promise', new Promise(async (resolve, reject) => {
         await this.getters['map/promise'] // Make sure building promises have been queued
@@ -36,10 +37,9 @@ const actions = {
         this.registerModule(defaultModuleSpace.split('/'), Block)
         store.commit(defaultBlockSpace + '/path', defaultModuleSpace)
         store.commit(defaultBlockSpace + '/shuffleChartColors')
-
         let charts = []
         let blockPromises = []
-        for (let group of meterGroups) {
+        for (let group of store.getters.meterGroupIDs) {
           let groupModule = this.getters['map/meterGroup'](group)
           if (groupModule) {
             charts.push({
@@ -90,15 +90,23 @@ const actions = {
         store.commit(defaultBlockSpace + '/graphType', 1)
         store.commit(defaultBlockSpace + '/dateStart', store.getters.dateStart)
         store.commit(defaultBlockSpace + '/dateEnd', store.getters.dateEnd)
+
+        // I dont think this works exactly right
+        store.commit(defaultBlockSpace + '/promise', Promise.resolve())
         const sortList = []
+        const dataPromise = []
         for (let block of store.getters.blocks) {
-          await this.dispatch(block.path + '/getData')
-          sortList.push({ path: block.path, value: this.getters[block.path + '/modifierData']('campaign_linebar').accumulatedPercentage })
+          dataPromise.push(new Promise(async (resolve, reject) => {
+            await this.dispatch(block.path + '/getData')
+            sortList.push({ path: block.path, value: this.getters[block.path + '/modifierData']('campaign_linebar').accumulatedPercentage })
+            resolve()
+          }))
         }
+        await Promise.all(dataPromise)
         sortList.sort((a, b) => (a.value > b.value) ? 1 : -1)
         for (let i = 0; i < 3; i++) {
           if (i >= sortList.length) break
-          this.dispatch(sortList[i].path + '/updateModifier', {
+          await this.dispatch(sortList[i].path + '/updateModifier', {
             name: 'campaign_linebar',
             data: {
               rank: i
@@ -115,6 +123,10 @@ const actions = {
 const mutations = {
   promise: (state, promise) => {
     state.promise = promise
+  },
+
+  meterGroupIds: (state, groups) => {
+    state.meterGroupIDs = groups
   },
 
   name: (state, name) => {
@@ -153,6 +165,10 @@ const mutations = {
 const getters = {
   promise: (state) => {
     return state.promise
+  },
+
+  meterGroupIDs: (state) => {
+    return state.meterGroupIDs
   },
 
   name: (state) => {
@@ -200,7 +216,13 @@ const getters = {
         blocks.push(state[key])
       }
     }
+    // if this is not copied adding removing elements will change the cached value
+    // which is really bad
     return blocks
+  },
+
+  defaultBlock: (state) => {
+    return state['block_default']
   }
 }
 

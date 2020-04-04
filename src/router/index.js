@@ -9,7 +9,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import index from '@/components/home/index'
-import account from '@/components/account/account'
 import view from '@/components/view/view'
 import map from '@/components/map/map'
 import campaigns from '@/components/campaigns/campaign_list'
@@ -42,8 +41,8 @@ export default new Router({
       component: view
     },
     {
-      path: '/compare/:ids/:range',
-      component: account
+      path: '/compare/:buildings/:range',
+      component: view
     },
     {
       path: '/map',

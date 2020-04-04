@@ -72,8 +72,9 @@ export default class LinePercModifier {
         startDate += (60 * 60 * 24)
       }
       avgbins.push([])
+      let begin = startDate
       for (let tod = 0; tod < ((60 * 60 * 24) / delta); tod++) {
-        startDate += tod * delta
+        startDate = begin + (tod * delta)
         let count = 0
         let value = -1
         while (startDate <= payload.compareEnd) {
@@ -91,14 +92,13 @@ export default class LinePercModifier {
         avgbins[dow].push(value)
       }
     }
-    console.log(avgbins)
     for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
       let accumulator = 0
       try {
         if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
           continue
         }
-        let baselinePoint = avgbins[(new Date((i + delta) * 1000)).getDay()][((i + delta) % ((60 * 60 * 24) / delta))]
+        let baselinePoint = avgbins[(new Date((i + delta) * 1000)).getDay()][Math.floor(((i + delta) % (60 * 60 * 24)) / delta)]
         if (baselinePoint !== -1) {
           accumulator = (resultDataObject.get(i + delta) - resultDataObject.get(i)) / baselinePoint * 100 - 100
           returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })

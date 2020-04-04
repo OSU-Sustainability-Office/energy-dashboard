@@ -49,13 +49,21 @@ export default {
   watch: {
     path: function (value) {
       this.loading = true
-      console.log('PATH data')
-      this.$store.dispatch(this.path + '/getData').then(r => {
-        if (this.chart) {
+      this.$store.dispatch(this.path + '/getData').then(data => {
+        if (this.chart && (this.graphType === 1 || this.graphType === 2)) {
           this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
           this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+          let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()
+          if (timeDif <= 24 * 60 * 60 * 1000) {
+            this.chart.options.scales.xAxes[0].time.unit = 'minute'
+          } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
+            this.chart.options.scales.xAxes[0].time.unit = 'hour'
+          } else {
+            this.chart.options.scales.xAxes[0].time.unit = 'day'
+          }
+          // this.chart.setOptions(this.chart.options)
         }
-        this.chartData = r
+        this.chartData = data
         this.loading = false
       })
     }
@@ -85,6 +93,19 @@ export default {
         User views need to grab data immediately.
       */
       this.$store.dispatch(this.path + '/getData').then(data => {
+        if (this.chart && (this.graphType === 1 || this.graphType === 2)) {
+          this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+          this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+          let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()
+          if (timeDif <= 24 * 60 * 60 * 1000) {
+            this.chart.options.scales.xAxes[0].time.unit = 'minute'
+          } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
+            this.chart.options.scales.xAxes[0].time.unit = 'hour'
+          } else {
+            this.chart.options.scales.xAxes[0].time.unit = 'day'
+          }
+          this.chart.setOptions(this.chart.options)
+        }
         this.chartData = data
         this.loading = false
       })
@@ -103,9 +124,17 @@ export default {
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
           this.$store.dispatch(this.path + '/getData').then(data => {
-            if (this.chart && (this.graphType === 1 || this.graphType === 2 || this.graphType === 5)) {
+            if (this.chart && (this.graphType === 1 || this.graphType === 2)) {
               this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
               this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+              let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()
+              if (timeDif <= 24 * 60 * 60 * 1000) {
+                this.chart.options.scales.xAxes[0].time.unit = 'minute'
+              } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
+                this.chart.options.scales.xAxes[0].time.unit = 'hour'
+              } else {
+                this.chart.options.scales.xAxes[0].time.unit = 'day'
+              }
               this.chart.setOptions(this.chart.options)
             }
             this.chartData = data
@@ -171,6 +200,9 @@ export default {
   methods: {
     unit: function (index) {
       const charts = this.$store.getters[this.path + '/charts']
+      if (index >= charts.length) {
+        index = 0
+      }
       const unit = this.$store.getters[charts[index].path + '/unitString']
       return unit
     },

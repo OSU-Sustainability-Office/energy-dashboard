@@ -63,6 +63,19 @@ const actions = {
     }
   },
 
+  async removeAllModifiers (store) {
+    for (let modIndex in store.getters.modifiers) {
+      if (modIndex < 0) {
+        throw new Error('Modifier not found on block')
+      } else {
+        const removingMod = store.getters.modifiers[modIndex]
+        await removingMod.onRemove(this, store)
+        store.commit('removeMod', removingMod)
+      }
+    }
+    console.log(store.getters.modifiers)
+  },
+
   async updateModifier (store, payload) {
     // eslint-disable-next-line no-proto
     const currentModNames = store.getters.modifiers.map(o => o.__proto__.constructor.name)
@@ -71,8 +84,14 @@ const actions = {
       throw new Error('Modifier not found on block')
     } else {
       const updatingMod = store.getters.modifiers[modIndex]
-      await updatingMod.updateData(this, module, payload.data)
+      await updatingMod.updateData(this, store, payload.data)
     }
+  },
+
+  async unloadChart (store, chartId) {
+    let chart = store.getters.chart(chartId)
+    console.log(chart)
+    this.unregisterModule(chart.path.split('/'))
   },
 
   async loadCharts (store, charts) {
@@ -207,7 +226,7 @@ const actions = {
       store.commit('graphType', 1)
       let currentEpoch = ((new Date()).getTime())
       currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
-      store.commit('dateStart', currentEpoch - (900 * 96 * 7 * 1000)) // 15 minutes, 96 times a day, 7 days
+      store.commit('dateStart', currentEpoch - (900 * 96 * 30 * 1000)) // 15 minutes, 96 times a day, 30 days
       store.commit('dateEnd', currentEpoch)
       resolve()
     }))
@@ -220,18 +239,18 @@ const actions = {
       labels: [],
       datasets: []
     }
+    const reqPayload = {
+      dateStart: parseInt(store.getters.dateStart / 1000),
+      dateEnd: parseInt(store.getters.dateEnd / 1000),
+      intervalUnit: store.getters.intervalUnit,
+      dateInterval: store.getters.dateInterval,
+      graphType: store.getters.graphType
+    }
     for (let mod of store.getters.modifiers) {
-      await mod.preData(this, store)
+      await mod.preData(this, store, reqPayload)
     }
     for (let chart of store.getters.charts) {
       if (!chart.path) continue
-      const reqPayload = {
-        dateStart: parseInt(store.getters.dateStart / 1000),
-        dateEnd: parseInt(store.getters.dateEnd / 1000),
-        intervalUnit: store.getters.intervalUnit,
-        dateInterval: store.getters.dateInterval,
-        graphType: store.getters.graphType
-      }
       chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
     }
     let chartData = await Promise.all(chartDataPromises)
@@ -393,6 +412,10 @@ const getters = {
       }
     }
     return charts
+  },
+
+  chart: (state) => (id) => {
+    return state[`chart_${id}`]
   }
 }
 /*

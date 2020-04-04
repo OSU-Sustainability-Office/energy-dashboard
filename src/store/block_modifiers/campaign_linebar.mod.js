@@ -16,12 +16,12 @@ export default class CampaignLineBarModifier {
       variables to be more descriptive for
       specific modifiers
     */
+    this.promise = null
     this.data = {
       accumulatedPercentage: 0,
       rank: -1,
       compareStart: 0,
-      compareEnd: 0,
-      dlData: {}
+      compareEnd: 0
     }
   }
 
@@ -64,6 +64,9 @@ export default class CampaignLineBarModifier {
       module is block module, data is new incoming
       data.
     */
+    if (moduleVuex.getters.charts.length > 1) {
+      throw new Error('This block modifier expects only one chart')
+    }
     this.data.dlData = {}
     const payload = {
       point: 'avg_accumulated_real',
@@ -75,10 +78,7 @@ export default class CampaignLineBarModifier {
       compareStart: this.data.compareStart / 1000,
       compareEnd: this.data.compareEnd / 1000
     }
-    for (let chart of moduleVuex.getters.charts) {
-      let cData = await store.dispatch(chart.path + '/getData', payload)
-      this.data.dlData = cData
-    }
+    this.promise = store.dispatch(moduleVuex.getters.charts[0].path + '/getData', payload)
   }
   async postData (store, moduleVuex, data) {
     /*
@@ -88,6 +88,7 @@ export default class CampaignLineBarModifier {
       data.
     */
     if (!data) return
+    let dlData = (await this.promise).data
     data.datasets.splice(0, 0, {
       label: 'Baseline',
       backgroundColor: '#FFF',
@@ -95,10 +96,11 @@ export default class CampaignLineBarModifier {
       fill: false,
       showLine: true,
       spanGaps: false,
-      data: this.data.dlData.data,
+      data: dlData,
       type: 'line'
     })
     data.datasets[1].label = 'Current Use'
+    data.datasets[1].spanGaps = true
 
     let current = data.datasets[1].data
     let baseline = data.datasets[0].data

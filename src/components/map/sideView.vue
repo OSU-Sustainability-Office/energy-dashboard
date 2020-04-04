@@ -34,7 +34,7 @@
           </el-row>
           <el-row class="buttons">
             <el-col :span='12'>
-              <el-button class='bigButton' @click="$emit('startCompare')">Compare</el-button>
+              <el-button class='bigButton' @click="$emit('startCompare', building.id)">Compare</el-button>
             </el-col>
             <el-col :span='12'>
               <el-button class='bigButton' @click='$router.push({path: `/building/${building.id}/${currentRange}`})'>View Full Graph</el-button>
@@ -87,28 +87,9 @@ export default {
     }
   },
   methods: {
-    // updateCharts: function (value) {
-    //   this.currentRange = value[0]
-    //   this.$nextTick(() => {
-    //     for (let controller of this.$refs.chartController) {
-    //       controller.parse()
-    //     }
-    //   })
-    // },
     hide: function () {
       this.$emit('hide')
     },
-    // dateOffset: function () {
-    //   var d = new Date()
-    //   if (this.currentRange === 0) {
-    //     d.setDate(d.getDate() - 7)
-    //   } else if (this.currentRange === 1) {
-    //     d.setMonth(d.getMonth() - 1)
-    //   } else if (this.currentRange === 2) {
-    //     d.setYear(d.getYear() - 1)
-    //   }
-    //   return d.toISOString()
-    // },
     next: function () {
       if (this.index + 1 >= this.buildingBlocks.length) { return }
       this.index++
@@ -137,27 +118,17 @@ export default {
       this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + value + ')'
     }
   },
-  mounted () {
+  async mounted () {
+    for (let block of this.buildingBlocks) {
+      await this.$store.dispatch(block.path + '/removeAllModifiers')
+    }
     this.$refs.prevArrow.style.display = 'none'
-  //   this.$store.dispatch('story', this.storyId).then(() => {
-  //     let promises = []
     if (this.buildingBlocks.length <= 1) {
       this.$refs.nextArrow.style.display = 'none'
     } else {
       this.$refs.nextArrow.style.display = 'block'
     }
-    let date = new Date()
     this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + this.media + ')'
-  //     for (let block in this.story.blocks) {
-  //       promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
-  //     }
-
-  //     Promise.all(promises).then(() => {
-  //       for (let controller of this.$refs.chartController) {
-  //         controller.parse()
-  //       }
-  //     })
-  //   })
   }
 }
 </script>
@@ -239,7 +210,6 @@ export default {
   // margin-right: 20px;
   transition: transform 1s;
   display: inline-block;
-  float: left;
 }
 
 .graphslide {

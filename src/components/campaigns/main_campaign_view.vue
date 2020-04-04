@@ -18,7 +18,7 @@
       <!-- Charts and the building selection list -->
       <el-row class='controlRow'>
         <el-col :span='8' class='buildingContainer'>
-          <buildingList v-model='blockPath' :loaded='loaded' :path='campaignPath' @clickedBuilding='changeChartIndex'/>
+          <buildingList v-model='blockPath' :loaded='loaded' :path='campaignPath'/>
         </el-coL>
         <el-col :span='16' class='otherSide'>
           <div class='chartArea'>
@@ -27,10 +27,10 @@
                 {{ currentTitle }}
               </el-col>
               <el-col :span='12' class='timeSwitchButtons'>
-                <!-- <switchButtons :blocks='blocks' :campaign='true' :days='days' /> -->
+                <switchButtons :blocks='blocks' :campaign='true' :days='days' :campaignDateStart='campaignStart' :campaignDateEnd='campaignEnd' />
               </el-col>
             </el-row>
-            <chartController :path='blockPath' :randomColors='1' class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '332px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='332'/>
+            <chartController :path='blockPath' :randomColors='1' class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '340px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='362'/>
           </div>
         </el-col>
       </el-row>
@@ -48,15 +48,15 @@ import heropicture from '@/components/extras/heropicture.vue'
 import chartController from '@/components/charts/chartController'
 import buildingList from '@/components/campaigns/campaign_building_list'
 import reductionTips from '@/components/campaigns/campaign_reduction_tips'
-// import switchButtons from '@/components/map/time_switch_buttons_big'
+import switchButtons from '@/components/map/time_switch_buttons_big'
 
 export default {
   components: {
     heropicture,
     chartController,
     buildingList,
-    reductionTips
-    // switchButtons
+    reductionTips,
+    switchButtons
   },
   data () {
     return {
@@ -65,11 +65,48 @@ export default {
       currentTitle: 'Energy Saved',
       description: '',
       startDate: null, // Start and End dates for the competition
-      endDate: null, // Formatted like this: "2020-02-02T15:00:00.000Z"
-      days: 0 // The number of days that have elapsed during the competition
+      endDate: null // Formatted like this: "2020-02-02T15:00:00.000Z"
     }
   },
   computed: {
+    days: {
+      get () {
+        if (!this.campaignPath) return ''
+        let start = this.campaignStart
+        let end = this.campaignEnd
+
+        return Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1
+      }
+    },
+    campaignStart: {
+      get () {
+        if (!this.campaignPath) return ''
+        return this.$store.getters[this.campaignPath + '/dateStart']
+      }
+    },
+    campaignEnd: {
+      get () {
+        if (!this.campaignPath) return ''
+        let end = this.$store.getters[this.campaignPath + '/dateEnd']
+        let current =  (new Date()).getTime()
+
+        if (current < end) {
+          return current
+        } else {
+          return end
+        }
+      }
+    },
+    blocks: {
+      get () {
+        if (!this.campaignPath) return []
+        // We need to copy this or adding the default block will change the return value of
+        // the store
+        let blocks = new Array(...this.$store.getters[this.campaignPath + '/blocks'])
+        blocks.push(this.$store.getters[this.campaignPath + '/defaultBlock'])
+        return blocks
+      }
+    },
     campaignPath: {
       get () {
         if (!this.$store.getters['campaigns/campaign'](this.$route.params.id)) return null
@@ -91,95 +128,12 @@ export default {
   },
   async mounted () {
     this.loaded = false
-    await this.$store.getters['campaigns/promise']
+    await this.$store.dispatch('campaigns/loadCampaigns')
+    await this.$store.dispatch(this.campaignPath + '/buildBlocks')
     this.blockPath = this.campaignPath + '/block_default'
     this.loaded = true
   },
   methods: {
-    // Retrieves campaign information from the vuex store
-    setCampaign: async function (camp) {
-      // Set the heropicture logo url
-      this.media = camp.media
-
-      // Set the campaign name
-      this.name = camp.name
-
-      // Set the number of days that have elapsed since the campaign started
-      // The number of days is displayed on the frontend
-      this.startDate = new Date(camp.date_start).getTime()
-      this.endDate = new Date(camp.date_end).getTime()
-      const nowDate = new Date().getTime()
-      // If the competition ended, set the number of days to the difference between the start and end dates
-      // Otherwise, calculate the difference between the current date and the start date
-      this.days = this.endDate < nowDate ? Math.round((this.endDate - this.startDate) / 86400000) + 1 : Math.round((nowDate - this.startDate) / 86400000) + 1
-
-      // Retrieve the buildings from the campaign
-      camp.buildings.forEach(async b => {
-        await Promise.all(this.$store.state['campaigns']['campaign_' + camp.id]['promises'])
-        const bdg = this.$store.state['map']['building_' + b.toString()]
-        this.buildings.push({
-          id: b,
-          accumulatedPercentage: 0,
-          name: bdg.name
-        })
-      })
-
-      // Save references to this campaign's blocks locally
-      await Promise.all(this.$store.state['campaigns']['campaign_' + camp.id]['blockPromises'])
-      this.blocks = camp.blocks
-      this.blockPath = camp.blocks[0].path
-
-      // this.$nextTick(() => {
-      //   this.updateAccumulated()
-      //   for (let i in this.buildings) {
-      //     // JS thought i should be a string and would concat it with 1...
-      //     this.buildings[i].place = (parseInt(i) + 1).toString()
-      //   }
-      //   this.loaded = true
-      // })
-    },
-
-    // Retrieve data from VueX
-    updateAccumulated: function () {
-      const endDate = new Date(this.dateStart).getTime()
-      for (let chart of this.story.blocks[0].charts) {
-        let index = chart.data.length - 1
-        if (index < 0) {
-          continue
-        }
-        let accm = 0
-        while (new Date(chart.data[index].x).getTime() >= endDate) {
-          accm += chart.data[index].y
-          index--
-        }
-        accm /= chart.data.length - index
-        this.$store.commit('updateBlockAverage', { index: (this.story.blocks[0].charts.indexOf(chart) + 1), avg: accm })
-      }
-      this.buildings.sort((a, b) => {
-        return a.accumulatedPercentage - b.accumulatedPercentage
-      })
-      this.$nextTick(() => {
-        this.$refs.chartController.parse()
-      })
-    },
-
-    // Change which chart is displayed when a chart selection button is pressed
-    changeChartIndex: function (index) {
-      console.log(index)
-      if (this.currentIndex !== index) {
-        this.currentTitle = this.block(index).name
-        this.currentIndex = index
-        this.graphType = 5
-      } else {
-        this.currentTitle = 'Energy Saved'
-        this.currentIndex = 0
-
-        this.graphType = 1
-      }
-      this.$nextTick(() => {
-        this.$refs.chartController.parse()
-      })
-    }
   }
 }
 </script>

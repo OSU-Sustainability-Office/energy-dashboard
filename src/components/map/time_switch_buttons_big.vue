@@ -21,14 +21,14 @@
 <script>
 
 export default {
-  props: ['height', 'campaign', 'days', 'blocks'],
+  props: ['height', 'campaign', 'days', 'blocks', 'campaignDateEnd', 'campaignDateStart'],
   data () {
     return {
-      currentRange: null
+      currentRange: -1
     }
   },
   mounted () {
-    
+
   },
   computed: {
   },
@@ -36,33 +36,9 @@ export default {
     blocks: {
       immediate: true,
       handler: async function (value) {
-        if (this.currentRange === 1) {
-          let intervalUnit = 'minute'
-          let dateInterval = 15
-          let time = (new Date()).getTime()
-          let dateEnd = time - (time % (900 * 1000))
-          let startModifier = 96 * 7
-          if (value === 0) {
-            intervalUnit = 'hour'
-            dateInterval = 6
-            startModifier = 96 * 7
-          } else if (value === 1) {
-            intervalUnit = 'day'
-            dateInterval = 1
-            startModifier = 96 * 30
-          } else {
-            intervalUnit = 'day'
-            dateInterval = 15
-            startModifier = 96 * 365
-          }
-          let dateStart = (new Date(dateEnd)).getTime() - startModifier * 900 * 1000
-          for (let block of this.blocks) {
-            await block.promise
-            this.$store.commit(block.path + '/dateInterval', dateInterval)
-            this.$store.commit(block.path + '/intervalUnit', intervalUnit)
-            this.$store.commit(block.path + '/dateStart', dateStart)
-            this.$store.commit(block.path + '/dateEnd', dateEnd)
-          }
+        this.currentRange = -1
+        if (this.campaign) {
+          this.currentRange = 2
         } else {
           this.currentRange = 1
         }
@@ -71,67 +47,60 @@ export default {
     currentRange: {
       immediate: true,
       handler: async function (value) {
+        if (value < 0) return
         let intervalUnit = 'minute'
         let dateInterval = 15
         let time = (new Date()).getTime()
         let dateEnd = time - (time % (900 * 1000))
-        let startModifier = 96 * 7
-        if (value === 0) {
-          intervalUnit = 'hour'
-          dateInterval = 6
-          startModifier = 96 * 7
-        } else if (value === 1) {
-          intervalUnit = 'day'
-          dateInterval = 1
-          startModifier = 96 * 30
+        let startModifier = 7 * 24 * 60 * 60 * 1000
+        if (!this.campaign) {
+          if (value === 0) {
+            intervalUnit = 'hour'
+            dateInterval = 6
+            startModifier = 7 * 24 * 60 * 60 * 1000
+          } else if (value === 1) {
+            intervalUnit = 'day'
+            dateInterval = 1
+            startModifier = 30 * 24 * 60 * 60 * 1000
+          } else {
+            intervalUnit = 'day'
+            dateInterval = 15
+            startModifier = 365 * 24 * 60 * 60 * 1000
+          }
         } else {
-          intervalUnit = 'day'
-          dateInterval = 15
-          startModifier = 96 * 365
+          dateEnd = this.campaignDateEnd
+          if (value === 0) {
+            intervalUnit = 'minute'
+            dateInterval = 15
+            startModifier = 6 * 60 * 60 * 1000
+          } else if (value === 1) {
+            intervalUnit = 'hour'
+            dateInterval = 1
+            startModifier = 24 * 60 * 60 * 1000
+          } else {
+            intervalUnit = 'day'
+            dateInterval = 1
+          }
         }
-        let dateStart = (new Date(dateEnd)).getTime() - startModifier * 900 * 1000
+        let dateStart = (new Date(dateEnd)).getTime() - startModifier
+        if (this.campaign && value === 2) {
+          dateStart = this.campaignDateStart
+        }
         for (let block of this.blocks) {
           await block.promise
           this.$store.commit(block.path + '/dateInterval', dateInterval)
           this.$store.commit(block.path + '/intervalUnit', intervalUnit)
           this.$store.commit(block.path + '/dateStart', dateStart)
           this.$store.commit(block.path + '/dateEnd', dateEnd)
+
+          /* Forces the campaign accumulated real stats to update
+             Probably a better way to do this but for now it will
+             work
+          */
+          this.$store.dispatch(block.path + '/getData')
         }
       }
     }
-      // value = parseInt(value)
-      // let i = 0
-      // let u = 0
-      // if (value === 0) {
-      //   i = (this.campaign) ? 15 : 6
-      //   u = (this.campaign) ? 'minute' : 'hour'
-      // } else if (value === 1) {
-      //   i = 1
-      //   u = (this.campaign) ? 'hour' : 'day'
-      // } else if (value === 2) {
-      //   i = (this.campaign) ? 1 : 15
-      //   u = 'day'
-      // }
-      // let promises = []
-      // for (let b of this.$store.getters.story.blocks) {
-      //   let c = {
-      //     index: b.index,
-      //     date_interval: i,
-      //     interval_unit: u,
-      //     date_start: this.dateOffset()
-      //   }
-      //   if (this.campaign) {
-      //     this.$store.commit('updateBlockInterval', c)
-      //     promises.push(Promise.resolve())
-      //   } else {
-      //     promises.push(this.$store.dispatch('block', c))
-      //   }
-      // }
-      // Promise.all(promises).then(() => {
-      //   this.$emit('update', [value])
-      // }).catch(e => {
-      // })
-    // }
   },
   methods: {
     dateOffset: function () {

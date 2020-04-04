@@ -8,9 +8,10 @@
 
 const DB = require('/opt/nodejs/sql-access.js')
 const MeterGroup = require('/opt/nodejs/models/meter_group.js')
-const axios = require('axios')
-const Geo = require('osmtogeojson')
-const XMLDom = require('xmldom')
+const Meter = require('/opt/nodejs/models/meter.js')
+// const axios = require('axios')
+// const Geo = require('osmtogeojson')
+// const XMLDom = require('xmldom')
 
 class Building {
   constructor (id) {
@@ -56,7 +57,6 @@ class Building {
       mapId: this.mapId,
       image: this.image,
       group: this.group,
-      geoJSON: this.geoJSON,
       name: this.name
     }
   }
@@ -139,35 +139,110 @@ class Building {
     return building
   }
 
+  set (name, group, mapId, image, meterGroups) {
+    this.name = name
+    this.mapId = mapId
+    this.image = image
+    this.group = group
+    this.meterGroups = meterGroups
+  }
+
   static async all () {
     await DB.connect()
-    let buildings = {}
-    let promiseChain1 = await Promise.all([DB.query('SELECT buildings.name, buildings.id, buildings.group, buildings.map_id, buildings.image, meter_groups.id as meter_group_id FROM buildings LEFT JOIN meter_groups on buildings.id = meter_groups.building_id_2')])
-    const buildingRows = promiseChain1[0]
-    // const token = promiseChain1[1]
-    const promiseChain2 = []
-    for (let buildingRow of buildingRows) {
-      if (buildings[buildingRow['id']]) {
-        buildings[buildingRow['id']].meterGroups.push(buildingRow['meter_group_id'])
-      } else {
-        let building = new Building(buildingRow['id'])
-        building.mapId = buildingRow['map_id']
-        building.group = buildingRow['group']
-        building.meterGroups = [buildingRow['meter_group_id']]
-        // OSM API now sends OSM Json format if application/json is in the request header
-        promiseChain2.push(axios('https://api.openstreetmap.org/api/0.6/way/' + buildingRow['map_id'] + '/full', { headers: { 'Accept': 'text/xml' }, method: 'get' }).then(data => {
-          let xmlData = (new XMLDom.DOMParser()).parseFromString(data.data)
-          building.geoJSON = Geo(xmlData).features[0]
-          building.name = buildingRow['name']
-          building.image = buildingRow['image']
-          building.geoJSON.properties.id = building.id
-          building.geoJSON.properties.group = buildingRow['group']
-        }))
-        buildings[buildingRow['id']] = building
+    let queryJson = {}
+    let query = await DB.query(
+      `SELECT buildings.name, 
+              buildings.id, 
+              buildings.group, 
+              buildings.map_id, 
+              buildings.image, 
+              meter_groups.id as meter_group_id,
+              meter_groups.name as meter_group_name,
+              meter_groups.default as meter_group_default,
+              meters.name as meter_name,
+              meters.id as meter_id,
+              meters.class as meter_class,
+              meter_group_relation.operation as meter_negate
+        FROM buildings 
+        LEFT JOIN meter_groups on buildings.id = meter_groups.building_id_2
+        LEFT JOIN meter_group_relation on meter_groups.id = meter_group_relation.group_id
+        LEFT JOIN meters on meters.id = meter_group_relation.meter_id;`
+    )
+    /*
+      Should probably change this to not be converted to json then models but
+      directly to models.
+    */
+    for (let row of query) {
+      if (!queryJson[row.id]) {
+        queryJson[row.id] = {
+          name: row.name,
+          group: row.group,
+          mapId: row.map_id,
+          image: row.image,
+          meterGroups: {}
+        }
+      }
+
+      if (!queryJson[row.id].meterGroups[row.meter_group_id]) {
+        queryJson[row.id].meterGroups[row.meter_group_id] = {
+          name: row.meter_group_name,
+          default: (row.meter_group_default === 1),
+          meters: {}
+        }
+      }
+
+      queryJson[row.id].meterGroups[row.meter_group_id].meters[row.meter_id] = {
+        name: row.meter_name,
+        classInt: row.meter_class,
+        negate: (row.meter_negate === 0)
       }
     }
-    await Promise.all(promiseChain2)
-    return Object.values(buildings)
+
+    let buildings = []
+    for (let key of Object.keys(queryJson)) {
+      let metergroups = []
+      for (let groupKey of Object.keys(queryJson[key].meterGroups)) {
+        let meters = []
+        for (let meterKey of Object.keys(queryJson[key].meterGroups[groupKey].meters)) {
+          let meterJson = queryJson[key].meterGroups[groupKey].meters[meterKey]
+          let meter = new Meter(meterKey)
+          meter.set(meterJson.name, meterJson.classInt, meterJson.negate)
+          meters.push(meter)
+        }
+
+        let groupJson = queryJson[key].meterGroups[groupKey]
+        let group = new MeterGroup(groupKey)
+        group.set(meters, groupJson.name, groupJson.default)
+        metergroups.push(group)
+      }
+      let building = new Building(key)
+      building.set(queryJson[key].name, queryJson[key].group, queryJson[key].mapId, queryJson[key].image, metergroups)
+      buildings.push(building)
+    }
+    // const token = promiseChain1[1]
+    // const promiseChain2 = []
+    // for (let buildingRow of buildingRows) {
+    //   if (buildings[buildingRow['id']]) {
+    //     buildings[buildingRow['id']].meterGroups.push(await (new MeterGroup(buildingRow['meter_group_id'])).get(true))
+    //   } else {
+    //     let building = new Building(buildingRow['id'])
+    //     building.mapId = buildingRow['map_id']
+    //     building.group = buildingRow['group']
+    //     building.meterGroups = [await (new MeterGroup(buildingRow['meter_group_id'])).get(true)]
+    //     // OSM API now sends OSM Json format if application/json is in the request header
+    //     // promiseChain2.push(axios('https://api.openstreetmap.org/api/0.6/way/' + buildingRow['map_id'] + '/full', { headers: { 'Accept': 'text/xml' }, method: 'get' }).then(data => {
+    //     //   let xmlData = (new XMLDom.DOMParser()).parseFromString(data.data)
+    //     //   building.geoJSON = Geo(xmlData).features[0]
+    //     //   building.name = buildingRow['name']
+    //     //   building.image = buildingRow['image']
+    //     //   building.geoJSON.properties.id = building.id
+    //     //   building.geoJSON.properties.group = buildingRow['group']
+    //     // }))
+    //     buildings[buildingRow['id']] = building
+    //   }
+    // }
+    // await Promise.all(promiseChain2)
+    return buildings
   }
 }
 

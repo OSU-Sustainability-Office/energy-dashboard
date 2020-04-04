@@ -7,6 +7,7 @@
  */
 import API from './api.js'
 import Meter from './meter.module.js'
+import Cache from './metergroup_cacher.js'
 
 const state = () => {
   return {
@@ -52,7 +53,25 @@ const actions = {
     return store.state
   },
 
+  async loadMeter (store, meter) {
+    let meterSpace = 'meter_' + meter.id.toString()
+    let moduleSpace = store.getters.path + '/' + meterSpace
+    this.registerModule(moduleSpace.split('/'), Meter)
+    store.commit(meterSpace + '/path', moduleSpace)
+    store.commit(meterSpace + '/id', meter.id)
+    store.commit(meterSpace + '/name', meter.name)
+    store.commit(meterSpace + '/address', meter.address)
+    store.commit(meterSpace + '/classInt', meter.classInt)
+    store.commit(meterSpace + '/negate', meter.negate)
+    store.commit(meterSpace + '/type', meter.type)
+    store.commit(meterSpace + '/points', meter.points)
+  },
+
   async getData (store, payload) {
+    let cache = Cache.retrieveEntry(payload, store.getters.path)
+    if (cache) {
+      return cache
+    }
     let resultDataObject = new Map()
     if (payload.point !== 'accumulated_real' && payload.point !== 'total' && payload.point !== 'cubic_feet' && store.getters.meters.length > 1) {
       /*
@@ -87,6 +106,7 @@ const actions = {
         }
       }
     }
+    Cache.addEntry(payload, store.getters.path, resultDataObject)
     return resultDataObject
     // if (payload.graphType === 1 || payload.graphType === 2 || payload.graphType === 5) {
     //   let delta = 1
@@ -192,6 +212,10 @@ const getters = {
       }
     }
     return r
+  },
+
+  type (state) {
+    return state.type
   },
 
   points (state) {

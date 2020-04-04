@@ -48,6 +48,13 @@ class Meter {
     return this
   }
 
+  set (name, classInt, negate) {
+    this.name = name
+    this.classInt = classInt
+    this.negate = negate
+    this.calcProps()
+  }
+
   calcProps () {
     if (this.classInt === null) {
       return

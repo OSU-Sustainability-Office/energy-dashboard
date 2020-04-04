@@ -10,8 +10,8 @@
   <el-row class='stage'>
     <el-col :span='24' class='main'>
       <div element-loading-background="rgba(0, 0, 0, 0.3)" class="background" ref='main'>
-        <div v-for='(pic, index) in media' :class='classForIndex(index)' :style='`background-image: url("${this.api}/image?name=${pic}"); width:calc(${100 / ((media.length < 4) ? media.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' v-if='arrayType && index < 4' :key='index'></div>
-        <div v-if='arrayType' class='gradientOverlay'> </div>
+        <div v-for='(pic, index) in media' :class='classForIndex(index)' :style='`background-image:url(${api}/image?name=${pic}); width:calc(${100 / ((media.length < 4) ? media.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' :key='index'></div>
+        <div v-if='arrayType && media.length > 0' class='gradientOverlay'> </div>
         <div class='title'>{{name}}</div>
         <div class='subtitle'>{{description}}</div>
       </div>
@@ -36,6 +36,9 @@ export default {
         this.arrayType = true
         this.$refs.main.style.backgroundColor = 'rgb(255,255,255)'
         this.$refs.main.style.borderBottom = 'solid 2px rgb(26,26,26)'
+        if (value.length === 0) {
+          this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
+        }
         return
       }
       if (value) {
@@ -107,11 +110,17 @@ export default {
     top: 0.4em;
     left: 0.5em;
     -webkit-text-stroke: 0.6px black;
+    width: 75%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .subtitle {
     font-family: "StratumNo2";
     color: #FFF;
     font-size: 1.8em;
+    position: absolute;
+    top: 0.4em;
+    left: 0.5em;
     padding-left: 1.5em;
     padding-top: 2.5em;
     -webkit-text-stroke: 0.6px black;

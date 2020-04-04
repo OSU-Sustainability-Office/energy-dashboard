@@ -13,7 +13,7 @@ const state = () => {
   return {
     path: 'map',
     promise: null,
-    allBuildingPromise: null
+    jsonPromise: null
   }
 }
 
@@ -23,17 +23,38 @@ const actions = {
     let moduleSpace = store.getters.path + '/' + buildingSpace
     this.registerModule(moduleSpace.split('/'), Building)
     store.commit(buildingSpace + '/path', moduleSpace)
-    store.commit(buildingSpace + '/geoJSON', payload.geoJSON)
     store.commit(buildingSpace + '/mapId', payload.mapId)
     store.commit(buildingSpace + '/name', payload.name)
     store.commit(buildingSpace + '/group', payload.group)
     store.commit(buildingSpace + '/image', payload.image)
     store.commit(buildingSpace + '/id', payload.id)
-    store.commit(buildingSpace + '/promise', Promise.resolve())
-    for (let meterGroupId of payload.meterGroups) {
-      await store.dispatch(buildingSpace + '/loadMeterGroup', { id: meterGroupId })
+    let mgPromises = []
+    for (let meterGroup of payload.meterGroups) {
+      mgPromises.push(store.dispatch(buildingSpace + '/loadMeterGroup', meterGroup))
     }
-    store.dispatch(buildingSpace + '/buildDefaultBlocks')
+    await Promise.all(mgPromises)
+    await store.dispatch(buildingSpace + '/buildDefaultBlocks')
+  },
+
+  async loadGeometry (store) {
+    if (store.getters.jsonPromise === null) {
+      store.commit('jsonPromise', new Promise(async (resolve, reject) => {
+        let geoPromise = []
+        await store.getters.promise
+        for (let building of store.getters.buildings) {
+          geoPromise.push(store.dispatch('buildingJSON', building.mapId).then(json => {
+            for (let feature of json.features) {
+              feature.properties.id = building.id
+              feature.properties.group = building.group
+            }
+            this.commit(building.path + '/geoJSON', json)
+          }))
+        }
+        await Promise.all(geoPromise)
+        resolve()
+      }))
+    }
+    return store.getters.jsonPromise
   },
 
   async deleteBuilding (store, payload) {
@@ -82,18 +103,18 @@ const actions = {
   },
 
   async loadMap (store) {
-    let buildings = API.buildings()
-    store.commit('promise', buildings)
-    for (let building of store.getters.buildings()) {
-      let buildingKey = building.path.split('/').pop()
-      this.unregisterModule(buildingKey)
+    if (store.getters.promise === null) {
+      store.commit('promise', new Promise(async (resolve, reject) => {
+        let buildingsResolved = await API.buildings()
+        let buildingPromises = []
+        for (let building of buildingsResolved) {
+          buildingPromises.push(store.dispatch('loadBuilding', building))
+        }
+        await Promise.all(buildingPromises)
+        resolve()
+      }))
     }
-    let buildingsResolved = await buildings
-    let buildingPromises = []
-    for (let building of buildingsResolved) {
-      buildingPromises.push(store.dispatch('loadBuilding', building))
-    }
-    store.commit('allBuildingPromise', Promise.all(buildingPromises))
+    return store.getters.promise
   }
 }
 
@@ -102,8 +123,8 @@ const mutations = {
     state.promise = promise
   },
 
-  allBuildingPromise: (state, promise) => {
-    state.allBuildingPromise = promise
+  jsonPromise: (state, promise) => {
+    state.jsonPromise = promise
   }
 }
 
@@ -112,16 +133,16 @@ const getters = {
     return state.path
   },
 
+  jsonPromise (state) {
+    return state.jsonPromise
+  },
+
   promise (state) {
     return state.promise
   },
 
   building: (state) => (id) => {
     return state['building_' + id.toString()]
-  },
-
-  allBuildingPromise: (state) => {
-    return state.allBuildingPromise
   },
 
   buildingGroups: (state) => {
@@ -144,7 +165,7 @@ const getters = {
     return buildings
   },
 
-  buildings: (state) => () => {
+  buildings: (state) => {
     let buildings = []
     for (let key of Object.keys(state)) {
       if (key.search(/building_/) >= 0) {

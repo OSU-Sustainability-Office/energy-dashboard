@@ -115,7 +115,7 @@ export default {
               fontFamily: 'Open Sans',
               autoSkip: true,
               stepSize: 10,
-              source: 'auto'
+              source: 'data'
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),
@@ -126,6 +126,7 @@ export default {
             },
             time: {
               unit: 'day',
+              unitStepSize: 15,
               displayFormats: {
                 'day': 'M/DD',
                 'hour': 'dd h:mm a',
@@ -146,12 +147,13 @@ export default {
     // }
   },
   methods: {
-    setOptions: function (opts) {
-      this.options = opts
-      this.renderChart(this.chartData, this.options)
-    },
     update: function () {
       this.$data._chart.update()
+    },
+    setOptions: function (opts) {
+      this.options = opts
+      this.$data._chart.options = this.options
+      // this.renderChart(this.chartData, this.options)
     }
   }
 }

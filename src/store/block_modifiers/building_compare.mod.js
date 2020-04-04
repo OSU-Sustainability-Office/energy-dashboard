@@ -16,7 +16,10 @@ export default class CompareModifier {
       variables to be more descriptive for
       specific modifiers
     */
-    this.data = {}
+    this.data = {
+      buildingIds: [],
+      dataPromises: []
+    }
   }
 
   async onAdd (store, module) {
@@ -33,15 +36,49 @@ export default class CompareModifier {
       is removed from a block. Store is Vuex store
       module is block module.
     */
+    await this.removeOldCharts(store, module, this.data.buildingIds)
   }
 
-  async updateData (store, module, data) {
+  async updateData (store, mod, data) {
     /*
       Function is called when a block
       updates modifier data. Store is Vuex store
       module is block module, data is new incoming
       data.
     */
+    if (data.buildingIds) {
+      await this.removeOldCharts(store, mod, this.data.buildingIds)
+      this.data.buildingIds = data.buildingIds
+      await this.addCharts(store, mod, this.data.buildingIds)
+    }
+  }
+
+  async removeOldCharts (store, mod, ids) {
+    // Consider moving await out of for loop
+    console.log(ids)
+    for (let i in ids) {
+      if (parseInt(i) !== 0) {
+        let id = ids[i]
+        await store.dispatch(mod.getters.path + '/unloadChart', id)
+      }
+    }
+  }
+
+  async addCharts (store, mod, ids) {
+    let charts = []
+    for (let i in ids) {
+      if (parseInt(i) !== 0) {
+        let id = ids[i]
+        let mgId = store.getters[store.getters['map/building'](id).path + '/primaryGroup']('Electricity').id
+        charts.push({
+          id: id,
+          name: this.buildingName(store, id),
+          point: 'accumulated_real',
+          meters: mgId
+        })
+      }
+    }
+    await store.dispatch(mod.getters.path + '/loadCharts', charts)
   }
 
   async preData (store, module, data) {
@@ -52,6 +89,15 @@ export default class CompareModifier {
       data.
     */
   }
+
+  color (index, module) {
+    return module.getters.chartColors[index]
+  }
+
+  buildingName (store, id) {
+    return store.getters[store.getters['map/building'](id).path + '/name']
+  }
+
   async postData (store, module, data) {
     /*
       Function is called when a block
@@ -59,5 +105,6 @@ export default class CompareModifier {
       module is block module, data is new incoming
       data.
     */
+    data.datasets[0].label = this.buildingName(store, this.data.buildingIds[0])
   }
 }

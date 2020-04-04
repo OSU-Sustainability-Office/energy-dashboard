@@ -39,12 +39,17 @@ export default {
     navdir,
     editCard
   },
-  mounted () {
+  async mounted () {
+    await this.$store.getters['map/promise']
+    // for (let block of this.cards) {
+    //   await this.$store.dispatch(block.path + '/removeAllModifiers')
+    // }
     this.$nextTick(() => {
       if (!this.$route.path.includes('building') && (!this.view || this.view.id !== parseInt(this.$route.params.id))) {
         this.$store.dispatch('view/changeView', this.$route.params.id)
       }
     })
+    console.log(this.view)
     // this.$nextTick(() => {
     //   if (!this.view || !this.view.path || !this.$route.path.includes('building')) {
     //     return
@@ -75,20 +80,47 @@ export default {
       if (!this.$route.path.includes('building') && (!this.view || this.view.id !== parseInt(this.$route.params.id))) {
         this.$store.dispatch('view/changeView', this.$route.params.id)
       }
+      for (let card of this.cards) {
+        this.$store.commit(card.path + '/dateStart', this.dateStart)
+        this.$store.commit(card.path + '/dateEnd', this.dateEnd)
+        this.$store.commit(card.path + '/dateInterval', this.dateInterval)
+        this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
+      }
+    },
+    compareBuildings: {
+      handler: async function (buildings) {
+        if (this.$route.path.includes('compare')) {
+          if (this.cards.length > 0 && this.cards[0]) {
+            await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
+            await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
+            await this.$store.dispatch(this.cards[0].path + '/updateModifier', {
+              name: 'building_compare',
+              data: {
+                buildingIds: buildings.map(building => building.id)
+              }
+            })
+          }
+        }
+      }
     },
     view: {
       immediate: true,
       handler: async function (value) {
-        if (!this.$route.path.includes('building')) {
-          return
-        }
-        for (let card of this.cards) {
-          if (!card.path) return
-          await card.promise
-          this.$store.commit(card.path + '/dateStart', this.dateStart)
-          this.$store.commit(card.path + '/dateEnd', this.dateEnd)
-          this.$store.commit(card.path + '/dateInterval', this.dateInterval)
-          this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
+        if (this.$route.path.includes('building') || this.$route.path.includes('compare')) {
+          for (let card of this.cards) {
+            if (!card.path) return
+            if (card.promise) await card.promise
+
+            await this.$store.dispatch(card.path + '/removeAllModifiers')
+            this.$store.commit(card.path + '/dateStart', this.dateStart)
+            this.$store.commit(card.path + '/dateEnd', this.dateEnd)
+            this.$store.commit(card.path + '/dateInterval', this.dateInterval)
+            this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
+          }
+        } else {
+          for (let card of this.cards) {
+            await this.$store.dispatch(card.path + '/removeAllModifiers')
+          }
         }
       }
     }
@@ -106,6 +138,24 @@ export default {
       get () {
         if (this.$route.path.includes('building')) {
           return this.$store.getters['map/building'](this.$route.params.id)
+        } else if (this.$route.path.includes('compare')) {
+          const view = {
+            name: '',
+            image: [],
+            description: 'Electrcity'
+          }
+          for (let index in this.compareBuildings) {
+            if (this.compareBuildings[index]) {
+              if (index > 0) {
+                view.name += ' vs '
+              }
+              view.name += this.compareBuildings[index].name
+              if (index < 4) {
+                view.image.push(this.compareBuildings[index].image)
+              }
+            }
+          }
+          return view
         } else {
           let userView = this.$store.getters['user/view'](this.$route.params.id)
           if (userView) return userView
@@ -113,9 +163,23 @@ export default {
         }
       }
     },
+    compareBuildings: {
+      get () {
+        if (!this.$route.path.includes('compare')) return null
+        return JSON.parse(decodeURI(this.$route.params.buildings)).map(id => this.$store.getters['map/building'](id))
+      }
+    },
     cards: {
       get () {
-        return this.$store.getters[this.view.path + '/blocks']
+        if (this.$route.path.includes('compare')) {
+          if (!this.compareBuildings || this.compareBuildings.length === 0 || !this.compareBuildings[0]) return []
+          let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
+          if (!building) return []
+          let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
+          return [this.$store.getters[building.path + '/block'](group.id)]
+        } else {
+          return this.$store.getters[this.view.path + '/blocks']
+        }
       }
     },
     dateStart: {
@@ -126,7 +190,7 @@ export default {
             d.setDate(d.getDate() - 7)
             break
           case 2:
-            d.setMonth(d.getMonth() - 1)
+            d.setDate(d.getDate() - 30)
             break
           case 3:
             d.setFullYear(d.getFullYear() - 1)

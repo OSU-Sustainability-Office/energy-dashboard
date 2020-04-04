@@ -39,6 +39,12 @@ class MeterGroup {
     return this
   }
 
+  set (meters, name, default2) {
+    this.meters = meters
+    this.name = name
+    this.default = default2
+  }
+
   async update (name, meters, def, user) {
     if (user.data.privilege <= 3) {
       throw new Error('Need escalated permissions')

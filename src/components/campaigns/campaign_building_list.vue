@@ -13,11 +13,13 @@
       </el-col>
     </el-row>
     <el-row class='buildingScroll' v-loading='!loaded' element-loading-background="rgba(0, 0, 0, 0.8)">
+      <el-row class='buildingRow' v-if='!loaded'>
+        &nbsp;
+      </el-row>
       <el-row class='buildingRow' v-for='block in blocks' :key='block.path' ref='buildingRows'>
-        <el-col :class='[(value === block.path) ? "buildingCol selected" : "buildingCol"]' :span='24'>
+        <el-col v-if='loaded' :class='[(value === block.path) ? "buildingCol selected" : "buildingCol"]' :span='24'>
           <div :class='[(value === block.path) ? "outerClip selected" : "outerClip"]'>
             <div :class='[(value === block.path) ? "innerClip selected" : "innerClip"]' :style='`background-color:${ computedColor(block.path) };`' @click='buildingClick(block.path)'>
-              <!-- {{ block.name }} -->
               <i class="fas fa-trophy" v-if='place(block.path) <= 3 && place(block.path) >= 1'><span :class='[(value === block.path) ? "innerTrophy selected" : "innerTrophy"]'>{{ place(block.path) }}</span></i> {{ block.name }} {{ ((accumulatedPercentage(block.path) > 0) ? '+' : '') + (Math.round(100 * accumulatedPercentage(block.path)) / 100).toString() + '%' }}
             </div>
           </div>
@@ -35,13 +37,17 @@ export default {
     }
   },
   mounted () {
-    if (!this.path) return
-    this.$emit('input', this.path + '/block_default')
+    if (this.path) {
+      this.$emit('input', this.path + '/block_default')
+    }
   },
   computed: {
     blocks: {
       get () {
         let blocks = this.$store.getters[this.path + '/blocks']
+        if (!blocks) {
+          return []
+        }
         blocks.sort((a, b) => {
           try {
             const aPercentage = this.accumulatedPercentage(a.path) // this.$store.getters[a.path + '/modifierData']('campaign_linebar').accumulatedPercentage

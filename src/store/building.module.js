@@ -30,10 +30,16 @@ const actions = {
     this.registerModule(moduleSpace.split('/'), MeterGroup)
     store.commit(meterGroupSpace + '/path', moduleSpace)
     store.commit(meterGroupSpace + '/building', store.getters.path)
-    store.dispatch(meterGroupSpace + '/changeGroup', { id: payload.id }).then(async group => {
-      await this.getters[group.path + '/meters'][0].promise
-      store.commit('addType', this.getters[group.path + '/meters'][0].type)
-    })
+    store.commit(meterGroupSpace + '/name', payload.name)
+    store.commit(meterGroupSpace + '/id', payload.id)
+    store.commit(meterGroupSpace + '/default', payload.default)
+    store.commit(meterGroupSpace + '/type', payload.meters[0].type)
+    store.commit('addType', payload.meters[0].type)
+    let meterPromises = []
+    for (let meter of payload.meters) {
+      meterPromises.push(store.dispatch(meterGroupSpace + '/loadMeter', meter))
+    }
+    await Promise.all(meterPromises)
   },
 
   async removeAllMeterGroups (store) {
@@ -195,6 +201,21 @@ const getters = {
       }
     }
     return r
+  },
+
+  block: (state) => (id) => {
+    return state[`block_${id}`]
+  },
+
+  primaryGroup: (state) => (type) => {
+    for (let key of Object.keys(state)) {
+      if (key.search(/meterGroup_[0-9]+/) >= 0) {
+        if (state[key].default && state[key].type === type) {
+          return state[key]
+        }
+      }
+    }
+    return null
   }
 
 }

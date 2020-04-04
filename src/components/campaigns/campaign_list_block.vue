@@ -8,7 +8,8 @@
 <template>
   <div class='block' ref='block' @click='$emit("click")'>
     <el-row style="padding:0">
-      <el-col :span='24' ref='imageContainer' class='imageContainer'>
+      <el-col :span='24' ref='imageContainer' class='imageContainer' v-loading='!loaded'>
+        <!-- <el-image class='image' :src='mediaSource' @load='loaded=true' v-if='mediaSource' :fit='cover' /> -->
         <span class='campaignName'>{{ camp.name }}</span>
       </el-col>
     </el-row>
@@ -26,9 +27,18 @@
 
 export default {
   props: ['camp'],
+  data () {
+    return {
+      loaded: true,
+      mediaSource: ''
+    }
+  },
   mounted () {
     // Load the media content
+    // this.loaded = false
     this.$refs.imageContainer.$el.style.backgroundImage = 'url("' + process.env.VUE_APP_ROOT_API + '/image?name=' + this.camp.media + '")'
+    // this.loaded = true
+    // this.mediaSource = process.env.VUE_APP_ROOT_API + '/image?name=' + this.camp.media
   },
   filters: {
     trunc: function (val) {
@@ -45,6 +55,14 @@ export default {
   width: 100%;
   left: 0px;
   margin: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.image {
+  position: absolute;
+  top: 0;
+  left: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

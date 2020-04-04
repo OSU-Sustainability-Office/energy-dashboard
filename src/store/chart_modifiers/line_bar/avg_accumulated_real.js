@@ -75,8 +75,9 @@ export default class LineAvgModifier {
         startDate += (60 * 60 * 24)
       }
       avgbins.push([])
+      let begin = startDate
       for (let tod = 0; tod < ((60 * 60 * 24) / delta); tod++) {
-        startDate += tod * delta
+        startDate = begin + (tod * delta)
         let count = 0
         let value = -1
         while (startDate <= payload.dateEnd) {
@@ -96,7 +97,7 @@ export default class LineAvgModifier {
     }
     for (let i = this.dateStart; i < this.dateEnd; i += delta) {
       try {
-        let baselinePoint = avgbins[(new Date((i + delta) * 1000)).getDay()][((i + delta) % ((60 * 60 * 24) / delta))]
+        let baselinePoint = avgbins[(new Date((i + delta) * 1000)).getDay()][Math.floor(((i + delta) % (60 * 60 * 24)) / delta)]
         returnData.push({ x: (new Date((i + delta) * 1000)), y: baselinePoint })
       } catch (error) {
         console.log(error)
@@ -126,9 +127,8 @@ export default class LineAvgModifier {
   */
   async preGetData (payload, store, module) {
     if (payload.intervalUnit === 'day' && payload.dateInterval > 1) {
-      throw new Error('Time difference interval to large to work correctly')
+      throw new Error('Time difference interval too large to work correctly')
     }
-    console.log('load')
     this.dateStart = payload.dateStart
     this.dateEnd = payload.dateEnd
     payload.point = 'accumulated_real'

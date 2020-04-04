@@ -27,11 +27,10 @@ export default {
   components: {
     navigbar
   },
-  created () {
-    let mapPromise = this.$store.dispatch('map/loadMap')
-    this.$store.commit('map/promise', mapPromise)
+  async created () {
+    await this.$store.dispatch('map/loadMap')
     this.$store.dispatch('user/user')
-    this.$store.dispatch('campaigns/loadCampaigns')
+    // this.$store.dispatch('campaigns/loadCampaigns')
     // this.$store.commit('user/promise', userPromise)
   },
   data () {

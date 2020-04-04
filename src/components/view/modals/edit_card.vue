@@ -41,12 +41,12 @@
             <el-option :value='3' label='Doughnut Chart'></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if='currentIndex < form.sets.length && !personalView' prop='meter' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
+        <el-form-item v-if='currentIndex < form.sets.length && !personalView && !compareView' prop='meter' label='Meter: ' :rules="{required: true, message: 'A meter is required', trigger: 'blur'}">
           <el-select ref="submeters" v-model="form.sets[currentIndex].meter" style='width: 100%;' @change='form[currentIndex].point = null'>
             <el-option v-for='item in meters' :key='item.path' :label='item.name' :value='item.path'></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if='currentIndex < form.sets.length && !personalView' :rules="{required: true, message: 'A measurement is required', trigger: 'blur'}" prop='point' label='Measurement: '>
+        <el-form-item v-if='currentIndex < form.sets.length && !personalView && !compareView' :rules="{required: true, message: 'A measurement is required', trigger: 'blur'}" prop='point' label='Measurement: '>
           <el-select v-model="form.sets[currentIndex].point" style='width: 100%;'>
             <el-option v-for='(point, index) in meterPoints' :value='point.value' :label='point.label' :key='index'></el-option>
           </el-select>
@@ -122,6 +122,11 @@ export default {
         if (value === false) {
           this.$store.dispatch('modalController/closeModal')
         }
+      }
+    },
+    compareView: {
+      get () {
+        return this.$route.path.includes('compare')
       }
     },
     personalView: {

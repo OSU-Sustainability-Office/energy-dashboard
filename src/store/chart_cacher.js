@@ -15,10 +15,15 @@ export default class ChartCacher {
   static cache = {}
 
   static retrieveEntry (payload, path) {
-    return ChartCacher.cache[Crypto.createHash('sha256').update(JSON.stringify(payload) + path).digest('hex')]
+    let obj = ChartCacher.cache[Crypto.createHash('sha256').update(JSON.stringify(payload) + path).digest('hex')]
+    if (obj) {
+      return JSON.parse(JSON.stringify(obj))
+    } else {
+      return null
+    }
   }
 
   static addEntry (payload, path, data) {
-    ChartCacher.cache[Crypto.createHash('sha256').update(JSON.stringify(payload) + path).digest('hex')] = data
+    ChartCacher.cache[Crypto.createHash('sha256').update(JSON.stringify(payload) + path).digest('hex')] = JSON.parse(JSON.stringify(data))
   }
 }
