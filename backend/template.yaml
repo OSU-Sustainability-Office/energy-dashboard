@@ -8,7 +8,7 @@ Description: >
 Globals:
   Function:
     Timeout: 3
-    Runtime: nodejs8.10
+    Runtime: nodejs10.x
   Api:
     # enable CORS; to make more specific, change the origin wildcard
     # to a particular domain name, e.g. "'www.example.com'"
@@ -18,10 +18,12 @@ Globals:
       - image~1gif
       - image~1png
       - image~1jpeg
+      - application/octet-stream
+      - multipart/form-data
 Parameters:
   LambdaCommonLayer:
     Type: String
-    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:69
+    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:75
 Resources:
   test:
     Type: AWS::Serverless::Function
@@ -218,6 +220,7 @@ Resources:
   MeterPost:
     Type: AWS::Serverless::Function
     Properties:
+      Timeout: 30
       MemorySize: 128
       CodeUri: app/
       Handler: meter.post

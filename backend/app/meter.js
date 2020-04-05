@@ -41,41 +41,59 @@ exports.data = async (event, context) => {
 
 exports.post = async (event, context) => {
   let response = new Response()
-  const file = MultipartParse(event, true)
+  event.body = Buffer.from(event.body, 'base64').toString('binary')
 
-  if (event.body.MODE !== 'LOGFILEUPLOAD') {
+  const body = await MultipartParse.parse(event, false)
+
+  response.headers = {
+    ...response.headers,
+    'Content-Type': 'application/xml'
+  }
+  if (body.MODE !== 'LOGFILEUPLOAD') {
     response.body = '<pre>\nSUCCESS\n</pre>'
     return response
   }
 
-  if (event.body.PASSWORD === process.env.ACQUISUITE_PASS) {
+  if (body.PASSWORD === process.env.ACQUISUITE_PASS) {
     response.body = '<pre>\nSUCCESS\n</pre>'
     let meter
     try {
-      meter = await Meter(null, event.body.SERIALNUMBER + '_' + event.body.MODBUSDEVICE).get()
+      meter = await (new Meter(null, body.SERIALNUMBER + '_' + body.MODBUSDEVICE)).get()
     } catch (err) {
       if (err.name === 'MeterNotFound') {
-        meter = await Meter.create(event.body.MODBUSDEVICENAME, event.body.SERIALNUMBER + '_' + event.body.MODBUSDEVICE, event.body.MODBUSDEVICECLASS)
+        meter = await Meter.create(body.MODBUSDEVICENAME, body.SERIALNUMBER + '_' + body.MODBUSDEVICE, body.MODBUSDEVICECLASS)
       } else {
         response.body = '<pre>\nFAILURE\n</pre>'
         return response
       }
     }
-    let table = await new Promise((resolve, reject) => {
-      ZLib.unzip(file.file.content.data, (error, result) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(result.toString('ascii').split('\n'))
+    try {
+      let table = await new Promise((resolve, reject) => {
+        let file
+        for (let object of Object.values(body)) {
+          if (object.type  && object.type === 'file') {
+            file = object
+            break
+          }
         }
+        if (!file) reject(new Error('File not found in request'))
+        ZLib.unzip(Buffer.from(file.content, 'binary'), (error, result) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(result.toString('ascii').split('\n'))
+          }
+        })
       })
-    })
-    for (let entry of table) {
-      let cols = entry.split(',')
+      for (let entry of table) {
+        let cols = entry.split(',')
 
-      if (parseInt(cols[0].toString().substring(15, 17)) % 15 === 0) {
-        meter.upload(cols)
+        if (parseInt(cols[0].toString().substring(15, 17)) % 15 === 0) {
+          await meter.upload(cols)
+        }
       }
+    } catch (err) {
+      response.body = '<pre>\nFAILURE\n</pre>'
     }
   } else {
     response.body = '<pre>\nFAILURE\n</pre>'

@@ -135,7 +135,7 @@ class Meter {
   async download (point, startTime, endTime, meterClass) {
     await DB.connect()
     if (Object.values(meterClasses[meterClass]).includes(point)) {
-      return DB.query('SELECT ' + point + ', time_seconds AS time, id FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ?', [this.id, startTime, endTime])
+      return DB.query('SELECT ' + point + ', time_seconds AS time, id FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)', [this.id, startTime, endTime])
     } else {
       throw new Error('Point is not available for given meter class')
     }
@@ -152,7 +152,7 @@ class Meter {
 
   async upload (data) {
     await DB.connect()
-    let points = Object.keys(meterClasses[this.class])
+    let points = meterClasses[this.classInt]
 
     const pointMap = {
       accumulated_real: null,
@@ -193,7 +193,90 @@ class Meter {
       pointMap[points[key]] = data[parseInt(key)]
     }
 
-    await DB.query('INSERT INTO data (meter_id, time, accumulated_real, real_power, reactive_power, apparent_power, real_a, real_b, real_c, reactive_a, reactive_b, reactive_c, apparent_a, apparent_b, apparent_c, pf_a, pf_b, pf_c, vphase_ab, vphase_bc, vphase_ac, vphase_an, vphase_bn, vphase_cn, cphase_a, cphase_b, cphase_c, total, input, minimum, maximum, cubic_feet, instant, rate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [this.id, data[0].toString(), pointMap.accumulated_real, pointMap.real_power, pointMap.reactive_power, pointMap.apparent_power, pointMap.real_a, pointMap.real_b, pointMap.real_c, pointMap.reactive_a, pointMap.reactive_b, pointMap.reactive_c, pointMap.apparent_a, pointMap.apparent_b, pointMap.apparent_c, pointMap.pf_a, pointMap.pf_b, pointMap.pf_c, pointMap.vphase_ab, pointMap.vphase_bc, pointMap.vphase_ac, pointMap.vphase_an, pointMap.vphase_bn, pointMap.vphase_cn, pointMap.cphase_a, pointMap.cphase_b, pointMap.cphase_c, pointMap.total, pointMap.input, pointMap.minimum, pointMap.maximum, pointMap.cubic_feet, pointMap.instant, pointMap.rate])
+    let time = data[0].toString().substring(1, 17) + ':00'
+    const timeseconds = ((new Date(time)).getTime() / 1000) - ((new Date()).getTimezoneOffset() * 60)
+    try {
+      await DB.query('INSERT INTO data (meter_id, time, time_seconds, error, accumulated_real, real_power, reactive_power, apparent_power, real_a, real_b, real_c, reactive_a, reactive_b, reactive_c, apparent_a, apparent_b, apparent_c, pf_a, pf_b, pf_c, vphase_ab, vphase_bc, vphase_ac, vphase_an, vphase_bn, vphase_cn, cphase_a, cphase_b, cphase_c, total, input, minimum, maximum, cubic_feet, instant, rate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [this.id, time, timeseconds, data[1], pointMap.accumulated_real, pointMap.real_power, pointMap.reactive_power, pointMap.apparent_power, pointMap.real_a, pointMap.real_b, pointMap.real_c, pointMap.reactive_a, pointMap.reactive_b, pointMap.reactive_c, pointMap.apparent_a, pointMap.apparent_b, pointMap.apparent_c, pointMap.pf_a, pointMap.pf_b, pointMap.pf_c, pointMap.vphase_ab, pointMap.vphase_bc, pointMap.vphase_ac, pointMap.vphase_an, pointMap.vphase_bn, pointMap.vphase_cn, pointMap.cphase_a, pointMap.cphase_b, pointMap.cphase_c, pointMap.total, pointMap.input, pointMap.minimum, pointMap.maximum, pointMap.cubic_feet, pointMap.instant, pointMap.rate])
+    } catch (err) {
+      if (err.code === 'ER_DUP_ENTRY' && !parseInt(data[1])) {
+        console.log(pointMap)
+        await DB.query(`UPDATE data SET 
+                        error = ?, 
+                        accumulated_real = ?, 
+                        real_power = ?, 
+                        reactive_power = ?, 
+                        apparent_power = ?, 
+                        real_a = ?, 
+                        real_b = ?, 
+                        real_c = ?, 
+                        reactive_a = ?, 
+                        reactive_b = ?, 
+                        reactive_c = ?, 
+                        apparent_a = ?, 
+                        apparent_b = ?, 
+                        apparent_c = ?, 
+                        pf_a = ?, 
+                        pf_b = ?, 
+                        pf_c = ?, 
+                        vphase_ab = ?, 
+                        vphase_bc = ?, 
+                        vphase_ac = ?, 
+                        vphase_an = ?, 
+                        vphase_bn = ?, 
+                        vphase_cn = ?, 
+                        cphase_a = ?, 
+                        cphase_b = ?, 
+                        cphase_c = ?, 
+                        total = ?, 
+                        input = ?, 
+                        minimum = ?, 
+                        maximum = ?, 
+                        cubic_feet = ?, 
+                        instant = ?, 
+                        rate = ?
+                        WHERE meter_id = ? AND time = ?`,
+        [
+          data[1],
+          pointMap.accumulated_real,
+          pointMap.real_power,
+          pointMap.reactive_power,
+          pointMap.apparent_power,
+          pointMap.real_a,
+          pointMap.real_b,
+          pointMap.real_c,
+          pointMap.reactive_a,
+          pointMap.reactive_b,
+          pointMap.reactive_c,
+          pointMap.apparent_a,
+          pointMap.apparent_b,
+          pointMap.apparent_c,
+          pointMap.pf_a,
+          pointMap.pf_b,
+          pointMap.pf_c,
+          pointMap.vphase_ab,
+          pointMap.vphase_bc,
+          pointMap.vphase_ac,
+          pointMap.vphase_an,
+          pointMap.vphase_bn,
+          pointMap.vphase_cn,
+          pointMap.cphase_a,
+          pointMap.cphase_b,
+          pointMap.cphase_c,
+          pointMap.total,
+          pointMap.input,
+          pointMap.minimum,
+          pointMap.maximum,
+          pointMap.cubic_feet,
+          pointMap.instant,
+          pointMap.rate,
+          this.id,
+          time
+        ])
+      } else if (!parseInt(data[1])) {
+        // Error on backend not acquisuite
+        throw err
+      }
+    }
   }
 
   async update (name, classInt, negate, user) {
@@ -210,7 +293,7 @@ class Meter {
   static async create (name, address, classInt, negate = 0) {
     await DB.connect()
     let returnRow = await DB.query('INSERT INTO meters (name, address, class, negate) values (?, ?, ?, ?)', [name, address, classInt, negate])
-    let meter = Meter(returnRow.insertId)
+    let meter = new Meter(returnRow.insertId)
     meter.name = name
     meter.address = address
     meter.class = classInt
