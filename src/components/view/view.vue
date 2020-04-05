@@ -128,7 +128,7 @@ export default {
   computed: {
     personalView: {
       get () {
-        if (this.view.user === this.$store.getters['user/onid']) {
+        if (this.view && this.view.user === this.$store.getters['user/onid']) {
           return true
         }
         return false
@@ -178,6 +178,7 @@ export default {
           let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
           return [this.$store.getters[building.path + '/block'](group.id)]
         } else {
+          if (!this.view) return []
           return this.$store.getters[this.view.path + '/blocks']
         }
       }

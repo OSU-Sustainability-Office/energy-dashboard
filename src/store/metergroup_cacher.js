@@ -23,7 +23,10 @@ export default class MeterGroupCacher {
       dateEnd: payload.dateEnd,
       point: payload.point
     }
-    let obj = MeterGroupCacher.cache[Crypto.createHash('sha256').update(JSON.stringify(correctedPayload) + path).digest('hex')]
+    let s = Crypto.createHash('sha256').update(JSON.stringify(correctedPayload) + path).digest('hex')
+    // let s = JSON.stringify(correctedPayload) + path
+
+    let obj = MeterGroupCacher.cache[s]
     if (obj) {
       return new Map(obj)
     } else {
@@ -37,6 +40,8 @@ export default class MeterGroupCacher {
       dateEnd: payload.dateEnd,
       point: payload.point
     }
-    MeterGroupCacher.cache[Crypto.createHash('sha256').update(JSON.stringify(correctedPayload) + path).digest('hex')] = new Map(data)
+    let s = Crypto.createHash('sha256').update(JSON.stringify(correctedPayload) + path).digest('hex')
+    // let s = JSON.stringify(correctedPayload) + path
+    MeterGroupCacher.cache[s] = new Map(data)
   }
 }

@@ -33,28 +33,32 @@
               </el-submenu>
             </el-menu>
           </el-col>
-          <!-- <el-col :span='4' class='buttons'>
+          <el-col :span='4' class='buttons'>
             <el-tooltip content='Click to copy share link'>
               <i class="fas fa-share-square" @click='copyUrl()'></i>
             </el-tooltip>
-            <el-tooltip content='Click to save story' placement='top'>
+            <!-- <el-tooltip content='Click to save story' placement='top'>
               <i class="fas fa-save" v-if='story.user_id === user.id' @click="$emit('save')"></i>
-            </el-tooltip>
+            </el-tooltip> -->
             <el-tooltip content='Click to download data' placement='top'>
               <i class="fas fa-download" @click="download()"></i>
             </el-tooltip>
-          </el-col> -->
+          </el-col>
       </el-row>
     </el-col>
+    <downloader />
   </el-row>
 </template>
 
 <script>
+import downloader from '@/components/view/modals/download_data'
 
-var JSZip = require('jszip')
 export default {
   name: 'navdir',
   props: ['groupContents'],
+  components: {
+    downloader
+  },
   up: 0,
   data () {
     return {
@@ -100,6 +104,7 @@ export default {
     },
     group2: {
       get () {
+        if (!this.viewOrBuilding) return
         if (this.publicView) {
           let buildings = this.$store.getters['map/buildingsForGroup'](this.viewOrBuilding.group)
           let rValue = []
@@ -115,6 +120,7 @@ export default {
     },
     group1Name: {
       get () {
+        if (!this.viewOrBuilding) return
         if (this.publicView) {
           return this.viewOrBuilding.group
         } else {
@@ -124,6 +130,7 @@ export default {
     },
     group2Name: {
       get () {
+        if (!this.viewOrBuilding) return
         return this.viewOrBuilding.name
       }
     },
@@ -164,85 +171,9 @@ export default {
       })
     },
     download: function () {
-      let zip = new JSZip()
-      const map = {
-        accumulated_real: 'kWh',
-        real_power: 'W',
-        reactive_power: 'VAR',
-        apparent_power: 'VA',
-        real_a: 'kW',
-        real_b: 'kW',
-        real_c: 'kW',
-        reactive_a: 'VAR',
-        reactive_b: 'VAR',
-        reactive_c: 'VAR',
-        pf_a: '',
-        pf_b: '',
-        pf_c: '',
-        vphase_ab: 'V',
-        vphase_bc: 'V',
-        vphase_ac: 'V',
-        vphase_an: 'V',
-        vphase_bn: 'V',
-        vphase_cn: 'V',
-        cphase_a: 'A',
-        cphase_b: 'A',
-        cphase_c: 'A',
-        cubic_feet: 'CF',
-        maximum: 'CFm',
-        minimum: 'CFm',
-        instant: 'CFm',
-        rate: 'CFm',
-        total: 'lbs.',
-        input: ''
-      }
-      let names = []
-      for (let block of this.story.blocks) {
-        let organizedData = [['Time']]
-        for (let chart of block.charts) {
-          organizedData[0].push(chart.name + ' (' + map[chart.point] + ')')
-          // Consider a better way for this
-          let mappedData = organizedData.slice(1, organizedData.length).map(e => { return e[0] })
-          for (let point of chart.data) {
-            let iDate = new Date(point.x)
-
-            if (mappedData.indexOf(iDate.toString()) < 0) {
-              let index = 1
-              if (!organizedData[index]) {
-                organizedData.splice(index, 0, [iDate.toString(), point.y])
-                continue
-              }
-              while (iDate > Date.parse(organizedData[index][0])) {
-                if (Date.parse(organizedData[index][0]) < iDate) {
-                  break
-                }
-                index++
-              }
-              organizedData.splice(index, 0, [iDate.toString(), point.y])
-            } else {
-              organizedData[mappedData.indexOf(iDate.toString()) + 1].push(point.y)
-            }
-          }
-        }
-        for (let array of organizedData) {
-          array = array.join(',')
-        }
-        organizedData = organizedData.join('\n')
-        let name = block.name
-        if (names.indexOf(name) >= 0) {
-          name += '-' + block.index
-        }
-        zip.file(name + '.csv', organizedData)
-        names.push(name)
-      }
-      var downloadName = this.story.name
-      zip.generateAsync({ type: 'blob' }).then(function (blob) {
-        let a = window.document.createElement('a')
-        a.href = window.URL.createObjectURL(blob, { type: 'text/plain' })
-        a.download = downloadName + '.zip'
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
+      this.$store.dispatch('modalController/openModal', {
+        name: 'download_data',
+        view: this.viewOrBuilding.path
       })
     },
     populate: function () {

@@ -52,6 +52,8 @@ export default class LineAccumulatedModifier {
         break
     }
     delta *= payload.dateInterval
+    payload.dateStart = payload.dateStart - (payload.dateStart % 900)
+    payload.dateEnd = payload.dateEnd - (payload.dateEnd % 900)
     for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
       try {
         let accumulator = 0
