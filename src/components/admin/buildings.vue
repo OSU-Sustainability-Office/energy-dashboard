@@ -85,7 +85,7 @@ export default {
   computed: {
     buildings: {
       get () {
-        return this.$store.getters['map/buildings']()
+        return this.$store.getters['map/buildings']
       }
     }
   }
