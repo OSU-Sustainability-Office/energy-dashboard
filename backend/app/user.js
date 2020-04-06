@@ -13,10 +13,15 @@ const UserModel = require('/opt/nodejs/models/user.js')
 exports.user = async (event, context) => {
   let response = new Response()
   let user = new User(event, response)
-  await user.resolved
-  let userModel = await (new UserModel(user.onid)).get()
-  // await user.set('energyDashboard', userModel.data)
-  user.appData['energyDashboard'] = userModel.data
-  response.body = JSON.stringify(user.data)
+  try {
+    await user.resolved
+    let userModel = await (new UserModel(user.onid)).get()
+    // await user.set('energyDashboard', userModel.data)
+    user.appData['energyDashboard'] = userModel.data
+    response.body = JSON.stringify(user.data)
+  } catch (error) {
+    response.statusCode = 200
+    response.body = JSON.stringify(user.data)
+  }
   return response
 }

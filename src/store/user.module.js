@@ -56,22 +56,25 @@ const actions = {
   },
 
   async user (store) {
-    store.commit('promise', new Promise(async (resolve, reject) => {
-      try {
-        let data = await API.user()
-        if (data.onid !== '') {
-          store.commit('onid', data.onid)
-          let edashData = await API.edashUser()
-          store.commit('privilege', edashData.privilege)
-          await store.dispatch('loadViews', edashData.appData['energyDashboard'].views)
-          // store.commit('alerts', edashData.alerts)
+    if (store.getters.promise === null) {
+      store.commit('promise', new Promise(async (resolve, reject) => {
+        try {
+          let data = await API.user()
+          if (data.onid !== '') {
+            store.commit('onid', data.onid)
+            let edashData = await API.edashUser()
+            store.commit('privilege', edashData.privilege)
+            await store.dispatch('loadViews', edashData.appData['energyDashboard'].views)
+            // store.commit('alerts', edashData.alerts)
+          }
+          resolve(store.getters)
+        } catch (error) {
+          reject(error)
+          // Do nothing, likely failed because no cookie has been made yet (user not logged in)
         }
-        resolve(store.getters)
-      } catch (error) {
-        reject(error)
-        // Do nothing, likely failed because no cookie has been made yet (user not logged in)
-      }
-    }))
+      }))
+    }
+    return store.getters.promise
   },
 
   async logout (store) {

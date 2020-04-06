@@ -55,7 +55,6 @@ export default class CompareModifier {
 
   async removeOldCharts (store, mod, ids) {
     // Consider moving await out of for loop
-    console.log(ids)
     for (let i in ids) {
       if (parseInt(i) !== 0) {
         let id = ids[i]

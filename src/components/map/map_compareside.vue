@@ -85,7 +85,6 @@ export default {
       get () {
         if (!this.buildings) return
         let buildingImages = this.buildings.map(building => this.$store.getters[building.path + '/image'])
-        console.log(buildingImages)
         while (buildingImages.length > 4) buildingImages.pop()
         return buildingImages
       }

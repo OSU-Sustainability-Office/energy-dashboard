@@ -6,6 +6,7 @@
  * @Last modified time: 2019-03-25T15:36:20-07:00
  */
 import axios from 'axios'
+axios.defaults.withCredentials = true
 
 function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP_ROOT_API, headers = null) {
   if (headers) {

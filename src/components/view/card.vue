@@ -18,7 +18,7 @@
     <el-col :span='24'>
       <el-row class='title' ref='title'>
         <el-col :span='20'>{{ name }}</el-col>
-        <el-col :span='4' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='openModal()'></i></el-col>
+        <el-col :span='4' v-if='personalView || publicView' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='openModal()'></i></el-col>
       </el-row>
       <el-row style='overflow: hidden;'>
         <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430'/>
@@ -66,6 +66,16 @@ export default {
         } else {
           return '\xa0'
         }
+      }
+    },
+    personalView: {
+      get () {
+        return this.path.includes('user')
+      }
+    },
+    publicView: {
+      get () {
+        return this.path.includes('building')
       }
     },
     intunit: {

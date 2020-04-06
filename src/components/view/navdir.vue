@@ -18,7 +18,7 @@
     <el-col class='main'>
         <el-row class='bar'>
           <el-col :span='20'>
-            <el-menu mode='horizontal' class='menu' background-color='#FFF' text-color='#1a1a1a' :router='true' @select='handleSelect'>
+            <el-menu v-if='!otherView' mode='horizontal' class='menu' background-color='#FFF' text-color='#1a1a1a' :router='true' @select='handleSelect'>
               <el-submenu index='1' :router='true'>
                 <template slot="title" class='menu-title'><i class="fas fa-th-large"></i>{{ group1Name }}</template>
                 <el-menu-item class='group-item' v-for='(groupS, index) in group1' :key='groupS.id' :index='"1-"+index' :route='{path: ((publicView)?"/buildings/":"/view/") + groupS.id}'>
@@ -32,6 +32,7 @@
                 </el-menu-item>
               </el-submenu>
             </el-menu>
+            <span v-if='otherView'> &nbsp; </span>
           </el-col>
           <el-col :span='4' class='buttons'>
             <el-tooltip content='Click to copy share link'>
@@ -137,6 +138,14 @@ export default {
     publicView: {
       get () {
         return this.$route.path.includes('building')
+      }
+    },
+    otherView: {
+      get () {
+        if (this.viewOrBuilding.path === 'view') {
+          return true
+        }
+        return false
       }
     }
   },

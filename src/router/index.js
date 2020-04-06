@@ -12,8 +12,7 @@ import index from '@/components/home/index'
 import view from '@/components/view/view'
 import map from '@/components/map/map'
 import campaigns from '@/components/campaigns/campaign_list'
-import publicDirectory from '@/components/directory/directoryPublic.vue'
-import privateDirectory from '@/components/dashboard/dashboard_main.vue'
+import notfound from '@/components/extras/404.vue'
 import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
 import buildingList from '@/components/building_list/building_list.vue'
 import admin from '@/components/admin/admin.vue'
@@ -30,6 +29,10 @@ export default new Router({
     {
       path: '/admin',
       component: admin
+    },
+    {
+      path: '/dashboard/',
+      component: buildingList
     },
     {
       path: '/building/:id/:range',
@@ -50,22 +53,6 @@ export default new Router({
       component: map
     },
     {
-      path: '/buildingList/',
-      component: publicDirectory
-    },
-    {
-      path: '/dashboard/',
-      component: buildingList
-    },
-    {
-      path: '/buildingList/:group',
-      component: publicDirectory
-    },
-    {
-      path: '/dashboard/:group',
-      component: privateDirectory
-    },
-    {
       path: '/campaign/:id',
       component: mainCampaignView
     },
@@ -80,6 +67,10 @@ export default new Router({
     {
       path: '/buildings/:group',
       component: buildingList
+    },
+    {
+      path: '*',
+      component: notfound
     }
   ]
 })

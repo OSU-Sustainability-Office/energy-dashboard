@@ -73,7 +73,6 @@ const actions = {
         store.commit('removeMod', removingMod)
       }
     }
-    console.log(store.getters.modifiers)
   },
 
   async updateModifier (store, payload) {

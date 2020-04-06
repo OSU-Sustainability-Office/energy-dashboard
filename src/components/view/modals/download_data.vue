@@ -283,7 +283,9 @@ export default {
         for (let chart of this.$store.getters[block.path + '/charts']) {
           let mg = chart.meterGroupPath
           let bgPath = this.$store.getters[mg + '/building']
-          this.form.points.push(chart.point)
+          if (this.form.points.indexOf(chart.point) < 0) {
+            this.form.points.push(chart.point)
+          }
           const bldg = {
             name: this.$store.getters[bgPath + '/name'],
             id: this.$store.getters[bgPath + '/id'],

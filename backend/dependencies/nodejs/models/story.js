@@ -21,17 +21,19 @@ class Story {
   async get (expand = true) {
     await DB.connect()
     let storyRow = await DB.query('SELECT * FROM stories WHERE id = ?', [this.id])
-    this.name = storyRow[0]['name']
-    this.media = storyRow[0]['media']
-    this.user = storyRow[0]['user']
-    let blockRows = await DB.query('SELECT * FROM blocks WHERE story_id = ?', [this.id])
-    if (expand) {
-      for (let row of blockRows) {
-        this.blocks.push((new Block(row['id'])).get())
+    if (storyRow.length === 1) {
+      this.name = storyRow[0]['name']
+      this.media = storyRow[0]['media']
+      this.user = storyRow[0]['user']
+      let blockRows = await DB.query('SELECT * FROM blocks WHERE story_id = ?', [this.id])
+      if (expand) {
+        for (let row of blockRows) {
+          this.blocks.push((new Block(row['id'])).get())
+        }
+        this.blocks = await Promise.all(this.blocks)
+      } else {
+        this.blocks = blockRows.map(row => row['id'])
       }
-      this.blocks = await Promise.all(this.blocks)
-    } else {
-      this.blocks = blockRows.map(row => row['id'])
     }
     return this
   }

@@ -7,11 +7,10 @@
 -->
 <template>
   <div v-loading='loading || !chartData' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}px; border-radius: 5px; overflow: hidden;`'>
-    <linechart v-if="graphType == 1 && chartData" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
-    <barchart v-if="graphType == 2 && chartData" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
-    <doughnutchart v-if="graphType == 3 && chartData" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
-    <piechart v-if="graphType == 4 && chartData" ref="piechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
-    <barchart v-if="graphType == 5 && chartData" ref="barlinechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <linechart v-if="graphType === 1 && chartData" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <barchart v-if="graphType === 2 && chartData" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <doughnutchart v-if="graphType === 3 && chartData" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <piechart v-if="graphType === 4 && chartData" ref="piechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
     <el-col :span='24' class='NoData' :style='`height:${height}px;line-height:${height}px;`' v-if="graphType == 100">Data Unavailable</el-col>
   </div>
 </template>
@@ -28,6 +27,9 @@ export default {
     linechart, barchart, doughnutchart, piechart
   },
   mounted () {
+    // if (this.loading) {
+    //   this.updateChart()
+    // }
     // if (this.promise === null) {
     //   this.loading = false
     // } else {
@@ -48,24 +50,7 @@ export default {
   },
   watch: {
     path: function (value) {
-      this.loading = true
-      this.$store.dispatch(this.path + '/getData').then(data => {
-        if (this.chart && (this.graphType === 1 || this.graphType === 2)) {
-          this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
-          this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
-          let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()
-          if (timeDif <= 24 * 60 * 60 * 1000) {
-            this.chart.options.scales.xAxes[0].time.unit = 'minute'
-          } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
-            this.chart.options.scales.xAxes[0].time.unit = 'hour'
-          } else {
-            this.chart.options.scales.xAxes[0].time.unit = 'day'
-          }
-          // this.chart.setOptions(this.chart.options)
-        }
-        this.chartData = data
-        this.loading = false
-      })
+      this.updateChart()
     }
   },
   data () {
@@ -92,23 +77,7 @@ export default {
         Building views set the date once the page is loaded.
         User views need to grab data immediately.
       */
-      this.$store.dispatch(this.path + '/getData').then(data => {
-        if (this.chart && (this.graphType === 1 || this.graphType === 2)) {
-          this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
-          this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
-          let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()
-          if (timeDif <= 24 * 60 * 60 * 1000) {
-            this.chart.options.scales.xAxes[0].time.unit = 'minute'
-          } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
-            this.chart.options.scales.xAxes[0].time.unit = 'hour'
-          } else {
-            this.chart.options.scales.xAxes[0].time.unit = 'day'
-          }
-          this.chart.setOptions(this.chart.options)
-        }
-        this.chartData = data
-        this.loading = false
-      })
+      this.updateChart()
     }
     this.unsubscribe = this.$store.subscribe((mutation, state) => {
       if (this.$el.style.display === 'none') return
@@ -119,28 +88,11 @@ export default {
         if (call === 'name') {
           return
         }
-        this.loading = true
         // this.chartData = null
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
-          this.$store.dispatch(this.path + '/getData').then(data => {
-            if (this.chart && (this.graphType === 1 || this.graphType === 2)) {
-              this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
-              this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
-              let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()
-              if (timeDif <= 24 * 60 * 60 * 1000) {
-                this.chart.options.scales.xAxes[0].time.unit = 'minute'
-              } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
-                this.chart.options.scales.xAxes[0].time.unit = 'hour'
-              } else {
-                this.chart.options.scales.xAxes[0].time.unit = 'day'
-              }
-              this.chart.setOptions(this.chart.options)
-            }
-            this.chartData = data
-            this.loading = false
-          })
-        }, 300)
+          this.updateChart()
+        }, 200)
       }
     })
   },
@@ -165,7 +117,7 @@ export default {
         if (this.chartData) {
           let noData = true
           for (let set of this.chartData.datasets) {
-            if (set.data && set.data.length !== 0) {
+            if (set && set.data && set.data.length !== 0) {
               noData = false
               break
             }
@@ -174,7 +126,7 @@ export default {
             return 100
           }
         }
-        return this.$store.getters[this.path + '/graphType']
+        return parseInt(this.$store.getters[this.path + '/graphType'])
       }
     },
     chart: {
@@ -198,6 +150,27 @@ export default {
     this.unsubscribe()
   },
   methods: {
+    updateChart: function () {
+      if (!this.path) return
+      this.loading = true
+      this.$store.dispatch(this.path + '/getData').then(data => {
+        if (this.chart && (this.graphType === 1 || this.graphType === 2) && data.datasets.length >= 1) {
+          this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+          this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+          let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()
+          if (timeDif <= 24 * 60 * 60 * 1000) {
+            this.chart.options.scales.xAxes[0].time.unit = 'minute'
+          } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
+            this.chart.options.scales.xAxes[0].time.unit = 'hour'
+          } else {
+            this.chart.options.scales.xAxes[0].time.unit = 'day'
+          }
+          this.chart.setOptions(this.chart.options)
+        }
+        this.chartData = data
+        this.loading = false
+      })
+    },
     unit: function (index) {
       const charts = this.$store.getters[this.path + '/charts']
       if (index >= charts.length) {

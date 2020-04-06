@@ -10,7 +10,7 @@
   <el-row class="stage">
     <el-col class='main'>
       <heropicture v-loading='!view' :media='(view && view.image) ? view.image : ""' :description='(view && view.description) ? view.description : ""' :name='(view && view.name) ? view.name : ""' />
-      <navdir ref='navdir' v-if="(personalView || $route.path.includes('building'))"></navdir>
+      <navdir ref='navdir' v-if="(personalView || $route.path.includes('building') || otherView )"></navdir>
       <el-row>
         <el-col :span='24' class='card_area'>
           <card v-for='(card, index) in cards' :key='index + "-" + view.id' :path='card.path' />
@@ -39,33 +39,12 @@ export default {
     navdir,
     editCard
   },
-  async mounted () {
-    await this.$store.getters['map/promise']
-    // for (let block of this.cards) {
-    //   await this.$store.dispatch(block.path + '/removeAllModifiers')
-    // }
-    this.$nextTick(() => {
-      if (!this.$route.path.includes('building') && (!this.view || this.view.id !== parseInt(this.$route.params.id))) {
-        this.$store.dispatch('view/changeView', this.$route.params.id)
-      }
-    })
-    console.log(this.view)
-    // this.$nextTick(() => {
-    //   if (!this.view || !this.view.path || !this.$route.path.includes('building')) {
-    //     return
-    //   }
-    //   for (let card of this.cards) {
-    //     if (!card.path) return
-    //     this.$store.commit(card.path + '/dateStart', this.dateStart)
-    //     this.$store.commit(card.path + '/dateEnd', this.dateEnd)
-    //     this.$store.commit(card.path + '/dateInterval', this.dateInterval)
-    //     this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
-    //   }
-    // })
-    // if (!this.$route.path.includes('building')) {
-    //   // May want to move this await to use the promise thing
-    //   this.$store.dispatch('view/changeView', this.$route.params.id)
-    // }
+  async created () {
+    await this.$store.dispatch('map/loadMap')
+    await this.$store.dispatch('user/user')
+    if (!this.view.id) {
+      await this.$store.dispatch('view/changeView', this.$route.params.id)
+    }
   },
   methods: {
     addFeature: function () {
@@ -76,15 +55,19 @@ export default {
     }
   },
   watch: {
-    $route (to, from) {
-      if (!this.$route.path.includes('building') && (!this.view || this.view.id !== parseInt(this.$route.params.id))) {
-        this.$store.dispatch('view/changeView', this.$route.params.id)
-      }
-      for (let card of this.cards) {
-        this.$store.commit(card.path + '/dateStart', this.dateStart)
-        this.$store.commit(card.path + '/dateEnd', this.dateEnd)
-        this.$store.commit(card.path + '/dateInterval', this.dateInterval)
-        this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
+    $route: {
+      immediate: true,
+      handler: async function (to, from) {
+        if (!this.$route.path.includes('building') && !this.$route.path.includes('compare') && (!this.view || this.view.id !== parseInt(this.$route.params.id))) {
+          this.$store.dispatch('view/changeView', this.$route.params.id)
+        } else if (this.$route.path.includes('building') || this.$route.path.includes('compare')) {
+          for (let card of this.cards) {
+            this.$store.commit(card.path + '/dateStart', this.dateStart)
+            this.$store.commit(card.path + '/dateEnd', this.dateEnd)
+            this.$store.commit(card.path + '/dateInterval', this.dateInterval)
+            this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
+          }
+        }
       }
     },
     compareBuildings: {
@@ -106,7 +89,7 @@ export default {
     view: {
       immediate: true,
       handler: async function (value) {
-        if (this.$route.path.includes('building') || this.$route.path.includes('compare')) {
+        if (this.$route.path.includes('building')) {
           for (let card of this.cards) {
             if (!card.path) return
             if (card.promise) await card.promise
@@ -117,9 +100,19 @@ export default {
             this.$store.commit(card.path + '/dateInterval', this.dateInterval)
             this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
           }
-        } else {
+        } else if (!this.$route.path.includes('compare')) {
           for (let card of this.cards) {
             await this.$store.dispatch(card.path + '/removeAllModifiers')
+          }
+        } else {
+          for (let card of this.cards) {
+            if (!card.path) return
+            this.$nextTick(() => {
+              this.$store.commit(card.path + '/dateStart', this.dateStart)
+              this.$store.commit(card.path + '/dateEnd', this.dateEnd)
+              this.$store.commit(card.path + '/dateInterval', this.dateInterval)
+              this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
+            })
           }
         }
       }
@@ -128,7 +121,15 @@ export default {
   computed: {
     personalView: {
       get () {
-        if (this.view && this.view.user === this.$store.getters['user/onid']) {
+        if (this.view && this.view.user === this.$store.getters['user/onid'] && this.$store.getters['user/onid'] !== '') {
+          return true
+        }
+        return false
+      }
+    },
+    otherView: {
+      get () {
+        if (this.view.path === 'view') {
           return true
         }
         return false
@@ -142,7 +143,8 @@ export default {
           const view = {
             name: '',
             image: [],
-            description: 'Electrcity'
+            description: 'Electrcity',
+            id: -1
           }
           for (let index in this.compareBuildings) {
             if (this.compareBuildings[index]) {
@@ -178,7 +180,7 @@ export default {
           let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
           return [this.$store.getters[building.path + '/block'](group.id)]
         } else {
-          if (!this.view) return []
+          if (!this.view || !this.view.id) return []
           return this.$store.getters[this.view.path + '/blocks']
         }
       }

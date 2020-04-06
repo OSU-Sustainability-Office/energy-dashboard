@@ -43,11 +43,15 @@ const actions = {
         await store.getters.promise
         for (let building of store.getters.buildings) {
           geoPromise.push(store.dispatch('buildingJSON', building.mapId).then(json => {
+            let way
             for (let feature of json.features) {
-              feature.properties.id = building.id
-              feature.properties.group = building.group
+              if (feature.id.includes('way')) {
+                feature.properties.id = building.id
+                feature.properties.group = building.group
+                way = feature
+              }
             }
-            this.commit(building.path + '/geoJSON', json)
+            this.commit(building.path + '/geoJSON', way)
           }))
         }
         await Promise.all(geoPromise)

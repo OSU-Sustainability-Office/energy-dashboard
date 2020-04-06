@@ -101,18 +101,22 @@ const actions = {
   },
 
   async changeView (store, id) {
-    for (let block of store.getters.blocks) {
-      this.unregisterModule(block.path.split('/'))
+    console.log('Changing stuff')
+    if (id !== store.getters.id) {
+      store.commit('promise', new Promise(async (resolve, reject) => {
+        for (let block of store.getters.blocks) {
+          this.unregisterModule(block.path.split('/'))
+        }
+        let view = await API.view(id)
+        store.commit('name', view.name)
+        store.commit('user', view.user)
+        store.commit('image', view.media)
+        store.commit('id', id)
+        await store.dispatch('loadBlocks', view.blocks)
+        resolve()
+      }))
     }
-
-    let view = API.view(id)
-    store.commit('promise', view)
-    view = await view
-    store.commit('name', view.name)
-    store.commit('user', view.user)
-    store.commit('image', view.media)
-    store.commit('id', id)
-    store.dispatch('loadBlocks', view.blocks)
+    return store.getters.promise
   }
 }
 

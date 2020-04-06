@@ -26,6 +26,7 @@ const state = () => {
 const actions = {
 
   async getData (store, payload) {
+    if (!store.getters.meterGroupPath) return
     const reqPayload = {
       point: store.getters.point,
       ...payload,
