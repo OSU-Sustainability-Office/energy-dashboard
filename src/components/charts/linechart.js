@@ -91,7 +91,9 @@ export default {
               fontSize: 12,
               fontColor: '#FFF',
               fontFamily: 'Open Sans',
-              source: 'data'
+              source: 'data',
+              autoSkip: true,
+              maxTicksLimit: 10
             },
             gridLines: {
               display: true // my new default options

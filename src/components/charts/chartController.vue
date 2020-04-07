@@ -158,13 +158,17 @@ export default {
           this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
           this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
           let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()
+          let dif = 0
           if (timeDif <= 24 * 60 * 60 * 1000) {
+            dif = 2
             this.chart.options.scales.xAxes[0].time.unit = 'minute'
           } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
+            dif = 1
             this.chart.options.scales.xAxes[0].time.unit = 'hour'
           } else {
             this.chart.options.scales.xAxes[0].time.unit = 'day'
           }
+          this.chart.options.scales.yAxes[0].ticks.maxTicksLimit = (this.height / 200) * 8 - dif
           this.chart.setOptions(this.chart.options)
         }
         this.chartData = data
