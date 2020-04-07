@@ -34,6 +34,8 @@ deploy:
   script: cd backend; sam deploy --template-file ./packaged.yaml --stack-name auth
     --capabilities CAPABILITY_IAM; cd ../;
   skip-cleanup: true
+  on:
+    all_branches: true
 - provider: pages
   local-dir: dist/
   skip-cleanup: true
