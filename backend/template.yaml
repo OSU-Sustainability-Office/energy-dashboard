@@ -20,10 +20,6 @@ Globals:
       - image~1jpeg
       - application/octet-stream
       - multipart/form-data
-Parameters:
-  LambdaCommonLayer:
-    Type: String
-    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
 Resources:
   test:
     Type: AWS::Serverless::Function
@@ -44,7 +40,7 @@ Resources:
       CodeUri: app/
       Handler: building.all
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -59,7 +55,7 @@ Resources:
       CodeUri: app/
       Handler: building.get
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -74,7 +70,7 @@ Resources:
       CodeUri: app/
       Handler: building.put
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -89,7 +85,7 @@ Resources:
       CodeUri: app/
       Handler: building.post
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -104,7 +100,7 @@ Resources:
       CodeUri: app/
       Handler: building.delete
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -119,7 +115,7 @@ Resources:
       CodeUri: app/
       Handler: meter_group.get
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -134,7 +130,7 @@ Resources:
       CodeUri: app/
       Handler: meter_group.put
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -149,7 +145,7 @@ Resources:
       CodeUri: app/
       Handler: meter_group.post
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -164,7 +160,7 @@ Resources:
       CodeUri: app/
       Handler: meter_group.delete
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -179,7 +175,7 @@ Resources:
       CodeUri: app/
       Handler: meter.get
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -194,7 +190,7 @@ Resources:
       CodeUri: app/
       Handler: meter.data
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -209,7 +205,7 @@ Resources:
       CodeUri: app/
       Handler: meter.put
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -225,7 +221,7 @@ Resources:
       CodeUri: app/
       Handler: meter.post
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -240,7 +236,7 @@ Resources:
       CodeUri: app/
       Handler: meter.delete
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -255,7 +251,7 @@ Resources:
       CodeUri: app/
       Handler: meter.classes
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -270,7 +266,7 @@ Resources:
       CodeUri: app/
       Handler: alert.get
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -285,7 +281,7 @@ Resources:
       CodeUri: app/
       Handler: alert.post
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -300,7 +296,7 @@ Resources:
       CodeUri: app/
       Handler: alert.put
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -315,7 +311,7 @@ Resources:
       CodeUri: app/
       Handler: alert.delete
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -330,7 +326,7 @@ Resources:
       CodeUri: app/
       Handler: campaign.get
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -345,7 +341,7 @@ Resources:
       CodeUri: app/
       Handler: campaign.all
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -360,7 +356,7 @@ Resources:
       CodeUri: app/
       Handler: campaign.put
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -375,7 +371,7 @@ Resources:
       CodeUri: app/
       Handler: campaign.post
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -390,7 +386,7 @@ Resources:
       CodeUri: app/
       Handler: campaign.delete
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -405,7 +401,7 @@ Resources:
       CodeUri: app/
       Handler: story.user
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -420,7 +416,7 @@ Resources:
       CodeUri: app/
       Handler: story.get
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -435,7 +431,7 @@ Resources:
       CodeUri: app/
       Handler: story.put
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -450,7 +446,7 @@ Resources:
       CodeUri: app/
       Handler: story.post
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -465,7 +461,7 @@ Resources:
       CodeUri: app/
       Handler: story.delete
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -480,7 +476,7 @@ Resources:
       CodeUri: app/
       Handler: block.get
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -495,7 +491,7 @@ Resources:
       CodeUri: app/
       Handler: block.put
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -510,7 +506,7 @@ Resources:
       CodeUri: app/
       Handler: block.post
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -525,7 +521,7 @@ Resources:
       CodeUri: app/
       Handler: block.delete
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -540,7 +536,7 @@ Resources:
       CodeUri: app/
       Handler: chart.get
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -555,7 +551,7 @@ Resources:
       CodeUri: app/
       Handler: chart.put
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -570,7 +566,7 @@ Resources:
       CodeUri: app/
       Handler: chart.post
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -585,7 +581,7 @@ Resources:
       CodeUri: app/
       Handler: chart.delete
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -600,7 +596,7 @@ Resources:
       CodeUri: app/
       Handler: user.user
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -615,7 +611,7 @@ Resources:
       CodeUri: app/
       Handler: images.get
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -630,7 +626,7 @@ Resources:
       CodeUri: app/
       Handler: images.all
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -645,7 +641,7 @@ Resources:
       CodeUri: app/
       Handler: admin.users
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
@@ -660,7 +656,7 @@ Resources:
       CodeUri: app/
       Handler: meter.all
       Layers:
-        - !Ref LambdaCommonLayer
+        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:82
         - !Ref EnergyModelLayer
       Events:
         Building:
