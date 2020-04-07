@@ -152,6 +152,7 @@ class Meter {
 
   async upload (data) {
     await DB.connect()
+    console.log(meterClasses)
     let points = meterClasses[this.classInt]
 
     const pointMap = {
