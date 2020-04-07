@@ -53,7 +53,7 @@
         </el-form-item>
       </el-form>
       <div v-if='personalView'>
-        <label>Datasets: </label>
+        <label class='setlabel'>Datasets: </label>
         <el-row ref="controlArea">
           <el-row class="pad-bottom" ref="indexChooser">
             <el-col :span='24'>
@@ -415,5 +415,17 @@ export default {
 .addFeatured:active {
   color: #d76740;
 }
-
+.setlabel {
+  vertical-align: middle;
+  float: left;
+  font-size: 16px;
+  color: #606266;
+  line-height: 40px;
+  padding: 0 12px 0 0;
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  font-weight: 400;
+}
+.pad-bottom {
+  padding: 1em;
+}
 </style>

@@ -27,9 +27,9 @@ export default {
     linechart, barchart, doughnutchart, piechart
   },
   mounted () {
-    // if (this.loading) {
-    //   this.updateChart()
-    // }
+    if (this.loading) {
+      this.updateChart()
+    }
     // if (this.promise === null) {
     //   this.loading = false
     // } else {
@@ -154,7 +154,7 @@ export default {
       if (!this.path) return
       this.loading = true
       this.$store.dispatch(this.path + '/getData').then(data => {
-        if (this.chart && (this.graphType === 1 || this.graphType === 2) && data.datasets.length >= 1) {
+        if (this.chart && (this.graphType === 1 || this.graphType === 2) && data.datasets.length >= 1 && data.datasets[0].data.length >= 1) {
           this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
           this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
           let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()

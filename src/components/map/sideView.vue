@@ -28,7 +28,7 @@
             <i class="right fas fa-angle-right" @click='next()' ref="nextArrow"></i>
           </el-row>
           <el-row type='flex' class="graph" ref='scrollBox'>
-            <el-col class='inline' v-for='block in buildingBlocks' :key='block.id' :span='24'>
+            <el-col class='inline' v-for='block in buildingBlocks' :key='block.id' :span='24' ref='slidingBox'>
               <chartController :path='block.path' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
             </el-col>
           </el-row>
@@ -93,42 +93,65 @@ export default {
     next: function () {
       if (this.index + 1 >= this.buildingBlocks.length) { return }
       this.index++
-      this.$refs.scrollBox.$children.forEach((child) => {
-        child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
-      })
-      this.$refs.prevArrow.style.display = 'block'
-      if (this.index + 1 === this.buildingBlocks.length) {
-        this.$refs.nextArrow.style.display = 'none'
-      }
     },
     prev: function () {
       if (this.index - 1 < 0) { return }
       this.index--
-      this.$refs.scrollBox.$children.forEach(child => {
-        child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
-      })
-      this.$refs.nextArrow.style.display = 'block'
-      if (this.index <= 0) {
-        this.$refs.prevArrow.style.display = 'none'
-      }
     }
   },
   watch: {
-    media: function (value) {
-      this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + value + ')'
+    // media: function (value) {
+    //   this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + value + ')'
+    // },
+    building: {
+      immediate: true,
+      handler: async function (value) {
+        this.index = 0
+        for (let block of this.buildingBlocks) {
+          await this.$store.dispatch(block.path + '/removeAllModifiers')
+          // this.$store.dispatch(block.path + '/getData')
+        }
+        this.$refs.prevArrow.style.display = 'none'
+        if (this.buildingBlocks.length > 1) {
+          this.$refs.nextArrow.style.display = 'block'
+        } else {
+          this.$refs.nextArrow.style.display = 'none'
+        }
+        this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + this.media + ')'
+      }
+    },
+    index: function (to, from) {
+      this.$refs.scrollBox.$children.forEach((child) => {
+        child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
+      })
+      if (to < from) {
+        if (this.index <= 0) {
+          this.$refs.prevArrow.style.display = 'none'
+        }
+        if (this.buildingBlocks.length > 1) {
+          this.$refs.nextArrow.style.display = 'block'
+        }
+      } else {
+        if (this.index + 1 === this.buildingBlocks.length) {
+          this.$refs.nextArrow.style.display = 'none'
+        }
+        if (this.buildingBlocks.length > 1) {
+          this.$refs.prevArrow.style.display = 'block'
+        }
+      }
     }
   },
   async mounted () {
-    for (let block of this.buildingBlocks) {
-      await this.$store.dispatch(block.path + '/removeAllModifiers')
-    }
-    this.$refs.prevArrow.style.display = 'none'
-    if (this.buildingBlocks.length <= 1) {
-      this.$refs.nextArrow.style.display = 'none'
-    } else {
-      this.$refs.nextArrow.style.display = 'block'
-    }
-    this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + this.media + ')'
+    // for (let block of this.buildingBlocks) {
+    //   await this.$store.dispatch(block.path + '/removeAllModifiers')
+    // }
+    // this.$refs.prevArrow.style.display = 'none'
+    // if (this.buildingBlocks.length <= 1) {
+    //   this.$refs.nextArrow.style.display = 'none'
+    // } else {
+    //   this.$refs.nextArrow.style.display = 'block'
+    // }
+    // this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + this.media + ')'
   }
 }
 </script>
@@ -207,15 +230,16 @@ export default {
   padding-bottom: 1em;
 }
 .inline {
-  // margin-right: 20px;
+  margin-right: 20px;
   transition: transform 1s;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .graphslide {
   position: absolute;
   color: rgba($--color-white, 0.4);
-  bottom: 180px;
+  bottom: 220px;
   font-size: 3em;
   width: 100%;
   left: 0;

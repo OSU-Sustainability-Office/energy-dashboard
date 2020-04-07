@@ -90,7 +90,8 @@ export default {
               beginAtZero: false,
               fontSize: 12,
               fontColor: '#FFF',
-              fontFamily: 'Open Sans'
+              fontFamily: 'Open Sans',
+              source: 'data'
             },
             gridLines: {
               display: true // my new default options
