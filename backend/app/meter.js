@@ -9,7 +9,7 @@
 const Meter = require('/opt/nodejs/models/meter.js')
 const Response = require('/opt/nodejs/response.js')
 const User = require('/opt/nodejs/user.js')
-const MultipartParse = require('aws-lambda-multipart-parser')
+const MultipartParse = require('/opt/nodejs/node_modules/aws-lambda-multipart-parser')
 const ZLib = require('zlib')
 
 exports.get = async (event, context) => {

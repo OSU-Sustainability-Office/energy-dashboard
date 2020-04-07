@@ -6,8 +6,8 @@
  * @Copyright:  (c) Oregon State University 2020
  */
 require('dotenv').config({ path: '/opt/nodejs/.env' })
-const AWS = require('aws-sdk')
-const Jimp = require('jimp')
+const AWS = require('/opt/nodejs/node_modules/aws-sdk')
+const Jimp = require('/opt/nodejs/node_modules/jimp')
 AWS.config.update({ region: 'us-west-2' })
 const S3 = new AWS.S3()
 const Response = require('/opt/nodejs/response.js')
