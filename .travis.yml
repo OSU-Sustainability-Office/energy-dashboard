@@ -30,7 +30,7 @@ script:
   cd ../
 deploy:
 - provider: script
-  script: cd backend; sam deploy --template-file ./packaged.yaml --stack-name auth
+  script: cd backend; sam deploy --template-file ./packaged.yaml --stack-name energy
     --capabilities CAPABILITY_IAM; cd ../;
   skip-cleanup: true
   on:
