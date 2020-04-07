@@ -63,6 +63,10 @@ const actions = {
     }
   },
 
+  async resetDefault (store) {
+    await store.dispatch('removeAllModifiers')
+  },
+
   async removeAllModifiers (store) {
     for (let modIndex in store.getters.modifiers) {
       if (modIndex < 0) {

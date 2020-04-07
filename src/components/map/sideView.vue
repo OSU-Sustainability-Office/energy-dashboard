@@ -108,7 +108,7 @@ export default {
       handler: async function (value) {
         this.index = 0
         for (let block of this.buildingBlocks) {
-          await this.$store.dispatch(block.path + '/removeAllModifiers')
+          await this.$store.dispatch(block.path + '/resetDefault')
           // this.$store.dispatch(block.path + '/getData')
         }
         this.$refs.prevArrow.style.display = 'none'

@@ -94,7 +94,7 @@ export default {
             if (!card.path) return
             if (card.promise) await card.promise
 
-            await this.$store.dispatch(card.path + '/removeAllModifiers')
+            await this.$store.dispatch(card.path + '/resetDefault')
             this.$store.commit(card.path + '/dateStart', this.dateStart)
             this.$store.commit(card.path + '/dateEnd', this.dateEnd)
             this.$store.commit(card.path + '/dateInterval', this.dateInterval)

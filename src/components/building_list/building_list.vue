@@ -105,13 +105,27 @@ export default {
           // await this.$store.getters['map/promise']
           let buildings = this.$store.getters['map/buildings']
           for (let building of buildings) {
+            if (r['All']) {
+              r['All'].push(building)
+              r['All'].sort((a, b) => (a.name > b.name) ? 1 : -1)
+            } else {
+              r['All'] = [building]
+            }
             if (r[building.group]) {
               r[building.group].push(building)
+              r[building.group].sort((a, b) => (a.name > b.name) ? 1 : -1)
             } else {
               r[building.group] = [building]
             }
           }
-          return r
+          let r2 = {
+            'All': r['All']
+          }
+          let keys = Object.keys(r).sort()
+          for (let key of keys) {
+            if (key !== 'All') r2[key] = r[key]
+          }
+          return r2
         } else {
           return this.$store.getters['user/views']
         }
@@ -170,7 +184,7 @@ export default {
   position: absolute;
   margin: 0;
   width: 100vw;
-  padding: 0;
+  padding: 1em;
 }
 
 /*HEADER*/
