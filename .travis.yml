@@ -18,6 +18,9 @@ cache:
   - "$HOME/.local"
   - ".cache-loader"
 install:
+  - pip install awscli
+  - pip install aws-sam-cli
+  - npm --prefix backend/dependencies/nodejs install
   - 'pip install plantuml --user'
 script:
 - |
@@ -29,11 +32,21 @@ script:
     npm install
     npm run build-stage
   fi
-  python plantuml.py -tsvg $(find documents | grep .puml) 
-  mv $(find documents | grep .svg) dist/*
+  cd backend
+  sam validate
+  sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
+  cd ../
+#  python plantuml.py -tsvg $(find documents | grep .puml) 
+#  mv $(find documents | grep .svg) dist/*
 
 
 deploy:
+- provider: script
+  script: >-
+    cd backend;
+    sam deploy --template-file ./packaged.yaml --stack-name auth --capabilities CAPABILITY_IAM;
+    cd ../;
+  skip-cleanup: true
 - provider: pages
   local-dir: dist/
   skip-cleanup: true
