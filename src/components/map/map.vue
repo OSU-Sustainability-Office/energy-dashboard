@@ -15,23 +15,22 @@
           <el-tooltip content="Click to toggle visibility" placement="right">
             <el-menu-item index='Academics' :class="[(isDisplayed('Academics') ? 'active' : 'notactive')]"><span class='edu swatch'></span>Academics</el-menu-item>
           </el-tooltip>
-          <el-menu-item index='Athletics' :class="[(isDisplayed('Athletics') ? 'active' : 'notactive')]"><span class='ath swatch'></span>Athletics & Rec</el-menu-item>
+          <el-menu-item index='Athletics & Rec' :class="[(isDisplayed('Athletics & Rec') ? 'active' : 'notactive')]"><span class='ath swatch'></span>Athletics & Rec</el-menu-item>
           <el-menu-item index='Dining' :class="[(isDisplayed('Dining') ? 'active' : 'notactive')]"><span class='din swatch'></span>Dining</el-menu-item>
-          <el-menu-item index='Admin' :class="[(isDisplayed('Admin') ? 'active' : 'notactive')]"><span class='com swatch'></span>Events & Admin</el-menu-item>
+          <el-menu-item index='Events & Admin' :class="[(isDisplayed('Events & Admin') ? 'active' : 'notactive')]"><span class='com swatch'></span>Events & Admin</el-menu-item>
           <el-menu-item index='Residence' :class="[(isDisplayed('Residence') ? 'active' : 'notactive')]"><span class='res swatch'></span>Residence</el-menu-item>
         </el-menu-item-group>
       </el-menu>
-      <div class='mapContainer' ref='mapContainer' v-loading='mapLoaded'>
+      <div class='mapContainer' ref='mapContainer' v-loading='!mapLoaded'>
         <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-          <l-geo-json v-for='(building, index) of this.polygonData' :key='index.toString() + rKey.toString()' :geojson='building' :options='buildingOptions' ref="geoLayer"></l-geo-json>
+          <l-geo-json v-for='building of this.$store.getters["map/buildings"]' :key='building.id * rKey' :geojson='building.geoJSON' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
       </div>
       <prompt v-if='askingForComparison' @cancel='stopCompare' @compare='showComparison' />
       <transition name='side'>
         <compareSide v-if='showCompareSide' @hide='showCompareSide = false' :compareStories='compareStories' />
-
-        <sideView :key='openStory' :storyId='openStory' ref='sideview' v-if='showSide' @hide='showSide = false' @startCompare='startCompare()'></sideView>
+        <sideView ref='sideview' v-if='showSide' @hide='showSide = false' @startCompare='startCompare'></sideView>
       </transition>
     </el-col>
   </el-row>
@@ -53,6 +52,26 @@ export default {
     prompt,
     compareSide
   },
+  computed: {
+    showSide: {
+      get () {
+        return (this.$store.getters['modalController/modalName'] === 'map_side_view')
+      },
+
+      set (value) {
+        this.$store.dispatch('modalController/closeModal')
+      }
+    },
+    showCompareSide: {
+      get () {
+        return (this.$store.getters['modalController/modalName'] === 'map_compare_side')
+      },
+
+      set (value) {
+        this.$store.dispatch('modalController/closeModal')
+      }
+    }
+  },
   data () {
     return {
       zoom: 15.5,
@@ -61,42 +80,44 @@ export default {
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       map: null,
       polygonData: null,
-      openStory: 0,
+      openBuilding: 0,
       compareStories: [],
-      showCompareSide: 0,
-      showSide: false,
       ele: [],
       compareMarkers: [],
-      rKey: 0,
+      rKey: 1,
       askingForComparison: false,
-      selected: ['Residence', 'Athletics', 'Dining', 'Academics', 'Admin'],
+      selected: ['Residence', 'Athletics & Rec', 'Dining', 'Academics', 'Events & Admin'],
       show: false,
-      mapLoaded: true,
+      mapLoaded: false,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
           layer.on('click', e => {
-            window.vue.$eventHub.$emit('clickedPolygon', [feature.properties.story_id, layer.getBounds().getCenter(), feature])
-            // document.execCommand('copy')
+            this.polyClick(e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter())
           })
           layer.on('mouseover', function (e) {
+            if (!e.target.setStyle) return
+            e.target.oldStyle = { fillColor: e.target.options.fillColor, color: e.target.options.color }
             e.target.setStyle({ fillColor: '#000', color: '#000' })
             e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
           })
-          layer.on('mouseout', e => { window.vue.$eventHub.$emit('resetPolygon', [e.target]) })
+          layer.on('mouseout', e => {
+            if (!e.target.setStyle) return
+            e.target.setStyle({ ...e.target.oldStyle })
+          })
         },
-        style: function (feature) {
+        style: feature => {
           var color = '#000'
-          switch (feature.properties.affiliation) {
+          switch (feature.properties.group) {
             case 'Residence':
               color = '#D3832B'
               break
             case 'Academics':
               color = '#0D5257'
               break
-            case 'Admin':
+            case 'Events & Admin':
               color = '#7A6855'
               break
-            case 'Athletics':
+            case 'Athletics & Rec':
               color = '#FFB500'
               break
             case 'Dining':
@@ -119,9 +140,9 @@ export default {
   methods: {
     polyClick: function (id, feature, center) {
       if (!this.askingForComparison) {
-        this.openStory = id
-        this.$nextTick(() => {
-          this.showSide = true
+        window.vue.$store.dispatch('modalController/openModal', {
+          name: 'map_side_view',
+          id: id
         })
       } else {
         if (this.askingForComparison && this.compareStories.indexOf(id) < 0) {
@@ -133,11 +154,11 @@ export default {
             shadowUrl: ''
           })
           const marker = L.marker(center, { icon: checkIcon, bubblingMouseEvents: true, interactive: false }).addTo(this.map)
-          marker.storyId = feature.properties.story_id
+          marker.buildingId = id
           this.compareMarkers.push(marker)
           this.compareStories.push(id)
         } else if (this.askingForComparison) {
-          const removingMarkerIndex = this.compareMarkers.findIndex(e => e.storyId === feature.properties.story_id)
+          const removingMarkerIndex = this.compareMarkers.findIndex(e => e.buildingId === id)
           if (removingMarkerIndex === -1) {
             return
           }
@@ -152,20 +173,35 @@ export default {
         this.map.removeLayer(marker)
       }
     },
-    showComparison: function (target) {
+    showComparison: async function (target) {
       this.askingForComparison = false
       this.removeAllMarkers()
+      let path = this.$store.getters['map/building'](this.compareStories[0]).path
       if (target === 'q') {
-        this.showCompareSide = true
+        let mgId = this.$store.getters[path + '/primaryGroup']('Electricity').id
+
+        let blockSpace = this.$store.getters[path + '/block'](mgId).path
+        await this.$store.dispatch(blockSpace + '/removeAllModifiers')
+        await this.$store.dispatch(blockSpace + '/addModifier', 'building_compare')
+        await this.$store.dispatch(blockSpace + '/updateModifier', {
+          name: 'building_compare',
+          data: {
+            buildingIds: this.compareStories
+          }
+        })
+        window.vue.$store.dispatch('modalController/openModal', {
+          name: 'map_compare_side',
+          path: path
+        })
       } else {
         this.$router.push({ path: `/compare/${encodeURI(JSON.stringify(this.compareStories))}/1` })
       }
     },
-    startCompare: function () {
+    startCompare: function (buildingId) {
       this.showSide = false
       this.askingForComparison = true
       this.compareStories = []
-      this.compareStories.push(this.openStory)
+      this.compareStories.push(buildingId)
 
       const data = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/> <path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"
       const formed = encodeURI('data:image/svg+xml,' + data).replace(/#/g, '%23')
@@ -176,7 +212,7 @@ export default {
       })
       let center = null
       for (let layer of Object.values(this.map._layers)) {
-        if (layer.feature && layer.feature.properties.story_id === this.openStory) {
+        if (layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon' && layer.feature.properties.id === buildingId) {
           center = layer.getBounds().getCenter()
         }
       }
@@ -184,7 +220,7 @@ export default {
         return
       }
       const marker = L.marker(center, { icon: checkIcon, bubblingMouseEvents: true, interactive: false }).addTo(this.map)
-      marker.storyId = this.openStory
+      marker.buildingId = buildingId
       this.compareMarkers.push(marker)
     },
     stopCompare: function () {
@@ -208,26 +244,14 @@ export default {
       }
     }
   },
-  created () {
-    this.$store.dispatch('mapdata').then(r => {
-      this.polygonData = r
-      this.mapLoaded = false
-    })
-    this.$eventHub.$on('clickedPolygon', v => (this.polyClick(v[0], v[2], v[1])))
-    this.$eventHub.$on('resetPolygon', v => { this.$refs.geoLayer.forEach(e => { e.mapObject.resetStyle(v[0]) }) })
+  async created () {
+    await this.$store.dispatch('map/loadGeometry')
+    this.mapLoaded = true
   },
   mounted () {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject
-      // this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
-      // window.addEventListener('resize', () => {
-      //   this.$refs.mapContainer.style.height = (window.innerHeight - 80 - this.$refs.topBar.clientHeight).toString() + 'px'
-      // })
     })
-  },
-  beforeDestroy () {
-    this.$eventHub.$off('clickedPolygon')
-    this.$eventHub.$off('resetPolygon')
   },
   watch: {
     selected: function (val) {
@@ -237,7 +261,7 @@ export default {
         for (var layerKey of Object.keys(this.map._layers)) {
           let layer = this.map._layers[layerKey]
           if (layer.feature) {
-            if (!val.includes(layer.feature.properties.affiliation)) {
+            if (!val.includes(layer.feature.properties.group)) {
               this.map.removeLayer(layer)
             }
           }
@@ -253,9 +277,6 @@ export default {
 </style>
 <style scoped lang='scss'>
 $sideMenu-width: 250px;
-.main {
-
-}
 .stage {
   padding: 0;
   position: absolute;

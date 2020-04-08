@@ -1,0 +1,8 @@
+@startuml TopLevel
+cloud Lambda
+database RDS
+rectangle GHPages
+
+Lambda -- RDS
+Lambda -- GHPages
+@enduml

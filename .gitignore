@@ -3,6 +3,8 @@ node_modules
 /dist
 
 # local env files
+.env
+.env.api
 .env.local
 .env.*.local
 tests/.env
@@ -20,3 +22,6 @@ yarn-error.log*
 *.sln
 *.sw*
 .cache-loader/
+.aws-sam
+express_build
+packaged.yaml

@@ -1,0 +1,124 @@
+@startuml RDS
+
+entity "Alerts" as alerts {
+  id: integer <<primary key>>
+  onid: string
+  point: string
+  lower_bounds: integer
+  upper_bounds: integer
+}
+
+entity "Charts" as charts {
+  id: integer <<primary key>>
+  block_id: integer <<foreign key>>
+  group_id: integer <<foreign key>>
+  name: string
+  point: string
+  meter: integer
+}
+
+entity "Blocks" as blocks {
+  id: integer <<primary key>>
+  date_start: datetime
+  date_end: datetime
+  graph_type: integer
+  name: string
+  date_interval: integer
+  interval_unit: string
+} 
+
+entity "Buildings" as buildings {
+  id: integer <<primary key>>
+  building_id: hash
+  group: string
+}
+
+entity "Campaign Groups" as campaign_groups {
+  id: integer <<primary key>>
+  goal: integer
+  building_id: integer
+  campaign_id: integer
+}
+
+entity "Campaigns" as campaigns {
+  id: integer <<primary key>>
+  date_start: string
+  date_end: string
+  compare_start: string
+  compare_end: string
+  media: string
+}
+
+entity "Data" as data {
+  id: integer <<primary key>>
+  time: datettime
+  meter_id: integer
+  accumulated_real: integer
+  real_power: float
+  reactive_power: float
+  apparent_power: float
+  real_a: float
+  real_b: float
+  real_c: float
+  reactive_a: float
+  reactive_b: float
+  reactive_c: float
+  apparent_a: float
+  apparent_b: float
+  apparent_c: float
+  pf_a: float
+  pf_b: float
+  pf_c: float
+  vphase_ab: float
+  vphase_bc: float
+  vphase_ac: float
+  vphase_an: float
+  vphase_bn: float
+  vphase_cn: float
+  cphase_a: float
+  cphase_b: float
+  cphase_c: float
+  cubic_feet: integer
+  maximum: integer
+  minimum: integer
+  instant: integer
+  rate: integer
+  total: integer
+  input: integer
+}
+
+entity "Meter Group Relation" as meter_group_relation {
+  id: integer
+  meter_id: integer
+  group_id: integer
+  operation: integer
+}
+
+entity "Meter Groups" as meter_groups {
+  id: integer <<primary key>>
+  name: string
+  building_id: integer <<foreign key>>
+
+}
+
+entity "Meters" as meters {
+  id: integer <<primary key>>
+  name: string
+  address: string
+  class: integer
+}
+
+
+
+meter_group_relation -up-> meter_groups
+meter_group_relation -> meters
+meters -> data
+buildings <- meter_groups
+
+campaign_groups -down-> campaigns
+buildings -down-> campaign_groups
+
+blocks -> charts
+charts -> meter_groups
+
+@enduml

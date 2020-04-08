@@ -15,8 +15,8 @@
           </el-input>
         </el-col>
       </el-row>
-      <el-row v-for='user in allUsers' :key='user.id' class='user-row' ref="userrow" :userid='user.id'>
-          <el-col :span='16'>{{ user.name }}</el-col>
+      <el-row v-for='user in allUsers' :key='user.onid' class='user-row' ref="userrow" :userid='user.onid'>
+          <el-col :span='16'>{{ user.onid }}</el-col>
           <el-col :span='8'>
             Privileges:
             <el-radio-group v-model="user.privilege" @change='updateUser(user)'>
@@ -46,9 +46,9 @@ export default {
     search: function (v) {
       let values = this.allUsers.filter(obj => (
         // Check that the item's name includes query
-        (obj.name && obj.name.toLowerCase().includes(v.toLowerCase())))
+        (obj.onid && obj.onid.toLowerCase().includes(v.toLowerCase())))
       ).map(e => {
-        return e.id
+        return e.onid
       })
       for (let row of this.$refs.userrow) {
         if (values.indexOf(row.$attrs.userid) < 0) {
@@ -60,24 +60,27 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('allUsers').then(r => {
-      this.allUsers = r.sort((a, b) => { return (a.name > b.name) ? 1 : -1 })
+    this.$store.dispatch('admin/users').then(users => {
+      this.allUsers = users
     })
   },
+  computed: {
+
+  },
   methods: {
-    updateUser: function (user) {
-      this.$store.dispatch('updateUser', { privilege: user.privilege, id: user.id }).then(r => {
-        this.$message({
-          message: 'User updated successfully',
-          type: 'success'
-        })
-      }).catch(e => {
-        this.$message({
-          message: 'User could not be updated',
-          type: 'error'
-        })
-      })
-    }
+    // updateUser: function (user) {
+    //   this.$store.dispatch('updateUser', { privilege: user.privilege, id: user.id }).then(r => {
+    //     this.$message({
+    //       message: 'User updated successfully',
+    //       type: 'success'
+    //     })
+    //   }).catch(e => {
+    //     this.$message({
+    //       message: 'User could not be updated',
+    //       type: 'error'
+    //     })
+    //   })
+    // }
   }
 }
 </script>

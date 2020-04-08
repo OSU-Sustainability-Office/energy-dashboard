@@ -8,9 +8,30 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
-
-import createStoreConfig from './storeconfig.js'
+import View from './view.module.js'
+import User from './user.module.js'
+import Campaigns from './campaigns.module.js'
+import EDMap from './map.module.js'
+import ModalController from './modal_controller.module.js'
+import Admin from './admin.module.js'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store(createStoreConfig())
+const store = {
+  getters: {
+    view: (state) => {
+      return state['view']
+    }
+  },
+
+  modules: {
+    view: View,
+    admin: Admin,
+    campaigns: Campaigns,
+    map: EDMap,
+    user: User,
+    modalController: ModalController
+  }
+}
+
+export default new Vuex.Store(store)

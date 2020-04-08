@@ -14,36 +14,45 @@
       <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="20">
         <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='rgba(0,0,0,0)' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
           <el-menu-item index="map" :route='{path: "/map"}' ref='mapItem'>Map</el-menu-item>
-          <el-menu-item index="buildinglist" :route='{path: "/buildinglist"}' ref='buildingItem'>Building List</el-menu-item>
+          <el-menu-item index="buildings" :route='{path: "/buildings"}' ref='buildingItem'>Building List</el-menu-item>
           <el-menu-item index="campaigns" :route='{path: "/campaigns"}' ref='buildingItem'>Campaigns</el-menu-item>
-          <el-menu-item v-if='(user !== null && user.name !== "") ' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
+          <el-menu-item v-if='onid' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
         </el-menu>
       </el-col>
       <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
-        <a class='sus-nav-sign' v-if='(user !== null && user.name !== "") && $route.path !== "/"' @click='logOut()'>Sign Out</a>
-        <a class='sus-nav-sign' v-if='(user === null || user.name === "") && $route.path !== "/"' :href='loginLink'>Sign In</a>
+        <a class='sus-nav-sign' v-if='onid && $route.path !== "/"' @click='logOut()'>Sign Out</a>
+        <a class='sus-nav-sign' v-if='!onid && $route.path !== "/"' :href='loginLink'>Sign In</a>
       </el-col>
     </el-row>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'navigbar',
   components: {},
   data () {
     return {
-      loginLink: process.env.VUE_APP_ROOT_API + '/auth/login?returnURI=' + process.env.VUE_APP_HOST_ADDRESS + '/#/map',
+      loginLink: 'https://api.sustainability.oregonstate.edu/v2/auth/login?returnURI=' + process.env.VUE_APP_HOST_ADDRESS + '/#/map',
       activeIndex: ''
     }
   },
   computed: {
-    ...mapGetters([
-      'user'
-    ])
+    // ...mapGetters([
+    //   'user'
+    // ])
+    onid: {
+      get () {
+        return this.$store.getters['user/onid']
+      }
+    }
+  },
+  created () {
+    // this.$store.dispatch('user/user').then( user => {
+    //   console.log(user)
+    //   this.user = user
+    // })
   },
   mounted () {
-    this.$store.dispatch('user')
     this.activeIndex = this.$route.path.split('/')[1]
   },
   watch: {
@@ -64,7 +73,7 @@ export default {
   },
   methods: {
     logOut: function () {
-      this.$store.dispatch('logout')
+      // this.$store.dispatch('logout')
     },
     handleSelect: function (select) {
       this.$router.push({ path: '/' + select })

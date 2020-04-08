@@ -27,8 +27,11 @@ export default {
   components: {
     navigbar
   },
-  created () {
-
+  async created () {
+    await this.$store.dispatch('map/loadMap')
+    this.$store.dispatch('user/user')
+    // this.$store.dispatch('campaigns/loadCampaigns')
+    // this.$store.commit('user/promise', userPromise)
   },
   data () {
     return {

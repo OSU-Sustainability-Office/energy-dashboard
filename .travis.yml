@@ -1,12 +1,6 @@
-# @Author: Brogan Miner <Brogan>
-# @Date:   2018-12-20T10:38:57-08:00
-# @Email:  brogan.miner@oregonstate.edu
-# @Last modified by:   Brogan
-# @Last modified time: 2019-04-06T10:09:28-07:00
-
-language: node_js
+language: python
 python:
-- '2.7'
+- '3.7'
 node_js:
 - '10'
 before_install:
@@ -17,16 +11,30 @@ cache:
   directories:
   - "$HOME/.local"
   - ".cache-loader"
+install:
+- pip install awscli
+- pip install aws-sam-cli
 script:
 - |
   if [ "$TRAVIS_BRANCH" == "master" ]; then
+    npm install
     npm run build
     echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
   else
+    npm install
     npm run build-stage
   fi
-
+  cd backend
+  sam validate
+  sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
+  cd ../
 deploy:
+- provider: script
+  script: cd backend; sam deploy --template-file ./packaged.yaml --stack-name energy
+    --capabilities CAPABILITY_IAM; cd ../;
+  skip-cleanup: true
+  on:
+    all_branches: true
 - provider: pages
   local-dir: dist/
   skip-cleanup: true
@@ -42,6 +50,9 @@ deploy:
   local_dir: dist
   on:
     all_branches: true
-    condition: $TRAVIS_BRANCH != master
-# after_deploy:
-# - mocha tests/integration.js
+    condition: "$TRAVIS_BRANCH != master"
+env:
+  global:
+  - AWS_DEFAULT_REGION=us-west-2
+  - secure: DGqcyCWbpY+rfQtFhGFyhOZ0AJr6B0xjl54Ns44UyM5/Hi8q/fJgkB579u1I0F5tPMJ0ej4y3aiVfA3XyIYS/Jh3Kn0RkXAWKj/FmuJ44bY7lZReiBozVvgrBlszunLs1ph1/h/gE3+Z+v+V1IO1O+tL4+cTy6JU6808xBdAiflSVxKJWCZkzAc7j3xN6dRSMlvc1AvpH9WaaqaZ17hkLodokvcHXs33GrG2VWekqKfDdKAIf2Cw8KTTkwb5/uXuxYKmW58wjJMmdN31Sq2HEfNAdYf3uuPJRmzdDx3UlUbbNAHgbUIXfRQdutvL1H60g3x+oK8WEB/yX7oqQ6GqpkyKn+wkwmYBc7e+uX9UIemV3m9hT2Q4AH1W6NsXXEe9hF5wreUQBlTM5/mNYjqSSUKPY5a9LOxyTTpYZ7hg0CMh6RS4R7gAJCaO4AKarVvK1MEXTm1OAPTn48VE3EGRNg7V6owFQKDW2w6KEpV7ZHZ5sJun6jeTojU4/SLoE9ae8DOzA3hIQKTlLKfvzVRmL4qfkpt8kTLakb6ungczNB6Eo3XZ93ptEZ/M1tlfZRSbCajPchlpBqZDUU3nQ6rmQsh1OqikJWCdi+x1FUS+5FRcrG0HIhhffwuhGPsOLZ+v4fJE40/0vvdEV+6ffNFNfCr8ICFVgjq69sY1ETHctp4=
+  - secure: sIHuAnnnjmIfzhuet40B634WOGLwhq/MRD9NCGhScYpoIuOfUuvsgvOUSpJTowjNvO6kUzaRB3RwB8GavHp+EzKfEfZRLcLweTWSggo7vD6Ocu5TvlubqcZxlLYaFrpiYnoLEdaVcpv4QhQWWs10XatTHS74/ZfeE6JTsWB2fZuD6HtPSvty0Awp6tqVU9RsSnk3v05nJ3dQ43/aJLEJfpa/Yg0dm9gNuUmXRTusvZh95cYV+2+tekRbiB8fCY6UnQmv2wd4bhp4etM8msv/ZQdSSE2KVx7IWVNjAsFnINZeo2xBuPqLzagli0gYX+RkkxkX6BisHh5BT2halpyLOjgXC+ugAU53OIpuSSlkUVWS90X7WeAXVNVUDMB02Tb4+mvwqIYBPW0dm5Fj9CcZo3dc2tc467MnSHWbgybwdRiX/NOKk594u+hh5WjzRTy96p31RI1D0p3qcwLA2NZwn6eTfaFy2InC/0zHdjVecO4NZmmh8GIC+HHd+UZDQEfWfHXkgSt72a3e4TAnRNaYIlAN6p+U1FZ2C7zmgLoWNWw1UzQ4wuXE5rfGAnRcJqavFUFe3/omXTMGUGF5OrfncH8z50SksXk5mfP3fNKyPaBv3ecoA6ksKcaSd/SS9NqFlHkkJN7uGG2prVHlS2bH7vioDfFIpjIvFGTTB4dhUR8=

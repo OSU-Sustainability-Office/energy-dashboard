@@ -9,12 +9,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import index from '@/components/home/index'
-import account from '@/components/account/account'
+import view from '@/components/view/view'
 import map from '@/components/map/map'
 import campaigns from '@/components/campaigns/campaign_list'
-import publicDirectory from '@/components/directory/directoryPublic.vue'
-import privateDirectory from '@/components/dashboard/dashboard_main.vue'
+import notfound from '@/components/extras/404.vue'
 import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
+import buildingList from '@/components/building_list/building_list.vue'
+// import admin from '@/components/admin/admin.vue'
 
 Vue.use(Router)
 
@@ -25,40 +26,31 @@ export default new Router({
       name: 'index',
       component: index
     },
+    // {
+    //   path: '/admin',
+    //   component: admin
+    // },
     {
-      path: '/public/:id/:range',
-      name: 'public',
-      component: account
+      path: '/dashboard/',
+      component: buildingList
+    },
+    {
+      path: '/building/:id/:range',
+      name: 'building',
+      component: view
     },
     {
       path: '/view/:id',
-      name: 'private',
-      component: account
+      component: view
     },
     {
-      path: '/compare/:ids/:range',
-      component: account
+      path: '/compare/:buildings/:range',
+      component: view
     },
     {
       path: '/map',
       name: 'map',
       component: map
-    },
-    {
-      path: '/buildingList/',
-      component: publicDirectory
-    },
-    {
-      path: '/dashboard/',
-      component: privateDirectory
-    },
-    {
-      path: '/buildingList/:group',
-      component: publicDirectory
-    },
-    {
-      path: '/dashboard/:group',
-      component: privateDirectory
     },
     {
       path: '/campaign/:id',
@@ -67,6 +59,18 @@ export default new Router({
     {
       path: '/campaigns',
       component: campaigns
+    },
+    {
+      path: '/buildings',
+      component: buildingList
+    },
+    {
+      path: '/buildings/:group',
+      component: buildingList
+    },
+    {
+      path: '*',
+      component: notfound
     }
   ]
 })

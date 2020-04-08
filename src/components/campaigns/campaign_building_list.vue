@@ -13,11 +13,14 @@
       </el-col>
     </el-row>
     <el-row class='buildingScroll' v-loading='!loaded' element-loading-background="rgba(0, 0, 0, 0.8)">
-      <el-row class='buildingRow' v-for='building in buildings' :key='building.id' ref='buildingRows'>
-        <el-col :class='[(activeId === building.id) ? "buildingCol selected" : "buildingCol"]' :span='24'>
-          <div :class='[(activeId === building.id) ? "outerClip selected" : "outerClip"]'>
-            <div :class='[(activeId === building.id) ? "innerClip selected" : "innerClip"]' :style='`background-color:${ computedColor(building.accumulatedPercentage) };`' @click='buildingClick(building)'>
-              <i class="fas fa-trophy" v-if='building.place <= 3'><span :class='[(activeId === building.id) ? "innerTrophy selected" : "innerTrophy"]'>{{ building.place }}</span></i> {{ building.name }} {{ ((building.accumulatedPercentage > 0) ? '+' : '') + (Math.round(100 * building.accumulatedPercentage) / 100).toString() + '%' }}
+      <el-row class='buildingRow' v-if='!loaded'>
+        &nbsp;
+      </el-row>
+      <el-row class='buildingRow' v-for='block in blocks' :key='block.path' ref='buildingRows'>
+        <el-col v-if='loaded' :class='[(value === block.path) ? "buildingCol selected" : "buildingCol"]' :span='24'>
+          <div :class='[(value === block.path) ? "outerClip selected" : "outerClip"]'>
+            <div :class='[(value === block.path) ? "innerClip selected" : "innerClip"]' :style='`background-color:${ computedColor(block.path) };`' @click='buildingClick(block.path)'>
+              <i class="fas fa-trophy" v-if='place(block.path) <= 3 && place(block.path) >= 1'><span :class='[(value === block.path) ? "innerTrophy selected" : "innerTrophy"]'>{{ place(block.path) }}</span></i> {{ block.name }} {{ ((accumulatedPercentage(block.path) > 0) ? '+' : '') + (Math.round(100 * accumulatedPercentage(block.path)) / 100).toString() + '%' }}
             </div>
           </div>
         </el-col>
@@ -27,18 +30,59 @@
 </template>
 <script>
 export default {
-  props: ['buildings', 'loaded'],
+  props: ['path', 'loaded', 'value'],
   data () {
     return {
-      activeId: null
+      activePath: null
+    }
+  },
+  mounted () {
+    if (this.path) {
+      this.$emit('input', this.path + '/block_default')
+    }
+  },
+  computed: {
+    blocks: {
+      get () {
+        let blocks = this.$store.getters[this.path + '/blocks']
+        if (!blocks) {
+          return []
+        }
+        blocks.sort((a, b) => {
+          try {
+            const aPercentage = this.accumulatedPercentage(a.path) // this.$store.getters[a.path + '/modifierData']('campaign_linebar').accumulatedPercentage
+            const bPercentage = this.accumulatedPercentage(b.path) // this.$store.getters[b.path + '/modifierData']('campaign_linebar').accumulatedPercentage
+            if (aPercentage > bPercentage) {
+              return 1
+            } else {
+              return -1
+            }
+          } catch (error) {
+            return 1
+          }
+        })
+        return blocks
+      }
     }
   },
   methods: {
     buildingClick: function (building) {
-      (this.activeId !== building.id) ? this.activeId = building.id : this.activeId = null
-      this.$emit('clickedBuilding', building.index)
+      if (this.value === building) {
+        this.$emit('input', this.path + '/block_default')
+      } else {
+        this.$emit('input', building)
+      }
     },
-    computedColor: function (percentage) {
+    accumulatedPercentage: function (path) {
+      return this.$store.getters[path + '/modifierData']('campaign_linebar').accumulatedPercentage
+    },
+    place: function (path) {
+      let place = this.$store.getters[path + '/modifierData']('campaign_linebar').rank
+      return place + 1
+    },
+    computedColor: function (path) {
+      if (!this.$store.getters[path + '/modifierData']('campaign_linebar')) return
+      const percentage = this.accumulatedPercentage(path) // this.$store.getters[path + '/modifierData']('campaign_linebar').accumulatedPercentage
       // #d62326 - Bottom Red
       // #19a23a - Top Green
       const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]

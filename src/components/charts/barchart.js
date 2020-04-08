@@ -49,7 +49,7 @@ export default {
               return (dayCodes[d.getDay()] + ' ' + (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem)
             },
             label: (item, data) => {
-              return parseFloat(item.yLabel).toFixed(2) + ' ' + this.$parent.unit()
+              return this.$parent.chartData.datasets[item.datasetIndex].label + ': ' + parseFloat(item.yLabel).toFixed(2) + ' ' + this.$parent.unit(item.datasetIndex)
             }
           }
         },
@@ -66,6 +66,14 @@ export default {
             fontSize: 12,
             fontColor: '#FFF',
             fontFamily: 'Open Sans'
+          },
+          onHover: function (e) {
+            e.target.style.cursor = 'pointer'
+          }
+        },
+        hover: {
+          onHover: function (e) {
+            e.target.style.cursor = 'default'
           }
         },
         title: {
@@ -78,11 +86,10 @@ export default {
         scales: {
           yAxes: [{
             ticks: {
-              beginAtZero: true,
+              beginAtZero: false,
               fontSize: 12,
               fontColor: '#FFF',
               fontFamily: 'Open Sans'
-              // min: 20 Need to caclulate this value so there arent any blank lines
             },
             gridLines: {
               display: true // my new default options
@@ -96,15 +103,18 @@ export default {
             }
           }],
           xAxes: [{
-            offset: true,
+            type: 'time',
+            bounds: 'data',
             gridLines: {
               display: false
             },
             ticks: {
-              fontSize: 12,
+              fontSize: 14,
               fontColor: '#FFF',
               fontFamily: 'Open Sans',
-              autoSkip: true
+              autoSkip: true,
+              stepSize: 10,
+              source: 'data'
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),
@@ -113,9 +123,9 @@ export default {
               fontColor: '#FFF',
               fontFamily: 'Open Sans'
             },
-            type: 'time',
             time: {
               unit: 'day',
+              unitStepSize: 15,
               displayFormats: {
                 'day': 'M/DD',
                 'hour': 'dd h:mm a',
@@ -130,10 +140,16 @@ export default {
   mounted () {
     this.renderChart(this.chartData, this.options)
   },
+  watch: {
+    // chartData: function(value) {
+    // this.renderChart(value);
+    // }
+  },
   methods: {
     setOptions: function (opts) {
       this.options = opts
-      this.renderChart(this.chartData, this.options)
+      this.$data._chart.options = this.options
+      // this.renderChart(this.chartData, this.options)
     },
     update: function () {
       this.$data._chart.update()

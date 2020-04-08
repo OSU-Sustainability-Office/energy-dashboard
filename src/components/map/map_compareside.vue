@@ -11,24 +11,24 @@
     <el-col :span='24' class='innerContent'>
       <el-row class='title'>
         <el-col :span='23'>
-          <span>{{ story.name }} </span>
+          <span>{{ name }} </span>
         </el-col>
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="$emit('hide')"></i></el-col>
       </el-row>
-      <el-row class='pics' v-loading='(story)? !story.loaded : true' element-loading-background="rgba(0, 0, 0, 0.8)">
+      <el-row class='pics' v-loading='mediaArray.length < 0' element-loading-background="rgba(0, 0, 0, 0.8)">
         <el-col :span='24' class='nowrap'>
-          <div v-for='(media, index) in mediaArray' :class='classForIndex(index)' :style='`background-image: url("https://api.sustainability.oregonstate.edu/energy/images/${media}"); width:calc(${100 / ((mediaArray.length < 4) ? mediaArray.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' v-if='index < 4' :key='index'></div>
+          <div v-for='(media, index) in mediaArray' :class='classForIndex(index)' :style='`background-image:url(${api}/image?name=${media}); width:calc(${100 / mediaArray.length}% + ${ (index === 0)? "22.5px" : "55px"});`' :key='media'></div>
         </el-col>
       </el-row>
-      <switchButtons @update='update()' />
+      <switchButtons :blocks='[block]' ref='switcher' />
       <el-row class='grid'>
         <el-col :span='24'>
-          <chartController :randomColors='1' :graphType='1' :index='0' ref="lineChartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='300'/>
+          <chartController v-if='block' :path='block.path' ref="lineChartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='300'/>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span='20' :offset='2' class='buttonParent'>
-          <el-button class='bigButton' @click='$router.push({path: `/compare/${encodeURI(JSON.stringify(compareStories))}/${currentRange}`})'>View Full Graph</el-button>
+          <el-button class='bigButton' @click='$router.push({path: `/compare/${encodeURI(JSON.stringify(buildings.map(o => o.id)))}/${$refs.switcher.currentRange}`})'>View Full Graph</el-button>
         </el-col>
       </el-row>
     </el-col>
@@ -37,32 +37,64 @@
 <script>
 import chartController from '@/components/charts/chartController'
 import switchButtons from '@/components/map/time_switch_buttons_big'
-import { mapGetters } from 'vuex'
 
 export default {
   components: {
     chartController, switchButtons
   },
-  props: ['compareStories', 'storyId'],
+  props: [],
   data () {
     return {
-      currentRange: 1,
-      mediaArray: [],
-      titles: []
+      api: process.env.VUE_APP_ROOT_API
     }
   },
   computed: {
-    ...mapGetters([
-      'story',
-      'block'
-    ])
+    path: {
+      get () {
+        return this.$store.getters['modalController/data'].path
+      }
+    },
+    block: {
+      get () {
+        let mgId = this.$store.getters[this.path + '/primaryGroup']('Electricity').id
+        return this.$store.getters[this.path + '/block'](mgId)
+      }
+    },
+    name: {
+      get () {
+        if (!this.buildings) return
+        let names = this.buildings.map(building => this.$store.getters[building.path + '/name'])
+        let r = ''
+        for (let index in names) {
+          if (index > 0) {
+            r += ' vs '
+          }
+          r += names[index]
+        }
+        return r
+      }
+    },
+    buildings: {
+      get () {
+        if (!this.block) return
+        let buildingIds = this.$store.getters[this.block.path + '/modifierData']('building_compare').buildingIds
+        return buildingIds.map(id => this.$store.getters['map/building'](id))
+      }
+    },
+    mediaArray: {
+      get () {
+        if (!this.buildings) return
+        let buildingImages = this.buildings.map(building => this.$store.getters[building.path + '/image'])
+        while (buildingImages.length > 4) buildingImages.pop()
+        return buildingImages
+      }
+    }
   },
-  mounted () {
-    this.$store.dispatch('compare', { stories: this.compareStories, dateStart: this.dateOffset(), dateEnd: (new Date()).toISOString(), interval: 1, unit: 'day' }).then(async callback => {
-      this.mediaArray = this.story.media
-      await callback()
-      this.$refs.lineChartController.parse()
-    })
+  created () {
+    // if (this.block) {
+    //   console.log('creates')
+    //   console.log(this.block)
+    // }
   },
   methods: {
     dateOffset: function () {

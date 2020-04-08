@@ -27,13 +27,12 @@
       </el-header>
       <!-- Main Page Content -->
       <el-main class='main'>
-          <el-tabs v-model='openName' class='tab-row' v-if='groups.length > 0'>
-            <el-tab-pane v-for='item in groups' :key='item.id' :name='item.name'>
-              <span slot='label' class='tab-label'>{{item.name}}</span>
-
+          <el-tabs v-model='openName' class='tab-row'>
+            <el-tab-pane v-for='(item, key) in groups' :key='key' :name='key'>
+              <span slot='label' class='tab-label'>{{ key }}</span>
                 <el-row type='flex' justify='left' class='story-flex'>
-                  <el-col v-for='story in item.stories' :key='story.id' :span='4' class='storyContainer'>
-                    <storycard :name='story.name' :notools='(publicDir !== null)? 1:0' :media='story.media' :description='story.description' :story_id='story.id' class='storyCard' @click='$router.push({ path: (story.public)?`/public/${story.id}/1`:`/view/${story.id}`})' ref='card' />
+                  <el-col v-for='building in item' :key='building.id' :span='4' class='storyContainer'>
+                    <storycard :name='building.name' :notools='(publicDir !== null)? 1:0' :media='building.image' :description='building.types' class='storyCard' @click='$router.push({ path: `/building/${building.id}/1` })' ref='card' />
                   </el-col>
                   <el-col v-if='!publicDir' :span='4' class='storyContainer'>
                     <el-tooltip content="Create New View" placement="top">
@@ -74,7 +73,7 @@ export default {
   props: ['publicDir'],
   data () {
     return {
-      groups: [],
+      groups: {},
       search: '',
       openName: ''
     }
@@ -104,29 +103,39 @@ export default {
       'user'
     ])
   },
-  mounted () {
-    this.$store.dispatch('stories').then(res => {
-      let allStories = []
-      for (let group of res) {
-        if (group.public === this.publicDir) {
-          let g = [].concat(group.stories)
-          allStories = allStories.concat(g)
-          g.sort((a, b) => { return (a.name > b.name) ? 1 : -1 })
-          this.groups.push({ name: group.group, stories: g, id: group.id })
-        }
+  async mounted () {
+    // this.$store.dispatch('stories').then(res => {
+    //   let allStories = []
+    //   for (let group of res) {
+    //     if (group.public === this.publicDir) {
+    //       let g = [].concat(group.stories)
+    //       allStories = allStories.concat(g)
+    //       g.sort((a, b) => { return (a.name > b.name) ? 1 : -1 })
+    //       this.groups.push({ name: group.group, stories: g, id: group.id })
+    //     }
+    //   }
+    //   if (this.publicDir) {
+    //     allStories.sort((a, b) => { return (a.name > b.name) ? 1 : -1 })
+    //     this.groups.splice(0, 0, {name: 'All', stories: allStories, id: 0})
+    //   }
+    //   if (this.groups.length > 0) {
+    //     this.openName = this.groups[0].name
+    //   }
+    //   if (this.$route.params.group) {
+    //     let name = this.groups.find(e => { return e.id === parseInt(this.$route.params.group) }).name
+    //     this.openName = name
+    //   }
+    // })
+    await this.$store.getters['map/promise']
+    let buildings = this.$store.getters['map/buildings']
+    for (let building of buildings) {
+      if (this.groups[building.group]) {
+        this.groups[building.group].push(building)
+      } else {
+        this.groups[building.group] = [building]
       }
-      if (this.publicDir) {
-        allStories.sort((a, b) => { return (a.name > b.name) ? 1 : -1 })
-        this.groups.splice(0, 0, {name: 'All', stories: allStories, id: 0})
-      }
-      if (this.groups.length > 0) {
-        this.openName = this.groups[0].name
-      }
-      if (this.$route.params.group) {
-        let name = this.groups.find(e => { return e.id === parseInt(this.$route.params.group) }).name
-        this.openName = name
-      }
-    })
+    }
+    this.openName = Object.keys(this.groups)[0]
     // 0: id
     this.$eventHub.$on('deleteStory', event => { this.deleteStory(event[0]) })
     // 0: name, 1: description, 2: media, 3: name, 4: id

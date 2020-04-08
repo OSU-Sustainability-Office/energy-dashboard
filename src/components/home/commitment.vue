@@ -54,8 +54,6 @@ export default {
   opacity: 1;
   transition-property: opacity, transform;
 }
- .fade-leave-active, .fade-enter-active {
-}
 .fade-enter {
   opacity: 0;
   transform: translateY(60px);

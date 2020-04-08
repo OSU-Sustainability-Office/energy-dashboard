@@ -8,14 +8,17 @@
 <template>
   <el-row class='stage'>
     <el-col :span='24' class='main'>
+      <!-- Large logo at the top of the page -->
       <el-row class='herorow'>
         <el-col :span='24'>
-          <heropicture :media='story.media' :description='story.description' :name='story.name' />
+          <heropicture :media='media' :description='description' :name='name' />
         </el-col>
       </el-row>
+
+      <!-- Charts and the building selection list -->
       <el-row class='controlRow'>
         <el-col :span='8' class='buildingContainer'>
-          <buildingList :loaded='loaded' :buildings='buildings' @clickedBuilding='changeChartIndex'/>
+          <buildingList v-model='blockPath' :loaded='loaded' :path='campaignPath'/>
         </el-coL>
         <el-col :span='16' class='otherSide'>
           <div class='chartArea'>
@@ -24,13 +27,15 @@
                 {{ currentTitle }}
               </el-col>
               <el-col :span='12' class='timeSwitchButtons'>
-                <switchButtons @update='updateAccumulated()' :campaign='true' :days='days' />
+                <switchButtons :blocks='blocks' :campaign='true' :days='days' :campaignDateStart='campaignStart' :campaignDateEnd='campaignEnd' />
               </el-col>
             </el-row>
-            <chartController :randomColors='1' :graphType='graphType' :index='currentIndex' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '332px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='332'/>
+            <chartController :path='blockPath' :randomColors='1' class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '340px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='362'/>
           </div>
         </el-col>
       </el-row>
+
+      <!-- Reduction tips at the bottom of the page -->
       <el-row>
         <reductionTips />
       </el-row>
@@ -39,8 +44,7 @@
 </template>
 
 <script>
-import heropicture from '@/components/account/heropicture.vue'
-import { mapGetters } from 'vuex'
+import heropicture from '@/components/extras/heropicture.vue'
 import chartController from '@/components/charts/chartController'
 import buildingList from '@/components/campaigns/campaign_building_list'
 import reductionTips from '@/components/campaigns/campaign_reduction_tips'
@@ -56,85 +60,80 @@ export default {
   },
   data () {
     return {
-      buildings: [],
-      loaded: false,
+      blockPath: '',
+      loaded: false, // Toggles the spinning circle loading animation on the graph and building list
       currentTitle: 'Energy Saved',
-      graphType: 1,
-      currentIndex: 0,
-      days: 0
+      description: '',
+      startDate: null, // Start and End dates for the competition
+      endDate: null // Formatted like this: "2020-02-02T15:00:00.000Z"
     }
   },
   computed: {
-    ...mapGetters([
-      'story',
-      'block',
-      'user'
-    ])
-  },
-  mounted () {
-    this.$store.dispatch('campaign', this.$route.params.id).then(() => {
-      const startDate = new Date(this.story.blocks[0].date_start).getTime()
-      const compareDate = new Date(this.story.blocks[0].date_end).getTime()
-      const nowDate = new Date().getTime()
-      if (compareDate < nowDate) {
-        this.days = Math.round((compareDate - startDate) / 86400000) + 1
-      } else {
-        this.days = Math.round((nowDate - startDate) / 86400000) + 1
-      }
-      for (let index in this.story.blocks) {
-        if (index > 0) {
-          this.buildings.push(this.story.blocks[index])
-        }
-      }
+    days: {
+      get () {
+        if (!this.campaignPath) return ''
+        let start = this.campaignStart
+        let end = this.campaignEnd
 
-      this.$nextTick(() => {
-        this.updateAccumulated()
-        for (let i in this.buildings) {
-          // JS thought i should be a string and would concat it with 1...
-          this.buildings[i].place = (parseInt(i) + 1).toString()
+        return Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1
+      }
+    },
+    campaignStart: {
+      get () {
+        if (!this.campaignPath) return ''
+        return this.$store.getters[this.campaignPath + '/dateStart']
+      }
+    },
+    campaignEnd: {
+      get () {
+        if (!this.campaignPath) return ''
+        let end = this.$store.getters[this.campaignPath + '/dateEnd']
+        let current =  (new Date()).getTime()
+
+        if (current < end) {
+          return current
+        } else {
+          return end
         }
-        this.loaded = true
-      })
-    })
+      }
+    },
+    blocks: {
+      get () {
+        if (!this.campaignPath) return []
+        // We need to copy this or adding the default block will change the return value of
+        // the store
+        let blocks = new Array(...this.$store.getters[this.campaignPath + '/blocks'])
+        blocks.push(this.$store.getters[this.campaignPath + '/defaultBlock'])
+        return blocks
+      }
+    },
+    campaignPath: {
+      get () {
+        if (!this.$store.getters['campaigns/campaign'](this.$route.params.id)) return null
+        return this.$store.getters['campaigns/campaign'](this.$route.params.id).path
+      }
+    },
+    media: {
+      get () {
+        if (!this.campaignPath) return ''
+        return this.$store.getters[this.campaignPath + '/media']
+      }
+    },
+    name: {
+      get () {
+        if (!this.campaignPath) return ''
+        return this.$store.getters[this.campaignPath + '/name']
+      }
+    }
+  },
+  async mounted () {
+    this.loaded = false
+    await this.$store.dispatch('campaigns/loadCampaigns')
+    await this.$store.dispatch(this.campaignPath + '/buildBlocks')
+    this.blockPath = this.campaignPath + '/block_default'
+    this.loaded = true
   },
   methods: {
-    updateAccumulated: function () {
-      const compareDate = new Date(this.story.blocks[0].date_start).getTime()
-      for (let chart of this.story.blocks[0].charts) {
-        let index = chart.data.length - 1
-        if (index < 0) {
-          continue
-        }
-        let accm = 0
-        while (new Date(chart.data[index].x).getTime() >= compareDate) {
-          accm += chart.data[index].y
-          index--
-        }
-        accm /= chart.data.length - index
-        this.$store.commit('updateBlockAverage', { index: (this.story.blocks[0].charts.indexOf(chart) + 1), avg: accm })
-      }
-      this.buildings.sort((a, b) => {
-        return a.accumulatedPercentage - b.accumulatedPercentage
-      })
-      this.$nextTick(() => {
-        this.$refs.chartController.parse()
-      })
-    },
-    changeChartIndex: function (index) {
-      if (this.currentIndex !== index) {
-        this.currentTitle = this.block(index).name
-        this.currentIndex = index
-        this.graphType = 5
-      } else {
-        this.currentTitle = 'Energy Saved'
-        this.currentIndex = 0
-
-        this.graphType = 1
-      }
-      this.$nextTick(() => {
-        this.$refs.chartController.parse()
-      })
-    }
   }
 }
 </script>

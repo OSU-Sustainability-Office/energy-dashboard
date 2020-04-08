@@ -14,7 +14,7 @@
           <div class='col' @click="select('')" style='backgroundColor: rgb(26,26,26)' v-bind:class="[selected === 0 ? 'selected' : 'e']"></div>
         </el-col>
         <el-col :span='6' v-for='(image,index) in images' :key='index'>
-          <div class='col' @click="select(image)" :style='"background-image:url(\"" + api + "/energy/images/" + image + "\")"' v-bind:class="[selected === (index + 1) ? 'selected' : 'e']"></div>
+          <div class='col' @click="select(image)" :style='"background-image:url(\"" + api + "/energy/images/" + image + "&size=0.1\")"' v-bind:class="[selected === (index + 1) ? 'selected' : 'e']"></div>
         </el-col>
         <el-col v-for='n in 10' :key='n+"bad"' :span='6' class='noHeight'></el-col>
       </el-row>
@@ -38,6 +38,7 @@ export default {
       var index = 0
       for (var i of r) {
         this.images.push(i)
+        console.log(i)
         if (i === this.value) { this.selected = index }
         index++
       }

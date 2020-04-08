@@ -10,34 +10,34 @@
   <el-row class='stage'>
     <el-row class='main'>
       <el-row class="title">
-        <el-col :span='23'>{{ story.name }}</el-col>
+        <el-col :span='23'>{{ building.name }}</el-col>
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="hide()"></i></el-col>
       </el-row>
       <el-row>
-        <el-col :span='24' v-loading='(story)? !story.loaded : true'>
+        <el-col :span='24' v-loading='building ? false : true'>
           <div class="media" ref='media'></div>
         </el-col>
       </el-row>
       <el-row class="graphcontrol">
         <el-col :span='24'>
           <el-col :span='24' class='buttonContainer'>
-            <switchButtons @update='updateCharts($event)' />
+            <switchButtons :blocks='buildingBlocks' />
           </el-col>
           <el-row class='graphslide'>
             <i class="left fas fa-angle-left" @click='prev()' ref="prevArrow"></i>
             <i class="right fas fa-angle-right" @click='next()' ref="nextArrow"></i>
           </el-row>
           <el-row type='flex' class="graph" ref='scrollBox'>
-            <el-col class='inline' v-for='(block,index) in story.blocks' :key='index' :span='24'>
-              <chartController :randomColors=1 :graphType='1' :index=index ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
+            <el-col class='inline' v-for='block in buildingBlocks' :key='block.id' :span='24' ref='slidingBox'>
+              <chartController :path='block.path' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
             </el-col>
           </el-row>
           <el-row class="buttons">
             <el-col :span='12'>
-              <el-button class='bigButton' @click="$emit('startCompare')">Compare</el-button>
+              <el-button class='bigButton' @click="$emit('startCompare', building.id)">Compare</el-button>
             </el-col>
             <el-col :span='12'>
-              <el-button class='bigButton' @click='$router.push({path: `/public/${storyId}/${currentRange}`})'>View Full Graph</el-button>
+              <el-button class='bigButton' @click='$router.push({path: `/building/${building.id}/${currentRange}`})'>View Full Graph</el-button>
             </el-col>
           </el-row>
         </el-col>
@@ -47,12 +47,11 @@
 </template>
 <script>
 import chartController from '@/components/charts/chartController'
-import { mapGetters } from 'vuex'
 import switchButtons from '@/components/map/time_switch_buttons_big'
 
 export default {
   name: 'sideView',
-  props: ['storyId'],
+  props: [],
   components: {
     chartController, switchButtons
   },
@@ -60,7 +59,6 @@ export default {
     return {
       api: process.env.VUE_APP_ROOT_API,
       title: '',
-      media: '',
       currentRange: 1,
       unit: 'day',
       int: 1,
@@ -69,82 +67,91 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'story',
-      'block'
-    ])
+
+    media: {
+      get () {
+        return this.building.image
+      }
+    },
+
+    buildingBlocks: {
+      get () {
+        return this.$store.getters[this.building.path + '/blocks']
+      }
+    },
+
+    building: {
+      get () {
+        return this.$store.getters['map/building'](this.$store.getters['modalController/data'].id)
+      }
+    }
   },
   methods: {
-    updateCharts: function (value) {
-      this.currentRange = value[0]
-      this.$nextTick(() => {
-        for (let controller of this.$refs.chartController) {
-          controller.parse()
-        }
-      })
-    },
     hide: function () {
       this.$emit('hide')
     },
-    dateOffset: function () {
-      var d = new Date()
-      if (this.currentRange === 0) {
-        d.setDate(d.getDate() - 7)
-      } else if (this.currentRange === 1) {
-        d.setMonth(d.getMonth() - 1)
-      } else if (this.currentRange === 2) {
-        d.setYear(d.getYear() - 1)
-      }
-      return d.toISOString()
-    },
     next: function () {
-      if (this.index + 1 >= this.story.blocks.length) { return }
+      if (this.index + 1 >= this.buildingBlocks.length) { return }
       this.index++
-      this.$refs.scrollBox.$children.forEach((child) => {
-        child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
-      })
-      this.$refs.prevArrow.style.display = 'block'
-      if (this.index + 1 === this.story.blocks.length) {
-        this.$refs.nextArrow.style.display = 'none'
-      }
     },
     prev: function () {
       if (this.index - 1 < 0) { return }
       this.index--
-      this.$refs.scrollBox.$children.forEach(child => {
-        child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
-      })
-      this.$refs.nextArrow.style.display = 'block'
-      if (this.index <= 0) {
-        this.$refs.prevArrow.style.display = 'none'
-      }
     }
   },
   watch: {
-    media: function (value) {
-      this.$refs.media.style.backgroundImage = 'url(' + this.api + '/energy/images/' + value + ')'
+    // media: function (value) {
+    //   this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + value + ')'
+    // },
+    building: {
+      immediate: true,
+      handler: async function (value) {
+        this.index = 0
+        for (let block of this.buildingBlocks) {
+          await this.$store.dispatch(block.path + '/resetDefault')
+          // this.$store.dispatch(block.path + '/getData')
+        }
+        this.$refs.prevArrow.style.display = 'none'
+        if (this.buildingBlocks.length > 1) {
+          this.$refs.nextArrow.style.display = 'block'
+        } else {
+          this.$refs.nextArrow.style.display = 'none'
+        }
+        this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + this.media + ')'
+      }
+    },
+    index: function (to, from) {
+      this.$refs.scrollBox.$children.forEach((child) => {
+        child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
+      })
+      if (to < from) {
+        if (this.index <= 0) {
+          this.$refs.prevArrow.style.display = 'none'
+        }
+        if (this.buildingBlocks.length > 1) {
+          this.$refs.nextArrow.style.display = 'block'
+        }
+      } else {
+        if (this.index + 1 === this.buildingBlocks.length) {
+          this.$refs.nextArrow.style.display = 'none'
+        }
+        if (this.buildingBlocks.length > 1) {
+          this.$refs.prevArrow.style.display = 'block'
+        }
+      }
     }
   },
-  mounted () {
-    this.$refs.prevArrow.style.display = 'none'
-    this.$store.dispatch('story', this.storyId).then(() => {
-      let promises = []
-      if (this.story.blocks.length <= 1) {
-        this.$refs.nextArrow.style.display = 'none'
-      } else {
-        this.$refs.nextArrow.style.display = 'block'
-      }
-      this.media = this.story.media
-      for (let block in this.story.blocks) {
-        promises.push(this.$store.dispatch('block', { index: block, date_start: this.dateOffset(), date_end: (new Date()).toISOString(), date_interval: 1, interval_unit: 'day' }))
-      }
-
-      Promise.all(promises).then(() => {
-        for (let controller of this.$refs.chartController) {
-          controller.parse()
-        }
-      })
-    })
+  async mounted () {
+    // for (let block of this.buildingBlocks) {
+    //   await this.$store.dispatch(block.path + '/removeAllModifiers')
+    // }
+    // this.$refs.prevArrow.style.display = 'none'
+    // if (this.buildingBlocks.length <= 1) {
+    //   this.$refs.nextArrow.style.display = 'none'
+    // } else {
+    //   this.$refs.nextArrow.style.display = 'block'
+    // }
+    // this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + this.media + ')'
   }
 }
 </script>
@@ -220,18 +227,19 @@ export default {
 .graph {
   width: 100%;
   overflow: hidden;
+  padding-bottom: 1em;
 }
 .inline {
   margin-right: 20px;
   transition: transform 1s;
   display: inline-block;
-  float: left;
+  flex-shrink: 0;
 }
 
 .graphslide {
   position: absolute;
   color: rgba($--color-white, 0.4);
-  bottom: 180px;
+  bottom: 220px;
   font-size: 3em;
   width: 100%;
   left: 0;
