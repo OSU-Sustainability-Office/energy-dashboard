@@ -11,7 +11,7 @@ const User = require('/opt/nodejs/user.js')
 const UserModel = require('/opt/nodejs/models/user.js')
 
 exports.user = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   try {
     await user.resolved

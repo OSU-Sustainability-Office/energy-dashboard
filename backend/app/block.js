@@ -11,13 +11,13 @@ const Response = require('/opt/nodejs/response.js')
 const User = require('/opt/nodejs/user.js')
 
 exports.get = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   response.body = JSON.stringify((await (new Block(event.queryStringParameters['id'])).get()).data)
   return response
 }
 
 exports.post = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   await user.resolved
   try {
@@ -39,7 +39,7 @@ exports.post = async (event, context) => {
 }
 
 exports.put = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   await user.resolved
   try {
@@ -60,7 +60,7 @@ exports.put = async (event, context) => {
 }
 
 exports.delete = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   await user.resolved
   try {

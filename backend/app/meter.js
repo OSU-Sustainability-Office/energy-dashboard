@@ -13,13 +13,13 @@ const MultipartParse = require('/opt/nodejs/node_modules/aws-lambda-multipart-pa
 const ZLib = require('zlib')
 
 exports.get = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   response.body = JSON.stringify((await (new Meter(event.queryStringParameters['id'])).get()).data)
   return response
 }
 
 exports.all = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   await user.resolved
 
@@ -29,7 +29,7 @@ exports.all = async (event, context) => {
 }
 
 exports.data = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   response.body = JSON.stringify((await (new Meter(event.queryStringParameters['id'])).download(
     event.queryStringParameters['point'],
     event.queryStringParameters['startDate'],
@@ -40,7 +40,7 @@ exports.data = async (event, context) => {
 }
 
 exports.post = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   event.body = Buffer.from(event.body, 'base64').toString('binary')
 
   const body = await MultipartParse.parse(event, false)
@@ -104,7 +104,7 @@ exports.post = async (event, context) => {
 }
 
 exports.put = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   try {
     await Meter(event.body.id).update(
@@ -121,7 +121,7 @@ exports.put = async (event, context) => {
 }
 
 exports.delete = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   try {
     await Meter(event.body.id).delete(user)

@@ -10,7 +10,7 @@ const User = require('/opt/nodejs/user.js')
 const EUser = require('/opt/nodejs/models/user.js')
 
 exports.users = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   await user.resolved
   response.body = await EUser.all(user)

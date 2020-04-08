@@ -14,7 +14,7 @@ const DB = require('/opt/nodejs/sql-access.js')
 // Retrieves a listing of all campaigns from the database, constructs an array of database class instances, and returns the array.
 exports.all = async (event, context) => {
   // Create the response object
-  let response = new Response()
+  let response = new Response(event)
 
   // Connect to the database
   await DB.connect()
@@ -35,17 +35,13 @@ exports.all = async (event, context) => {
 }
 
 exports.get = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   response.body = JSON.stringify((await (new Campaign(event.queryStringParameters['id'])).get()).data)
-  response.headers = {
-    'Access-Control-Allow-Origin': event.headers.origin ? event.headers.origin : 'https://myco2.sustainability.oregonstate.edu',
-    'Access-Control-Allow-Credentials': 'true'
-  }
   return response
 }
 
 exports.post = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   try {
     response.body = JSON.stringify((await Campaign.create(
@@ -65,7 +61,7 @@ exports.post = async (event, context) => {
 }
 
 exports.put = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   try {
     await Campaign(event.body.id).update(
@@ -86,7 +82,7 @@ exports.put = async (event, context) => {
 }
 
 exports.delete = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   try {
     await Campaign(event.body.id).delete(user)

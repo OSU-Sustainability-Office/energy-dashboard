@@ -11,19 +11,19 @@ const Response = require('/opt/nodejs/response.js')
 const User = require('/opt/nodejs/user.js')
 
 exports.all = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   response.body = JSON.stringify((await Building.all()).map(o => o.data))
   return response
 }
 
 exports.get = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   response.body = JSON.stringify((await (new Building(event.queryStringParameters['id'])).get()).data)
   return response
 }
 
 exports.put = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   await user.resolved
   try {
@@ -44,7 +44,7 @@ exports.put = async (event, context) => {
 }
 
 exports.post = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   await user.resolved
   try {
@@ -64,7 +64,7 @@ exports.post = async (event, context) => {
 }
 
 exports.delete = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   let user = new User(event, response)
   try {
     await (new Building(event.body.id)).delete(user)

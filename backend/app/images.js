@@ -14,7 +14,7 @@ const Response = require('/opt/nodejs/response.js')
 // const User = require('/opt/nodejs/user.js')
 
 exports.get = async (event, context) => {
-  let response = new Response()
+  let response = new Response(event)
   const params = {
     Bucket: 'osu-energy-images',
     Key: event.queryStringParameters['name']
@@ -63,7 +63,7 @@ exports.all = async (event, context) => {
       else resolve(data)
     })
   }))
-  let response = new Response()
+  let response = new Response(event)
   response.body = JSON.stringify(images.Contents.map(o => o.Key))
   return response
 }
