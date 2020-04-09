@@ -21,7 +21,7 @@
       <el-row class="graphcontrol">
         <el-col :span='24'>
           <el-col :span='24' class='buttonContainer'>
-            <switchButtons :blocks='buildingBlocks' />
+            <switchButtons :blocks='buildingBlocks' ref='switchbutton' />
           </el-col>
           <el-row class='graphslide'>
             <i class="left fas fa-angle-left" @click='prev()' ref="prevArrow"></i>
@@ -37,7 +37,7 @@
               <el-button class='bigButton' @click="$emit('startCompare', building.id)">Compare</el-button>
             </el-col>
             <el-col :span='12'>
-              <el-button class='bigButton' @click='$router.push({path: `/building/${building.id}/${currentRange}`})'>View Full Graph</el-button>
+              <el-button class='bigButton' @click='$router.push({path: `/building/${building.id}/${currentRange + 1}`})'>View Full Graph</el-button>
             </el-col>
           </el-row>
         </el-col>
@@ -59,7 +59,6 @@ export default {
     return {
       api: process.env.VUE_APP_ROOT_API,
       title: '',
-      currentRange: 1,
       unit: 'day',
       int: 1,
       index: 0
@@ -67,6 +66,12 @@ export default {
     }
   },
   computed: {
+
+    currentRange: {
+      get () {
+        return this.$refs.switchbutton.currentRange
+      }
+    },
 
     media: {
       get () {
