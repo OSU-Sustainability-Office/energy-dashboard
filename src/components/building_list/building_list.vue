@@ -23,7 +23,7 @@
               <span slot='label' class='tab_label'>{{ key }}</span>
               <el-row type='flex' justify='left' class='card_flex'>
                 <el-col v-for='building in item' :key='building.name' :span='4' class='card_container'>
-                  <viewCard :plus='false' :building='buildingList' :id='building.id' class='card' @click='$router.push({ path: `/building/${building.id}/1` })' ref='card' />
+                  <viewCard :plus='false' :building='buildingList' :id='building.id' class='card' @click='$router.push({ path: `/building/${building.id}/2` })' ref='card' />
                 </el-col>
                 <!-- <el-col v-if='!publicDir' :span='4' class='card_container'>
                   <el-tooltip content="Create New View" placement="top">
