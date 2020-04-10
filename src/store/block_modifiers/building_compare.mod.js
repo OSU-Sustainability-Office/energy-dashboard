@@ -104,6 +104,8 @@ export default class CompareModifier {
       module is block module, data is new incoming
       data.
     */
-    data.datasets[0].label = this.buildingName(store, this.data.buildingIds[0])
+    if (this.data.buildingIds[0]) {
+      data.datasets[0].label = this.buildingName(store, this.data.buildingIds[0])
+    }
   }
 }

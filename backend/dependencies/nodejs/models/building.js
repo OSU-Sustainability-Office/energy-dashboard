@@ -22,6 +22,7 @@ class Building {
     this.group = ''
     this.geoJSON = ''
     this.name = ''
+    this.hidden = false
   }
 
   async get (expand = true) {
@@ -57,7 +58,8 @@ class Building {
       mapId: this.mapId,
       image: this.image,
       group: this.group,
-      name: this.name
+      name: this.name,
+      hidden: this.hidden
     }
   }
 
@@ -139,19 +141,21 @@ class Building {
     return building
   }
 
-  set (name, group, mapId, image, meterGroups) {
+  set (name, group, mapId, image, meterGroups, hidden) {
     this.name = name
     this.mapId = mapId
     this.image = image
     this.group = group
     this.meterGroups = meterGroups
+    this.hidden = hidden
   }
 
   static async all () {
     await DB.connect()
     let queryJson = {}
     let query = await DB.query(
-      `SELECT buildings.name, 
+      `SELECT buildings.name,
+              buildings.hidden, 
               buildings.id, 
               buildings.group, 
               buildings.map_id, 
@@ -179,6 +183,7 @@ class Building {
           group: row.group,
           mapId: row.map_id,
           image: row.image,
+          hidden: (row.hidden === 1),
           meterGroups: {}
         }
       }
@@ -216,7 +221,7 @@ class Building {
         metergroups.push(group)
       }
       let building = new Building(key)
-      building.set(queryJson[key].name, queryJson[key].group, queryJson[key].mapId, queryJson[key].image, metergroups)
+      building.set(queryJson[key].name, queryJson[key].group, queryJson[key].mapId, queryJson[key].image, metergroups, queryJson[key].hidden)
       buildings.push(building)
     }
     // const token = promiseChain1[1]

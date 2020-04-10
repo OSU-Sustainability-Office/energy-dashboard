@@ -214,24 +214,28 @@ export default {
           graphType: 1
         }
         for (let group of groups) {
-          promises.push((new Promise(async (resolve, reject) => {
-            const chartModifier = ChartModifier(req.graphType, req.point)
-            await chartModifier.preGetData(req, this.$store, null)
-            let data = await this.$store.dispatch(this.$store.getters['map/meterGroup'](group).path + '/getData', req)
-            // Mimic what the chart modifier expects so there is no issues
-            let chartData = {
-              label: '',
-              backgroundColor: '',
-              borderColor: '',
-              fill: false,
-              showLine: true,
-              spanGaps: false,
-              data: data
-            }
+          let groupPoints = this.$store.getters[this.$store.getters['map/meterGroup'](group).path + '/points']
+          let findex = groupPoints.map(o => o.value).indexOf(req.point)
+          if (findex >= 0) {
+            promises.push((new Promise(async (resolve, reject) => {
+              const chartModifier = ChartModifier(req.graphType, req.point)
+              await chartModifier.preGetData(req, this.$store, null)
+              let data = await this.$store.dispatch(this.$store.getters['map/meterGroup'](group).path + '/getData', req)
+              // Mimic what the chart modifier expects so there is no issues
+              let chartData = {
+                label: '',
+                backgroundColor: '',
+                borderColor: '',
+                fill: false,
+                showLine: true,
+                spanGaps: false,
+                data: data
+              }
 
-            await chartModifier.postGetData(chartData, req, this.$store, null)
-            resolve({ point: map[point], group: this.$store.getters['map/meterGroup'](group).name, data: chartData.data })
-          })))
+              await chartModifier.postGetData(chartData, req, this.$store, null)
+              resolve({ point: map[point], group: this.$store.getters['map/meterGroup'](group).name, data: chartData.data })
+            })))
+          }
         }
       }
       let dlData = await Promise.all(promises)

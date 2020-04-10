@@ -28,7 +28,7 @@
       </el-row>
       <el-row>
         <el-col :span='20' :offset='2' class='buttonParent'>
-          <el-button class='bigButton' @click='$router.push({path: `/compare/${encodeURI(JSON.stringify(buildings.map(o => o.id)))}/${$refs.switcher.currentRange}`})'>View Full Graph</el-button>
+          <el-button class='bigButton' @click='$router.push({path: `/compare/${encodeURI(JSON.stringify(buildings.map(o => o.id)))}/${$refs.switcher.currentRange + 1}`})'>View Full Graph</el-button>
         </el-col>
       </el-row>
     </el-col>

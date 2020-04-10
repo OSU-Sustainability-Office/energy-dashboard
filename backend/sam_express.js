@@ -107,23 +107,22 @@
 
   for (let layer of neededLayers) {
     try {
-      const arn = template.Parameters[layer].Default
       layerPromises.push(new Promise((resolve, reject) => {
         Lambda.getLayerVersionByArn({
-          Arn: arn
+          Arn: layer
         }, (err, data) => {
           if (err) {
             reject(err)
           } else {
             const layerUrl = data.Content.Location
-            const zipFile = FileSystem.createWriteStream(arn + '.zip')
+            const zipFile = FileSystem.createWriteStream(layer + '.zip')
             HTTPS.get(layerUrl, (data) => {
               data.pipe(zipFile)
               zipFile.on('finish', () => {
                 const extractor = Unzip.Extract({ path: 'express_build/opt' })
-                FileSystem.createReadStream(arn + '.zip').pipe(extractor)
+                FileSystem.createReadStream(layer + '.zip').pipe(extractor)
                 extractor.on('close', () => {
-                  FileSystem.unlinkSync(arn + '.zip')
+                  FileSystem.unlinkSync(layer + '.zip')
                   resolve()
                 })
               })

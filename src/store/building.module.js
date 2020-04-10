@@ -19,7 +19,8 @@ const state = () => {
     geoJSON: null,
     description: '',
     mapId: null,
-    id: null
+    id: null,
+    hidden: null
   }
 }
 
@@ -109,6 +110,10 @@ const mutations = {
     state.promise = promise
   },
 
+  hidden (state, hide) {
+    state.hidden = hide
+  },
+
   mapId (state, mapId) {
     state.mapId = mapId
   },
@@ -152,6 +157,10 @@ const getters = {
   promise (state) {
     return state.promise
   },
+  hidden (state) {
+    return state.hidden
+  },
+
   mapId (state) {
     return state.mapId
   },

@@ -28,6 +28,7 @@ const actions = {
     store.commit(buildingSpace + '/group', payload.group)
     store.commit(buildingSpace + '/image', payload.image)
     store.commit(buildingSpace + '/id', payload.id)
+    store.commit(buildingSpace + '/hidden', payload.hidden)
     let mgPromises = []
     for (let meterGroup of payload.meterGroups) {
       mgPromises.push(store.dispatch(buildingSpace + '/loadMeterGroup', meterGroup))
@@ -173,7 +174,9 @@ const getters = {
     let buildings = []
     for (let key of Object.keys(state)) {
       if (key.search(/building_/) >= 0) {
-        buildings.push(state[key])
+        if (!state[key].hidden) {
+          buildings.push(state[key])
+        }
       }
     }
     return buildings

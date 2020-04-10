@@ -194,7 +194,7 @@ export default {
           path: path
         })
       } else {
-        this.$router.push({ path: `/compare/${encodeURI(JSON.stringify(this.compareStories))}/1` })
+        this.$router.push({ path: `/compare/${encodeURI(JSON.stringify(this.compareStories))}/2` })
       }
     },
     startCompare: function (buildingId) {

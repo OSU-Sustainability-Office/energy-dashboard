@@ -10,7 +10,7 @@
   <el-row class="stage">
     <el-col class='main'>
       <heropicture v-loading='!view' :media='(view && view.image) ? view.image : ""' :description='(view && view.description) ? view.description : ""' :name='(view && view.name) ? view.name : ""' />
-      <navdir ref='navdir' v-if="(personalView || $route.path.includes('building') || otherView )"></navdir>
+      <navdir ref='navdir' v-if="navVis"></navdir>
       <el-row>
         <el-col :span='24' class='card_area'>
           <card v-for='(card, index) in cards' :key='index + "-" + view.id' :path='card.path' />
@@ -39,8 +39,14 @@ export default {
     navdir,
     editCard
   },
+  data () {
+    return {
+      navVis: false
+    }
+  },
   async created () {
     await this.$store.dispatch('map/loadMap')
+    this.navVis = (this.personalView || this.$route.path.includes('building') || this.otherView)
     await this.$store.dispatch('user/user')
     if (!this.view.id) {
       await this.$store.dispatch('view/changeView', this.$route.params.id)
@@ -71,6 +77,7 @@ export default {
       }
     },
     compareBuildings: {
+      immediate: true,
       handler: async function (buildings) {
         if (this.$route.path.includes('compare')) {
           if (this.cards.length > 0 && this.cards[0]) {
@@ -140,6 +147,7 @@ export default {
         if (this.$route.path.includes('building')) {
           return this.$store.getters['map/building'](this.$route.params.id)
         } else if (this.$route.path.includes('compare')) {
+          if (!this.cards || this.cards.length === 0) return
           const view = {
             name: '',
             image: [],
@@ -178,6 +186,8 @@ export default {
           let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
           if (!building) return []
           let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
+          let block = this.$store.getters[building.path + '/block'](group.id)
+          if (!block) return []
           return [this.$store.getters[building.path + '/block'](group.id)]
         } else {
           if (!this.view || !this.view.id) return []

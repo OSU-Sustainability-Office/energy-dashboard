@@ -129,6 +129,27 @@ export default class LineAvgModifier {
     if (payload.intervalUnit === 'day' && payload.dateInterval > 1) {
       throw new Error('Time difference interval too large to work correctly')
     }
+    let delta = 1
+    let dataDate = (new Date((payload.dateStart) * 1000))
+    switch (payload.intervalUnit) {
+      case 'minute':
+        delta = 60
+        break
+      case 'hour':
+        delta = 3600
+        break
+      case 'day':
+        delta = 86400
+        break
+      case 'month':
+        let monthDays = (new Date(dataDate.getFullYear(), dataDate.getMonth(), 0)).getDate()
+        if (dataDate.getDate() > monthDays) monthDays = dataDate.getDate()
+        delta = 60 * 60 * 24 * monthDays
+        break
+    }
+    delta *= payload.dateInterval
+    payload.dateStart = (payload.dateStart -  delta) - (payload.dateStart % 900)
+
     this.dateStart = payload.dateStart
     this.dateEnd = payload.dateEnd
     payload.point = 'accumulated_real'

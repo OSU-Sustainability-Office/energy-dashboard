@@ -226,6 +226,7 @@ const getters = {
       }
     }
     if (r.length > 1) {
+      // Need to change this incase steam meters are grouped etc
       return [{ label: 'Net Energy Usage (kWh)', value: 'accumulated_real' }]
     } else {
       return r[0].points
