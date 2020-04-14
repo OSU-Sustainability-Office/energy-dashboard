@@ -6,6 +6,9 @@
  * @Copyright:  Oregon State University 2019
  */
 (async () => {
+  const Module = require('module')
+  const _require = Module.prototype.require
+
   const Express = require('express')
   const AWS = require('aws-sdk')
   const FileSystem = require('fs-extra')
@@ -14,6 +17,22 @@
   const Unzip = require('unzip')
   const Cors = require('cors')
 
+  Module.prototype.require = function () {
+    for (let p of Object.keys(arguments)) {
+      if (arguments[p].search(/opt/gi) >= 0) {
+        let mPath = this.id.split('/')
+        let token = mPath[mPath.length - 2]
+        let count = 0
+        while (token !== 'backend' && count < mPath.length - 2) {
+          count++
+          token = mPath[mPath.length - 2 - count]
+        }
+        arguments[p] = 'express_build' + arguments[p]
+        for (let i = 0; i < count; i++) arguments[p] = '../' + arguments[p]
+      }
+    }
+    return _require.apply(this, arguments)
+  }
   const awsKeys = (() => {
     const fileContents = FileSystem.readFileSync(require('os').homedir() + '/.aws/credentials').toString()
     const lineArray = fileContents.split('\n')
@@ -141,6 +160,7 @@
   app.use(Express.urlencoded({ extended: true }))
   app.use(Express.json())
   app.listen(3000, function () {
+    require('dotenv').config({ path: 'express_build/opt/nodejs/.env' })
     console.log('Server Running')
   })
 })()
