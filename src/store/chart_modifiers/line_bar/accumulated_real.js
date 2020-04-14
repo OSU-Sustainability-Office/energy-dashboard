@@ -88,6 +88,9 @@ export default class LineAccumulatedModifier {
         if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
           continue
         }
+        if (Math.abs(resultDataObject.get(i + delta)) < Math.abs(resultDataObject.get(i))) {
+          continue
+        }
         accumulator = resultDataObject.get(i + delta) - resultDataObject.get(i)
         if (payload.point === 'total') {
           // Steam meters report in 100s of lbs
