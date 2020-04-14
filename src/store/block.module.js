@@ -229,7 +229,7 @@ const actions = {
       store.commit('graphType', 1)
       let currentEpoch = ((new Date()).getTime())
       currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
-      store.commit('dateStart', currentEpoch - (900 * 96 * 30 * 1000)) // 15 minutes, 96 times a day, 30 days
+      store.commit('dateStart', currentEpoch - (900 * 96 * 60 * 1000)) // 15 minutes, 96 times a day, 30 days
       store.commit('dateEnd', currentEpoch)
       resolve()
     }))

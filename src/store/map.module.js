@@ -154,7 +154,9 @@ const getters = {
     let groups = new Set()
     for (let key of Object.keys(state)) {
       if (key.search(/building_/) >= 0) {
-        groups.add(state[key].group)
+        if (state[key].group) {
+          groups.add(state[key].group)
+        }
       }
     }
     return groups
@@ -164,7 +166,9 @@ const getters = {
     let buildings = []
     for (let key of Object.keys(state)) {
       if (key.search(/building_/) >= 0 && state[key].group === group) {
-        buildings.push(state[key])
+        if (!state[key].hidden) {
+          buildings.push(state[key])
+        }
       }
     }
     return buildings

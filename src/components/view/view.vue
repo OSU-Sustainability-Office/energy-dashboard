@@ -197,27 +197,27 @@ export default {
     },
     dateStart: {
       get () {
-        let d = new Date()
+        let startModifier = 7 * 24 * 60 * 60 * 1000
         switch (parseInt(this.$route.params.range)) {
           case 1:
-            d.setDate(d.getDate() - 7)
+            startModifier = 7 * 24 * 60 * 60 * 1000
             break
           case 2:
-            d.setDate(d.getDate() - 30)
+            startModifier = 60 * 24 * 60 * 60 * 1000
             break
           case 3:
-            d.setFullYear(d.getFullYear() - 1)
+            startModifier = 365 * 24 * 60 * 60 * 1000
             break
           default:
             break
         }
-        return d.toISOString()
+        return (new Date(this.dateEnd)).getTime() - startModifier
       }
     },
     dateEnd: {
       get () {
         let d = new Date()
-        return d.toISOString()
+        return d.getTime()
       }
     },
     intervalUnit: {

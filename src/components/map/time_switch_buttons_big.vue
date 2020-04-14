@@ -11,7 +11,7 @@
       <el-button class='rangeButton' @click='currentRange = 0'>{{ (campaign) ? 'Past 6 Hours' : 'Week' }}</el-button>
     </el-col>
     <el-col class='rangeButtonParent' v-bind:class="{ active: currentRange == 1 }">
-      <el-button class='rangeButton' @click='currentRange = 1'>{{(campaign) ? 'Past Day' : 'Month'}}</el-button>
+      <el-button class='rangeButton' @click='currentRange = 1'>{{(campaign) ? 'Past Day' : '60 Days'}}</el-button>
     </el-col>
     <el-col class='rangeButtonParent' v-bind:class="{ active: currentRange == 2 }">
       <el-button class='rangeButton' @click='currentRange = 2'>{{(campaign) ? 'Past ' + days + ' Days' : 'Year'}}</el-button>
@@ -61,7 +61,7 @@ export default {
           } else if (value === 1) {
             intervalUnit = 'day'
             dateInterval = 1
-            startModifier = 30 * 24 * 60 * 60 * 1000
+            startModifier = 60 * 24 * 60 * 60 * 1000
           } else {
             intervalUnit = 'day'
             dateInterval = 15
@@ -113,7 +113,7 @@ export default {
       if (this.currentRange === 0) {
         (this.campaign) ? d.setHours(d.getHours() - 6) : d.setDate(d.getDate() - 7)
       } else if (this.currentRange === 1) {
-        (this.campaign) ? d.setDate(d.getDate() - 1) : d.setMonth(d.getMonth() - 1)
+        (this.campaign) ? d.setDate(d.getDate() - 1) : d.setDate(d.getDate() - 60)
       } else if (this.currentRange === 2) {
         (this.campaign) ? d = new Date(this.story.date_start) : d.setFullYear(d.getFullYear() - 1)
       }
