@@ -24,11 +24,16 @@
         </el-menu-item-group>
         <el-menu-item-group v-if='grouping === "Energy Trend"'>
           <span slot='title' class='sideMenuGroupTitle'>Key</span>
-          <el-tooltip content="Click to toggle visibility" placement="right">
+          <el-col class='trendBox'>
+            <div class='trendGradient'>&nbsp;</div>
+            <div class='trendTopLabel'>Reducing Energy <br> Usage</div>
+            <div class='trendBottomLabel'>Increasing Energy <br> Usage</div>
+          </el-col>
+          <!-- <el-tooltip content="Click to toggle visibility" placement="right">
             <el-menu-item index='Down Trend' :class="[(isDisplayed('Down Trend') ? 'active' : 'notactive')]"><span class='down swatch'></span>Down Trend</el-menu-item>
           </el-tooltip>
           <el-menu-item index='Stable Trend' :class="[(isDisplayed('Stable Trend') ? 'active' : 'notactive')]"><span class='stable swatch'></span>Stable Trend</el-menu-item>
-          <el-menu-item index='Up Trend' :class="[(isDisplayed('Up Trend') ? 'active' : 'notactive')]"><span class='up swatch'></span>Up Trend</el-menu-item>
+          <el-menu-item index='Up Trend' :class="[(isDisplayed('Up Trend') ? 'active' : 'notactive')]"><span class='up swatch'></span>Up Trend</el-menu-item> -->
         </el-menu-item-group>
       </el-menu>
       <div class='mapContainer' ref='mapContainer' v-loading='!mapLoaded'>
@@ -255,6 +260,33 @@ export default {
       } else {
         this.selected.push(string)
       }
+    },
+    computedColor: function (percentage) {
+      // #d62326 - Bottom Red
+      // #19a23a - Top Green
+      const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]
+      const greenInt = [parseInt('0x19', 16), parseInt('0xa2', 16), parseInt('0x3a', 16)]
+      const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
+      const compare = Math.abs(percentage) / 0.01
+      const result = []
+      if (percentage < -0.01) {
+        result.push(greenInt[0])
+        result.push(greenInt[1])
+        result.push(greenInt[2])
+      } else if (percentage > 0.01) {
+        result.push(redInt[0])
+        result.push(redInt[1])
+        result.push(redInt[2])
+      } else if (percentage < 0) {
+        result.push(Math.round(typicalColor[0] - redInt[0] * compare))
+        result.push(Math.round(typicalColor[1] + redInt[1] * compare))
+        result.push(Math.round(typicalColor[2] + redInt[2] * compare))
+      } else {
+        result.push(Math.round(typicalColor[0] + greenInt[0] * (compare)))
+        result.push(Math.round(typicalColor[1] - greenInt[1] * (compare)))
+        result.push(Math.round(typicalColor[2] - greenInt[2] * (compare)))
+      }
+      return 'rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')'
     }
   },
   async created () {
@@ -336,13 +368,15 @@ export default {
                   let slope = accmxxyy / accmxx
                   let normalizedSlope = slope / meanY
                   // slope /= 30
-                  if (normalizedSlope > 0.001) {
-                    layer.setStyle({ fillColor: '#d62326', color: '#d62326' })
-                  } else if (normalizedSlope < -0.001) {
-                    layer.setStyle({ fillColor: '#4A773C', color: '#4A773C' })
-                  } else {
-                    layer.setStyle({ fillColor: '#FFB500', color: '#FFB500' })
-                  }
+                  console.log(normalizedSlope)
+                  layer.setStyle({ fillColor: this.computedColor(normalizedSlope), color: this.computedColor(normalizedSlope) })
+                  // if (normalizedSlope > 0.001) {
+                  //   layer.setStyle({ fillColor: '#d62326', color: '#d62326' })
+                  // } else if (normalizedSlope < -0.001) {
+                  //   layer.setStyle({ fillColor: '#4A773C', color: '#4A773C' })
+                  // } else {
+                  //   layer.setStyle({ fillColor: '#FFB500', color: '#FFB500' })
+                  // }
                   resolve()
                 }))
               }
@@ -488,5 +522,29 @@ $sideMenu-width: 250px;
 .active .up.swatch {
   background-color: #d62326B3;
   border-color: #d62326;
+}
+.trendGradient {
+  width: 20px;
+  height: 150px;
+  border: solid 2px rgb(255, 255, 255);
+  background: rgb(25,162,58);
+  background: linear-gradient(180deg, rgba(25,162,58,1) 0%, rgba(214,35,38,1) 100%);
+  border-radius: 8px;
+}
+.trendBox {
+  padding: 20px;
+  position: relative;
+  font-size: 16px;
+  color: #fff;
+}
+.trendTopLabel {
+  position: absolute;
+  left: 60px;
+  top: 20px;
+}
+.trendBottomLabel {
+  position: absolute;
+  left: 60px;
+  bottom: 20px;
 }
 </style>
