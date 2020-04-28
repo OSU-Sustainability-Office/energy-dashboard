@@ -10,7 +10,9 @@
   <el-row class='stage'>
     <el-col :span='24'>
       <el-menu class='sideMenu' mode='vertical' backgroundColor='#1A1A1A' @select='handleSelect'>
-        <el-menu-item-group>
+        <div class='colorByTitle'>Group By:</div>
+        <switchButtons :titles='["Category", "Energy Trend"]' v-model='grouping' />
+        <el-menu-item-group v-if='grouping === "Category"'>
           <span slot='title' class='sideMenuGroupTitle'>Key</span>
           <el-tooltip content="Click to toggle visibility" placement="right">
             <el-menu-item index='Academics' :class="[(isDisplayed('Academics') ? 'active' : 'notactive')]"><span class='edu swatch'></span>Academics</el-menu-item>
@@ -19,6 +21,19 @@
           <el-menu-item index='Dining' :class="[(isDisplayed('Dining') ? 'active' : 'notactive')]"><span class='din swatch'></span>Dining</el-menu-item>
           <el-menu-item index='Events & Admin' :class="[(isDisplayed('Events & Admin') ? 'active' : 'notactive')]"><span class='com swatch'></span>Events & Admin</el-menu-item>
           <el-menu-item index='Residence' :class="[(isDisplayed('Residence') ? 'active' : 'notactive')]"><span class='res swatch'></span>Residence</el-menu-item>
+        </el-menu-item-group>
+        <el-menu-item-group v-if='grouping === "Energy Trend"'>
+          <span slot='title' class='sideMenuGroupTitle'>Key</span>
+          <el-col class='trendBox'>
+            <div class='trendGradient'>&nbsp;</div>
+            <div class='trendTopLabel'>Reducing Energy <br> Usage</div>
+            <div class='trendBottomLabel'>Increasing Energy <br> Usage</div>
+          </el-col>
+          <!-- <el-tooltip content="Click to toggle visibility" placement="right">
+            <el-menu-item index='Down Trend' :class="[(isDisplayed('Down Trend') ? 'active' : 'notactive')]"><span class='down swatch'></span>Down Trend</el-menu-item>
+          </el-tooltip>
+          <el-menu-item index='Stable Trend' :class="[(isDisplayed('Stable Trend') ? 'active' : 'notactive')]"><span class='stable swatch'></span>Stable Trend</el-menu-item>
+          <el-menu-item index='Up Trend' :class="[(isDisplayed('Up Trend') ? 'active' : 'notactive')]"><span class='up swatch'></span>Up Trend</el-menu-item> -->
         </el-menu-item-group>
       </el-menu>
       <div class='mapContainer' ref='mapContainer' v-loading='!mapLoaded'>
@@ -41,6 +56,7 @@ import sideView from '@/components/map/sideView'
 import prompt from '@/components/map/map_prompt'
 import compareSide from '@/components/map/map_compareside'
 import L from 'leaflet'
+import switchButtons from '@/components/map/switch_buttons'
 
 export default {
   name: 'featured',
@@ -50,7 +66,8 @@ export default {
     sideView,
     LGeoJson,
     prompt,
-    compareSide
+    compareSide,
+    switchButtons
   },
   computed: {
     showSide: {
@@ -82,11 +99,12 @@ export default {
       polygonData: null,
       openBuilding: 0,
       compareStories: [],
+      grouping: 'Category',
       ele: [],
       compareMarkers: [],
       rKey: 1,
       askingForComparison: false,
-      selected: ['Residence', 'Athletics & Rec', 'Dining', 'Academics', 'Events & Admin'],
+      selected: ['Residence', 'Athletics & Rec', 'Dining', 'Academics', 'Events & Admin', 'Stable Trend', 'Up Trend', 'Down Trend'],
       show: false,
       mapLoaded: false,
       buildingOptions: {
@@ -242,6 +260,33 @@ export default {
       } else {
         this.selected.push(string)
       }
+    },
+    computedColor: function (percentage) {
+      // #d62326 - Bottom Red
+      // #19a23a - Top Green
+      const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]
+      const greenInt = [parseInt('0x19', 16), parseInt('0xa2', 16), parseInt('0x3a', 16)]
+      const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
+      const compare = Math.abs(percentage) / 0.01
+      const result = []
+      if (percentage < -0.01) {
+        result.push(greenInt[0])
+        result.push(greenInt[1])
+        result.push(greenInt[2])
+      } else if (percentage > 0.01) {
+        result.push(redInt[0])
+        result.push(redInt[1])
+        result.push(redInt[2])
+      } else if (percentage < 0) {
+        result.push(Math.round(typicalColor[0] - redInt[0] * compare))
+        result.push(Math.round(typicalColor[1] + redInt[1] * compare))
+        result.push(Math.round(typicalColor[2] + redInt[2] * compare))
+      } else {
+        result.push(Math.round(typicalColor[0] + greenInt[0] * (compare)))
+        result.push(Math.round(typicalColor[1] - greenInt[1] * (compare)))
+        result.push(Math.round(typicalColor[2] - greenInt[2] * (compare)))
+      }
+      return 'rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')'
     }
   },
   async created () {
@@ -254,6 +299,94 @@ export default {
     })
   },
   watch: {
+    grouping: {
+      handler: function (value) {
+        this.rKey++
+        this.mapLoaded = false
+        this.$nextTick(async () => {
+          this.map = this.$refs.map.mapObject
+          let promises = []
+          for (var layerKey of Object.keys(this.map._layers)) {
+            let layer = this.map._layers[layerKey]
+            if (layer.feature) {
+              if (this.grouping === 'Category') {
+                console.log(layer)
+                var color = '#000'
+                switch (layer.feature.properties.group) {
+                  case 'Residence':
+                    color = '#D3832B'
+                    break
+                  case 'Academics':
+                    color = '#0D5257'
+                    break
+                  case 'Events & Admin':
+                    color = '#7A6855'
+                    break
+                  case 'Athletics & Rec':
+                    color = '#FFB500'
+                    break
+                  case 'Dining':
+                    color = '#4A773C'
+                    break
+                  default:
+                    break
+                }
+                layer.setStyle({ fillColor: color, color: color })
+              } else if (this.grouping === 'Energy Trend') {
+                promises.push(new Promise(async (resolve, reject) => {
+                  await this.$store.getters['map/promise']
+                  let building = this.$store.getters['map/building'](layer.feature.properties.id)
+                  await this.$store.getters[building.path + '/promise']
+                  let mg = this.$store.getters[building.path + '/primaryGroup']('Electricity')
+                  let defaultBlock = this.$store.getters[building.path + '/block'](mg.id)
+                  await this.$store.getters[defaultBlock.path + '/promise']
+                  let defaultChart = this.$store.getters[defaultBlock.path + '/charts'][0]
+                  let currentDate = new Date()
+                  let minus60 = new Date(currentDate.getTime() - (60 * 24 * 60 * 60 * 1000))
+                  const reqPayload = {
+                    dateEnd: parseInt((currentDate.getTime() - (currentDate.getTime() % 900 * 1000)) / 1000),
+                    dateStart: parseInt((minus60.getTime() - (minus60.getTime() % 900 * 1000)) / 1000),
+                    intervalUnit: 'day',
+                    dateInterval: 1,
+                    graphType: 1
+                  }
+                  let data = await this.$store.dispatch(defaultChart.path + '/getData', reqPayload)
+                  // Below is an algorithm to compute least squares linear regression
+                  let meanY = 0
+                  for (let index = 0; index < data.data.length; index++) {
+                    meanY +=  data.data[index].y
+                  }
+                  meanY /= data.data.length
+                  let meanX = data.data.length / 2 // No need to use date can just use index
+                  let accmxx = 0
+                  let accmxxyy = 0
+                  for (let index = 0; index < data.data.length; index++) {
+                    accmxx +=  Math.pow(index - meanX, 2)// index - meanX
+                    accmxxyy += (data.data[index].y - meanY) * (index - meanX)
+                  }
+                  // accmxx =
+                  let slope = accmxxyy / accmxx
+                  let normalizedSlope = slope / meanY
+                  // slope /= 30
+                  console.log(normalizedSlope)
+                  layer.setStyle({ fillColor: this.computedColor(normalizedSlope), color: this.computedColor(normalizedSlope) })
+                  // if (normalizedSlope > 0.001) {
+                  //   layer.setStyle({ fillColor: '#d62326', color: '#d62326' })
+                  // } else if (normalizedSlope < -0.001) {
+                  //   layer.setStyle({ fillColor: '#4A773C', color: '#4A773C' })
+                  // } else {
+                  //   layer.setStyle({ fillColor: '#FFB500', color: '#FFB500' })
+                  // }
+                  resolve()
+                }))
+              }
+            }
+          }
+          await Promise.all(promises)
+          this.mapLoaded = true
+        })
+      }
+    },
     selected: function (val) {
       this.rKey++
       this.$nextTick(() => {
@@ -261,7 +394,7 @@ export default {
         for (var layerKey of Object.keys(this.map._layers)) {
           let layer = this.map._layers[layerKey]
           if (layer.feature) {
-            if (!val.includes(layer.feature.properties.group)) {
+            if (!val.includes(layer.feature.properties.group) && this.grouping === 'Category') {
               this.map.removeLayer(layer)
             }
           }
@@ -277,6 +410,12 @@ export default {
 </style>
 <style scoped lang='scss'>
 $sideMenu-width: 250px;
+.colorByTitle {
+  color: $--color-white;
+  font-size: 26px;
+  text-align: center;
+  font-family: 'stratumno2';
+}
 .stage {
   padding: 0;
   position: absolute;
@@ -289,7 +428,7 @@ $sideMenu-width: 250px;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 20000;
+  z-index: 2000;
   width: $sideMenu-width;
   padding-top: 1em;
 }
@@ -371,5 +510,41 @@ $sideMenu-width: 250px;
 .label {
   color: #000;
   font-size: 1em;
+}
+.active .stable.swatch {
+  background-color: #FFB500B3;
+  border-color: #FFB500;
+}
+.active .down.swatch {
+  background-color: #4A773CB3;
+  border-color: #4A773C;
+}
+.active .up.swatch {
+  background-color: #d62326B3;
+  border-color: #d62326;
+}
+.trendGradient {
+  width: 20px;
+  height: 150px;
+  border: solid 2px rgb(255, 255, 255);
+  background: rgb(25,162,58);
+  background: linear-gradient(180deg, rgba(25,162,58,1) 0%, rgba(214,35,38,1) 100%);
+  border-radius: 8px;
+}
+.trendBox {
+  padding: 20px;
+  position: relative;
+  font-size: 16px;
+  color: #fff;
+}
+.trendTopLabel {
+  position: absolute;
+  left: 60px;
+  top: 20px;
+}
+.trendBottomLabel {
+  position: absolute;
+  left: 60px;
+  bottom: 20px;
 }
 </style>
