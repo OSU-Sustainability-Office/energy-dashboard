@@ -15,9 +15,16 @@ const Response = require('/opt/nodejs/response.js')
 
 exports.get = async (event, context) => {
   let response = new Response(event)
+
+  let size = event.queryStringParameters['size'] : '1'
+  // This If statement is here solely to prevent any sort of injection. We always convert user input into something safe to run in aws.
+  // Additionally, sizes of 1 and 2 were previously used for this api endpoint. The if statement is necessary for maintaining the legacy interface.
+  if (parseInt(size) === 2) size = '/thumbnails/'
+  else size = '/fullSize/'
+
   const params = {
     Bucket: 'osu-energy-images',
-    Key: event.queryStringParameters['name']
+    Key: size + event.queryStringParameters['name']
   }
   let image
   try {
@@ -31,23 +38,7 @@ exports.get = async (event, context) => {
     response.status = 404
     return response
   }
-  if (event.queryStringParameters['size']) {
-    if (event.queryStringParameters['size'] > 2 || event.queryStringParameters['size'] <= 0) {
-      response.status = 400
-      return response
-    }
-    let jImage = await Jimp.read(image.Body)
-    jImage.scale(Number(event.queryStringParameters['size']))
-    response.body = await (new Promise((resolve, reject) => {
-      jImage.getBase64(Jimp.AUTO, (err, data) => {
-        if (err) reject(err)
-        else resolve(data)
-      })
-    }))
-    response.body = response.body.split(',')[1]
-  } else {
-    response.body = image.Body.toString('base64')
-  }
+  response.body = image.Body.toString('base64')
   response.headers['Content-Type'] = 'image/jpeg'
   response.isBase64Encoded =  true
   return response
