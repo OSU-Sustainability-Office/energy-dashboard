@@ -7,7 +7,6 @@
  */
 require('dotenv').config({ path: '/opt/nodejs/.env' })
 const AWS = require('/opt/nodejs/node_modules/aws-sdk')
-const Jimp = require('/opt/nodejs/node_modules/jimp')
 AWS.config.update({ region: 'us-west-2' })
 const S3 = new AWS.S3()
 const Response = require('/opt/nodejs/response.js')
@@ -15,9 +14,15 @@ const Response = require('/opt/nodejs/response.js')
 
 exports.get = async (event, context) => {
   let response = new Response(event)
+
+  let prepath = 'fullSize/'
+  if (event.queryStringParameters['size'] && parseInt(event.queryStringParameters['size']) === 2) {
+    prepath = 'thumbnails/'
+  }
+
   const params = {
     Bucket: 'osu-energy-images',
-    Key: event.queryStringParameters['name']
+    Key: prepath + event.queryStringParameters['name']
   }
   let image
   try {
@@ -31,23 +36,7 @@ exports.get = async (event, context) => {
     response.status = 404
     return response
   }
-  if (event.queryStringParameters['size']) {
-    if (event.queryStringParameters['size'] > 2 || event.queryStringParameters['size'] <= 0) {
-      response.status = 400
-      return response
-    }
-    let jImage = await Jimp.read(image.Body)
-    jImage.scale(Number(event.queryStringParameters['size']))
-    response.body = await (new Promise((resolve, reject) => {
-      jImage.getBase64(Jimp.AUTO, (err, data) => {
-        if (err) reject(err)
-        else resolve(data)
-      })
-    }))
-    response.body = response.body.split(',')[1]
-  } else {
-    response.body = image.Body.toString('base64')
-  }
+  response.body = image.Body.toString('base64')
   response.headers['Content-Type'] = 'image/jpeg'
   response.isBase64Encoded =  true
   return response
@@ -63,7 +52,8 @@ exports.all = async (event, context) => {
       else resolve(data)
     })
   }))
+  images = images.Contents.filter(image => image.Key.split('/').length === 1)
   let response = new Response(event)
-  response.body = JSON.stringify(images.Contents.map(o => o.Key))
+  response.body = JSON.stringify(images.map(o => o.Key))
   return response
 }
