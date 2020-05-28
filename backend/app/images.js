@@ -7,7 +7,6 @@
  */
 require('dotenv').config({ path: '/opt/nodejs/.env' })
 const AWS = require('/opt/nodejs/node_modules/aws-sdk')
-const Jimp = require('/opt/nodejs/node_modules/jimp')
 AWS.config.update({ region: 'us-west-2' })
 const S3 = new AWS.S3()
 const Response = require('/opt/nodejs/response.js')
@@ -16,15 +15,14 @@ const Response = require('/opt/nodejs/response.js')
 exports.get = async (event, context) => {
   let response = new Response(event)
 
-  let size = event.queryStringParameters['size'] : '1'
-  // This If statement is here solely to prevent any sort of injection. We always convert user input into something safe to run in aws.
-  // Additionally, sizes of 1 and 2 were previously used for this api endpoint. The if statement is necessary for maintaining the legacy interface.
-  if (parseInt(size) === 2) size = '/thumbnails/'
-  else size = '/fullSize/'
+  let prepath = 'fullSize/'
+  if (event.queryStringParameters['size'] && parseInt(event.queryStringParameters['size']) === 2) {
+    prepath = 'thumbnails/'
+  }
 
   const params = {
     Bucket: 'osu-energy-images',
-    Key: size + event.queryStringParameters['name']
+    Key: prepath + event.queryStringParameters['name']
   }
   let image
   try {
@@ -54,7 +52,8 @@ exports.all = async (event, context) => {
       else resolve(data)
     })
   }))
+  images = images.Contents.filter(image => image.Key.split('/').length === 1)
   let response = new Response(event)
-  response.body = JSON.stringify(images.Contents.map(o => o.Key))
+  response.body = JSON.stringify(images.map(o => o.Key))
   return response
 }
