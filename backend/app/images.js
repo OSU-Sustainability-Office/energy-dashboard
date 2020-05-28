@@ -15,7 +15,7 @@ const Response = require('/opt/nodejs/response.js')
 exports.get = async (event, context) => {
   let response = new Response(event)
 
-  let prepath = 'fullSize/'
+  let prepath = ''
   if (event.queryStringParameters['size'] && parseInt(event.queryStringParameters['size']) === 2) {
     prepath = 'thumbnails/'
   }
