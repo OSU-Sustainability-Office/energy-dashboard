@@ -15,6 +15,7 @@ import campaigns from '@/components/campaigns/campaign_list'
 import notfound from '@/components/extras/404.vue'
 import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
 import buildingList from '@/components/building_list/building_list.vue'
+import extras from '@/components/extras/embeddable-page.vue'
 // import admin from '@/components/admin/admin.vue'
 
 Vue.use(Router)
@@ -67,6 +68,10 @@ export default new Router({
     {
       path: '/buildings/:group',
       component: buildingList
+    },
+    {
+      path: '/embeddable-page',
+      component: extras
     },
     {
       path: '*',
