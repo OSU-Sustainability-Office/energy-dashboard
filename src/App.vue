@@ -9,7 +9,7 @@
 <template>
   <el-container class="app">
     <el-header class='header'>
-      <navigbar />
+      <navigbar v-if="['kiosks'].indexOf($route.name) > -1"></navigbar>
     </el-header>
     <el-main class='main' ref='main'>
       <!-- <transition v-bind:name="transitionName" v-on:after-leave="enableScroll" v-on:before-enter="disableScroll"> -->

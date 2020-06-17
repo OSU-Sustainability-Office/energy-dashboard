@@ -70,6 +70,7 @@ export default new Router({
       component: buildingList
     },
     {
+      name: 'kiosks',
       path: '/kiosks',
       component: kiosks
     },

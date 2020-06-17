@@ -9,7 +9,7 @@
 <template>
   <el-row class='stage'>
     <el-col>
-      Hello World.
+      Hello World
     </el-col>
   </el-row>
 </template>
