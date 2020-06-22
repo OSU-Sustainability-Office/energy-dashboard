@@ -71,7 +71,7 @@ export default new Router({
     },
     {
       name: 'kiosks',
-      path: '/kiosks',
+      path: '/building/:id/:range/kiosks',
       component: kiosks
     },
     {
