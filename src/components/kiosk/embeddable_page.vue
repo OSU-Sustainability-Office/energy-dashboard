@@ -9,8 +9,6 @@
 <template>
   <el-row class="stage">
     <el-col class='main'>
-      <heropicture v-loading='!view' :media='(view && view.image) ? view.image : ""' :description='(view && view.description) ? view.description : ""' :name='(view && view.name) ? view.name : ""' />
-      <!-- <navdir ref='navdir' v-if="navVis"></navdir> -->
       <el-row>
         <el-col :span='24' class='card_area'>
           <card v-for='(card, index) in cards' :key='index + "-" + view.id' :path='card.path' />
@@ -28,15 +26,11 @@
 
 <script>
 import card from '@/components/view/card'
-import heropicture from '@/components/extras/heropicture'
-// import navdir from '@/components/view/navdir'
 import editCard from '@/components/view/modals/edit_card'
 
 export default {
   components: {
     card,
-    heropicture,
-    // navdir,
     editCard
   },
   data () {
@@ -263,25 +257,23 @@ export default {
   margin: 0;
   padding: 0;
 }
-.main {
+.el-main .main {
+  top: 0px;
   padding: 0;
 }
-.card_area {
-  padding: 2em;
-}
-.addFeatured {
+  .addFeatured {
   background-color: $--color-black;
   height: calc(400px + 0.8em);
   color: $--color-primary;
-  margin-top: 0.1em;
-  margin-bottom: 0.1em;
-  border-radius: 5px;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-radius: 0px;
   text-align: center;
   font-size: 10em;
   cursor: pointer;
 }
 .addFeatured .fas {
-  margin-top: 1em;
+  margin-top: 0;
 }
 .addFeatured:hover {
   border: solid 1px $--color-primary;

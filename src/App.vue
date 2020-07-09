@@ -11,7 +11,7 @@
     <el-header class='header'>
       <navigbar v-if="'kiosks'.indexOf($route.name) == -1"></navigbar>
     </el-header>
-    <el-main class='main' ref='main'>
+    <el-main class='main' ref='main' v-bind:class="{ 'no-top': 'kiosks'.indexOf($route.name) !== -1 }">
       <!-- <transition v-bind:name="transitionName" v-on:after-leave="enableScroll" v-on:before-enter="disableScroll"> -->
         <router-view />
       <!-- </transition> -->
@@ -156,5 +156,8 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
+}
+.no-top {
+  top: 0;
 }
 </style>
