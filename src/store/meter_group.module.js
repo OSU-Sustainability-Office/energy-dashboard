@@ -7,7 +7,6 @@
  */
 import API from './api.js'
 import Meter from './meter.module.js'
-import Cache from './metergroup_cacher.js'
 
 const state = () => {
   return {
@@ -68,10 +67,7 @@ const actions = {
   },
 
   async getData (store, payload) {
-    let cache = Cache.retrieveEntry(payload, store.getters.path)
-    if (cache) {
-      return cache
-    }
+    // TODO - JRW Add caching here
     let resultDataObject = new Map()
     if (payload.point !== 'accumulated_real' && payload.point !== 'total' && payload.point !== 'cubic_feet' && store.getters.meters.length > 1) {
       /*
@@ -106,49 +102,7 @@ const actions = {
         }
       }
     }
-    Cache.addEntry(payload, store.getters.path, resultDataObject)
     return resultDataObject
-    // if (payload.graphType === 1 || payload.graphType === 2 || payload.graphType === 5) {
-    //   let delta = 1
-    //   switch (payload.intervalUnit) {
-    //     case 'minute':
-    //       delta = 60
-    //       break
-    //     case 'hour':
-    //       delta = 3600
-    //       break
-    //     case 'day':
-    //       delta = 86400
-    //       break
-    //   }
-
-    //   delta *= payload.dateInterval
-    //   for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
-    //     try {
-    //       let accumulator = 0
-    //       if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
-    //         continue
-    //       }
-    //       if (payload.point === 'accumulated_real' || payload.point === 'total' || payload.point === 'cubic_feet') {
-    //         accumulator = resultDataObject.get(i + delta) - resultDataObject.get(i)
-    //       } else {
-    //         accumulator = resultDataObject.get(i + delta)
-    //       }
-    //       returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
-    //     } catch (error) {
-    //       console.log(error)
-    //     }
-    //   }
-    // } else if (payload.graphType === 3 || payload.graphType === 4) {
-    //   try {
-    //     const net = resultDataObject.get(payload.dateEnd) - resultDataObject.get(payload.dateStart)
-    //     returnData.push(net)
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
-
-    // return returnData
   }
 }
 

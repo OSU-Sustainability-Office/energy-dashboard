@@ -1,11 +1,3 @@
-/*
- * @Author: Brogan
- * @Date:   Monday September 30th 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Monday September 30th 2019
- * @Copyright:  Oregon State University 2019
- */
-
 <template>
   <el-row class="stage">
     <el-col class='main'>

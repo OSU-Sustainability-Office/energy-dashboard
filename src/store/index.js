@@ -14,6 +14,7 @@ import Campaigns from './campaigns.module.js'
 import EDMap from './map.module.js'
 import ModalController from './modal_controller.module.js'
 import Admin from './admin.module.js'
+import DataStore from './data_layer/data_store.js'
 
 Vue.use(Vuex)
 
@@ -30,7 +31,8 @@ const store = {
     campaigns: Campaigns,
     map: EDMap,
     user: User,
-    modalController: ModalController
+    modalController: ModalController,
+    dataStore: DataStore
   }
 }
 
