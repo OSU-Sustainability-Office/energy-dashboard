@@ -65,25 +65,37 @@ const actions = {
     //  - timestamps abutting a gap in the data larger than 15 minutes
     //  - the last timestamp
     let timestamps = Object.keys(this.getters['dataStore/cache'][payload.meterId][payload.uom])
-      .sort((a, b) => parseInt(a) <= parseInt(b))
+      .filter((key) => parseInt(key) >= payload.start && parseInt(key) <= payload.end) // Filter out irrelevant times
+      .sort((a, b) => parseInt(a) > parseInt(b)) // Chronologically sort times
       .filter((key, index, array) => {
         // Keep the first, the last, and any indices defining the start and/or end of a gap
         return index === 0 || index === array.length - 1 || Math.abs(key - array[index - 1]) > 900 || Math.abs(key - array[index + 1]) > 900
       })
+      .map(ts => parseInt(ts)) // Parse them to integers
 
-    // Return pairs of two consecutive timestamps
-    // [2, 3, 4, 5, 6, 4, 3, 5, 5] becomes
-    // [
-    //  [2, 3],
-    //  [4, 5],
-    //  [6, 4],
-    //  [3, 5],
-    //  [5]
-    // ]
-    return timestamps.reduce((result, value, index, array) => {
-      result.push(array.slice(index, index + 2))
-      return result
-    }, [])
+    // If no matching records are found, return the original interval
+    if (timestamps.length === 0) return [[payload.start, payload.end]]
+    else {
+      // At least one timestamp was found
+      // At this point, we have an array of all intervals where we have data stored
+      // We have the start and end times for each interval (inclusive)
+      // Now, we need to determine if there are any gaps.
+      let returnArr = [] // An array of interval pairs, ie: [[start, end]]
+      if (timestamps[0] > payload.start) {
+        // The first gap is between the start and the first timestamp
+        returnArr.push([payload.start, timestamps[0]])
+      }
+      // Iterate over the remaining timestamps and search for gaps
+      for (let index = 1; index < timestamps.length; index += 2) {
+        if (timestamps[index + 1]) {
+          returnArr.push([timestamps[index], timestamps[index + 1]])
+        } else if (timestamps[index] < payload.end) {
+          returnArr.push([timestamps[index], payload.end])
+        }
+      }
+      // Return an array of interval pairs
+      return returnArr
+    }
   },
 
   // Retrieves data from the cache if it exists
@@ -133,11 +145,25 @@ const actions = {
           })
         })
       })
+    } else {
+      console.log('')
     }
 
     // Retrieve the data from the cache
-    const cache = this.getters['dataStore/cache'][payload.meterId][payload.uom]
-    const cacheKeys = Object.keys(cache).filter(key => key >= payload.start && key <= payload.end)
+    let cache
+    let cacheKeys
+    try {
+      cache = this.getters['dataStore/cache'][payload.meterId][payload.uom]
+      cacheKeys = Object.keys(cache).filter(key => key >= payload.start && key <= payload.end) // Filter out data that is not in our time range
+    } catch (e) {
+      // Somehow, the data we expect to be in the cache is not there!
+      console.log(e)
+      return []
+    }
+
+    // Reformat the data so that it matches the API's format
+    // TODO: JRW 8.13.2020 Someone (probably me) needs to standardize how data is passed around the dashboard.
+    //       This reformatting issue should work itself out if we make every component consume a standardized datum class instance.
     let dataArray = []
     cacheKeys.forEach(key => {
       let dataObj = {}
