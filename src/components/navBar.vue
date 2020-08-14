@@ -9,7 +9,7 @@
 <template>
     <el-row class='sus-nav'>
       <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">
-        <img src="/images/logo.png" height=50 width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/"})'>
+        <svgLogo width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/"})'/>
       </el-col>
       <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="20">
         <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='rgba(0,0,0,0)' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
@@ -26,10 +26,13 @@
     </el-row>
 </template>
 <script>
+import svgLogo from '../../public/images/logo.svg'
 
 export default {
   name: 'navigbar',
-  components: {},
+  components: {
+    svgLogo
+  },
   data () {
     return {
       loginLink: 'https://api.sustainability.oregonstate.edu/v2/auth/login?returnURI=' + process.env.VUE_APP_HOST_ADDRESS + '/#/map',
@@ -93,7 +96,9 @@ export default {
   overflow: hidden;
 }
 .sus-nav-image {
-  padding-top: ($--nav-height - 50) / 2;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  height: $--nav-height - 2px;
   cursor: pointer;
 }
 .sus-nav-menu {

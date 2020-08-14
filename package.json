@@ -26,6 +26,7 @@
     "vue-chartjs": "^3.5.0",
     "vue-i18n": "^8.15.3",
     "vue-router": "^3.1.5",
+    "vue-svg-loader": "^0.16.0",
     "vue2-leaflet": "^1.2.3",
     "vuex": "^3.1.2"
   },

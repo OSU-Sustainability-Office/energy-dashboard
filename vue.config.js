@@ -24,6 +24,9 @@ module.exports = {
       ]
     }
   },
+  chainWebpack: config => {
+    config.module.rules.delete("svg");
+  },
   configureWebpack: {
     optimization: {
       removeAvailableModules: false,
@@ -39,6 +42,12 @@ module.exports = {
             'cache-loader',
             'thread-loader',
             'babel-loader'
+          ]
+        },
+        {
+          test: /\.svg$/,
+          use: [
+            'vue-svg-loader'
           ]
         }
       ]
