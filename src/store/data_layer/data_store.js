@@ -145,8 +145,6 @@ const actions = {
           })
         })
       })
-    } else {
-      console.log('')
     }
 
     // Retrieve the data from the cache
