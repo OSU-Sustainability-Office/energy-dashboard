@@ -67,7 +67,6 @@ const actions = {
   },
 
   async getData (store, payload) {
-    // TODO - JRW Add caching here
     let resultDataObject = new Map()
     if (payload.point !== 'accumulated_real' && payload.point !== 'total' && payload.point !== 'cubic_feet' && store.getters.meters.length > 1) {
       /*
