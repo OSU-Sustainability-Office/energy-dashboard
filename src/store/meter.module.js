@@ -59,7 +59,6 @@ const actions = {
       uom: payload.point,
       classInt: store.getters.classInt
     })
-    // return API.data(store.getters.id, start, end, payload.point, store.getters.classInt)
   }
 
 }
