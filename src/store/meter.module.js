@@ -52,7 +52,13 @@ const actions = {
     let start = payload.dateStart - 900
     let end = payload.dateEnd
     await store.getters.promise
-    return API.data(store.getters.id, start, end, payload.point, store.getters.classInt)
+    return this.dispatch('dataStore/getData', {
+      meterId: store.getters.id,
+      start: start,
+      end: end,
+      uom: payload.point,
+      classInt: store.getters.classInt
+    })
   }
 
 }

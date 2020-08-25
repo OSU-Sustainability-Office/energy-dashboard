@@ -1,13 +1,5 @@
-/*
- * @Author: Brogan
- * @Date:   Saturday August 3rd 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday August 3rd 2019
- * @Copyright:  Oregon State University 2019
- */
 import API from './api.js'
 import ChartModifiers from './chart_modifiers/index.js'
-import ChartCacher from './chart_cacher.js'
 
 const state = () => {
   return {
@@ -25,6 +17,14 @@ const state = () => {
 
 const actions = {
 
+  // Example Payload
+  // {
+  //   "dateStart": 1590512400,
+  //   "dateEnd": 1595696400,
+  //   "intervalUnit": "day",
+  //   "dateInterval": 1,
+  //   "graphType": 1
+  // }
   async getData (store, payload) {
     if (!store.getters.meterGroupPath) return
     const reqPayload = {
@@ -33,8 +33,6 @@ const actions = {
       ...store.getters.modifierData
     }
     let reqPayloadCopy = JSON.parse(JSON.stringify(reqPayload))
-    let cached = ChartCacher.retrieveEntry(reqPayloadCopy, store.getters.meterGroupPath)
-    if (cached) return cached
 
     const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
     await chartModifier.preGetData(reqPayload, this, store)
@@ -51,8 +49,6 @@ const actions = {
     }
 
     await chartModifier.postGetData(chartData, reqPayload, this, store)
-
-    ChartCacher.addEntry(reqPayloadCopy, store.getters.meterGroupPath, chartData)
 
     return chartData
   },
