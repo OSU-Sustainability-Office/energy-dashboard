@@ -141,7 +141,12 @@ const actions = {
           })
         })
       })
-      window.localStorage.setItem('OSU Sustainability Office Energy Dashboard Data Cache', JSON.stringify(this.getters['dataStore/cache']))
+      try {
+        window.localStorage.setItem('OSU Sustainability Office Energy Dashboard Data Cache', JSON.stringify(this.getters['dataStore/cache']))
+      } catch (e) {
+        console.log(e)
+        console.log('Failed to write new datums to the persistent cache.')
+      }
     }
 
     // Retrieve the data from the cache
@@ -189,15 +194,20 @@ const mutations = {
   },
 
   loadLocalStorage: (state) => {
-    if (!state.localStorageChecked) {
-      state.localStorageChecked = true
-      const temp = JSON.parse(window.localStorage.getItem('OSU Sustainability Office Energy Dashboard Data Cache'))
-      if (temp) {
-        state.cache = temp
-        console.log('Data loaded from persistent cache')
-      } else {
-        console.log('No persistent cache found.')
+    try {
+      if (!state.localStorageChecked) {
+        state.localStorageChecked = true
+        const temp = JSON.parse(window.localStorage.getItem('OSU Sustainability Office Energy Dashboard Data Cache'))
+        if (temp) {
+          state.cache = temp
+          console.log('Data loaded from persistent cache.')
+        } else {
+          console.log('No persistent cache found.')
+        }
       }
+    } catch (e) {
+      console.log(e)
+      console.log('The persistent cache failed to load.')
     }
   }
 
