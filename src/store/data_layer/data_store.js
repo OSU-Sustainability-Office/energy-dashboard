@@ -16,13 +16,6 @@
  * 6/26-7/19 will be requested from the API.
  */
 
-/*
- * @Author: Brogan
- * @Date:   Saturday August 3rd 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday August 3rd 2019
- * @Copyright:  Oregon State University 2019
- */
 import API from '../api.js'
 // import Meter from '../meter.module.js'
 
@@ -39,7 +32,8 @@ const state = () => {
       //     }
       //   }
       // }
-    }
+    },
+    localStorageChecked: false
   }
 }
 
@@ -110,6 +104,9 @@ const actions = {
   //  uom: the unit of measure/metering point to request data for
   //  classInt: An integer that corresponds to the type of meter we are reading from
   async getData (store, payload) {
+    // First, attempt to load a cache from localstorage (if the cache is empty)
+    this.commit('dataStore/loadLocalStorage')
+
     // Does the cache contain the data?
     const missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
       meterId: payload.meterId,
@@ -127,24 +124,29 @@ const actions = {
       })
 
       // Save all of the new data to the cache
-      await Promise.all(promises).then(responses => {
-        // The data looks like an array of these objects:
-        // {
-        //   accumulated_real: -13385083 // This key can change based on the uom
-        //   id: 4596804
-        //   time: 1597284900
-        // }
-        responses.forEach(datumArray => {
-          datumArray.forEach(datum => {
-            this.commit('dataStore/addToCache', {
-              datetime: datum.time,
-              meterId: payload.meterId,
-              uom: payload.uom,
-              value: datum[payload.uom]
-            })
+      const responses = await Promise.all(promises)
+      // The data looks like an array of these objects:
+      // {
+      //   accumulated_real: -13385083 // This key can change based on the uom
+      //   id: 4596804
+      //   time: 1597284900
+      // }
+      await responses.forEach(async datumArray => {
+        datumArray.forEach(datum => {
+          this.commit('dataStore/addToCache', {
+            datetime: datum.time,
+            meterId: payload.meterId,
+            uom: payload.uom,
+            value: datum[payload.uom]
           })
         })
       })
+      try {
+        window.localStorage.setItem('OSU Sustainability Office Energy Dashboard Data Cache', JSON.stringify(this.getters['dataStore/cache']))
+      } catch (e) {
+        console.log(e)
+        console.log('Failed to write new datums to the persistent cache.')
+      }
     }
 
     // Retrieve the data from the cache
@@ -155,8 +157,13 @@ const actions = {
       cacheKeys = Object.keys(cache).filter(key => key >= payload.start && key <= payload.end) // Filter out data that is not in our time range
     } catch (e) {
       // Somehow, the data we expect to be in the cache is not there!
-      console.log(e)
-      return []
+      // This occurs when we request for data that does not exist in our database.
+      // For example, a building can be brought offline for maintenance, causing
+      // a chunk of data to be missing.
+      console.log('Data not found for meter: ' + payload.meterId)
+      console.log('Is the meter connected to the internet and uploading data?')
+
+      return [] // Return an empty array
     }
 
     // Reformat the data so that it matches the API's format
@@ -184,7 +191,26 @@ const mutations = {
     if (!state.cache[cacheEntry.meterId]) state.cache[cacheEntry.meterId] = {}
     if (!state.cache[cacheEntry.meterId][cacheEntry.uom]) state.cache[cacheEntry.meterId][cacheEntry.uom] = {}
     state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] = cacheEntry.value
+  },
+
+  loadLocalStorage: (state) => {
+    try {
+      if (!state.localStorageChecked) {
+        state.localStorageChecked = true
+        const temp = JSON.parse(window.localStorage.getItem('OSU Sustainability Office Energy Dashboard Data Cache'))
+        if (temp) {
+          state.cache = temp
+          console.log('Data loaded from persistent cache.')
+        } else {
+          console.log('No persistent cache found.')
+        }
+      }
+    } catch (e) {
+      console.log(e)
+      console.log('The persistent cache failed to load.')
+    }
   }
+
 }
 
 const getters = {
