@@ -127,21 +127,20 @@ const actions = {
       })
 
       // Save all of the new data to the cache
-      await Promise.all(promises).then(responses => {
-        // The data looks like an array of these objects:
-        // {
-        //   accumulated_real: -13385083 // This key can change based on the uom
-        //   id: 4596804
-        //   time: 1597284900
-        // }
-        responses.forEach(datumArray => {
-          datumArray.forEach(datum => {
-            this.commit('dataStore/addToCache', {
-              datetime: datum.time,
-              meterId: payload.meterId,
-              uom: payload.uom,
-              value: datum[payload.uom]
-            })
+      const responses = await Promise.all(promises)
+      // The data looks like an array of these objects:
+      // {
+      //   accumulated_real: -13385083 // This key can change based on the uom
+      //   id: 4596804
+      //   time: 1597284900
+      // }
+      await responses.forEach(async datumArray => {
+        datumArray.forEach(datum => {
+          this.commit('dataStore/addToCache', {
+            datetime: datum.time,
+            meterId: payload.meterId,
+            uom: payload.uom,
+            value: datum[payload.uom]
           })
         })
       })
@@ -155,8 +154,13 @@ const actions = {
       cacheKeys = Object.keys(cache).filter(key => key >= payload.start && key <= payload.end) // Filter out data that is not in our time range
     } catch (e) {
       // Somehow, the data we expect to be in the cache is not there!
-      console.log(e)
-      return []
+      // This occurs when we request for data that does not exist in our database.
+      // For example, a building can be brought offline for maintenance, causing
+      // a chunk of data to be missing.
+      console.log('Data not found for meter: ' + payload.meterId)
+      console.log('Is the meter connected to the internet and uploading data?')
+
+      return [] // Return an empty array
     }
 
     // Reformat the data so that it matches the API's format
