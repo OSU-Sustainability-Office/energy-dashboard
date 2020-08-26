@@ -310,7 +310,6 @@ export default {
             let layer = this.map._layers[layerKey]
             if (layer.feature) {
               if (this.grouping === 'Category') {
-                console.log(layer)
                 var color = '#000'
                 switch (layer.feature.properties.group) {
                   case 'Residence':
@@ -368,7 +367,6 @@ export default {
                   let slope = accmxxyy / accmxx
                   let normalizedSlope = slope / meanY
                   // slope /= 30
-                  console.log(normalizedSlope)
                   layer.setStyle({ fillColor: this.computedColor(normalizedSlope), color: this.computedColor(normalizedSlope) })
                   // if (normalizedSlope > 0.001) {
                   //   layer.setStyle({ fillColor: '#d62326', color: '#d62326' })
