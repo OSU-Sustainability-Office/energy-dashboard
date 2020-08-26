@@ -191,8 +191,13 @@ const mutations = {
   loadLocalStorage: (state) => {
     if (!state.localStorageChecked) {
       state.localStorageChecked = true
-      state.cache = JSON.parse(window.localStorage.getItem('OSU Sustainability Office Energy Dashboard Data Cache'))
-      console.log(state.cache)
+      const temp = JSON.parse(window.localStorage.getItem('OSU Sustainability Office Energy Dashboard Data Cache'))
+      if (temp) {
+        state.cache = temp
+        console.log('Data loaded from persistent cache')
+      } else {
+        console.log('No persistent cache found.')
+      }
     }
   }
 
