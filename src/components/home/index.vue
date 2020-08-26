@@ -26,7 +26,9 @@
             &nbsp;
           </el-col>
           <el-col :span='5' v-if='user.name === ""'>
-              <el-button type='primary' class='home-button' @click="login()">Login</el-button>
+            <a :href='loginLink'>
+              <el-button type='primary' class='home-button'>Login</el-button>
+            </a>
           </el-col>
           <el-col :span='6'>
             &nbsp;
@@ -48,6 +50,7 @@ export default {
   },
   data () {
     return {
+      loginLink: 'https://api.sustainability.oregonstate.edu/v2/auth/login?returnURI=' + process.env.VUE_APP_HOST_ADDRESS + '/#/map',
       user: {
         name: '',
         privilege: 0
