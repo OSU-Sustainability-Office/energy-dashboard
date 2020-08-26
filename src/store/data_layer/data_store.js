@@ -16,13 +16,6 @@
  * 6/26-7/19 will be requested from the API.
  */
 
-/*
- * @Author: Brogan
- * @Date:   Saturday August 3rd 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday August 3rd 2019
- * @Copyright:  Oregon State University 2019
- */
 import API from '../api.js'
 // import Meter from '../meter.module.js'
 
@@ -39,7 +32,8 @@ const state = () => {
       //     }
       //   }
       // }
-    }
+    },
+    localStorageChecked: false
   }
 }
 
@@ -110,6 +104,9 @@ const actions = {
   //  uom: the unit of measure/metering point to request data for
   //  classInt: An integer that corresponds to the type of meter we are reading from
   async getData (store, payload) {
+    // First, attempt to load a cache from localstorage (if the cache is empty)
+    this.commit('dataStore/loadLocalStorage')
+
     // Does the cache contain the data?
     const missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
       meterId: payload.meterId,
@@ -144,6 +141,7 @@ const actions = {
           })
         })
       })
+      window.localStorage.setItem('OSU Sustainability Office Energy Dashboard Data Cache', JSON.stringify(this.getters['dataStore/cache']))
     }
 
     // Retrieve the data from the cache
@@ -188,7 +186,16 @@ const mutations = {
     if (!state.cache[cacheEntry.meterId]) state.cache[cacheEntry.meterId] = {}
     if (!state.cache[cacheEntry.meterId][cacheEntry.uom]) state.cache[cacheEntry.meterId][cacheEntry.uom] = {}
     state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] = cacheEntry.value
+  },
+
+  loadLocalStorage: (state) => {
+    if (!state.localStorageChecked) {
+      state.localStorageChecked = true
+      state.cache = JSON.parse(window.localStorage.getItem('OSU Sustainability Office Energy Dashboard Data Cache'))
+      console.log(state.cache)
+    }
   }
+
 }
 
 const getters = {
