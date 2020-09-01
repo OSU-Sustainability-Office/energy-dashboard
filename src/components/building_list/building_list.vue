@@ -223,15 +223,6 @@ export default {
 .card_container {
   padding: 0.5em;
 }
-.card {
-  margin: auto;
-  cursor: pointer;
-}
-.card:hover {
-  border-color: $--color-primary;
-  outline: solid 3px $--color-primary;
-  outline-offset: -5px;
-}
 .blankSlate {
   padding-right: 0.5em;
   padding-left: 0.5em;
