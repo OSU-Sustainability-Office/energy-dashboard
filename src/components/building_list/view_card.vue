@@ -1,10 +1,3 @@
-/*
- * @Author: Brogan Miner
- * @Date:   Friday December 13th 2019
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Friday December 13th 2019
- * @Copyright:  (c) Oregon State University 2019
- */
 <template>
   <div class="card" ref='card' @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
     <div class="toolbox" ref="toolbox" v-if='!plus && !building'>
@@ -149,7 +142,6 @@ export default {
   margin: 1em;
   border-radius: 5px;
   overflow: hidden;
-  /* width: 250px; */
   margin: auto;
   cursor: pointer;
   transition: box-shadow 0.2s ease-in-out;

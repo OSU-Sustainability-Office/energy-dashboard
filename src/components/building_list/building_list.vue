@@ -1,11 +1,3 @@
-/*
- * @Author: Brogan Miner
- * @Date:   Friday December 13th 2019
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Friday December 13th 2019
- * @Copyright:  (c) Oregon State University 2019
- */
-
 <template>
   <el-row class='top_row'>
     <el-col :span='24' class='top_col'>
