@@ -7,10 +7,10 @@
 -->
 <template>
   <div v-loading='loading || !chartData' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}px; border-radius: 5px; overflow: hidden;`'>
-    <linechart v-if="graphType === 1 && chartData" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
-    <barchart v-if="graphType === 2 && chartData" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
-    <doughnutchart v-if="graphType === 3 && chartData" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
-    <piechart v-if="graphType === 4 && chartData" ref="piechart" v-bind:chartData="chartData" :style="styleC" :height='height'/>
+    <linechart v-if="graphType === 1 && chartData" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
+    <barchart v-if="graphType === 2 && chartData" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
+    <doughnutchart v-if="graphType === 3 && chartData" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
+    <piechart v-if="graphType === 4 && chartData" ref="piechart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
     <el-col :span='24' class='NoData' :style='`height:${height}px;line-height:${height}px;`' v-if="graphType == 100">Data Unavailable</el-col>
   </div>
 </template>
@@ -22,7 +22,13 @@ import piechart from '@/components/charts/piechart.js'
 
 export default {
   name: 'card',
-  props: ['styleC', 'randomColors', 'height', 'path'],
+  props: {
+    styleC: Object,
+    randomColors: Number,
+    height: Number,
+    path: String,
+    invertColors: Boolean
+  },
   components: {
     linechart, barchart, doughnutchart, piechart
   },
@@ -30,23 +36,6 @@ export default {
     if (this.loading) {
       this.updateChart()
     }
-    // if (this.promise === null) {
-    //   this.loading = false
-    // } else {
-    //   this.promise.then(() => {
-    //     this.loading = false
-    //   })
-    // }
-    // this.loading = true
-    // console.log('mounted data')
-    // this.$store.dispatch(this.path + '/getData').then(r => {
-    //   if (this.chart) {
-    //     this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
-    //     this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
-    //   }
-    //   this.chartData = r
-    //   this.loading = false
-    // })
   },
   watch: {
     path: function (value) {
@@ -258,7 +247,7 @@ export default {
 <style lang='scss' scoped>
   .NoData {
     text-align: center;
-    color: $--color-white;
+    color: $--color-black;
     font-weight: 800;
     font-size: 22px;
   }

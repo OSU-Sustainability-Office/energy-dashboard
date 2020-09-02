@@ -156,13 +156,14 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang='scss'>
 .card {
-  background-color: $--color-black;
+  background-color: $--color-white;
   padding: 2em;
   height: calc(400px + 8em);
   color: $--color-primary;
   margin-top: 1em;
   margin-bottom: 1em;
   border-radius: 5px;
+  box-shadow: 0px 0px 3px $--color-black;
 }
 .title {
   font-family: 'StratumNO2';
@@ -174,7 +175,7 @@ export default {
   cursor: pointer;
 }
 .title .fas:hover {
-  color: $--color-white;
+  color: $--color-black;
 }
 .right {
   text-align: right;

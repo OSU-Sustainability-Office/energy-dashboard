@@ -29,7 +29,7 @@
           </el-row>
           <el-row type='flex' class="graph" ref='scrollBox'>
             <el-col class='inline' v-for='block in buildingBlocks' :key='block.id' :span='24' ref='slidingBox'>
-              <chartController :path='block.path' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200'/>
+              <chartController :path='block.path' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200' :invertColors='true'/>
             </el-col>
           </el-row>
           <el-row class="buttons">

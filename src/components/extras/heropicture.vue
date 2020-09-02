@@ -103,7 +103,7 @@ export default {
   }
   .title {
     font-family: "StratumNo2";
-    color: #D73F09;
+    color: $--color-white;
     font-size: 3.2em;
     z-index: 5;
     position: absolute;

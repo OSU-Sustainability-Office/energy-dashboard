@@ -4,10 +4,18 @@ export default {
   name: 'piechart',
   extends: Pie,
   mixins: [mixins.reactiveProp],
-  props: [],
-  data () {
-    return {
-      options: {
+  props: {
+    invertColors: Boolean
+  },
+  computed: {
+    primaryColor: function () {
+      return this.invertColors ? 'white' : 'black'
+    },
+    secondaryColor: function () {
+      return this.invertColors ? '#1a1a1a' : '#111'
+    },
+    options: function () {
+      return {
         layout: {
           padding: {
             left: 0,
@@ -42,11 +50,11 @@ export default {
         },
         legend: {
           labels: {
-            fontColor: 'white'
+            fontColor: this.primaryColor
           }
         },
         title: {
-          fontColor: 'white'
+          fontColor: this.primaryColor
         },
         responsive: true, // my new default options
         maintainAspectRatio: false // my new default options
