@@ -12,10 +12,18 @@ export default {
   name: 'linechart',
   extends: Line,
   mixins: [mixins.reactiveProp],
-  props: [],
-  data () {
-    return {
-      options: {
+  props: {
+    invertColors: Boolean
+  },
+  computed: {
+    primaryColor: function () {
+      return this.invertColors ? '#FFF' : '#000'
+    },
+    secondaryColor: function () {
+      return this.invertColors ? '#1a1a1a' : '#111'
+    },
+    options: function () {
+      return {
         elements: {
           point: {
             radius: 3
@@ -65,7 +73,7 @@ export default {
         legend: {
           labels: {
             fontSize: 12,
-            fontColor: '#FFF',
+            fontColor: this.primaryColor,
             fontFamily: 'Open Sans'
           },
           onHover: function (e) {
@@ -79,7 +87,7 @@ export default {
         },
         title: {
           fontSize: 12,
-          fontColor: '#FFF',
+          fontColor: this.primaryColor,
           fontFamily: 'Open Sans'
         },
         responsive: true, // my new default options
@@ -89,20 +97,21 @@ export default {
             ticks: {
               beginAtZero: false,
               fontSize: 12,
-              fontColor: '#FFF',
+              fontColor: this.primaryColor,
               fontFamily: 'Open Sans',
               source: 'data',
               autoSkip: true,
               maxTicksLimit: 10
             },
             gridLines: {
-              display: true // my new default options
+              display: true, // my new default options
+              color: this.secondaryColor
             },
             scaleLabel: {
               display: (this.$parent.buildLabel('y') !== ''),
               labelString: this.$parent.buildLabel('y'),
               fontSize: 12,
-              fontColor: '#FFF',
+              fontColor: this.primaryColor,
               fontFamily: 'Open Sans'
             }
           }],
@@ -110,11 +119,12 @@ export default {
             type: 'time',
             bounds: 'data',
             gridLines: {
-              display: false
+              display: false, // my new default options
+              color: this.secondaryColor
             },
             ticks: {
               fontSize: 14,
-              fontColor: '#FFF',
+              fontColor: this.primaryColor,
               fontFamily: 'Open Sans',
               autoSkip: true,
               stepSize: 10,
@@ -124,7 +134,7 @@ export default {
               display: (this.$parent.buildLabel('y') !== ''),
               labelString: this.$parent.buildLabel('x'),
               fontSize: 12,
-              fontColor: '#FFF',
+              fontColor: this.primaryColor,
               fontFamily: 'Open Sans'
             },
             time: {

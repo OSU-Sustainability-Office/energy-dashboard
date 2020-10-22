@@ -30,7 +30,7 @@
                 <switchButtons :blocks='blocks' :campaign='true' :days='days' :campaignDateStart='campaignStart' :campaignDateEnd='campaignEnd' />
               </el-col>
             </el-row>
-            <chartController :path='blockPath' :randomColors='1' class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '340px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :height='362'/>
+            <chartController :path='blockPath' :randomColors='1' class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '340px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :invertColors='true' :height='362'/>
           </div>
         </el-col>
       </el-row>

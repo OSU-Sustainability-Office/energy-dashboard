@@ -1,10 +1,3 @@
-/*
- * @Author: Brogan Miner
- * @Date:   Friday December 13th 2019
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Friday December 13th 2019
- * @Copyright:  (c) Oregon State University 2019
- */
 <template>
   <div class="card" ref='card' @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
     <div class="toolbox" ref="toolbox" v-if='!plus && !building'>
@@ -135,15 +128,13 @@ export default {
   font-size: 1.8em;
 }
 .name {
-  color:rgb(215,63,9);
   font-family: 'StratumNo2';
   font-size: 1.7em;
   display: block;
   z-index: 1;
-  -webkit-text-stroke: 0.3px black;
-  // -webkit-text-fill-color: white;
 }
 .card {
+  color: $--color-white;
   position: relative;
   border: 2.5px solid rgb(0,0,0);
   padding: 1em;
@@ -151,13 +142,17 @@ export default {
   margin: 1em;
   border-radius: 5px;
   overflow: hidden;
-  /* width: 250px; */
+  margin: auto;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease-in-out;
 
 }
+
 .card:hover {
-  border-color:'rgb(215,63,9)';
-  border-width: '4px';
+  box-shadow: 0 0 12px $--color-primary;
+  outline-offset: -5px;
 }
+
 .card:hover .plus .fas {
   color: $--color-black !important;
 }

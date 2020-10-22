@@ -1,11 +1,3 @@
-/*
- * @Author: Brogan Miner
- * @Date:   Friday December 13th 2019
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Friday December 13th 2019
- * @Copyright:  (c) Oregon State University 2019
- */
-
 <template>
   <el-row class='top_row'>
     <el-col :span='24' class='top_col'>
@@ -222,15 +214,6 @@ export default {
 /*--- Cards   ---*/
 .card_container {
   padding: 0.5em;
-}
-.card {
-  margin: auto;
-  cursor: pointer;
-}
-.card:hover {
-  border-color: $--color-primary;
-  outline: solid 3px $--color-primary;
-  outline-offset: -5px;
 }
 .blankSlate {
   padding-right: 0.5em;
