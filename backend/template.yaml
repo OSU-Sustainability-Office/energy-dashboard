@@ -12,8 +12,12 @@ Globals:
   Api:
     # enable CORS; to make more specific, change the origin wildcard
     # to a particular domain name, e.g. "'www.example.com'"
-    Cors:
-      AllowOrigin: "'http://localhost:8080'"
+    Cors: 
+        AllowMethods: "'POST, GET'"
+        AllowHeaders: "'X-Forwarded-For'"
+        AllowOrigin: "'oregonstate.edu'"
+        MaxAge: "'600'"
+        AllowCredentials: True
     BinaryMediaTypes:
       - image~1gif
       - image~1png
