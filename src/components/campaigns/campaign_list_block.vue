@@ -1,21 +1,12 @@
-<!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-02-04T11:40:29-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-02-11T09:03:16-08:00
--->
 <template>
   <div class='block' ref='block' @click='$emit("click")'>
     <el-row style="padding:0">
       <el-col :span='24' ref='imageContainer' class='imageContainer' v-loading='!loaded'>
-        <!-- <el-image class='image' :src='mediaSource' @load='loaded=true' v-if='mediaSource' :fit='cover' /> -->
         <span class='campaignName'>{{ camp.name }}</span>
       </el-col>
     </el-row>
     <el-row class='popped'>
       <el-col :span='18' class='standings'>
-        <!-- 1. Finley -20.00%  2. Bloss -15.00%  3. Kelley Engineering Center +115.00% -->
       </el-col>
       <el-col :span='6' class='dates'>
         {{ camp.dateStart | trunc }} - {{ camp.dateEnd | trunc }}
@@ -35,10 +26,7 @@ export default {
   },
   mounted () {
     // Load the media content
-    // this.loaded = false
-    this.$refs.imageContainer.$el.style.backgroundImage = 'url("' + process.env.VUE_APP_ROOT_API + '/image?name=' + this.camp.media + '")'
-    // this.loaded = true
-    // this.mediaSource = process.env.VUE_APP_ROOT_API + '/image?name=' + this.camp.media
+    this.$refs.imageContainer.$el.style.backgroundImage = 'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/' + this.camp.media + '")'
   },
   filters: {
     trunc: function (val) {
