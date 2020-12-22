@@ -1,18 +1,3 @@
-/*
- * @Author: you@you.you
- * @Date:   Tuesday December 17th 2019
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Tuesday December 17th 2019
- * @Copyright:  (c) Oregon State University 2019
- */
-<!--
-@Author: Brogan Miner <Brogan>
-@Date:   2018-11-29T12:53:21-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-01-09T13:35:41-08:00
--->
-
 <template>
   <el-row class="card" ref='card'>
     <el-col :span='24'>

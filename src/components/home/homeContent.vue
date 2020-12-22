@@ -28,7 +28,6 @@ export default {
   font-size: 5.5em;
   align-content: center;
   height: 2.5em;
-  /* background-color: rgba(0,0,0,0.8); */
   width: 100%;
   padding-top: 0.5em;
 
