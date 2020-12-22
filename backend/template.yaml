@@ -608,21 +608,6 @@ Resources:
           Properties:
             Path: /user
             Method: get
-  ImageGet:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: images.get
-      Layers:
-        - arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:92
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /image
-            Method: get
   ImageAll:
     Type: AWS::Serverless::Function
     Properties:
