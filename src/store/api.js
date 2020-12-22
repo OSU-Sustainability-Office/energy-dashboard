@@ -29,7 +29,6 @@ export default {
       {
         'Accept': 'text/xml'
       })).data
-    // return (await callAPI(`way/40535383/full`, null, 'get', 'https://api.openstreetmap.org/api/0.6')).data
   },
   buildingFeature: async (payload) => {
     return (await callAPI(
