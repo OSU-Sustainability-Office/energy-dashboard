@@ -28,9 +28,11 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang='scss'>
 #home-side {
-  background-color: rgba(255,255,255,.85);
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0px 0px 3px $--color-black;
+  border-radius: 5px;
   padding: 2em;
 }
 h1 {

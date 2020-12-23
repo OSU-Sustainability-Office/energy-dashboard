@@ -1,11 +1,3 @@
-<!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-01-04T10:08:23-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-02-11T11:26:01-08:00
--->
-
 <template>
   <el-row class='stage'>
     <el-col :span='4' class='full-height no-overflow' v-if='user.privilege >= 2'>

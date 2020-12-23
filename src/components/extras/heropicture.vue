@@ -1,17 +1,7 @@
-<!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-01-04T10:08:23-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-01-31T13:44:50-08:00
--->
-
 <template>
   <el-row class='stage'>
     <el-col :span='24' class='main'>
       <div element-loading-background="rgba(0, 0, 0, 0.3)" class="background" ref='main'>
-        <div v-for='(pic, index) in media' :class='classForIndex(index)' :style='`background-image:url(${api}/image?name=${pic}); width:calc(${100 / ((media.length < 4) ? media.length : 4)}% + ${ (index === 0)? "22.5px" : "55px"});`' :key='index'></div>
-        <div v-if='arrayType && media.length > 0' class='gradientOverlay'> </div>
         <div class='title'>{{name}}</div>
         <div class='subtitle'>{{description}}</div>
       </div>
@@ -30,19 +20,11 @@ export default {
     }
   },
   watch: {
-    media: function (value) {
+    // imageString is a string containing the image filename in the S3 bucket. ie: mcnary_2.jpg
+    media: function (imageString) {
       this.$refs.main.style.backgroundImage = ''
-      if (Array.isArray(value)) {
-        this.arrayType = true
-        this.$refs.main.style.backgroundColor = 'rgb(255,255,255)'
-        this.$refs.main.style.borderBottom = 'solid 2px rgb(26,26,26)'
-        if (value.length === 0) {
-          this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
-        }
-        return
-      }
-      if (value) {
-        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + this.api + '/image?name=' + value + '\')'
+      if (imageString) {
+        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)), url("https://osu-energy-images.s3-us-west-2.amazonaws.com/' + imageString + '")'
       } else {
         this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
       }
@@ -50,14 +32,9 @@ export default {
   },
   mounted () {
     this.$refs.main.style.backgroundImage = ''
+
     if (this.media) {
-      if (Array.isArray(this.media)) {
-        this.arrayType = true
-        this.$refs.main.style.backgroundColor = 'rgb(255,255,255)'
-        this.$refs.main.style.borderBottom = 'solid 2px rgb(26,26,26)'
-      } else {
-        this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url(\'' + this.api + '/image?name=' + this.media + '\')'
-      }
+      this.$refs.main.style.backgroundImage = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url("https://osu-energy-images.s3-us-west-2.amazonaws.com/' + this.media + '")'
     } else {
       this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
     }

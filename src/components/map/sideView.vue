@@ -105,16 +105,12 @@ export default {
     }
   },
   watch: {
-    // media: function (value) {
-    //   this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + value + ')'
-    // },
     building: {
       immediate: true,
       handler: async function (value) {
         this.index = 0
         for (let block of this.buildingBlocks) {
           await this.$store.dispatch(block.path + '/resetDefault')
-          // this.$store.dispatch(block.path + '/getData')
         }
         this.$refs.prevArrow.style.display = 'none'
         if (this.buildingBlocks.length > 1) {
@@ -122,7 +118,7 @@ export default {
         } else {
           this.$refs.nextArrow.style.display = 'none'
         }
-        this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + this.media + ')'
+        this.$refs.media.style.backgroundImage = 'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' + this.media + '")'
       }
     },
     index: function (to, from) {
@@ -145,18 +141,6 @@ export default {
         }
       }
     }
-  },
-  async mounted () {
-    // for (let block of this.buildingBlocks) {
-    //   await this.$store.dispatch(block.path + '/removeAllModifiers')
-    // }
-    // this.$refs.prevArrow.style.display = 'none'
-    // if (this.buildingBlocks.length <= 1) {
-    //   this.$refs.nextArrow.style.display = 'none'
-    // } else {
-    //   this.$refs.nextArrow.style.display = 'block'
-    // }
-    // this.$refs.media.style.backgroundImage = 'url(' + this.api + '/image?name=' + this.media + ')'
   }
 }
 </script>
