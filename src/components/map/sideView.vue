@@ -1,11 +1,3 @@
-<!--
-@Author: Brogan Miner <Brogan>
-@Date:   2018-12-20T10:38:57-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-03-11T13:01:28-07:00
--->
-
 <template>
   <el-row class='stage'>
     <el-row class='main'>
@@ -150,7 +142,7 @@ export default {
   display: block;
   position: absolute;
   left: 100%;
-  top: 15%;
+  bottom: 8%;
   width: 450px !important;
   margin-left: -470px;
   height: 85% !important;

@@ -1,11 +1,3 @@
-<!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-01-03T12:39:57-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-05-01T18:35:17-07:00
--->
-
 <template>
   <el-row class='stage'>
     <el-col :span='24'>
