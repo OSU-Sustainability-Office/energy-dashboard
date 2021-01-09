@@ -1,11 +1,3 @@
-/*
- * @Author: Brogan
- * @Date:   Wednesday September 25th 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Wednesday September 25th 2019
- * @Copyright:  (c) Oregon State University 2019
- */
-
 import API from './api.js'
 import View from './view.module.js'
 
@@ -75,11 +67,6 @@ const actions = {
       }))
     }
     return store.getters.promise
-  },
-
-  async logout (store) {
-    store.commit('onid', '')
-    store.commit('privilege', 0)
   }
 }
 

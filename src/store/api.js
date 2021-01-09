@@ -1,10 +1,3 @@
-/**
- * @Author: Brogan Miner <Brogan.Miner@oregonstate.edu>
- * @Date:   2018-12-20T16:22:04-08:00
- * @Email:  brogan.miner@oregonstate.edu
- * @Last modified by:   Brogan
- * @Last modified time: 2019-03-25T15:36:20-07:00
- */
 import axios from 'axios'
 axios.defaults.withCredentials = true
 

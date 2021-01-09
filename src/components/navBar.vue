@@ -1,11 +1,3 @@
-<!--
-@Author: Brogan Miner <Brogan>
-@Date:   2018-11-29T12:53:21-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-02-13T11:06:31-08:00
--->
-
 <template>
     <el-row class='sus-nav'>
       <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">
@@ -20,7 +12,7 @@
         </el-menu>
       </el-col>
       <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
-        <a class='sus-nav-sign' v-if='onid && $route.path !== "/"' @click='logOut()'>Sign Out</a>
+        <a class='sus-nav-sign' v-if='onid && $route.path !== "/"' :href='logoutLink'>Sign Out</a>
         <a class='sus-nav-sign' v-if='!onid && $route.path !== "/"' :href='loginLink'>Sign In</a>
       </el-col>
     </el-row>
@@ -36,13 +28,11 @@ export default {
   data () {
     return {
       loginLink: 'https://api.sustainability.oregonstate.edu/v2/auth/login?returnURI=' + process.env.VUE_APP_HOST_ADDRESS + '/#/map',
+      logoutLink: 'https://api.sustainability.oregonstate.edu/v2/auth/logout',
       activeIndex: ''
     }
   },
   computed: {
-    // ...mapGetters([
-    //   'user'
-    // ])
     onid: {
       get () {
         return this.$store.getters['user/onid']
@@ -50,10 +40,6 @@ export default {
     }
   },
   created () {
-    // this.$store.dispatch('user/user').then( user => {
-    //   console.log(user)
-    //   this.user = user
-    // })
   },
   mounted () {
     this.activeIndex = this.$route.path.split('/')[1]
@@ -75,9 +61,6 @@ export default {
     }
   },
   methods: {
-    logOut: function () {
-      // this.$store.dispatch('logout')
-    },
     handleSelect: function (select) {
       this.$router.push({ path: '/' + select })
       this.activeIndex = select
