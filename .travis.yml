@@ -3,10 +3,6 @@ python:
 - '3.7'
 node_js:
 - '10'
-before_install:
-- openssl aes-256-cbc -K $encrypted_3e7d443718a9_key -iv $encrypted_3e7d443718a9_iv
-  -in .env.enc -out .env -d
-- mv .env tests/.env
 cache:
   directories:
   - "$HOME/.local"
