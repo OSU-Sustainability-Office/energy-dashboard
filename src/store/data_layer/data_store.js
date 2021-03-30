@@ -33,7 +33,7 @@ const state = () => {
       //   }
       // }
     },
-    sessionStorageChecked: false
+    localStorageChecked: false
   }
 }
 
@@ -104,8 +104,8 @@ const actions = {
   //  uom: the unit of measure/metering point to request data for
   //  classInt: An integer that corresponds to the type of meter we are reading from
   async getData (store, payload) {
-    // First, attempt to load a cache from sessionStorage (if the cache is empty)
-    this.commit('dataStore/loadSessionStorage')
+    // First, attempt to load a cache from localstorage (if the cache is empty)
+    this.commit('dataStore/loadLocalStorage')
 
     // Does the cache contain the data?
     const missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
@@ -142,7 +142,7 @@ const actions = {
         })
       })
       try {
-        window.sessionStorage.setItem('OSU Sustainability Office Energy Dashboard Data Cache', JSON.stringify(this.getters['dataStore/cache']))
+        window.localStorage.setItem('OSU Sustainability Office Energy Dashboard Data Cache', JSON.stringify(this.getters['dataStore/cache']))
       } catch (e) {
         console.log(e)
         console.log('Failed to write new datums to the persistent cache.')
@@ -193,11 +193,11 @@ const mutations = {
     state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] = cacheEntry.value
   },
 
-  loadSessionStorage: (state) => {
+  loadLocalStorage: (state) => {
     try {
-      if (!state.sessionStorageChecked) {
-        state.sessionStorageChecked = true
-        const temp = JSON.parse(window.sessionStorage.getItem('OSU Sustainability Office Energy Dashboard Data Cache'))
+      if (!state.localStorageChecked) {
+        state.localStorageChecked = true
+        const temp = JSON.parse(window.localStorage.getItem('OSU Sustainability Office Energy Dashboard Data Cache'))
         if (temp) {
           state.cache = temp
           console.log('Data loaded from persistent cache.')
