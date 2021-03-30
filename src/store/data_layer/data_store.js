@@ -21,7 +21,8 @@ import API from '../api.js'
 
 const state = () => {
   return {
-    cache: {
+    cache:
+    {
       // Initially empty
       // Generally has this structure:
       // {
@@ -33,11 +34,76 @@ const state = () => {
       //   }
       // }
     },
-    localStorageChecked: false
+    indexedDBInstance: undefined
   }
 }
 
 const actions = {
+  // Copies "cache" object to indexedDB for persistant storage.
+  async addCacheToIndexedDB (store) {
+    const db = this.getters['dataStore/DB']
+    if (db === undefined) throw new Error('indexedDB not instantiated')
+    const cache = this.getters['dataStore/cache']
+    if (cache.length === 0) throw new Error('cache object is empty')
+
+    // Wrapping each callback into promise so async works on indexedDB api calls
+    for (let meterId of Object.keys(cache)) {
+      await new Promise((resolve, reject) => {
+        let request = db.transaction('MeterReadings', 'readwrite').objectStore('MeterReadings').put({ 'meterId': meterId, 'meterData': { ...cache[meterId] } })
+        request.onerror = event => reject(event)
+        request.onsuccess = event => resolve(event)
+      })
+        .catch(err => { throw err })
+    }
+  },
+
+  // Loads indexedDB into the Vuex store
+  // this is an action since indexedDB is asynchronous (localStorage is synchronous)
+  async loadIndexedDB (store) {
+    if (this.getters['dataStore/DB'] !== undefined) return
+
+    // connect to indexedDB
+    await new Promise((resolve, reject) => {
+      const db = window.indexedDB.open('OSU Sustainability Office Energy Dashboard Data Cache', 1)
+      db.onerror = event => reject(event)
+      db.onupgradeneeded = event => {
+        switch (event.oldVersion) {
+          // if oldVersion == 0, then indexedDB did not exist so we build it.
+          case 0:
+            event.target.result.createObjectStore('MeterReadings', { keyPath: 'meterId' })
+            break
+        }
+      }
+      db.onsuccess = event => resolve(event)
+    })
+      .then(event => {
+        // event.target.result should be identical to the "db" variable.
+        this.commit('dataStore/setDBInstance', { instance: event.target.result })
+      })
+      .catch(event => {
+        console.log('An error occured when trying to use indexedDB API, is it enabled?')
+      })
+
+    // Finally, load indexedDB into cache object
+    let newCacheObject = {}
+    await new Promise((resolve, reject) => {
+      let dataReqest = this.getters['dataStore/DB'].transaction('MeterReadings', 'readonly').objectStore('MeterReadings').getAll()
+      dataReqest.onsuccess = event => resolve(event)
+      dataReqest.onerror = event => resolve(event)
+    })
+      .then(event => {
+        // transform from indexedDB representation to cache-friendly variant
+        for (let meterIndex = 0; meterIndex < event.target.result.length; meterIndex++) {
+          let db_entry = event.target.result[meterIndex]
+          newCacheObject[db_entry['meterId']] = db_entry['meterData']
+        }
+        this.commit('dataStore/overwriteCache', { newCache: newCacheObject })
+        console.log('data loaded from persistent cache')
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  },
 
   // Returns an array containing intervals of missing data between the start and end
   // Parameters:
@@ -65,7 +131,7 @@ const actions = {
         // Keep the first, the last, and any indices defining the start and/or end of a gap
         return index === 0 || index === array.length - 1 || Math.abs(key - array[index - 1]) > 900 || Math.abs(key - array[index + 1]) > 900
       })
-      .map(ts => parseInt(ts)) // Parse them to integers
+      .map(ts => parseInt(ts, 10)) // Parse them to integers
 
     // If no matching records are found, return the original interval
     if (timestamps.length === 0) return [[payload.start, payload.end]]
@@ -105,7 +171,7 @@ const actions = {
   //  classInt: An integer that corresponds to the type of meter we are reading from
   async getData (store, payload) {
     // First, attempt to load a cache from localstorage (if the cache is empty)
-    this.commit('dataStore/loadLocalStorage')
+    await this.dispatch('dataStore/loadIndexedDB')
 
     // Does the cache contain the data?
     const missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
@@ -114,6 +180,7 @@ const actions = {
       end: payload.end,
       uom: payload.uom
     })
+
     if (missingIntervals.length > 0) {
       // The cache does not contain all of the data
       // Add it to the cache
@@ -142,7 +209,9 @@ const actions = {
         })
       })
       try {
-        window.localStorage.setItem('OSU Sustainability Office Energy Dashboard Data Cache', JSON.stringify(this.getters['dataStore/cache']))
+        // add all cached instances to the indexedDB
+        await this.dispatch('dataStore/addCacheToIndexedDB')
+        //  window.localStorage.setItem('OSU Sustainability Office Energy Dashboard Data Cache', JSON.stringify(this.getters['dataStore/cache']))
       } catch (e) {
         console.log(e)
         console.log('Failed to write new datums to the persistent cache.')
@@ -193,29 +262,35 @@ const mutations = {
     state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] = cacheEntry.value
   },
 
-  loadLocalStorage: (state) => {
-    try {
-      if (!state.localStorageChecked) {
-        state.localStorageChecked = true
-        const temp = JSON.parse(window.localStorage.getItem('OSU Sustainability Office Energy Dashboard Data Cache'))
-        if (temp) {
-          state.cache = temp
-          console.log('Data loaded from persistent cache.')
-        } else {
-          console.log('No persistent cache found.')
-        }
-      }
-    } catch (e) {
-      console.log(e)
-      console.log('The persistent cache failed to load.')
-    }
-  }
+  // Sets DBInstance property to an initialized indexedDB instance.
+  // The indexedDB schema similar to the cache:
+  //    {
+  //      meterId: <id of meter>
+  //      meterData: {
+  //        uom: {
+  //          datetime: accumulated_real (value),
+  //          ...
+  //        }
+  //      }
+  //    }
+  //
+  setDBInstance: (state, { instance }) => {
+    state.indexedDBInstance = instance
+  },
 
+  // Completely overwrites cache with new data.
+  // Needed for indexedDB load action to change cache state.
+  overwriteCache: (state, { newCache }) => {
+    state.cache = newCache
+  }
 }
 
 const getters = {
   cache (state) {
     return state.cache
+  },
+  DB (state) {
+    return state.indexedDBInstance
   }
 }
 
