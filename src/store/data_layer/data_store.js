@@ -243,11 +243,13 @@ const actions = {
 
     // remove already checked intervals (intervals where data presumably doesn't exist on server)
     // this should prevent extraneous GET requests from occuring on the front-end
-    missingIntervals = missingIntervals.filter(async (interval) => {
+    let newMissingIntervals = []
+    for (let interval of missingIntervals) {
       let [startTime, end] = interval
       let endPoints = await this.dispatch('dataStore/getDeadQueries', { startTime })
-      return !endPoints.includes(end)
-    })
+      if (!endPoints.includes(end)) newMissingIntervals.push(interval)
+    }
+    missingIntervals = newMissingIntervals
 
     if (missingIntervals.length > 0) {
       // The cache does not contain all of the data
