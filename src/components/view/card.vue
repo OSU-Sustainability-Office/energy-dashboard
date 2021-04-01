@@ -5,6 +5,20 @@
         <el-col :span='20'>{{ name }}</el-col>
         <el-col :span='4' v-if='personalView || publicView' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='openModal()'></i></el-col>
       </el-row>
+      <!--Next/Previous arrows on graph-->
+      <el-row class='GraphChangeButtons' ref='GraphChangeButtons'>
+        <el-col :span='20'>
+          <el-button-group>
+            <el-button size="small" type='primary' icon='el-icon-d-arrow-left' @click='previousInterval'>
+              Previous {{ currentTimeInterval() }}
+            </el-button>
+            <el-button size="small" type='primary' disabled>
+              Next {{ currentTimeInterval() }} <i class="el-icon-d-arrow-right" @click='nextInterval'></i>
+            </el-button>
+          </el-button-group>
+        </el-col>
+      </el-row>
+      <!--Chart Below-->
       <el-row style='overflow: hidden;'>
         <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430'/>
       </el-row>
@@ -133,6 +147,26 @@ export default {
       // this.$store.dispatch('block', block).then(() => {
       //   this.$refs.chartController.parse()
       // })
+    },
+    // returns current interval of chart data: [start, end]
+    currentTimeInterval: function () {
+          // get date start & end
+          const blockPath = this.$store.getters['modalController/data'].path
+          console.log(blockPath)
+          if (blockPath) {
+            let startDate = this.$store.getters[blockPath + '/dateStart']
+            let endDate = this.$store.getters[blockPath + '/dateEnd']
+            console.log(`== ${startDate}, ${endDate}`)
+          }
+          return 'TODO' 
+    },
+    // Moves the chart data to its previous occuring interval
+    previousInterval: function () {
+      // TODO 
+    },
+    // Moves chart data to its next occuring interval
+    nextInterval: function () {
+      // TODO 
     }
   }
 }
