@@ -251,6 +251,9 @@ const actions = {
     }
     missingIntervals = newMissingIntervals
 
+    // boolean flag which indicates if any requests failed
+    let requestsSucceeded = true
+
     if (missingIntervals.length > 0) {
       // The cache does not contain all of the data
       // Add it to the cache
@@ -262,6 +265,11 @@ const actions = {
 
       // Save all of the new data to the cache
       const responses = await Promise.all(promises)
+        .catch(err => {
+          requestsSucceeded = false
+          console.log(err)
+        })
+
       // The data looks like an array of these objects:
       // {
       //   accumulated_real: -13385083 // This key can change based on the uom
@@ -296,15 +304,18 @@ const actions = {
 
       // At this point, let's double-check if our data has any gaps even after re-querying for the intervals.
       // if there are still gaps, we assume it's a dead-request and cache it to prevent re-querying the api.
-      const stillMissingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
-        meterId: payload.meterId,
-        start: payload.start,
-        end: payload.end,
-        uom: payload.uom
-      })
+      // NOTE: we only do this if all our requests succeeded (i.e. the API is up)
+      if (requestsSucceeded) {
+        const stillMissingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
+          meterId: payload.meterId,
+          start: payload.start,
+          end: payload.end,
+          uom: payload.uom
+        })
 
-      if (stillMissingIntervals.length) {
-        await this.dispatch('dataStore/addDeadQueries', { MissingPairs: stillMissingIntervals })
+        if (stillMissingIntervals.length) {
+          await this.dispatch('dataStore/addDeadQueries', { MissingPairs: stillMissingIntervals })
+        }
       }
     } catch (e) {
       // Somehow, the data we expect to be in the cache is not there!
