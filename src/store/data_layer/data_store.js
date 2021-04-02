@@ -33,11 +33,20 @@ const state = () => {
       //   }
       // }
     },
-    indexedDBInstance: undefined
+    indexedDBInstance: undefined,
+    remoteSystemNow: undefined
   }
 }
 
 const actions = {
+
+  // Queries backend-api to get "system.now()" timestamp
+  // this is to ensure DeadRequests doesn't improperly
+  // mark intervals as "unavailable."
+  async getSystemNow(store){
+    // TODO: add API request to <apiurl>/now/ or something
+    thisDate.now()
+  },
 
   // Copies "cache" object to indexedDB for persistent storage
   async addCacheToIndexedDB (store) {
@@ -364,7 +373,11 @@ const mutations = {
   // Needed for indexedDB load action to change cache state.
   overwriteCache: (state, { newCache }) => {
     state.cache = newCache
-  }
+  },
+
+  setSystemNow: (state, { now }) => {
+    state.remoteSystemNow = now
+  },
 }
 
 const getters = {
@@ -373,6 +386,9 @@ const getters = {
   },
   DB (state) {
     return state.indexedDBInstance
+  },
+  SystemNow (state){
+    return state.remoteSystemNow
   }
 }
 
