@@ -5,22 +5,17 @@
         <el-col :span='20'>{{ name }}</el-col>
         <el-col :span='4' v-if='personalView || publicView' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='openModal()'></i></el-col>
       </el-row>
-      <!--Next/Previous arrows on graph-->
-      <el-row class='GraphChangeButtons' ref='GraphChangeButtons'>
-        <el-col :span='20'>
-          <el-button-group>
-            <el-button size="small" type='primary' icon='el-icon-d-arrow-left' @click='previousInterval'>
-              Previous {{ currentTimeInterval() }}
-            </el-button>
-            <el-button size="small" type='primary' disabled>
-              Next {{ currentTimeInterval() }} <i class="el-icon-d-arrow-right" @click='nextInterval'></i>
-            </el-button>
-          </el-button-group>
-        </el-col>
-      </el-row>
       <!--Chart Below-->
-      <el-row style='overflow: hidden;'>
-        <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430'/>
+      <el-row style='overflow: hidden;' :span='24'>
+        <el-col :span='1'>
+          <el-button class='moveButtons' size="small" type='primary' icon='el-icon-d-arrow-left' @click='previousInterval' :disabled='!prevExists'></el-button>
+        </el-col>
+        <el-col :span='22'>
+          <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430'/>
+        </el-col>
+        <el-col :span='1'>
+          <el-button class='moveButtons' size="small" type='primary' icon='el-icon-d-arrow-right' @click='nextInterval' :disabled='!nextExists'></el-button>
+        </el-col>
       </el-row>
   </el-col>
   </el-row>
@@ -122,6 +117,32 @@ export default {
             break
         }
       }
+    },
+    // returns the current time interval from an end date to start date
+    currentTimeInterval: function () {
+      return this.$store.getters[this.path + '/dateEnd'] - this.$store.getters[this.path + '/dateStart']
+    },
+    // returns boolean for if next interval exists in program.
+    nextExists: function () {
+      return this.nextEndpoint < Date.now()
+    },
+    // returns boolean for if prev interval exists in program
+    prevExists: function () {
+      // !! WARNING: THIS IS HARDCODED, WE SHOULD HAVE ANOTHER
+      // !! (server-side) MECHANISM TO CHECK THE OLDEST DATA DATE
+      // !! DO NOT MERGE THIS: WILL CREATE PROBLEMS LATER ON
+      // !! IT DOESN'T TAKE INTO ACCOUNT DIFFERENT METERS
+      // check if user is asking for data in the past
+      // earliest record in energy_data right now is from 2018--this is its timestamp.
+      return this.nextStartpoint > 1527836400000
+    },
+    // holds next possible interval start
+    nextStartpoint: function () {
+      return this.$store.getters[this.path + '/dateStart'] - this.currentTimeInterval
+    },
+    // holds next possible interval end
+    nextEndpoint: function () {
+      return this.$store.getters[this.path + '/dateEnd'] + this.currentTimeInterval
     }
   },
   methods: {
@@ -148,25 +169,17 @@ export default {
       //   this.$refs.chartController.parse()
       // })
     },
-    // returns current interval of chart data: [start, end]
-    currentTimeInterval: function () {
-          // get date start & end
-          const blockPath = this.$store.getters['modalController/data'].path
-          console.log(blockPath)
-          if (blockPath) {
-            let startDate = this.$store.getters[blockPath + '/dateStart']
-            let endDate = this.$store.getters[blockPath + '/dateEnd']
-            console.log(`== ${startDate}, ${endDate}`)
-          }
-          return 'TODO' 
-    },
-    // Moves the chart data to its previous occuring interval
+    // Moves chart data to its previously occuring interval
     previousInterval: function () {
-      // TODO 
+      let currentStartPoint = this.$store.getters[this.path + '/dateStart']
+      this.$store.commit(this.path + '/dateStart', this.nextStartpoint)
+      this.$store.commit(this.path + '/dateEnd', currentStartPoint)
     },
     // Moves chart data to its next occuring interval
     nextInterval: function () {
-      // TODO 
+      let currentEndPoint = this.$store.getters[this.path + '/dateEnd']
+      this.$store.commit(this.path + '/dateEnd', this.nextEndpoint)
+      this.$store.commit(this.path + '/dateStart', currentEndPoint)
     }
   }
 }
@@ -198,6 +211,10 @@ export default {
 }
 .right {
   text-align: right;
+}
+.moveButtons {
+  margin-top: 0 auto;
+  height: calc( (400px + 8em) * 0.8)
 }
 
 </style>
