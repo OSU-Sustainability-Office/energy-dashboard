@@ -86,5 +86,8 @@ export default {
   },
   campaigns: async () => {
     return (await callAPI('campaigns')).data
+  },
+  systemtime: async () => {
+    return (await callAPI('systemtime')).data
   }
 }

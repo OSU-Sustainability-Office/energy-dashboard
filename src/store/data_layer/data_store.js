@@ -43,9 +43,17 @@ const actions = {
   // Queries backend-api to get "system.now()" timestamp
   // this is to ensure DeadRequests doesn't improperly
   // mark intervals as "unavailable."
-  async getSystemNow(store){
-    // TODO: add API request to <apiurl>/now/ or something
-    thisDate.now()
+  async loadSystemNow(store){
+    
+    let apiTime = await API.systemtime()
+    if (apiTime){
+      console.log(`== the api time is ${apiTime}`)
+      this.commit('dataStore/setSystemNow', { now: Number(apiTime) })
+    } else {
+      // fall-back to local time
+      console.log('could not query api, falling back to locale time...')
+      this.commit('dataStore/setSystemNow', { now: thisDate.now() })
+    }
   },
 
   // Copies "cache" object to indexedDB for persistent storage
@@ -75,6 +83,15 @@ const actions = {
     MissingPairs.forEach(async pair => {
       // updates stored dead intervals
       let [startTime, endTime] = pair
+      
+      // check if startTime is at least 3 months old
+      // then we can be reasonably sure that data for that entry
+      // will not be recovered. (Meters cache data for last 3 months)
+      // we calculate 3 months to be about 96 days 
+      // (this is intended to be an upper-bound to prevent any mislabeling)
+      const ThreeMonthsInMilliseconds = 497664000 // = 96 * 24 * 60 * 60 * 60
+      if (startTime < (this.getters['dataStore/remoteSystemNow'] - ThreeMonthsInMilliseconds)) return
+
       let currentEndTimes = await this.dispatch('dataStore/getDeadQueries', { startTime })
       await new Promise((resolve, reject) => {
         let request = db.transaction('DeadRequests', 'readwrite').objectStore('DeadRequests').put({ startTime, endingTimes: [...currentEndTimes, endTime] })
@@ -126,6 +143,12 @@ const actions = {
   //  }
   async loadIndexedDB (store) {
     if (this.getters['dataStore/DB'] !== undefined) return
+
+    // Alright, since we need to setup our database 
+    // let's first set the current time for the Dead Requests Store
+    // (this is used later for checking if data is sufficiently old enough
+    // to be declared "dead").
+    await this.dispatch('dataStore/loadSystemNow')
 
     // connect to indexedDB instance
     await new Promise((resolve, reject) => {
