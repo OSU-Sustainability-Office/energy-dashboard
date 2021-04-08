@@ -48,6 +48,9 @@ Resources:
       MemorySize: 128
       CodeUri: app/
       Handler: now.systemtime
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
       Events:
         Building:
           Type: Api
