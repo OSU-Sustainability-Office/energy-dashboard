@@ -43,16 +43,14 @@ const actions = {
   // Queries backend-api to get "system.now()" timestamp
   // this is to ensure DeadRequests doesn't improperly
   // mark intervals as "unavailable."
-  async loadSystemNow(store){
-    
+  async loadSystemNow (store) {
     let apiTime = await API.systemtime()
-    if (apiTime){
-      console.log(`== the api time is ${apiTime}`)
+    // see if we can set the apiTime from querying AWS
+    if (apiTime) {
       this.commit('dataStore/setSystemNow', { now: Number(apiTime) })
     } else {
-      // fall-back to local time
-      console.log('could not query api, falling back to locale time...')
-      this.commit('dataStore/setSystemNow', { now: thisDate.now() })
+      // otherwise, fall-back to using locale time
+      this.commit('dataStore/setSystemNow', { now: Date.now() })
     }
   },
 
@@ -83,11 +81,11 @@ const actions = {
     MissingPairs.forEach(async pair => {
       // updates stored dead intervals
       let [startTime, endTime] = pair
-      
+
       // check if startTime is at least 3 months old
       // then we can be reasonably sure that data for that entry
       // will not be recovered. (Meters cache data for last 3 months)
-      // we calculate 3 months to be about 96 days 
+      // we calculate 3 months to be about 96 days
       // (this is intended to be an upper-bound to prevent any mislabeling)
       const ThreeMonthsInMilliseconds = 497664000 // = 96 * 24 * 60 * 60 * 60
       if (startTime < (this.getters['dataStore/remoteSystemNow'] - ThreeMonthsInMilliseconds)) return
@@ -144,10 +142,10 @@ const actions = {
   async loadIndexedDB (store) {
     if (this.getters['dataStore/DB'] !== undefined) return
 
-    // Alright, since we need to setup our database 
+    // Alright, since we need to setup our database
     // let's first set the current time for the Dead Requests Store
     // (this is used later for checking if data is sufficiently old enough
-    // to be declared "dead").
+    // to be declared as "dead").
     await this.dispatch('dataStore/loadSystemNow')
 
     // connect to indexedDB instance
@@ -400,7 +398,7 @@ const mutations = {
 
   setSystemNow: (state, { now }) => {
     state.remoteSystemNow = now
-  },
+  }
 }
 
 const getters = {
@@ -410,7 +408,7 @@ const getters = {
   DB (state) {
     return state.indexedDBInstance
   },
-  SystemNow (state){
+  SystemNow (state) {
     return state.remoteSystemNow
   }
 }
