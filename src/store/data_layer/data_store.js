@@ -17,11 +17,11 @@
  */
 
 import API from '../api.js'
-// import Meter from '../meter.module.js'
 
 const state = () => {
   return {
-    cache: {
+    cache:
+    {
       // Initially empty
       // Generally has this structure:
       // {
@@ -33,11 +33,168 @@ const state = () => {
       //   }
       // }
     },
-    localStorageChecked: false
+    indexedDBInstance: undefined,
+    remoteSystemNow: undefined
   }
 }
 
 const actions = {
+
+  // Queries backend-api to get "system.now()" timestamp
+  // this is to ensure DeadRequests doesn't improperly
+  // mark intervals as "unavailable."
+  async loadSystemNow (store) {
+    let apiTime = await API.systemtime()
+    // see if we can set the apiTime from querying AWS
+    if (apiTime) {
+      this.commit('dataStore/setSystemNow', { now: Number(apiTime) })
+    } else {
+      // otherwise, fall-back to using locale time
+      console.log('API time route was unavailable, falling back to locale time.')
+      this.commit('dataStore/setSystemNow', { now: Date.now() })
+    }
+  },
+
+  // Copies "cache" object to indexedDB for persistent storage
+  async addCacheToIndexedDB (store) {
+    // double-check current store state
+    const db = this.getters['dataStore/DB']
+    if (db === undefined) throw new Error('indexedDB not instantiated')
+    const cache = this.getters['dataStore/cache']
+    if (cache.length === 0) throw new Error('cache object is empty')
+
+    // Wrapping each callback into promise so async works on indexedDB api calls
+    for (let meterId of Object.keys(cache)) {
+      await new Promise((resolve, reject) => {
+        let request = db.transaction('MeterReadings', 'readwrite').objectStore('MeterReadings').put({ 'meterId': meterId, 'meterData': { ...cache[meterId] } })
+        request.onerror = event => reject(event)
+        request.onsuccess = event => resolve(event)
+      })
+        .catch(err => { throw err })
+    }
+  },
+
+  // Adds pairs of intervals which point to non-existant data in the indexDB DeadRequest object store.
+  async addDeadQueries (store, { MissingPairs }) {
+    const db = this.getters['dataStore/DB']
+    if (db === undefined) throw new Error('indexedDB not instantiated')
+
+    MissingPairs.forEach(async pair => {
+      // updates stored dead intervals
+      let [startTime, endTime] = pair
+
+      // check if startTime is at least 3 months old
+      // then we can be reasonably sure that data for that entry
+      // will not be recovered. (The AcquiSuites cache data for last 3 months)
+      // we calculate 3 months to be about 96 days
+      // (this is intended to be an upper-bound to prevent any mislabeling)
+      const ThreeMonthsInMilliseconds = 497664000 // = 96 * 24 * 60 * 60 * 60
+      if (startTime < (this.getters['dataStore/remoteSystemNow'] - ThreeMonthsInMilliseconds)) return
+
+      let currentEndTimes = await this.dispatch('dataStore/getDeadQueries', { startTime })
+      await new Promise((resolve, reject) => {
+        let request = db.transaction('DeadRequests', 'readwrite').objectStore('DeadRequests').put({ startTime, endingTimes: [...currentEndTimes, endTime] })
+        request.onerror = event => reject(event)
+        request.onsuccess = event => resolve(event)
+      })
+        .catch(err => { throw err })
+    })
+  },
+
+  // Retrieves array of 'dead' end times for a given start-time
+  async getDeadQueries (store, { startTime }) {
+    const db = this.getters['dataStore/DB']
+    if (db === undefined) throw new Error('indexedDB not instantiated')
+
+    let currentlyStoredEndTimes = []
+    await new Promise((resolve, reject) => {
+      let dbGetRequest = db.transaction('DeadRequests', 'readwrite').objectStore('DeadRequests').get(startTime)
+      dbGetRequest.onsuccess = event => resolve(event)
+      dbGetRequest.onerror = event => reject(event)
+    })
+      .then(event => {
+        if (event.target.result !== undefined) currentlyStoredEndTimes = event.target.result['endingTimes']
+        else currentlyStoredEndTimes = []
+      })
+    return currentlyStoredEndTimes
+  },
+
+  // Loads indexedDB into the Vuex store
+  // The indexedDB database holds two "Object Stores" which hold persistent data within the user's browser.
+  // There are currently two defined object stores:
+  //    1. MeterReadings -> stores queried meter measurements from the api (persistent cache object)
+  //    2. DeadRequests  -> stores missing intervals for which data cannot be retrieved (intended to prevent extraneous api requests).
+  //
+  // The MeterReadings's structure is pretty similar to the cache:
+  //    {
+  //      meterId: <id of meter>
+  //      meterData: {
+  //        uom: {
+  //          datetime: accumulated_real (value),
+  //          ...
+  //        }
+  //      }
+  //    }
+  // The DeadRequests store stores intervals for which data cannot be obtained from the api.  This it's structure (generally):
+  //  {
+  //    startTime: <timestamp>
+  //    endTimes: [array of timestamps]
+  //  }
+  async loadIndexedDB (store) {
+    if (this.getters['dataStore/DB'] !== undefined) return
+
+    // Alright, since we need to setup our database
+    // let's first set the current time for the Dead Requests Store
+    // (this is used later for checking if data is sufficiently old enough
+    // to be declared as "dead").
+    await this.dispatch('dataStore/loadSystemNow')
+
+    // connect to indexedDB instance
+    await new Promise((resolve, reject) => {
+      const db = window.indexedDB.open('OSU Sustainability Office Energy Dashboard Data Cache', 1)
+      db.onerror = event => reject(event)
+      // onupgradeneeded will be called if the database does not exist and/or exists with an older version
+      db.onupgradeneeded = event => {
+        switch (event.oldVersion) {
+          // if oldVersion == 0, then indexedDB did not exist so we build it.
+          case 0:
+            // stores meter readings
+            event.target.result.createObjectStore('MeterReadings', { keyPath: 'meterId' })
+            // stores dead-end requests
+            event.target.result.createObjectStore('DeadRequests',  { keyPath: 'startTime' })
+            break
+        }
+      }
+      db.onsuccess = event => resolve(event)
+    })
+      .then(event => {
+        // Store reference to indexDB database in vuex store
+        this.commit('dataStore/setDBInstance', { instance: event.target.result })
+      })
+      .catch(event => {
+        console.log('An error occured when trying to use indexedDB API, is it enabled?')
+      })
+
+    // Then, load indexedDB into the dataStore's cache object
+    let newCacheObject = {}
+    await new Promise((resolve, reject) => {
+      let dataReqest = this.getters['dataStore/DB'].transaction('MeterReadings', 'readonly').objectStore('MeterReadings').getAll()
+      dataReqest.onsuccess = event => resolve(event)
+      dataReqest.onerror = event => resolve(event)
+    })
+      .then(event => {
+        // transform from indexedDB representation to cache-friendly variant
+        for (let meterIndex = 0; meterIndex < event.target.result.length; meterIndex++) {
+          let db_entry = event.target.result[meterIndex]
+          newCacheObject[db_entry['meterId']] = db_entry['meterData']
+        }
+        this.commit('dataStore/overwriteCache', { newCache: newCacheObject })
+        console.log('data loaded from persistent cache')
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  },
 
   // Returns an array containing intervals of missing data between the start and end
   // Parameters:
@@ -65,7 +222,7 @@ const actions = {
         // Keep the first, the last, and any indices defining the start and/or end of a gap
         return index === 0 || index === array.length - 1 || Math.abs(key - array[index - 1]) > 900 || Math.abs(key - array[index + 1]) > 900
       })
-      .map(ts => parseInt(ts)) // Parse them to integers
+      .map(ts => parseInt(ts, 10)) // Parse them to integers
 
     // If no matching records are found, return the original interval
     if (timestamps.length === 0) return [[payload.start, payload.end]]
@@ -104,16 +261,30 @@ const actions = {
   //  uom: the unit of measure/metering point to request data for
   //  classInt: An integer that corresponds to the type of meter we are reading from
   async getData (store, payload) {
-    // First, attempt to load a cache from localstorage (if the cache is empty)
-    this.commit('dataStore/loadLocalStorage')
+    // First, attempt to load a cache from indexDB (if the cache is empty)
+    await this.dispatch('dataStore/loadIndexedDB')
 
     // Does the cache contain the data?
-    const missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
+    let missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
       meterId: payload.meterId,
       start: payload.start,
       end: payload.end,
       uom: payload.uom
     })
+
+    // remove already checked intervals (intervals where data presumably doesn't exist on server)
+    // this should prevent extraneous GET requests from occuring on the front-end
+    let newMissingIntervals = []
+    for (let interval of missingIntervals) {
+      let [startTime, end] = interval
+      let endPoints = await this.dispatch('dataStore/getDeadQueries', { startTime })
+      if (!endPoints.includes(end)) newMissingIntervals.push(interval)
+    }
+    missingIntervals = newMissingIntervals
+
+    // boolean flag which indicates if any requests failed
+    let requestsSucceeded = true
+
     if (missingIntervals.length > 0) {
       // The cache does not contain all of the data
       // Add it to the cache
@@ -125,6 +296,11 @@ const actions = {
 
       // Save all of the new data to the cache
       const responses = await Promise.all(promises)
+        .catch(err => {
+          requestsSucceeded = false
+          console.log(err)
+        })
+
       // The data looks like an array of these objects:
       // {
       //   accumulated_real: -13385083 // This key can change based on the uom
@@ -142,7 +318,8 @@ const actions = {
         })
       })
       try {
-        window.localStorage.setItem('OSU Sustainability Office Energy Dashboard Data Cache', JSON.stringify(this.getters['dataStore/cache']))
+        // add all cached instances to the indexedDB
+        await this.dispatch('dataStore/addCacheToIndexedDB')
       } catch (e) {
         console.log(e)
         console.log('Failed to write new datums to the persistent cache.')
@@ -155,6 +332,22 @@ const actions = {
     try {
       cache = this.getters['dataStore/cache'][payload.meterId][payload.uom]
       cacheKeys = Object.keys(cache).filter(key => key >= payload.start && key <= payload.end) // Filter out data that is not in our time range
+
+      // At this point, let's double-check if our data has any gaps even after re-querying for the intervals.
+      // if there are still gaps, we assume it's a dead-request and cache it to prevent re-querying the api.
+      // NOTE: we only do this if all our requests succeeded (i.e. the API is up)
+      if (requestsSucceeded) {
+        const stillMissingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
+          meterId: payload.meterId,
+          start: payload.start,
+          end: payload.end,
+          uom: payload.uom
+        })
+
+        if (stillMissingIntervals.length) {
+          await this.dispatch('dataStore/addDeadQueries', { MissingPairs: stillMissingIntervals })
+        }
+      }
     } catch (e) {
       // Somehow, the data we expect to be in the cache is not there!
       // This occurs when we request for data that does not exist in our database.
@@ -193,29 +386,31 @@ const mutations = {
     state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] = cacheEntry.value
   },
 
-  loadLocalStorage: (state) => {
-    try {
-      if (!state.localStorageChecked) {
-        state.localStorageChecked = true
-        const temp = JSON.parse(window.localStorage.getItem('OSU Sustainability Office Energy Dashboard Data Cache'))
-        if (temp) {
-          state.cache = temp
-          console.log('Data loaded from persistent cache.')
-        } else {
-          console.log('No persistent cache found.')
-        }
-      }
-    } catch (e) {
-      console.log(e)
-      console.log('The persistent cache failed to load.')
-    }
-  }
+  // Sets DBInstance property to an initialized indexedDB instance.
+  setDBInstance: (state, { instance }) => {
+    state.indexedDBInstance = instance
+  },
 
+  // Completely overwrites cache with new data.
+  // Needed for indexedDB load action to change cache state.
+  overwriteCache: (state, { newCache }) => {
+    state.cache = newCache
+  },
+
+  setSystemNow: (state, { now }) => {
+    state.remoteSystemNow = now
+  }
 }
 
 const getters = {
   cache (state) {
     return state.cache
+  },
+  DB (state) {
+    return state.indexedDBInstance
+  },
+  SystemNow (state) {
+    return state.remoteSystemNow
   }
 }
 

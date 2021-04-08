@@ -42,6 +42,18 @@ Resources:
           Properties:
             Path: /test
             Method: get
+  SystemTime:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: now.systemtime
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /systemtime
+            Method: get
   BuildingAll:
     Type: AWS::Serverless::Function
     Properties:
