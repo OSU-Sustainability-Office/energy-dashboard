@@ -50,6 +50,7 @@ const actions = {
       this.commit('dataStore/setSystemNow', { now: Number(apiTime) })
     } else {
       // otherwise, fall-back to using locale time
+      console.log('API time route was unavailable, falling back to locale time.')
       this.commit('dataStore/setSystemNow', { now: Date.now() })
     }
   },
@@ -84,7 +85,7 @@ const actions = {
 
       // check if startTime is at least 3 months old
       // then we can be reasonably sure that data for that entry
-      // will not be recovered. (Meters cache data for last 3 months)
+      // will not be recovered. (The AcquiSuites cache data for last 3 months)
       // we calculate 3 months to be about 96 days
       // (this is intended to be an upper-bound to prevent any mislabeling)
       const ThreeMonthsInMilliseconds = 497664000 // = 96 * 24 * 60 * 60 * 60
