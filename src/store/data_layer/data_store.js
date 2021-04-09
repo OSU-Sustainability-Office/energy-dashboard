@@ -45,6 +45,7 @@ const actions = {
   // mark intervals as "unavailable."
   async loadSystemNow (store) {
     let apiTime = await API.systemtime()
+      .catch(fail => {}) // empty catch prevents front-end from halting on error
     // see if we can set the apiTime from querying AWS
     if (apiTime) {
       this.commit('dataStore/setSystemNow', { now: Number(apiTime) })
