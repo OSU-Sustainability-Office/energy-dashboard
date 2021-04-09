@@ -125,10 +125,11 @@
   const layerPromises = []
 
   for (let layer of neededLayers) {
+    let layerArn = template.Parameters[layer].Default
     try {
       layerPromises.push(new Promise((resolve, reject) => {
         Lambda.getLayerVersionByArn({
-          Arn: layer
+          Arn: layerArn
         }, (err, data) => {
           if (err) {
             reject(err)
