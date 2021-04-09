@@ -11,6 +11,7 @@
           <el-button class='moveButtons' size="small" type='primary' icon='el-icon-d-arrow-left' @click='previousInterval' :disabled='!prevExists'></el-button>
         </el-col>
         <el-col :span='22'>
+          <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
           <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430'/>
         </el-col>
         <el-col :span='1'>
@@ -124,16 +125,14 @@ export default {
     },
     // returns boolean for if next interval exists in program.
     nextExists: function () {
-      return this.nextEndpoint < Date.now()
+      return this.nextEndpoint < this.$store.getters['dataStore/SystemNow']
     },
     // returns boolean for if prev interval exists in program
     prevExists: function () {
-      // !! WARNING: THIS IS HARDCODED, WE SHOULD HAVE ANOTHER
-      // !! (server-side) MECHANISM TO CHECK THE OLDEST DATA DATE
-      // !! DO NOT MERGE THIS: WILL CREATE PROBLEMS LATER ON
-      // !! IT DOESN'T TAKE INTO ACCOUNT DIFFERENT METERS
-      // check if user is asking for data in the past
-      // earliest record in energy_data right now is from 2018--this is its timestamp.
+      // Check if user is asking for data in the past,
+      // since the earliest record in energy_data right now is from 2018
+      // this is the hard-coded in time-stamp and may be subject to change
+      // depending on how far back our records go.
       return this.nextStartpoint > 1527836400000
     },
     // holds next possible interval start
@@ -187,6 +186,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang='scss'>
+
+$chart-height: 430px;
+
 .card {
   background-color: $--color-white;
   padding: 2em;
@@ -213,8 +215,7 @@ export default {
   text-align: right;
 }
 .moveButtons {
-  margin-top: 0 auto;
-  height: calc( (400px + 8em) * 0.8)
+  height: $chart-height;
 }
 
 </style>
