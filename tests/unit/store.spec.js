@@ -2,13 +2,16 @@
  * @Author: Brogan Miner <Brogan>
  * @Date:   2018-12-20T14:36:18-08:00
  * @Email:  brogan.miner@oregonstate.edu
- * @Last modified by:   Brogan
+ * @Last modified by: Milan
  * @Last modified time: 2019-01-07T14:24:13-08:00
  */
 import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
-import createStoreConfig from '@/store/storeconfig.js'
 
+
+// TODO: Actually add unit tests for the store interface
+
+import createStoreConfig from '@/store/storeconfig.js'
 import assertedStories from '../assertedData/stories.json'
 import assertedStory from '../assertedData/story.json'
 import assertedBaseline from '../assertedData/baseline.json'
