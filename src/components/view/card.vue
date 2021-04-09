@@ -11,10 +11,7 @@
           <el-button class='moveButtons' size="small" type='primary' icon='el-icon-d-arrow-left' @click='previousInterval' :disabled='!prevExists'></el-button>
         </el-col>
         <el-col :span='22'>
-<<<<<<< HEAD
           <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
-=======
->>>>>>> 7ffbcb9f9f365d72910f179442301042d9582f6c
           <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430'/>
         </el-col>
         <el-col :span='1'>
