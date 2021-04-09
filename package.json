@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "bash start_service.sh",
     "serve": "vue-cli-service serve",
     "build": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "build-stage": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service build --mode staging",
-    "test:unit": "vue-cli-service test:unit"
+    "start": "bash start_service.sh",
+    "test": "vue-cli-service test:unit"
   },
   "dependencies": {
     "ajv": "^6.11.0",
@@ -33,9 +34,9 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.12.1",
     "@vue/cli-plugin-eslint": "^3.12.1",
-    "@vue/cli-plugin-unit-jest": "^3.12.1",
+    "@vue/cli-plugin-unit-jest": "^4.5.12",
     "@vue/cli-service": "^3.12.1",
-    "@vue/test-utils": "^1.0.0-beta.31",
+    "@vue/test-utils": "^1.0.3",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
@@ -74,7 +75,18 @@
     "rules": {},
     "parserOptions": {
       "parser": "babel-eslint"
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/__tests__/*.{j,t}s?(x)",
+          "**/tests/unit/**/*.spec.{j,t}s?(x)"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ]
   },
   "postcss": {
     "plugins": {
