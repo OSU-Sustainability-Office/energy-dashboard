@@ -125,7 +125,7 @@ export default {
     },
     // returns boolean for if next interval exists in program.
     nextExists: function () {
-      return this.nextEndpoint < this.$store.getters['dataStore/SystemNow']
+      return this.nextEndpoint < Date.now()
     },
     // returns boolean for if prev interval exists in program
     prevExists: function () {
@@ -213,6 +213,7 @@ $chart-height: 430px;
 }
 .right {
   text-align: right;
+  padding-right: 10px;
 }
 .moveButtons {
   height: $chart-height;
