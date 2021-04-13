@@ -2,51 +2,66 @@
  * @Author: Brogan Miner <Brogan>
  * @Date:   2018-12-20T14:36:18-08:00
  * @Email:  brogan.miner@oregonstate.edu
- * @Last modified by: Milan
- * @Last modified time: 2019-01-07T14:24:13-08:00
+ * @Last modified by: Milan Donhowe
+ * @Last modified time: 4/13/2021
+ * @Description: This file describes unit tests for the Vuex store & its modules.
+ *               The way it fundamentally works is by creating a dummy-vue instance
+ *               along with a copy of the Vuex store and then testss the code output
+ *               against mock data (data we store locally which imitates the structure of
+ *               data we expect to appear during the real program runtime).
  */
+const axios = require('axios')
 import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
+import { cloneDeep } from 'lodash'
+
+// jest.mock essentially redirects any axios calls
+// to some empty functions whose behavior we can define
+// in the unit tests.  This is because we don't want to
+// *actually query* the API during a test.
+jest.mock('axios')
 
 
-// TODO: Actually add unit tests for the store interface
+// import the vuex store configuration object
+import { StoreConfig } from '@/store/index'
 
-import createStoreConfig from '@/store/storeconfig.js'
-import assertedStories from '../assertedData/stories.json'
-import assertedStory from '../assertedData/story.json'
-import assertedBaseline from '../assertedData/baseline.json'
+// Also import all the store modules (needed for cloneDeep)
+import View from '@/store/view.module.js'
+import User from '@/store/user.module.js'
+import Campaigns from '@/store/campaigns.module.js'
+import EDMap from '@/store/map.module.js'
+import ModalController from '@/store/modal_controller.module.js'
+import Admin from '@/store/admin.module.js'
+import DataStore from '@/store/data_layer/data_store.js'
 
-/* eslint-disable-next-line */
-jest.mock('@/store/api')
 
-const localVue = createLocalVue()
-localVue.use(Vuex)
+describe('Testing Vuex Store Modules', () => {
+    
+    // Create local deep-copy of Vue & Vuex instances
+    const localVue = createLocalVue()
+    localVue.use(Vuex)
+    const localStore = new Vuex.Store(cloneDeep({...StoreConfig, modules: {
+      view: View,
+      admin: Admin,
+      campaigns: Campaigns,
+      map: EDMap,
+      user: User,
+      modalController: ModalController,
+      dataStore: DataStore
+    }}))
+  
+    describe('Testing Data Store Module', () => {
 
-describe('Testing Vuex Store', () => {
-  describe('Testing Actions', () => {
-    test('Can get stories', async () => {
-      const store = new Vuex.Store(createStoreConfig())
-      let r = await store.dispatch('stories')
-      expect(r).toMatchObject(assertedStories)
+        it('Testing Remote System Now',  async () => {
+          const mockTime = Date.now().toString()
+          axios.mockResolvedValue( { data: mockTime } )
+
+          await localStore.dispatch('dataStore/loadSystemNow')
+
+          return expect(localStore.getters['dataStore/SystemNow']).toBe(Number(mockTime))
+        })
+
     })
 
-    test('Can get story', async () => {
-      const store = new Vuex.Store(createStoreConfig())
-      let r = await store.dispatch('story', 95)
-      expect(r).toMatchObject(assertedStory)
-    })
-
-    test('Can make a proper baseline', async () => {
-      const store = new Vuex.Store(createStoreConfig())
-      let r = await store.dispatch('baseline', {
-        meters: [{ meter_id: 1, negate: null, operation: 1, type: 'e' }],
-        point: 'accumulated_real',
-        date_start: '2018-06-01T00:15:00.000Z',
-        date_end: '2018-06-15T00:15:00.000Z',
-        date_interval: 'minute',
-        interval_unit: 15
-      })
-      expect(r).toMatchObject(assertedBaseline)
-    })
-  })
+    // TODO: add more unit tests for other modules!
 })

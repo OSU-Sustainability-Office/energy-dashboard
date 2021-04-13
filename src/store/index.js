@@ -6,8 +6,6 @@
  * @Last modified time: 2018-12-20T15:51:39-08:00
  */
 
-import Vue from 'vue'
-import Vuex from 'vuex'
 import View from './view.module.js'
 import User from './user.module.js'
 import Campaigns from './campaigns.module.js'
@@ -16,9 +14,7 @@ import ModalController from './modal_controller.module.js'
 import Admin from './admin.module.js'
 import DataStore from './data_layer/data_store.js'
 
-Vue.use(Vuex)
-
-const store = {
+const StoreConfig = {
   getters: {
     view: (state) => {
       return state['view']
@@ -36,4 +32,4 @@ const store = {
   }
 }
 
-export default new Vuex.Store(store)
+export default StoreConfig

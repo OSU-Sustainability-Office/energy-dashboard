@@ -11,7 +11,16 @@ module.exports = function (api) {
   const presets = [
     '@vue/app'
   ]
+
+  const plugins = []
+
+  // add babel-require hook so web-pack directives don't brick jest
+  if (process.env.NODE_ENV === 'test') {
+    plugins.push('require-context-hook')
+  }
+
   return {
-    presets
+    presets,
+    plugins
   }
 }
