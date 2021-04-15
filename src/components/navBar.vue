@@ -39,8 +39,6 @@ export default {
       }
     }
   },
-  created () {
-  },
   mounted () {
     this.activeIndex = this.$route.path.split('/')[1]
   },
