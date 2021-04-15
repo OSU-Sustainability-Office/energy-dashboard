@@ -57,12 +57,6 @@ export default {
         }
       }
     }
-  },
-  methods: {
-    handleSelect: function (select) {
-      this.$router.push({ path: '/' + select })
-      this.activeIndex = select
-    }
   }
 }
 </script>
