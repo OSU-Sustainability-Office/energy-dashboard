@@ -15,6 +15,7 @@
       <!-- <transition v-bind:name="transitionName" v-on:after-leave="enableScroll" v-on:before-enter="disableScroll"> -->
         <router-view />
       <!-- </transition> -->
+
     </el-main>
   </el-container>
 </template>
@@ -47,6 +48,20 @@ export default {
     enableScroll: function () {
       this.$refs.main.$el.style.overflow = 'auto'
     }
+  },
+  mounted () {
+    this.$msgbox({
+      title: 'First Timer?',
+      message: 'Take a look at the "Get Started" tab to learn more and for FAQ\'s!',
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Never Show This Message Again',
+      callback: function (action) {
+        if (action === 'cancel') {
+          // save cookie
+        }
+      }
+    })
   },
   watch: {
     $route: function (to, from) {
