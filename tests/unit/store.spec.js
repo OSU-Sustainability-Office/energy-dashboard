@@ -10,7 +10,9 @@
  *               against mock data (data we store locally which imitates the structure of
  *               data we expect to appear during the real program runtime).
  */
+
 const axios = require('axios')
+
 import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import { cloneDeep } from 'lodash'
@@ -34,6 +36,10 @@ import ModalController from '@/store/modal_controller.module.js'
 import Admin from '@/store/admin.module.js'
 import DataStore from '@/store/data_layer/data_store.js'
 
+// Mock API Data
+import mockMeterReadings from "../assertedData/mock_meter_data.json"
+import mockAllBuildings from "../assertedData/mock_allbuildings.json"
+
 
 describe('Testing Vuex Store Modules', () => {
     
@@ -51,17 +57,41 @@ describe('Testing Vuex Store Modules', () => {
     }}))
   
     describe('Testing Data Store Module', () => {
-
+        
         it('Testing Remote System Now',  async () => {
           const mockTime = Date.now().toString()
-          axios.mockResolvedValue( { data: mockTime } )
+          axios.mockResolvedValue({ data: mockTime })
 
           await localStore.dispatch('dataStore/loadSystemNow')
 
           return expect(localStore.getters['dataStore/SystemNow']).toBe(Number(mockTime))
         })
 
+        it('Testing API Query', async () => {
+          axios.mockResolvedValue({ data: mockMeterReadings })
+
+          const payload = {
+            meterId: 5,
+            start: 1613232900,
+            end: 1618504200,
+            uom: 'accumulated_real'
+          }
+          
+          const formattedData = await localStore.dispatch('dataStore/getData', payload);
+          // make sure we recieved the expected number of responses
+          expect(formattedData.length).toEqual(mockMeterReadings.length)
+        })
+
     })
 
-    // TODO: add more unit tests for other modules!
+    describe('Testing Map Module', async () => {
+
+      it('Loading Map', async () => {
+        axios.mockResolvedValue({data: mockAllBuildings})
+        const buildingPromises = await localStore.dispatch('EDMap/loadMap')
+        // okay, at this point the map queries OpenMAP API
+        const jsonPromises  = await localStore.dispatch('EDMap/loadGeometry')
+      })
+
+    })
 })

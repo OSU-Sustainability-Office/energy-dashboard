@@ -124,7 +124,10 @@ module.exports = {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: ['./tests/setupJest.js'],
+  setupFiles: [
+    './tests/setupJest.js',
+    'fake-indexeddb/auto' // used to mock indexedDB automatically
+    ],
 
   // The path to a module that runs some code to configure or set up the testing framework before each test
   // setupTestFrameworkScriptFile: null,
