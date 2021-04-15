@@ -213,7 +213,6 @@ $chart-height: 430px;
 }
 .right {
   text-align: right;
-  padding-right: 10px;
 }
 .moveButtons {
   height: $chart-height;
