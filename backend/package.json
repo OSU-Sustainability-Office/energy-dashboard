@@ -4,7 +4,7 @@
   "description": "",
   "main": "sam_express.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -20,5 +20,9 @@
     "rimraf": "^3.0.0",
     "unzip": "^0.1.11",
     "yaml": "^1.6.0"
+  },
+  "devDependencies": {
+    "aws-sdk-mock": "^5.1.0",
+    "jest": "^26.6.3"
   }
 }
