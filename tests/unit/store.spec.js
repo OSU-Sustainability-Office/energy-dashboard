@@ -40,7 +40,6 @@ import DataStore from '@/store/data_layer/data_store.js'
 import mockMeterReadings from "../assertedData/mock_meter_data.json"
 import mockAllBuildings from "../assertedData/mock_allbuildings.json"
 
-
 describe('Testing Vuex Store Modules', () => {
     
     // Create local deep-copy of Vue & Vuex instances
@@ -67,6 +66,7 @@ describe('Testing Vuex Store Modules', () => {
           return expect(localStore.getters['dataStore/SystemNow']).toBe(Number(mockTime))
         })
 
+        
         it('Testing API Query', async () => {
           axios.mockResolvedValue({ data: mockMeterReadings })
 
@@ -83,15 +83,56 @@ describe('Testing Vuex Store Modules', () => {
         })
 
     })
+    
+    describe('Testing Map Module...', () => {
 
-    describe('Testing Map Module', async () => {
-
-      it('Loading Map', async () => {
+      it('Calling Load Map...', async () => {
+        // we have 32 buildings in our mock-data
         axios.mockResolvedValue({data: mockAllBuildings})
-        const buildingPromises = await localStore.dispatch('EDMap/loadMap')
-        // okay, at this point the map queries OpenMAP API
-        const jsonPromises  = await localStore.dispatch('EDMap/loadGeometry')
+
+        // This single action loads all the buildings, meter groups & meter modules.
+        await localStore.dispatch('map/loadMap')
+
+        // See if this correctly setup the Building modules
+        for (let building of mockAllBuildings){
+          let buildingModulePath = 'map/building_' + building.id.toString()
+          // Check that the building object got loaded correctly
+          for (let attribute of Object.keys(building)){
+            if (attribute !== 'meterGroups'){
+              expect(localStore.getters[buildingModulePath + `/${attribute}`]).toEqual(building[attribute])
+            }
+          }
+
+          for (let MeterGroup of building.meterGroups){
+            let MeterGroupModulePath = buildingModulePath + '/meterGroup_' + MeterGroup.id.toString()
+
+            // Check that the Meter Groups got loaded correctly
+            for (let attribute of Object.keys(MeterGroup)){
+              if (attribute !== 'meters'){
+                expect(localStore.getters[MeterGroupModulePath + `/${attribute}`]).toEqual(MeterGroup[attribute])
+              }
+            }
+
+            for (let Meter of MeterGroup.meters){
+              let MeterModulePath = MeterGroupModulePath + '/meter_' + Meter.id.toString()
+
+              // Finally, check that the Meter module got loaded correctly
+              for (let attribute of Object.keys(Meter)){
+                expect(localStore.getters[MeterModulePath + `/${attribute}`]).toEqual(Meter[attribute])
+              }
+
+            }
+          }
+        }
       })
+      // TODO: add load JSON test
 
     })
+
+    /*TODO: add test for Modal controller */
+
+    /*TODO: add test for Chart Module */
+
+    /*TODO: add test for Block/user/view module? */
+
 })
