@@ -1,0 +1,74 @@
+name,hidden,id,group,map_id,image,meter_group_id,meter_group_name,meter_group_default,meter_name,meter_id,meter_class,meter_negate
+"Tebeau Hall",NULL,1,Residence,265115620,tebeau.jpg,8,"Tebeau Hall",1,"Tebeau Electricity",1,48,1
+"Memorial Union",NULL,3,"Events & Admin",40535383,0014_OSUBiz_3223.jpg,9,"Memorial Union",1,"Memorial Union West Electricity (2000A)",8,48,1
+"Memorial Union",NULL,3,"Events & Admin",40535383,0014_OSUBiz_3223.jpg,9,"Memorial Union",1,"Memorial Union East Electricity (1000A)",9,48,1
+"Milne Computer Center",NULL,4,Academics,40535423,milne.jpg,10,"Milne Computer Center",1,"Milne South Electrical",36,48,0
+"Milne Computer Center",NULL,4,Academics,40535423,milne.jpg,10,"Milne Computer Center",1,"Milne North Electrical",37,48,1
+"Dryden Hall",NULL,5,Academics,92994898,dryden.jpg,11,"Dryden Hall",1,"Dryden Electricity",40,48,1
+"Sackett Hall",NULL,7,Residence,41375968,sackett.jpg,17,"Sackett Hall",1,"Sackett Electricity",4,48,1
+"West Hall",NULL,11,Residence,91780165,west-hall.jpg,27,"West Hall",1,"West Hall Electricity",44,48,1
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,38,"Wave Lab",1,"Building Main",67,48,1
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,38,"Wave Lab",1,"Wave Tank HVAC",66,48,2
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,38,"Wave Lab",1,"Wave Tank # 4",65,48,2
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,38,"Wave Lab",1,"Wave Tank # 3",64,48,2
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,38,"Wave Lab",1,"Wave Tank # 2",63,48,2
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,38,"Wave Lab",1,"Wave Tank # 1",62,48,2
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,38,"Wave Lab",1,"West Side Wave Tank",69,48,2
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,38,"Wave Lab",1,"Main Pump Disconnect",70,48,2
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,38,"Wave Lab",1,"Wave Machine",71,48,2
+"Kelley Engineering Center",NULL,6,Academics,92370509,4172-Campus-0195.jpg,52,"Kelley Engineering Center",1,"4000A service",33,48,1
+"Kelley Engineering Center",NULL,6,Academics,92370509,4172-Campus-0195.jpg,52,"Kelley Engineering Center",1,"2000A Service",34,48,1
+"Cauthorn Hall",NULL,8,Residence,91778492,cauthorn_2.jpg,54,"Cauthorn Hall",1,"Cauthorn Hall Electricity",45,48,1
+"Valley Library",NULL,9,Academics,40535502,180626_teresahall_2117.jpg,55,"Valley Library",1,"Valley Library Electricity",3,48,1
+"Valley Library",NULL,9,Academics,40535502,180626_teresahall_2117.jpg,55,"Valley Library",1,"Valley Library Electric",77,48,1
+"Dixon Rec Center",NULL,10,"Athletics & Rec",45088438,Oregon-State-University-Dixon-Rec-Center-Aquatic-Center-Corvallis-Oregon.jpg,56,"Dixon Rec Center",1,"Dixon Electricity",5,48,0
+"West Dining Hall",NULL,12,Dining,91780166,marketplacewest.jpg,58,"West Dining Hall",1,"West Dining",46,2,1
+"Dixon Rec Center",NULL,10,"Athletics & Rec",45088438,Oregon-State-University-Dixon-Rec-Center-Aquatic-Center-Corvallis-Oregon.jpg,60,"Dixon Steam",1,"Dixon Steam",7,4444,1
+"Arnold Dining Center",NULL,14,Dining,92962627,arnold.jpg,61,"Arnold Electric",1,"Arnold Dining Electrical Main",10,5,1
+"Bloss Hall",NULL,15,Residence,92962598,bloss_2.jpg,62,"Bloss Electric",1,"Bloss Hall Electricity",13,48,1
+"Buxton Hall",NULL,16,Residence,91778510,buxton_2.jpg,63,"Buxton Electric",1,"Buxton Electricity",38,48,1
+"Buxton Hall",NULL,16,Residence,91778510,buxton_2.jpg,63,"Buxton Electric",1,"Buxton Electricity",53,48,1
+"CHM2Hill Alumni Center",NULL,17,"Events & Admin",92962590,OSU_alumni_center.jpg,64,"CHM2Hill Alumni Center Electric",1,"CH2MHill Alumni Center Electricity New",51,2,1
+"Callahan Hall",NULL,18,Residence,92946879,callahan_v2_0.jpg,65,"Callahan Electric",1,"Callahan Electricity",41,48,1
+"Finley Hall",NULL,19,Residence,92962630,finley.jpg,66,"Finley Electric",1,"Filnley Hall Electricity",15,48,1
+"Gill Coliseum",NULL,20,"Athletics & Rec",41376076,gill.jpg,67,"Gill Electric",1,Gill,47,48,1
+"Halsell Hall",NULL,21,Residence,92962632,Halsell_4.jpg,68,"Halsell Electric",1,"Halsell Hall Electricity",18,4045,1
+"Hawley Hall",NULL,22,Residence,91778515,hawley_2.jpg,69,"Hawley Electric",1,"Hawley Electricity",39,48,1
+"CHM2Hill Alumni Center",NULL,17,"Events & Admin",92962590,OSU_alumni_center.jpg,70,"CHM2Hill Alumni Center Gas",1,"CH2MHill Alumni Center Modhopper",52,17,1
+ILLC,NULL,23,Residence,136374085,illc.jpg,71,"ILLC Electric",1,"ILLC Electricity",28,82,1
+"Johnson Hall",NULL,24,Academics,346414624,Lester_060517_1173.jpg,72,"Johnson Electric",1,"Main Johnson Hall",55,48,1
+"Kelley Engineering Center",NULL,6,Academics,92370509,4172-Campus-0195.jpg,73,"Kelley Steam",1,"Kelley Steam",72,4444,1
+"McNary Dining Hall",NULL,25,Dining,92946852,mcnary_dining.jpg,74,"McNary Dining Electric",1,"McNary Complex Master Electricity",2,48,1
+"McNary Dining Hall",NULL,25,Dining,92946852,mcnary_dining.jpg,74,"McNary Dining Electric",1,"McNary Hall Electricity",6,48,0
+"McNary Hall",NULL,26,Residence,92946874,mcnary_2.jpg,75,"McNary Hall Electric",1,"McNary Hall Electricity",6,48,1
+"Milam Hall",NULL,27,Academics,40535366,smilam.jpg,76,"Milam Electric",1,"Milam Electricity",49,48,0
+"Nash Hall",NULL,28,Academics,41376092,Nashhall-1_905.jpg,77,"Nash Electric",1,"Nash 1500 Amp Electrical",31,48,0
+"Nash Hall",NULL,28,Academics,41376092,Nashhall-1_905.jpg,77,"Nash Electric",1,"Nash 3000 Amp Electrical",32,48,1
+"Nash Hall",NULL,28,Academics,41376092,Nashhall-1_905.jpg,78,"Nash Steam",1,"Nash Steam",73,4444,1
+"Poling Hall",NULL,29,Residence,788678967,poling_2.jpg,79,"Poling Electric",1,"Poling Electricity",43,4045,1
+"Student Experience Center",NULL,30,"Events & Admin",265112825,sec.jpg,80,"SEC Electric",1,"Student Experience Center Electricity",30,48,1
+"Student Experience Center",NULL,30,"Events & Admin",265112825,sec.jpg,81,"SEC Steam",1,"Student Experience Center Steam",29,4444,1
+"Weniger Hall",1,31,Academics,54119130,OSU_WenigerHall_35.jpg,82,"Weniger Electric",1,"Weniger South Electricity",35,48,1
+"Wilson Hall",NULL,32,Residence,92946844,wilson_hall.jpg,83,"Wilson Electric",1,"Wilson Electricity",42,48,0
+"McNary Dining Hall",NULL,25,Dining,92946852,mcnary_dining.jpg,129,"McNary Complex Master Electricity",0,"McNary Complex Master Electricity",2,48,1
+"Memorial Union",NULL,3,"Events & Admin",40535383,0014_OSUBiz_3223.jpg,130,"Memorial Union West Electricity (2000A)",0,"Memorial Union West Electricity (2000A)",8,48,1
+"Memorial Union",NULL,3,"Events & Admin",40535383,0014_OSUBiz_3223.jpg,131,"Memorial Union East Electricity (1000A)",0,"Memorial Union East Electricity (1000A)",9,48,1
+"Nash Hall",NULL,28,Academics,41376092,Nashhall-1_905.jpg,146,"Nash 1500 Amp Electrical",0,"Nash 1500 Amp Electrical",31,48,1
+"Nash Hall",NULL,28,Academics,41376092,Nashhall-1_905.jpg,147,"Nash 3000 Amp Electrical",0,"Nash 3000 Amp Electrical",32,48,1
+"Kelley Engineering Center",NULL,6,Academics,92370509,4172-Campus-0195.jpg,148,"4000A service",0,"4000A service",33,48,1
+"Kelley Engineering Center",NULL,6,Academics,92370509,4172-Campus-0195.jpg,149,"2000A Service",0,"2000A Service",34,48,1
+"Milne Computer Center",NULL,4,Academics,40535423,milne.jpg,150,"Milne South Electrical",0,"Milne South Electrical",36,48,1
+"Milne Computer Center",NULL,4,Academics,40535423,milne.jpg,151,"Milne North Electrical",0,"Milne North Electrical",37,48,1
+"Buxton Hall",NULL,16,Residence,91778510,buxton_2.jpg,152,"Buxton Electricity",0,"Buxton Electricity",38,48,1
+"Buxton Hall",NULL,16,Residence,91778510,buxton_2.jpg,155,"Buxton Electricity",0,"Buxton Electricity",53,48,1
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,163,"Wave Tank # 1",0,"Wave Tank # 1",62,48,1
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,164,"Wave Tank # 2",0,"Wave Tank # 2",63,48,1
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,165,"Wave Tank # 3",0,"Wave Tank # 3",64,48,1
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,166,"Wave Tank # 4",0,"Wave Tank # 4",65,48,1
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,167,"Wave Tank HVAC",0,"Wave Tank HVAC",66,48,1
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,168,"Building Main",0,"Building Main",67,48,1
+"Orchard Court",1,34,,,NULL,169,"Orchard Court",0,"Orchard Court",68,48,1
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,170,"West Side Wave Tank",0,"West Side Wave Tank",69,48,1
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,171,"Main Pump Disconnect",0,"Main Pump Disconnect",70,48,1
+"Hindsdale Wave Lab",NULL,2,Academics,100278455,wavelab.jpg,172,"Wave Machine",0,"Wave Machine",71,48,1
+"Valley Library",NULL,9,Academics,40535502,180626_teresahall_2117.jpg,174,"Valley Library Steam",1,"Red Lion",78,4444,1

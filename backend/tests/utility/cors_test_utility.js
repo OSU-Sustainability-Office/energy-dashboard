@@ -12,35 +12,6 @@
 */
 
 /*
-*   This provides a class to define the endpoints between the Dashboard's API requests.
-*   The client & server object are locally exposed constants (i.e. they shouldn't be
-*   modifiable outside this file).
-*/
-class Origin {
-    constructor(scheme, host, port){
-        this.scheme = scheme;
-        this.host = host;
-        this.port = port;
-    }
-    // returns string of scheme & host assuming default port
-    getOriginDefaultPort(){
-        return this.scheme + '://' + this.host
-    }
-    // object equality (can't operator overload in JS)
-    Equals(otherOrigin){
-        if (this.scheme !== otherOrigin.scheme) return false
-        if (this.host !== otherOrigin.host) return false
-        return this.port === otherOrigin.port
-    }
-}
-
-// Production API origins (assumed correct by automated tests)
-const testClientOrigin = new Origin('https', 'dashboard.sustainability.oregonstate.edu', 443);
-const testServerOrigin = new Origin('https', 'api.sustainability.oregonstate.edu/v2/energy', 443);
-
-
-
-/*
     This function provides some light sanity testing for CORS responses
     coming from the Lambda services just to make sure things look OK.
 
@@ -52,8 +23,13 @@ const testServerOrigin = new Origin('https', 'api.sustainability.oregonstate.edu
         1. that request occurs over https (ssh keys assumed valid)
         2. that client & server origin are accurate and use default port for ssh
 */
-exports.VerifyCORSResponse = (response) => {
-    // if it's same origin, CORS doesn't come into play.
+exports.VerifyCORSResponse = (response, clientOrigin, serverOrigin) => {
+    if (clientOrigin.scheme !== serverOrigin.scheme){
+        return {result: false, reason: 'CORS response scheme did not match request scheme.'}
+    }
+    if (clientOrigin.port !== serverOrigin.port) {
+        return {result: false, reason: 'CORS response port did not match request port.'}
+    }
     // extract response headers.  Not all of these need to be defined, which is OK.
     if (response.headers){
         const allowedOrigin = response.headers['Access-Control-Allow-Origin']
@@ -74,7 +50,13 @@ exports.VerifyCORSResponse = (response) => {
         }
         
         // Make sure the origin matches production
-        if (allowedOrigin !== clientOrigin.getOriginDefaultPort()) return {result: false, reason: `'Access-Control-Allow-Origin' does not match '${clientOrigin.getOriginDefaultPort()}'`}
+        const client = `${clientOrigin.scheme}://${clientOrigin.host}`
+        if (allowedOrigin !== client){
+            return {
+                result: false, 
+                reason: `'Access-Control-Allow-Origin' does not match '${client}'`
+            }
+        }
         
         // Make sure we're not returning bad method names.
         if (allowedMethods){
