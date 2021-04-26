@@ -9,7 +9,10 @@
     "lint": "vue-cli-service lint",
     "build-stage": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service build --mode staging",
     "start": "bash start_service.sh",
-    "test": "vue-cli-service test:unit -- -ci"
+    "test": "vue-cli-service test:unit --ci",
+    "frontend-badge": "make-coverage-badge",
+    "backend-badge": "make-coverage-badge --report-path './backend/coverage/coverage-summary.json' --output-path './backend/coverage/badge.svg'",
+    "make-badges": "npm run frontend-badge && npm run backend-badge"
   },
   "dependencies": {
     "ajv": "^6.11.0",
@@ -20,6 +23,7 @@
     "json-loader": "^0.5.7",
     "jszip": "^3.2.2",
     "leaflet": "^1.6.0",
+    "make-coverage-badge": "^1.2.0",
     "osmtogeojson": "^3.0.0-beta.4",
     "raw-loader": "^4.0.0",
     "vue": "^2.6.11",

@@ -4,7 +4,7 @@
   "description": "",
   "main": "sam_express.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --ci"
   },
   "author": "",
   "license": "ISC",
@@ -22,7 +22,6 @@
     "yaml": "^1.6.0"
   },
   "devDependencies": {
-    "aws-sdk-mock": "^5.1.0",
     "jest": "^26.6.3",
     "sustainability-office-lambda-common-layer": "git://github.com/OSU-Sustainability-Office/lambda-common-layer.git"
   }
