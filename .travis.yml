@@ -27,11 +27,11 @@ script:
   sam validate
   sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
   cd ../
-after-script:
-  - npm run test
-  - cd backend
-  - npm run test
-  - cd ..
+after_success:
+- npm run test
+- cd backend
+- npm run test
+- cd ..
 deploy:
 - provider: script
   script: cd backend; sam deploy --template-file ./packaged.yaml --stack-name energy
