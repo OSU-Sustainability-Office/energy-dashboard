@@ -2,7 +2,7 @@ language: python
 python:
 - '3.7'
 node_js:
-- '10'
+- "10"
 os: linux
 cache:
   directories:
@@ -10,18 +10,19 @@ cache:
   - ".cache-loader"
 jobs:
   include:
-    - stage: test
-      name: "Jest Unit Tests"
+    - stage: frontend_test
+      name: "Jest Frontend Tests"
       install:
       - npm install
-      - cd backend
-      - npm install
-      - cd ..
       script:
       - npm run test
-      - cd backend
+    - stage: backend_test
+      name: "Jest Backend Tests"
+      node_js: "10"
+      install:
+      - cd backend && npm install
+      script:
       - npm run test
-      - cd ..
     - stage: build
       name: "Building Project"
       install:
