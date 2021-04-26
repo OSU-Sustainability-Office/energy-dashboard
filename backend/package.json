@@ -4,7 +4,7 @@
   "description": "",
   "main": "sam_express.js",
   "scripts": {
-    "test": "jest --ci --notify -c='./jest.config.js' --debug"
+    "test": "jest --ci --notify"
   },
   "author": "",
   "license": "ISC",
