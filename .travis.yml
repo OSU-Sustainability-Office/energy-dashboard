@@ -3,6 +3,7 @@ python:
 - '3.7'
 node_js:
 - '10'
+os: linux
 cache:
   directories:
   - "$HOME/.local"
@@ -10,25 +11,23 @@ cache:
 install:
 - pip install awscli
 - pip install aws-sam-cli
+- npm install
+- ./backend/npm install
 script:
 - |
   if [ "$TRAVIS_BRANCH" == "master" ]; then
-    npm install
     npm run build
     echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
   else
-    npm install
-    npm run test
-    cd backend
-    npm install
-    npm run test
-    cd ../
     npm run build-stage
   fi
   cd backend
   sam validate
   sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
   cd ../
+after-script:
+  - npm run test
+  - ./backend/npm run test
 deploy:
 - provider: script
   script: cd backend; sam deploy --template-file ./packaged.yaml --stack-name energy
