@@ -10,62 +10,62 @@ cache:
   - ".cache-loader"
 jobs:
   include:
-    stage: test
-    name: "Jest Unit Tests"
-    install:
-    - npm install
-    - cd backend
-    - npm install
-    - cd ..
-    script:
-    - npm run test
-    - cd backend
-    - npm run test
-    - cd ..
-    stage: build
-    name: "Building Project"
-    install:
-    - pip install awscli
-    - pip install aws-sam-cli
-    - npm install
-    - cd backend
-    - npm install
-    - cd ..
-    script:
-    - |
-      if [ "$TRAVIS_BRANCH" == "master" ]; then
-        npm run build
-        echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
-      else
-        npm run build-stage
-      fi
-      cd backend
-      sam validate
-      sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
-      cd ../
-    deploy:
-    - provider: script
-      script: cd backend; sam deploy --template-file ./packaged.yaml --stack-name energy
-        --capabilities CAPABILITY_IAM; cd ../;
-      skip-cleanup: true
-      on:
-        branch: master
-    - provider: pages
-      local-dir: dist/
-      skip-cleanup: true
-      github-token: "$GITHUB_TOKEN"
-      keep-history: true
-      on:
-        branch: master
-    - provider: s3
-      access_key_id: "$S3_ACCESS_ID"
-      secret_access_key: "$S3_ACCESS_KEY"
-      bucket: energy-dashboard
-      skip_cleanup: true
-      local_dir: dist
-      on:
-        all_branches: true
-        condition: "$TRAVIS_BRANCH != master"
+    - stage: test
+      name: "Jest Unit Tests"
+      install:
+      - npm install
+      - cd backend
+      - npm install
+      - cd ..
+      script:
+      - npm run test
+      - cd backend
+      - npm run test
+      - cd ..
+    - stage: build
+      name: "Building Project"
+      install:
+      - pip install awscli
+      - pip install aws-sam-cli
+      - npm install
+      - cd backend
+      - npm install
+      - cd ..
+      script:
+      - |
+        if [ "$TRAVIS_BRANCH" == "master" ]; then
+          npm run build
+          echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
+        else
+          npm run build-stage
+        fi
+        cd backend
+        sam validate
+        sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
+        cd ../
+      deploy:
+      - provider: script
+        script: cd backend; sam deploy --template-file ./packaged.yaml --stack-name energy
+          --capabilities CAPABILITY_IAM; cd ../;
+        skip_cleanup: true
+        on:
+          branch: master
+      - provider: pages
+        local_dir: dist/
+        skip_cleanup: true
+        github_token: "$GITHUB_TOKEN"
+        keep_history: true
+        on:
+          branch: master
+      - provider: s3
+        access_key_id: "$S3_ACCESS_ID"
+        secret_access_key: "$S3_ACCESS_KEY"
+        bucket: energy-dashboard
+        skip_cleanup: true
+        local_dir: dist
+        on:
+          all_branches: true
+          condition: "$TRAVIS_BRANCH != master"
 env:
   global:
   - AWS_DEFAULT_REGION=us-west-2
