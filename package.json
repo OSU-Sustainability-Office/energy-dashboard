@@ -9,7 +9,7 @@
     "lint": "vue-cli-service lint",
     "build-stage": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service build --mode staging",
     "start": "bash start_service.sh",
-    "test": "vue-cli-service test:unit --ci",
+    "test": "vue-cli-service test:unit --ci --detectOpenHandles",
     "frontend-badge": "make-coverage-badge",
     "backend-badge": "make-coverage-badge --report-path './backend/coverage/coverage-summary.json' --output-path './backend/coverage/badge.svg'",
     "make-badges": "npm run frontend-badge && npm run backend-badge"
