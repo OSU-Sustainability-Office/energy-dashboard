@@ -2,7 +2,7 @@ language: python
 python:
   - '3.7'
 node_js:
-  - 10
+  - "10"
 os: linux
 cache:
   directories:n
@@ -12,12 +12,12 @@ jobs:
   include:
     - stage: tests
       name: "Jest Unit Tests"
-      before_install:
-        - npm i -g npm@6
       install:
       - cd backend && npm install
       - cd .. && npm install
       script:
+      - node --version
+      - npm --version
       - npm run test
       - cd backend && npm run test
     - stage: build
