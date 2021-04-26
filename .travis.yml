@@ -12,7 +12,9 @@ install:
 - pip install awscli
 - pip install aws-sam-cli
 - npm install
-- ./backend/npm install
+- cd backend
+- npm install
+- cd ..
 script:
 - |
   if [ "$TRAVIS_BRANCH" == "master" ]; then
@@ -27,7 +29,9 @@ script:
   cd ../
 after-script:
   - npm run test
-  - ./backend/npm run test
+  - cd backend
+  - npm run test
+  - cd ..
 deploy:
 - provider: script
   script: cd backend; sam deploy --template-file ./packaged.yaml --stack-name energy
