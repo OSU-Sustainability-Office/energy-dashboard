@@ -63,7 +63,7 @@ module.exports = {
   // globalTeardown: null,
 
   // A set of global variables that need to be available in all test environments
-  //globals: {},
+  // globals: {},
 
   // An array of directory names to be searched recursively up from the requiring module's location
   // moduleDirectories: [
@@ -127,7 +127,7 @@ module.exports = {
   setupFiles: [
     './tests/setupJest.js',
     'fake-indexeddb/auto' // used to mock indexedDB automatically
-    ],
+  ],
 
   // The path to a module that runs some code to configure or set up the testing framework before each test
   // setupTestFrameworkScriptFile: null,
@@ -185,10 +185,8 @@ module.exports = {
   // watchman: true,
   transform: {
     '^.+\\.js$': '<rootDir>/node_modules/babel-jest',
-    //'.*\\.(vue)$': '<rootDir>/node_modules/vue-jest',
     '.*\\.(vue)$': '<rootDir>/node_modules/jest-vue-preprocessor',
     '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest',
-    //'^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '^.+\\.jsx?$': 'babel-jest'
   },

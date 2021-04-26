@@ -69,7 +69,6 @@ describe('Testing campaigns endpoint...', () => {
     it('Can get campaigns...', async () => {
         response = await CampaignGetAll.all(MOCK_REQUEST_EVENT)
         const jsonData = JSON.parse(response.body)[0]
-        //console.log(jsonData)
         // id should be number
         expect(isNaN(jsonData['id'])).not.toBe(true)
         // group ids should be numbers

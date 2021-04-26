@@ -18,6 +18,11 @@ script:
     echo "dashboard.sustainability.oregonstate.edu" >> dist/CNAME
   else
     npm install
+    npm run test
+    cd backend
+    npm install
+    npm run test
+    cd ../
     npm run build-stage
   fi
   cd backend
