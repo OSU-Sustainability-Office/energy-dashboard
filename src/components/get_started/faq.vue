@@ -1,21 +1,21 @@
 <template>
   <el-collapse v-model="activeNames" @change="handleChange">
-  <el-collapse-item title="Consistency" name="1">
-    <div>Consistent with real life: in line with the process and logic of real life, and comply with languages and habits that the users are used to;</div>
-    <div>Consistent within interface: all elements should be consistent, such as: design style, icons and texts, position of elements, etc.</div>
+  <el-collapse-item title="Who supports the dashboard?" name="1">
+    <div>OSU’s Energy Dashboard is supported by a team of part-time student software developers at OSU’s Sustainability Office.</div>
   </el-collapse-item>
-  <el-collapse-item title="Feedback" name="2">
-    <div>Operation feedback: enable the users to clearly perceive their operations by style updates and interactive effects;</div>
-    <div>Visual feedback: reflect current state by updating or rearranging elements of the page.</div>
+  <el-collapse-item title="How is the data collected?" name="2">
+    <div>The data are collected using Obvius Data Acquisition Servers (AcquiSuites) located in 30+ buildings on OSU’s campus. Every 15 minutes, each server reports the most recent electricity, steam, and water meter observations.</div>
   </el-collapse-item>
-  <el-collapse-item title="Efficiency" name="3">
+  <el-collapse-item title="Why is the data collected in 15 minute intervals?" name="3">
     <div>Simplify the process: keep operating process simple and intuitive;</div>
     <div>Definite and clear: enunciate your intentions clearly so that the users can quickly understand and make decisions;</div>
     <div>Easy to identify: the interface should be straightforward, which helps the users to identify and frees them from memorizing and recalling.</div>
   </el-collapse-item>
-  <el-collapse-item title="Controllability" name="4">
-    <div>Decision making: giving advices about operations is acceptable, but do not make decisions for the users;</div>
-    <div>Controlled consequences: users should be granted the freedom to operate, including canceling, aborting or terminating current operation.</div>
+  <el-collapse-item title="How much does this dashboard cost?" name="4">
+    <div>Not including labor costs, hosting for OSU’s Energy Dashboard costs ~$40 per month.</div>
+  </el-collapse-item>
+  <el-collapse-item title="How can I deploy my own dashboard at my institution?" name="5">
+    <div>We are currently exploring how to share our dashboard with other Organizations. For more information, contact Brandon Trelstad.</div>
   </el-collapse-item>
 </el-collapse>
 </template>
@@ -24,7 +24,7 @@
 export default {
   data () {
     return {
-      activeNames: ['1']
+      activeNames: []
     }
   },
   methods: {

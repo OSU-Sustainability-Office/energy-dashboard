@@ -50,18 +50,23 @@ export default {
     }
   },
   mounted () {
-    this.$msgbox({
-      title: 'First Timer?',
-      message: 'Take a look at the "Get Started" tab to learn more and for FAQ\'s!',
-      showCancelButton: true,
-      confirmButtonText: 'OK',
-      cancelButtonText: 'Never Show This Message Again',
-      callback: function (action) {
-        if (action === 'cancel') {
-          // save cookie
+    if (!document.cookie.split(';').some((cookieString) => cookieString.includes('firstTimer'))) {
+      this.$msgbox({
+        title: 'First Timer?',
+        message: 'Take a look at the "Get Started" tab to learn more and for FAQ\'s!',
+        showCancelButton: true,
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Never Show This Message Again',
+        distinguishCancelAndClose: true,
+        callback: function (action) {
+          if (action === 'cancel') {
+            const cookieDate = new Date()
+            cookieDate.setFullYear((new Date()).getFullYear() + 10)
+            document.cookie = 'firstTimer=true; expires=' + cookieDate.toUTCString() + ';'
+          }
         }
-      }
-    })
+      })
+    }
   },
   watch: {
     $route: function (to, from) {

@@ -1,11 +1,14 @@
 <template>
   <el-container>
     <el-main>
-      <el-row>
+      <el-row >
         <getStartedBanner />
       </el-row>
       <el-row>
         The Energy Dashboard has been developed by the Oregon State University Sustainability Office to enable members of the OSU community to access, view, and analyze energy consumption trends.
+      </el-row>
+      <el-row>
+        Frequently Asked Questions (FAQ's):
       </el-row>
       <el-row>
         <faq />
@@ -28,5 +31,7 @@ export default {
 </script>
 
 <style>
-
+.el-row {
+  margin-bottom: 20px
+}
 </style>

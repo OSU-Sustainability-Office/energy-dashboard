@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <div id="center">
     <h2 class="highlight">COMMITTED TO:</h2>
     <commitment />
@@ -29,19 +29,22 @@ export default {
 
 <style>
 .highlight {
-  color: #000;
+  color: #FFFFFF;
   font-size: 0.4em;
 }
 #center {
-  color: #000;
+  color: #FFFFFF;
   font-family: 'StratumNo2';
   font-size: 5.5em;
-  align-content: center;
+  justify-content: center;
   height: 2.5em;
   width: 100%;
   padding-top: 0.5em;
-
+  background: url('/images/solar.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
+
 /*
 * Don't think I need this
 
