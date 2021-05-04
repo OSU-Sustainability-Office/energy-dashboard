@@ -7,7 +7,6 @@
 * @Description: Unit tests for now.js, "systemtime" endpoint
 */
 
-/* CORS testing imports */
 const testConfig = require('./assertedData/test_config.json')
 const CORSUtil = require('./utility/cors_test_utility.js')
 const server = testConfig['serverOrigin']
@@ -18,13 +17,7 @@ const MOCK_REQUEST_EVENT = {
         origin: `${client.scheme}://${client.host}`
     }
 }
-/* Lambda Common Layer mocks */
-const mockResponse = require(`${testConfig.so_namespace}/response.js`)
-jest.mock(
-    '/opt/nodejs/response.js',
-    () => { return mockResponse },
-    {virtual: true}
-)
+
 
 const RemoteSystemNow = require('../app/now.js')
 

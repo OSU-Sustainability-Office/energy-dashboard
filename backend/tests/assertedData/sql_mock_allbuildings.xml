@@ -1,0 +1,1191 @@
+<?xml version="1.0"?>
+
+<resultset statement="SELECT buildings.name,
+              buildings.hidden, 
+              buildings.id, 
+              buildings.group, 
+              buildings.map_id, 
+              buildings.image, 
+              meter_groups.id as meter_group_id,
+              meter_groups.name as meter_group_name,
+              meter_groups.default as meter_group_default,
+              meters.name as meter_name,
+              meters.id as meter_id,
+              meters.class as meter_class,
+              meter_group_relation.operation as meter_negate
+        FROM buildings 
+        LEFT JOIN meter_groups on buildings.id = meter_groups.building_id_2
+        LEFT JOIN meter_group_relation on meter_groups.id = meter_group_relation.group_id
+        LEFT JOIN meters on meters.id = meter_group_relation.meter_id
+LIMIT 0, 1000
+"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<row>
+		<field name="name">Tebeau Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">1</field>
+		<field name="group">Residence</field>
+		<field name="map_id">265115620</field>
+		<field name="image">tebeau.jpg</field>
+		<field name="meter_group_id">8</field>
+		<field name="meter_group_name">Tebeau Hall</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Tebeau Electricity</field>
+		<field name="meter_id">1</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Memorial Union</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">3</field>
+		<field name="group">Events & Admin</field>
+		<field name="map_id">40535383</field>
+		<field name="image">0014_OSUBiz_3223.jpg</field>
+		<field name="meter_group_id">9</field>
+		<field name="meter_group_name">Memorial Union</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Memorial Union West Electricity (2000A)</field>
+		<field name="meter_id">8</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Memorial Union</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">3</field>
+		<field name="group">Events & Admin</field>
+		<field name="map_id">40535383</field>
+		<field name="image">0014_OSUBiz_3223.jpg</field>
+		<field name="meter_group_id">9</field>
+		<field name="meter_group_name">Memorial Union</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Memorial Union East Electricity (1000A)</field>
+		<field name="meter_id">9</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Milne Computer Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">4</field>
+		<field name="group">Academics</field>
+		<field name="map_id">40535423</field>
+		<field name="image">milne.jpg</field>
+		<field name="meter_group_id">10</field>
+		<field name="meter_group_name">Milne Computer Center</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Milne South Electrical</field>
+		<field name="meter_id">36</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">0</field>
+	</row>
+
+	<row>
+		<field name="name">Milne Computer Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">4</field>
+		<field name="group">Academics</field>
+		<field name="map_id">40535423</field>
+		<field name="image">milne.jpg</field>
+		<field name="meter_group_id">10</field>
+		<field name="meter_group_name">Milne Computer Center</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Milne North Electrical</field>
+		<field name="meter_id">37</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Dryden Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">5</field>
+		<field name="group">Academics</field>
+		<field name="map_id">92994898</field>
+		<field name="image">dryden.jpg</field>
+		<field name="meter_group_id">11</field>
+		<field name="meter_group_name">Dryden Hall</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Dryden Electricity</field>
+		<field name="meter_id">40</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Sackett Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">7</field>
+		<field name="group">Residence</field>
+		<field name="map_id">41375968</field>
+		<field name="image">sackett.jpg</field>
+		<field name="meter_group_id">17</field>
+		<field name="meter_group_name">Sackett Hall</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Sackett Electricity</field>
+		<field name="meter_id">4</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">West Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">11</field>
+		<field name="group">Residence</field>
+		<field name="map_id">91780165</field>
+		<field name="image">west-hall.jpg</field>
+		<field name="meter_group_id">27</field>
+		<field name="meter_group_name">West Hall</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">West Hall Electricity</field>
+		<field name="meter_id">44</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">38</field>
+		<field name="meter_group_name">Wave Lab</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Building Main</field>
+		<field name="meter_id">67</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">38</field>
+		<field name="meter_group_name">Wave Lab</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Wave Tank HVAC</field>
+		<field name="meter_id">66</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">2</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">38</field>
+		<field name="meter_group_name">Wave Lab</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Wave Tank # 4</field>
+		<field name="meter_id">65</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">2</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">38</field>
+		<field name="meter_group_name">Wave Lab</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Wave Tank # 3</field>
+		<field name="meter_id">64</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">2</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">38</field>
+		<field name="meter_group_name">Wave Lab</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Wave Tank # 2</field>
+		<field name="meter_id">63</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">2</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">38</field>
+		<field name="meter_group_name">Wave Lab</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Wave Tank # 1</field>
+		<field name="meter_id">62</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">2</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">38</field>
+		<field name="meter_group_name">Wave Lab</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">West Side Wave Tank</field>
+		<field name="meter_id">69</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">2</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">38</field>
+		<field name="meter_group_name">Wave Lab</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Main Pump Disconnect</field>
+		<field name="meter_id">70</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">2</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">38</field>
+		<field name="meter_group_name">Wave Lab</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Wave Machine</field>
+		<field name="meter_id">71</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">2</field>
+	</row>
+
+	<row>
+		<field name="name">Kelley Engineering Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">6</field>
+		<field name="group">Academics</field>
+		<field name="map_id">92370509</field>
+		<field name="image">4172-Campus-0195.jpg</field>
+		<field name="meter_group_id">52</field>
+		<field name="meter_group_name">Kelley Engineering Center</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">4000A service</field>
+		<field name="meter_id">33</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Kelley Engineering Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">6</field>
+		<field name="group">Academics</field>
+		<field name="map_id">92370509</field>
+		<field name="image">4172-Campus-0195.jpg</field>
+		<field name="meter_group_id">52</field>
+		<field name="meter_group_name">Kelley Engineering Center</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">2000A Service</field>
+		<field name="meter_id">34</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Cauthorn Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">8</field>
+		<field name="group">Residence</field>
+		<field name="map_id">91778492</field>
+		<field name="image">cauthorn_2.jpg</field>
+		<field name="meter_group_id">54</field>
+		<field name="meter_group_name">Cauthorn Hall</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Cauthorn Hall Electricity</field>
+		<field name="meter_id">45</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Valley Library</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">9</field>
+		<field name="group">Academics</field>
+		<field name="map_id">40535502</field>
+		<field name="image">180626_teresahall_2117.jpg</field>
+		<field name="meter_group_id">55</field>
+		<field name="meter_group_name">Valley Library</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Valley Library Electricity</field>
+		<field name="meter_id">3</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Valley Library</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">9</field>
+		<field name="group">Academics</field>
+		<field name="map_id">40535502</field>
+		<field name="image">180626_teresahall_2117.jpg</field>
+		<field name="meter_group_id">55</field>
+		<field name="meter_group_name">Valley Library</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Valley Library Electric</field>
+		<field name="meter_id">77</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Dixon Rec Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">10</field>
+		<field name="group">Athletics & Rec</field>
+		<field name="map_id">45088438</field>
+		<field name="image">Oregon-State-University-Dixon-Rec-Center-Aquatic-Center-Corvallis-Oregon.jpg</field>
+		<field name="meter_group_id">56</field>
+		<field name="meter_group_name">Dixon Rec Center</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Dixon Electricity</field>
+		<field name="meter_id">5</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">0</field>
+	</row>
+
+	<row>
+		<field name="name">West Dining Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">12</field>
+		<field name="group">Dining</field>
+		<field name="map_id">91780166</field>
+		<field name="image">marketplacewest.jpg</field>
+		<field name="meter_group_id">58</field>
+		<field name="meter_group_name">West Dining Hall</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">West Dining</field>
+		<field name="meter_id">46</field>
+		<field name="meter_class">2</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Dixon Rec Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">10</field>
+		<field name="group">Athletics & Rec</field>
+		<field name="map_id">45088438</field>
+		<field name="image">Oregon-State-University-Dixon-Rec-Center-Aquatic-Center-Corvallis-Oregon.jpg</field>
+		<field name="meter_group_id">60</field>
+		<field name="meter_group_name">Dixon Steam</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Dixon Steam</field>
+		<field name="meter_id">7</field>
+		<field name="meter_class">4444</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Arnold Dining Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">14</field>
+		<field name="group">Dining</field>
+		<field name="map_id">92962627</field>
+		<field name="image">arnold.jpg</field>
+		<field name="meter_group_id">61</field>
+		<field name="meter_group_name">Arnold Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Arnold Dining Electrical Main</field>
+		<field name="meter_id">10</field>
+		<field name="meter_class">5</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Bloss Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">15</field>
+		<field name="group">Residence</field>
+		<field name="map_id">92962598</field>
+		<field name="image">bloss_2.jpg</field>
+		<field name="meter_group_id">62</field>
+		<field name="meter_group_name">Bloss Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Bloss Hall Electricity</field>
+		<field name="meter_id">13</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Buxton Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">16</field>
+		<field name="group">Residence</field>
+		<field name="map_id">91778510</field>
+		<field name="image">buxton_2.jpg</field>
+		<field name="meter_group_id">63</field>
+		<field name="meter_group_name">Buxton Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Buxton Electricity</field>
+		<field name="meter_id">38</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Buxton Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">16</field>
+		<field name="group">Residence</field>
+		<field name="map_id">91778510</field>
+		<field name="image">buxton_2.jpg</field>
+		<field name="meter_group_id">63</field>
+		<field name="meter_group_name">Buxton Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Buxton Electricity</field>
+		<field name="meter_id">53</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">CHM2Hill Alumni Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">17</field>
+		<field name="group">Events & Admin</field>
+		<field name="map_id">92962590</field>
+		<field name="image">OSU_alumni_center.jpg</field>
+		<field name="meter_group_id">64</field>
+		<field name="meter_group_name">CHM2Hill Alumni Center Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">CH2MHill Alumni Center Electricity New</field>
+		<field name="meter_id">51</field>
+		<field name="meter_class">2</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Callahan Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">18</field>
+		<field name="group">Residence</field>
+		<field name="map_id">92946879</field>
+		<field name="image">callahan_v2_0.jpg</field>
+		<field name="meter_group_id">65</field>
+		<field name="meter_group_name">Callahan Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Callahan Electricity</field>
+		<field name="meter_id">41</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Finley Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">19</field>
+		<field name="group">Residence</field>
+		<field name="map_id">92962630</field>
+		<field name="image">finley.jpg</field>
+		<field name="meter_group_id">66</field>
+		<field name="meter_group_name">Finley Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Filnley Hall Electricity</field>
+		<field name="meter_id">15</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Gill Coliseum</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">20</field>
+		<field name="group">Athletics & Rec</field>
+		<field name="map_id">41376076</field>
+		<field name="image">gill.jpg</field>
+		<field name="meter_group_id">67</field>
+		<field name="meter_group_name">Gill Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Gill</field>
+		<field name="meter_id">47</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Halsell Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">21</field>
+		<field name="group">Residence</field>
+		<field name="map_id">92962632</field>
+		<field name="image">Halsell_4.jpg</field>
+		<field name="meter_group_id">68</field>
+		<field name="meter_group_name">Halsell Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Halsell Hall Electricity</field>
+		<field name="meter_id">18</field>
+		<field name="meter_class">4045</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hawley Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">22</field>
+		<field name="group">Residence</field>
+		<field name="map_id">91778515</field>
+		<field name="image">hawley_2.jpg</field>
+		<field name="meter_group_id">69</field>
+		<field name="meter_group_name">Hawley Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Hawley Electricity</field>
+		<field name="meter_id">39</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">CHM2Hill Alumni Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">17</field>
+		<field name="group">Events & Admin</field>
+		<field name="map_id">92962590</field>
+		<field name="image">OSU_alumni_center.jpg</field>
+		<field name="meter_group_id">70</field>
+		<field name="meter_group_name">CHM2Hill Alumni Center Gas</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">CH2MHill Alumni Center Modhopper</field>
+		<field name="meter_id">52</field>
+		<field name="meter_class">17</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">ILLC</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">23</field>
+		<field name="group">Residence</field>
+		<field name="map_id">136374085</field>
+		<field name="image">illc.jpg</field>
+		<field name="meter_group_id">71</field>
+		<field name="meter_group_name">ILLC Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">ILLC Electricity</field>
+		<field name="meter_id">28</field>
+		<field name="meter_class">82</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Johnson Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">24</field>
+		<field name="group">Academics</field>
+		<field name="map_id">346414624</field>
+		<field name="image">Lester_060517_1173.jpg</field>
+		<field name="meter_group_id">72</field>
+		<field name="meter_group_name">Johnson Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Main Johnson Hall</field>
+		<field name="meter_id">55</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Kelley Engineering Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">6</field>
+		<field name="group">Academics</field>
+		<field name="map_id">92370509</field>
+		<field name="image">4172-Campus-0195.jpg</field>
+		<field name="meter_group_id">73</field>
+		<field name="meter_group_name">Kelley Steam</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Kelley Steam</field>
+		<field name="meter_id">72</field>
+		<field name="meter_class">4444</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">McNary Dining Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">25</field>
+		<field name="group">Dining</field>
+		<field name="map_id">92946852</field>
+		<field name="image">mcnary_dining.jpg</field>
+		<field name="meter_group_id">74</field>
+		<field name="meter_group_name">McNary Dining Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">McNary Complex Master Electricity</field>
+		<field name="meter_id">2</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">McNary Dining Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">25</field>
+		<field name="group">Dining</field>
+		<field name="map_id">92946852</field>
+		<field name="image">mcnary_dining.jpg</field>
+		<field name="meter_group_id">74</field>
+		<field name="meter_group_name">McNary Dining Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">McNary Hall Electricity</field>
+		<field name="meter_id">6</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">0</field>
+	</row>
+
+	<row>
+		<field name="name">McNary Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">26</field>
+		<field name="group">Residence</field>
+		<field name="map_id">92946874</field>
+		<field name="image">mcnary_2.jpg</field>
+		<field name="meter_group_id">75</field>
+		<field name="meter_group_name">McNary Hall Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">McNary Hall Electricity</field>
+		<field name="meter_id">6</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Milam Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">27</field>
+		<field name="group">Academics</field>
+		<field name="map_id">40535366</field>
+		<field name="image">smilam.jpg</field>
+		<field name="meter_group_id">76</field>
+		<field name="meter_group_name">Milam Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Milam Electricity</field>
+		<field name="meter_id">49</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">0</field>
+	</row>
+
+	<row>
+		<field name="name">Nash Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">28</field>
+		<field name="group">Academics</field>
+		<field name="map_id">41376092</field>
+		<field name="image">Nashhall-1_905.jpg</field>
+		<field name="meter_group_id">77</field>
+		<field name="meter_group_name">Nash Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Nash 1500 Amp Electrical</field>
+		<field name="meter_id">31</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">0</field>
+	</row>
+
+	<row>
+		<field name="name">Nash Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">28</field>
+		<field name="group">Academics</field>
+		<field name="map_id">41376092</field>
+		<field name="image">Nashhall-1_905.jpg</field>
+		<field name="meter_group_id">77</field>
+		<field name="meter_group_name">Nash Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Nash 3000 Amp Electrical</field>
+		<field name="meter_id">32</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Nash Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">28</field>
+		<field name="group">Academics</field>
+		<field name="map_id">41376092</field>
+		<field name="image">Nashhall-1_905.jpg</field>
+		<field name="meter_group_id">78</field>
+		<field name="meter_group_name">Nash Steam</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Nash Steam</field>
+		<field name="meter_id">73</field>
+		<field name="meter_class">4444</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Poling Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">29</field>
+		<field name="group">Residence</field>
+		<field name="map_id">788678967</field>
+		<field name="image">poling_2.jpg</field>
+		<field name="meter_group_id">79</field>
+		<field name="meter_group_name">Poling Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Poling Electricity</field>
+		<field name="meter_id">43</field>
+		<field name="meter_class">4045</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Student Experience Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">30</field>
+		<field name="group">Events & Admin</field>
+		<field name="map_id">265112825</field>
+		<field name="image">sec.jpg</field>
+		<field name="meter_group_id">80</field>
+		<field name="meter_group_name">SEC Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Student Experience Center Electricity</field>
+		<field name="meter_id">30</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Student Experience Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">30</field>
+		<field name="group">Events & Admin</field>
+		<field name="map_id">265112825</field>
+		<field name="image">sec.jpg</field>
+		<field name="meter_group_id">81</field>
+		<field name="meter_group_name">SEC Steam</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Student Experience Center Steam</field>
+		<field name="meter_id">29</field>
+		<field name="meter_class">4444</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Weniger Hall</field>
+		<field name="hidden">1</field>
+		<field name="id">31</field>
+		<field name="group">Academics</field>
+		<field name="map_id">54119130</field>
+		<field name="image">OSU_WenigerHall_35.jpg</field>
+		<field name="meter_group_id">82</field>
+		<field name="meter_group_name">Weniger Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Weniger South Electricity</field>
+		<field name="meter_id">35</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Wilson Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">32</field>
+		<field name="group">Residence</field>
+		<field name="map_id">92946844</field>
+		<field name="image">wilson_hall.jpg</field>
+		<field name="meter_group_id">83</field>
+		<field name="meter_group_name">Wilson Electric</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Wilson Electricity</field>
+		<field name="meter_id">42</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">0</field>
+	</row>
+
+	<row>
+		<field name="name">McNary Dining Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">25</field>
+		<field name="group">Dining</field>
+		<field name="map_id">92946852</field>
+		<field name="image">mcnary_dining.jpg</field>
+		<field name="meter_group_id">129</field>
+		<field name="meter_group_name">McNary Complex Master Electricity</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">McNary Complex Master Electricity</field>
+		<field name="meter_id">2</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Memorial Union</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">3</field>
+		<field name="group">Events & Admin</field>
+		<field name="map_id">40535383</field>
+		<field name="image">0014_OSUBiz_3223.jpg</field>
+		<field name="meter_group_id">130</field>
+		<field name="meter_group_name">Memorial Union West Electricity (2000A)</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Memorial Union West Electricity (2000A)</field>
+		<field name="meter_id">8</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Memorial Union</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">3</field>
+		<field name="group">Events & Admin</field>
+		<field name="map_id">40535383</field>
+		<field name="image">0014_OSUBiz_3223.jpg</field>
+		<field name="meter_group_id">131</field>
+		<field name="meter_group_name">Memorial Union East Electricity (1000A)</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Memorial Union East Electricity (1000A)</field>
+		<field name="meter_id">9</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Nash Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">28</field>
+		<field name="group">Academics</field>
+		<field name="map_id">41376092</field>
+		<field name="image">Nashhall-1_905.jpg</field>
+		<field name="meter_group_id">146</field>
+		<field name="meter_group_name">Nash 1500 Amp Electrical</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Nash 1500 Amp Electrical</field>
+		<field name="meter_id">31</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Nash Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">28</field>
+		<field name="group">Academics</field>
+		<field name="map_id">41376092</field>
+		<field name="image">Nashhall-1_905.jpg</field>
+		<field name="meter_group_id">147</field>
+		<field name="meter_group_name">Nash 3000 Amp Electrical</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Nash 3000 Amp Electrical</field>
+		<field name="meter_id">32</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Kelley Engineering Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">6</field>
+		<field name="group">Academics</field>
+		<field name="map_id">92370509</field>
+		<field name="image">4172-Campus-0195.jpg</field>
+		<field name="meter_group_id">148</field>
+		<field name="meter_group_name">4000A service</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">4000A service</field>
+		<field name="meter_id">33</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Kelley Engineering Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">6</field>
+		<field name="group">Academics</field>
+		<field name="map_id">92370509</field>
+		<field name="image">4172-Campus-0195.jpg</field>
+		<field name="meter_group_id">149</field>
+		<field name="meter_group_name">2000A Service</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">2000A Service</field>
+		<field name="meter_id">34</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Milne Computer Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">4</field>
+		<field name="group">Academics</field>
+		<field name="map_id">40535423</field>
+		<field name="image">milne.jpg</field>
+		<field name="meter_group_id">150</field>
+		<field name="meter_group_name">Milne South Electrical</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Milne South Electrical</field>
+		<field name="meter_id">36</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Milne Computer Center</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">4</field>
+		<field name="group">Academics</field>
+		<field name="map_id">40535423</field>
+		<field name="image">milne.jpg</field>
+		<field name="meter_group_id">151</field>
+		<field name="meter_group_name">Milne North Electrical</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Milne North Electrical</field>
+		<field name="meter_id">37</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Buxton Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">16</field>
+		<field name="group">Residence</field>
+		<field name="map_id">91778510</field>
+		<field name="image">buxton_2.jpg</field>
+		<field name="meter_group_id">152</field>
+		<field name="meter_group_name">Buxton Electricity</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Buxton Electricity</field>
+		<field name="meter_id">38</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Buxton Hall</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">16</field>
+		<field name="group">Residence</field>
+		<field name="map_id">91778510</field>
+		<field name="image">buxton_2.jpg</field>
+		<field name="meter_group_id">155</field>
+		<field name="meter_group_name">Buxton Electricity</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Buxton Electricity</field>
+		<field name="meter_id">53</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">163</field>
+		<field name="meter_group_name">Wave Tank # 1</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Wave Tank # 1</field>
+		<field name="meter_id">62</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">164</field>
+		<field name="meter_group_name">Wave Tank # 2</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Wave Tank # 2</field>
+		<field name="meter_id">63</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">165</field>
+		<field name="meter_group_name">Wave Tank # 3</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Wave Tank # 3</field>
+		<field name="meter_id">64</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">166</field>
+		<field name="meter_group_name">Wave Tank # 4</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Wave Tank # 4</field>
+		<field name="meter_id">65</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">167</field>
+		<field name="meter_group_name">Wave Tank HVAC</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Wave Tank HVAC</field>
+		<field name="meter_id">66</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">168</field>
+		<field name="meter_group_name">Building Main</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Building Main</field>
+		<field name="meter_id">67</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Orchard Court</field>
+		<field name="hidden">1</field>
+		<field name="id">34</field>
+		<field name="group"></field>
+		<field name="map_id"></field>
+		<field name="image" xsi:nil="true" />
+		<field name="meter_group_id">169</field>
+		<field name="meter_group_name">Orchard Court</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Orchard Court</field>
+		<field name="meter_id">68</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">170</field>
+		<field name="meter_group_name">West Side Wave Tank</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">West Side Wave Tank</field>
+		<field name="meter_id">69</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">171</field>
+		<field name="meter_group_name">Main Pump Disconnect</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Main Pump Disconnect</field>
+		<field name="meter_id">70</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Hindsdale Wave Lab</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">2</field>
+		<field name="group">Academics</field>
+		<field name="map_id">100278455</field>
+		<field name="image">wavelab.jpg</field>
+		<field name="meter_group_id">172</field>
+		<field name="meter_group_name">Wave Machine</field>
+		<field name="meter_group_default">0</field>
+		<field name="meter_name">Wave Machine</field>
+		<field name="meter_id">71</field>
+		<field name="meter_class">48</field>
+		<field name="meter_negate">1</field>
+	</row>
+
+	<row>
+		<field name="name">Valley Library</field>
+		<field name="hidden" xsi:nil="true" />
+		<field name="id">9</field>
+		<field name="group">Academics</field>
+		<field name="map_id">40535502</field>
+		<field name="image">180626_teresahall_2117.jpg</field>
+		<field name="meter_group_id">174</field>
+		<field name="meter_group_name">Valley Library Steam</field>
+		<field name="meter_group_default">1</field>
+		<field name="meter_name">Red Lion</field>
+		<field name="meter_id">78</field>
+		<field name="meter_class">4444</field>
+		<field name="meter_negate">1</field>
+	</row>
+</resultset>

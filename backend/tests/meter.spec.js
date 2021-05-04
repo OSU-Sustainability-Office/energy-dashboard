@@ -26,37 +26,6 @@ const MOCK_REQUEST_EVENT = {
     }
 }
 
-/* Lambda Common Layer mocks */
-const mockResponse = require(`${testConfig.so_namespace}/response.js`)
-jest.mock(
-    '/opt/nodejs/response.js',
-    () => { return mockResponse },
-    {virtual: true}
-)
-
-// stub un-used requires
-jest.mock('/opt/nodejs/user.js', () => {null}, {virtual:true})
-jest.mock('/opt/nodejs/node_modules/aws-lambda-multipart-parser', 
-    () => {null}, 
-    {virtual: true}
-)
-
-
-// Mock dashboard specific dependencies
-const modelMocks = [
-    'meter_classes.js', 
-    'models/meter.js', 
-    'models/meter_group.js'
-]
-for (modelMock of modelMocks){
-    const mock = require(`../dependencies/nodejs/${modelMock}`)
-    jest.mock(
-        `/opt/nodejs/${modelMock}`,
-        () => {return mock},
-        {virtual: true}
-    ) 
-}
-
 /* Mock MySQL Database */
 const csvHelper = require('./utility/csv_to_obj.js')
 let mockSQLResponse = csvHelper.csv2object('./tests/assertedData/sql_mock_meter_download.csv')

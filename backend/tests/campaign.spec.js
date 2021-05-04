@@ -6,8 +6,6 @@
 * @Copyright:  Oregon State University 2021
 * @Description: Unit tests for campaign.js, "campaigns" endpoint
 */
-
-/* CORS testing imports */
 const testConfig = require('./assertedData/test_config.json')
 const CORSUtil = require('./utility/cors_test_utility.js')
 const server = testConfig['serverOrigin']
@@ -18,25 +16,6 @@ const MOCK_REQUEST_EVENT = {
         origin: `${client.scheme}://${client.host}`
     }
 }
-
-/* Lambda Common Layer mocks */
-const mockResponse = require(`${testConfig.so_namespace}/response.js`)
-jest.mock(
-    '/opt/nodejs/response.js',
-    () => { return mockResponse },
-    {virtual: true}
-)
-
-// stub user module
-jest.mock('/opt/nodejs/user.js', () => {null}, {virtual:true})
-
-// Mock Campaign Model Module
-const mockCampaign = require('../dependencies/nodejs/models/campaign.js')
-jest.mock(
-    '/opt/nodejs/models/campaign.js',
-    () => { return mockCampaign },
-    {virtual: true}
-)
 
 /* Mock MySQL Database */
 const csvHelper = require('./utility/csv_to_obj.js')
