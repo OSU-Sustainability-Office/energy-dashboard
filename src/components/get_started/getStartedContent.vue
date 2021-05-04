@@ -5,9 +5,9 @@
         <getStartedBanner />
       </el-row>
       <el-row>
-        The Energy Dashboard has been developed by the Oregon State University Sustainability Office to enable members of the OSU community to access, view, and analyze energy consumption trends.
+        <mainDescription />
       </el-row>
-      <el-row>
+      <el-row class="faq">
         Frequently Asked Questions (FAQ's):
       </el-row>
       <el-row>
@@ -20,12 +20,14 @@
 <script>
 import getStartedBanner from '@/components/get_started/getStartedBanner'
 import faq from '@/components/get_started/faq'
+import mainDescription from '@/components/get_started/mainDescription'
 
 export default {
   name: 'getStartedContent',
   components: {
     getStartedBanner,
-    faq
+    faq,
+    mainDescription
   }
 }
 </script>
@@ -33,5 +35,8 @@ export default {
 <style>
 .el-row {
   margin-bottom: 20px
+}
+.faq {
+  text-align: center
 }
 </style>

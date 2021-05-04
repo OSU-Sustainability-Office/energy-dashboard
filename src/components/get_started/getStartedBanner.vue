@@ -39,7 +39,8 @@ export default {
   justify-content: center;
   height: 2.5em;
   width: 100%;
-  padding-top: 0.5em;
+  padding-top: 1em;
+  padding-left: 10px;
   background: url('/images/solar.jpg');
   background-size: cover;
   background-repeat: no-repeat;
