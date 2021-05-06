@@ -9,36 +9,39 @@
 *               mock response.
 */
 
-const sqlite3 = require('sqlite3')
-const DB = new sqlite3.Database('assertedData/test.db')
-const fs = require('fs')
 
-// Super hacky function to bypass sqlite3's keyword restrictions
-function fixKeywords(line){
-    const keywords = ['group', 'default']
-    for (let keyword of keywords){
-        while (line.match(new RegExp(`(?<!building_)${keyword}\``))) line = line.replace(keyword, `building_${keyword}`)
-    }
-    return line
-}
+const sqlite3 = require('sqlite3')
+const DB = new sqlite3.Database('./tests/assertedData/test.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE)
+
+const fs = require('fs')
+// this function amends any MySQL/SQLite keyword conflicts
+const sql_utility = require('./utility/sql_test_utility.js')
 
 function formatInserts(filename, tablename){
     let text = fs.readFileSync(filename, 'utf-8')
-    return (text.split('\n').map(ln => fixKeywords(ln.replace('``', tablename)))).join('')
+    return (text.split('\n').map(ln => sql_utility.fixSQLKeywords(ln.replace('``', tablename)))).join('')
 }
 
 /*
     Create table schema equivalents for sqlite.
-    Some fields have been removed since they're not used
-    in any queries, and ergo aren't super useful for testing purposes.
+    Not all fields in the MySQL DB are replicated here.
 */
+console.log('building test database...')
 DB.serialize(() => {
-    const tablenames = ['buildings', 'meter_groups', 'meters', 'meter_group_relation']
+    // Remove tables if they already exist
+    const tablenames = [
+        'buildings', 
+        'meter_groups', 
+        'meters', 
+        'meter_group_relation',
+        'campaigns',
+        'campaign_groups',
+        'data'
+    ]
     for (let name of tablenames){
         DB.run(`DROP TABLE IF EXISTS ${name};`)
     }
 
-    // create buildings
     DB.run(`CREATE TABLE buildings(
         id INTEGER PRIMARY KEY,
         map_id TEXT,
@@ -46,11 +49,8 @@ DB.serialize(() => {
         building_group TEXT,
         name TEXT,
         hidden INTEGER
-    );`, (err) => {
-        console.log('at create table', err)
-    })
+    )`)
     
-    // create meter-group table
     DB.run(`CREATE TABLE meter_groups (
         id INTEGER PRIMARY KEY,
         name TEXT,
@@ -78,24 +78,45 @@ DB.serialize(() => {
         class INTEGER
     )`)
     
-    
+    DB.run(`CREATE TABLE campaigns (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        date_start TEXT,
+        date_end TEXT,
+        compare_start TEXT,
+        compare_end TEXT,
+        media TEXT,
+        visible INTEGER
+    )`)
+
+    DB.run(`CREATE TABLE campaign_groups (
+        id INTEGER PRIMARY KEY,
+        goal REAL,
+        group_id INTEGER,
+        campaign_id INTEGER
+    )`)
+
+    DB.run(`CREATE TABLE data (
+        id INTEGER PRIMARY KEY,
+        meter_id INTEGER,
+        accumulated_real REAL,
+        time_seconds INTEGER,
+        error TEXT
+    )`)
+
     /* Populate tables with data */
-    DB.exec(formatInserts('assertedData/buildings_insert.sql', 'buildings'))
-    DB.exec(formatInserts('assertedData/meter_groups_insert.sql', 'meter_groups'))
-    DB.exec(formatInserts('assertedData/meter_group_relation_insert.sql', 'meter_group_relation'))
-    DB.exec(formatInserts('assertedData/meters_insert.sql', 'meters'))
-    
-    /*
-    DB.all('SELECT * from meters;', (err, rows) => {
-        if (err) console.log('error: ', err)
-        if (rows) console.log(rows)
-    })*/
-
+    DB.exec(formatInserts('tests/assertedData/buildings_insert.sql', 'buildings'))
+    DB.exec(formatInserts('tests/assertedData/meter_groups_insert.sql', 'meter_groups'))
+    DB.exec(formatInserts('tests/assertedData/meter_group_relation_insert.sql', 'meter_group_relation'))
+    DB.exec(formatInserts('tests/assertedData/meters_insert.sql', 'meters'))
+    DB.exec(formatInserts('tests/assertedData/campaigns_insert.sql', 'campaigns'))
+    DB.exec(formatInserts('tests/assertedData/campaign_groups_insert.sql', 'campaign_groups'))
+    DB.exec(formatInserts('tests/assertedData/data_insert.sql', 'data'), (err) => {
+        if (!err) console.log('built test database!')
+        else {
+            console.log(err)
+            process.exit(1)
+        }
+    })
 })
-
-// I need to create 3 tables
-// and then insert all the relevant data
-
-// CREATE TABLES & INSERT DATA
-// --> data
-// --> buildings
+DB.close();

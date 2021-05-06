@@ -26,23 +26,6 @@ const MOCK_REQUEST_EVENT = {
     }
 }
 
-/* Mock MySQL Database */
-const csvHelper = require('./utility/csv_to_obj.js')
-let mockSQLResponse = csvHelper.csv2object('./tests/assertedData/sql_mock_meter_download.csv')
-
-jest.mock(
-    '/opt/nodejs/sql-access.js',
-    () => {return {
-        // claim db is up
-        connect: async () => { return Promise.resolve() },
-        // return mock sql data
-        query: async () => { 
-            return Promise.resolve(mockSQLResponse)
-        }
-    }},
-    {virtual: true}
-)
-
 // Lambda function
 const MeterData = require('../app/meter.js')
 

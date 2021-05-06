@@ -15,28 +15,6 @@ const MOCK_REQUEST_EVENT = {
     }
 }
 
-const csvHelper = require('./utility/csv_to_obj.js')
-let mockSQLResponse = csvHelper.csv2object('./tests/assertedData/sql_mock_allbuildings.csv')
-
-
-/* Mock MySQL Database */
-jest.mock(
-    '/opt/nodejs/sql-access.js',
-    () => {return {
-        // claim db is up
-        connect: async () => { return Promise.resolve() },
-        // return mock sql data
-        query: async () => { 
-            return Promise.resolve(mockSQLResponse)
-        }
-    }},
-    {virtual: true}
-)
-
-
-// stub "User" module (not currently used by endpoint)
-jest.mock('/opt/nodejs/user.js', () => {null}, {virtual:true})
-
 const AllBuildings = require('../app/building.js')
 
 describe('Testing allbuildings endpoint...', () => {

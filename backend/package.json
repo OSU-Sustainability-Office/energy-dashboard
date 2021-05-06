@@ -4,7 +4,7 @@
   "description": "",
   "main": "sam_express.js",
   "scripts": {
-    "test": "jest --ci --notify"
+    "test": "node ./tests/buildTestDatabase.js && jest --ci --notify --detectOpenHandles --runInBand"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "jest": "=26.6.3",
+    "sqlite3": "^5.0.2",
     "sustainability-office-lambda-common-layer": "git://github.com/OSU-Sustainability-Office/lambda-common-layer.git"
   }
 }

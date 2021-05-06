@@ -1,0 +1,3 @@
+INSERT INTO `` (`id`,`name`,`date_start`,`date_end`,`compare_start`,`compare_end`,`media`,`visible`) VALUES (3,'','2019-04-08 07:00:00','2019-05-05 07:00:00','2019-02-18 08:00:00','2019-03-11 08:00:00','KC19-dashboad-banner.jpg',1);
+INSERT INTO `` (`id`,`name`,`date_start`,`date_end`,`compare_start`,`compare_end`,`media`,`visible`) VALUES (4,NULL,'2020-02-03 07:00:00','2020-03-01 07:00:00','2020-01-12 07:00:00','2020-02-02 07:00:00','KC-Banner1.jpg',1);
+INSERT INTO `` (`id`,`name`,`date_start`,`date_end`,`compare_start`,`compare_end`,`media`,`visible`) VALUES (6,NULL,'2021-04-02 07:00:00','2021-05-02 07:00:00','2021-02-19 07:00:00','2021-03-21 07:00:00','KC-Banner-2021.jpg',NULL);

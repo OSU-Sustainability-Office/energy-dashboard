@@ -18,25 +18,37 @@ jest.mock(
 
 // stub un-used requires
 jest.mock('/opt/nodejs/user.js', () => {null}, {virtual:true})
-jest.mock('/opt/nodejs/node_modules/aws-lambda-multipart-parser', 
+jest.mock(
+    '/opt/nodejs/node_modules/aws-lambda-multipart-parser', 
     () => {null}, 
     {virtual: true}
 )
 
-// Mock DB using sqlite
+/**
+    Mock MySQL Database w/ sqlite
+*/
 const sqlite3 = require('sqlite3')
+const sql_utility = require('./utility/sql_test_utility.js')
+
+const DB =  new sqlite3.Database('./tests/assertedData/test.db', sqlite3.OPEN_READWRITE)
 
 const mockDB = {
-    DB: new sqlite3.Database('assertedData/test.db'),
     connect: () => { return Promise.resolve()},
-    query: (req) => {
-        // call sqlite3 version of query
+    // Call sqlite query equivalent
+    query: (req, params) => {
+        let query = sql_utility.fixSQLKeywords(req)
+        return new Promise((resolve, reject) => {
+            DB.all(query, params, (err, rows) => {
+                if (err) reject(err);
+                resolve(rows);
+            })
+        })
     }
 }
 
-
-jest.mock('/opt/nodejs/sql-access.js',
-    () => {return null},
+jest.mock(
+    '/opt/nodejs/sql-access.js',
+    () => { return mockDB },
     {virtual: true}
 )
 

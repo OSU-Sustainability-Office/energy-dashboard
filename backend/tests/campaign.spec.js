@@ -17,27 +17,6 @@ const MOCK_REQUEST_EVENT = {
     }
 }
 
-/* Mock MySQL Database */
-const csvHelper = require('./utility/csv_to_obj.js')
-let mockSQLResponses = [
-    [{id:3}],
-    csvHelper.csv2object('./tests/assertedData/sql_mock_campaigns.csv')
-]
-
-jest.mock(
-    '/opt/nodejs/sql-access.js',
-    () => {return {
-        query_index: 0,
-        // claim db is up
-        connect: async () => { return Promise.resolve() },
-        // return mock sql data
-        query: async () => {
-            return Promise.resolve(mockSQLResponses.shift())
-        }
-    }},
-    {virtual: true}
-)
-
 // Lambda function
 const CampaignGetAll = require('../app/campaign.js')
 
@@ -54,11 +33,11 @@ describe('Testing campaigns endpoint...', () => {
         for (let id of jsonData['meterGroupIDs']){
             expect(isNaN(id)).not.toBe(true)
         }
-        // compare time stamps (slice to get rid of extraneous quotes)
-        expect(Date.parse(jsonData['dateStart'].slice(1, -1))).not.toBe(NaN)
-        expect(Date.parse(jsonData['dateEnd'].slice(1, -1))).not.toBe(NaN)
-        expect(Date.parse(jsonData['compareStart'].slice(1, -1))).not.toBe(NaN)
-        expect(Date.parse(jsonData['compareEnd'].slice(1, -1))).not.toBe(NaN)
+        // compare time stamps
+        expect(Date.parse(jsonData['dateStart'])).not.toBe(NaN)
+        expect(Date.parse(jsonData['dateEnd'])).not.toBe(NaN)
+        expect(Date.parse(jsonData['compareStart'])).not.toBe(NaN)
+        expect(Date.parse(jsonData['compareEnd'])).not.toBe(NaN)
     })
 
     it ('campaigns returns CORS headers...', async () => {
