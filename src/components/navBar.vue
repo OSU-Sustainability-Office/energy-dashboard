@@ -1,7 +1,7 @@
 <template>
     <el-row class='sus-nav'>
       <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">
-        <svgLogo width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/map"})'/>
+        <svgLogo width="auto" alt="" class='sus-nav-image' @click='$router.push({path: "/map"})'/>
       </el-col>
       <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="20">
         <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='rgba(0,0,0,0)' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>

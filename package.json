@@ -24,7 +24,6 @@
     "vue": "^2.6.11",
     "vue-async-computed": "^3.8.2",
     "vue-chartjs": "^3.5.0",
-    "vue-gifplayer": "^1.0.2",
     "vue-i18n": "^8.15.3",
     "vue-router": "^3.1.5",
     "vue-svg-loader": "^0.16.0",

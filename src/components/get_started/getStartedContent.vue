@@ -7,8 +7,8 @@
       <el-row>
         <mainDescription />
       </el-row>
-      <el-row class="faq">
-        <h1>Frequently Asked Questions (FAQ's):</h1>
+      <el-row>
+        <h1 class="faq">Frequently Asked Questions (FAQ's):</h1>
       </el-row>
       <el-row>
         <faq />
@@ -38,6 +38,7 @@ export default {
 }
 .faq {
   text-align: center;
-  font-weight: bold
+  font-weight: bold;
+  color: #D73F09
 }
 </style>
