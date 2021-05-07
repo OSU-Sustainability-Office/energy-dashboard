@@ -4,7 +4,8 @@
 * @Last Modified By:  Milan Donhowe
 * @Last Modified Time:  4/25/2021
 * @Copyright:  Oregon State University 2021
-* @Description: Unit tests for campaign.js, "campaigns" endpoint
+* @Description: Unit tests for API endpoints associated with
+*               the frontend campaigns VueX module
 */
 const testConfig = require('./assertedData/test_config.json')
 const CORSUtil = require('./utility/cors_test_utility.js')
@@ -20,11 +21,11 @@ const MOCK_REQUEST_EVENT = {
 // Lambda function
 const CampaignGetAll = require('../app/campaign.js')
 
-describe('Testing campaigns endpoint...', () => {
+describe('Testing campaigns.module.js related API endpoints...', () => {
 
     let response
 
-    it('Can get campaigns...', async () => {
+    it('/campaigns returns valid data...', async () => {
         response = await CampaignGetAll.all(MOCK_REQUEST_EVENT)
         const jsonData = JSON.parse(response.body)[0]
         // id should be number
@@ -40,7 +41,7 @@ describe('Testing campaigns endpoint...', () => {
         expect(Date.parse(jsonData['compareEnd'])).not.toBe(NaN)
     })
 
-    it ('campaigns returns CORS headers...', async () => {
+    it ('/campaigns returns CORS headers...', async () => {
         const corsResult = CORSUtil.VerifyCORSResponse(response, client, server)
         try {
             expect(corsResult.result).toBe(true)

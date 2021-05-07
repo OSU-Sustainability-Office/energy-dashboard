@@ -22,6 +22,15 @@ function formatInserts(filename, tablename){
     return (text.split('\n').map(ln => sql_utility.fixSQLKeywords(ln.replace('``', tablename)))).join('')
 }
 
+// logs progress of database construction
+function progressReport(err, table){
+    if (!err) console.log(`added data to the '${table}' table`);
+    else {
+        console.log(`Error setting up ${table}`)
+        process.exit(1)
+    }
+}
+
 /*
     Create table schema equivalents for sqlite.
     Not all fields in the MySQL DB are replicated here.
@@ -105,18 +114,15 @@ DB.serialize(() => {
     )`)
 
     /* Populate tables with data */
-    DB.exec(formatInserts('tests/assertedData/buildings_insert.sql', 'buildings'))
-    DB.exec(formatInserts('tests/assertedData/meter_groups_insert.sql', 'meter_groups'))
-    DB.exec(formatInserts('tests/assertedData/meter_group_relation_insert.sql', 'meter_group_relation'))
-    DB.exec(formatInserts('tests/assertedData/meters_insert.sql', 'meters'))
-    DB.exec(formatInserts('tests/assertedData/campaigns_insert.sql', 'campaigns'))
-    DB.exec(formatInserts('tests/assertedData/campaign_groups_insert.sql', 'campaign_groups'))
+    DB.exec(formatInserts('tests/assertedData/buildings_insert.sql', 'buildings'), (err) => progressReport(err, 'buildings'))
+    DB.exec(formatInserts('tests/assertedData/meter_groups_insert.sql', 'meter_groups'), (err) => progressReport(err, 'meter_groups'))
+    DB.exec(formatInserts('tests/assertedData/meter_group_relation_insert.sql', 'meter_group_relation'), (err) => progressReport(err, 'meter_group_relation'))
+    DB.exec(formatInserts('tests/assertedData/meters_insert.sql', 'meters'), (err) => progressReport(err, 'meters'))
+    DB.exec(formatInserts('tests/assertedData/campaigns_insert.sql', 'campaigns'), (err) => progressReport(err, 'campaigns'))
+    DB.exec(formatInserts('tests/assertedData/campaign_groups_insert.sql', 'campaign_groups'), (err) => progressReport(err, 'campaign_groups'))
     DB.exec(formatInserts('tests/assertedData/data_insert.sql', 'data'), (err) => {
-        if (!err) console.log('built test database!')
-        else {
-            console.log(err)
-            process.exit(1)
-        }
+        progressReport(err, 'data')
+        console.log('built test database!')
     })
 })
 DB.close();
