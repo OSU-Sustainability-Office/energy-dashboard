@@ -1,25 +1,34 @@
 <template>
-  <el-row class="card" ref='card'>
-    <el-col :span='24'>
-      <el-row class='title' ref='title'>
+  <div class="card" ref='card'>
+      <el-row :span='24' class='title' ref='title'>
         <el-col :span='20'>{{ name }}</el-col>
         <el-col :span='4' v-if='personalView || publicView' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='openModal()'></i></el-col>
       </el-row>
+
+      <!--Next/Previous Buttons-->
+      <el-row :span='24'>
+        <el-col :span='12' class='buttonDisplay'>
+            <el-button size='small' type='primary' class='moveButtons' @click='previousInterval' icon='el-icon-d-arrow-left'>
+              Previous
+            </el-button>
+        </el-col>
+        <el-col :span='12'>
+          <el-row type='flex' justify='end'>
+            <el-button size='small' type='primary' class='moveButtons' @click='nextInterval' :disabled='!nextExists'>
+              Next <i class='el-icon-d-arrow-right'></i>
+            </el-button>
+          </el-row>
+        </el-col>
+      </el-row>
+
       <!--Chart Below-->
       <el-row style='overflow: hidden;' :span='24'>
-        <el-col :span='1'>
-          <el-button class='moveButtons' size="small" type='primary' icon='el-icon-d-arrow-left' @click='previousInterval' :disabled='!prevExists'></el-button>
-        </el-col>
-        <el-col :span='22'>
+        <el-col :span='24'>
           <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
           <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430'/>
         </el-col>
-        <el-col :span='1'>
-          <el-button class='moveButtons' size="small" type='primary' icon='el-icon-d-arrow-right' @click='nextInterval' :disabled='!nextExists'></el-button>
-        </el-col>
       </el-row>
-  </el-col>
-  </el-row>
+  </div>
 </template>
 
 <script>
@@ -215,7 +224,9 @@ $chart-height: 430px;
   text-align: right;
 }
 .moveButtons {
-  height: $chart-height;
+  //height: $chart-height;
+  height: 3em;
+  width: 10em;
 }
 
 </style>
