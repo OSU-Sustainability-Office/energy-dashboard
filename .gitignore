@@ -25,3 +25,7 @@ yarn-error.log*
 .aws-sam
 express_build
 packaged.yaml
+
+
+# sqlite testing database
+*.db

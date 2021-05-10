@@ -1,6 +1,6 @@
 const webdriver = require('selenium-webdriver')
 const dotenv = require('dotenv')
-dotenv.config({path: './tests/.env'})
+dotenv.config({ path: './tests/.env' })
 dotenv.load()
 require('it-each')()
 // const assert = require('chai').assert
