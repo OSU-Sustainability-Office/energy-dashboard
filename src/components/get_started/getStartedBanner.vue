@@ -37,7 +37,7 @@ export default {
   font-family: 'StratumNo2';
   font-size: 5.5em;
   justify-content: center;
-  height: 2.5em;
+  height: 3em;
   width: 100%;
   padding-top: 1em;
   padding-left: 10px;

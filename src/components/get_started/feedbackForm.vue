@@ -1,3 +1,4 @@
+<!-- Shawn Kim 5/5/2021: Will use in the future when we don't want a third-party feedback form. Using Google form for now. -->
 <template>
   <el-form :model="ruleForm" :rules="rules" ref="feedbackForm" label-width="120px" class="form">
     <el-form-item label="Full Name" prop="name">
