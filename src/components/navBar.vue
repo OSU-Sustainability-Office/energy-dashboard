@@ -1,7 +1,7 @@
 <template>
     <el-row class='sus-nav'>
       <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">
-        <svgLogo width=auto alt="" class='sus-nav-image' @click='$router.push({path: "/"})'/>
+        <svgLogo width="auto" alt="" class='sus-nav-image' @click='$router.push({path: "/map"})'/>
       </el-col>
       <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="20">
         <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='rgba(0,0,0,0)' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
@@ -9,6 +9,7 @@
           <el-menu-item index="buildings" :route='{path: "/buildings"}' ref='buildingItem'>Building List</el-menu-item>
           <el-menu-item index="campaigns" :route='{path: "/campaigns"}' ref='buildingItem'>Campaigns</el-menu-item>
           <el-menu-item v-if='onid' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
+          <el-menu-item index="getStarted" :route='{path: "/getstarted"}' ref='getStartedItem'>Get Started</el-menu-item>
         </el-menu>
       </el-col>
       <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
@@ -39,15 +40,13 @@ export default {
       }
     }
   },
-  created () {
-  },
   mounted () {
     this.activeIndex = this.$route.path.split('/')[1]
   },
   watch: {
     '$route.path': function (path) {
       this.activeIndex = path.split('/')[1]
-      const buttons = [this.$refs.mapItem, this.$refs.buildingItem, this.$refs.dashboardItem]
+      const buttons = [this.$refs.mapItem, this.$refs.buildingItem, this.$refs.dashboardItem, this.$refs.getStartedItem]
       for (let item of buttons) {
         if (!item) {
           continue
@@ -58,12 +57,6 @@ export default {
           item.$el.classList.add('is-active')
         }
       }
-    }
-  },
-  methods: {
-    handleSelect: function (select) {
-      this.$router.push({ path: '/' + select })
-      this.activeIndex = select
     }
   }
 }

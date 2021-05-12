@@ -8,10 +8,10 @@
 
 import Vue from 'vue'
 import Router from 'vue-router'
-import index from '@/components/home/index'
 import view from '@/components/view/view'
 import map from '@/components/map/map'
 import campaigns from '@/components/campaigns/campaign_list'
+import getStarted from '@/components/get_started/getStartedContent'
 import notfound from '@/components/extras/404.vue'
 import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
 import buildingList from '@/components/building_list/building_list.vue'
@@ -23,8 +23,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'index',
-      component: index
+      redirect: '/map'
     },
     // {
     //   path: '/admin',
@@ -49,7 +48,6 @@ export default new Router({
     },
     {
       path: '/map',
-      name: 'map',
       component: map
     },
     {
@@ -67,6 +65,10 @@ export default new Router({
     {
       path: '/buildings/:group',
       component: buildingList
+    },
+    {
+      path: '/getstarted',
+      component: getStarted
     },
     {
       path: '*',

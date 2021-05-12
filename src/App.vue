@@ -15,6 +15,7 @@
       <!-- <transition v-bind:name="transitionName" v-on:after-leave="enableScroll" v-on:before-enter="disableScroll"> -->
         <router-view />
       <!-- </transition> -->
+
     </el-main>
   </el-container>
 </template>
@@ -46,6 +47,25 @@ export default {
     },
     enableScroll: function () {
       this.$refs.main.$el.style.overflow = 'auto'
+    }
+  },
+  mounted () {
+    if (!document.cookie.split(';').some((cookieString) => cookieString.includes('firstTimer'))) {
+      this.$msgbox({
+        title: 'First Timer?',
+        message: 'Take a look at the "Get Started" tab to learn more and for FAQ\'s!',
+        showCancelButton: true,
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Never Show This Message Again',
+        distinguishCancelAndClose: true,
+        callback: function (action) {
+          if (action === 'cancel') {
+            const cookieDate = new Date()
+            cookieDate.setFullYear((new Date()).getFullYear() + 10)
+            document.cookie = 'firstTimer=true; expires=' + cookieDate.toUTCString() + ';'
+          }
+        }
+      })
     }
   },
   watch: {
