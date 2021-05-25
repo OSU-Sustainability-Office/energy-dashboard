@@ -20,7 +20,6 @@
           </el-row>
         </el-col>
       </el-row>
-
       <!--Chart Below-->
       <el-row style='overflow: hidden;' :span='24'>
         <el-col :span='24'>
@@ -201,6 +200,7 @@ $chart-height: 430px;
 .card {
   background-color: $--color-white;
   padding: 2em;
+  padding-bottom: 5em;
   height: calc(400px + 8em);
   color: $--color-primary;
   margin-top: 1em;
