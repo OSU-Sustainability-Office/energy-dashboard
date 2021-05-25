@@ -200,7 +200,7 @@ $chart-height: 430px;
 .card {
   background-color: $--color-white;
   padding: 2em;
-  padding-bottom: 4em;
+  padding-bottom: 5em;
   height: calc(400px + 8em);
   color: $--color-primary;
   margin-top: 1em;
