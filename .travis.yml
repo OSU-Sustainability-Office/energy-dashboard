@@ -39,12 +39,12 @@ jobs:
       - provider: script
         script: cd backend; sam deploy --template-file ./packaged.yaml --stack-name energy
           --capabilities CAPABILITY_IAM; cd ../;
-        cleanup: false
+        skip_cleanup: true
         on:
           branch: master
       - provider: pages
         local_dir: dist/
-        cleanup: false
+        skip_cleanup: true
         github_token: "$GITHUB_TOKEN"
         keep_history: true
         on:
@@ -53,7 +53,7 @@ jobs:
         access_key_id: "$S3_ACCESS_ID"
         secret_access_key: "$S3_ACCESS_KEY"
         bucket: energy-dashboard
-        cleanup: false
+        skip_cleanup: true
         region: "$AWS_DEFAULT_REGION"
         local_dir: dist
         on:
