@@ -12,7 +12,7 @@ jobs:
       name: "Jest Unit Tests"
       language: node_js
       node_js:
-        - "10"
+        - "12"
       install:
       - cd backend && npm install
       - cd .. && npm install
