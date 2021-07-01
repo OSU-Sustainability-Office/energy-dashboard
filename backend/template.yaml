@@ -8,7 +8,7 @@ Description: >
 Globals:
   Function:
     Timeout: 15
-    Runtime: nodejs10.x
+    Runtime: nodejs12.x
   Api:
     # enable CORS; to make more specific, change the origin wildcard
     # to a particular domain name, e.g. "'www.example.com'"
@@ -27,7 +27,7 @@ Globals:
 Parameters:
   LambdaCommonLayer:
     Type: String
-    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:96
+    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:97
     
 Resources:
   test:
@@ -683,5 +683,6 @@ Resources:
               - nodejs6.10
               - nodejs8.10
               - nodejs10.x
+              - nodejs12.x
             LicenseInfo: 'MIT'
             RetentionPolicy: Retain
