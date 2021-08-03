@@ -1,11 +1,9 @@
 /*
- * @Author: Brogan
- * @Date:   Saturday July 13th 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday July 13th 2019
- * @Copyright:  (c) Oregon State University 2019
+  Filename: meter.js
+  Description: API Endpoint logic for meter data upload & retrieval
  */
 
+const DB = require('/opt/nodejs/sql-access.js')
 const Meter = require('/opt/nodejs/models/meter.js')
 const Response = require('/opt/nodejs/response.js')
 const User = require('/opt/nodejs/user.js')
@@ -39,10 +37,79 @@ exports.data = async (event, context) => {
   return response
 }
 
+async function handleGeneralMeters (data, response) {
+  const payload = JSON.parse(data)
+  const meter_id = payload['id']
+  const meter_data = payload['body']
+  const pwd = payload['pwd']
+
+  if (pwd !== process.env.ACQUISUITE_PASS) {
+    return response
+  }
+
+  // Is the meter in the data-table?
+  await DB.connect()
+  let row = await DB.query('SELECT * from ? LIMIT 1', [meter_id])
+  if (row.length === 0) {
+    //  it isn't so let's add it!
+    const point = meter_data[0]
+    const schema = {}
+    for (let field of Object.keys(point)) {
+      if (field.toLower().contains('time')) {
+        schema[field] = 'DATETIME'
+      } else if (isNaN(point[field])) {
+        schema[field] = 'TEXT'
+      } else {
+        schema[field] = 'DOUBLE'
+      }
+    }
+    let query_string = 'CREATE TABLE ? (`id` int NOT NULL AUTO_INCREMENT,'
+    const parameters = []
+    for (let [field, datatype] of Object.entries(schema)) {
+      query_string += '? ?,'
+      parameters.push(field, datatype)
+    }
+    query_string += ')'
+    try {
+      await DB.query(query_string, parameters)
+    } catch (err) {
+      // DO something with error
+    }
+  }
+  // upload meter data
+  for (let point of meter_data) {
+    const fields = []
+    const readings = []
+    const question_marks = []
+    for (let [field, reading] of Object.keys(point)) {
+      fields.push(field)
+      readings.push(reading)
+      question_marks.push('?')
+    }
+    const qs = question_marks.join(', ')
+    let query_string = 'INSERT INTO ? (' + qs + ') VALUES (' + qs + ')'
+    try {
+      await DB.query(query_string, [meter_id, ...fields, ...readings])
+    } catch (err) {
+      if (err.code === 'ER_DUP_ENTRY') {}
+    }
+  }
+
+  return response
+}
+/*
+  This endpoint handles data uploads
+*/
 exports.post = async (event, context) => {
   let response = new Response(event)
-  event.body = Buffer.from(event.body, 'base64').toString('binary')
 
+  // check if request uses new meter upload method
+  if (event.headers['SO-METERUPLOAD'] && event.headers['SO-METERUPLOAD'] === 'true') {
+    return handleGeneralMeters(event.body, response)
+  }
+
+  // otherwise use "legacy" aquisuite support:
+  event.body = Buffer.from(event.body, 'base64').toString('binary')
   const body = await MultipartParse.parse(event, false)
 
   response.headers = {

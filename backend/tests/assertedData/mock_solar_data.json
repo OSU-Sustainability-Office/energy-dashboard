@@ -1,0 +1,146 @@
+[
+  {
+    "Timestamp": "2021-08-03T05:00:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "0.04",
+    "Lifetime Cumulative Energy (kWh)": "1297295.76",
+    "Current": "5.80",
+    "Voltage": "272.93\r"
+  },
+  {
+    "Timestamp": "2021-08-03T05:15:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "0.00",
+    "Lifetime Cumulative Energy (kWh)": "1297295.76",
+    "Current": "5.84",
+    "Voltage": "274.50\r"
+  },
+  {
+    "Timestamp": "2021-08-03T05:30:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "0.00",
+    "Lifetime Cumulative Energy (kWh)": "1297295.76",
+    "Current": "5.84",
+    "Voltage": "274.42\r"
+  },
+  {
+    "Timestamp": "2021-08-03T05:45:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "0.00",
+    "Lifetime Cumulative Energy (kWh)": "1297295.76",
+    "Current": "5.84",
+    "Voltage": "275.49\r"
+  },
+  {
+    "Timestamp": "2021-08-03T06:00:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "0.04",
+    "Lifetime Cumulative Energy (kWh)": "1297295.80",
+    "Current": "6.11",
+    "Voltage": "274.91\r"
+  },
+  {
+    "Timestamp": "2021-08-03T06:15:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "0.09",
+    "Lifetime Cumulative Energy (kWh)": "1297295.89",
+    "Current": "22.80",
+    "Voltage": "275.81\r"
+  },
+  {
+    "Timestamp": "2021-08-03T06:30:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "0.57",
+    "Lifetime Cumulative Energy (kWh)": "1297296.46",
+    "Current": "25.42",
+    "Voltage": "276.40\r"
+  },
+  {
+    "Timestamp": "2021-08-03T06:45:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "1.37",
+    "Lifetime Cumulative Energy (kWh)": "1297297.83",
+    "Current": "34.08",
+    "Voltage": "276.40\r"
+  },
+  {
+    "Timestamp": "2021-08-03T07:00:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "2.05",
+    "Lifetime Cumulative Energy (kWh)": "1297299.88",
+    "Current": "36.66",
+    "Voltage": "276.30\r"
+  },
+  {
+    "Timestamp": "2021-08-03T07:15:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "2.37",
+    "Lifetime Cumulative Energy (kWh)": "1297302.25",
+    "Current": "43.20",
+    "Voltage": "276.51\r"
+  },
+  {
+    "Timestamp": "2021-08-03T07:30:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "2.91",
+    "Lifetime Cumulative Energy (kWh)": "1297305.16",
+    "Current": "45.81",
+    "Voltage": "276.90\r"
+  },
+  {
+    "Timestamp": "2021-08-03T07:45:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "2.65",
+    "Lifetime Cumulative Energy (kWh)": "1297307.81",
+    "Current": "39.52",
+    "Voltage": "276.61\r"
+  },
+  {
+    "Timestamp": "2021-08-03T08:00:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "3.19",
+    "Lifetime Cumulative Energy (kWh)": "1297311.00",
+    "Current": "64.70",
+    "Voltage": "277.11\r"
+  },
+  {
+    "Timestamp": "2021-08-03T08:15:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "4.97",
+    "Lifetime Cumulative Energy (kWh)": "1297315.97",
+    "Current": "78.11",
+    "Voltage": "277.70\r"
+  },
+  {
+    "Timestamp": "2021-08-03T08:30:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "5.72",
+    "Lifetime Cumulative Energy (kWh)": "1297321.69",
+    "Current": "80.16",
+    "Voltage": "277.51\r"
+  },
+  {
+    "Timestamp": "2021-08-03T08:45:00",
+    "Type": "\"Production\"",
+    "Device GUID": "537fcb9e-57fa-4b9a-ae90-dcdfda497429",
+    "Energy In Interval (kWh)": "5.54",
+    "Lifetime Cumulative Energy (kWh)": "1297327.23",
+    "Current": "97.64",
+    "Voltage": "278.18\r"
+  }
+]
