@@ -37,45 +37,59 @@ exports.data = async (event, context) => {
   return response
 }
 
-async function handleGeneralMeters (data, response) {
-  const payload = JSON.parse(data)
+// Meter Data Upload Route (currently only for solar panels)
+exports.upload = async (event, context) => {
+  let response = new Response(event)
+
+  const payload = JSON.parse(event.body)
+
   const meter_id = payload['id']
   const meter_data = payload['body']
   const pwd = payload['pwd']
 
   if (pwd !== process.env.ACQUISUITE_PASS) {
+    response.statusCode = 400
     return response
   }
 
+  // Check if meter_id is in meter table
+
   // Is the meter in the data-table?
   await DB.connect()
-  let row = await DB.query('SELECT * from ? LIMIT 1', [meter_id])
+  let row = []
+  try {
+    row = await DB.query(`SELECT * FROM ${meter_id} LIMIT 1;`)
+  } catch {}
+
   if (row.length === 0) {
-    //  it isn't so let's add it!
-    const point = meter_data[0]
-    const schema = {}
-    for (let field of Object.keys(point)) {
-      if (field.toLower().contains('time')) {
-        schema[field] = 'DATETIME'
-      } else if (isNaN(point[field])) {
-        schema[field] = 'TEXT'
-      } else {
-        schema[field] = 'DOUBLE'
+    console.log('Row length is zer0')
+    if (event.headers['SO-METERTYPE'] === 'solar') {
+      console.log('meter type is solar')
+      // Make table w/ parameters
+      try {
+        console.log('Creating Table!')
+        await DB.query(`CREATE TABLE ${meter_id} (
+          \`id\` INT NOT NULL AUTO_INCREMENT,
+          \`time\` DATETIME NOT NULL,
+          \`time_seconds\` INT DEFAULT NULL
+          \`current\` DOUBLE,
+          \`voltage\` DOUBLE,
+          \`energy change\` DOUBLE,
+          \`total energy\` DOUBLE,
+          UNIQUE KEY \`time\` (\`time\`),
+          PRIMARY KEY (\`ID\`)
+        )`)
+      } catch (err) {
+        response.body = err
+        response.statusCode = 500
+        return response
       }
-    }
-    let query_string = 'CREATE TABLE ? (`id` int NOT NULL AUTO_INCREMENT,'
-    const parameters = []
-    for (let [field, datatype] of Object.entries(schema)) {
-      query_string += '? ?,'
-      parameters.push(field, datatype)
-    }
-    query_string += ')'
-    try {
-      await DB.query(query_string, parameters)
-    } catch (err) {
-      // DO something with error
+    } else {
+      response.statusCode = 401
+      return response
     }
   }
+
   // upload meter data
   for (let point of meter_data) {
     const fields = []
@@ -95,20 +109,15 @@ async function handleGeneralMeters (data, response) {
     }
   }
 
+  response.statusCode = 200
   return response
 }
 /*
-  This endpoint handles data uploads
+  This endpoint handles data uploads from Aquisuites
 */
 exports.post = async (event, context) => {
   let response = new Response(event)
 
-  // check if request uses new meter upload method
-  if (event.headers['SO-METERUPLOAD'] && event.headers['SO-METERUPLOAD'] === 'true') {
-    return handleGeneralMeters(event.body, response)
-  }
-
-  // otherwise use "legacy" aquisuite support:
   event.body = Buffer.from(event.body, 'base64').toString('binary')
   const body = await MultipartParse.parse(event, false)
 

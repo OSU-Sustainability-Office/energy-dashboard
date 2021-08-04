@@ -237,6 +237,24 @@ Resources:
           Properties:
             Path: /meter
             Method: put
+  # For newer meter types
+  MeterUpload:
+    Type: AWS::Serverless::Function
+    Properties:
+      Timeout: 30
+      MemorySize: 128
+      CodeUri: app/
+      Handler: meter.upload
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /upload
+            Method: post
+  # Legacy Data Upload Route (still works for Aquisuites)
   MeterPost:
     Type: AWS::Serverless::Function
     Properties:
