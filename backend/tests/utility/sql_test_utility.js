@@ -15,11 +15,6 @@ exports.fixSQLKeywords = function (line) {
       line = line.replace(searchRegex, `building_${keyword}`)
     }
   }
-  // DATATYPE KEYWORD FIXES
-  /*
-  line = line.replace(/DOUBLE/g, 'REAL')
-  line = line.replace(/INT/g, 'INTEGER')
-  line = line.replace(/DATETIME/g, 'TEXT')
-  */
+
   return line
 }

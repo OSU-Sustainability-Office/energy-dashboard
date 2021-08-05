@@ -25,20 +25,22 @@ jest.mock(
 )
 
 /**
-    Mock MySQL Database w/ sqlite
-*/
-const sqlite3 = require('sqlite3').verbose()
-const sql_utility = require('./utility/sql_test_utility.js')
-
-const DB =  new sqlite3.Database('./tests/assertedData/test.db', sqlite3.OPEN_READWRITE)
+    Mock MySQL Database
+**/
+const mysql = require('mysql')
+const DB =  mysql.createConnection({
+  host: process.env.MYSQL_HOST,
+  user: 'root',
+  password: 'password',
+  database: 'energy',
+  multipleStatements: false // it's disabled by default in common layer db class 
+})
 
 const mockDB = {
   connect: () => { return Promise.resolve() },
-  // Call sqlite query equivalent
-  query: (req, params) => {
-    let query = sql_utility.fixSQLKeywords(req)
+  query: (query, params) => {
     return new Promise((resolve, reject) => {
-      DB.all(query, params, (err, rows) => {
+      DB.query(query, params, (err, rows) => {
         if (err) reject(err)
         resolve(rows)
       })

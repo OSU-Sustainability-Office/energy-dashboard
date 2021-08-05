@@ -67,6 +67,7 @@ describe('Testing data_layer related API endpoints...', () => {
 
   it('mock solar data upload...', async () => {
     process.env.ACQUISUITE_PASS = 'test_pwd'
+    // Have to make meter_id acceptable for SQL commands
     const meter_id = 'M' + '007c9349-72ba-450c-aa1f-4e5a77b68f79'.replace(/-/g, 'M')
     const mockRequest = {
       headers: {

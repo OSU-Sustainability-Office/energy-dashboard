@@ -21,6 +21,8 @@ module.exports = {
     './tests/setupBackendTests.js'
   ],
 
+  modulePathIgnorePatterns: ['<rootDir>/dependencies/nodejs/'],
+
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: "v8",
 

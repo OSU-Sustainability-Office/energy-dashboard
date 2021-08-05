@@ -62,23 +62,20 @@ exports.upload = async (event, context) => {
   } catch {}
 
   if (row.length === 0) {
-    console.log('Row length is zer0')
     if (event.headers['SO-METERTYPE'] === 'solar') {
-      console.log('meter type is solar')
       // Make table w/ parameters
       try {
-        console.log('Creating Table!')
-        await DB.query(`CREATE TABLE ${meter_id} (
+        await DB.query(`CREATE TABLE \`${meter_id}\` (
           \`id\` INT NOT NULL AUTO_INCREMENT,
           \`time\` DATETIME NOT NULL,
-          \`time_seconds\` INT DEFAULT NULL
-          \`current\` DOUBLE,
-          \`voltage\` DOUBLE,
-          \`energy change\` DOUBLE,
-          \`total energy\` DOUBLE,
+          \`time_seconds\` INT DEFAULT NULL,
+          \`current\` FLOAT,
+          \`voltage\` FLOAT,
+          \`energy change\` FLOAT,
+          \`total energy\` FLOAT,
           UNIQUE KEY \`time\` (\`time\`),
           PRIMARY KEY (\`ID\`)
-        )`)
+        );`)
       } catch (err) {
         response.body = err
         response.statusCode = 500
