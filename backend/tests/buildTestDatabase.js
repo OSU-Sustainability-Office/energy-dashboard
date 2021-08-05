@@ -1,5 +1,5 @@
 /*
-* @ Filename: buildTestDatabase.js 
+* @ Filename: buildTestDatabase.js
 * @ Description: Connects to the test mysql database which should be running in a docker container and populates
 *                the database with some mock-data.
 */
@@ -80,6 +80,7 @@ DB.beginTransaction((err) => {
   gigantic_query_string += `CREATE TABLE meters (
         \`id\` int NOT NULL AUTO_INCREMENT,
         \`name\` TEXT,
+        \`address\` char(16) DEFAULT NULL,
         \`type\` TEXT,
         \`negate\` INTEGER,
         \`class\` INTEGER,
@@ -165,4 +166,3 @@ DB.beginTransaction((err) => {
     })
   })
 })
-

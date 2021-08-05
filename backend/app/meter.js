@@ -58,7 +58,7 @@ exports.upload = async (event, context) => {
   await DB.connect()
   let row = []
   try {
-    row = await DB.query(`SELECT * FROM ${meter_id} LIMIT 1;`)
+    row = await DB.query(`SHOW TABLES LIKE ?;`, [meter_id])
   } catch {}
 
   if (row.length === 0) {
@@ -67,15 +67,16 @@ exports.upload = async (event, context) => {
       try {
         await DB.query(`CREATE TABLE \`${meter_id}\` (
           \`id\` INT NOT NULL AUTO_INCREMENT,
-          \`time\` DATETIME NOT NULL,
+          \`time\` TEXT NOT NULL,
           \`time_seconds\` INT DEFAULT NULL,
           \`current\` FLOAT,
           \`voltage\` FLOAT,
-          \`energy change\` FLOAT,
-          \`total energy\` FLOAT,
-          UNIQUE KEY \`time\` (\`time\`),
+          \`energy_change\` FLOAT,
+          \`total_energy\` FLOAT,
+          UNIQUE KEY \`time_seconds\` (\`time_seconds\`),
           PRIMARY KEY (\`ID\`)
         );`)
+        await DB.query(`INSERT INTO meters (name, type, class) VALUES (?, ?, ?)`, [meter_id, 'E', '9990001'])
       } catch (err) {
         response.body = err
         response.statusCode = 500
@@ -92,17 +93,21 @@ exports.upload = async (event, context) => {
     const fields = []
     const readings = []
     const question_marks = []
-    for (let [field, reading] of Object.keys(point)) {
+    for (let [field, reading] of Object.entries(point)) {
       fields.push(field)
       readings.push(reading)
       question_marks.push('?')
     }
     const qs = question_marks.join(', ')
-    let query_string = 'INSERT INTO ? (' + qs + ') VALUES (' + qs + ')'
+    let query_string = (`INSERT INTO ${meter_id} (` + fields.map(x => `\`${x}\``).join(', ') + ') VALUES (' + qs + ')').replace(/\\r/g, '')
     try {
-      await DB.query(query_string, [meter_id, ...fields, ...readings])
+      await DB.query(query_string, readings)
     } catch (err) {
-      if (err.code === 'ER_DUP_ENTRY') {}
+      if (err.code !== 'ER_DUP_ENTRY') {
+        response.statusCode = 400
+        response.body = 'meter data does not fit database schema'
+        return response
+      }
     }
   }
 

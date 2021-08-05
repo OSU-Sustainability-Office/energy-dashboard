@@ -4,4 +4,4 @@ WORKDIR /test_work_dir
 COPY package*.json ./
 RUN npm install
 COPY . ./
-CMD npm run test
+CMD ["./wait-for-it.sh", "db:3306", "-t", "40", "--", "npm", "run", "test"]

@@ -80,13 +80,31 @@ describe('Testing data_layer related API endpoints...', () => {
         pwd: process.env.ACQUISUITE_PASS
       })
     }
-    // check that we can read data
+    // Check that we can upload data
     let response = await MeterData.upload(mockRequest, undefined)
-    console.log(response.body)
     expect(response.statusCode).toBe(200)
+    // Check that data was written
     let energy_data = await DB.query('SELECT * from ' + meter_id)
     expect(energy_data.length).toBe(solarData.length)
-    // double check that we can update without creating new table
-  })
+    // Check that meter was added to Meters table
+    // todo
 
+    // Check that we can GET data
+    const mockReadRequest = {
+      headers: {
+        origin: `${client.scheme}://${client.host}`
+      },
+      queryStringParameters: {
+        'id': meter_id,
+        'point': 'total_energy',
+        'startDate': 1627974000,
+        'endDate': 1627976700,
+        'meterClass': 999001
+      }
+    }
+    let EnergyResponse = await MeterData.data(mockReadRequest)
+    const meter_data = JSON.parse(EnergyResponse.body)
+    expect(meter_data.length).toBe(solarData.length)
+    expect(meter_data[0]['total_energy']).toBe(3665740)
+  })
 })
