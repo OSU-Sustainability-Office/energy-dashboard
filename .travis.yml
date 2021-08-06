@@ -9,14 +9,17 @@ cache:
 jobs:
   include:
     - stage: tests
-      name: "Jest Unit Tests"
+      name: "API Unit Tests"
       language: node_js
+      services:
+        - docker
       node_js:
         - "12"
       install:
-      - cd backend && npm install
+        - cd backend && docker-compose build
       script:
-      - npm run test
+        - docker-compose run --rm test
+        - docker-compose down
     - stage: build
       name: "Building Project"
       install:

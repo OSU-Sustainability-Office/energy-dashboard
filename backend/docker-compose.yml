@@ -13,5 +13,6 @@ services:
     build: .
     depends_on: 
       - db
+    command: ["./wait-for-it.sh", "db:3306", "-t", "60", "--", "npm", "run", "test"]
     environment:
       MYSQL_HOST: db

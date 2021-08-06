@@ -4,7 +4,7 @@
   "description": "",
   "main": "sam_express.js",
   "scripts": {
-    "test": "node ./tests/buildTestDatabase.js && jest --ci --notify --detectOpenHandles --runInBand"
+    "test": "node ./tests/buildTestDatabase.js && jest --ci --notify --detectOpenHandles --runInBand --forceExit"
   },
   "author": "",
   "license": "ISC",
