@@ -146,5 +146,11 @@ module.exports = {
     4: 'cphase_a',
     5: 'cphase_b',
     6: 'cphase_c'
+  },
+  999001: { // Tesla Solar City Solar Panels
+    0: 'current',
+    1: 'voltage',
+    2: 'energy_change',
+    3: 'total_energy'
   }
 }

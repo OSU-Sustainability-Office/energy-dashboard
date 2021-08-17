@@ -9,14 +9,22 @@ cache:
 jobs:
   include:
     - stage: tests
-      name: "Jest Unit Tests"
+      name: "API Unit Tests"
       language: node_js
+      services:
+        - docker
       node_js:
         - "12"
+      before_install:
+        - sudo rm /usr/local/bin/docker-compose
+        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+        - chmod +x docker-compose
+        - sudo mv docker-compose /usr/local/bin
       install:
-      - cd backend && npm install
+        - cd backend && docker-compose build
       script:
-      - npm run test
+        - docker-compose run --rm test
+        - docker-compose down
     - stage: build
       name: "Building Project"
       install:
@@ -62,3 +70,4 @@ jobs:
 env:
   global:
   - AWS_DEFAULT_REGION=us-west-2
+  - DOCKER_COMPOSE_VERSION=1.29.2

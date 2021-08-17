@@ -5,16 +5,16 @@
 * @Description: Helper functions for the sqlite test database.
 */
 
-
 // Super hacky function to bypass sqlite3's keyword restrictions
 // by replacing each instance of a keyword with a prefixed alternative
-exports.fixSQLKeywords = function(line){
-    const keywords = ['group', 'default']
-    for (let keyword of keywords){
-        const searchRegex = new RegExp(`(?<!_)${keyword}(?!_)`, 'g')
-        if (line.match(searchRegex)){
-            line = line.replace(searchRegex, `building_${keyword}`)
-        }
+exports.fixSQLKeywords = function (line) {
+  const keywords = ['group', 'default']
+  for (let keyword of keywords) {
+    const searchRegex = new RegExp(`(?<!_)${keyword}(?!_)`, 'g')
+    if (line.match(searchRegex)) {
+      line = line.replace(searchRegex, `building_${keyword}`)
     }
-    return line
+  }
+
+  return line
 }

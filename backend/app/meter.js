@@ -1,11 +1,9 @@
 /*
- * @Author: Brogan
- * @Date:   Saturday July 13th 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday July 13th 2019
- * @Copyright:  (c) Oregon State University 2019
+  Filename: meter.js
+  Description: API Endpoint logic for meter data upload & retrieval
  */
 
+const DB = require('/opt/nodejs/sql-access.js')
 const Meter = require('/opt/nodejs/models/meter.js')
 const Response = require('/opt/nodejs/response.js')
 const User = require('/opt/nodejs/user.js')
@@ -39,10 +37,91 @@ exports.data = async (event, context) => {
   return response
 }
 
+// Meter Data Upload Route (currently only for solar panels)
+exports.upload = async (event, context) => {
+  let response = new Response(event)
+
+  const payload = JSON.parse(event.body)
+
+  const meter_type = payload['type']
+  const meter_id = payload['id']
+  const meter_data = payload['body']
+  const pwd = payload['pwd']
+
+  if (pwd !== process.env.ACQUISUITE_PASS) {
+    response.statusCode = 400
+    return response
+  }
+
+  // Check if meter_id is in meter table
+
+  // Is the meter in the data-table?
+  await DB.connect()
+  let row = []
+  try {
+    row = await DB.query(`SHOW TABLES LIKE ?;`, [meter_id])
+  } catch {}
+
+  if (row.length === 0) {
+    if (meter_type === 'solar') {
+      // Make table w/ parameters
+      try {
+        await DB.query(`CREATE TABLE \`${meter_id}\` (
+          \`id\` INT NOT NULL AUTO_INCREMENT,
+          \`time\` TEXT NOT NULL,
+          \`time_seconds\` INT DEFAULT NULL,
+          \`current\` FLOAT,
+          \`voltage\` FLOAT,
+          \`energy_change\` FLOAT,
+          \`total_energy\` FLOAT,
+          UNIQUE KEY \`time_seconds\` (\`time_seconds\`),
+          PRIMARY KEY (\`ID\`)
+        );`)
+        await DB.query(`INSERT INTO meters (name, type, class) VALUES (?, ?, ?)`, [meter_id, 'E', '9990001'])
+      } catch (err) {
+        response.body = err
+        response.statusCode = 500
+        return response
+      }
+    } else {
+      response.statusCode = 401
+      return response
+    }
+  }
+
+  // upload meter data
+  for (let point of meter_data) {
+    const fields = []
+    const readings = []
+    const question_marks = []
+    for (let [field, reading] of Object.entries(point)) {
+      fields.push(field)
+      readings.push(reading)
+      question_marks.push('?')
+    }
+    const qs = question_marks.join(', ')
+    let query_string = (`INSERT INTO ${meter_id} (` + fields.map(x => `\`${x}\``).join(', ') + ') VALUES (' + qs + ')').replace(/\\r/g, '')
+    try {
+      await DB.query(query_string, readings)
+    } catch (err) {
+      if (err.code !== 'ER_DUP_ENTRY') {
+        response.statusCode = 400
+        response.body = 'meter data does not fit database schema: ' + JSON.stringify(point) + ', code: ' + err.code
+        return response
+      }
+    }
+  }
+
+  response.statusCode = 200
+  return response
+}
+/*
+  This endpoint handles data uploads from Aquisuites
+*/
 exports.post = async (event, context) => {
   let response = new Response(event)
-  event.body = Buffer.from(event.body, 'base64').toString('binary')
 
+  event.body = Buffer.from(event.body, 'base64').toString('binary')
   const body = await MultipartParse.parse(event, false)
 
   response.headers = {

@@ -135,6 +135,11 @@ class Meter {
   async download (point, startTime, endTime, meterClass) {
     await DB.connect()
     if (Object.values(meterClasses[meterClass]).includes(point)) {
+      // Generalized Meter Types
+      if (String(meterClass).startsWith('999')) {
+        return DB.query('SELECT ' + point + ', time_seconds AS time, \'' + this.id + '\' FROM ' + this.id + ' WHERE time_seconds >= ? AND time_seconds <= ?', [startTime, endTime])
+      }
+      // Aquisuites
       return DB.query('SELECT ' + point + ', time_seconds AS time, id FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)', [this.id, startTime, endTime])
     } else {
       throw new Error('Point is not available for given meter class')
