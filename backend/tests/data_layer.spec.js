@@ -71,13 +71,13 @@ describe('Testing data_layer related API endpoints...', () => {
     const meter_id = 'M' + '007c9349-72ba-450c-aa1f-4e5a77b68f79'.replace(/-/g, 'M')
     const mockRequest = {
       headers: {
-        ...MOCK_REQUEST_EVENT.headers,
-        'SO-METERTYPE': 'solar'
+        ...MOCK_REQUEST_EVENT.headers
       },
       body: JSON.stringify({
         id: meter_id,
         body: solarData,
-        pwd: process.env.ACQUISUITE_PASS
+        pwd: process.env.ACQUISUITE_PASS,
+        type: 'solar'
       })
     }
     // Check that we can upload data

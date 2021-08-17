@@ -43,6 +43,7 @@ exports.upload = async (event, context) => {
 
   const payload = JSON.parse(event.body)
 
+  const meter_type = payload['type']
   const meter_id = payload['id']
   const meter_data = payload['body']
   const pwd = payload['pwd']
@@ -62,7 +63,7 @@ exports.upload = async (event, context) => {
   } catch {}
 
   if (row.length === 0) {
-    if (event.headers['SO-METERTYPE'] === 'solar') {
+    if (meter_type === 'solar') {
       // Make table w/ parameters
       try {
         await DB.query(`CREATE TABLE \`${meter_id}\` (
