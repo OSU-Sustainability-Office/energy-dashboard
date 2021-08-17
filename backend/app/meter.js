@@ -106,7 +106,7 @@ exports.upload = async (event, context) => {
     } catch (err) {
       if (err.code !== 'ER_DUP_ENTRY') {
         response.statusCode = 400
-        response.body = 'meter data does not fit database schema'
+        response.body = 'meter data does not fit database schema: ' + JSON.stringify(point) + ', code: ' + err.code
         return response
       }
     }
