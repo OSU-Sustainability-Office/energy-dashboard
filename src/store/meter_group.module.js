@@ -72,6 +72,7 @@ const actions = {
       /*
         To decide if this should allow more points later, but there are a lot that do not make sense or can not be directly added together
       */
+      // TODO: Add logic for solar data
       throw new Error('Can not add together non-total metering points')
     }
 
