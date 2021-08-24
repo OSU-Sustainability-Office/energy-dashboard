@@ -124,8 +124,7 @@ const actions = {
         }
       }
     }
-    console.log("here's the data object")
-    console.log(resultDataObject)
+
     return resultDataObject
   }
 }
