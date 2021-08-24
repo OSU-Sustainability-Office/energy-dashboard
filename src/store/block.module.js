@@ -208,7 +208,8 @@ const actions = {
       const pointMap = {
         'Electricity': 'accumulated_real',
         'Gas': 'cubic_feet',
-        'Steam': 'total'
+        'Steam': 'total',
+        'Solar Panel': 'total_energy'
       }
       store.commit(chartSpace + '/path', moduleSpace)
       if (utilityType !== '') {

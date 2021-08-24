@@ -87,7 +87,7 @@ describe('Testing data_layer related API endpoints...', () => {
     let energy_data = await DB.query('SELECT * from ' + meter_id)
     expect(energy_data.length).toBe(solarData.length)
     // Check that meter was added to Meters table
-    // todo
+    const [{ 'id': meter_normalized_id }] = await DB.query('SELECT id FROM meters WHERE name = ?;', [meter_id])
 
     // Check that we can GET data
     const mockReadRequest = {
@@ -95,11 +95,11 @@ describe('Testing data_layer related API endpoints...', () => {
         origin: `${client.scheme}://${client.host}`
       },
       queryStringParameters: {
-        'id': meter_id,
+        'id': meter_normalized_id,
         'point': 'total_energy',
         'startDate': 1627974000,
         'endDate': 1627976700,
-        'meterClass': 999001
+        'meterClass': 9990001
       }
     }
     let EnergyResponse = await MeterData.data(mockReadRequest)
