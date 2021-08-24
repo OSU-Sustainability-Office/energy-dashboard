@@ -103,7 +103,11 @@ class Meter {
       apparent_a: 'Apparent Power, Phase A (VA)',
       apparent_b: 'Apparent Power, Phase B (VA)',
       apparent_c: 'Apparent Power, Phase C (VA)',
-      baseline_percentage: 'Percentage (%)'
+      baseline_percentage: 'Percentage (%)',
+      total_energy: 'Lifetime Cumulative Energy (kWh)',
+      energy_change: 'Energy In Interval (kWh)',
+      voltage: 'Voltage (V)',
+      current: 'Current (A)'
     }
     const points = Object.values(meterClasses[this.classInt])
     for (let point of points) {
@@ -115,6 +119,8 @@ class Meter {
       this.type = 'Gas'
     } else if (points.indexOf('accumulated_real') >= 0) {
       this.type = 'Electricity'
+    } else if (points.indexOf('total_energy') >= 0) {
+      this.type = 'Solar Panel'
     }
     return this
   }
@@ -137,7 +143,9 @@ class Meter {
     if (Object.values(meterClasses[meterClass]).includes(point)) {
       // Generalized Meter Types
       if (String(meterClass).startsWith('999')) {
-        return DB.query('SELECT ' + point + ', time_seconds AS time, \'' + this.id + '\' FROM ' + this.id + ' WHERE time_seconds >= ? AND time_seconds <= ?', [startTime, endTime])
+        // get table name from meter table
+        let [{ 'name': meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id])
+        return DB.query('SELECT ' + point + ', time_seconds AS time, \'' + this.id + '\' as id FROM ' + meter_table_name + ' WHERE time_seconds >= ? AND time_seconds <= ?', [startTime, endTime])
       }
       // Aquisuites
       return DB.query('SELECT ' + point + ', time_seconds AS time, id FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)', [this.id, startTime, endTime])

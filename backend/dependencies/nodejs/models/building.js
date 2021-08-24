@@ -224,29 +224,6 @@ class Building {
       building.set(queryJson[key].name, queryJson[key].group, queryJson[key].mapId, queryJson[key].image, metergroups, queryJson[key].hidden)
       buildings.push(building)
     }
-    // const token = promiseChain1[1]
-    // const promiseChain2 = []
-    // for (let buildingRow of buildingRows) {
-    //   if (buildings[buildingRow['id']]) {
-    //     buildings[buildingRow['id']].meterGroups.push(await (new MeterGroup(buildingRow['meter_group_id'])).get(true))
-    //   } else {
-    //     let building = new Building(buildingRow['id'])
-    //     building.mapId = buildingRow['map_id']
-    //     building.group = buildingRow['group']
-    //     building.meterGroups = [await (new MeterGroup(buildingRow['meter_group_id'])).get(true)]
-    //     // OSM API now sends OSM Json format if application/json is in the request header
-    //     // promiseChain2.push(axios('https://api.openstreetmap.org/api/0.6/way/' + buildingRow['map_id'] + '/full', { headers: { 'Accept': 'text/xml' }, method: 'get' }).then(data => {
-    //     //   let xmlData = (new XMLDom.DOMParser()).parseFromString(data.data)
-    //     //   building.geoJSON = Geo(xmlData).features[0]
-    //     //   building.name = buildingRow['name']
-    //     //   building.image = buildingRow['image']
-    //     //   building.geoJSON.properties.id = building.id
-    //     //   building.geoJSON.properties.group = buildingRow['group']
-    //     // }))
-    //     buildings[buildingRow['id']] = building
-    //   }
-    // }
-    // await Promise.all(promiseChain2)
     return buildings
   }
 }

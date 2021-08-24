@@ -68,10 +68,33 @@ const actions = {
 
   async getData (store, payload) {
     let resultDataObject = new Map()
-    if (payload.point !== 'accumulated_real' && payload.point !== 'total' && payload.point !== 'cubic_feet' && store.getters.meters.length > 1) {
+    if (payload.point !== 'accumulated_real' && payload.point !== 'total' && payload.point !== 'cubic_feet') { // && store.getters.meters.length > 1) {
       /*
         To decide if this should allow more points later, but there are a lot that do not make sense or can not be directly added together
       */
+      // Tesla Solar Panel Support
+      if (payload.point === 'total_energy') {
+        payload.dateStart = payload.dateStart - (payload.dateStart % 900)
+        payload.dateEnd = payload.dateEnd  - (payload.dateEnd % 900)
+        let promiseObject = {}
+        for (let meter of store.getters.meters) {
+          let promise = this.dispatch(meter.path + '/getData', payload)
+          promiseObject[meter.id] = promise
+        }
+        for (let meter of store.getters.meters) {
+          let data = await promiseObject[meter.id]
+          // For some reason if the array is empty it sometimes forgets it is an array
+          if (!Array.isArray(data) || data.length === 0) {
+            continue
+          }
+          // move object -> map
+          for (let dataPoint of data) {
+            resultDataObject.set(dataPoint['time'], dataPoint[payload.point])
+          }
+        }
+        return resultDataObject
+      }
+
       throw new Error('Can not add together non-total metering points')
     }
 
@@ -101,6 +124,7 @@ const actions = {
         }
       }
     }
+
     return resultDataObject
   }
 }
