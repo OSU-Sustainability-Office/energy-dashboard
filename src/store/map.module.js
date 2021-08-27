@@ -42,7 +42,8 @@ const actions = {
       store.commit('jsonPromise', new Promise(async (resolve, reject) => {
         let geoPromise = []
         await store.getters.promise
-        for (let building of store.getters.buildings) {
+        // Query for Map Geometry if it exists
+        for (let building of store.getters.buildings.filter(b => b.mapId)) {
           geoPromise.push(store.dispatch('buildingJSON', building.mapId).then(json => {
             let way
             for (let feature of json.features) {

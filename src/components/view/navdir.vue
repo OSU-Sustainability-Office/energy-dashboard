@@ -1,18 +1,6 @@
 /*
- * @Author: you@you.you
- * @Date:   Tuesday December 17th 2019
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Tuesday December 17th 2019
- * @Copyright:  (c) Oregon State University 2019
- */
-<!--
-@Author: Brogan Miner <Brogan>
-@Date:   2018-12-17T14:07:35-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-01-29T12:43:12-08:00
--->
-
+  Filename: navdir.vue
+*/
 <template>
   <el-row class='stage'>
     <el-col class='main'>

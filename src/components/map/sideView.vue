@@ -110,7 +110,9 @@ export default {
         } else {
           this.$refs.nextArrow.style.display = 'none'
         }
-        this.$refs.media.style.backgroundImage = 'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' + this.media + '")'
+        if (this.media) {
+          this.$refs.media.style.backgroundImage = 'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' + this.media + '")'
+        }
       }
     },
     index: function (to, from) {

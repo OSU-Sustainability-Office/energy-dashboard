@@ -30,8 +30,7 @@ export default {
   mounted () {
 
   },
-  computed: {
-  },
+  computed: {},
   watch: {
     blocks: {
       immediate: true,
