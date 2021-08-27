@@ -209,7 +209,7 @@ const actions = {
         'Electricity': 'accumulated_real',
         'Gas': 'cubic_feet',
         'Steam': 'total',
-        'Solar Panel': 'total_energy'
+        'Solar Panel': 'energy_change'
       }
       store.commit(chartSpace + '/path', moduleSpace)
       if (utilityType !== '') {
