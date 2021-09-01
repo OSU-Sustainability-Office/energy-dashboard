@@ -1,16 +1,6 @@
-/*
- * @Author: you@you.you
- * @Date:   Friday April 24th 2020
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Friday April 24th 2020
- * @Copyright:  (c) Oregon State University 2020
- */
 <!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-01-23T10:51:08-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-02-11T09:14:17-08:00
+  Filename: switch_buttons.vue
+  Description: Component for button input on the side-view bar (the category/energy trend)
 -->
 <template>
   <el-row class='buttons'>
