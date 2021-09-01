@@ -1,17 +1,16 @@
 <!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-01-23T10:51:08-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-02-11T09:14:17-08:00
+  Filename: time_switch_buttons_big.vue
+  Description: vue component for map-building-pop-up showing the graph options
 -->
 <template>
   <el-row class='buttons'>
     <el-col class='rangeButtonParent' v-bind:class="{ active: currentRange == 0 }">
       <el-button class='rangeButton' @click='currentRange = 0'>{{ (campaign) ? 'Past 6 Hours' : 'Week' }}</el-button>
     </el-col>
-    <el-col class='rangeButtonParent' v-bind:class="{ active: currentRange == 1 }">
-      <el-button class='rangeButton' @click='currentRange = 1'>{{(campaign) ? 'Past Day' : '60 Days'}}</el-button>
+    <el-col class='rangeButtonParent' v-bind:class="{ active: (currentRange == 1 || currentRange == 3) }">
+      <!--Change default interval for Solar Panels-->
+      <el-button v-if="blocks[0].name !== 'Solar Panel'" class='rangeButton' @click='currentRange = 1'>{{(campaign) ? 'Past Day' : '60 Days'}}</el-button>
+      <el-button v-else class='rangeButton' @click='currentRange = 3'>Past Day</el-button>
     </el-col>
     <el-col class='rangeButtonParent' v-bind:class="{ active: currentRange == 2 }">
       <el-button class='rangeButton' @click='currentRange = 2'>{{(campaign) ? 'Past ' + days + ' Days' : 'Year'}}</el-button>
@@ -58,9 +57,31 @@ export default {
             dateInterval = 6
             startModifier = 7 * 24 * 60 * 60 * 1000
           } else if (value === 1) {
-            intervalUnit = 'day'
+            // had to add conditional here too since vue wasn't
+            // calling the v-if clause on initial load
+            // NOTE!!!: make sure to also change "(value == 3)" code block
+            // when changing this section!
+            if ((this.blocks[0].name === 'Solar Panel')) {
+              intervalUnit = 'hour'
+              dateInterval = 1
+              startModifier = 24 * 60 * 60 * 1000
+              // We push it back 1 day since solar data is day old
+              dateEnd -= startModifier
+              // we're doubling this so we actually are getting the range of [3 days ago, 1 day ago]
+              // because Chart.js is giving us a lame flat-line chart with the [2 days ago, 1 day ago]
+              // setup.
+              startModifier *= 2
+            } else {
+              intervalUnit = 'day'
+              dateInterval = 1
+              startModifier = 60 * 24 * 60 * 60 * 1000
+            }
+          } else if (value === 3) {
+            intervalUnit = 'hour'
             dateInterval = 1
-            startModifier = 60 * 24 * 60 * 60 * 1000
+            startModifier =  24 * 60 * 60 * 1000
+            dateEnd -= startModifier
+            startModifier *= 2
           } else {
             intervalUnit = 'day'
             dateInterval = 15
@@ -74,7 +95,7 @@ export default {
             startModifier = 6 * 60 * 60 * 1000
           } else if (value === 1) {
             intervalUnit = 'hour'
-            dateInterval = 1
+            dateInterval = 2
             startModifier = 24 * 60 * 60 * 1000
           } else {
             intervalUnit = 'day'

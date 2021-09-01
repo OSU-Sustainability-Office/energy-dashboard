@@ -1,9 +1,7 @@
 /*
- * @Author: Brogan.Miner@oregonstate.edu
- * @Date:   Saturday August 3rd 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday August 3rd 2019
- * @Copyright:  Oregon State University 2019
+ * Filename: block.module.js
+ * Description: Vuex module for handling "blocks" the abstract container for
+ *              handling meter data and their visual properties (interacts with chart module).
  */
 import API from './api.js'
 import Chart from './chart.module.js'
@@ -193,6 +191,7 @@ const actions = {
     store.commit('dateInterval', store.getters.dateInterval)
   },
 
+  // Default block for Aqcuisuites & Tesla Solar Panels
   async loadDefault (store, payload) {
     store.commit('promise', new Promise(async (resolve, reject) => {
       store.commit('shuffleChartColors')
@@ -225,9 +224,20 @@ const actions = {
       store.commit(chartSpace + '/meterGroupPath', payload.group.path)
 
       store.commit('name', utilityType)
+
+      // default chart settings
       store.commit('dateInterval', 1)
-      store.commit('intervalUnit', 'day')
       store.commit('graphType', 1)
+
+      // change default interval for solar panels
+      // Note: this parameter is often modified elsewhere in the dashboard
+      // E.g. Building list component changes it via a Vue router parameter
+      if (utilityType === 'Solar Panel') {
+        store.commit('intervalUnit', 'hour')
+      } else {
+        store.commit('intervalUnit', 'day')
+      }
+
       let currentEpoch = ((new Date()).getTime())
       currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
       store.commit('dateStart', currentEpoch - (900 * 96 * 60 * 1000)) // 15 minutes, 96 times a day, 30 days
