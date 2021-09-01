@@ -194,6 +194,7 @@ export default {
           case 1:
             startModifier = 7 * 24 * 60 * 60 * 1000
             break
+          case 4:
           case 2:
             startModifier = 60 * 24 * 60 * 60 * 1000
             break
@@ -215,6 +216,7 @@ export default {
     intervalUnit: {
       get () {
         switch (parseInt(this.$route.params.range)) {
+          case 4:
           case 1:
             return 'hour'
           case 2:
@@ -231,6 +233,7 @@ export default {
         switch (parseInt(this.$route.params.range)) {
           case 1:
             return 1
+          case 4:
           case 2:
             return 1
           case 3:
