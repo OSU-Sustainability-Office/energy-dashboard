@@ -15,8 +15,7 @@
               <span slot='label' class='tab_label'>{{ key }}</span>
               <el-row type='flex' justify='left' class='card_flex'>
                 <el-col v-for='building in item' :key='building.name' :span='4' class='card_container'>
-                  <viewCard v-if="building.group === 'Solar'" :plus='false' :building='buildingList' :id='building.id' class='card' @click='$router.push({ path: `/building/${building.id}/4` })' ref='card' />
-                  <viewCard v-else :plus='false' :building='buildingList' :id='building.id' class='card' @click='$router.push({ path: `/building/${building.id}/2` })' ref='card' />
+                  <viewCard :plus='false' :building='buildingList' :id='building.id' class='card' @click='$router.push({ path: `/building/${building.id}/2` })' ref='card' />
                 </el-col>
                 <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
                 <el-col v-for='n in 10' :key='key + n' :span='4' class='blankSlate'>
