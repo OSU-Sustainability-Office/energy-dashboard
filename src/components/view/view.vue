@@ -215,13 +215,22 @@ export default {
     },
     intervalUnit: {
       get () {
+        /*
+         If we're dealing with solar panels just show the interval in hours or minutes since the
+         default unit for solar panels is Energy in Interval--basically the change in
+         energy absorbed over a time frame, so any range greater than an hour will make ChartJS
+         produce a trendline of zero (horizontal line) which isn't particularly useful for anyone.
+        */
+        const isSolar = this.$store.getters[`map/building_${this.$route.params.id}/meterGroups`][0].type === 'Solar Panel'
+
         switch (parseInt(this.$route.params.range)) {
-          case 4:
           case 1:
             return 'hour'
           case 2:
+            if (isSolar) return 'hour'
             return 'day'
           case 3:
+            if (isSolar) return 'hour'
             return 'day'
           default:
             return 'minute'
