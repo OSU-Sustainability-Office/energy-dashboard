@@ -30,6 +30,7 @@ export default class LineBaseModifier {
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')
           dateInterval: count of interval units to group data points by (integer)
+          timezoneOffset*: timezone of initial timestamp (optional)
         }
       - store (vuex store)
       - module: (vuex module) module dispatching this function call
@@ -52,6 +53,10 @@ export default class LineBaseModifier {
         break
     }
     delta *= payload.dateInterval
+
+    // set the offset if there is one we need to account for
+    const offset = (payload.timeZoneOffset) ? payload.timeZoneOffset : 0
+
     for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
       try {
         let accumulator = 0
@@ -59,7 +64,7 @@ export default class LineBaseModifier {
           continue
         }
         accumulator = resultDataObject.get(i + delta)
-        returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
+        returnData.push({ x: (new Date((i + delta + offset) * 1000)), y: accumulator })
       } catch (error) {
         console.log(error)
       }
@@ -87,6 +92,5 @@ export default class LineBaseModifier {
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
-
   }
 }
