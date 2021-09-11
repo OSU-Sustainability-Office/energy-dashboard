@@ -19,7 +19,8 @@ const state = () => {
     dateStart: null,          // Epoch time
     dateEnd: null,            // Epoch time
     id: null,                  // Integer DB ID
-    chartColors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4']
+    chartColors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4'],
+    timeZoneOffset: null
   }
 }
 
@@ -233,6 +234,10 @@ const actions = {
       // Note: this parameter is often modified elsewhere in the dashboard
       // E.g. Building list component changes it via a Vue router parameter
       if (utilityType === 'Solar Panel') {
+        // Solar panel webscraper uploads time_seconds in UTC
+        // so we're gonna need to add the offset for the correct time
+        // in pacific standard time.
+        store.commit('timeZoneOffset', (420 * 60))
         store.commit('intervalUnit', 'hour')
       } else {
         store.commit('intervalUnit', 'day')
@@ -240,6 +245,7 @@ const actions = {
 
       let currentEpoch = ((new Date()).getTime())
       currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
+
       store.commit('dateStart', currentEpoch - (900 * 96 * 60 * 1000)) // 15 minutes, 96 times a day, 30 days
       store.commit('dateEnd', currentEpoch)
       resolve()
@@ -258,8 +264,10 @@ const actions = {
       dateEnd: parseInt(store.getters.dateEnd / 1000),
       intervalUnit: store.getters.intervalUnit,
       dateInterval: store.getters.dateInterval,
-      graphType: store.getters.graphType
+      graphType: store.getters.graphType,
+      timeZoneOffset: store.getters.timeZoneOffset
     }
+
     for (let mod of store.getters.modifiers) {
       await mod.preData(this, store, reqPayload)
     }
@@ -289,6 +297,10 @@ const actions = {
 const mutations = {
   path (state, path) {
     state.path = path
+  },
+  // seconds to add from starting time_seconds in dateStart
+  timeZoneOffset (state, offset) {
+    state.timeZoneOffset = offset
   },
 
   shuffleChartColors (state) {
@@ -363,6 +375,10 @@ const getters = {
 
   state: (state) => {
     return state
+  },
+
+  timeZoneOffset: (state) => {
+    return state.timeZoneOffset
   },
 
   modifierData: (state) => (modifierName) => {

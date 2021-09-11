@@ -1,4 +1,4 @@
-<img src='https://dashboard.sustainability.oregonstate.edu/images/logo.png' height=80 />
+<img src='https://dashboard.sustainability.oregonstate.edu/images/readme_logo.png' height=80 />
 
 ---
 
