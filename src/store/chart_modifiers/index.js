@@ -9,6 +9,7 @@ import LineBaselinePerc from './line_bar/baseline_perc.js'
 import LineBaselineAvg from './line_bar/avg_accumulated_real.js'
 import LineBase from './line_bar/base.js'
 import PieBase from './pie_doughnut/base.js'
+import LineEnergyChange from './line_bar/energy_change.js'
 
 export default function (graphType, point) {
   if (graphType === 3 || graphType === 4) { // Pie or Doughnut
@@ -28,6 +29,9 @@ export default function (graphType, point) {
         return new LineBaselinePerc()
       case 'avg_accumulated_real':
         return new LineBaselineAvg()
+      // TODO: add energy_change specific line chart
+      case 'energy_change':
+        return new LineEnergyChange()
       default:
         return new LineBase()
     }
