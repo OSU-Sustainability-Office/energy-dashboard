@@ -18,7 +18,7 @@
       <el-row class="graphcontrol">
         <el-col :span='24'>
           <el-col :span='24' class='buttonContainer'>
-            <switchButtons :blocks='buildingBlocks' ref='switchbutton' />
+            <switchButtons :blocks='buildingBlocks' forceUpdate="false" ref='switchbutton' />
           </el-col>
           <el-row class='graphslide'>
             <i class="left fas fa-angle-left" @click='prev()' ref="prevArrow"></i>

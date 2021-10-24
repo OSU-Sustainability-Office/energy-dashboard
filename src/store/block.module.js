@@ -92,7 +92,6 @@ const actions = {
 
   async unloadChart (store, chartId) {
     let chart = store.getters.chart(chartId)
-    console.log(chart)
     this.unregisterModule(chart.path.split('/'))
   },
 

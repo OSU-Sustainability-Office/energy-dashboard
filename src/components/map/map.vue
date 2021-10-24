@@ -325,10 +325,20 @@ export default {
                 layer.setStyle({ fillColor: color, color: color })
               } else if (this.grouping === 'Energy Trend') {
                 promises.push(new Promise(async (resolve, reject) => {
+                  /*
+                    Ok, it *looks like* each Vuex logical object (building, chart, block, etc.)
+                    contains a promise to resolve the data required from the api.  Unsure if
+                    it's actually being used in practice.
+                  */
                   await this.$store.getters['map/promise']
+                  // Retrieves building object from store using leaflet property id
                   let building = this.$store.getters['map/building'](layer.feature.properties.id)
                   await this.$store.getters[building.path + '/promise']
                   let mg = this.$store.getters[building.path + '/primaryGroup']('Electricity')
+                  if (mg == null) {
+                    console.error(building.name, building.path, building)
+                    resolve()
+                  }
                   let defaultBlock = this.$store.getters[building.path + '/block'](mg.id)
                   await this.$store.getters[defaultBlock.path + '/promise']
                   let defaultChart = this.$store.getters[defaultBlock.path + '/charts'][0]
