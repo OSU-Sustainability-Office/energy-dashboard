@@ -19,7 +19,7 @@
 <script>
 
 export default {
-  props: ['height', 'campaign', 'days', 'blocks', 'campaignDateEnd', 'campaignDateStart'],
+  props: ['height', 'campaign', 'days', 'blocks', 'campaignDateEnd', 'campaignDateStart', 'forceUpdate'],
   data () {
     return {
       currentRange: -1
@@ -103,7 +103,17 @@ export default {
              Probably a better way to do this but for now it will
              work
           */
-          this.$store.dispatch(block.path + '/getData')
+          /*
+            10/24/2021:
+            Ok -- so the issue with the below line is that it's triggering
+            excessive API calls on a user session when opening a single
+            building on the map interface, but from the above
+            comment it also sounds like it's needed for the campaigns.
+
+            So, I'm adding a prop-flag to toggle it... for now!
+              - Milan
+          */
+          if (this.forceUpdate) this.$store.dispatch(block.path + '/getData')
         }
       }
     }

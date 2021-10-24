@@ -1,5 +1,5 @@
 /*
- * This file provides a non-persistent cache for time series energy data. The
+ * This file provides a persistent cache for time series energy data. The
  * goal is to accumulate data in this datastore as the user navigates around the
  * energy dashboard. As an optimization, data will be read from this datastore
  * before any additional data is requested from the API.

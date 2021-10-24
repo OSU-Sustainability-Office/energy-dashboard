@@ -1,9 +1,6 @@
 <!--
-@Author: Brogan Miner <Brogan>
-@Date:   2018-12-13T17:14:29-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-04-09T11:43:22-07:00
+Filename: chartController.vue
+Description: Handles the display logic for the meter-data charts on the dashboard (both for the map-interface and building-list).
 -->
 <template>
   <div v-loading='loading || !chartData' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}px; border-radius: 5px; overflow: hidden;`'>
@@ -32,11 +29,7 @@ export default {
   components: {
     linechart, barchart, doughnutchart, piechart
   },
-  mounted () {
-    if (this.loading) {
-      this.updateChart()
-    }
-  },
+  mounted () {},
   watch: {
     path: function (value) {
       this.updateChart()
@@ -68,6 +61,17 @@ export default {
       */
       this.updateChart()
     }
+    /*
+      This looks weird (or at least it did to me) but it's
+      actually the proper way of fetching async API data from
+      a vue component (at least from what I can tell).
+
+      Basically this is attaching an event listener to
+      the Vuex store (which we later remove in the beforeDestroy hook)
+      which will update the chart after the Vuex store calls
+      a mutation path which references our path (url/window.location.hash)
+      indicating we have new data to show.
+    */
     this.unsubscribe = this.$store.subscribe((mutation, state) => {
       if (this.$el.style.display === 'none') return
       let mutationPath = mutation.type.split('/')
@@ -78,6 +82,7 @@ export default {
           return
         }
         // this.chartData = null
+        // console.error(mutationPath)
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
           this.updateChart()
