@@ -1,10 +1,7 @@
-/*
- * @Author: Brogan
- * @Date:   Saturday August 3rd 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday August 3rd 2019
- * @Copyright:  Oregon State University 2019
- */
+/**
+  Filename: map.module.js
+  Info: "Map" module handles map-geometry data and dynamically loads all the building modules.
+*/
 import API from './api.js'
 import Building from './building.module.js'
 import Geo from 'osmtogeojson'

@@ -1,11 +1,9 @@
 /**
- * @Author: Brogan Miner <Brogan>
- * @Date:   2018-12-13T17:14:29-08:00
- * @Email:  brogan.miner@oregonstate.edu
- * @Last modified by:   Brogan
- * @Last modified time: 2018-12-20T15:51:39-08:00
- */
-
+  Filename: index.js
+  Info: This is the entry-point for the Vuex store.
+        All our API data is stored here and handled by their
+        respective modules.
+*/
 import View from './view.module.js'
 import User from './user.module.js'
 import Campaigns from './campaigns.module.js'

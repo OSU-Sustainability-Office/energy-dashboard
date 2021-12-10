@@ -1,3 +1,7 @@
+/**
+  Filename: user.module.js
+  Info: This vuex module handles user session data on the front-end.
+*/
 import API from './api.js'
 import View from './view.module.js'
 

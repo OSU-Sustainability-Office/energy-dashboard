@@ -1,10 +1,7 @@
-/**
- * @Author: Brogan Miner <Brogan>
- * @Date:   2019-01-09T13:26:49-08:00
- * @Email:  brogan.miner@oregonstate.edu
- * @Last modified by:   Brogan
- * @Last modified time: 2019-02-01T14:07:17-08:00
- */
+/*
+  Filename: vue.config.js
+  Info: This is the vue config file used to alter how the Vue app gets built and run.
+*/
 
 const path = require('path')
 

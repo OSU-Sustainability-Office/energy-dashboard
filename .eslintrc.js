@@ -1,10 +1,7 @@
-/**
- * @Author: Brogan Miner <Brogan>
- * @Date:   2019-01-03T12:39:57-08:00
- * @Email:  brogan.miner@oregonstate.edu
- * @Last modified by:   Brogan
- * @Last modified time: 2019-03-14T12:14:09-07:00
- */
+/*
+  Filename: .eslintrc.js
+  Info: eslint settings
+*/
 
 // https://eslint.org/docs/user-guide/configuring
 

@@ -1,10 +1,7 @@
-/*
- * @Author: Brogan
- * @Date:   Saturday August 3rd 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday August 3rd 2019
- * @Copyright:  Oregon State University 2019
- */
+/**
+  Filename: meter_group.module.js
+  Info: meter group module representing a building's meter group.
+*/
 import API from './api.js'
 import Meter from './meter.module.js'
 

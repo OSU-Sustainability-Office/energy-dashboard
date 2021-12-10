@@ -1,10 +1,7 @@
 /**
- * @Author: Brogan Miner <Brogan>
- * @Date:   2019-01-04T10:08:23-08:00
- * @Email:  brogan.miner@oregonstate.edu
- * @Last modified by:   Milan
- * @Last modified time: 2019-01-31T12:58:55-08:00
- */
+  Filename: main.js
+  Info: Entry point for Vue application
+*/
 
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.

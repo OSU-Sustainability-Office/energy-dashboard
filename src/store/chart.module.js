@@ -1,3 +1,7 @@
+/**
+  Filename: chart.module.js
+  Info: Module representing a chart with the parameters needed for visualizing the meter data
+*/
 import API from './api.js'
 import ChartModifiers from './chart_modifiers/index.js'
 
