@@ -21,7 +21,7 @@ At a high-level, the dashboard just retrieves meter data from our API, stores it
 
 Basically when the dashboard first loads, it requests the map-building-meter layout of the database through the `allbuildings` API route. The dashboard then dynamically loads a Vuex module for each `building`, their `meter-group`, and each `meter` within said meter-group with attributes corresponding to the field values in the MySQL database.
 
-Those datasets themselves we store
+Those datasets themselves we store as "block" modules which themselves load "charts" to actually visualize the data.
 
 Basically here's the initial load procedure:
 1. App.vue calls `map/loadMap` which hits the Cloud API route "allbuildings"
@@ -29,7 +29,7 @@ Basically here's the initial load procedure:
 3. `map/loadBuilding` dynamically registers a `building` module for each building and then calls `<loaded building module>/loadMeterGroup` to load each meter group before then calling the `<loaded building module>/buildDefaultBlocks` action.
 4. `building/loadMeterGroup` similarly to `loadBuilding` dynamically loads the corresponding MeterGroup module for the building and then calls the `<loaded metergroup module>/loadMeter` action to load each meter module.
 5. `metergroup/loadMeter` loads the meter module.
-6. The `building/buildDefaultBlocks` action gets called loading the 'blocks'  There is a block module generated for each meter group, and each block will load a chart 
+6. The `building/buildDefaultBlocks` action gets called loading the 'blocks'  There is a block module generated for each meter group, and each block will load a chart.
 
 Each building has a set of "blocks" which store the dataset (meter data) which we can display as a chart.
 

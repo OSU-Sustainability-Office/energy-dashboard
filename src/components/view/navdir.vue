@@ -1,6 +1,8 @@
-/*
+<!--
   Filename: navdir.vue
-*/
+  Info: From README:
+    "This component is the small navigation bar underneath the heroPicture. It offers quick routing between stories and groups."
+-->
 <template>
   <el-row class='stage'>
     <el-col class='main'>

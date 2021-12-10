@@ -1,11 +1,7 @@
-/*
- * @Author: you@you.you
- * @Date:   Wednesday March 25th 2020
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Wednesday March 25th 2020
- * @Copyright:  (c) Oregon State University 2020
- */
-
+/**
+  Filename: accumulated_real.js
+  Info: Chart math & setup for accumulated real meter point.
+*/
 export default class LineAccumulatedModifier {
   constructor () {
     this.data = {}
@@ -56,9 +52,7 @@ export default class LineAccumulatedModifier {
         delta = 86400
         break
       case 'month':
-        // let monthDaysPrev = (new Date(startDate.getFullYear(), startDate.getMonth(), 0)).getDate()
         monthDays = (new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0)).getDate()
-        // if (monthDays > monthDaysPrev) monthDays = monthDaysPrev
         delta = 60 * 60 * 24 * monthDays
         break
     }
@@ -70,15 +64,7 @@ export default class LineAccumulatedModifier {
       let oldDate = (new Date(i * 1000))
       if (payload.intervalUnit === 'month') {
         let monthDaysCurrent = (new Date(oldDate.getFullYear(), oldDate.getMonth() + 1, 0)).getDate()
-        // let monthDaysNext = (new Date(oldDate.getFullYear(), oldDate.getMonth() + 2, 0)).getDate()
-        // console.log(monthDaysCurrent)
-        // console.log(monthDaysNext)
 
-        // if (monthDaysCurrent < monthDaysNext) {
-        //   monthDaysCurrent +=  startDate.getDate() - monthDaysCurrent + 1
-        // }
-
-        // if (monthDaysCurrent > monthDaysNext) monthDaysCurrent = monthDaysNext
         delta += (monthDaysCurrent - monthDays) * 24 * 60 * 60
         monthDays = monthDaysCurrent
       }
@@ -91,7 +77,12 @@ export default class LineAccumulatedModifier {
         if (Math.abs(resultDataObject.get(i + delta)) < Math.abs(resultDataObject.get(i))) {
           continue
         }
+        // If either reading is zero that indicates a missing reading -- do not report.
+        if (resultDataObject.get(i + delta) === 0 || resultDataObject.get(i) === 0) {
+          continue
+        }
         accumulator = resultDataObject.get(i + delta) - resultDataObject.get(i)
+
         if (payload.point === 'total') {
           // Steam meters report in 100s of lbs
           accumulator *= 100

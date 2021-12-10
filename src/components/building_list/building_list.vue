@@ -1,3 +1,7 @@
+<!--
+  Filename: building_list.vue
+  Info: This component shows the list of buildings for which we automatically collect data under the "buildings" tab.
+-->
 <template>
   <el-row class='top_row'>
     <el-col :span='24' class='top_col'>

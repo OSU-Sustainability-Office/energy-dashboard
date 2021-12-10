@@ -13,3 +13,5 @@ This Energy Dashboard has been developed by the Oregon State University Sustaina
  - [Brogan Miner](https://github.com/broha22)
  - [Jack Woods](https://github.com/jackrwoods)
 
+### Documentation
+For more detailed information about how the dashboard front-end works, there's a README.md with the vue components described under the `documents/frontend` directory.

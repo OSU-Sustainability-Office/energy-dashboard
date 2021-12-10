@@ -36,7 +36,6 @@ const actions = {
       ...payload,
       ...store.getters.modifierData
     }
-    // let reqPayloadCopy = JSON.parse(JSON.stringify(reqPayload))
 
     const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
     await chartModifier.preGetData(reqPayload, this, store)

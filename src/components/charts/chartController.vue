@@ -1,9 +1,6 @@
 <!--
-@Author: Brogan Miner <Brogan>
-@Date:   2018-12-13T17:14:29-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-04-09T11:43:22-07:00
+  Filename: chartController.vue
+  Info: Component responsible for displaying the charts!
 -->
 <template>
   <div v-loading='loading || !chartData' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}px; border-radius: 5px; overflow: hidden;`'>
@@ -158,7 +155,6 @@ export default {
             this.chart.options.scales.xAxes[0].time.unit = 'day'
           }
           this.chart.options.scales.yAxes[0].ticks.maxTicksLimit = (this.height / 200) * 8 - dif
-          this.chart.setOptions(this.chart.options)
         }
         this.chartData = data
         this.loading = false

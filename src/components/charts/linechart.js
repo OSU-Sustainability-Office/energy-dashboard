@@ -162,12 +162,6 @@ export default {
   methods: {
     update: function () {
       this.$data._chart.update()
-    },
-    setOptions: function (opts) {
-      // console.log(opts)
-      this.options = opts
-      // this.$data._chart.options = this.options
-      // this.renderChart(this.chartData, this.options)
     }
   }
 }
