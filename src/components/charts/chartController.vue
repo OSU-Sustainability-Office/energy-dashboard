@@ -74,7 +74,6 @@ export default {
         if (call === 'name') {
           return
         }
-        // this.chartData = null
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
           this.updateChart()
@@ -141,8 +140,9 @@ export default {
       this.loading = true
       this.$store.dispatch(this.path + '/getData').then(data => {
         if (this.chart && (this.graphType === 1 || this.graphType === 2) && data.datasets.length >= 1 && data.datasets[0].data.length >= 1) {
-          this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
-          this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+          // this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+          // this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+          this.chart.update()
           let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()
           let dif = 0
           if (timeDif <= 24 * 60 * 60 * 1000) {

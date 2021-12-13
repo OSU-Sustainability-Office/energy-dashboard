@@ -2,10 +2,25 @@ import axios from 'axios'
 axios.defaults.withCredentials = true
 
 function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP_ROOT_API, headers = null) {
-  if (headers) {
-    return axios(base + '/' + route, { method: method, data: data, withCredentials: true, timeout: 72000, headers: headers })
+  /* This if-clause for "allowCredentials" deserves an explanation:
+     Locally, when using "sam local start-api" the response class in the lambda common layer
+     will reply with a HTTP headers allow-origin set to "*" and the credentials flag to true.
+     On most browsers released after 1875 this will immediately trigger a CORS violation and
+     stop us from requesting any data locally--which makes testing the front-end locally a lot
+     harder. To side-step this, we will ignore the credentials flag if we're querying a local
+     API.
+
+     NOTE: In production we do want to set withCredentials to true so we can use HTTPS & cookies
+     for the user login session.
+  */
+  let allowCredentials = true
+  if (process.env.VUE_APP_ROOT_API === 'http://localhost:3000') {
+    allowCredentials = false
   }
-  return axios(base + '/' + route, { method: method, data: data, withCredentials: true, timeout: 72000 })
+  if (headers) {
+    return axios(base + '/' + route, { method: method, data: data, withCredentials: allowCredentials, timeout: 72000, headers: headers })
+  }
+  return axios(base + '/' + route, { method: method, data: data, withCredentials: allowCredentials, timeout: 72000 })
 }
 
 export default {

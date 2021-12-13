@@ -1,10 +1,7 @@
 /**
- * @Author: Brogan Miner <Brogan>
- * @Date:   2018-11-19T10:40:29-08:00
- * @Email:  brogan.miner@oregonstate.edu
- * @Last modified by:   Brogan
- * @Last modified time: 2019-02-04T11:32:14-08:00
- */
+  Filename: linechart.js
+  Info: chartJS line chart preset for energy dashboard.
+*/
 
 import { Line, mixins } from 'vue-chartjs'
 
@@ -13,7 +10,9 @@ export default {
   extends: Line,
   mixins: [mixins.reactiveProp],
   props: {
-    invertColors: Boolean
+    invertColors: Boolean,
+    yLabel: String,
+    xLabel: String
   },
   computed: {
     primaryColor: function () {
@@ -154,14 +153,12 @@ export default {
   mounted () {
     this.renderChart(this.chartData, this.options)
   },
-  watch: {
-    // chartData: function(value) {
-    // this.renderChart(value);
-    // }
-  },
+  watch: {},
   methods: {
     update: function () {
-      this.$data._chart.update()
+      // Re-render the *entire* graph, so that the labels are also updated.
+      // Potential optimization to be made here in the future but chartJS is scary.
+      this.renderChart(this.chartData, this.options)
     }
   }
 }
