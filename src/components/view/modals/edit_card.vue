@@ -1,11 +1,7 @@
-/*
- * @Author: you@you.you
- * @Date:   Saturday December 21st 2019
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Saturday December 21st 2019
- * @Copyright:  (c) Oregon State University 2019
- */
-
+<!--
+  Filename: edit_card.vue
+  Info: Modal for editing "full-view" chart settings.
+-->
 <template>
   <el-dialog size='lg' :visible.sync="visible" :title='(form.new)? "New Block" : "Edit Block"' width="80%" @open='updateForm()'>
       <el-form label-width='150px' label-position='left' :model='form' ref='form'>
@@ -192,21 +188,6 @@ export default {
           intervalUnit: this.interval(this.form.intUnit)
         })
       } else {
-        // if (this.$store.getters[blockPath + '/dateStart'] !== this.form.start) {
-        //   this.$store.commit(blockPath + '/dateStart', this.form.start)
-        // }
-        // if (this.$store.getters[blockPath + '/dateEnd'] !== this.form.end) {
-        //   this.$store.commit(blockPath + '/dateEnd', this.form.end)
-        // }
-        // if (this.$store.getters[blockPath + '/name'] !== this.form.name) {
-        //   this.$store.commit(blockPath + '/name', this.form.name)
-        // }
-        // if (this.$store.getters[blockPath + '/intervalUnit'] !== this.interval(this.form.intUnit)) {
-        //   this.$store.commit(blockPath + '/intervalUnit', this.interval(this.form.intUnit))
-        // }
-        // if (this.$store.getters[blockPath + '/dateInterval'] !== this.date(this.form.intUnit)) {
-        //   this.$store.commit(blockPath + '/dateInterval', this.date(this.form.intUnit))
-        // }
         this.$store.dispatch(blockPath + '/update', {
           dateStart: this.form.start,
           dateEnd: this.form.end,
@@ -222,26 +203,7 @@ export default {
       for (let index in this.form.sets) {
         if (index < charts.length) {
           const chartPath = charts[index].path
-          // let saveChart = false
-          // if (this.$store.getters[chartPath + '/name'] !== this.form.sets[index].name) {
-          //   this.$store.commit(chartPath + '/name', this.form.sets[index].name)
-          //   saveChart = true
-          // }
-          // if (this.$store.getters[chartPath + '/point'] !== this.form.sets[index].point) {
-          //   this.$store.commit(chartPath + '/point', this.form.sets[index].point)
-          //   saveChart = true
-          // }
-          // if (this.$store.getters[chartPath + '/building'] !== this.form.sets[index].building) {
-          //   this.$store.commit(chartPath + '/building', this.form.sets[index].building)
-          //   saveChart = true
-          // }
-          // if (this.$store.getters[chartPath + '/meterGroupPath'] !== this.form.sets[index].meter) {
-          //   this.$store.commit(chartPath + '/meterGroupPath', this.form.sets[index].meter)
-          //   saveChart = true
-          // }
-          // if (saveChart) {
           this.$store.dispatch(chartPath + '/update', this.form.sets[index])
-          // }
         } else {
           this.$store.dispatch(blockPath + '/newChart', this.form.sets[index])
         }

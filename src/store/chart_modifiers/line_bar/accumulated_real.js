@@ -87,7 +87,10 @@ export default class LineAccumulatedModifier {
           // Steam meters report in 100s of lbs
           accumulator *= 100
         }
-        returnData.push({ x: dataDate, y: accumulator })
+        // While some readings are negative for offset purposes, we should
+        // still display them as positive readings since negative electricity
+        // isn't really what our meters should detect.
+        returnData.push({ x: dataDate, y: Math.abs(accumulator) })
       } catch (error) {
         console.log(error)
       }
