@@ -24,6 +24,9 @@ Vue.use(Vuei18n)
 Vue.use(elm, { locale: locale })
 Vue.use(AsyncComputed)
 
+// Should probably offload this to a .env
+Vue.config.debug = false
+Vue.config.devtools = false
 Vue.config.lang = 'en'
 
 /* eslint-disable no-new */
@@ -33,5 +36,4 @@ var v = new Vue({
   store: new Vuex.Store(StoreConfig),
   render: h => h(App)
 })
-Vue.config.devtools = true
 window.vue = v
