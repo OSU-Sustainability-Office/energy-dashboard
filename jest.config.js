@@ -1,10 +1,7 @@
-/**
- * @Author: Brogan Miner <Brogan>
- * @Date:   2018-12-20T14:41:50-08:00
- * @Email:  brogan.miner@oregonstate.edu
- * @Last modified by:   Brogan
- * @Last modified time: 2019-01-04T13:15:51-08:00
- */
+/*
+  Filename: jest.config.js
+  Info: This is the jest configuration file for the currently un-used frontend tests.
+*/
 
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html

@@ -1,3 +1,7 @@
+/**
+  Filename: chart.module.js
+  Info: Module representing a chart with the parameters needed for visualizing the meter data
+*/
 import API from './api.js'
 import ChartModifiers from './chart_modifiers/index.js'
 
@@ -32,7 +36,6 @@ const actions = {
       ...payload,
       ...store.getters.modifierData
     }
-    // let reqPayloadCopy = JSON.parse(JSON.stringify(reqPayload))
 
     const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
     await chartModifier.preGetData(reqPayload, this, store)

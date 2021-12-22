@@ -1,6 +1,6 @@
 <!--
-Filename: chartController.vue
-Description: Handles the display logic for the meter-data charts on the dashboard (both for the map-interface and building-list).
+  Filename: chartController.vue
+  Description: Handles the display logic for the meter-data charts on the dashboard (both for the map-interface and building-list).
 -->
 <template>
   <div v-loading='loading || !chartData' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}px; border-radius: 5px; overflow: hidden;`'>
@@ -81,8 +81,6 @@ export default {
         if (call === 'name') {
           return
         }
-        // this.chartData = null
-        // console.error(mutationPath)
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
           this.updateChart()
@@ -149,8 +147,9 @@ export default {
       this.loading = true
       this.$store.dispatch(this.path + '/getData').then(data => {
         if (this.chart && (this.graphType === 1 || this.graphType === 2) && data.datasets.length >= 1 && data.datasets[0].data.length >= 1) {
-          this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
-          this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+          // this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
+          // this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
+          this.chart.update()
           let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()
           let dif = 0
           if (timeDif <= 24 * 60 * 60 * 1000) {
@@ -163,7 +162,6 @@ export default {
             this.chart.options.scales.xAxes[0].time.unit = 'day'
           }
           this.chart.options.scales.yAxes[0].ticks.maxTicksLimit = (this.height / 200) * 8 - dif
-          this.chart.setOptions(this.chart.options)
         }
         this.chartData = data
         this.loading = false

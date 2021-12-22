@@ -1,19 +1,21 @@
 /*
- * This file provides a persistent cache for time series energy data. The
- * goal is to accumulate data in this datastore as the user navigates around the
- * energy dashboard. As an optimization, data will be read from this datastore
- * before any additional data is requested from the API.
+ * Filename: data_store.js
+ * Info:
+ *  This file provides a persistent cache for time series energy data. The
+ *  goal is to accumulate data in this datastore as the user navigates around the
+ *  energy dashboard. As an optimization, data will be read from this datastore
+ *  before any additional data is requested from the API.
  *
- * For example, let's say a user starts a new session and visits the map. Since this user just
- * started their session, no data will be in the datastore. If the user clicks on the MU, viewing
- * a week's worth of data from 7/19/2020 thru 7/25/2020, then the MU electricity data will be
- * written to the datastore.
+ *  For example, let's say a user starts a new session and visits the map. Since this user just
+ *  started their session, no data will be in the datastore. If the user clicks on the MU, viewing
+ *  a week's worth of data from 7/19/2020 thru 7/25/2020, then the MU electricity data will be
+ *  written to the datastore.
  *
- * Now, let's say that same user (in the same session) visits a few more dashbaords
- * before eventually returning to the MU's dashboard. The user modifies the date
- * range to view a month of data (from 6/26/2020 to 7/25/2020). Since we already
- * have data from 7/19-7/25 stored in the local datastore, only the data from
- * 6/26-7/19 will be requested from the API.
+ *  Now, let's say that same user (in the same session) visits a few more dashbaords
+ *  before eventually returning to the MU's dashboard. The user modifies the date
+ *  range to view a month of data (from 6/26/2020 to 7/25/2020). Since we already
+ *  have data from 7/19-7/25 stored in the local datastore, only the data from
+ *  6/26-7/19 will be requested from the API.
  */
 
 import API from '../api.js'
@@ -44,6 +46,9 @@ const actions = {
   // this is to ensure DeadRequests doesn't improperly
   // mark intervals as "unavailable."
   async loadSystemNow (store) {
+    // If system time is already set, no need to hit API again.
+    if (store.getters['dataStore/SystemNow']) return
+
     let apiTime = await API.systemtime()
       .catch(fail => {}) // empty catch prevents front-end from halting on error
     // see if we can set the apiTime from querying AWS

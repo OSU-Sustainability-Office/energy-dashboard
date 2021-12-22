@@ -1,9 +1,6 @@
-/**
-* @Author: Milan Donhowe
-* @Email: Milan.Donhowe@oregosntate.edu
-* @Date Created:       4/20/2021
-* @Date Last Modified: 4/23/2021
-* @Description: Dynamically update the Mock Data used by the unit tests
+/*
+  Filename: updateMockData.js
+  Info: Dynamically update the Mock Data used by the unit tests
 */
 
 const fs = require('fs')

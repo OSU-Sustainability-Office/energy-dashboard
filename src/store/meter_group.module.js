@@ -1,10 +1,7 @@
-/*
- * @Author: Brogan
- * @Date:   Saturday August 3rd 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday August 3rd 2019
- * @Copyright:  Oregon State University 2019
- */
+/**
+  Filename: meter_group.module.js
+  Info: meter group module representing a building's meter group.
+*/
 import API from './api.js'
 import Meter from './meter.module.js'
 
@@ -107,6 +104,10 @@ const actions = {
       let promise = this.dispatch(meter.path + '/getData', payload)
       promiseObject[meter.id] = promise
     }
+    /*
+      The following section is the most important computation the dashboard does
+      since the meters sometimes need to be negated to get the correct meter reading.
+    */
     for (let meter of store.getters.meters) {
       let data = await promiseObject[meter.id]
       // For some reason if the array is empty it sometimes forgets it is an array

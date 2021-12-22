@@ -1,3 +1,7 @@
+<!--
+  Filename: navBar.vue
+  Info: Navgiation bar component
+-->
 <template>
     <el-row class='sus-nav'>
       <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">

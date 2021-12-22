@@ -1,21 +1,17 @@
 <!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-01-04T10:08:23-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-02-11T20:41:56-08:00
+  Filename: App.vue
+  Info: Root vue component.
 -->
 
 <template>
   <el-container class="app">
+    <!--Nav bar -->
     <el-header class='header'>
       <navigbar />
     </el-header>
+    <!--Page Content (handled by vue-router)-->
     <el-main class='main' ref='main'>
-      <!-- <transition v-bind:name="transitionName" v-on:after-leave="enableScroll" v-on:before-enter="disableScroll"> -->
         <router-view />
-      <!-- </transition> -->
-
     </el-main>
   </el-container>
 </template>
@@ -29,10 +25,10 @@ export default {
     navigbar
   },
   async created () {
+    // On load, grab building/meter/map information from the API.
     await this.$store.dispatch('map/loadMap')
+    // Also check if user is logged in.
     this.$store.dispatch('user/user')
-    // this.$store.dispatch('campaigns/loadCampaigns')
-    // this.$store.commit('user/promise', userPromise)
   },
   data () {
     return {
@@ -50,6 +46,7 @@ export default {
     }
   },
   mounted () {
+    // This is the first-timer pop-up window
     if (!document.cookie.split(';').some((cookieString) => cookieString.includes('firstTimer'))) {
       this.$msgbox({
         title: 'First Timer?',
@@ -93,7 +90,6 @@ export default {
     font-weight: bold;
     font-style: normal;
 }
-/* @import url('/static/css/c3.min.css'); */
 body {
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -104,9 +100,6 @@ body {
   transition-duration: 1s;
 }
 
-/* .page-enter-active {
-  transition-delay: 1s;
-} */
 .pageTo-enter {
   transform: scale(0.75);
   position: absolute;
@@ -124,9 +117,6 @@ body {
   transition-duration: 1s;
 }
 
-/* .page-enter-active {
-  transition-delay: 1s;
-} */
 .pageFrom-enter {
   transform: scale(2);
   position: absolute;
@@ -139,9 +129,7 @@ body {
   opacity: 0;
 
 }
-/* .pageTransition-leave-actiev {
 
-} */
 </style>
 <style lang='scss'>
 @import "~element-ui/packages/theme-chalk/src/index";

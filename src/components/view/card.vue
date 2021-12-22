@@ -1,3 +1,7 @@
+<!--
+  Filename: card.vue
+  Info: Displays a single chart for a dataset from the "buildings" directory.
+-->
 <template>
   <div class="card" ref='card'>
       <el-row :span='24' class='title' ref='title'>
@@ -224,7 +228,6 @@ $chart-height: 430px;
   text-align: right;
 }
 .moveButtons {
-  //height: $chart-height;
   height: 3em;
   width: 10em;
 }
