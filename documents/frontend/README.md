@@ -14,10 +14,17 @@ This is the front-end Vue application documentation explaining how the frontend 
 ## 0 About
 
 This Front End to the OSU Energy Dashboard. It uses Vue.js as a Front End framework and uses many other supporting libraries. Notable libraries include Chart.js for the graphing of energy data and Axios for communication with our cloud API services. Vuex is also used to handle shared data between components.
+
+The Energy Dashboard also performs a few other miscellaneous tasks:
+ - Displays campaigns for the annual Killowatt Crackdown
+ - Hosts a web-page to display the Sustainability Map
+ - Shows energy trend for last 60 days
+
+
 --
 ## 1 Overview
 
-At a high-level, the dashboard just retrieves meter data from our API, stores it in a cache, and then displays the data as a line-chart.
+At a high-level, the dashboard just retrieves meter data from our API, stores it in a cache, and then displays the data as a line-chart using chartJS.
 
 Basically when the dashboard first loads, it requests the map-building-meter layout of the database through the `allbuildings` API route. The dashboard then dynamically loads a Vuex module for each `building`, their `meter-group`, and each `meter` within said meter-group with attributes corresponding to the field values in the MySQL database.
 
@@ -29,7 +36,7 @@ Basically here's the initial load procedure:
 3. `map/loadBuilding` dynamically registers a `building` module for each building and then calls `<loaded building module>/loadMeterGroup` to load each meter group before then calling the `<loaded building module>/buildDefaultBlocks` action.
 4. `building/loadMeterGroup` similarly to `loadBuilding` dynamically loads the corresponding MeterGroup module for the building and then calls the `<loaded metergroup module>/loadMeter` action to load each meter module.
 5. `metergroup/loadMeter` loads the meter module.
-6. The `building/buildDefaultBlocks` action gets called loading the 'blocks'  There is a block module generated for each meter group, and each block will load a chart.
+6. The `building/buildDefaultBlocks` action gets called loading the 'blocks'  There is a block module generated for each meter group, and each block will load an array of charts.
 
 Each building has a set of "blocks" which store the dataset (meter data) which we can display as a chart.
 
@@ -555,7 +562,8 @@ Integration testing is done through the [BrowserStack](https://www.browserstack.
 The Energy Dashboard uses a continuous integration scheme through Travis CI to deploy quickly and painlessly.
 
 #### Dev Deployment
-When a branch is pushed to GitHub Travis CI hooks into the push and begins running. Travus first tests the package with unit tests as described above. On success of the unit tests the package is built. If successful the application will be uploaded for static website hosting on the S3 bucket. After this deployment BrowserStack will be employed to run a quick integration test and report back its failure or success.
+When a branch is pushed to GitHub Travis CI hooks into the push and begins running. Travis first tests the package with unit tests as described above. On success of the unit tests the package is built.  If successful, the application will be uploaded to the gh-pages branch of the repo, updating our github-pages display.  We used to have an S3 bucket display a test-build but it's currently defunct.
+
 
 #### Production Deployment
 Production deployment happens when a branch is merged into master. During this Travis CI is told once again to process the package. The same actions above are taken except the aplication is also deployed to the gh-pages branch of this repo. The gh-pages branch is set up for static hosting and our domain name is pointed to this page.
