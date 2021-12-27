@@ -39,6 +39,14 @@ export default {
   async created () {
     await this.$store.dispatch('map/loadMap')
     this.navVis = (this.personalView || this.$route.path.includes('building') || this.otherView)
+    // same building compare logic here:
+    if (this.$route.path.includes('history')) {
+      // TODO:
+      // 1. Setup Vuex Store / Modal Settings
+      // await this.$store.dispatch('view/changeView', this.$route.params.id)
+      // 2. ???
+      // 3. Yay?
+    }
     await this.$store.dispatch('user/user')
     if (!this.view.id) {
       await this.$store.dispatch('view/changeView', this.$route.params.id)
@@ -136,7 +144,7 @@ export default {
     },
     view: {
       get () {
-        if (this.$route.path.includes('building')) {
+        if (this.$route.path.includes('building') || this.$route.path.includes('history')) {
           return this.$store.getters['map/building'](this.$route.params.id)
         } else if (this.$route.path.includes('compare')) {
           if (!this.cards || this.cards.length === 0) return

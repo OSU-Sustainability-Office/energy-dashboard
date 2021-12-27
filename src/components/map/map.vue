@@ -1,3 +1,7 @@
+<!--
+  Filename: map.vue
+  Info: Component handling the interactive leaflet map of campus
+-->
 <template>
   <el-row class='stage'>
     <el-col :span='24'>
@@ -21,11 +25,6 @@
             <div class='trendTopLabel'>Reducing Energy <br> Usage</div>
             <div class='trendBottomLabel'>Increasing Energy <br> Usage</div>
           </el-col>
-          <!-- <el-tooltip content="Click to toggle visibility" placement="right">
-            <el-menu-item index='Down Trend' :class="[(isDisplayed('Down Trend') ? 'active' : 'notactive')]"><span class='down swatch'></span>Down Trend</el-menu-item>
-          </el-tooltip>
-          <el-menu-item index='Stable Trend' :class="[(isDisplayed('Stable Trend') ? 'active' : 'notactive')]"><span class='stable swatch'></span>Stable Trend</el-menu-item>
-          <el-menu-item index='Up Trend' :class="[(isDisplayed('Up Trend') ? 'active' : 'notactive')]"><span class='up swatch'></span>Up Trend</el-menu-item> -->
         </el-menu-item-group>
       </el-menu>
       <div class='mapContainer' ref='mapContainer' v-loading='!mapLoaded'>
@@ -148,6 +147,7 @@ export default {
     }
   },
   methods: {
+    // All interactive behavior for clicking on the building geometry
     polyClick: function (id, feature, center) {
       if (!this.askingForComparison) {
         window.vue.$store.dispatch('modalController/openModal', {

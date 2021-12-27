@@ -43,6 +43,11 @@ export default new Router({
       path: '/compare/:buildings/:range',
       component: view
     },
+    // same building compare
+    {
+      path: '/history/:id/:range',
+      component: view
+    },
     {
       path: '/map',
       component: map

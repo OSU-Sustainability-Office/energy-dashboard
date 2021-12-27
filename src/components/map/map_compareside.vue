@@ -15,15 +15,17 @@
         </el-col>
         <el-col :span='1' class='close-box'><i class="fas fa-times" @click="$emit('hide')"></i></el-col>
       </el-row>
+      <!--
       <el-row class='pics' v-loading='mediaArray.length < 0' element-loading-background="rgba(0, 0, 0, 0.8)">
         <el-col :span='24' class='nowrap'>
           <div v-for='(media, index) in mediaArray' :class='classForIndex(index)' :style='`background-image:url(${api}/image?name=${media}); width:calc(${100 / mediaArray.length}% + ${ (index === 0)? "22.5px" : "55px"});`' :key='media'></div>
         </el-col>
       </el-row>
+      -->
       <switchButtons :blocks='[block]' ref='switcher' />
       <el-row class='grid'>
         <el-col :span='24'>
-          <chartController v-if='block' :path='block.path' ref="lineChartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='300'/>
+          <chartController v-if='block' :path='block.path' ref="lineChartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='300' :invertColors="true"/>
         </el-col>
       </el-row>
       <el-row>
