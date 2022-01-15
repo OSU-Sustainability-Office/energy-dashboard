@@ -222,6 +222,21 @@ Resources:
           Properties:
             Path: /data
             Method: get
+  MeterBatchData:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri:  app/
+      Handler: meter.batchData
+      Layers:
+        - !Ref LambdaCommonLater
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /batchData
+            Method: post
   MeterPut:
     Type: AWS::Serverless::Function
     Properties:

@@ -100,6 +100,9 @@ const actions = {
     payload.dateEnd = payload.dateEnd  - (payload.dateEnd % 900)
 
     let promiseObject = {}
+    // TODO: INSTEAD OF MAKING A REQUEST FOR EACH METER: LET'S MAKE A BATCH REQUEST
+    // Still need to call a meter function to setup the payload
+    console.log("Meters requested: ", store.getters.meters)
     for (let meter of store.getters.meters) {
       let promise = this.dispatch(meter.path + '/getData', payload)
       promiseObject[meter.id] = promise

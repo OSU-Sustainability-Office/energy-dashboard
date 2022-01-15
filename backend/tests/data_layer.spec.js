@@ -1,9 +1,6 @@
 /*
-* @Author: Milan Donhowe
-* @Date Created:   5/6/2021
-* @Last Modified By:  Milan Donhowe
-* @Copyright:  Oregon State University 2021
-* @Description: Unit tests for API endpoints associated with
+* Filename: data_layer.spec.js
+* Description: Unit tests for API endpoints associated with
 *               the data_layer (or data_store) VueX module
 */
 
@@ -25,6 +22,24 @@ const MOCK_REQUEST_EVENT = {
     'startDate': 1603854900,
     'endDate': 1613618100,
     'meterClass': 48
+  },
+  body: {
+    requests: [
+      {
+        'id': 92,
+        'point': 'accumulated_real',
+        'startDate': 1641684600,
+        'endDate': 1642207500,
+        'meterClass': 5
+      },
+      {
+        'id': 93,
+        'point': 'accumluated_real',
+        'startDate': 1641684600,
+        'endDate': 1642207500,
+        'meterClass': '5'
+      }
+    ]
   }
 }
 
@@ -53,6 +68,7 @@ describe('Testing data_layer related API endpoints...', () => {
   it('/data should return data...', async () => {
     response = await MeterData.data(MOCK_REQUEST_EVENT)
     const jsonData = JSON.parse(response.body)
+    console.log(jsonData)
     expect(jsonData.length).toBeGreaterThan(5)
   })
 
@@ -63,6 +79,14 @@ describe('Testing data_layer related API endpoints...', () => {
     } catch {
       throw new Error(corsResult.reason)
     }
+  })
+
+  it('/batchData should return data for multiple metres...', async () => {
+    response = await MeterData.data(MOCK_REQUEST_EVENT)
+    const jsonData = JSON.parse(response.body)
+    expect(Object.keys(jsonData).length).toBe(2)
+    expect(jsonData['92'].length).toBeGreaterThan(10)
+    expect(jsonData['93'].length).toBeGreaterThan(10)
   })
 
   it('mock solar data upload...', async () => {

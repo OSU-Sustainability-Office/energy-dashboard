@@ -26,6 +26,36 @@ exports.all = async (event, context) => {
   return response
 }
 
+// Check integral parameters.
+function parseParameters ({ id, point, startDate, endDate, meterClass }) {
+  return {
+    id: parseInt(id, 10),
+    point,
+    startDate: parseInt(startDate, 10),
+    endDate: parseInt(startDate, 10),
+    meterClass: parseInt(meterClass, 10)
+  }
+}
+function verifyParameters ({ id, startDate, endDate, meterClass }) {
+  return ![id, startDate, endDate, meterClass].some(isNaN)
+}
+// Get data for multiple meters => {id -> [{}...], ...}
+exports.batchData = async (event, context) => {
+  const meterList = event.body.requests
+    .map(parseParameters)
+    .filter(verifyParameters)
+  const response = new Response(event)
+  response.body.data = {}
+  // Get data for each Response [in-efficient, should switch to transaction eventually]
+  for (let query of meterList) {
+    response.body.data[query.id] = JSON.stringify((await (new Meter(query.id)).download(
+      query.point, query.startDate, query.endDate, query.meterClass
+    )))
+  }
+  return response
+}
+
+// GET data for single meter
 exports.data = async (event, context) => {
   let response = new Response(event)
   response.body = JSON.stringify((await (new Meter(event.queryStringParameters['id'])).download(
