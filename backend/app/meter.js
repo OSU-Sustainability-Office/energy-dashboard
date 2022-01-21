@@ -32,7 +32,7 @@ function parseParameters ({ id, point, startDate, endDate, meterClass }) {
     id: parseInt(id, 10),
     point,
     startDate: parseInt(startDate, 10),
-    endDate: parseInt(startDate, 10),
+    endDate: parseInt(endDate, 10),
     meterClass: parseInt(meterClass, 10)
   }
 }
@@ -41,17 +41,18 @@ function verifyParameters ({ id, startDate, endDate, meterClass }) {
 }
 // Get data for multiple meters => {id -> [{}...], ...}
 exports.batchData = async (event, context) => {
-  const meterList = event.body.requests
+  const meterList = JSON.parse(event.body).requests
     .map(parseParameters)
     .filter(verifyParameters)
   const response = new Response(event)
-  response.body.data = {}
-  // Get data for each Response [in-efficient, should switch to transaction eventually]
+  response.body = { 'data': {} }
+  // Get data for each Response [inefficient, should switch to transaction eventually]
   for (let query of meterList) {
     response.body.data[query.id] = JSON.stringify((await (new Meter(query.id)).download(
       query.point, query.startDate, query.endDate, query.meterClass
     )))
   }
+  response.body = JSON.stringify(response.body)
   return response
 }
 

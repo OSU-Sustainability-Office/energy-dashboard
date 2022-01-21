@@ -229,7 +229,7 @@ Resources:
       CodeUri:  app/
       Handler: meter.batchData
       Layers:
-        - !Ref LambdaCommonLater
+        - !Ref LambdaCommonLayer
         - !Ref EnergyModelLayer
       Events:
         Building:

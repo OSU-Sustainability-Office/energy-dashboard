@@ -22,24 +22,6 @@ const MOCK_REQUEST_EVENT = {
     'startDate': 1603854900,
     'endDate': 1613618100,
     'meterClass': 48
-  },
-  body: {
-    requests: [
-      {
-        'id': 92,
-        'point': 'accumulated_real',
-        'startDate': 1641684600,
-        'endDate': 1642207500,
-        'meterClass': 5
-      },
-      {
-        'id': 93,
-        'point': 'accumluated_real',
-        'startDate': 1641684600,
-        'endDate': 1642207500,
-        'meterClass': '5'
-      }
-    ]
   }
 }
 
@@ -68,7 +50,6 @@ describe('Testing data_layer related API endpoints...', () => {
   it('/data should return data...', async () => {
     response = await MeterData.data(MOCK_REQUEST_EVENT)
     const jsonData = JSON.parse(response.body)
-    console.log(jsonData)
     expect(jsonData.length).toBeGreaterThan(5)
   })
 
@@ -82,11 +63,34 @@ describe('Testing data_layer related API endpoints...', () => {
   })
 
   it('/batchData should return data for multiple metres...', async () => {
-    response = await MeterData.data(MOCK_REQUEST_EVENT)
+    const batchRequest = {
+      headers: {
+        ...MOCK_REQUEST_EVENT.headers
+      },
+      body: JSON.stringify({
+        requests: [
+          {
+            'id': 92,
+            'point': 'accumulated_real',
+            'startDate': 1641684600,
+            'endDate': 1642207500,
+            'meterClass': 5
+          },
+          {
+            'id': 93,
+            'point': 'accumulated_real',
+            'startDate': 1641684600,
+            'endDate': 1642207500,
+            'meterClass': '5'
+          }
+        ]
+      })
+    }
+    response = await MeterData.batchData(batchRequest)
     const jsonData = JSON.parse(response.body)
-    expect(Object.keys(jsonData).length).toBe(2)
-    expect(jsonData['92'].length).toBeGreaterThan(10)
-    expect(jsonData['93'].length).toBeGreaterThan(10)
+    expect(Object.keys(jsonData['data']).length).toBe(2)
+    expect(jsonData['data']['92'].length).toBeGreaterThan(10)
+    expect(jsonData['data']['93'].length).toBeGreaterThan(10)
   })
 
   it('mock solar data upload...', async () => {
