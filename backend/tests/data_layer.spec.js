@@ -63,40 +63,52 @@ describe('Testing data_layer related API endpoints...', () => {
   })
 
   it('/batchData should return data for multiple metres...', async () => {
+    /*
+      Ok, assume a batch request involves the same point & meter class
+      {
+        point,
+        meterClass,
+        datasets [{
+          id,
+          startDate,
+          endDate
+        }]
+      }
+    */
     const batchRequest = {
       headers: {
         ...MOCK_REQUEST_EVENT.headers
       },
       body: JSON.stringify({
-        requests: [
-          {
-            'id': 92,
-            'point': 'accumulated_real',
-            'startDate': 1641684600,
-            'endDate': 1642207500,
-            'meterClass': 5
-          },
-          {
-            'id': 93,
-            'point': 'accumulated_real',
-            'startDate': 1641684600,
-            'endDate': 1642207500,
-            'meterClass': '5'
-          }
+        point: 'accumulated_real',
+        meterClass: 5,
+        datasets: [
+          { id: 92, startDate: 1641684600, endDate: 1642207500 },
+          { id: 93, startDate: 1641684600, endDate: 1642207500 }
         ]
       })
     }
     response = await MeterData.batchData(batchRequest)
     const jsonData = JSON.parse(response.body)
-    expect(Object.keys(jsonData['data']).length).toBe(2)
-    expect(jsonData['data']['92'].length).toBeGreaterThan(10)
-    expect(jsonData['data']['93'].length).toBeGreaterThan(10)
+    // Response should be of type:
+    /*
+    {
+      data: [{
+        id: <id>,
+        readings: [{time, reading}]
+      },...]
+    }
+    */
+    expect(jsonData['data'].length).toBe(2)
+    expect(jsonData['data'][0]['readings'].length).toBeGreaterThan(10)
+    expect(jsonData['data'][1]['readings'].length).toBeGreaterThan(10)
+
   })
 
+  const meter_id = 'M' + '007c9349-72ba-450c-aa1f-4e5a77b68f79'.replace(/-/g, 'M')
   it('mock solar data upload...', async () => {
     process.env.ACQUISUITE_PASS = 'test_pwd'
     // Have to make meter_id acceptable for SQL commands
-    const meter_id = 'M' + '007c9349-72ba-450c-aa1f-4e5a77b68f79'.replace(/-/g, 'M')
     const mockRequest = {
       headers: {
         ...MOCK_REQUEST_EVENT.headers
@@ -134,5 +146,24 @@ describe('Testing data_layer related API endpoints...', () => {
     const meter_data = JSON.parse(EnergyResponse.body)
     expect(meter_data.length).toBe(solarData.length)
     expect(meter_data[0]['total_energy']).toBe(3665740)
+    // Make sure batch route works too
+    const batchRequest = {
+      headers: {
+        ...MOCK_REQUEST_EVENT.headers
+      },
+      body: JSON.stringify({
+        point: 'total_energy',
+        meterClass: 9990001,
+        datasets: [
+          { id: meter_normalized_id, startDate: 1627974000, endDate: 1627976700 }
+        ]
+      })
+    }
+
+    response = await MeterData.batchData(batchRequest)
+    const jsonData = JSON.parse(response.body)
+    console.log(jsonData)
+    expect(jsonData['data'][0]['readings'].length).toBe(solarData.length)
+    expect(jsonData['data'][0]['readings'][0]['reading']).toBe(3665740)
   })
 })

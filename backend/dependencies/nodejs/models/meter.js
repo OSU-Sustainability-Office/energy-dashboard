@@ -154,6 +154,22 @@ class Meter {
     }
   }
 
+  // download without explicit point name
+  async sparseDownload (point, startTime, endTime, meterClass) {
+    await DB.connect()
+    console.log(point, startTime, endTime, meterClass)
+    if (Object.values(meterClasses[meterClass]).includes(point)) {
+      if (String(meterClass).startsWith('999')) {
+        // get table name from meter table
+        let [{ 'name': meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id])
+        return DB.query('SELECT ' + point + ' as reading, time_seconds AS time FROM ' + meter_table_name + ' WHERE time_seconds >= ? AND time_seconds <= ?', [startTime, endTime])
+      }
+      return DB.query('SELECT ' + point + ' as reading, time_seconds AS time FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)', [this.id, startTime, endTime])
+    } else {
+      throw new Error('Point is not available for given meter class')
+    }
+  }
+
   async delete (user) {
     if (user.data.privilege > 3) {
       await DB.connect()

@@ -103,12 +103,38 @@ const actions = {
     // TODO: INSTEAD OF MAKING A REQUEST FOR EACH METER: LET'S MAKE A BATCH REQUEST
     // Still need to call a meter function to setup the payload
     console.log("Meters requested: ", store.getters.meters)
-    for (let meter of store.getters.meters) {
-      let promise = this.dispatch(meter.path + '/getData', payload)
-      promiseObject[meter.id] = promise
+
+    // if we're requesting data for multiple meters, make 1 batch request.
+    if (store.getters.meters.length > 1) {
+      const dataLayerPayload = []
+      for (let meter of store.getters.meters) {
+        dataLayerPayload.push({
+          meterId: this.getters[meter.path + '/id'],
+          start: payload.dateStart - 900,
+          end: payload.dateEnd,
+          uom: payload.point,
+          classInt: this.getters[meter.path + '/classInt']
+        })
+      }
+      // console.log("== PAYLOAD BUILT:", dataLayerPayload)
+      // Hit the data-layer with a batch-request
+      const batchedMeterData = await this.dispatch('dataStore/getBatchData', dataLayerPayload)
+        .catch(err => {
+          console.log('The DataLayer threw an exception for our payload array, error message: ', err)
+        })
+      // push the return'd data to the promiseObject
+      for (let meter of store.getters.meters) {
+        promiseObject[meter.id] = new Promise((resolve, reject) => { resolve(batchedMeterData[meter.id]) })
+      }
+    } else {
+      // Otherwise just request the dat afor that singular meter
+      for (let meter of store.getters.meters) {
+        let promise = this.dispatch(meter.path + '/getData', payload)
+        promiseObject[meter.id] = promise
+      }
     }
     /*
-      The following section is the most important computation the dashboard does
+      The following section is possibly the most important computation the dashboard does
       since the meters sometimes need to be negated to get the correct meter reading.
     */
     for (let meter of store.getters.meters) {

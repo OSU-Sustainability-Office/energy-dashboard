@@ -87,6 +87,9 @@ export default {
   data: async (id, start, end, point, classInt) => {
     return (await callAPI('data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point + '&meterClass=' + classInt)).data
   },
+  batchData: async (requestArray) => {
+    return (await callAPI('batchData', JSON.stringify(requestArray))).data
+  },
   user: async () => {
     return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
   },

@@ -181,6 +181,95 @@ const actions = {
     }
   },
 
+  // This is a getData route specifically for the batched requests
+  // For single meter-data requests this has more overhead.
+  // This function also assumes each request will have same meterClass
+  // and point type.
+  async getBatchData (store, payload) {
+    await this.dispatch('dataStore/loadIndexedDB')
+
+    const requestPoint =  payload[0].uom
+    const meterClass = payload[0].classInt
+
+    const requestedDatasets = payload.map(({ meterId, start, end }) => {
+      return {
+        'id': meterId,
+        'startDate': start,
+        'endDate': end
+      }
+    })
+
+    let requestObject = {
+      point: requestPoint,
+      meterClass: meterClass,
+      datasets: []
+    }
+
+    for (let dataset of requestedDatasets) {
+      let missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
+        meterId: dataset['id'],
+        start: dataset['startDate'],
+        end: dataset['endDate'],
+        uom: requestPoint
+      })
+
+      if (missingIntervals.length > 0) {
+        requestObject.datasets.push(dataset)
+      }
+    }
+
+    // Add missing data to cache
+    if (requestObject.datasets.length > 0) {
+      // Hit API
+      const meterData = await API.batchData(requestObject)
+        .catch(err => console.log("COULD NOT HIT batchData API ROUTE.", err))
+
+      for (let { id, readings: dataset } of meterData['data']) {
+        dataset.forEach(datum => {
+          this.commit('dataStore/addToCache', {
+            dateTime: datum.time,
+            meterId: id,
+            uom: requestPoint,
+            value: datum.reading
+          })
+        })
+      }
+
+      // Write to persistent cache
+      try {
+        // add all cached instances to the indexedDB
+        await this.dispatch('dataStore/addCacheToIndexedDB')
+      } catch (e) {
+        console.log(e)
+        console.log('Failed to write new datums to the persistent cache.')
+      }
+    }
+
+    // Get requested data from cache
+    let dataArrayObject = {}
+
+    for (let { id, startDate, endDate } of requestedDatasets) {
+      let cache
+      let cacheKeys
+      try {
+        cache = this.getters['dataStore/cache'][id][requestPoint]
+        cacheKeys = Object.keys(cache).filter(key => key >= startDate && key <= endDate)
+      } catch (e) {
+        console.log('Data not found for meter: ' + id)
+        console.log('Is the meter connected to the internet and uploading data?')
+        continue
+      }
+      dataArrayObject[id] = cacheKeys.map(key => {
+        let dataObj = {}
+        dataObj[requestPoint] = cache[key]
+        dataObj['time'] = parseInt(key)
+        return dataObj
+      })
+    }
+
+    return dataArrayObject
+  },
+
   // Retrieves data from the cache if it exists
   // If the data does not exist, it:
   //   1. Requests for the data from the API

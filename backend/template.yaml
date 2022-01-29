@@ -236,7 +236,7 @@ Resources:
           Type: Api
           Properties:
             Path: /batchData
-            Method: post
+            Method: get
   MeterPut:
     Type: AWS::Serverless::Function
     Properties:
