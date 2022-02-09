@@ -35,6 +35,9 @@ const state = () => {
       //   }
       // }
     },
+    // Prevent extraneous requests when possible
+    // Maps meter_id -> range set of queried data
+    requestStore: {},
     indexedDBInstance: undefined
   }
 }
@@ -141,6 +144,11 @@ const actions = {
       return [[payload.start, payload.end]]
     }
 
+    // Check if this interval is encapsulated in our request store. vue.$store.getters['dataStore/inRangeSet']({id:3, start:3, end:34})
+    if (this.getters['dataStore/inRangeSet']({ id: payload.meterId, start: payload.start, end: payload.end })) {
+      console.log('Checked range set and found we already queried the API for this dataset!')
+      return []
+    }
     // We know that at least the meter and uom exist in the cache from here down
 
     // Remove all timestamps except for:
@@ -187,7 +195,6 @@ const actions = {
   // and point type.
   async getBatchData (store, payload) {
     await this.dispatch('dataStore/loadIndexedDB')
-
     const requestPoint =  payload[0].uom
     const meterClass = payload[0].classInt
 
@@ -222,26 +229,38 @@ const actions = {
     if (requestObject.datasets.length > 0) {
       // Hit API
       const meterData = await API.batchData(requestObject)
-        .catch(err => console.log("COULD NOT HIT batchData API ROUTE.", err))
-
-      for (let { id, readings: dataset } of meterData['data']) {
-        dataset.forEach(datum => {
-          this.commit('dataStore/addToCache', {
-            dateTime: datum.time,
-            meterId: id,
-            uom: requestPoint,
-            value: datum.reading
-          })
+        .catch(err => {
+          console.log('Error accessing batchData api route:', err)
         })
-      }
 
-      // Write to persistent cache
-      try {
-        // add all cached instances to the indexedDB
-        await this.dispatch('dataStore/addCacheToIndexedDB')
-      } catch (e) {
-        console.log(e)
-        console.log('Failed to write new datums to the persistent cache.')
+      if (meterData !== undefined) {
+        // Write to cache
+        for (let { id, readings: dataset } of meterData['data']) {
+          // write to RequestStore
+          this.commit('dataStore/addToRequestStore', {
+            meterId: id,
+            start: dataset[dataset.length - 1].time,
+            end: dataset[0].time
+          })
+
+          // write to cache
+          dataset.forEach(datum => {
+            this.commit('dataStore/addToCache', {
+              datetime: datum.time,
+              meterId: id,
+              uom: requestPoint,
+              value: datum.reading
+            })
+          })
+        }
+        // Write to persistent cache
+        try {
+          // add all cached instances to the indexedDB
+          await this.dispatch('dataStore/addCacheToIndexedDB')
+        } catch (e) {
+          console.log(e)
+          console.log('Failed to write new datums to the persistent cache.')
+        }
       }
     }
 
@@ -249,6 +268,7 @@ const actions = {
     let dataArrayObject = {}
 
     for (let { id, startDate, endDate } of requestedDatasets) {
+      console.log('>>>', startDate, endDate)
       let cache
       let cacheKeys
       try {
@@ -267,6 +287,7 @@ const actions = {
       })
     }
 
+    console.log('returning object', dataArrayObject)
     return dataArrayObject
   },
 
@@ -377,6 +398,56 @@ const mutations = {
     state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] = cacheEntry.value
   },
 
+  /*
+      This function adds an element to the request store & merges overlapping ranges.
+
+      Basically we use a "range-set" to keep track of which meter data ranges we've already
+      queried during a user's session.  This makes it so we minimize redundant requests for data
+      that won't exist in the database.  We don't persist this data since it's concievable that
+      our database will acquire the data at some point, but unlikely it will occur during a
+      single user session.
+
+      The range set works by storing a sorted array of tuples containing a start and end date for data
+      of form (starttime, endtime)
+
+      Like for meterID 15: [(143500, 134560), (134590, 145000)]
+
+      When we add another range to the data, we push that tuple into our range-set and perform a reduction
+      to merge overlapping ranges:
+
+      E.g. [(143500, 143600), (143560, 143555)] -> [(143500, 143600)]
+  */
+  addToRequestStore: (state, { meterId, start, end }) => {
+    console.log('Pushing new range to request store', { meterId, start, end })
+    if (!Object.keys(state.requestStore).includes(meterId)) {
+      state.requestStore[meterId] = [[start, end]]
+    } else {
+      state.requestStore[meterId].unshift([start, end])
+      // Reduce range sets if possible
+      state.requestStore[meterId].sort((a, b) => a[0] - b[0])
+      console.log('== DEBUG: before reduction: ', state.requestStore[meterId])
+      let reductionComplete = false
+      while (!reductionComplete) {
+        reductionComplete = true
+        const reducedRangeSet = []
+        for (let i = 0; i < state.requestStore[meterId].length - 1; i++) {
+          const thisRange = state.requestStore[meterId][i]
+          const nextRange = state.requestStore[meterId][i + 1]
+          if (thisRange[1] > nextRange[1]) {
+            reducedRangeSet.push([ thisRange[0], thisRange[1] ])
+            i++ // increase i to skip merged range
+            reductionComplete = false
+          } else {
+            reducedRangeSet.push(thisRange)
+          }
+        }
+        // write new, possibly reduced request store
+        state.requestStore[meterId] = reducedRangeSet
+        console.log('== DEBUG: after reduction: ', state.requestStore[meterId])
+      }
+    }
+  },
+
   // Sets DBInstance property to an initialized indexedDB instance.
   setDBInstance: (state, { instance }) => {
     state.indexedDBInstance = instance
@@ -396,6 +467,17 @@ const getters = {
   },
   DB (state) {
     return state.indexedDBInstance
+  },
+  requestStore (state) {
+    return state.requestStore
+  },
+
+  inRangeSet: (state, getters) => ({ id, start, end }) => {
+    if (getters.requestStore[id] === undefined) return false
+    for (let i = 0; i < getters.requestStore[id].length; i++) {
+      if (getters.requestStore[id][i][0] <= start && getters.requestStore[id][i][1] >= end) return true
+    }
+    return false
   }
 }
 

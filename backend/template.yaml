@@ -225,7 +225,8 @@ Resources:
   MeterBatchData:
     Type: AWS::Serverless::Function
     Properties:
-      MemorySize: 128
+      Timeout: 30
+      MemorySize: 256
       CodeUri:  app/
       Handler: meter.batchData
       Layers:
@@ -236,7 +237,7 @@ Resources:
           Type: Api
           Properties:
             Path: /batchData
-            Method: get
+            Method: post
   MeterPut:
     Type: AWS::Serverless::Function
     Properties:

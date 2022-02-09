@@ -88,7 +88,9 @@ export default {
     return (await callAPI('data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point + '&meterClass=' + classInt)).data
   },
   batchData: async (requestArray) => {
-    return (await callAPI('batchData', JSON.stringify(requestArray))).data
+    // Why a POST request? Most browsers disallow GET requests to have payloads.
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
+    return (await callAPI('batchData', JSON.stringify(requestArray), 'post')).data
   },
   user: async () => {
     return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data

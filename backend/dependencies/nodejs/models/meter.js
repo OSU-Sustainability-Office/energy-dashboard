@@ -157,7 +157,6 @@ class Meter {
   // download without explicit point name
   async sparseDownload (point, startTime, endTime, meterClass) {
     await DB.connect()
-    console.log(point, startTime, endTime, meterClass)
     if (Object.values(meterClasses[meterClass]).includes(point)) {
       if (String(meterClass).startsWith('999')) {
         // get table name from meter table
