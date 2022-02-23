@@ -36,11 +36,18 @@ const state = () => {
       // }
     },
     // Prevent extraneous requests when possible
-    // Maps meter_id -> range set of queried data
+    // Maps [uom][meter_id] -> range set of queried data
     requestStore: {},
     indexedDBInstance: undefined
   }
 }
+
+/*
+ To prevent exceeding the AWS lambda response body size limit we'll take into account the maximum response size we can send.
+*/
+const RESPONSE_HEADER_SIZE = 1000 // this is an over-calculation, the actual header is normally 222 bytes.
+const DATA_ITEM_SIZE = 51 // (32 + 2 + 2 + 4 + 11)=51, an over-estimate for each item.
+const RESPONSE_MAX_SIZE = 0x600000 // 6MB limit = 6*(2^20) Bytes
 
 const actions = {
 
@@ -145,7 +152,7 @@ const actions = {
     }
 
     // Check if this interval is encapsulated in our request store. vue.$store.getters['dataStore/inRangeSet']({id:3, start:3, end:34})
-    if (this.getters['dataStore/inRangeSet']({ id: payload.meterId, start: payload.start, end: payload.end })) {
+    if (this.getters['dataStore/inRangeSet']({ uom: payload.uom, id: payload.meterId, start: payload.start, end: payload.end })) {
       console.log('Checked range set and found we already queried the API for this dataset!')
       return []
     }
@@ -227,6 +234,14 @@ const actions = {
 
     // Add missing data to cache
     if (requestObject.datasets.length > 0) {
+      // Check if we need to divide the requests up.
+      if (this.getters['dataStore/requestSizeException'](requestObject.datasets)) {
+        // Divide the requests up
+        // Should this be by time, or meter?... Probably better to do time
+        // TODO
+        console.log("DATA LIMIT EXCEEDED")
+      }
+
       // Hit API
       const meterData = await API.batchData(requestObject)
         .catch(err => {
@@ -240,7 +255,8 @@ const actions = {
           this.commit('dataStore/addToRequestStore', {
             meterId: id,
             start: dataset[dataset.length - 1].time,
-            end: dataset[0].time
+            end: dataset[0].time,
+            uom: requestPoint
           })
 
           // write to cache
@@ -410,29 +426,31 @@ const mutations = {
       The range set works by storing a sorted array of tuples containing a start and end date for data
       of form (starttime, endtime)
 
-      Like for meterID 15: [(143500, 134560), (134590, 145000)]
+      Like for meterID 15 and the unit of measurement of `accumulated_real`: [(143500, 134560), (134590, 145000)]
 
       When we add another range to the data, we push that tuple into our range-set and perform a reduction
       to merge overlapping ranges:
 
       E.g. [(143500, 143600), (143560, 143555)] -> [(143500, 143600)]
   */
-  addToRequestStore: (state, { meterId, start, end }) => {
-    console.log('Pushing new range to request store', { meterId, start, end })
-    if (!Object.keys(state.requestStore).includes(meterId)) {
-      state.requestStore[meterId] = [[start, end]]
+  addToRequestStore: (state, { meterId, uom, start, end }) => {
+    console.log('Pushing new range to request store', { meterId, uom, start, end })
+    if (state.requestStore[uom] === undefined) state.requestStore[uom] = []
+
+    if (!Object.keys(state.requestStore[uom]).includes(meterId)) {
+      state.requestStore[uom][meterId] = [[start, end]]
     } else {
-      state.requestStore[meterId].unshift([start, end])
+      state.requestStore[uom][meterId].unshift([start, end])
       // Reduce range sets if possible
-      state.requestStore[meterId].sort((a, b) => a[0] - b[0])
-      console.log('== DEBUG: before reduction: ', state.requestStore[meterId])
+      state.requestStore[uom][meterId].sort((a, b) => a[0] - b[0])
+      console.log('== DEBUG: before reduction: ', state.requestStore[uom][meterId])
       let reductionComplete = false
       while (!reductionComplete) {
         reductionComplete = true
         const reducedRangeSet = []
-        for (let i = 0; i < state.requestStore[meterId].length - 1; i++) {
-          const thisRange = state.requestStore[meterId][i]
-          const nextRange = state.requestStore[meterId][i + 1]
+        for (let i = 0; i < state.requestStore[uom][meterId].length - 1; i++) {
+          const thisRange = state.requestStore[uom][meterId][i]
+          const nextRange = state.requestStore[uom][meterId][i + 1]
           if (thisRange[1] > nextRange[1]) {
             reducedRangeSet.push([ thisRange[0], thisRange[1] ])
             i++ // increase i to skip merged range
@@ -442,8 +460,8 @@ const mutations = {
           }
         }
         // write new, possibly reduced request store
-        state.requestStore[meterId] = reducedRangeSet
-        console.log('== DEBUG: after reduction: ', state.requestStore[meterId])
+        state.requestStore[uom][meterId] = reducedRangeSet
+        console.log('== DEBUG: after reduction: ', state.requestStore[uom][meterId])
       }
     }
   },
@@ -472,13 +490,33 @@ const getters = {
     return state.requestStore
   },
 
-  inRangeSet: (state, getters) => ({ id, start, end }) => {
-    if (getters.requestStore[id] === undefined) return false
-    for (let i = 0; i < getters.requestStore[id].length; i++) {
-      if (getters.requestStore[id][i][0] <= start && getters.requestStore[id][i][1] >= end) return true
+  inRangeSet: (state, getters) => ({ uom, id, start, end }) => {
+    if (getters.requestStore[uom] === undefined) return false
+    if (getters.requestStore[uom][id] === undefined) return false
+    for (let i = 0; i < getters.requestStore[uom][id].length; i++) {
+      if (getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end) return true
     }
     return false
+  },
+
+  // calculates data set size, assuming there's a data-point every 15 minutes.
+  // (this assumption may not hold for some meter-types), it is unlikely any
+  // meter will have more frequent data reporting.
+  dataSetSize: (state, getters) => ({ id, startDate, endDate }) => {
+    // date is in seconds so 900 seconds = 15 minute interval
+    const numItems = Math.ceil((endDate - startDate) / (900))
+    return DATA_ITEM_SIZE * numItems
+  },
+
+  // determines if size exceeds the lambda API response limit
+  requestSizeException: (state, getters) => (requests) => {
+    let totalSize = RESPONSE_HEADER_SIZE
+    for (let dataset of requests) {
+      totalSize += getters.dataSetSize(dataset)
+    }
+    return totalSize >= RESPONSE_MAX_SIZE
   }
+
 }
 
 const modules = {}

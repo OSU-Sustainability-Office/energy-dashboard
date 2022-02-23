@@ -88,7 +88,7 @@ export default {
     return (await callAPI('data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point + '&meterClass=' + classInt)).data
   },
   batchData: async (requestArray) => {
-    // Why a POST request? Most browsers disallow GET requests to have payloads.
+    // Why a POST request? Most browsers disallow GET requests to have payloads (i.e., a body field).
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
     return (await callAPI('batchData', JSON.stringify(requestArray), 'post')).data
   },
