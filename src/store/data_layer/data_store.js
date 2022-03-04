@@ -196,10 +196,15 @@ const actions = {
     }
   },
 
-  // This is a getData route specifically for the batched requests
-  // For single meter-data requests this has more overhead.
-  // This function also assumes each request will have same meterClass
-  // and point type.
+  /*
+    getBatchData function specifically for requesting large sets of data.
+    The dashboard was originally designed to send out requests per-meter,
+    which unfortunately becomes really slow when handling buildings with
+    >5 meters in a meterGroup, especially since we need all the meter data
+    to show accurate readings.
+
+    This function assumes each request will have the same metreClass and point type.
+  */
   async getBatchData (store, payload) {
     await this.dispatch('dataStore/loadIndexedDB')
     const requestPoint =  payload[0].uom
@@ -234,49 +239,98 @@ const actions = {
 
     // Add missing data to cache
     if (requestObject.datasets.length > 0) {
-      // Check if we need to divide the requests up.
-      if (this.getters['dataStore/requestSizeException'](requestObject.datasets)) {
-        // Divide the requests up
-        // Should this be by time, or meter?... Probably better to do time
-        // TODO
+      // estimate our request size (will be an overestimate).
+      let requestSize = this.getters['dataStore/requestSize'](requestObject.datasets)
+
+      // Array of promises
+      const apiRequests = []
+
+      /*
+        To avoid exceeding the lambda response body size constraint (~6MB)
+        we're going to delegate the datasets evenly across multiple
+        requests.  This assumes that our datasets are roughly equivalent in
+        size.
+      */
+      if (requestSize >= RESPONSE_MAX_SIZE) {
         console.log("DATA LIMIT EXCEEDED")
+        // Divide the requests up by time.
+        const batchSize = Math.ceil(requestSize / RESPONSE_MAX_SIZE)
+
+        // Initialize divided request objects
+        for (let _ = 0; _ < batchSize; _++) apiRequests.push({ ...requestObject, datasets: [] })
+
+        // Distribute the datasets evenly.
+        for (let i = 0; i < requestObject.datasets.length; i++) {
+          let index = i % batchSize
+          apiRequests[index].datasets.push(requestObject.datasets[i])
+        }
+
+        console.log("DEBUG", JSON.stringify(apiRequests))
+      } else {
+        // otherwise we can just send a single request
+        apiRequests.push(requestObject)
       }
 
-      // Hit API
-      const meterData = await API.batchData(requestObject)
+      // hit API
+      const meterDataArray = await Promise.all(apiRequests.map(reqObj => API.batchData(reqObj)))
         .catch(err => {
           console.log('Error accessing batchData api route:', err)
         })
 
-      if (meterData !== undefined) {
-        // Write to cache
-        for (let { id, readings: dataset } of meterData['data']) {
-          // write to RequestStore
-          this.commit('dataStore/addToRequestStore', {
-            meterId: id,
-            start: dataset[dataset.length - 1].time,
-            end: dataset[0].time,
-            uom: requestPoint
-          })
+      if (meterDataArray !== undefined) {
+        for (const meterData of meterDataArray) {
+          // Write to cache
+          for (let { id, readings: dataset } of meterData['data']) {
+            // write to RequestStore
 
-          // write to cache
-          dataset.forEach(datum => {
-            this.commit('dataStore/addToCache', {
-              datetime: datum.time,
+            // Ignore if dataset is zero.  This will occur if we have a defunct
+            // meter still included in a meter group (e.g. valley library).
+            // We still add it to the volatile request store, since it's unlikely
+            // to re-appear during a user session.
+            if (dataset.length === 0) {
+              for (let i = 0; i < requestedDatasets.length; i++) {
+                if (requestedDatasets[i].meterId === id) {
+                  this.commit('dataStore/addToRequestStore', {
+                    meterId: id,
+                    start: requestedDatasets[i].startDate,
+                    end: requestedDatasets[i].endDate,
+                    uom: requestPoint
+                  })
+                }
+              }
+              // don't commit this to the persistent store, since we don't have any data.
+              // and, idealiistically, we might actually recover said data later on.
+              continue
+            }
+            this.commit('dataStore/addToRequestStore', {
               meterId: id,
-              uom: requestPoint,
-              value: datum.reading
+              start: dataset[dataset.length - 1].time,
+              end: dataset[0].time,
+              uom: requestPoint
             })
-          })
+
+            // write to cache
+            dataset.forEach(datum => {
+              this.commit('dataStore/addToCache', {
+                datetime: datum.time,
+                meterId: id,
+                uom: requestPoint,
+                value: datum.reading
+              })
+            })
+          }
+          // Write to persistent cache
+          try {
+            // add all cached instances to the indexedDB
+            await this.dispatch('dataStore/addCacheToIndexedDB')
+          } catch (e) {
+            console.log(e)
+            console.log('Failed to write new datums to the persistent cache.')
+          }
         }
-        // Write to persistent cache
-        try {
-          // add all cached instances to the indexedDB
-          await this.dispatch('dataStore/addCacheToIndexedDB')
-        } catch (e) {
-          console.log(e)
-          console.log('Failed to write new datums to the persistent cache.')
-        }
+      } else {
+        // Something went very wrong if our response is undefined
+        alert('Catastrophic error occured with API')
       }
     }
 
@@ -490,6 +544,7 @@ const getters = {
     return state.requestStore
   },
 
+  // checks if we have already queried this date range for the given unit of measurement (uom)
   inRangeSet: (state, getters) => ({ uom, id, start, end }) => {
     if (getters.requestStore[uom] === undefined) return false
     if (getters.requestStore[uom][id] === undefined) return false
@@ -508,13 +563,17 @@ const getters = {
     return DATA_ITEM_SIZE * numItems
   },
 
-  // determines if size exceeds the lambda API response limit
-  requestSizeException: (state, getters) => (requests) => {
+  requestSize: (state, getters) => (requests) => {
     let totalSize = RESPONSE_HEADER_SIZE
     for (let dataset of requests) {
       totalSize += getters.dataSetSize(dataset)
     }
-    return totalSize >= RESPONSE_MAX_SIZE
+    return totalSize
+  },
+
+  // determines if size exceeds the lambda API response limit
+  requestSizeException: (state, getters) => (requests) => {
+    return getters.requestSize(requests) >= RESPONSE_MAX_SIZE
   }
 
 }
