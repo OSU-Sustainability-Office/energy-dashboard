@@ -252,7 +252,7 @@ const actions = {
         size.
       */
       if (requestSize >= RESPONSE_MAX_SIZE) {
-        console.log("DATA LIMIT EXCEEDED")
+        // console.log("DATA LIMIT EXCEEDED")
         // Divide the requests up by time.
         const batchSize = Math.ceil(requestSize / RESPONSE_MAX_SIZE)
 
@@ -264,8 +264,6 @@ const actions = {
           let index = i % batchSize
           apiRequests[index].datasets.push(requestObject.datasets[i])
         }
-
-        console.log("DEBUG", JSON.stringify(apiRequests))
       } else {
         // otherwise we can just send a single request
         apiRequests.push(requestObject)
@@ -330,7 +328,8 @@ const actions = {
         }
       } else {
         // Something went very wrong if our response is undefined
-        alert('Catastrophic error occured with API')
+        console.log('Catastrophic error occured with API')
+        // alert('Catastrophic error occured with API')
       }
     }
 
@@ -338,7 +337,7 @@ const actions = {
     let dataArrayObject = {}
 
     for (let { id, startDate, endDate } of requestedDatasets) {
-      console.log('>>>', startDate, endDate)
+      // console.log('>>>', startDate, endDate)
       let cache
       let cacheKeys
       try {
@@ -357,7 +356,6 @@ const actions = {
       })
     }
 
-    console.log('returning object', dataArrayObject)
     return dataArrayObject
   },
 
@@ -393,6 +391,14 @@ const actions = {
         promises.push(API.data(payload.meterId, interval[0], interval[1], payload.uom, payload.classInt))
       })
 
+      // add to request store so we don't re-request this data
+      this.commit('dataStore/addToRequestStore', {
+        meterId: payload.meterId,
+        start: payload.start,
+        end: payload.end,
+        uom: payload.uom
+      })
+
       // Save all of the new data to the cache
       const responses = await Promise.all(promises)
         .catch(err => {
@@ -406,6 +412,7 @@ const actions = {
       //   time: 1597284900
       // }
       await responses.forEach(async datumArray => {
+        // push data to our cache for future retrieval
         datumArray.forEach(datum => {
           this.commit('dataStore/addToCache', {
             datetime: datum.time,
@@ -451,6 +458,7 @@ const actions = {
       dataObj['time'] = parseInt(key)
       dataArray.push(dataObj)
     })
+    console.log('returning', dataArray)
     return dataArray
   }
 }
@@ -550,7 +558,9 @@ const getters = {
     if (getters.requestStore[uom][id] === undefined) return false
     for (let i = 0; i < getters.requestStore[uom][id].length; i++) {
       if (getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end) return true
+      console.log(getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end, '???')
     }
+    console.log('Nope, not in range set: ', getters.requestStore[uom][id], { start, end })
     return false
   },
 
