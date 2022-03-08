@@ -114,7 +114,6 @@ export default {
               - Milan
           */
           if (this.forceUpdate) {
-            console.log('BRUH MOMENTO')
             this.$store.dispatch(block.path + '/getData')
           }
         }

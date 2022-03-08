@@ -32,7 +32,6 @@ export default {
   mounted () {},
   watch: {
     path: function (value) {
-      console.log('called from watch')
       this.updateChart()
     }
   },
@@ -46,7 +45,6 @@ export default {
     }
   },
   created () {
-    console.log('created triggered')
     if (parseInt(this.randomColors) === 1) {
       // DurstenFeld Shuffle
       for (var i = this.colors.length - 1; i > 0; i--) {
@@ -61,7 +59,6 @@ export default {
         Building views set the date once the page is loaded.
         User views need to grab data immediately.
       */
-      console.log('called from created')
       this.updateChart()
     }
     /*
@@ -86,7 +83,6 @@ export default {
         }
         clearTimeout(this.watchTimeout)
         this.watchTimeout = setTimeout(() => {
-          console.log('timeout hit')
           this.updateChart()
         }, 200)
       }

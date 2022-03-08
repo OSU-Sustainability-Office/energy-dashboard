@@ -1,7 +1,5 @@
 <img src='https://dashboard.sustainability.oregonstate.edu/images/readme_logo.png' height=80 />
 
----
-
 # OSU Energy Dashboard
 [![Build Status](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard.svg?branch=master)](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard)
 

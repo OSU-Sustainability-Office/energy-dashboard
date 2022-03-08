@@ -153,7 +153,6 @@ const actions = {
 
     // Check if this interval is encapsulated in our request store. vue.$store.getters['dataStore/inRangeSet']({id:3, start:3, end:34})
     if (this.getters['dataStore/inRangeSet']({ uom: payload.uom, id: payload.meterId, start: payload.start, end: payload.end })) {
-      console.log('Checked range set and found we already queried the API for this dataset!')
       return []
     }
     // We know that at least the meter and uom exist in the cache from here down
@@ -164,7 +163,7 @@ const actions = {
     //  - the last timestamp
     let timestamps = Object.keys(this.getters['dataStore/cache'][payload.meterId][payload.uom])
       .filter((key) => parseInt(key) >= payload.start && parseInt(key) <= payload.end) // Filter out irrelevant times
-      .sort((a, b) => parseInt(a) > parseInt(b)) // Chronologically sort times
+      .sort((a, b) => parseInt(a) - parseInt(b)) // Chronologically sort times
       .filter((key, index, array) => {
         // Keep the first, the last, and any indices defining the start and/or end of a gap
         return index === 0 || index === array.length - 1 || Math.abs(key - array[index - 1]) > 900 || Math.abs(key - array[index + 1]) > 900
@@ -252,7 +251,6 @@ const actions = {
         size.
       */
       if (requestSize >= RESPONSE_MAX_SIZE) {
-        // console.log("DATA LIMIT EXCEEDED")
         // Divide the requests up by time.
         const batchSize = Math.ceil(requestSize / RESPONSE_MAX_SIZE)
 
@@ -458,7 +456,6 @@ const actions = {
       dataObj['time'] = parseInt(key)
       dataArray.push(dataObj)
     })
-    console.log('returning', dataArray)
     return dataArray
   }
 }
@@ -496,7 +493,6 @@ const mutations = {
       E.g. [(143500, 143600), (143560, 143555)] -> [(143500, 143600)]
   */
   addToRequestStore: (state, { meterId, uom, start, end }) => {
-    console.log('Pushing new range to request store', { meterId, uom, start, end })
     if (state.requestStore[uom] === undefined) state.requestStore[uom] = []
 
     if (!Object.keys(state.requestStore[uom]).includes(meterId)) {
@@ -505,7 +501,6 @@ const mutations = {
       state.requestStore[uom][meterId].unshift([start, end])
       // Reduce range sets if possible
       state.requestStore[uom][meterId].sort((a, b) => a[0] - b[0])
-      console.log('== DEBUG: before reduction: ', state.requestStore[uom][meterId])
       let reductionComplete = false
       while (!reductionComplete) {
         reductionComplete = true
@@ -523,7 +518,6 @@ const mutations = {
         }
         // write new, possibly reduced request store
         state.requestStore[uom][meterId] = reducedRangeSet
-        console.log('== DEBUG: after reduction: ', state.requestStore[uom][meterId])
       }
     }
   },
@@ -558,9 +552,7 @@ const getters = {
     if (getters.requestStore[uom][id] === undefined) return false
     for (let i = 0; i < getters.requestStore[uom][id].length; i++) {
       if (getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end) return true
-      console.log(getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end, '???')
     }
-    console.log('Nope, not in range set: ', getters.requestStore[uom][id], { start, end })
     return false
   },
 
