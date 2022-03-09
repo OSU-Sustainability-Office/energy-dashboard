@@ -27,7 +27,7 @@
                 {{ currentTitle }}
               </el-col>
               <el-col :span='12' class='timeSwitchButtons'>
-                <switchButtons :blocks='blocks' :campaign='true' :days='days' :campaignDateStart='campaignStart' :campaignDateEnd='campaignEnd' forceUpdate="true" />
+                <switchButtons :blocks='blocks' :campaign='true' :days='days' :campaignDateStart='campaignStart' :campaignDateEnd='campaignEnd' :forceUpdate="true" />
               </el-col>
             </el-row>
             <chartController :path='blockPath' :randomColors='1' class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '340px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :invertColors='true' :height='362'/>

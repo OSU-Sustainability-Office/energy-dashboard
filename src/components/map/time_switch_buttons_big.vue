@@ -113,7 +113,9 @@ export default {
             So, I'm adding a prop-flag to toggle it... for now!
               - Milan
           */
-          if (this.forceUpdate) this.$store.dispatch(block.path + '/getData')
+          if (this.forceUpdate) {
+            this.$store.dispatch(block.path + '/getData')
+          }
         }
       }
     }

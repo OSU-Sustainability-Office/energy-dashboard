@@ -100,12 +100,47 @@ const actions = {
     payload.dateEnd = payload.dateEnd  - (payload.dateEnd % 900)
 
     let promiseObject = {}
-    for (let meter of store.getters.meters) {
-      let promise = this.dispatch(meter.path + '/getData', payload)
-      promiseObject[meter.id] = promise
+    // Still need to call a meter function to setup the payload
+    // console.log("Meters requested: ", store.getters.meters)
+
+    // if we're requesting data for multiple meters, make a batch request.
+    let batchRequests = (store.getters.meters.length > 5)
+
+    if (batchRequests) {
+      const dataLayerPayload = []
+      for (let meter of store.getters.meters) {
+        dataLayerPayload.push({
+          meterId: this.getters[meter.path + '/id'],
+          start: payload.dateStart - 900,
+          end: payload.dateEnd,
+          uom: payload.point,
+          classInt: this.getters[meter.path + '/classInt']
+        })
+      }
+
+      // Hit the data-layer with a batch-request
+      const batchedMeterData = await this.dispatch('dataStore/getBatchData', dataLayerPayload)
+        .catch(err => {
+          console.log('The DataLayer threw an exception for our payload array, error message: ', err)
+          console.log('Falling back to 1:1 requests...')
+          batchRequests = false
+        })
+      if (batchRequests) {
+        // push the return'd data to the promiseObject
+        for (let meter of store.getters.meters) {
+          promiseObject[meter.id] = new Promise((resolve, reject) => { resolve(batchedMeterData[meter.id]) })
+        }
+      }
+    }
+    // request data per-meter, 1 request per meter.
+    if (!batchRequests) {
+      for (let meter of store.getters.meters) {
+        let promise = this.dispatch(meter.path + '/getData', payload)
+        promiseObject[meter.id] = promise
+      }
     }
     /*
-      The following section is the most important computation the dashboard does
+      The following section is possibly the most important computation the dashboard does
       since the meters sometimes need to be negated to get the correct meter reading.
     */
     for (let meter of store.getters.meters) {

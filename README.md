@@ -1,7 +1,5 @@
 <img src='https://dashboard.sustainability.oregonstate.edu/images/readme_logo.png' height=80 />
 
----
-
 # OSU Energy Dashboard
 [![Build Status](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard.svg?branch=master)](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard)
 
@@ -13,5 +11,15 @@ This Energy Dashboard has been developed by the Oregon State University Sustaina
  - [Brogan Miner](https://github.com/broha22)
  - [Jack Woods](https://github.com/jackrwoods)
 
+
+### Testing Locally 
+
+We recommend setting up `nvm` to set your node installation to version 12 (`nvm use 12`).
+
+Running `npm run serve` will run the front-end locally.
+
+To run the serverless backend API locally you'll want to run `sam local start-api` (docker will need to be running first).
+
+
 ### Documentation
-For more detailed information about how the dashboard front-end works, there's a README.md with the vue components described under the `documents/frontend` directory.
+For more detailed information about how the dashboard front-end works internally, there's a README.md with the vue components described under the `documents/frontend` directory.

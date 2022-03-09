@@ -26,6 +26,52 @@ exports.all = async (event, context) => {
   return response
 }
 
+// Check integral parameters.
+function parseParameters ({ id, startDate, endDate }) {
+  return {
+    id: parseInt(id, 10),
+    startDate: parseInt(startDate, 10),
+    endDate: parseInt(endDate, 10)
+  }
+}
+function verifyParameters ({ id, startDate, endDate }) {
+  return ![id, startDate, endDate].some(isNaN)
+}
+// Get data for multiple meters => {id -> [{}...], ...}
+/*
+  Ok, assume a batch request involves the same point & meter class
+  {
+    point,
+    meterClass,
+    datasets [{
+      id,
+      startDate,
+      endDate
+    }]
+  }
+*/
+exports.batchData = async (event, context) => {
+  const request = JSON.parse(event.body)
+  const meterList = request.datasets
+    .map(parseParameters)
+    .filter(verifyParameters)
+  const { point, meterClass } = request
+  const response = new Response(event)
+  response.body = { 'data': [] }
+  // Get data for each Response [inefficient, should switch to transaction eventually]
+  for (let query of meterList) {
+    response.body.data.push({
+      id: query.id,
+      readings: await (new Meter(query.id)).sparseDownload(
+        point, query.startDate, query.endDate, meterClass
+      )
+    })
+  }
+  response.body = JSON.stringify(response.body)
+  return response
+}
+
+// GET data for single meter
 exports.data = async (event, context) => {
   let response = new Response(event)
   response.body = JSON.stringify((await (new Meter(event.queryStringParameters['id'])).download(

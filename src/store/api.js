@@ -1,7 +1,7 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true
 
-function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP_ROOT_API, headers = null) {
+function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP_ROOT_API, headers = null, timeoutMS = 72000) {
   /* This if-clause for "allowCredentials" deserves an explanation:
      Locally, when using "sam local start-api" the response class in the lambda common layer
      will reply with a HTTP headers allow-origin set to "*" and the credentials flag to true.
@@ -18,9 +18,9 @@ function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP
     allowCredentials = false
   }
   if (headers) {
-    return axios(base + '/' + route, { method: method, data: data, withCredentials: allowCredentials, timeout: 72000, headers: headers })
+    return axios(base + '/' + route, { method: method, data: data, withCredentials: allowCredentials, timeout: timeoutMS, headers: headers })
   }
-  return axios(base + '/' + route, { method: method, data: data, withCredentials: allowCredentials, timeout: 72000 })
+  return axios(base + '/' + route, { method: method, data: data, withCredentials: allowCredentials, timeout: timeoutMS })
 }
 
 export default {
@@ -86,6 +86,12 @@ export default {
   },
   data: async (id, start, end, point, classInt) => {
     return (await callAPI('data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point + '&meterClass=' + classInt)).data
+  },
+  batchData: async (requestArray) => {
+    // Why a POST request? Most browsers disallow GET requests to have payloads (i.e., a body field).
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
+    // We're also increasing the timeeout to 2 minutes to account for really slow requests (e.g. LINC 1 year data)
+    return (await callAPI('batchData', JSON.stringify(requestArray), 'post', process.env.VUE_APP_ROOT_API, null, 120000)).data
   },
   user: async () => {
     return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
