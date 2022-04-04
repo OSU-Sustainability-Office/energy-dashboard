@@ -10,14 +10,20 @@
     <el-tabs v-model="activePane">
       <el-tab-pane label="Current Campaigns" name="new" ref='currentTab' class='list'>
         <campaignBlock v-for='campaign in currentCampaigns' :camp='campaign' :key='campaign.id' @click='$router.push("/campaign/" + campaign.id)'/>
-        <span class='noText' v-if='currentCampaigns.length <= 0'>
+        <span class='noText' v-if='currentCampaigns.length <= 0 && loaded'>
           No Current Campaigns
+        </span>
+        <span class='noText' v-if='!loaded'>
+          Loading...
         </span>
       </el-tab-pane>
       <el-tab-pane label="Past Campaigns" name="old" ref='pastTab' class='list'>
         <campaignBlock v-for='campaign in pastCampaigns' :camp='campaign' :key='campaign.id' @click='$router.push("/campaign/" + campaign.id)'/>
-        <span class='noText' v-if='pastCampaigns.length <= 0'>
+        <span class='noText' v-if='pastCampaigns.length <= 0 && loaded'>
           No Past Campaigns
+        </span>
+        <span class='noText' v-if='!loaded'>
+          Loading...
         </span>
       </el-tab-pane>
     </el-tabs>
@@ -31,6 +37,7 @@ export default {
   },
   data () {
     return {
+      loaded: false,
       activePane: 'new',
       currentCampaigns: [],
       pastCampaigns: []
@@ -39,6 +46,7 @@ export default {
   async mounted () {
     // await this.$store.dispatch('map/allBuildingPromise')
     await this.$store.dispatch('campaigns/loadCampaigns')
+    this.loaded = true
     // this.$store.dispatch('campaigns/getCampaigns').then(campaigns => {
     for (let camp of this.$store.getters['campaigns/campaigns']) {
       if (this.checkDate(camp.dateEnd)) {

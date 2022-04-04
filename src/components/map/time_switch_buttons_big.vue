@@ -35,7 +35,12 @@ export default {
       handler: async function (value) {
         this.currentRange = -1
         if (this.campaign) {
-          this.currentRange = 2
+          // don't default to displaying a broken graph right after campaign starts.
+          if ((Math.floor(Date.now() / 1000) - this.campaignDateStart) > 86400) {
+            this.currentRange = 2
+          } else {
+            this.currentRange = 0
+          }
         } else {
           this.currentRange = 1
         }
