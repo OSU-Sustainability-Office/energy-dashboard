@@ -35,12 +35,7 @@ export default {
       handler: async function (value) {
         this.currentRange = -1
         if (this.campaign) {
-          // don't default to displaying a broken graph right after campaign starts.
-          if ((Math.floor(Date.now() / 1000) - this.campaignDateStart) > 86400) {
-            this.currentRange = 2
-          } else {
-            this.currentRange = 0
-          }
+          this.currentRange = 2
         } else {
           this.currentRange = 1
         }
@@ -97,7 +92,9 @@ export default {
         if (this.campaign && value === 2) {
           dateStart = this.campaignDateStart
         }
+
         for (let block of this.blocks) {
+          // if (!block.promise) continue
           await block.promise
           this.$store.commit(block.path + '/dateInterval', dateInterval)
           this.$store.commit(block.path + '/intervalUnit', intervalUnit)

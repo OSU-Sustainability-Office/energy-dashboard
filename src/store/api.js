@@ -16,6 +16,8 @@ function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP
   let allowCredentials = true
   if (process.env.VUE_APP_ROOT_API === 'http://localhost:3000') {
     allowCredentials = false
+    // increase timeout since it's slow locally testing.
+    timeoutMS = timeoutMS * 4
   }
   if (headers) {
     return axios(base + '/' + route, { method: method, data: data, withCredentials: allowCredentials, timeout: timeoutMS, headers: headers })

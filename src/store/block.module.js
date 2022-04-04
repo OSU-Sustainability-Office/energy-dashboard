@@ -289,6 +289,7 @@ const actions = {
     for (let mod of store.getters.modifiers) {
       await mod.postData(this, store, data)
     }
+    // console.log(data, 'is chart data!')
     return data
   }
 }

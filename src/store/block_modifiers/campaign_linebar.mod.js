@@ -104,6 +104,7 @@ export default class CampaignLineBarModifier {
 
     let current = data.datasets[1].data
     let baseline = data.datasets[0].data
+
     let colors = []
     this.data.accumulatedPercentage = 0
     for (let i in current) {
