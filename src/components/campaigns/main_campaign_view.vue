@@ -27,6 +27,7 @@
                 <switchButtons :blocks='blocks' :campaign='true' :days='days' :campaignDateStart='campaignStart' :campaignDateEnd='campaignEnd' :forceUpdate='true' />
               </el-col>
             </el-row>
+            <!--<linechart v-if="loaded" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors' />-->
             <chartController :path='blockPath' :randomColors='1' class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '340px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :invertColors='true' :height='362'/>
           </div>
         </el-col>
@@ -46,10 +47,12 @@ import chartController from '@/components/charts/chartController'
 import buildingList from '@/components/campaigns/campaign_building_list'
 import reductionTips from '@/components/campaigns/campaign_reduction_tips'
 import switchButtons from '@/components/map/time_switch_buttons_big'
+import linechart from '@/components/charts/linechart.js'
 
 export default {
   components: {
     heropicture,
+    linechart,
     chartController,
     buildingList,
     reductionTips,
