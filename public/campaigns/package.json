@@ -1,0 +1,27 @@
+{
+  "name": "campaigns",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5050",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "chart.js": "^3.7.1",
+    "elements-ui": "^0.4.3",
+    "pinia": "^2.0.13",
+    "vue": "^3.2.31",
+    "vue-chartjs": "^4.0.4",
+    "vue-i18n": "^8.27.1"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.1.0",
+    "@vitejs/plugin-vue": "^2.3.1",
+    "@vue/eslint-config-prettier": "^7.0.0",
+    "eslint": "^8.5.0",
+    "eslint-plugin-vue": "^8.2.0",
+    "prettier": "^2.5.1",
+    "vite": "^2.9.1"
+  }
+}
