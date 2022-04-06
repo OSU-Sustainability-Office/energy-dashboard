@@ -144,6 +144,7 @@ export default {
   methods: {
     updateChart: function () {
       if (!this.path) return
+      if (!this.$store.getters[this.path]) return
       this.loading = true
       this.$store.dispatch(this.path + '/getData').then(data => {
         if (this.chart && (this.graphType === 1 || this.graphType === 2) && data.datasets.length >= 1 && data.datasets[0].data.length >= 1) {
