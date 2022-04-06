@@ -50,8 +50,8 @@ export default {
         }
         blocks.sort((a, b) => {
           try {
-            const aPercentage = this.accumulatedPercentage(a.path) // this.$store.getters[a.path + '/modifierData']('campaign_linebar').accumulatedPercentage
-            const bPercentage = this.accumulatedPercentage(b.path) // this.$store.getters[b.path + '/modifierData']('campaign_linebar').accumulatedPercentage
+            const aPercentage = this.accumulatedPercentage(a.path)
+            const bPercentage = this.accumulatedPercentage(b.path)
             if (aPercentage > bPercentage) {
               return 1
             } else {
@@ -74,7 +74,10 @@ export default {
       }
     },
     accumulatedPercentage: function (path) {
-      return this.$store.getters[path + '/modifierData']('campaign_linebar').accumulatedPercentage
+      if (this.$store.getters[path + '/modifierData']) {
+        return this.$store.getters[path + '/modifierData']('campaign_linebar').accumulatedPercentage
+      }
+      return undefined
     },
     place: function (path) {
       let place = this.$store.getters[path + '/modifierData']('campaign_linebar').rank
@@ -82,7 +85,7 @@ export default {
     },
     computedColor: function (path) {
       if (!this.$store.getters[path + '/modifierData']('campaign_linebar')) return
-      const percentage = this.accumulatedPercentage(path) // this.$store.getters[path + '/modifierData']('campaign_linebar').accumulatedPercentage
+      const percentage = this.accumulatedPercentage(path)
       // #d62326 - Bottom Red
       // #19a23a - Top Green
       const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]

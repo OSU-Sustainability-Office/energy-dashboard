@@ -44,10 +44,8 @@ export default {
     }
   },
   async mounted () {
-    // await this.$store.dispatch('map/allBuildingPromise')
     await this.$store.dispatch('campaigns/loadCampaigns')
     this.loaded = true
-    // this.$store.dispatch('campaigns/getCampaigns').then(campaigns => {
     for (let camp of this.$store.getters['campaigns/campaigns']) {
       if (this.checkDate(camp.dateEnd)) {
         this.currentCampaigns.push(camp)
@@ -57,7 +55,6 @@ export default {
     }
     this.currentCampaigns.sort((a, b) => { return (new Date(b.dateEnd)).getTime() - (new Date(a.dateEnd)).getTime() })
     this.pastCampaigns.sort((a, b) => { return (new Date(b.dateEnd)).getTime() - (new Date(a.dateEnd)).getTime() })
-    // })
   },
   methods: {
     checkDate: function (end) {

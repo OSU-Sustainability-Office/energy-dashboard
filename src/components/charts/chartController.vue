@@ -144,11 +144,10 @@ export default {
   methods: {
     updateChart: function () {
       if (!this.path) return
+      if (!this.$store.getters[this.path]) return
       this.loading = true
       this.$store.dispatch(this.path + '/getData').then(data => {
         if (this.chart && (this.graphType === 1 || this.graphType === 2) && data.datasets.length >= 1 && data.datasets[0].data.length >= 1) {
-          // this.chart.options.scales.yAxes[0].scaleLabel.labelString = this.buildLabel('y')
-          // this.chart.options.scales.xAxes[0].scaleLabel.labelString = this.buildLabel('x')
           this.chart.update()
           let timeDif = (new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x)).getTime() - (new Date(data.datasets[0].data[0].x)).getTime()
           let dif = 0
@@ -165,6 +164,11 @@ export default {
         }
         this.chartData = data
         this.loading = false
+        console.log('done loading!', this.path, data)
+        // this.$store.getters[this.path]
+      }).catch(err => {
+        console.log('could not load data', err)
+        this.loading = true
       })
     },
     unit: function (index) {

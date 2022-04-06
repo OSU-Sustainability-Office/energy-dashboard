@@ -1,9 +1,6 @@
 <!--
-@Author: Brogan Miner <Brogan>
-@Date:   2018-12-24T13:56:21-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-04-09T11:33:36-07:00
+  Filename: main_campaign_view.vue
+  Info: The main graphic page for a campaign.
 -->
 <template>
   <el-row class='stage'>
@@ -27,9 +24,10 @@
                 {{ currentTitle }}
               </el-col>
               <el-col :span='12' class='timeSwitchButtons'>
-                <switchButtons :blocks='blocks' :campaign='true' :days='days' :campaignDateStart='campaignStart' :campaignDateEnd='campaignEnd' :forceUpdate="true" />
+                <switchButtons :blocks='blocks' :campaign='true' :days='days' :campaignDateStart='campaignStart' :campaignDateEnd='campaignEnd' :forceUpdate='true' />
               </el-col>
             </el-row>
+            <!--<linechart v-if="loaded" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors' />-->
             <chartController :path='blockPath' :randomColors='1' class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '340px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :invertColors='true' :height='362'/>
           </div>
         </el-col>
@@ -49,10 +47,12 @@ import chartController from '@/components/charts/chartController'
 import buildingList from '@/components/campaigns/campaign_building_list'
 import reductionTips from '@/components/campaigns/campaign_reduction_tips'
 import switchButtons from '@/components/map/time_switch_buttons_big'
+import linechart from '@/components/charts/linechart.js'
 
 export default {
   components: {
     heropicture,
+    linechart,
     chartController,
     buildingList,
     reductionTips,
