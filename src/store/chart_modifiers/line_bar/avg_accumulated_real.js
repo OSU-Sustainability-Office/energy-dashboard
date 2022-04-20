@@ -103,7 +103,14 @@ export default class LineAvgModifier {
         console.log(error)
       }
     }
-    chartData.data = returnData
+    console.log(returnData)
+    // Prevent corrupted data from getting returned
+    if (returnData.filter(o => !isNaN(o.y) && o.y > -1).length > 0) {
+      chartData.data = returnData
+    } else {
+      chartData.data = []
+    }
+    console.log(chartData.data)
   }
 
   /*

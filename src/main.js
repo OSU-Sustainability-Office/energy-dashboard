@@ -25,8 +25,9 @@ Vue.use(elm, { locale: locale })
 Vue.use(AsyncComputed)
 
 // Should probably offload this to a .env
-Vue.config.debug = false
-Vue.config.devtools = false
+let REMINDER = "ReMEmBER TO RESET THE VALUES HERE FRIENDO"
+Vue.config.debug = true
+Vue.config.devtools = true
 Vue.config.lang = 'en'
 
 /* eslint-disable no-new */

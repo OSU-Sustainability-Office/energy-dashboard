@@ -370,7 +370,7 @@ const actions = {
   //  classInt: An integer that corresponds to the type of meter we are reading from
   async getData (store, payload) {
     // First, attempt to load a cache from indexDB (if the cache is empty)
-    await this.dispatch('dataStore/loadIndexedDB')
+    // await this.dispatch('dataStore/loadIndexedDB')
 
     // Does the cache contain the data?
     let missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
@@ -422,7 +422,7 @@ const actions = {
       })
       try {
         // add all cached instances to the indexedDB
-        await this.dispatch('dataStore/addCacheToIndexedDB')
+        // await this.dispatch('dataStore/addCacheToIndexedDB')
       } catch (e) {
         console.log(e)
         console.log('Failed to write new datums to the persistent cache.')
