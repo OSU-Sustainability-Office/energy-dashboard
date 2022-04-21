@@ -1,15 +1,9 @@
 /*
- * @Author: Brogan
- * @Date:   Saturday August 3rd 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday August 3rd 2019
- * @Copyright:  Oregon State University 2019
- */
+  Filename: campaign.module.js
+  Info: Logical vuex-store instance of a campaign
+*/
 
-// import API from './api.js'
-// import Building from './building.module.js' // For creating buildings in VueX
 import Block from './block.module.js' // For building the blocks for this campaign
-// import Chart from './chart.module.js' // Used during the block building process
 
 const state = () => {
   return {
@@ -103,16 +97,6 @@ const actions = {
           }))
         }
         await Promise.all(dataPromise)
-        sortList.sort((a, b) => (a.value > b.value) ? 1 : -1)
-        for (let i = 0; i < 3; i++) {
-          if (i >= sortList.length) break
-          await this.dispatch(sortList[i].path + '/updateModifier', {
-            name: 'campaign_linebar',
-            data: {
-              rank: i
-            }
-          })
-        }
         resolve()
       }))
     }

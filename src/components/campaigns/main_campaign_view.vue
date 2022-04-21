@@ -16,12 +16,13 @@
         <el-alert
           title="The Dashboard is having some issues right now."
           type="warning"
+          :closable="false"
         >
           <a href="/kw22/" style="font-size:30px;text-decoration: underline;" target="_blank">To view the current Kilowatt Crackdown Standing click here!</a>
         </el-alert>
       </el-row>
       <!-- Charts and the building selection list -->
-      <el-row class='controlRow'>
+      <el-row class='controlRow' v-if="loaded">
         <el-col :span='8' class='buildingContainer'>
           <buildingList v-model='blockPath' :loaded='loaded' :path='campaignPath'/>
         </el-coL>
@@ -35,12 +36,18 @@
                 <switchButtons :blocks='blocks' :campaign='true' :days='days' :campaignDateStart='campaignStart' :campaignDateEnd='campaignEnd' :forceUpdate='true' />
               </el-col>
             </el-row>
-            <!--<linechart v-if="loaded" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors' />-->
             <chartController :path='blockPath' :randomColors='1' class="chart" :styleC="{ 'display': 'inline-block', 'width': '98%','height': '340px', 'padding-right': '0.5em','padding-left': '0.5em','padding-top': '1em' }" :invertColors='true' :height='362'/>
           </div>
         </el-col>
       </el-row>
-
+      <!--Loading message-->
+      <el-row v-else>
+        <el-col :span='24'>
+          <el-alert title="Loading..." :closable="false" type="info">
+            <!--TODO: add loading status message here-->
+          </el-alert>
+        </el-col>
+      </el-row>
       <!-- Reduction tips at the bottom of the page -->
       <el-row>
         <reductionTips />
@@ -55,12 +62,10 @@ import chartController from '@/components/charts/chartController'
 import buildingList from '@/components/campaigns/campaign_building_list'
 import reductionTips from '@/components/campaigns/campaign_reduction_tips'
 import switchButtons from '@/components/map/time_switch_buttons_big'
-import linechart from '@/components/charts/linechart.js'
 
 export default {
   components: {
     heropicture,
-    linechart,
     chartController,
     buildingList,
     reductionTips,

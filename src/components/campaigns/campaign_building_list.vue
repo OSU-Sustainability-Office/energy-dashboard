@@ -80,8 +80,7 @@ export default {
       return undefined
     },
     place: function (path) {
-      let place = this.$store.getters[path + '/modifierData']('campaign_linebar').rank
-      return place + 1
+      return this.blocks.map(b => b.path).indexOf(path) + 1
     },
     computedColor: function (path) {
       if (!this.$store.getters[path + '/modifierData']('campaign_linebar')) return
