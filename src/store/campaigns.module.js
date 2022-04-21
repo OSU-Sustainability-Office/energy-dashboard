@@ -28,7 +28,7 @@ const actions = {
           const campaignPath = store.getters.path + '/' + campaign
 
           this.registerModule(campaignPath.split('/'), Campaign)
-          console.log(c, 'REGISTERED')
+          // console.log(c, 'REGISTERED')
           // store.dispatch(campaign + '/buildBlocks', c.meterGroupIDs) // Create the graph blocks for this campaign
           store.commit(campaign + '/meterGroupIds', c.meterGroupIDs)
           store.commit(campaign + '/path', campaignPath)

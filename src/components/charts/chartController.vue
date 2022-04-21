@@ -144,7 +144,7 @@ export default {
   methods: {
     updateChart: function () {
       if (!this.path) return
-      if (!this.$store.getters[this.path]) return
+      // if (!this.$store.getters[this.path]) return
       this.loading = true
       // console.log('calling load boii')
       this.$store.dispatch(this.path + '/getData').then(data => {
@@ -165,7 +165,7 @@ export default {
         }
         this.chartData = data
         this.loading = false
-        console.log('done loading!', this.path, data)
+        // console.log('done loading!', this.path, data)
         // this.$store.getters[this.path]
       }).catch(err => {
         console.log('could not load data', err)
