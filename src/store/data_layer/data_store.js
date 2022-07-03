@@ -1,7 +1,7 @@
 /*
  * Filename: data_store.js
  * Info:
- *  This file provides a persistent cache for time series energy data. The
+ *  This file provides a (semi-)persistent cache for time series energy data. The
  *  goal is to accumulate data in this datastore as the user navigates around the
  *  energy dashboard. As an optimization, data will be read from this datastore
  *  before any additional data is requested from the API.
@@ -16,6 +16,18 @@
  *  range to view a month of data (from 6/26/2020 to 7/25/2020). Since we already
  *  have data from 7/19-7/25 stored in the local datastore, only the data from
  *  6/26-7/19 will be requested from the API.
+ *
+ * UPDATE: 5/25/22
+ * So, there's a slight problem with our persistent cache: there's no efficient browser API
+ * for storing large quantitites of meter-data.  Using localStorage is insufficient as its
+ * capacity is easily overloaded, and indexedDB, while capable of storing large quantities
+ * of data, is incredibly slow (https://rxdb.info/slow-indexeddb.html).  There are ways to
+ * optimize its performance via batch-ing requests, but at the current moment it seems logical
+ * to offload performance costs to the API side of things to maintain the usability of the dashboard.
+ *
+ * The persistent storage API is still enbabled for batchData requests (e.g. for the LINc building)
+ * but for non-batched meter requests (the majority of the dashboard requests) we're just going to
+ * not persistently store the meter data on the user-end.
  */
 
 import API from '../api.js'
@@ -369,9 +381,7 @@ const actions = {
   //  uom: the unit of measure/metering point to request data for
   //  classInt: An integer that corresponds to the type of meter we are reading from
   async getData (store, payload) {
-    // First, attempt to load a cache from indexDB (if the cache is empty)
-    // await this.dispatch('dataStore/loadIndexedDB')
-
+    // First, check the non-persistent cahce object:
     // Does the cache contain the data?
     let missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
       meterId: payload.meterId,
@@ -389,7 +399,7 @@ const actions = {
         promises.push(API.data(payload.meterId, interval[0], interval[1], payload.uom, payload.classInt))
       })
 
-      // add to request store so we don't re-request this data
+      // add to request store so we don't re-request this data in this session
       this.commit('dataStore/addToRequestStore', {
         meterId: payload.meterId,
         start: payload.start,
@@ -420,13 +430,6 @@ const actions = {
           })
         })
       })
-      try {
-        // add all cached instances to the indexedDB
-        // await this.dispatch('dataStore/addCacheToIndexedDB')
-      } catch (e) {
-        console.log(e)
-        console.log('Failed to write new datums to the persistent cache.')
-      }
     }
 
     // Retrieve the data from the cache
@@ -449,6 +452,7 @@ const actions = {
     // Reformat the data so that it matches the API's format
     // TODO: JRW 8.13.2020 Someone (probably me) needs to standardize how data is passed around the dashboard.
     //       This reformatting issue should work itself out if we make every component consume a standardized datum class instance.
+    // TODO: MAD 5.25.2022 ^ That is a good idea, I should do that.
     let dataArray = []
     cacheKeys.forEach(key => {
       let dataObj = {}
@@ -479,13 +483,13 @@ const mutations = {
       Basically we use a "range-set" to keep track of which meter data ranges we've already
       queried during a user's session.  This makes it so we minimize redundant requests for data
       that won't exist in the database.  We don't persist this data since it's concievable that
-      our database will acquire the data at some point, but unlikely it will occur during a
+      our database will acquire the data at some point, but it's unlikely it will occur during a
       single user session.
 
       The range set works by storing a sorted array of tuples containing a start and end date for data
-      of form (starttime, endtime)
+      of form (start time, end time)
 
-      Like for meterID 15 and the unit of measurement of `accumulated_real`: [(143500, 134560), (134590, 145000)]
+      Like for meterID = 15 and the unit of measurement of `accumulated_real`: [(143500, 134560), (134590, 145000)]
 
       When we add another range to the data, we push that tuple into our range-set and perform a reduction
       to merge overlapping ranges:
