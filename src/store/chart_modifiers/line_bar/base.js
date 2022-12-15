@@ -1,8 +1,8 @@
 /**
-  Filename: accumulated_real.js
+  Filename: base.js
   Info: Chart math & setup for accumulated real meter point.
 */
-export default class LineAccumulatedModifier {
+export default class LineBaseModifier {
   constructor () {
     this.data = {}
   }
