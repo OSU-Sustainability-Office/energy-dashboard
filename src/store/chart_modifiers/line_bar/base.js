@@ -7,6 +7,9 @@
  */
 
 export default class LineBaseModifier {
+  constructor () {
+    this.data = {}
+  }
   /*
     Description: Called after getData function of chart module. Create
     a new class following this template if a new modifier type is needed
@@ -41,6 +44,8 @@ export default class LineBaseModifier {
     let resultDataObject = chartData.data
     let returnData = []
     let delta = 1
+    let startDate = (new Date((payload.dateStart) * 1000))
+    let monthDays = 1
     switch (payload.intervalUnit) {
       case 'minute':
         delta = 60
@@ -50,6 +55,10 @@ export default class LineBaseModifier {
         break
       case 'day':
         delta = 86400
+        break
+      case 'month':
+        monthDays = (new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0)).getDate()
+        delta = 60 * 60 * 24 * monthDays
         break
     }
     delta *= payload.dateInterval
@@ -92,5 +101,25 @@ export default class LineBaseModifier {
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
+    let delta = 1
+    let dataDate = (new Date((payload.dateStart) * 1000))
+    switch (payload.intervalUnit) {
+      case 'minute':
+        delta = 60
+        break
+      case 'hour':
+        delta = 3600
+        break
+      case 'day':
+        delta = 86400
+        break
+      case 'month':
+        let monthDays = (new Date(dataDate.getFullYear(), dataDate.getMonth(), 0)).getDate()
+        if (dataDate.getDate() > monthDays) monthDays = dataDate.getDate()
+        delta = 60 * 60 * 24 * monthDays
+        break
+    }
+    delta *= payload.dateInterval
+    payload.dateStart = (payload.dateStart -  delta) - (payload.dateStart % 900)
   }
 }

@@ -9,7 +9,6 @@ export default class LineAccumulatedModifier {
   /*
     Description: Called after getData function of chart module. Create
     a new class following this template if a new modifier type is needed
-
     Arguments:
       - chartData (object)
         {
@@ -32,7 +31,6 @@ export default class LineAccumulatedModifier {
         }
       - store (Vuex store)
       - module: (vuex module) module dispatching this function call
-
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
@@ -101,7 +99,6 @@ export default class LineAccumulatedModifier {
   /*
     Description: Called before getData function of chart module. Create
     a new class following this template if a new modifier type is needed
-
     Arguments:
       - payload (object)
         {
@@ -114,7 +111,6 @@ export default class LineAccumulatedModifier {
         }
       - store (Vuex store)
       - module: (vuex module) module dispatching this function call
-
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
