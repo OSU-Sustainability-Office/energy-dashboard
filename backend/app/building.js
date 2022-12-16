@@ -13,6 +13,7 @@ const User = require('/opt/nodejs/user.js')
 exports.all = async (event, context) => {
   let response = new Response(event)
   response.body = JSON.stringify((await Building.all()).map(o => o.data))
+  response.headers['Content-Type'] = 'application/json'
   return response
 }
 
