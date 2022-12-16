@@ -42,10 +42,10 @@ export default {
   },
   buildingFeature: async (payload) => {
     return (await callAPI(
-      `way/${payload}/full`,
+      `interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`,
       null,
       'get',
-      'https://api.openstreetmap.org/api/0.6',
+      'https://maps.mail.ru/osm/tools/overpass/api',
       {
         'Accept': 'text/xml'
       })).data
