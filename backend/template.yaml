@@ -24,6 +24,7 @@ Globals:
       - image~1jpeg
       - application/octet-stream
       - multipart/form-data
+    MinimumCompressionSize: 80000
 Parameters:
   LambdaCommonLayer:
     Type: String
