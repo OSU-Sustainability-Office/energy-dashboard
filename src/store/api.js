@@ -1,7 +1,7 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true
 
-function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP_ROOT_API, headers = null, timeoutMS = 72000) {
+function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP_ROOT_API, headers = null, timeoutMS = 72000, allowCredentials = true) {
   /* This if-clause for "allowCredentials" deserves an explanation:
      Locally, when using "sam local start-api" the response class in the lambda common layer
      will reply with a HTTP headers allow-origin set to "*" and the credentials flag to true.
@@ -13,7 +13,6 @@ function callAPI (route, data = null, method = 'get', base = process.env.VUE_APP
      NOTE: In production we do want to set withCredentials to true so we can use HTTPS & cookies
      for the user login session.
   */
-  let allowCredentials = true
   if (process.env.VUE_APP_ROOT_API === 'http://localhost:3000') {
     allowCredentials = false
     // increase timeout since it's slow locally testing.
@@ -42,13 +41,15 @@ export default {
   },
   buildingFeature: async (payload) => {
     return (await callAPI(
-      `way/${payload}/full`,
+      `interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`,
       null,
       'get',
-      'https://api.openstreetmap.org/api/0.6',
+      'https://maps.mail.ru/osm/tools/overpass/api',
       {
         'Accept': 'text/xml'
-      })).data
+      },
+      72000,
+      false)).data
   },
   users: async () => {
     return (await callAPI('admin/users')).data
