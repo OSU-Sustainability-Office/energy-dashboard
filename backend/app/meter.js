@@ -9,6 +9,8 @@ const Response = require('/opt/nodejs/response.js')
 const User = require('/opt/nodejs/user.js')
 const MultipartParse = require('/opt/nodejs/node_modules/aws-lambda-multipart-parser')
 const ZLib = require('zlib')
+const Compress = require('/opt/nodejs/models/compress.js')
+
 
 exports.get = async (event, context) => {
   let response = new Response(event)
@@ -68,7 +70,7 @@ exports.batchData = async (event, context) => {
     })
   }
   response.body = JSON.stringify(response.body)
-  return response
+  return Compress(event, response)
 }
 
 // GET data for single meter
@@ -80,7 +82,7 @@ exports.data = async (event, context) => {
     event.queryStringParameters['endDate'],
     event.queryStringParameters['meterClass']
   )))
-  return response
+  return Compress(event, response)
 }
 
 // Meter Data Upload Route (currently only for solar panels)

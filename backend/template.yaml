@@ -24,7 +24,6 @@ Globals:
       - image~1jpeg
       - application/octet-stream
       - multipart/form-data
-    MinimumCompressionSize: 80000
 Parameters:
   LambdaCommonLayer:
     Type: String
@@ -69,7 +68,7 @@ Resources:
         - !Ref EnergyModelLayer
       Events:
         Building:
-          Type: Api
+          Type: HttpApi
           Properties:
             Path: /allbuildings
             Method: get
@@ -219,7 +218,7 @@ Resources:
         - !Ref EnergyModelLayer
       Events:
         Building:
-          Type: Api
+          Type: HttpApi
           Properties:
             Path: /data
             Method: get
@@ -235,7 +234,7 @@ Resources:
         - !Ref EnergyModelLayer
       Events:
         Building:
-          Type: Api
+          Type: HttpApi
           Properties:
             Path: /batchData
             Method: post
