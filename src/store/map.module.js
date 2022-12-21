@@ -37,23 +37,34 @@ const actions = {
   async loadGeometry (store) {
     if (store.getters.jsonPromise === null) {
       store.commit('jsonPromise', new Promise(async (resolve, reject) => {
-        let geoPromise = []
         await store.getters.promise
-        // Query for Map Geometry if it exists
-        for (let building of store.getters.buildings.filter(b => b.mapId)) {
-          geoPromise.push(store.dispatch('buildingJSON', building.mapId).then(json => {
-            let way
-            for (let feature of json.features) {
-              if (feature.id.includes('way')) {
-                feature.properties.id = building.id
-                feature.properties.group = building.group
-                way = feature
-              }
-            }
-            this.commit(building.path + '/geoJSON', way)
-          }))
+
+        // Fetch Building Geometry from Overpass if it exists
+        const buildings = store.getters.buildings.filter(b => b.mapId)
+        const IDs = buildings.map(b => b.mapId).join(',')
+        const geometryOSM = await API.buildingFeature(IDs)
+        const buildingParser = new DOMParser()
+        const buildingData = buildingParser.parseFromString(geometryOSM, 'text/xml')
+        const JSON = Geo(buildingData)
+
+        // Setup dictionary
+        const ways = new Map()
+        for (let feature of JSON.features) {
+          if (feature.id.includes('way')) {
+            ways.set(feature.id, feature)
+          }
         }
-        await Promise.all(geoPromise)
+
+        // Commit GeoJSON to each building module
+        for (let building of buildings) {
+          let way = ways.get(`way/${building.mapId}`)
+          if (way) {
+            way.properties.id = building.id
+            way.properties.group = building.group
+            this.commit(building.path + '/geoJSON', way)
+          }
+        }
+
         resolve()
       }))
     }
@@ -78,14 +89,6 @@ const actions = {
 
   async allDevices (store, payload) {
     return API.devices()
-  },
-
-  async buildingJSON (store, id) {
-    let buildingOSM = await API.buildingFeature(id)
-    let buildingParser = new DOMParser()
-    let buildingData = buildingParser.parseFromString(buildingOSM, 'text/xml')
-    let buildingJSON = Geo(buildingData)
-    return buildingJSON
   },
 
   async boundedWays (store, payload) {
