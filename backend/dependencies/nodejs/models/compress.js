@@ -8,7 +8,6 @@ function compress(event, response) {
   }
 
   const encodingHeader = event.headers['Accept-Encoding']
-  console.log(encodingHeader)
   const encodings = new Set()
   if (encodingHeader) {
     encodingHeader.split(',').forEach((encoding) => {
@@ -19,7 +18,6 @@ function compress(event, response) {
   if (!response.headers) {
     response.headers = {}
   }
-  console.log(encodings)
   if (encodings.has('br')) {
     response.headers['Content-Encoding'] = 'br'
     response.isBase64Encoded = true

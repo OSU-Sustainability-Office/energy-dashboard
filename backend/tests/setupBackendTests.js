@@ -60,7 +60,8 @@ const modelMocks = [
   'models/meter.js',
   'models/meter_group.js',
   'models/building.js',
-  'models/campaign.js'
+  'models/campaign.js',
+  'models/compress.js'
 ]
 for (modelMock of modelMocks) {
   const mock = require(`../dependencies/nodejs/${modelMock}`)
