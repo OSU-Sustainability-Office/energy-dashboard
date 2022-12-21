@@ -149,10 +149,11 @@ export default {
   display: block;
   position: absolute;
   left: 100%;
-  bottom: 8%;
+  bottom: 0%;
   width: 450px !important;
   margin-left: -470px;
-  height: 85% !important;
+  height: 97% !important;
+  overflow: scroll;
 
 }
 .main {
