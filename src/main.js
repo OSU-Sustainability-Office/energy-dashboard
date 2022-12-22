@@ -38,3 +38,7 @@ var v = new Vue({
   render: h => h(App)
 })
 window.vue = v
+Vue.prototype.$window = window
+Vue.prototype.$WINDOW_HEIGHT = 700
+// 800+ height may be more accurate for final product, 700 for testing
+// Vue.prototype.$WINDOW_HEIGHT = 800
