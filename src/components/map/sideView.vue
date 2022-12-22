@@ -5,7 +5,7 @@
   NOTE FOR LAPTOP SCREEN SIZES: Reference src/main.js for $window and $WINDOW_HEIGHT values
 -->
 <template>
-  <div class = "smaller-screen" v-if = "$window.innerHeight < $WINDOW_HEIGHT">
+  <div class = "smaller-screen" v-if = "$window.innerHeight <= $WINDOW_HEIGHT">
     <el-row class='stage-small'>
       <el-row class='main-small'>
         <el-row class="title">
