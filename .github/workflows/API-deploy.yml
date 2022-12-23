@@ -7,14 +7,14 @@ jobs:
   run-npm-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+           node-version: 16
       - name: npm install and build
         run: |
           npm install
           npm run build-stage
-      - uses: actions/upload-artifact@v2
-        with:
-          node-version: 16
 
   deploy-sam:
     name: Deploy Serveless API
@@ -28,9 +28,9 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
-    - run: |
-        working-directory: backend
+    - name: Deploy
+      working-directory: backend
+      run: |
         sam validate
         sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
         sam deploy --template-file ./packaged.yaml --stack-name energy --s3-bucket energy-dashboard --capabilities CAPABILITY_IAM --region us-west-2
-        
