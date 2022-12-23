@@ -32,7 +32,7 @@ Globals:
         AllowHeaders: 
           - "'X-Forwarded-For'"
         AllowOrigins:
-          - "oregonstate.edu"
+          - "https://dashboard.sustainability.oregonstate.edu"
         MaxAge: 600
         AllowCredentials: True
 Parameters:
