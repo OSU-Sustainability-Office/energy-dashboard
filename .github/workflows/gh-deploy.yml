@@ -6,6 +6,18 @@ on:
       - gh-pages  # change later
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: unit tests
+        working-directory: backend
+        run: |
+          docker-compose build
+          docker-compose run --rm test
+          docker-compose down
+
   build-test-deploy:
     runs-on: ubuntu-latest
     steps:
@@ -15,18 +27,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
-      - name: aws-creds
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-         aws-region: us-west-2
-      - name: unit tests
-        working-directory: backend
-        run: |
-          docker-compose build
-          docker-compose run --rm test
-          docker-compose down
       - run: npm install
       - run: npm run build
       - name: Deploy
