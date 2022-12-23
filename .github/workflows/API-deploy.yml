@@ -34,4 +34,7 @@ jobs:
       run: |
         sam validate
         sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
-        sam deploy --template-file ./packaged.yaml --stack-name energy --no-fail-on-empty-changeset --s3-bucket energy-dashboard --capabilities CAPABILITY_IAM --region us-west-2
+        sam deploy --template-file ./packaged.yaml --stack-name energy --no-fail-on-empty-changeset --capabilities CAPABILITY_IAM --region us-west-2
+    - name: deploy frontend
+      run: |
+        aws s3 sync ./dist s3://energy-dashboard
