@@ -1,11 +1,11 @@
-name: gh pages deploy test
+name: gh pages deploy
 on:
   push:
     branches:
       - master
 
 jobs:
-  test:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,7 +17,7 @@ jobs:
           docker-compose run --rm test
           docker-compose down
 
-  build-deploy:
+  build-deploy-gh-pages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

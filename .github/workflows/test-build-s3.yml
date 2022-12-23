@@ -1,4 +1,3 @@
-
 name: S3 Frontend Test Build
 on:
   push:
@@ -7,7 +6,7 @@ on:
       - gh-pages
 
 jobs:
-  test:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
