@@ -30,7 +30,7 @@ jobs:
       run: |
         sam validate
         sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
-        sam deploy --template-file /home/runner/work/energy-dashboard/energy-dashboard/backend/packaged.yaml --stack-name energy
+        sam deploy --template-file /home/runner/work/energy-dashboard/energy-dashboard/backend/packaged.yaml --stack-name energy --no-confirm-changeset --no-fail-on-empty-changeset
     - name: deploy frontend
       run: |
         aws s3 sync ./dist s3://energy-dashboard
