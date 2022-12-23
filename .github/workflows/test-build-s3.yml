@@ -1,4 +1,4 @@
-name: S3 Frontend Test Build
+name: S3 Test Build
 on:
   push:
     branches-ignore:
@@ -7,6 +7,7 @@ on:
 
 jobs:
   unit-tests:
+    name: Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,7 +20,7 @@ jobs:
           docker-compose down
           
   deploy-s3:
-    name: Deploy to S3 Test Build
+    name: Build / Deploy to S3 Test Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
