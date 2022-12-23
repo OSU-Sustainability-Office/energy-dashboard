@@ -25,16 +25,16 @@ jobs:
       run: |
           npm install
           npm run build-stage
-    - name: Build Backend
-      working-directory: backend
-      run: |
-        sam build --use-container
     - name: Deploy
       working-directory: backend
       run: |
         sam validate
         sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
         sam deploy --template-file ./packaged.yaml --stack-name energy --no-fail-on-empty-changeset --capabilities CAPABILITY_IAM --region us-west-2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
     - name: deploy frontend
       run: |
         aws s3 sync ./dist s3://energy-dashboard
