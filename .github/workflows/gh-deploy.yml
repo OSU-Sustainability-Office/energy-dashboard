@@ -1,9 +1,8 @@
 name: gh pages deploy test
 on:
   push:
-    branches-ignore:
+    branches:
       - master
-      - gh-pages  # change later
 
 jobs:
   test:
@@ -18,7 +17,7 @@ jobs:
           docker-compose run --rm test
           docker-compose down
 
-  build-test-deploy:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

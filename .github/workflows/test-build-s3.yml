@@ -5,8 +5,20 @@ on:
     branches-ignore:
       - master
       - gh-pages
-      - test-build-workflow # remove later
+
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: unit tests
+        working-directory: backend
+        run: |
+          docker-compose build
+          docker-compose run --rm test
+          docker-compose down
+          
   deploy-s3:
     name: Deploy to S3 Test Build
     runs-on: ubuntu-latest
@@ -21,12 +33,6 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
-    - name: unit tests
-      working-directory: backend
-      run: |
-        docker-compose build
-        docker-compose run --rm test
-        docker-compose down
     - name: npm install and build frontend
       run: |
           npm install
