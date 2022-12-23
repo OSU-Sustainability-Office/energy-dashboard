@@ -1,0 +1,24 @@
+name: SAM Deployment
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy-sam:
+    name: Deploy Serveless API
+    runs-on: ubuntu-latest
+    steps:
+    - working-directory: backend
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v2
+    - uses: aws-actions/setup-sam@v1
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+    - run: |
+        sam validate
+        sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
+        sam deploy --template-file ./packaged.yaml --stack-name energy --capabilities CAPABILITY_IAM;
+        
