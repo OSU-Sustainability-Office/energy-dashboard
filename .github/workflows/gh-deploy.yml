@@ -1,4 +1,4 @@
-name: gh pages deploy test
+name: gh pages deploy test # double check right domain
 on:
   push:
     branches-ignore: #change later to only trigger on master
