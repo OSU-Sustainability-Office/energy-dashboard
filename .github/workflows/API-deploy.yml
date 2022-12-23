@@ -19,10 +19,14 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
-    - name: npm install and build
+    - name: npm install and build frontend
       run: |
           npm install
           npm run build-stage
+    - name: Build Backend
+      working-directory: backend
+      run: |
+        sam build --use-container
     - name: Deploy
       working-directory: backend
       run: |
