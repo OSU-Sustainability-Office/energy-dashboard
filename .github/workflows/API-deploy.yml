@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+      with: 
+        github_token: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/setup-python@v2
     - uses: aws-actions/setup-sam@v1
     - uses: actions/setup-node@v3
@@ -33,5 +35,3 @@ jobs:
         sam validate
         sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
         sam deploy --template-file ./packaged.yaml --stack-name energy --no-fail-on-empty-changeset --s3-bucket energy-dashboard --capabilities CAPABILITY_IAM --region us-west-2
-      with: 
-        github_token: ${{ secrets.GITHUB_TOKEN }}
