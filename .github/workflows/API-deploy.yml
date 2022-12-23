@@ -2,7 +2,7 @@ name: SAM Deployment
 on:
   push:
     branches:
-      - ci-github-actions
+      - master
 jobs:
   deploy-sam:
     name: Deploy Serveless API
@@ -13,24 +13,14 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/setup-python@v2
     - uses: aws-actions/setup-sam@v1
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 12
     - uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
-    - name: npm install and build frontend
-      run: |
-          npm install
-          npm run build-stage
     - name: Deploy
       working-directory: backend
       run: |
         sam validate
         sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
         sam deploy --template-file /home/runner/work/energy-dashboard/energy-dashboard/backend/packaged.yaml --stack-name energy --no-confirm-changeset --no-fail-on-empty-changeset
-    - name: deploy frontend
-      run: |
-        aws s3 sync ./dist s3://energy-dashboard
