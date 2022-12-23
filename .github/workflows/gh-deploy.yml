@@ -28,6 +28,6 @@ jobs:
         with:
           target_branch: gh-pages
           build_dir: dist
-          fqdn: https://dashboard.sustainability.oregonstate.edu/
+          fqdn: dashboard.sustainability.oregonstate.edu
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
