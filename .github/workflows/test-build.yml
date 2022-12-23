@@ -4,9 +4,10 @@ on:
   push:
     branches-ignore:
       - master
+      - gh-pages
 jobs:
-  deploy-sam:
-    name: Deploy Serveless API
+  deploy-s3:
+    name: Deploy to S3 Test Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
