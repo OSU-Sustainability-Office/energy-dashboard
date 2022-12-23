@@ -15,7 +15,7 @@ exports.all = async (event, context) => {
   let response = new Response(event)
   response.body = JSON.stringify((await Building.all()).map(o => o.data))
   response.headers['Content-Type'] = 'application/json'
-  return Compress(event, response)
+  return response //Compress(event, response)
 }
 
 exports.get = async (event, context) => {

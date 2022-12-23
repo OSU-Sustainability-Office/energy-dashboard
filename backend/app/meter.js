@@ -70,7 +70,7 @@ exports.batchData = async (event, context) => {
     })
   }
   response.body = JSON.stringify(response.body)
-  return Compress(event, response)
+  return response //Compress(event, response)
 }
 
 // GET data for single meter
@@ -82,7 +82,7 @@ exports.data = async (event, context) => {
     event.queryStringParameters['endDate'],
     event.queryStringParameters['meterClass']
   )))
-  return Compress(event, response)
+  return response //Compress(event, response)
 }
 
 // Meter Data Upload Route (currently only for solar panels)

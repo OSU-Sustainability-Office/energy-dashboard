@@ -79,7 +79,7 @@ Resources:
         - !Ref EnergyModelLayer
       Events:
         Building:
-          Type: HttpApi
+          Type: Api
           Properties:
             Path: /allbuildings
             Method: get
@@ -229,7 +229,7 @@ Resources:
         - !Ref EnergyModelLayer
       Events:
         Building:
-          Type: HttpApi
+          Type: Api
           Properties:
             Path: /data
             Method: get
@@ -245,7 +245,7 @@ Resources:
         - !Ref EnergyModelLayer
       Events:
         Building:
-          Type: HttpApi
+          Type: Api
           Properties:
             Path: /batchData
             Method: post
