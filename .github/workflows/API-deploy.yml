@@ -4,18 +4,6 @@ on:
     branches:
       - ci-github-actions
 jobs:
-  run-npm-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-           node-version: 16
-      - name: npm install and build
-        run: |
-          npm install
-          npm run build-stage
-
   deploy-sam:
     name: Deploy Serveless API
     runs-on: ubuntu-latest
@@ -23,11 +11,16 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v2
     - uses: aws-actions/setup-sam@v1
+    - uses: actions/setup-node@v3
     - uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
+    - name: npm install and build
+      run: |
+          npm install
+          npm run build-stage
     - name: Deploy
       working-directory: backend
       run: |
