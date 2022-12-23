@@ -24,6 +24,17 @@ Globals:
       - image~1jpeg
       - application/octet-stream
       - multipart/form-data
+  HttpApi:
+    CorsConfiguration:
+        AllowMethods:
+          - GET
+          - POST
+        AllowHeaders: 
+          - "'X-Forwarded-For'"
+        AllowOrigins:
+          - "'oregonstate.edu'"
+        MaxAge: 600
+        AllowCredentials: True
 Parameters:
   LambdaCommonLayer:
     Type: String
