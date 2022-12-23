@@ -23,4 +23,4 @@ jobs:
       run: |
         sam validate
         sam package --template-file template.yaml --s3-bucket osu-so-serverless-builds --output-template-file packaged.yaml
-        sam deploy --template-file /home/runner/work/energy-dashboard/energy-dashboard/backend/packaged.yaml --stack-name energy --no-confirm-changeset --no-fail-on-empty-changeset
+        sam deploy --template-file /home/runner/work/energy-dashboard/energy-dashboard/backend/packaged.yaml --stack-name energy --capabilities CAPABILITY_IAM --region us-west-2 --no-confirm-changeset --no-fail-on-empty-changeset
