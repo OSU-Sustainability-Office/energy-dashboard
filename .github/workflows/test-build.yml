@@ -5,6 +5,7 @@ on:
     branches-ignore:
       - master
       - gh-pages
+      - test-build-workflow # remove later
 jobs:
   deploy-s3:
     name: Deploy to S3 Test Build
