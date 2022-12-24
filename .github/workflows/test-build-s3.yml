@@ -19,24 +19,26 @@ jobs:
           docker-compose run --rm test
           docker-compose down
           
-  deploy-s3:
+  build-deploy-s3:
     name: Build / Deploy to S3 Test Build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v2
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
-    - uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2
-    - name: npm install and build frontend
-      run: |
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set-up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: AWS Creds
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+      - name: npm install and build frontend
+        run: |
           npm install
           npm run build-stage
-    - name: deploy frontend
-      run: |
-        aws s3 sync ./dist s3://energy-dashboard
+      - name: deploy frontend to s3
+        run: |
+          aws s3 sync ./dist s3://energy-dashboard
