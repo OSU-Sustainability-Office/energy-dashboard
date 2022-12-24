@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - test-build-workflow #remove after checking all good
 
 jobs:
   unit-tests:
