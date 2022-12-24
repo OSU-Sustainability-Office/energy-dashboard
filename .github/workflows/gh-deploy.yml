@@ -29,9 +29,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
-      - name: npm install and build frontend
+      - name: npm install
         run: |
           npm install
+      - name: npm build frontend
+        run: |
           npm run build
       - name: deploy frontend to gh pages
         uses: crazy-max/ghaction-github-pages@v3     # https://github.com/crazy-max/ghaction-github-pages
