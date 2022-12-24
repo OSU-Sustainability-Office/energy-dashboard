@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - test-build-s3.yml #remove after checking all good
+      - test-build-workflow #remove after checking all good
 
 jobs:
   unit-tests:
