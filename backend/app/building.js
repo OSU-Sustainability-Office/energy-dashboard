@@ -9,12 +9,13 @@
 const Building = require('/opt/nodejs/models/building.js')
 const Response = require('/opt/nodejs/response.js')
 const User = require('/opt/nodejs/user.js')
+const Compress = require('/opt/nodejs/models/compress.js')
 
 exports.all = async (event, context) => {
   let response = new Response(event)
   response.body = JSON.stringify((await Building.all()).map(o => o.data))
   response.headers['Content-Type'] = 'application/json'
-  return response
+  return response //Compress(event, response)
 }
 
 exports.get = async (event, context) => {

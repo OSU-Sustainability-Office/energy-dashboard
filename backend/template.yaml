@@ -24,7 +24,17 @@ Globals:
       - image~1jpeg
       - application/octet-stream
       - multipart/form-data
-    MinimumCompressionSize: 80000
+  HttpApi:
+    CorsConfiguration:
+        AllowMethods:
+          - GET
+          - POST
+        AllowHeaders: 
+          - "'X-Forwarded-For'"
+        AllowOrigins:
+          - "https://dashboard.sustainability.oregonstate.edu"
+        MaxAge: 600
+        AllowCredentials: True
 Parameters:
   LambdaCommonLayer:
     Type: String

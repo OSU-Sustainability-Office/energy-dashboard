@@ -1,0 +1,44 @@
+name: gh pages
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: unit tests
+        working-directory: backend
+        run: |
+          docker-compose build
+          docker-compose run --rm test
+          docker-compose down
+
+  build-deploy-gh-pages:
+    name: Build / Deploy to gh-pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set-up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: npm install
+        run: |
+          npm install
+      - name: npm build frontend
+        run: |
+          npm run build
+      - name: deploy frontend to gh pages
+        uses: crazy-max/ghaction-github-pages@v3     # https://github.com/crazy-max/ghaction-github-pages
+        with:
+          target_branch: gh-pages
+          build_dir: dist
+          fqdn: dashboard.sustainability.oregonstate.edu
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

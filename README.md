@@ -1,7 +1,8 @@
 <img src='https://dashboard.sustainability.oregonstate.edu/images/readme_logo.png' height=80 />
 
 # OSU Energy Dashboard
-[![Build Status](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard.svg?branch=master)](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard)
+![Frontend Status](https://github.com/OSU-Sustainability-Office/energy-dashboard/actions/workflows/gh-deploy.yml/badge.svg)![API Status](https://github.com/OSU-Sustainability-Office/energy-dashboard/actions/workflows/API-deploy.yml/badge.svg) ![Test Build Status](https://github.com/OSU-Sustainability-Office/energy-dashboard/actions/workflows/test-build-s3.yml/badge.svg)
+
 
 
 
@@ -14,7 +15,7 @@ This Energy Dashboard has been developed by the Oregon State University Sustaina
 
 ### Testing Locally 
 
-We recommend setting up `nvm` to set your node installation to version 12 (`nvm use 12`).
+We recommend setting up `nvm` to set your node installation to version 16 (`nvm use 16`).
 
 Running `npm run serve` will run the front-end locally.
 
