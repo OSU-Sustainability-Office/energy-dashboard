@@ -1,0 +1,46 @@
+name: S3 Test Build
+on:
+  push:
+    branches-ignore:
+      - master
+      - gh-pages
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: unit tests
+        working-directory: backend
+        run: |
+          docker-compose build
+          docker-compose run --rm test
+          docker-compose down
+          
+  build-deploy-s3:
+    name: Build / Deploy to S3 Test Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set-up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: AWS Creds
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+      - name: npm install
+        run: |
+          npm install
+      - name: npm build frontend
+        run: |
+          npm run build-stage
+      - name: deploy frontend to s3
+        run: |
+          aws s3 sync ./dist s3://energy-dashboard
