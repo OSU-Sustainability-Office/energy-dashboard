@@ -1,7 +1,8 @@
 <img src='https://dashboard.sustainability.oregonstate.edu/images/readme_logo.png' height=80 />
 
 # OSU Energy Dashboard
-[![Build Status](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard.svg?branch=master)](https://travis-ci.com/OSU-Sustainability-Office/energy-dashboard)
+![Frontend Status](https://github.com/OSU-Sustainability-Office/energy-dashboard/actions/workflows/gh-deploy.yml/badge.svg)![API Status](https://github.com/OSU-Sustainability-Office/energy-dashboard/actions/workflows/API-deploy.yml/badge.svg) ![Test Build Status](https://github.com/OSU-Sustainability-Office/energy-dashboard/actions/workflows/test-build-s3.yml/badge.svg)
+
 
 
 
