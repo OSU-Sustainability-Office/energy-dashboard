@@ -93,7 +93,6 @@ export default {
           dateStart = this.campaignDateStart
         }
 
-        console.log(this.blocks)
         for (let block of this.blocks) {
           // if (!block.promise) continue
           await block.promise

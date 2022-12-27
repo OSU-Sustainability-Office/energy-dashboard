@@ -5,7 +5,7 @@
   NOTE FOR LAPTOP SCREEN SIZES: Reference src/main.js for $window and $WINDOW_HEIGHT values
 -->
 <template>
-  <div class = "smaller-screen" v-if = "$window.innerHeight <= $WINDOW_HEIGHT">
+  <div class = "smaller-screen" v-if="isLaptopScreen">
     <el-row class='stage-small'>
       <el-row class='main-small'>
         <el-row class="title">
@@ -44,7 +44,7 @@
       </el-row>
     </el-row>
   </div>
-  <div class = "bigger-screen" v-else-if = "$window.innerHeight > $WINDOW_HEIGHT">
+  <div class = "bigger-screen" v-else>
     <el-row class='stage'>
       <el-row class='main'>
         <el-row class="title">
@@ -89,11 +89,9 @@
 import chartController from '@/components/charts/chartController'
 import switchButtons from '@/components/map/time_switch_buttons_big'
 
-console.log('Inner Height: ' + window.innerHeight)  // or you can just call this in the dev browser console
-
 export default {
   name: 'sideView',
-  props: [],
+  props: {},
   components: {
     chartController, switchButtons
   },
@@ -103,11 +101,16 @@ export default {
       title: '',
       unit: 'day',
       int: 1,
-      index: 0
-
+      index: 0,
+      windowHeight: window.innerHeight,
+      windowUpdate: () => { this.windowHeight = window.innerHeight }
     }
   },
   computed: {
+
+    isLaptopScreen () {
+      return this.windowHeight <= this.$WINDOW_HEIGHT
+    },
 
     currentRange: {
       get () {
@@ -132,6 +135,12 @@ export default {
         return this.$store.getters['map/building'](this.$store.getters['modalController/data'].id)
       }
     }
+  },
+  mounted () {
+    window.addEventListener('resize', this.windowUpdate)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.windowUpdate)
   },
   methods: {
     hide: function () {
