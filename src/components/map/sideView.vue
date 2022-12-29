@@ -31,7 +31,7 @@
                 <chartController :path='block.path' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200' :invertColors='true'/>
               </el-col>
             </el-row>
-            <el-row class="buttons">
+            <el-row class="bottomButtons">
               <el-col :span='12'>
                 <el-button class='bigButton' @click="$emit('startCompare', building.id)">Compare</el-button>
               </el-col>
@@ -231,7 +231,7 @@ export default {
   overflow: hidden;
   background-color: rgb(26,26,26);
   box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
-  height: 500px;  // hard-coded value, might not be correct
+  height: 425px;  // hard-coded value, might not be correct
 }
 .title {
   padding: 0.3em;
@@ -256,14 +256,14 @@ export default {
   border-bottom: solid 1px #fff;
 }
 .media-small {
-  height: 200px;
+  height: 320px;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   // deleted white border on bottom - might need to add back
   width: 450px;
   position: absolute;
-  top: 95px;  // hard-coded value, might not be correct
+  top: 0px;  // hard-coded value, might not be correct
 }
 .graphcontrol {
   padding: 1.5em;
@@ -353,5 +353,11 @@ export default {
   background-color: $--color-black;
   color: $--color-white;
   border-color: $--color-white;
+}
+.buttonContainer {
+  height: 60px;  // reduce padding above top buttons (week / 60 days /year)
+}
+.bottomButtons {
+  height: 25px;  // might not be needed, div pokes out on inspect element otherwise, but doesn't affect button padding
 }
 </style>
