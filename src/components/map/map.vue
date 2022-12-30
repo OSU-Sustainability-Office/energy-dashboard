@@ -552,20 +552,20 @@ $sideMenu-width: 250px;
   bottom: 20px;
 }
 .resetMapButton{
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     display: flex;
     align-items: center;
     position: absolute;
     top: 11px;
     left: 55px;
-    width: 70px;
+    width: 90px;
     height: 50px;
     background-color: white;
+    border: 2px solid rgba(0,0,0,0.2);
+    background-clip: padding-box;
     border-radius: 5px;
-    border-color: gray;
-    border-style: solid;
-    border-width: 1px 1px 1px 1px;
     opacity: 1.0;
-    text-align: center;
+    justify-content: center;
     z-index: 500;
 }
 </style>
