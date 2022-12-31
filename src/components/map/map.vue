@@ -567,5 +567,6 @@ $sideMenu-width: 250px;
     opacity: 1.0;
     justify-content: center;
     z-index: 500;
+    cursor: pointer;
 }
 </style>
