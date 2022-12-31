@@ -30,6 +30,7 @@
       </el-menu>
       <div class='mapContainer' ref='mapContainer' v-loading='!mapLoaded'>
         <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map'>
+          <button class = "resetMapButton" @click="resetMap()">Reset Map</button>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json v-for='building of this.$store.getters["map/buildings"]' :key='building.id * rKey' :geojson='building.geoJSON' :options='buildingOptions' ref="geoLayer"></l-geo-json>
         </l-map>
@@ -177,6 +178,9 @@ export default {
           this.compareStories.splice(this.compareStories.indexOf(id), 1)
         }
       }
+    },
+    resetMap () {
+      this.map.setView(L.latLng(44.565, -123.2785), 15.5)
     },
     removeAllMarkers: function () {
       for (let marker of this.compareMarkers) {
@@ -546,5 +550,23 @@ $sideMenu-width: 250px;
   position: absolute;
   left: 60px;
   bottom: 20px;
+}
+.resetMapButton{
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 10px;
+    left: 55px;
+    width: 90px;
+    height: 50px;
+    background-color: white;
+    border: 2px solid rgba(0,0,0,0.2);
+    background-clip: padding-box;
+    border-radius: 4.5px;
+    opacity: 1.0;
+    justify-content: center;
+    z-index: 500;
+    cursor: pointer;
 }
 </style>
