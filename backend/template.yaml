@@ -14,6 +14,7 @@ Globals:
     # to a particular domain name, e.g. "'www.example.com'"
     Cors:
         AllowMethods: "'POST, GET'"
+        AllowHeaders: "'X-Forwarded-For'"
         AllowOrigin: "'oregonstate.edu'"
         MaxAge: "'600'"
         AllowCredentials: True
