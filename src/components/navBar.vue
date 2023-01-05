@@ -16,10 +16,12 @@
           <el-menu-item index="getStarted" :route='{path: "/getstarted"}' ref='getStartedItem'>Get Started</el-menu-item>
         </el-menu>
       </el-col>
+      <!--
       <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
         <a class='sus-nav-sign' v-if='onid && $route.path !== "/"' :href='logoutLink'>Sign Out</a>
         <a class='sus-nav-sign' v-if='!onid && $route.path !== "/"' :href='loginLink'>Sign In</a>
       </el-col>
+      -->
     </el-row>
 </template>
 <script>
