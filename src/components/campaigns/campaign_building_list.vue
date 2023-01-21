@@ -20,7 +20,9 @@
         <el-col v-if='loaded' :class='[(value === block.path) ? "buildingCol selected" : "buildingCol"]' :span='24'>
           <div :class='[(value === block.path) ? "outerClip selected" : "outerClip"]'>
             <div :class='[(value === block.path) ? "innerClip selected" : "innerClip"]' :style='`background-color:${ computedColor(block.path) };`' @click='buildingClick(block.path)'>
-              <i class="fas fa-trophy" v-if='place(block.path) <= 3 && place(block.path) >= 1'><span :class='[(value === block.path) ? "innerTrophy selected" : "innerTrophy"]'>{{ place(block.path) }}</span></i> {{ block.name }} {{ ((accumulatedPercentage(block.path) > 0) ? '+' : '') + (Math.round(100 * accumulatedPercentage(block.path)) / 100).toString() + '%' }}
+              <i class="fas fa-trophy" v-if='place(block.path) <= 3 && place(block.path) >= 1'><span :class='[(value === block.path) ? "innerTrophy selected" : "innerTrophy"]'>{{ place(block.path) }}</span></i> {{ block.name }}
+              <span v-if = "!isNaN(accumulatedPercentage(block.path))">{{ ((accumulatedPercentage(block.path) > 0) ? '+' : '') + (Math.round(100 * accumulatedPercentage(block.path)) / 100).toString() + '%' }}
+              </span><span v-else>- No Data</span>  <!-- Display "No Data" on block if NaN percentage detected-->
             </div>
           </div>
         </el-col>
@@ -61,6 +63,23 @@ export default {
             return 1
           }
         })
+
+        // Sort blocks with NaN percentages (no data) to the bottom
+        blocks.sort((a, b) => {
+          try {
+            const aPercentage = this.accumulatedPercentage(a.path)
+            const bPercentage = this.accumulatedPercentage(b.path)
+            if (isNaN(aPercentage) && !isNaN(bPercentage)) {
+              return 1
+            } else if (!isNaN(aPercentage) && isNaN(bPercentage))  {
+              return -1
+            } else {
+              return 1
+            }
+          } catch (error) {
+            return 1
+          }
+        })
         return blocks
       }
     }
@@ -83,7 +102,6 @@ export default {
       return this.blocks.map(b => b.path).indexOf(path) + 1
     },
     computedColor: function (path) {
-      let blocks = this.$store.getters[this.path + '/blocks']
       if (!this.$store.getters[path + '/modifierData']('campaign_linebar')) return
       const percentage = this.accumulatedPercentage(path)
       // #d62326 - Bottom Red
@@ -93,22 +111,6 @@ export default {
       const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
       const compare = Math.abs(percentage) / 7.5
       const result = []
-
-      // NOTE: defined $this.BLOCK_ITERATOR in energy-dashboard/main.js as a global variable, as I didn't know how to stop
-      // the iterator from resetting to 0 otherwise.
-
-      // reset iterator to stop it going too high
-      if (this.$BLOCK_ITERATOR > 6) {
-        this.$BLOCK_ITERATOR = 0
-      }
-
-      // If block with NaN percentage is found, it is removed from the blocks array
-      if (isNaN(percentage)) {
-        blocks.splice(this.$BLOCK_ITERATOR, 1)
-      }
-
-      // increase iterator
-      this.$BLOCK_ITERATOR++
 
       if (percentage < -7.5) {
         result.push(greenInt[0])
@@ -122,6 +124,10 @@ export default {
         result.push(Math.round(typicalColor[0] - redInt[0] * compare))
         result.push(Math.round(typicalColor[1] + redInt[1] * compare))
         result.push(Math.round(typicalColor[2] + redInt[2] * compare))
+      } else if (isNaN(percentage)) {
+        result.push(greenInt[0])
+        result.push(greenInt[0])
+        result.push(greenInt[0])
       } else {
         result.push(Math.round(typicalColor[0] + greenInt[0] * (compare)))
         result.push(Math.round(typicalColor[1] - greenInt[1] * (compare)))

@@ -38,5 +38,3 @@ var v = new Vue({
   render: h => h(App)
 })
 window.vue = v
-
-Vue.prototype.$BLOCK_ITERATOR = 0
