@@ -19,10 +19,14 @@
       <el-row class='buildingRow' v-for='block in blocks' :key='block.path' ref='buildingRows'>
         <el-col v-if='loaded' :class='[(value === block.path) ? "buildingCol selected" : "buildingCol"]' :span='24'>
           <div :class='[(value === block.path) ? "outerClip selected" : "outerClip"]'>
-            <div :class='[(value === block.path) ? "innerClip selected" : "innerClip"]' :style='`background-color:${ computedColor(block.path) };`' @click='buildingClick(block.path)'>
+            <div v-if = "!isNaN(accumulatedPercentage(block.path))" :class='[(value === block.path) ? "innerClip selected" : "innerClip"]' :style='`background-color:${ computedColor(block.path) };`' @click='buildingClick(block.path)'>
               <i class="fas fa-trophy" v-if='place(block.path) <= 3 && place(block.path) >= 1'><span :class='[(value === block.path) ? "innerTrophy selected" : "innerTrophy"]'>{{ place(block.path) }}</span></i> {{ block.name }}
-              <span v-if = "!isNaN(accumulatedPercentage(block.path))">{{ ((accumulatedPercentage(block.path) > 0) ? '+' : '') + (Math.round(100 * accumulatedPercentage(block.path)) / 100).toString() + '%' }}
-              </span><span v-else>- No Data</span>  <!-- Display "No Data" on block if NaN percentage detected-->
+              {{ ((accumulatedPercentage(block.path) > 0) ? '+' : '') + (Math.round(100 * accumulatedPercentage(block.path)) / 100).toString() + '%' }}
+            </div>
+
+            <!-- Display "No Data" on block, remove button functionality of block if NaN percentage detected-->
+            <div v-else :class='[(value === block.path) ? "innerClip selected" : "innerClipNoData"]' :style='`background-color:${ computedColor(block.path) };`'>
+              <i class="fas fa-trophy" v-if='place(block.path) <= 3 && place(block.path) >= 1'><span :class='[(value === block.path) ? "innerTrophy selected" : "innerTrophy"]'>{{ place(block.path) }}</span></i> {{ block.name }}- No Data
             </div>
           </div>
         </el-col>
@@ -185,6 +189,12 @@ export default {
     padding: 0.5em;
     padding-left: 1em;
     clip-path: $clippath;
+  }
+  .innerClipNoData {
+    padding: 0.5em;
+    padding-left: 1em;
+    clip-path: $clippath;
+    cursor: auto;
   }
   .innerClip.selected {
     background-color: $--color-white !important;
