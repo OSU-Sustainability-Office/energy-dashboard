@@ -83,6 +83,7 @@ export default {
       return this.blocks.map(b => b.path).indexOf(path) + 1
     },
     computedColor: function (path) {
+      let blocks = this.$store.getters[this.path + '/blocks']
       if (!this.$store.getters[path + '/modifierData']('campaign_linebar')) return
       const percentage = this.accumulatedPercentage(path)
       // #d62326 - Bottom Red
@@ -92,6 +93,23 @@ export default {
       const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
       const compare = Math.abs(percentage) / 7.5
       const result = []
+
+      // NOTE: defined $this.BLOCK_ITERATOR in energy-dashboard/main.js as a global variable, as I didn't know how to stop
+      // the iterator from resetting to 0 otherwise.
+
+      // reset iterator to stop it going too high
+      if (this.$BLOCK_ITERATOR > 6) {
+        this.$BLOCK_ITERATOR = 0
+      }
+
+      // If block with NaN percentage is found, it is removed from the blocks array
+      if (isNaN(percentage)) {
+        blocks.splice(this.$BLOCK_ITERATOR, 1)
+      }
+
+      // increase iterator
+      this.$BLOCK_ITERATOR++
+
       if (percentage < -7.5) {
         result.push(greenInt[0])
         result.push(greenInt[1])
