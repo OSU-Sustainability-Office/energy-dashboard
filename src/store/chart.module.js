@@ -51,7 +51,12 @@ const actions = {
       data: data
     }
 
+    // console.log(chartData.data)
+    // console.log(chartData.data)
+
     await chartModifier.postGetData(chartData, reqPayload, this, store)
+
+    console.log(chartData)
 
     return chartData
   },

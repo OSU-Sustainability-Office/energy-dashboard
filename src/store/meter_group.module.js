@@ -161,7 +161,6 @@ const actions = {
         }
       }
     }
-
     return resultDataObject
   }
 }

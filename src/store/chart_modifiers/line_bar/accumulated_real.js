@@ -35,6 +35,10 @@ export default class LineAccumulatedModifier {
   */
   async postGetData (chartData, payload, store, module) {
     let resultDataObject = chartData.data
+    console.log(resultDataObject)
+    console.log(Array.from(resultDataObject.keys()))
+    let keysarray = Array.from(resultDataObject.keys())
+    
     let returnData = []
     let delta = 1
     let startDate = (new Date((payload.dateStart) * 1000))
@@ -62,24 +66,49 @@ export default class LineAccumulatedModifier {
       let oldDate = (new Date(i * 1000))
       if (payload.intervalUnit === 'month') {
         let monthDaysCurrent = (new Date(oldDate.getFullYear(), oldDate.getMonth() + 1, 0)).getDate()
-
         delta += (monthDaysCurrent - monthDays) * 24 * 60 * 60
         monthDays = monthDaysCurrent
       }
       let dataDate = (new Date((i + delta) * 1000))
+
+      console.log(i + delta + ' i + delta')
+      // console.log(i)
+      console.log(resultDataObject.get(1649314800) + ' weatherford with hardcoded correct value')
+      console.log(resultDataObject.get(1649199600) + ' weatherford with i + delta value')
+      // console.log(resultDataObject.get(i + delta))
+
+
+
+      function findClosest(array, num) {
+        return array.reduce(function(prev, curr) {
+          return (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev);
+        });
+      }
+
+
+      const result = findClosest(keysarray, (delta + i));
+
+      const result_i = findClosest(keysarray, (i));
+
+      console.log(result + ' i + delta2')
+      console.log(resultDataObject.get(result) + ' i + delta3')
+
+      console.log(resultDataObject.get(result) - resultDataObject.get(result_i) + ' final')
+      
+
       try {
         let accumulator = 0
-        if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
+        if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
           continue
         }
-        if (Math.abs(resultDataObject.get(i + delta)) < Math.abs(resultDataObject.get(i))) {
+        if (Math.abs(resultDataObject.get(result)) < Math.abs(resultDataObject.get(result_i))) {
           continue
         }
         // If either reading is zero that indicates a missing reading -- do not report.
-        if (resultDataObject.get(i + delta) === 0 || resultDataObject.get(i) === 0) {
+        if (resultDataObject.get(result) === 0 || resultDataObject.get(result_i) === 0) {
           continue
         }
-        accumulator = resultDataObject.get(i + delta) - resultDataObject.get(i)
+        accumulator = resultDataObject.get(result) - resultDataObject.get(result_i)
 
         if (payload.point === 'total') {
           // Steam meters report in 100s of lbs
@@ -93,6 +122,7 @@ export default class LineAccumulatedModifier {
         console.log(error)
       }
     }
+    console.log(returnData)
     chartData.data = returnData
   }
 
