@@ -94,8 +94,34 @@ export default class LineAccumulatedModifier {
       console.log(resultDataObject.get(result) + ' i + delta3')
 
       console.log(resultDataObject.get(result) - resultDataObject.get(result_i) + ' final')
-      
 
+      try {
+        let accumulator = 0
+        if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
+          continue
+        }
+        if (Math.abs(resultDataObject.get(i + delta)) < Math.abs(resultDataObject.get(i))) {
+          continue
+        }
+        // If either reading is zero that indicates a missing reading -- do not report.
+        if (resultDataObject.get(i + delta) === 0 || resultDataObject.get(i) === 0) {
+          continue
+        }
+        accumulator = resultDataObject.get(i + delta) - resultDataObject.get(i)
+
+        if (payload.point === 'total') {
+          // Steam meters report in 100s of lbs
+          accumulator *= 100
+        }
+        // While some readings are negative for offset purposes, we should
+        // still display them as positive readings since negative electricity
+        // isn't really what our meters should detect.
+        returnData.push({ x: dataDate, y: Math.abs(accumulator) })
+      } catch (error) {
+        console.log(error)
+      }
+      
+/*
       try {
         let accumulator = 0
         if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
@@ -121,6 +147,7 @@ export default class LineAccumulatedModifier {
       } catch (error) {
         console.log(error)
       }
+      */
     }
     console.log(returnData)
     chartData.data = returnData

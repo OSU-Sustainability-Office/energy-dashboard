@@ -60,7 +60,7 @@ const actions = {
     // console.log(chartData.data)
 
     // commenting out line below makes the main graph appear?? but no data: https://cdn.discordapp.com/attachments/1018323831468851202/1072222839614230558/image.png
-    // await chartModifier.postGetData(chartData, reqPayload, this, store)
+    await chartModifier.postGetData(chartData, reqPayload, this, store)
 
     console.log(chartData)
 
