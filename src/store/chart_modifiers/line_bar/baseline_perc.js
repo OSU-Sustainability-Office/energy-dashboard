@@ -60,9 +60,9 @@ export default class LinePercModifier {
     delta *= payload.dateInterval
 
     // I ended up not using the below 3 lines, but maybe it's needed for "past 6 hours" or "past day". Need better training data maybe (adjust end date on test campaign)
-    // let baselineData = payload.baselineData
+    let baselineData = payload.baselineData
     // let keysarray2 = Array.from(baselineData.keys())
-    // let differenceBaseline = new Map()
+    let differenceBaseline = new Map()
 
     for (let i = payload.compareStart; i <= payload.compareEnd; i += delta) {
       // let result2 = findClosest(keysarray2, (delta + i));
