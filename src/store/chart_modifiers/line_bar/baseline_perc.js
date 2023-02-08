@@ -106,8 +106,8 @@ export default class LinePercModifier {
         avgbins[dow].push(value)
       }
     }
-    // after changing the graph for weatherford, I need to subtract delta from payload.dateEnd for some reason
-    for (let i = payload.dateStart; i <= (payload.dateEnd - delta); i += delta) {
+    // EDIT: No longer have to subtract delta from payload.dateEnd due to the fix in line 135
+    for (let i = payload.dateStart; i <= (payload.dateEnd); i += delta) {
       let accumulator = 0
       let result;
       let result_delta;
