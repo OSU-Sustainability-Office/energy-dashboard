@@ -101,7 +101,8 @@ export default class LinePercModifier {
         let baselinePoint = avgbins[(new Date((i + delta) * 1000)).getDay()][Math.floor(((i + delta) % (60 * 60 * 24)) / delta)]
         if (baselinePoint !== -1) {
           accumulator = (resultDataObject.get(i + delta) - resultDataObject.get(i)) / baselinePoint * 100 - 100
-          returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
+          // line below has something to do with the graph with all buildings on it
+          returnData.push({ x: (new Date((i + delta) * 1000)), y: (accumulator) })
         }
       } catch (error) {
         console.log(error)
