@@ -85,10 +85,19 @@ export default class LineAccumulatedModifier {
         });
       }
 
+      let result;
 
-      const result = findClosest(keysarray, (delta + i));
+      let result_i;
 
-      const result_i = findClosest(keysarray, (i));
+      console.log(keysarray)
+      if (keysarray === undefined || keysarray.length == 0) {
+        result = (delta + i)
+        result_i = i
+    }
+    else {
+      result = findClosest(keysarray, (delta + i));
+      result_i = findClosest(keysarray, (i));
+    }
 
       //console.log(result + ' i + delta2')
       //console.log(resultDataObject.get(result) + ' i + delta3')
