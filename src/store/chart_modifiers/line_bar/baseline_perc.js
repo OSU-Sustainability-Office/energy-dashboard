@@ -59,14 +59,14 @@ export default class LinePercModifier {
     }
     delta *= payload.dateInterval
 
-    // I ended up not using the below 3 lines, don't think is needed
-    let baselineData = payload.baselineData
-    let keysarray2 = Array.from(baselineData.keys())
-    let differenceBaseline = new Map()
+    // I ended up not using the below 3 lines, but maybe it's needed for "past 6 hours" or "past day". Need better training data maybe (adjust end date on test campaign)
+    // let baselineData = payload.baselineData
+    // let keysarray2 = Array.from(baselineData.keys())
+    // let differenceBaseline = new Map()
 
     for (let i = payload.compareStart; i <= payload.compareEnd; i += delta) {
-      let result2 = findClosest(keysarray2, (delta + i));
-      let result_i2 = findClosest(keysarray2, (i));
+      // let result2 = findClosest(keysarray2, (delta + i));
+      // let result_i2 = findClosest(keysarray2, (i));
       try {
         if (isNaN(baselineData.get(delta + i)) || isNaN(baselineData.get(i))) {
           continue
@@ -78,6 +78,8 @@ export default class LinePercModifier {
       }
     }
     let avgbins = []
+
+    // also don't know if we need findClosest() function calls for the two for loops below, for "past 6 hours" or "past day". Need better training data maybe (adjust end date on test campaign)
     for (let dow = 0; dow < 7; dow++) {
       let startDate = payload.compareStart
       while ((new Date(startDate * 1000)).getDay() !== dow) {
@@ -107,9 +109,19 @@ export default class LinePercModifier {
     // after changing the graph for weatherford, I need to subtract delta from payload.dateEnd for some reason
     for (let i = payload.dateStart; i <= (payload.dateEnd - delta); i += delta) {
       let accumulator = 0
-      let result = findClosest(keysarray, (delta + i));
-      let result_delta = findClosest(keysarray, (delta));
-      let result_i = findClosest(keysarray, (i));
+      let result;
+      let result_delta;
+      let result_i;
+      if (keysarray === undefined || keysarray.length == 0) {
+        result = (delta + i)
+        result_delta = delta
+        result_i = i
+      }
+      else {
+        result = findClosest(keysarray, (delta + i))
+        result_delta = findClosest(keysarray, (delta))
+        result_i = findClosest(keysarray, (i))
+      }
       try {
         if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
           continue
