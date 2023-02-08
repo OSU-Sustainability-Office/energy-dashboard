@@ -35,8 +35,8 @@ export default class LineAccumulatedModifier {
   */
   async postGetData (chartData, payload, store, module) {
     let resultDataObject = chartData.data
-    console.log(resultDataObject)
-    console.log(Array.from(resultDataObject.keys()))
+    // console.log(resultDataObject)
+    // console.log(Array.from(resultDataObject.keys()))
     let keysarray = Array.from(resultDataObject.keys())
     
     let returnData = []
@@ -71,10 +71,10 @@ export default class LineAccumulatedModifier {
       }
       let dataDate = (new Date((i + delta) * 1000))
 
-      console.log(i + delta + ' i + delta')
+      // console.log(i + delta + ' i + delta')
       // console.log(i)
-      console.log(resultDataObject.get(1649314800) + ' weatherford with hardcoded correct value')
-      console.log(resultDataObject.get(1649199600) + ' weatherford with i + delta value')
+      // console.log(resultDataObject.get(1649314800) + ' weatherford with hardcoded correct value')
+      // console.log(resultDataObject.get(1649199600) + ' weatherford with i + delta value')
       // console.log(resultDataObject.get(i + delta))
 
 
@@ -90,11 +90,11 @@ export default class LineAccumulatedModifier {
 
       const result_i = findClosest(keysarray, (i));
 
-      console.log(result + ' i + delta2')
-      console.log(resultDataObject.get(result) + ' i + delta3')
+      //console.log(result + ' i + delta2')
+      //console.log(resultDataObject.get(result) + ' i + delta3')
 
-      console.log(resultDataObject.get(result) - resultDataObject.get(result_i) + ' final')
-
+     //  console.log(resultDataObject.get(result) - resultDataObject.get(result_i) + ' final')
+/*
       try {
         let accumulator = 0
         if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
@@ -120,8 +120,9 @@ export default class LineAccumulatedModifier {
       } catch (error) {
         console.log(error)
       }
+      */
       
-/*
+
       try {
         let accumulator = 0
         if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
@@ -147,9 +148,9 @@ export default class LineAccumulatedModifier {
       } catch (error) {
         console.log(error)
       }
-      */
+      
     }
-    console.log(returnData)
+    //console.log(returnData)
     chartData.data = returnData
   }
 

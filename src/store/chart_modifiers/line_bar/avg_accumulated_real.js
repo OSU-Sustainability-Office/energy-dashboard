@@ -56,10 +56,27 @@ export default class LineAvgModifier {
     }
     delta *= payload.dateInterval
     let baselineData = chartData.data
+    // console.log(baselineData)
+
+    let keysarray = Array.from(baselineData.keys())
+
+    function findClosest(array, num) {
+      return array.reduce(function(prev, curr) {
+        return (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev);
+      });
+    }
+
+
+
     let differenceBaseline = new Map()
     for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
+
+      const result = findClosest(keysarray, (delta + i));
+
+      const result_i = findClosest(keysarray, (i));
       try {
         if (isNaN(baselineData.get(i + delta)) || isNaN(baselineData.get(i))) {
+          // console.log('nans found')
           continue
         }
         differenceBaseline.set(i + delta, baselineData.get(i + delta) - baselineData.get(i))
