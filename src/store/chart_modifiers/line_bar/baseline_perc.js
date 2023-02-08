@@ -117,8 +117,13 @@ export default class LinePercModifier {
         let baselinePoint = avgbins[(new Date((result) * 1000)).getDay()][Math.floor(((result) % (60 * 60 * 24)) / result_delta)]
         if (baselinePoint !== -1) {
           accumulator = (resultDataObject.get(result) - resultDataObject.get(result_i)) / baselinePoint * 100 - 100
-          // line below has something to do with the graph with all buildings on it
-          returnData.push({ x: (new Date((result) * 1000)), y: (accumulator) })
+
+          // hacky check for -100 in weatherford trendline
+          if (accumulator != -100) {
+            // line below has something to do with the graph with all buildings on it
+            returnData.push({ x: (new Date((result) * 1000)), y: (accumulator) })
+          }
+          console.log(returnData)
         }
       } catch (error) {
         console.log(error)
