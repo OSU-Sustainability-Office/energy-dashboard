@@ -77,7 +77,10 @@ export default {
               return 1
             } else if (!isNaN(aPercentage) && isNaN(bPercentage))  {
               return -1
-            } else {
+            } else if (isNaN(aPercentage) && isNaN(bPercentage)) {
+              return -1
+            }
+            else {
               return 1
             }
           } catch (error) {
