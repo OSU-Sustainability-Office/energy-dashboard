@@ -89,15 +89,32 @@ export default class LineAccumulatedModifier {
 
       let result_i;
 
+      // console.log(payload.dateEnd)
+
       // console.log(keysarray)
+      // if array is empty, don't use the nearest valid index algorithm
       if (keysarray === undefined || keysarray.length == 0) {
         result = (delta + i)
         result_i = i
     }
     else {
-      result = findClosest(keysarray, (delta + i));
+
+      // if delta + i is out of range, don't use the nearest valid index algorithm
+      if (delta + i < payload.dateEnd) {
+        result = findClosest(keysarray, (delta + i));
+      }
+      else {
+        result = delta + i
+      }
       result_i = findClosest(keysarray, (i));
     }
+
+    /*
+    if ((delta + i) != result) {
+      console.log(result + 'badresult')
+      console.log(delta + i + 'baddeltai')
+    }
+    */
 
       //console.log(result + ' i + delta2')
       //console.log(resultDataObject.get(result) + ' i + delta3')
