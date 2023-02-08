@@ -89,7 +89,7 @@ export default class LineAccumulatedModifier {
 
       let result_i;
 
-      console.log(keysarray)
+      // console.log(keysarray)
       if (keysarray === undefined || keysarray.length == 0) {
         result = (delta + i)
         result_i = i

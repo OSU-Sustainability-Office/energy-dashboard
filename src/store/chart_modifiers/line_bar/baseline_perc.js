@@ -38,6 +38,7 @@ export default class LinePercModifier {
   */
   async postGetData (chartData, payload, store, module) {
     let resultDataObject = chartData.data
+    let keysarray = Array.from(resultDataObject.keys())
     let returnData = []
     let delta = 1
     switch (payload.intervalUnit) {
@@ -51,15 +52,26 @@ export default class LinePercModifier {
         delta = 86400
         break
     }
+    function findClosest(array, num) {
+      return array.reduce(function(prev, curr) {
+        return (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev);
+      });
+    }
     delta *= payload.dateInterval
+
+    // I ended up not using the below 3 lines, don't think is needed
     let baselineData = payload.baselineData
+    let keysarray2 = Array.from(baselineData.keys())
     let differenceBaseline = new Map()
+
     for (let i = payload.compareStart; i <= payload.compareEnd; i += delta) {
+      let result2 = findClosest(keysarray2, (delta + i));
+      let result_i2 = findClosest(keysarray2, (i));
       try {
-        if (isNaN(baselineData.get(i + delta)) || isNaN(baselineData.get(i))) {
+        if (isNaN(baselineData.get(delta + i)) || isNaN(baselineData.get(i))) {
           continue
         }
-        differenceBaseline.set(i + delta, baselineData.get(i + delta) - baselineData.get(i))
+        differenceBaseline.set(delta + i, baselineData.get(delta + i) - baselineData.get(i))
         // returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
       } catch (error) {
         console.log(error)
@@ -92,22 +104,27 @@ export default class LinePercModifier {
         avgbins[dow].push(value)
       }
     }
-    for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
+    // after changing the graph for weatherford, I need to subtract delta from payload.dateEnd for some reason
+    for (let i = payload.dateStart; i <= (payload.dateEnd - delta); i += delta) {
       let accumulator = 0
+      let result = findClosest(keysarray, (delta + i));
+      let result_delta = findClosest(keysarray, (delta));
+      let result_i = findClosest(keysarray, (i));
       try {
-        if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
+        if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
           continue
         }
-        let baselinePoint = avgbins[(new Date((i + delta) * 1000)).getDay()][Math.floor(((i + delta) % (60 * 60 * 24)) / delta)]
+        let baselinePoint = avgbins[(new Date((result) * 1000)).getDay()][Math.floor(((result) % (60 * 60 * 24)) / result_delta)]
         if (baselinePoint !== -1) {
-          accumulator = (resultDataObject.get(i + delta) - resultDataObject.get(i)) / baselinePoint * 100 - 100
+          accumulator = (resultDataObject.get(result) - resultDataObject.get(result_i)) / baselinePoint * 100 - 100
           // line below has something to do with the graph with all buildings on it
-          returnData.push({ x: (new Date((i + delta) * 1000)), y: (accumulator) })
+          returnData.push({ x: (new Date((result) * 1000)), y: (accumulator) })
         }
       } catch (error) {
         console.log(error)
       }
     }
+    console.log(returnData)
     chartData.data = returnData
   }
 
