@@ -75,7 +75,7 @@ export default {
             const bPercentage = this.accumulatedPercentage(b.path)
             if (isNaN(aPercentage) && !isNaN(bPercentage)) {
               return 1
-            } else if (!isNaN(aPercentage) && isNaN(bPercentage))  {
+            } else if (isNaN(aPercentage) || isNaN(bPercentage)) {
               return -1
             } else {
               return 1
