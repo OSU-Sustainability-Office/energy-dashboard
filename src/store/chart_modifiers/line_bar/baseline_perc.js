@@ -135,13 +135,11 @@ export default class LinePercModifier {
             // line below has something to do with the graph with all buildings on it
             returnData.push({ x: (new Date((result) * 1000)), y: (accumulator) })
           }
-          console.log(returnData)
         }
       } catch (error) {
         console.log(error)
       }
     }
-    console.log(returnData)
     chartData.data = returnData
   }
 

@@ -56,12 +56,10 @@ export default class LineAvgModifier {
     }
     delta *= payload.dateInterval
     let baselineData = chartData.data
-
     let differenceBaseline = new Map()
     for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
       try {
         if (isNaN(baselineData.get(i + delta)) || isNaN(baselineData.get(i))) {
-          // console.log('nans found')
           continue
         }
         differenceBaseline.set(i + delta, baselineData.get(i + delta) - baselineData.get(i))

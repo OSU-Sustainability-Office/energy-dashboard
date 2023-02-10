@@ -51,23 +51,7 @@ const actions = {
       data: data
     }
 
-    // maybe can use this to check for weatherford. accumulated_real.js I don't think can check for building name
-    if (chartData.label === 'Weatherford Hall') {
-      //console.log('got weatherford')
-      //console.log(chartData.data)
-      //console.log(chartData)
-    }
-    console.log(chartData)
-    console.log(chartData.label)
-    // commenting out line below makes the main graph appear?? but no data: https://cdn.discordapp.com/attachments/1018323831468851202/1072222839614230558/image.png
     await chartModifier.postGetData(chartData, reqPayload, this, store)
-
-    // reqpayload has data but not chartData.data
-
-    // chartData.data =reqPayload.baselineData
-    console.log(chartData)
-
-    console.log(chartData.data)
 
     return chartData
   },

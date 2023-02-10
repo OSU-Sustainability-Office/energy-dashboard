@@ -105,13 +105,8 @@ export default class CampaignLineBarModifier {
     let current = data.datasets[1].data
     let baseline = data.datasets[0].data
 
-    console.log(baseline)
-
     let colors = []
     this.data.accumulatedPercentage = 0
-    let currentlength = current.length
-    console.log(currentlength)
-    console.log(baseline.length)
     for (let i in current) {
       const percentage = (current[i].y / baseline[i].y) * 100 - 100
       this.data.accumulatedPercentage += percentage
