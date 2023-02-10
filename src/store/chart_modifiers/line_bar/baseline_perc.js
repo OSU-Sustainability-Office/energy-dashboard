@@ -38,9 +38,20 @@ export default class LinePercModifier {
   */
   async postGetData (chartData, payload, store, module) {
     let resultDataObject = chartData.data
+
+    // array that stores keys for the resultDataObject (used for finding nearest valid keys for Weatherford)
     let keysarray = Array.from(resultDataObject.keys())
     let returnData = []
     let delta = 1
+
+    // Finds the nearest valid keys for a given building (mostly intended for correcting manual meter uploads, e.g. Weatherford.)
+    // Other buildings with automatic meter upload should have the same keys after this function is run.
+    function findClosest (array, num) {
+      return array.reduce(function (prev, curr) {
+        return (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev)
+      })
+    }
+
     switch (payload.intervalUnit) {
       case 'minute':
         delta = 60
@@ -52,14 +63,10 @@ export default class LinePercModifier {
         delta = 86400
         break
     }
-    function findClosest(array, num) {
-      return array.reduce(function(prev, curr) {
-        return (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev);
-      });
-    }
+
     delta *= payload.dateInterval
 
-    // I ended up not using the below 3 lines, but maybe it's needed for "past 6 hours" or "past day". Need better training data maybe (adjust end date on test campaign)
+    // I ended up not using the below 3 lines, but maybe it's needed for "past 6 hours" or "past day". Might also be a moot point due to not enough data points per day on the manually uploaded data for Weatherford.
     let baselineData = payload.baselineData
     // let keysarray2 = Array.from(baselineData.keys())
     let differenceBaseline = new Map()
@@ -106,18 +113,17 @@ export default class LinePercModifier {
         avgbins[dow].push(value)
       }
     }
-    // EDIT: No longer have to subtract delta from payload.dateEnd due to the fix in line 135
+
     for (let i = payload.dateStart; i <= (payload.dateEnd); i += delta) {
       let accumulator = 0
-      let result;
-      let result_delta;
-      let result_i;
-      if (keysarray === undefined || keysarray.length == 0) {
+      let result
+      let result_delta
+      let result_i
+      if (keysarray === undefined || keysarray.length === 0) {
         result = (delta + i)
         result_delta = delta
         result_i = i
-      }
-      else {
+      } else {
         result = findClosest(keysarray, (delta + i))
         result_delta = findClosest(keysarray, (delta))
         result_i = findClosest(keysarray, (i))
@@ -130,8 +136,8 @@ export default class LinePercModifier {
         if (baselinePoint !== -1) {
           accumulator = (resultDataObject.get(result) - resultDataObject.get(result_i)) / baselinePoint * 100 - 100
 
-          // hacky check for -100 in weatherford trendline
-          if (accumulator != -100) {
+          // do not add data point to graph if datapoint is -100% (issue with Weatherford for campaign 8, near the end)
+          if (accumulator !== -100) {
             // line below has something to do with the graph with all buildings on it
             returnData.push({ x: (new Date((result) * 1000)), y: (accumulator) })
           }

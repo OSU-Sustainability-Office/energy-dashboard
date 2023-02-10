@@ -35,12 +35,22 @@ export default class LineAccumulatedModifier {
   */
   async postGetData (chartData, payload, store, module) {
     let resultDataObject = chartData.data
+
+    // array that stores keys for the resultDataObject (used for finding nearest valid keys for Weatherford)
     let keysarray = Array.from(resultDataObject.keys())
-    
     let returnData = []
     let delta = 1
     let startDate = (new Date((payload.dateStart) * 1000))
     let monthDays = 1
+
+    // Finds the nearest valid keys for a given building (mostly intended for correcting manual meter uploads, e.g. Weatherford.)
+    // Other buildings with automatic meter upload should have the same keys after this function is run.
+    function findClosest (array, num) {
+      return array.reduce(function (prev, curr) {
+        return (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev)
+      })
+    }
+
     switch (payload.intervalUnit) {
       case 'minute':
         delta = 60
@@ -68,32 +78,22 @@ export default class LineAccumulatedModifier {
         monthDays = monthDaysCurrent
       }
       let dataDate = (new Date((i + delta) * 1000))
+      let result
+      let result_i
 
-      function findClosest(array, num) {
-        return array.reduce(function(prev, curr) {
-          return (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev);
-        });
-      }
-
-      let result;
-      let result_i;
-
-      // if array is empty, don't use the nearest valid index algorithm
-      if (keysarray === undefined || keysarray.length == 0) {
+      // If array is empty, don't use the nearest valid index algorithm (needed for past 6 hours / past day on Weatherford)
+      if (keysarray === undefined || keysarray.length === 0) {
         result = (delta + i)
         result_i = i
-    }
-    else {
-
-      // if delta + i is out of range, don't use the nearest valid index algorithm
-      if (delta + i < payload.dateEnd) {
-        result = findClosest(keysarray, (delta + i));
+      } else {
+      // If delta + i is out of range, don't use the nearest valid index algorithm (e.g. make sure May 2 data isn't included if campaign ends May 1)
+        if (delta + i < payload.dateEnd) {
+          result = findClosest(keysarray, (delta + i))
+        } else {
+          result = delta + i
+        }
+        result_i = findClosest(keysarray, (i))
       }
-      else {
-        result = delta + i
-      }
-      result_i = findClosest(keysarray, (i));
-    }
 
       try {
         let accumulator = 0
@@ -120,7 +120,6 @@ export default class LineAccumulatedModifier {
       } catch (error) {
         console.log(error)
       }
-      
     }
     chartData.data = returnData
   }
