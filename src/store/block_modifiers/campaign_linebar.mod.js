@@ -106,7 +106,7 @@ export default class CampaignLineBarModifier {
     let baseline = data.datasets[0].data
 
     // Set as no data on leaderboard if baseline and/or current data is empty
-    if(baseline.length === 0 || current.length === 0){
+    if (baseline.length === 0 || current.length === 0) {
       current = []
       baseline = []
     }

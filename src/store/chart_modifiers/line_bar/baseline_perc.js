@@ -75,10 +75,10 @@ export default class LinePercModifier {
       // let result2 = findClosest(keysarray2, (delta + i));
       // let result_i2 = findClosest(keysarray2, (i));
       try {
-        if (isNaN(baselineData.get(delta + i)) || isNaN(baselineData.get(i))) {
+        if (isNaN(baselineData.get(i + delta)) || isNaN(baselineData.get(i))) {
           continue
         }
-        differenceBaseline.set(delta + i, baselineData.get(delta + i) - baselineData.get(i))
+        differenceBaseline.set(i + delta, baselineData.get(i + delta) - baselineData.get(i))
         // returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
       } catch (error) {
         console.log(error)
@@ -119,6 +119,8 @@ export default class LinePercModifier {
       let result
       let result_delta
       let result_i
+
+      // If array is empty, don't use the nearest valid index algorithm (needed for past 6 hours / past day on Weatherford)
       if (keysarray === undefined || keysarray.length === 0) {
         result = (delta + i)
         result_delta = delta

@@ -116,8 +116,6 @@ export default {
       const compare = Math.abs(percentage) / 7.5
       const result = []
 
-      console.log(percentage)
-
       if (percentage < -7.5) {
         result.push(greenInt[0])
         result.push(greenInt[1])
