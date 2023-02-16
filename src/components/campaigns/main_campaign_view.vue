@@ -12,15 +12,6 @@
         </el-col>
       </el-row>
 
-      <el-row>
-        <el-alert
-          title="The Dashboard is having some issues right now."
-          type="warning"
-          :closable="false"
-        >
-          <a href="/kw22/" style="font-size:30px;text-decoration: underline;" target="_blank">To view the current Kilowatt Crackdown Standing click here!</a>
-        </el-alert>
-      </el-row>
       <!-- Charts and the building selection list -->
       <el-row class='controlRow' v-if="loaded">
         <el-col :span='8' class='buildingContainer'>
