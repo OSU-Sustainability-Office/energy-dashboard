@@ -38,8 +38,20 @@ export default class LinePercModifier {
   */
   async postGetData (chartData, payload, store, module) {
     let resultDataObject = chartData.data
+
+    // array that stores keys for the resultDataObject (used for finding nearest valid keys for Weatherford)
+    let keysarray = Array.from(resultDataObject.keys())
     let returnData = []
     let delta = 1
+
+    // Finds the nearest valid keys for a given building (mostly intended for correcting manual meter uploads, e.g. Weatherford.)
+    // Other buildings with automatic meter upload should have the same keys after this function is run.
+    function findClosest (array, num) {
+      return array.reduce(function (prev, curr) {
+        return (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev)
+      })
+    }
+
     switch (payload.intervalUnit) {
       case 'minute':
         delta = 60
@@ -51,10 +63,17 @@ export default class LinePercModifier {
         delta = 86400
         break
     }
+
     delta *= payload.dateInterval
+
+    // I ended up not using the below 3 lines, but maybe it's needed for "past 6 hours" or "past day". Might also be a moot point due to not enough data points per day on the manually uploaded data for Weatherford.
     let baselineData = payload.baselineData
+    // let keysarray2 = Array.from(baselineData.keys())
     let differenceBaseline = new Map()
+
     for (let i = payload.compareStart; i <= payload.compareEnd; i += delta) {
+      // let result2 = findClosest(keysarray2, (delta + i));
+      // let result_i2 = findClosest(keysarray2, (i));
       try {
         if (isNaN(baselineData.get(i + delta)) || isNaN(baselineData.get(i))) {
           continue
@@ -66,6 +85,8 @@ export default class LinePercModifier {
       }
     }
     let avgbins = []
+
+    // also don't know if we need findClosest() function calls for the two for loops below, for "past 6 hours" or "past day". Need better training data maybe (adjust end date on test campaign)
     for (let dow = 0; dow < 7; dow++) {
       let startDate = payload.compareStart
       while ((new Date(startDate * 1000)).getDay() !== dow) {
@@ -92,16 +113,36 @@ export default class LinePercModifier {
         avgbins[dow].push(value)
       }
     }
-    for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
+
+    for (let i = payload.dateStart; i <= (payload.dateEnd); i += delta) {
       let accumulator = 0
+      let result
+      let result_delta
+      let result_i
+
+      // If array is empty, don't use the nearest valid index algorithm (needed for past 6 hours / past day on Weatherford)
+      if (keysarray === undefined || keysarray.length === 0) {
+        result = (delta + i)
+        result_delta = delta
+        result_i = i
+      } else {
+        result = findClosest(keysarray, (delta + i))
+        result_delta = findClosest(keysarray, (delta))
+        result_i = findClosest(keysarray, (i))
+      }
       try {
-        if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
+        if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
           continue
         }
-        let baselinePoint = avgbins[(new Date((i + delta) * 1000)).getDay()][Math.floor(((i + delta) % (60 * 60 * 24)) / delta)]
+        let baselinePoint = avgbins[(new Date((result) * 1000)).getDay()][Math.floor(((result) % (60 * 60 * 24)) / result_delta)]
         if (baselinePoint !== -1) {
-          accumulator = (resultDataObject.get(i + delta) - resultDataObject.get(i)) / baselinePoint * 100 - 100
-          returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
+          accumulator = (resultDataObject.get(result) - resultDataObject.get(result_i)) / baselinePoint * 100 - 100
+
+          // do not add data point to graph if datapoint is -100% (issue with Weatherford for campaign 8, near the end)
+          if (accumulator !== -100) {
+            // line below has something to do with the graph with all buildings on it
+            returnData.push({ x: (new Date((result) * 1000)), y: (accumulator) })
+          }
         }
       } catch (error) {
         console.log(error)
