@@ -90,6 +90,15 @@ exports.upload = async (event, context) => {
   let response = new Response(event)
 
   const payload = JSON.parse(event.body)
+  const pwd = payload['pwd']
+  if (pwd !== process.env.ACQUISUITE_PASS) {
+    response.statusCode = 400
+    return response
+  }
+
+  console.log(payload)
+
+  /*
 
   const meter_type = payload['type']
   const meter_id = payload['id']
@@ -162,6 +171,7 @@ exports.upload = async (event, context) => {
 
   response.statusCode = 200
   return response
+  */
 }
 /*
   This endpoint handles data uploads from Aquisuites
