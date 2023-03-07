@@ -172,6 +172,8 @@ exports.upload = async (event, context) => {
   response.statusCode = 200
   return response
   */
+  response.statusCode = 200
+  return response
 }
 /*
   This endpoint handles data uploads from Aquisuites
