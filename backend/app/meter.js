@@ -110,7 +110,7 @@ exports.upload = async (event, context) => {
 
   //for (let point of meter_data) {
     
-    let query_string = (`INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`energy_change\`, \`tableid\`) VALUES ('2023-3-6T23:59:59', 1678175999999, 766.72, 'SEC_OSU_Op');`);
+    let query_string = (`INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`energy_change\`, \`tableid\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.totalYieldYesterday}', '${meter_data.tableID}');`);
     // let query_string = (`INSERT INTO ${meter_id} (` + fields.map(x => `\`${x}\``).join(', ') + ') VALUES (' + qs + ')').replace(/\\r/g, '')
 
     try {
@@ -200,6 +200,7 @@ exports.upload = async (event, context) => {
   response.statusCode = 200
   return response
   */
+  // response.body = meter_data.time
   response.statusCode = 200
   return response
 }
