@@ -91,12 +91,40 @@ exports.upload = async (event, context) => {
 
   const payload = JSON.parse(event.body)
   const pwd = payload['pwd']
+  const meter_id = payload['id']
+  const meter_data = payload['body']
+
   if (pwd !== process.env.ACQUISUITE_PASS) {
     response.statusCode = 400
     return response
   }
 
-  console.log(payload)
+  await DB.connect()
+  let row = []
+  try {
+    row = await DB.query(`SHOW TABLES LIKE ?;`, [meter_id])
+  } catch {
+    response.statusCode = 400
+    return response
+  }
+
+  //for (let point of meter_data) {
+    
+    let query_string = (`INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`energy_change\`, \`tableid\`) VALUES ('2023-3-6T23:59:59', 1678175999999, 766.72, 'SEC_OSU_Op');`);
+    // let query_string = (`INSERT INTO ${meter_id} (` + fields.map(x => `\`${x}\``).join(', ') + ') VALUES (' + qs + ')').replace(/\\r/g, '')
+
+    try {
+      await DB.query(query_string)
+    } catch (err) {
+      if (err.code !== 'ER_DUP_ENTRY') {
+        response.statusCode = 400
+        response.body = 'meter data does not fit database schema: ' + ', code: ' + err.code
+        return response
+      }
+    }
+  //}
+
+  //console.log(payload)
 
   /*
 
