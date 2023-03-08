@@ -151,7 +151,13 @@ class Meter {
           122: "SEC_OSU_Op",
           123: "SEC_Solar",
         }; 
-        return DB.query('SELECT ' + point + ', time_seconds AS time, \'' + this.id + '\' as id FROM ' + meter_table_name + ' WHERE time_seconds >= ? AND time_seconds <= ? AND tableID = ?', [startTime, endTime, meterLookupTable[this.id]])
+        // return DB.query('SELECT ' + point + ', time_seconds AS time, \'' + this.id + '\' as id FROM ' + meter_table_name + ' WHERE time_seconds >= ? AND time_seconds <= ? AND tableID = ?', [startTime, endTime, meterLookupTable[this.id]])
+        if (meter_table_name.startsWith("M")) {
+          return DB.query('SELECT ' + point + ', time_seconds AS time, \'' + this.id + '\' as id FROM ' + meter_table_name + ' WHERE time_seconds >= ? AND time_seconds <= ?', [startTime, endTime])
+        }
+        else {
+          return DB.query('SELECT ' + point + ', time_seconds AS time, \'' + this.id + '\' as id FROM ' + meter_table_name + ' WHERE time_seconds >= ? AND time_seconds <= ? AND tableID = ?', [startTime, endTime, meterLookupTable[this.id]])
+        }
       }
       // Aquisuites
       return DB.query('SELECT ' + point + ', time_seconds AS time, id FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)', [this.id, startTime, endTime])
