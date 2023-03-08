@@ -145,7 +145,13 @@ class Meter {
       if (String(meterClass).startsWith('999')) {
         // get table name from meter table
         let [{ 'name': meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id])
-        return DB.query('SELECT ' + point + ', time_seconds AS time, \'' + this.id + '\' as id FROM ' + meter_table_name + ' WHERE time_seconds >= ? AND time_seconds <= ?', [startTime, endTime])
+        // return DB.query('SELECT ' + point + ', time_seconds AS time, \'' + this.id + '\' as id FROM ' + meter_table_name + ' WHERE time_seconds >= ? AND time_seconds <= ?', [startTime, endTime])
+        const meterLookupTable = {
+          121: "SEC_OSU_Op_Lube",
+          122: "SEC_OSU_Op",
+          123: "SEC_Solar",
+        }; 
+        return DB.query('SELECT ' + point + ', time_seconds AS time, \'' + this.id + '\' as id FROM ' + meter_table_name + ' WHERE time_seconds >= ? AND time_seconds <= ? AND tableID = ?', [startTime, endTime, meterLookupTable[this.id]])
       }
       // Aquisuites
       return DB.query('SELECT ' + point + ', time_seconds AS time, id FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)', [this.id, startTime, endTime])
