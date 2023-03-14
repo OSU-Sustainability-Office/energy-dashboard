@@ -227,7 +227,7 @@ const actions = {
 
       // default chart settings
       store.commit('dateInterval', 1)
-      store.commit('graphType', 1)
+      store.commit('graphType', 2)
 
       // change default interval for solar panels
       // Note: this parameter is often modified elsewhere in the dashboard
