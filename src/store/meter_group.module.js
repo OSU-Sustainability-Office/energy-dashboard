@@ -86,6 +86,7 @@ const actions = {
           resultDataObject.set(dataPoint['time'], dataPoint[payload.point])
         }
       }
+      console.log(resultDataObject)
       return resultDataObject
     }
 

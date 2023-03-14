@@ -53,6 +53,7 @@ const actions = {
 
     await chartModifier.postGetData(chartData, reqPayload, this, store)
 
+    console.log(chartData)
     return chartData
   },
 

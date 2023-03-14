@@ -50,6 +50,15 @@ export default class LineEnergyChange {
     let resultDataObject = chartData.data
     let returnData = []
     let delta = 1
+    let result
+    let result_i
+
+    // Finds the nearest valid keys for a given building. In this case, it handles solar meters that upload less than every 15 minutes.
+    function findClosest (array, num) {
+      return array.reduce(function (prev, curr) {
+        return (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev)
+      })
+    }
 
     const intervalUnitDelta = {
       'minute': 60,
@@ -60,29 +69,39 @@ export default class LineEnergyChange {
     delta = intervalUnitDelta[payload.intervalUnit]
     delta *= payload.dateInterval
 
-    // set the offset if there is one we need to account for
+    // set the offset if there is one we need to account forre
     const offset = (payload.timeZoneOffset) ? payload.timeZoneOffset : 0
+    let keysarray = Array.from(resultDataObject.keys())
 
     for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
+      result = findClosest(keysarray, (delta + i))
+      result_i = findClosest(keysarray, (i))
+      console.log(result + ' result')
+      console.log(result_i + ' result_i')
+
       try {
+        console.log(resultDataObject.get(result) + ' resultDataObject.get(result)')
+        console.log(resultDataObject.get(result_i) + ' resultDataObject.get(result_i)')
+
         let accumulator = 0
-        if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
+        if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
           continue
         }
-        accumulator = resultDataObject.get(i + delta)
+        accumulator = resultDataObject.get(result)
         // Add proceeding values
         const minimumInterval = intervalUnitDelta['minute'] * payload.dateInterval
         for (let next = minimumInterval; next < delta; next += minimumInterval) {
-          const nextReading = resultDataObject.get(i + (delta + next))
+          const nextReading = resultDataObject.get(result_i + (delta + next))
           accumulator =  (isNaN(nextReading)) ? accumulator : accumulator + nextReading
         }
         // console.log(accumulator)
 
-        returnData.push({ x: (new Date((i + delta + offset) * 1000)), y: accumulator })
+        returnData.push({ x: (new Date((result + offset) * 1000)), y: accumulator })
       } catch (error) {
         console.log(error)
       }
     }
+    console.log(returnData)
     chartData.data = returnData
   }
 
