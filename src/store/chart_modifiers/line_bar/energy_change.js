@@ -73,9 +73,30 @@ export default class LineEnergyChange {
     const offset = (payload.timeZoneOffset) ? payload.timeZoneOffset : 0
     let keysarray = Array.from(resultDataObject.keys())
 
+    let shouldContinue = true;
     for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
-      result = findClosest(keysarray, (delta + i))
-      result_i = findClosest(keysarray, (i))
+
+      // handle the case where there is no data
+      if (keysarray === undefined || keysarray.length === 0) {
+        result = (delta + i)
+        result_i = i
+      }  else {
+        if (findClosest(keysarray, (i)) === findClosest(keysarray, (delta + i))) {
+          console.log('duplicate found')
+          if (shouldContinue) {
+            // The first time the condition is true, continue the loop
+            shouldContinue = false;
+            result = findClosest(keysarray, (delta + i))
+            result_i = findClosest(keysarray, (i))
+          } else {
+            // The second time the condition is true, break the loop
+            continue;
+          }
+        } else {
+          result = findClosest(keysarray, (delta + i))
+          result_i = findClosest(keysarray, (i))
+        }
+      }
       console.log(result + ' result')
       console.log(result_i + ' result_i')
 
