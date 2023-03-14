@@ -82,12 +82,12 @@ export default class LineEnergyChange {
       }  else {
         if (findClosest(keysarray, (i)) === findClosest(keysarray, (delta + i))) {
           if (shouldContinue) {
-            // The first time the shouldContinue condition is true, set the result and result_i values
+            // The first time, the shouldContinue condition is true, set the result and result_i values
             shouldContinue = false
             result = findClosest(keysarray, (delta + i))
             result_i = findClosest(keysarray, (i))
           } else {
-            // The second time the shouldContinue condition is true, don't set the result and result_i values (avoid duplicates)
+            // The second time, the shouldContinue condition is false, don't set the result and result_i values (avoid duplicates)
             continue
           }
         } else {
