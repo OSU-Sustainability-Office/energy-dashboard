@@ -69,7 +69,7 @@ export default class LineEnergyChange {
     delta = intervalUnitDelta[payload.intervalUnit]
     delta *= payload.dateInterval
 
-    // set the offset if there is one we need to account forre
+    // set the offset if there is one we need to account for
     const offset = (payload.timeZoneOffset) ? payload.timeZoneOffset : 0
     let keysarray = Array.from(resultDataObject.keys())
 
