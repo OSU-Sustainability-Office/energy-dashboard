@@ -73,37 +73,30 @@ export default class LineEnergyChange {
     const offset = (payload.timeZoneOffset) ? payload.timeZoneOffset : 0
     let keysarray = Array.from(resultDataObject.keys())
 
-    let shouldContinue = true;
+    let shouldContinue = true
     for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
-
       // handle the case where there is no data
       if (keysarray === undefined || keysarray.length === 0) {
         result = (delta + i)
         result_i = i
       }  else {
         if (findClosest(keysarray, (i)) === findClosest(keysarray, (delta + i))) {
-          console.log('duplicate found')
           if (shouldContinue) {
             // The first time the condition is true, continue the loop
-            shouldContinue = false;
+            shouldContinue = false
             result = findClosest(keysarray, (delta + i))
             result_i = findClosest(keysarray, (i))
           } else {
             // The second time the condition is true, break the loop
-            continue;
+            continue
           }
         } else {
           result = findClosest(keysarray, (delta + i))
           result_i = findClosest(keysarray, (i))
         }
       }
-      console.log(result + ' result')
-      console.log(result_i + ' result_i')
 
       try {
-        console.log(resultDataObject.get(result) + ' resultDataObject.get(result)')
-        console.log(resultDataObject.get(result_i) + ' resultDataObject.get(result_i)')
-
         let accumulator = 0
         if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
           continue
@@ -122,7 +115,6 @@ export default class LineEnergyChange {
         console.log(error)
       }
     }
-    console.log(returnData)
     chartData.data = returnData
   }
 
