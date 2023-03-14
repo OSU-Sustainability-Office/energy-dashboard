@@ -87,7 +87,7 @@ export default class LineEnergyChange {
             result = findClosest(keysarray, (delta + i))
             result_i = findClosest(keysarray, (i))
           } else {
-            // The second time, the shouldContinue condition is false, don't set the result and result_i values (avoid duplicates)
+            // The second time, the shouldContinue condition is false. Don't execute the remaining in the for loop, return to beginning of the for loop. (avoid duplicates)
             continue
           }
         } else {
