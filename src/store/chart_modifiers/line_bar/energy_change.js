@@ -62,7 +62,8 @@ export default class LineEnergyChange {
 
     const intervalUnitDelta = {
       'minute': 60,
-      'hour': 3600,
+      // Can hardcode "hour" to be same value as "day" for testing - not good design, change before production
+      'hour': 86400,
       'day': 86400
     }
 

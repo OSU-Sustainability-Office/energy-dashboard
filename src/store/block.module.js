@@ -259,13 +259,19 @@ const actions = {
       datasets: []
     }
     const reqPayload = {
-      dateStart: parseInt(store.getters.dateStart / 1000),
+
+      // optimal findings: 2 weeks interval, daily, or MAYBE 1 week interval, hourly. Way too much sporadic data in Tesla sample. 
+      // Overall advise NOT to use bar graphs
+
+      // testing: hardcoded start date as subtraction from end datae. Units in seconds
+      dateStart: parseInt(store.getters.dateEnd / 1000) - (2630000*2),
       dateEnd: parseInt(store.getters.dateEnd / 1000),
       intervalUnit: store.getters.intervalUnit,
       dateInterval: store.getters.dateInterval,
       graphType: store.getters.graphType,
       timeZoneOffset: store.getters.timeZoneOffset
     }
+    console.log(reqPayload)
 
     for (let mod of store.getters.modifiers) {
       await mod.preData(this, store, reqPayload)
