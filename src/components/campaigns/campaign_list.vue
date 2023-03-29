@@ -1,10 +1,3 @@
-<!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-02-04T11:40:29-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-02-11T09:06:12-08:00
--->
 <template>
   <el-row class='campaignlistview'>
     <el-tabs v-model="activePane">
@@ -47,9 +40,10 @@ export default {
     await this.$store.dispatch('campaigns/loadCampaigns')
     this.loaded = true
     for (let camp of this.$store.getters['campaigns/campaigns']) {
-      if (this.checkDate(camp.dateEnd)) {
+      if (this.checkDate(camp.dateEnd) && !camp.name.toLowerCase().startsWith('test')) {
+        console.log(this.checkDate(camp.dateEnd))
         this.currentCampaigns.push(camp)
-      } else {
+      } else if (!camp.name.toLowerCase().startsWith('test')) {
         this.pastCampaigns.push(camp)
       }
     }
