@@ -68,7 +68,7 @@ export default {
           }
         })
 
-        //Sort blocks with NaN percentages (no data) to the bottom
+        // Sort blocks with NaN percentages (no data) to the bottom
         blocks.sort((a, b) => {
           try {
             const aPercentage = this.accumulatedPercentage(a.path)
@@ -128,8 +128,7 @@ export default {
         result.push(Math.round(typicalColor[0] - redInt[0] * compare))
         result.push(Math.round(typicalColor[1] + redInt[1] * compare))
         result.push(Math.round(typicalColor[2] + redInt[2] * compare))
-      } 
-      else if (isNaN(percentage)) {
+      } else if (isNaN(percentage)) {
         result.push(greenInt[0])
         result.push(greenInt[0])
         result.push(greenInt[0])
