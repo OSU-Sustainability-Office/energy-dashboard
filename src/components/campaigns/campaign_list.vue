@@ -40,10 +40,10 @@ export default {
     await this.$store.dispatch('campaigns/loadCampaigns')
     this.loaded = true
     for (let camp of this.$store.getters['campaigns/campaigns']) {
-      if (this.checkDate(camp.dateEnd) && !camp.name.startsWith('test')) {
+      if (this.checkDate(camp.dateEnd) && !camp.name.toLowerCase().startsWith('test')) {
         console.log(this.checkDate(camp.dateEnd))
         this.currentCampaigns.push(camp)
-      } else if (!camp.name.startsWith('test')) {
+      } else if (!camp.name.toLowerCase().startsWith('test')) {
         this.pastCampaigns.push(camp)
       }
     }
