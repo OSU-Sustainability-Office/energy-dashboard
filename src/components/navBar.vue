@@ -12,7 +12,7 @@
           <el-menu-item index="map" :route='{path: "/map"}' ref='mapItem'>Map</el-menu-item>
           <el-menu-item index="buildings" :route='{path: "/buildings"}' ref='buildingItem'>Building List</el-menu-item>
           <el-menu-item index="campaigns" :route='{path: "/campaigns"}' ref='buildingItem'>Campaigns</el-menu-item>
-          <el-menu-item v-if='onid' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item>
+          <!--<el-menu-item v-if='onid' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item> -->
           <el-menu-item index="getStarted" :route='{path: "/getstarted"}' ref='getStartedItem'>Get Started</el-menu-item>
         </el-menu>
       </el-col>
