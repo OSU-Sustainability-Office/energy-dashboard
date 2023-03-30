@@ -60,7 +60,7 @@ const actions = {
             store.commit('onid', data.onid)
             let edashData = await API.edashUser()
             store.commit('privilege', edashData.privilege)
-            await store.dispatch('loadViews', edashData.appData['energyDashboard'].views)
+            // await store.dispatch('loadViews', edashData.appData['energyDashboard'].views)
             // store.commit('alerts', edashData.alerts)
           }
           resolve(store.getters)
