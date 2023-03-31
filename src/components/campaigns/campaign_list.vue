@@ -45,6 +45,10 @@ export default {
         this.currentCampaigns.push(camp)
       } else if (!camp.name.toLowerCase().startsWith('test')) {
         this.pastCampaigns.push(camp)
+      } else if (this.checkDate(camp.dateEnd) && camp.name.toLowerCase().startsWith('test') && process.env.VUE_APP_HOST_ADDRESS === 'http://localhost:8080') {
+        this.currentCampaigns.push(camp)
+      } else if (camp.name.toLowerCase().startsWith('test') && process.env.VUE_APP_HOST_ADDRESS === 'http://localhost:8080') {
+        this.pastCampaigns.push(camp)
       }
     }
     this.currentCampaigns.sort((a, b) => { return (new Date(b.dateEnd)).getTime() - (new Date(a.dateEnd)).getTime() })
