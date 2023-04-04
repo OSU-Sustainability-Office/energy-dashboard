@@ -729,5 +729,6 @@ Resources:
               - nodejs8.10
               - nodejs10.x
               - nodejs12.x
+              - nodejs16.x
             LicenseInfo: 'MIT'
             RetentionPolicy: Retain
