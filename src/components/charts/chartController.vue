@@ -4,10 +4,11 @@
 -->
 <template>
   <div v-loading='loading || !chartData' element-loading-background="rgba(0, 0, 0, 0.8)" :style='`height: ${height}px; border-radius: 5px; overflow: hidden;`'>
-    <linechart v-if="graphType === 1 && chartData" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
+    <linechart v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'" ref="linechart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
     <barchart v-if="graphType === 2 && chartData" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
     <doughnutchart v-if="graphType === 3 && chartData" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
     <piechart v-if="graphType === 4 && chartData" ref="piechart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
+    <iframe v-if = "this.path === 'map/building_35/block_175'" src="https://mysolarcity.com/Share/007c9349-72ba-450c-aa1f-4e5a77b68f79#/monitoring/historical/day?date=2023-04-02" height="600" width="1000" title="Iframe Example"></iframe>
     <el-col :span='24' class='NoData' :style='`height:${height}px;line-height:${height}px;`' v-if="graphType == 100">Data Unavailable</el-col>
   </div>
 </template>
@@ -162,6 +163,7 @@ export default {
           this.chart.options.scales.yAxes[0].ticks.maxTicksLimit = (this.height / 200) * 8 - dif
         }
         this.chartData = data
+        console.log(this.path)
         this.loading = false
         // console.log('done loading!', this.path, data)
         // this.$store.getters[this.path]

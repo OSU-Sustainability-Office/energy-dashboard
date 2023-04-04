@@ -3,7 +3,20 @@
   Info: Displays a single chart for a dataset from the "buildings" directory.
 -->
 <template>
-  <div class="card" ref='card'>
+  <div class="card-iframe" ref='card' v-if = "this.path === 'map/building_35/block_175'">
+      <el-row :span='24' class='title' ref='title'>
+        <el-col :span='20'>{{ name }}</el-col>
+      </el-row>
+
+      <!--Chart Below-->
+      <el-row style="overflow: hidden" :span='24'>
+        <el-col :span='24'>
+          <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
+          <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='550'/>
+        </el-col>
+      </el-row>
+  </div>
+  <div class="card" ref='card' v-else>
       <el-row :span='24' class='title' ref='title'>
         <el-col :span='20'>{{ name }}</el-col>
         <el-col :span='4' v-if='personalView || publicView' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='openModal()'></i></el-col>
@@ -25,10 +38,10 @@
         </el-col>
       </el-row>
       <!--Chart Below-->
-      <el-row style='overflow: hidden;' :span='24'>
+      <el-row style="overflow: hidden" :span='24'>
         <el-col :span='24'>
           <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
-          <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430'/>
+          <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430' />
         </el-col>
       </el-row>
   </div>
@@ -206,6 +219,18 @@ $chart-height: 430px;
   padding: 2em;
   padding-bottom: 5em;
   height: calc(400px + 8em);
+  color: $--color-primary;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border-radius: 5px;
+  box-shadow: 0px 0px 3px $--color-black;
+}
+
+.card-iframe {
+  background-color: $--color-white;
+  padding: 2em;
+  padding-bottom: 5em;
+  height: calc(520px + 8em);
   color: $--color-primary;
   margin-top: 1em;
   margin-bottom: 1em;
