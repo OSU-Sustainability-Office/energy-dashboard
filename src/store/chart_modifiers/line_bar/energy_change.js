@@ -53,6 +53,8 @@ export default class LineEnergyChange {
     let result
     let result_i
 
+    chartData.fill = true
+
     // Finds the nearest valid keys for a given building. In this case, it handles solar meters that upload less than every 15 minutes.
     function findClosest (array, num) {
       return array.reduce(function (prev, curr) {
