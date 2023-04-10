@@ -8,7 +8,10 @@
     <barchart v-if="graphType === 2 && chartData" ref="barchart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
     <doughnutchart v-if="graphType === 3 && chartData" ref="doughnutchart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
     <piechart v-if="graphType === 4 && chartData" ref="piechart" v-bind:chartData="chartData" :style="styleC" :height='height' :invertColors='invertColors'/>
-    <iframe v-if = "this.path === 'map/building_35/block_175'" src="https://mysolarcity.com/Share/007c9349-72ba-450c-aa1f-4e5a77b68f79#/monitoring/historical/day?date=2023-04-02" height="600" width="1000" title="Iframe Example"></iframe>
+    <iframe v-if = "this.path === 'map/building_35/block_175'" :class="iframeClass" src="https://mysolarcity.com/Share/007c9349-72ba-450c-aa1f-4e5a77b68f79#/monitoring/historical/month" height="600" width="1000" title="Iframe Example"></iframe>
+    <iframe v-if = "this.path === 'map/building_36/block_176'" :class="iframeClass" src="https://mysolarcity.com/share/9D5EB0D2-E376-44A1-9B8C-8DFCDD7507A5#/monitoring/historical/month" height="600" width="1000" title="Iframe Example"></iframe>
+    <iframe v-if = "this.path === 'map/building_37/block_177'" :class="iframeClass" src="https://mysolarcity.com/Share/38954c21-8669-47b6-8376-835cc24f908c#/monitoring/historical/month" height="600" width="1000" title="Iframe Example"></iframe>
+    <iframe v-if = "this.path === 'map/building_38/block_178'" :class="iframeClass" src="https://mysolarcity.com/Share/47cf089a-5b93-4200-8566-e030cb4f8574#/monitoring/historical/month" height="600" width="1000" title="Iframe Example"></iframe>
     <el-col :span='24' class='NoData' :style='`height:${height}px;line-height:${height}px;`' v-if="graphType == 100">Data Unavailable</el-col>
   </div>
 </template>
@@ -30,7 +33,9 @@ export default {
   components: {
     linechart, barchart, doughnutchart, piechart
   },
-  mounted () {},
+  mounted () {
+    console.log(this.$route.path)
+  },
   watch: {
     path: function (value) {
       this.updateChart()
@@ -90,6 +95,13 @@ export default {
     })
   },
   computed: {
+    iframeClass () {
+      if (this.$route.path.startsWith('/map')) {
+        return 'scaled-iframe'
+      } else {
+        return ''
+      }
+    },
     promise: {
       get () {
         return this.$store.getters[this.path + '/promise']
@@ -259,4 +271,8 @@ export default {
     font-weight: 800;
     font-size: 22px;
   }
+  .scaled-iframe {
+  transform: scale(0.40);
+  transform-origin: top left;
+}
 </style>
