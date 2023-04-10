@@ -107,6 +107,9 @@ export default {
           })
           layer.on('mouseover', function (e) {
             if (!e.target.setStyle) return
+            if (e.target.feature.id === 'way/1100972272') {
+              e.target.feature.properties.name = 'OSU Operations'
+            }
             e.target.oldStyle = { fillColor: e.target.options.fillColor, color: e.target.options.color }
             e.target.setStyle({ fillColor: '#000', color: '#000' })
             e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
