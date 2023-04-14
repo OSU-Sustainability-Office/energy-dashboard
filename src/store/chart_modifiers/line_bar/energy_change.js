@@ -50,6 +50,17 @@ export default class LineEnergyChange {
     let resultDataObject = chartData.data
     let returnData = []
     let delta = 1
+    let result
+    let result_i
+
+    chartData.fill = true
+
+    // Finds the nearest valid keys for a given building. In this case, it handles solar meters that upload less than every 15 minutes.
+    function findClosest (array, num) {
+      return array.reduce(function (prev, curr) {
+        return (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev)
+      })
+    }
 
     const intervalUnitDelta = {
       'minute': 60,
@@ -62,23 +73,46 @@ export default class LineEnergyChange {
 
     // set the offset if there is one we need to account for
     const offset = (payload.timeZoneOffset) ? payload.timeZoneOffset : 0
+    let keysarray = Array.from(resultDataObject.keys())
 
+    let shouldContinue = true
     for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
+      // handle the case where there is no data
+      if (keysarray === undefined || keysarray.length === 0) {
+        result = (delta + i)
+        result_i = i
+      }  else {
+        if (findClosest(keysarray, (i)) === findClosest(keysarray, (delta + i))) {
+          if (shouldContinue) {
+            // The first time, the shouldContinue condition is true, set the result and result_i values
+            shouldContinue = false
+            result = findClosest(keysarray, (delta + i))
+            result_i = findClosest(keysarray, (i))
+          } else {
+            // The second time, the shouldContinue condition is false. Don't execute the remaining in the for loop, return to beginning of the for loop. (avoid duplicates)
+            continue
+          }
+        } else {
+          result = findClosest(keysarray, (delta + i))
+          result_i = findClosest(keysarray, (i))
+        }
+      }
+
       try {
         let accumulator = 0
-        if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
+        if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
           continue
         }
-        accumulator = resultDataObject.get(i + delta)
+        accumulator = resultDataObject.get(result)
         // Add proceeding values
         const minimumInterval = intervalUnitDelta['minute'] * payload.dateInterval
         for (let next = minimumInterval; next < delta; next += minimumInterval) {
-          const nextReading = resultDataObject.get(i + (delta + next))
+          const nextReading = resultDataObject.get(result_i + (delta + next))
           accumulator =  (isNaN(nextReading)) ? accumulator : accumulator + nextReading
         }
         // console.log(accumulator)
 
-        returnData.push({ x: (new Date((i + delta + offset) * 1000)), y: accumulator })
+        returnData.push({ x: (new Date((result + offset) * 1000)), y: accumulator })
       } catch (error) {
         console.log(error)
       }
