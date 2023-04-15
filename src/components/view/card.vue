@@ -3,7 +3,24 @@
   Info: Displays a single chart for a dataset from the "buildings" directory.
 -->
 <template>
-  <div class="card" ref='card'>
+  <div class="card-iframe" ref='card' v-if = "this.path === 'map/building_35/block_175' || 'map/building_36/block_176' || 'map/building_37/block_177' || 'map/building_38/block_178'">
+      <el-row :span='24' class='title' ref='title'>
+        <el-col :span='20'>{{ name }}</el-col>
+      </el-row>
+
+      <!--Chart Below-->
+      <el-row style="overflow: hidden" :span='24'>
+        <el-col :span='24'>
+          <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
+          <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='550'/>
+        </el-col>
+      </el-row>
+      <p v-if = "this.path === 'map/building_35/block_175'"><a href = https://mysolarcity.com/Share/007c9349-72ba-450c-aa1f-4e5a77b68f79#/monitoring/historical/month>Data Provided by Tesla</a></p>
+      <p v-if = "this.path === 'map/building_36/block_176'"><a href = https://mysolarcity.com/share/9D5EB0D2-E376-44A1-9B8C-8DFCDD7507A5#/monitoring/historical/month>Data Provided by Tesla</a></p>
+      <p v-if = "this.path === 'map/building_37/block_177'"><a href = https://mysolarcity.com/Share/38954c21-8669-47b6-8376-835cc24f908c#/monitoring/historical/month>Data Provided by Tesla</a></p>
+      <p v-if = "this.path === 'map/building_38/block_178'"><a href = https://mysolarcity.com/Share/47cf089a-5b93-4200-8566-e030cb4f8574#/monitoring/historical/month>Data Provided by Tesla</a></p>
+  </div>
+  <div class="card" ref='card' v-else>
       <el-row :span='24' class='title' ref='title'>
         <el-col :span='20'>{{ name }}</el-col>
         <el-col :span='4' v-if='personalView || publicView' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='openModal()'></i></el-col>
@@ -25,10 +42,10 @@
         </el-col>
       </el-row>
       <!--Chart Below-->
-      <el-row style='overflow: hidden;' :span='24'>
+      <el-row style="overflow: hidden" :span='24'>
         <el-col :span='24'>
           <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
-          <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430'/>
+          <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430' />
         </el-col>
       </el-row>
   </div>
@@ -206,6 +223,18 @@ $chart-height: 430px;
   padding: 2em;
   padding-bottom: 5em;
   height: calc(400px + 8em);
+  color: $--color-primary;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border-radius: 5px;
+  box-shadow: 0px 0px 3px $--color-black;
+}
+
+.card-iframe {
+  background-color: $--color-white;
+  padding: 2em;
+  padding-bottom: 5em;
+  height: calc(520px + 8em);
   color: $--color-primary;
   margin-top: 1em;
   margin-bottom: 1em;
