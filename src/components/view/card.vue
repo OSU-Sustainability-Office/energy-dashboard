@@ -3,7 +3,7 @@
   Info: Displays a single chart for a dataset from the "buildings" directory.
 -->
 <template>
-  <div class="card-iframe" ref='card' v-if = "this.path === 'map/building_35/block_175' || 'map/building_36/block_176' || 'map/building_37/block_177' || 'map/building_38/block_178'">
+  <div class="card-iframe" ref='card' v-if = "this.path === ('map/building_35/block_175' || 'map/building_36/block_176' || 'map/building_37/block_177' || 'map/building_38/block_178')">
       <el-row :span='24' class='title' ref='title'>
         <el-col :span='20'>{{ name }}</el-col>
       </el-row>
