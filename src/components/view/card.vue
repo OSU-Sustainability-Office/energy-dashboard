@@ -3,7 +3,7 @@
   Info: Displays a single chart for a dataset from the "buildings" directory.
 -->
 <template>
-  <div class="card-iframe" ref='card' v-if = "this.path === ('map/building_35/block_175' || 'map/building_36/block_176' || 'map/building_37/block_177' || 'map/building_38/block_178')">
+  <div class="card-iframe" ref='card' v-if = "this.path === ('map/building_35/block_175') || this.path === ('map/building_36/block_176') || this.path === ('map/building_37/block_177') || this.path === ('map/building_38/block_178')">
       <el-row :span='24' class='title' ref='title'>
         <el-col :span='20'>{{ name }}</el-col>
       </el-row>
@@ -19,6 +19,7 @@
       <p v-if = "this.path === 'map/building_36/block_176'"><a href = https://mysolarcity.com/share/9D5EB0D2-E376-44A1-9B8C-8DFCDD7507A5#/monitoring/historical/month>Data Provided by Tesla</a></p>
       <p v-if = "this.path === 'map/building_37/block_177'"><a href = https://mysolarcity.com/Share/38954c21-8669-47b6-8376-835cc24f908c#/monitoring/historical/month>Data Provided by Tesla</a></p>
       <p v-if = "this.path === 'map/building_38/block_178'"><a href = https://mysolarcity.com/Share/47cf089a-5b93-4200-8566-e030cb4f8574#/monitoring/historical/month>Data Provided by Tesla</a></p>
+      <p><a href = https://fa.oregonstate.edu/sustainability/ground-mounted-photovoltaic-arrays>More Info About Oregon State University's Partnership with Tesla</a></p>
   </div>
   <div class="card" ref='card' v-else>
       <el-row :span='24' class='title' ref='title'>
@@ -85,6 +86,7 @@ export default {
     name: {
       get () {
         let name = this.$store.getters[this.path + '/name']
+        console.log(this.path)
         if (name && name !== '') {
           return name
         } else {
