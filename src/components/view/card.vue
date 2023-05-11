@@ -86,7 +86,7 @@ export default {
     name: {
       get () {
         let name = this.$store.getters[this.path + '/name']
-        console.log(this.path)
+        // console.log(this.path)
         if (name && name !== '') {
           return name
         } else {
