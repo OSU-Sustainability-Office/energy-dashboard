@@ -16,7 +16,7 @@
       <div>Not all of OSU's buildings are equipped with modern metering technology. Although we are working towards adding more meters, the process of installing meters is quite demanding and requires the entire building to be shut down.</div>
     </el-collapse-item>
     <el-collapse-item title="How can I submit questions or feedback?" name="7">
-      <div>Please email us at sustainability@oregonstate.edu.</div>
+      <div>Please email us at <a href="mailto:sustainability@oregonstate.edu">sustainability@oregonstate.edu</a>.</div>
     </el-collapse-item>
   </el-collapse>
 </template>
