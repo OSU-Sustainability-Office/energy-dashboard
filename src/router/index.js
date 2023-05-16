@@ -10,6 +10,7 @@ import map from '@/components/map/map'
 import campaigns from '@/components/campaigns/campaign_list'
 import getStarted from '@/components/get_started/getStartedContent'
 import notfound from '@/components/extras/404.vue'
+import contact from '@/components/extras/contact.vue'
 import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
 import buildingList from '@/components/building_list/building_list.vue'
 // import admin from '@/components/admin/admin.vue'
@@ -66,6 +67,10 @@ export default new Router({
     {
       path: '/getstarted',
       component: getStarted
+    },
+    {
+      path: '/contact',
+      component: contact
     },
     {
       path: '*',
