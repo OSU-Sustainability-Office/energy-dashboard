@@ -7,10 +7,7 @@
       <div>The data are collected using Obvius Data Acquisition Servers (AcquiSuites) located in 30+ buildings on OSU’s campus. Every 15 minutes, each server reports the most recent electricity, steam, and water meter observations.</div>
     </el-collapse-item>
     <el-collapse-item title="Why is the data collected in 15 minute intervals?" name="3">
-      <div>The energy usage data is collected in 15 minute intervals as this is the (utilities) industry standard for data measurement / verification.</div>
-    </el-collapse-item>
-    <el-collapse-item title="How much does this dashboard cost?" name="4">
-      <div>Email us at sustainability@oregonstate.edu for more info.</div>
+      <div>The energy usage data is collected in 15 minute intervals as this is the utility industry standard for data measurement / verification.</div>
     </el-collapse-item>
     <el-collapse-item title="Why are some buildings not listed on the Dashboard?" name="5">
       <div>Not all of OSU's buildings are equipped with modern metering technology. Although we are working towards adding more meters, the process of installing meters is quite demanding and requires the entire building to be shut down.</div>
