@@ -34,7 +34,7 @@ export default {
 
 <style>
 .el-row {
-  margin-bottom: 20px
+  margin-bottom: 0px
 }
 .faq {
   text-align: center;
