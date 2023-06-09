@@ -231,7 +231,7 @@ export default {
   overflow: hidden;
   background-color: rgb(26,26,26);
   box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
-  height: 425px;  // hard-coded value, might not be correct
+  height: 378px;  // hard-coded value, might not be correct
 }
 .title {
   padding: 0.3em;
@@ -269,7 +269,7 @@ export default {
   padding: 1.5em;
 }
 .graphcontrol-small {
-  padding: 1.5em;
+  padding: 0.5em;
   width: 450px;
   margin-left: 450px;
   position: absolute;
