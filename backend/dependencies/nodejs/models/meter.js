@@ -6,58 +6,58 @@
  * @Copyright:  Oregon State University 2019
  */
 
-const DB = require('/opt/nodejs/sql-access.js');
-const meterClasses = require('/opt/nodejs/meter_classes.js');
+const DB = require('/opt/nodejs/sql-access.js')
+const meterClasses = require('/opt/nodejs/meter_classes.js')
 
 class Meter {
   constructor(id, address = '') {
     if (!id && address === '') {
-      throw new Error('Meter needs id or address');
+      throw new Error('Meter needs id or address')
     }
-    this.id = id;
-    this.name = '';
-    this.address = address;
-    this.classInt = 0;
-    this.negate = 0;
-    this.type = '';
-    this.points = [];
+    this.id = id
+    this.name = ''
+    this.address = address
+    this.classInt = 0
+    this.negate = 0
+    this.type = ''
+    this.points = []
   }
 
   async get() {
-    await DB.connect();
-    let row;
+    await DB.connect()
+    let row
     if (this.address && this.address !== '') {
-      row = await DB.query('SELECT * FROM meters WHERE address = ?', [this.address]);
+      row = await DB.query('SELECT * FROM meters WHERE address = ?', [this.address])
     } else {
-      row = await DB.query('SELECT * FROM meters WHERE id = ?', [this.id]);
+      row = await DB.query('SELECT * FROM meters WHERE id = ?', [this.id])
     }
 
     if (row.length === 0) {
-      let notFoundError = new Error('Meter not found');
-      notFoundError.name = 'MeterNotFound';
-      throw notFoundError;
+      let notFoundError = new Error('Meter not found')
+      notFoundError.name = 'MeterNotFound'
+      throw notFoundError
     }
 
-    this.id = row[0]['id'];
-    this.name = row[0]['name'];
-    this.address = row[0]['address'];
-    this.classInt = row[0]['class'];
-    this.negate = row[0]['negate'] === 1;
+    this.id = row[0]['id']
+    this.name = row[0]['name']
+    this.address = row[0]['address']
+    this.classInt = row[0]['class']
+    this.negate = row[0]['negate'] === 1
 
-    this.calcProps();
-    return this;
+    this.calcProps()
+    return this
   }
 
   set(name, classInt, negate) {
-    this.name = name;
-    this.classInt = classInt;
-    this.negate = negate;
-    this.calcProps();
+    this.name = name
+    this.classInt = classInt
+    this.negate = negate
+    this.calcProps()
   }
 
   calcProps() {
     if (this.classInt === null) {
-      return;
+      return
     }
     // switch (this.classInt) {
     //   case 17:
@@ -107,22 +107,22 @@ class Meter {
       total_energy: 'Lifetime Cumulative Energy (kWh)',
       energy_change: 'Energy In Interval (kWh)',
       voltage: 'Voltage (V)',
-      current: 'Current (A)',
-    };
-    const points = Object.values(meterClasses[this.classInt]);
+      current: 'Current (A)'
+    }
+    const points = Object.values(meterClasses[this.classInt])
     for (let point of points) {
-      this.points.push({ label: map[point], value: point });
+      this.points.push({ label: map[point], value: point })
     }
     if (points.indexOf('total') >= 0) {
-      this.type = 'Steam';
+      this.type = 'Steam'
     } else if (points.indexOf('cubic_feet') >= 0) {
-      this.type = 'Gas';
+      this.type = 'Gas'
     } else if (points.indexOf('accumulated_real') >= 0) {
-      this.type = 'Electricity';
+      this.type = 'Electricity'
     } else if (points.indexOf('total_energy') >= 0) {
-      this.type = 'Solar Panel';
+      this.type = 'Solar Panel'
     }
-    return this;
+    return this
   }
 
   get data() {
@@ -133,23 +133,23 @@ class Meter {
       classInt: this.classInt,
       negate: this.negate,
       type: this.type,
-      points: this.points,
-    };
+      points: this.points
+    }
   }
 
   async download(point, startTime, endTime, meterClass) {
-    await DB.connect();
+    await DB.connect()
     if (Object.values(meterClasses[meterClass]).includes(point)) {
       // Generalized Meter Types
       if (String(meterClass).startsWith('999')) {
         // get table name from meter table
-        let [{ name: meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id]);
+        let [{ name: meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id])
         const meterLookupTable = {
           121: 'SEC_OSU_Op_Lube',
           122: 'SEC_OSU_Op',
           123: 'SEC_Solar',
-          124: 'OSU_Operations_Total',
-        };
+          124: 'OSU_Operations_Total'
+        }
         if (meter_table_name.startsWith('M')) {
           return DB.query(
             'SELECT ' +
@@ -159,8 +159,8 @@ class Meter {
               "' as id FROM " +
               meter_table_name +
               ' WHERE time_seconds >= ? AND time_seconds <= ?',
-            [startTime, endTime],
-          );
+            [startTime, endTime]
+          )
         } else {
           return DB.query(
             'SELECT ' +
@@ -170,8 +170,8 @@ class Meter {
               "' as id FROM " +
               meter_table_name +
               ' WHERE time_seconds >= ? AND time_seconds <= ? AND tableID = ?',
-            [startTime, endTime, meterLookupTable[this.id]],
-          );
+            [startTime, endTime, meterLookupTable[this.id]]
+          )
         }
       }
       // Aquisuites
@@ -179,53 +179,53 @@ class Meter {
         'SELECT ' +
           point +
           ', time_seconds AS time, id FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)',
-        [this.id, startTime, endTime],
-      );
+        [this.id, startTime, endTime]
+      )
     } else {
-      throw new Error('Point is not available for given meter class');
+      throw new Error('Point is not available for given meter class')
     }
   }
 
   // download without explicit point name
   async sparseDownload(point, startTime, endTime, meterClass) {
-    await DB.connect();
+    await DB.connect()
     if (Object.values(meterClasses[meterClass]).includes(point)) {
       if (String(meterClass).startsWith('999')) {
         // get table name from meter table
-        let [{ name: meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id]);
+        let [{ name: meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id])
         return DB.query(
           'SELECT ' +
             point +
             ' as reading, time_seconds AS time FROM ' +
             meter_table_name +
             ' WHERE time_seconds >= ? AND time_seconds <= ?',
-          [startTime, endTime],
-        );
+          [startTime, endTime]
+        )
       }
       return DB.query(
         'SELECT ' +
           point +
           ' as reading, time_seconds AS time FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)',
-        [this.id, startTime, endTime],
-      );
+        [this.id, startTime, endTime]
+      )
     } else {
-      throw new Error('Point is not available for given meter class');
+      throw new Error('Point is not available for given meter class')
     }
   }
 
   async delete(user) {
     if (user.data.privilege > 3) {
-      await DB.connect();
-      await DB.query('DELETE meters WHERE id = ?', [this.id]);
+      await DB.connect()
+      await DB.query('DELETE meters WHERE id = ?', [this.id])
     } else {
-      throw new Error('Need escalated privileges');
+      throw new Error('Need escalated privileges')
     }
   }
 
   async upload(data) {
-    await DB.connect();
-    console.log(meterClasses);
-    let points = meterClasses[this.classInt];
+    await DB.connect()
+    console.log(meterClasses)
+    let points = meterClasses[this.classInt]
 
     const pointMap = {
       accumulated_real: null,
@@ -260,14 +260,14 @@ class Meter {
       cubic_feet: null,
       instant: null,
       rate: null,
-      default: null,
-    };
+      default: null
+    }
     for (let key of Object.keys(points)) {
-      pointMap[points[key]] = data[parseInt(key)];
+      pointMap[points[key]] = data[parseInt(key)]
     }
 
-    let time = data[0].toString().substring(1, 17) + ':00';
-    const timeseconds = new Date(time).getTime() / 1000 - new Date().getTimezoneOffset() * 60;
+    let time = data[0].toString().substring(1, 17) + ':00'
+    const timeseconds = new Date(time).getTime() / 1000 - new Date().getTimezoneOffset() * 60
     try {
       await DB.query(
         'INSERT INTO data (meter_id, time, time_seconds, error, accumulated_real, real_power, reactive_power, apparent_power, real_a, real_b, real_c, reactive_a, reactive_b, reactive_c, apparent_a, apparent_b, apparent_c, pf_a, pf_b, pf_c, vphase_ab, vphase_bc, vphase_ac, vphase_an, vphase_bn, vphase_cn, cphase_a, cphase_b, cphase_c, total, input, minimum, maximum, cubic_feet, instant, rate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
@@ -307,12 +307,12 @@ class Meter {
           pointMap.maximum,
           pointMap.cubic_feet,
           pointMap.instant,
-          pointMap.rate,
-        ],
-      );
+          pointMap.rate
+        ]
+      )
     } catch (err) {
       if (err.code === 'ER_DUP_ENTRY' && !parseInt(data[1])) {
-        console.log(pointMap);
+        console.log(pointMap)
         await DB.query(
           `UPDATE data SET 
                         error = ?, 
@@ -384,61 +384,61 @@ class Meter {
             pointMap.instant,
             pointMap.rate,
             this.id,
-            time,
-          ],
-        );
+            time
+          ]
+        )
       } else if (!parseInt(data[1])) {
         // Error on backend not acquisuite
-        throw err;
+        throw err
       }
     }
   }
 
   async update(name, classInt, negate, user) {
     if (user.data.privilege <= 3) {
-      throw new Error('Need escalated privileges');
+      throw new Error('Need escalated privileges')
     }
-    await DB.connect();
-    await DB.query('UPDATE meters SET name = ?, class = ?, negate = ? WHERE id = ?', [name, classInt, negate, this.id]);
-    this.name = name;
-    this.classInt = classInt;
-    this.negate = negate;
+    await DB.connect()
+    await DB.query('UPDATE meters SET name = ?, class = ?, negate = ? WHERE id = ?', [name, classInt, negate, this.id])
+    this.name = name
+    this.classInt = classInt
+    this.negate = negate
   }
 
   static async create(name, address, classInt, negate = 0) {
-    await DB.connect();
+    await DB.connect()
     let returnRow = await DB.query('INSERT INTO meters (name, address, class, negate) values (?, ?, ?, ?)', [
       name,
       address,
       classInt,
-      negate,
-    ]);
-    let meter = new Meter(returnRow.insertId);
-    meter.name = name;
-    meter.address = address;
-    meter.class = classInt;
-    meter.negate = negate;
-    return meter;
+      negate
+    ])
+    let meter = new Meter(returnRow.insertId)
+    meter.name = name
+    meter.address = address
+    meter.class = classInt
+    meter.negate = negate
+    return meter
   }
 
   static async all(user) {
     if (user.privilege > 3) {
-      await DB.connect();
-      let meters = await DB.query('SELECT * FROM meters');
-      let r = [];
+      await DB.connect()
+      let meters = await DB.query('SELECT * FROM meters')
+      let r = []
       for (let meterQ of meters) {
-        let meter = new Meter(meterQ.id);
-        meter.id = meterQ['id'];
-        meter.name = meterQ['name'];
-        meter.address = meterQ['address'];
-        meter.classInt = meterQ['class'];
-        meter.negate = meterQ['negate'] === 1;
-        meter.calcProps();
-        r.push(meter.data);
+        let meter = new Meter(meterQ.id)
+        meter.id = meterQ['id']
+        meter.name = meterQ['name']
+        meter.address = meterQ['address']
+        meter.classInt = meterQ['class']
+        meter.negate = meterQ['negate'] === 1
+        meter.calcProps()
+        r.push(meter.data)
       }
-      return r;
+      return r
     }
   }
 }
 
-module.exports = Meter;
+module.exports = Meter

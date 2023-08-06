@@ -8,16 +8,15 @@
 
 <template>
   <el-row class="stage">
-    <el-col class='main'>
-      <heropicture :media='story.media' :description='story.description' :name='story.name'></heropicture>
-      <navdir ref='navdir' @update='update' @save='save'></navdir>
-      <featured ref='featureBox' :compareMode="$route.path.search('compare') > 0"/>
+    <el-col class="main">
+      <heropicture :media="story.media" :description="story.description" :name="story.name"></heropicture>
+      <navdir ref="navdir" @update="update" @save="save"></navdir>
+      <featured ref="featureBox" :compareMode="$route.path.search('compare') > 0" />
     </el-col>
   </el-row>
 </template>
 
 <script>
-
 import featured from '@/components/account/featured'
 import heropicture from '@/components/extras/heropicture'
 import navdir from '@/components/account/navdir'
@@ -33,29 +32,25 @@ export default {
   asyncComputed: {
     stories: {
       get: function () {
-        return this.$store.dispatch('stories')
+        return this.$store.dispatch( 'stories' )
       }
     }
   },
   computed: {
-    ...mapGetters([
-      'story',
-      'block',
-      'user'
-    ]),
+    ...mapGetters( ['story', 'block', 'user'] ),
     start: {
       get () {
-        if (this.$route.path.search('building') > 0 || this.$route.path.search('compare') > 0) {
+        if ( this.$route.path.search( 'building' ) > 0 || this.$route.path.search( 'compare' ) > 0 ) {
           let d = new Date()
-          switch (parseInt(this.$route.params.range)) {
+          switch ( parseInt( this.$route.params.range ) ) {
             case 0:
-              d.setDate(d.getDate() - 7)
+              d.setDate( d.getDate() - 7 )
               break
             case 1:
-              d.setMonth(d.getMonth() - 1)
+              d.setMonth( d.getMonth() - 1 )
               break
             case 2:
-              d.setFullYear(d.getFullYear() - 1)
+              d.setFullYear( d.getFullYear() - 1 )
               break
             default:
               break
@@ -66,7 +61,7 @@ export default {
     },
     end: {
       get () {
-        if (this.$route.path.search('building') > 0 || this.$route.path.search('compare') > 0) {
+        if ( this.$route.path.search( 'building' ) > 0 || this.$route.path.search( 'compare' ) > 0 ) {
           let d = new Date()
           return d.toISOString()
         }
@@ -74,8 +69,8 @@ export default {
     },
     unit: {
       get () {
-        if (this.$route.path.search('building') > 0 || this.$route.path.search('compare') > 0) {
-          switch (parseInt(this.$route.params.range)) {
+        if ( this.$route.path.search( 'building' ) > 0 || this.$route.path.search( 'compare' ) > 0 ) {
+          switch ( parseInt( this.$route.params.range ) ) {
             case 0:
               return 'hour'
             case 1:
@@ -90,8 +85,8 @@ export default {
     },
     interval: {
       get () {
-        if (this.$route.path.search('building') > 0 || this.$route.path.search('compare') > 0) {
-          switch (parseInt(this.$route.params.range)) {
+        if ( this.$route.path.search( 'building' ) > 0 || this.$route.path.search( 'compare' ) > 0 ) {
+          switch ( parseInt( this.$route.params.range ) ) {
             case 0:
               return 1
             case 1:
@@ -106,9 +101,9 @@ export default {
     }
   },
   created () {
-    this.$eventHub.$on('reloadCharts', () => {
+    this.$eventHub.$on( 'reloadCharts', () => {
       this.$refs.featureBox.updateCards()
-    })
+    } )
   },
   mounted () {
     this.update()
@@ -116,60 +111,80 @@ export default {
   methods: {
     save: function () {
       let promises = []
-      for (let block of this.story.blocks) {
-        if (block.id === null) {
-          this.$store.dispatch('createBlock', block).then(() => {
-            for (let chart of block.charts) {
-              promises.push(this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meter: chart.meter }))
+      for ( let block of this.story.blocks ) {
+        if ( block.id === null ) {
+          this.$store.dispatch( 'createBlock', block ).then( () => {
+            for ( let chart of block.charts ) {
+              promises.push(
+                this.$store.dispatch( 'createChart', {
+                  index: block.index,
+                  name: chart.name,
+                  block_id: block.id,
+                  group_id: chart.group_id,
+                  point: chart.point,
+                  meter: chart.meter
+                } )
+              )
             }
-          })
+          } )
         } else {
-          this.$store.dispatch('updateBlock', block).then(() => {
-            for (let chart of block.charts) {
-              if (chart.id) {
-                promises.push(this.$store.dispatch('updateChart', chart))
+          this.$store.dispatch( 'updateBlock', block ).then( () => {
+            for ( let chart of block.charts ) {
+              if ( chart.id ) {
+                promises.push( this.$store.dispatch( 'updateChart', chart ) )
               } else {
-                promises.push(this.$store.dispatch('createChart', { index: block.index, name: chart.name, block_id: block.id, group_id: chart.group_id, point: chart.point, meter: chart.meter }))
+                promises.push(
+                  this.$store.dispatch( 'createChart', {
+                    index: block.index,
+                    name: chart.name,
+                    block_id: block.id,
+                    group_id: chart.group_id,
+                    point: chart.point,
+                    meter: chart.meter
+                  } )
+                )
               }
             }
-          })
+          } )
         }
       }
-      if (this.story.removed.length > 0) {
-        for (let obj of this.story.removed) {
-          if (obj.type === 'block') {
-            promises.push(this.$store.dispatch('deleteBlock', { id: obj.id }))
-          } else if (obj.type === 'chart') {
-            promises.push(this.$store.dispatch('deleteChart', { id: obj.id }))
+      if ( this.story.removed.length > 0 ) {
+        for ( let obj of this.story.removed ) {
+          if ( obj.type === 'block' ) {
+            promises.push( this.$store.dispatch( 'deleteBlock', { id: obj.id } ) )
+          } else if ( obj.type === 'chart' ) {
+            promises.push( this.$store.dispatch( 'deleteChart', { id: obj.id } ) )
           }
         }
-        promises.push(this.$store.commit('resetRemoved'))
+        promises.push( this.$store.commit( 'resetRemoved' ) )
       }
-      Promise.all(promises).then(() => {
-        this.$message({
-          message: 'Story saved successfully',
-          type: 'success'
-        })
-      }).catch(() => {
-        this.$message({
-          message: 'Error could not save story',
-          type: 'error'
-        })
-      })
+      Promise.all( promises )
+        .then( () => {
+          this.$message( {
+            message: 'Story saved successfully',
+            type: 'success'
+          } )
+        } )
+        .catch( () => {
+          this.$message( {
+            message: 'Error could not save story',
+            type: 'error'
+          } )
+        } )
     },
     cancel: function () {
       let id = this.story.id
-      this.$store.commit('loadStory', { id: null })
-      this.$store.dispatch('story', id).then(() => {
+      this.$store.commit( 'loadStory', { id: null } )
+      this.$store.dispatch( 'story', id ).then( () => {
         this.$refs.featureBox.updateCards()
-      })
+      } )
     },
     update: function () {
-      if (this.$route.path.search('building') > 0) {
+      if ( this.$route.path.search( 'building' ) > 0 ) {
         this.path = ['Public']
-        this.$store.dispatch('story', this.$route.params.id).then(r => {
+        this.$store.dispatch( 'story', this.$route.params.id ).then( r => {
           let promises = []
-          for (let b in r.blocks) {
+          for ( let b in r.blocks ) {
             let c = {
               index: b,
               date_start: this.start,
@@ -177,37 +192,45 @@ export default {
               date_interval: this.interval,
               interval_unit: this.unit
             }
-            promises.push(this.$store.dispatch('block', c))
+            promises.push( this.$store.dispatch( 'block', c ) )
           }
 
-          Promise.all(promises).then(t => {
+          Promise.all( promises ).then( t => {
             this.$refs.featureBox.updateCards()
             this.$refs.navdir.populate()
-          })
-        })
-      } else if (this.$route.path.search('compare') > 0) {
-        let ids = JSON.parse(decodeURI(this.$route.params.ids))
-        this.$store.dispatch('compare', { stories: ids, dateStart: this.start, dateEnd: this.end, interval: this.interval, unit: this.unit }).then(async v => {
-          // this.mediaArray = this.story.media
-          // for (let chart of this.story.blocks[0].charts) {
-          //   this.titles.push(chart.name)
-          // }
-          await v()
-          this.$refs.featureBox.updateCards()
-          if (this.$refs.navdir) {
-            // this.$refs.navdir.populate()
-          }
-        })
-      } else {
-        if (this.$route.params.id) {
-          this.$store.dispatch('story', this.$route.params.id).then(r => {
+          } )
+        } )
+      } else if ( this.$route.path.search( 'compare' ) > 0 ) {
+        let ids = JSON.parse( decodeURI( this.$route.params.ids ) )
+        this.$store
+          .dispatch( 'compare', {
+            stories: ids,
+            dateStart: this.start,
+            dateEnd: this.end,
+            interval: this.interval,
+            unit: this.unit
+          } )
+          .then( async v => {
+            // this.mediaArray = this.story.media
+            // for (let chart of this.story.blocks[0].charts) {
+            //   this.titles.push(chart.name)
+            // }
+            await v()
             this.$refs.featureBox.updateCards()
-            if (this.$refs.navdir) {
+            if ( this.$refs.navdir ) {
+              // this.$refs.navdir.populate()
+            }
+          } )
+      } else {
+        if ( this.$route.params.id ) {
+          this.$store.dispatch( 'story', this.$route.params.id ).then( r => {
+            this.$refs.featureBox.updateCards()
+            if ( this.$refs.navdir ) {
               this.$refs.navdir.populate()
             }
-          })
+          } )
         } else {
-          this.$router.push('/#/map')
+          this.$router.push( '/#/map' )
           // this.$store.dispatch('user').then(user => {
           //   this.$store.dispatch('stories').then(groups => {
           //     if (!this.story.id) {
@@ -224,15 +247,15 @@ export default {
         }
       }
     },
-    changeStory: function (event) {
+    changeStory: function ( event ) {
       this.editingStory = false
-      this.$store.dispatch('story', event[0])
+      this.$store.dispatch( 'story', event[0] )
     }
   }
 }
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .stage {
   position: absolute;
   top: 0;

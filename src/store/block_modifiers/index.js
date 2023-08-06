@@ -6,11 +6,11 @@
  * @Copyright:  (c) Oregon State University 2020
  */
 
-const modifiers = require.context('.', false, /\.mod\.js$/);
-const modules = {};
+const modifiers = require.context( '.', false, /\.mod\.js$/ )
+const modules = {}
 
-modifiers.keys().forEach(key => {
-  modules[modifiers(key).default.name] = modifiers(key).default;
-});
+modifiers.keys().forEach( key => {
+  modules[modifiers( key ).default.name] = modifiers( key ).default
+} )
 
-export default modules;
+export default modules

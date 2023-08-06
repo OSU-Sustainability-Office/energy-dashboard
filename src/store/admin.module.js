@@ -2,24 +2,24 @@
   Filename: admin.module.js
   Info: This is the "admin module"--currently unimplemented.
 */
-import API from './api.js';
+import API from './api.js'
 
 const state = () => {
-  return {};
-};
+  return {}
+}
 
 const actions = {
-  async users(store, payload) {
-    let users = await API.users();
-    return users;
-  },
-};
+  async users ( store, payload ) {
+    let users = await API.users()
+    return users
+  }
+}
 
-const getters = {};
+const getters = {}
 
-const mutations = {};
+const mutations = {}
 
-const modules = {};
+const modules = {}
 
 export default {
   namespaced: true,
@@ -27,5 +27,5 @@ export default {
   actions,
   mutations,
   getters,
-  modules,
-};
+  modules
+}

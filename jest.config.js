@@ -28,7 +28,7 @@ module.exports = {
   // The paths to modules that run some code to configure or set up the testing environment before each test
   setupFiles: [
     './tests/setupJest.js',
-    'fake-indexeddb/auto', // used to mock indexedDB automatically
+    'fake-indexeddb/auto' // used to mock indexedDB automatically
   ],
 
   // The test environment that will be used for testing
@@ -47,11 +47,11 @@ module.exports = {
     '.*\\.(vue)$': '<rootDir>/node_modules/jest-vue-preprocessor',
     '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
-    '^.+\\.jsx?$': 'babel-jest',
+    '^.+\\.jsx?$': 'babel-jest'
   },
 
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
+    '^@/(.*)$': '<rootDir>/src/$1'
   },
 
   snapshotSerializers: ['jest-serializer-vue'],
@@ -59,5 +59,5 @@ module.exports = {
   testMatch: ['**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)'],
 
   testURL: 'http://localhost/',
-  preset: '@vue/cli-plugin-unit-jest',
-};
+  preset: '@vue/cli-plugin-unit-jest'
+}

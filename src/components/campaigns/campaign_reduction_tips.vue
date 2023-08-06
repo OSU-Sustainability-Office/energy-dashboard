@@ -7,12 +7,10 @@
 -->
 
 <template>
-  <el-col :span='24' class='reductionBody'>
-    <el-col :span='24' class='reductionBackground'>
-      <el-row class='title'>
-        <el-col :span='24'>
-          Reducing your Usage
-        </el-col>
+  <el-col :span="24" class="reductionBody">
+    <el-col :span="24" class="reductionBackground">
+      <el-row class="title">
+        <el-col :span="24"> Reducing your Usage </el-col>
       </el-row>
       <!-- <el-row class='reductionTimeLine'>
         <el-progress :percentage="50" :stroke-width="22" :show-text='false' class='bar'>
@@ -26,18 +24,18 @@
         <div class='ball'>
         </div>
       </el-row> -->
-      <el-row class='reductionGrid' type='flex'>
-        <el-col class='gridCard' v-for='(tip, index) in tips' :key='index' :span='8'>
-          <div @mouseenter='hoverShow = index' @mouseleave='hoverShow = null' style='height: 100%;'>
-            <el-col :span='24' class='gridCardOverlay'>
-              <img class='gridCardIcon' :src='"images/" + tip.icon + ".svg"' />
-              <el-row class='gridCardTitle'>
+      <el-row class="reductionGrid" type="flex">
+        <el-col class="gridCard" v-for="(tip, index) in tips" :key="index" :span="8">
+          <div @mouseenter="hoverShow = index" @mouseleave="hoverShow = null" style="height: 100%">
+            <el-col :span="24" class="gridCardOverlay">
+              <img class="gridCardIcon" :src="'images/' + tip.icon + '.svg'" />
+              <el-row class="gridCardTitle">
                 {{ tip.title }}
               </el-row>
-              <transition name='fade'>
-                <el-row class='gridCardDescription' v-if='hoverShow === index'>
+              <transition name="fade">
+                <el-row class="gridCardDescription" v-if="hoverShow === index">
                   <ul>
-                    <li v-for='l in tip.description' :key='l'> {{ l }}</li>
+                    <li v-for="l in tip.description" :key="l">{{ l }}</li>
                   </ul>
                 </el-row>
               </transition>
@@ -97,12 +95,10 @@ export default {
       ]
     }
   },
-  created () {
-
-  }
+  created () {}
 }
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .reductionBody {
   padding-top: 2em;
 }
@@ -113,10 +109,10 @@ export default {
 .title {
   padding-left: 2em;
   color: $--color-black;
-  font-family: "StratumNO2";
+  font-family: 'StratumNO2';
   font-size: 34px;
 }
-.reductionGrid{
+.reductionGrid {
   padding: 1em;
   padding-right: 2em;
   padding-left: 2em;
@@ -129,7 +125,7 @@ export default {
   margin: 1em;
   overflow: hidden;
   flex: 0 0 calc(50% - 2em);
-  background-color: #FCB248;
+  background-color: #fcb248;
 }
 
 .gridCardTitle {
@@ -161,7 +157,7 @@ export default {
 .bar {
   position: relative;
   top: 0;
-  left:0;
+  left: 0;
   width: 100%;
   z-index: 0;
 }
@@ -169,7 +165,7 @@ export default {
   height: 30px;
   width: 30px;
   border-radius: 15px;
-  background-color: #1A1A1A;
+  background-color: #1a1a1a;
   position: relative;
   z-index: 100;
   display: inline-block;
@@ -189,7 +185,7 @@ export default {
 }
 .gridCardOverlay {
   position: relative;
-  background-color: rgba(255,255,255, 0);
+  background-color: rgba(255, 255, 255, 0);
   left: 0;
   width: 100%;
   height: 100%;
@@ -213,7 +209,8 @@ export default {
   opacity: 0;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: all 0.4s;
 }
 .fade-enter {

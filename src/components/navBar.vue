@@ -1,99 +1,117 @@
 <template>
   <div>
-  <div class="nav-menu">
-  <i 
-  class="fas fa-bars" 
-  @click="showMenu()"> 
-  </i>
-  <div
-  class="nav-content"
-  :class="this.showMobileMenu ? 'open-menu' : 'closed-menu'"
-  > // Menu content
-  <div class="logo">Logo</div>
-  <ul class="nav-items">
-  <li>Menu</li>
-  <li>About</li>
-  <li>Contact</li>
-  </ul>
-  <div class="login-button">Login</div>
+    <div class="nav-menu">
+      <i class="fas fa-bars" @click="showMenu()"> </i>
+      <div class="nav-content" :class="this.showMobileMenu ? 'open-menu' : 'closed-menu'">
+        <div class="logo"><svgLogo width="200px" alt="" @click="$router.push({ path: '/map' })" /></div>
+        <ul class="nav-items">
+          <li class="navLi"><a href="/#/map" class="navLink" rel="noreferrer"> Map </a></li>
+          <li class="navLi"><a href="/#/buildings" class="navLink" rel="noreferrer"> Building List </a></li>
+          <li class="navLi"><a href="/#/campaigns" class="navLink" rel="noreferrer"> Campaigns </a></li>
+          <li class="navLi"><a href="/#/getstarted" class="navLink" rel="noreferrer"> Get Started </a></li>
+          <li class="navLi"><a href="/#/contact" class="navLink" rel="noreferrer"> Contact </a></li>
+        </ul>
+      </div>
+    </div>
   </div>
-  </div>
-  </div>
-  </template>
+</template>
 
 <script>
+import svgLogo from '../../public/images/logo.svg'
+
 export default {
-data() {
-return {
-showMobileMenu: false,
-};
-},
-methods: {
-showMenu() {
-this.showMobileMenu = !this.showMobileMenu;
-},
-},
-};
+  components: {
+    svgLogo
+  },
+  data () {
+    return {
+      showMobileMenu: false
+    }
+  },
+  methods: {
+    showMenu () {
+      this.showMobileMenu = !this.showMobileMenu
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 .nav-menu {
-background-color: white;
+  background-color: white;
 }
 .nav-content {
-display: flex;
-justify-content: space-between;
-padding: 27px 30px;
-align-items: left;
-background-color: $--color-primary !important;
+  display: flex;
+  justify-content: left;
+  padding: 5px 20px;
+  align-items: left;
+  padding-top: 10px;
+  left: 10px;
+  background-color: $--color-primary !important;
 }
 .nav-items {
-display: flex;
-justify-content: center;
-align-items: left;
-list-style: none;
-margin: 0;
-padding: 0;
-li {
-padding: 0 10px;
-}
+  display: flex;
+  justify-content: center;
+  align-items: left;
+  list-style: none;
+  margin: 0;
+  padding-top: 18px;
+  li {
+    padding: 0 10px;
+  }
 }
 i {
-display: none;
+  display: none;
 }
+.navLi {
+  padding-top: 10px;
+}
+.navLink {
+  color: white;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
 // Mobile version - hidden hamburger menu
 @media screen and (max-width: 768px) {
-.nav-menu {
-padding-top: 20px;
-padding-left: 20px;
-position: absolute;
-width: 100%;
-background-color: $--color-primary !important;
-}
-.open-menu {
-opacity: 1;
-height: 150px;
-}
-.closed-menu {
-opacity: 0;
-height: 0;
-padding: 0;
-}
-.nav-content {
-flex-direction: column;
-z-index: 100;
-position: relative;
-padding: 27px 30px;
-transition: all 0.2s ease-out;
-left: -30px
-}
-.nav-items {
-flex-direction: column;
-}
-i {
-display: block;
-text-align: left;
-padding: 0 10px 10px 0;
-}
+  .nav-menu {
+    padding-left: -200;
+    padding-bottom: -20;
+    top: -30px;
+    position: absolute;
+    width: 100%;
+    background-color: $--color-primary !important;
+  }
+  .open-menu {
+    opacity: 1;
+    height: 150px;
+  }
+  .closed-menu {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+  }
+  .nav-content {
+    flex-direction: column;
+    z-index: 500;
+    position: relative;
+    padding: 27px 30px;
+    transition: all 0.2s ease-out;
+    left: 20px;
+    align-items: end;
+    top: -50px;
+  }
+  .nav-items {
+    flex-direction: column;
+    align-items: left;
+    padding-top: 0px;
+  }
+  i {
+    display: block;
+    text-align: left;
+    padding-left: 10px;
+
+    padding-top: 50px;
+  }
 }
 </style>

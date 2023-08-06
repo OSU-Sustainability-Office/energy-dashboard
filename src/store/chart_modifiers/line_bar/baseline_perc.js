@@ -36,120 +36,120 @@ export default class LinePercModifier {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData(chartData, payload, store, module) {
-    let resultDataObject = chartData.data;
+  async postGetData ( chartData, payload, store, module ) {
+    let resultDataObject = chartData.data
 
     // array that stores keys for the resultDataObject (used for finding nearest valid keys for Weatherford)
-    let keysarray = Array.from(resultDataObject.keys());
-    let returnData = [];
-    let delta = 1;
+    let keysarray = Array.from( resultDataObject.keys() )
+    let returnData = []
+    let delta = 1
 
     // Finds the nearest valid keys for a given building (mostly intended for correcting manual meter uploads, e.g. Weatherford.)
     // Other buildings with automatic meter upload should have the same keys after this function is run.
-    function findClosest(array, num) {
-      return array.reduce(function (prev, curr) {
-        return Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev;
-      });
+    function findClosest ( array, num ) {
+      return array.reduce( function ( prev, curr ) {
+        return Math.abs( curr - num ) < Math.abs( prev - num ) ? curr : prev
+      } )
     }
 
-    switch (payload.intervalUnit) {
+    switch ( payload.intervalUnit ) {
       case 'minute':
-        delta = 60;
-        break;
+        delta = 60
+        break
       case 'hour':
-        delta = 3600;
-        break;
+        delta = 3600
+        break
       case 'day':
-        delta = 86400;
-        break;
+        delta = 86400
+        break
     }
 
-    delta *= payload.dateInterval;
+    delta *= payload.dateInterval
 
     // I ended up not using the below 3 lines, but maybe it's needed for "past 6 hours" or "past day". Might also be a moot point due to not enough data points per day on the manually uploaded data for Weatherford.
-    let baselineData = payload.baselineData;
+    let baselineData = payload.baselineData
     // let keysarray2 = Array.from(baselineData.keys())
-    let differenceBaseline = new Map();
+    let differenceBaseline = new Map()
 
-    for (let i = payload.compareStart; i <= payload.compareEnd; i += delta) {
+    for ( let i = payload.compareStart; i <= payload.compareEnd; i += delta ) {
       // let result2 = findClosest(keysarray2, (delta + i));
       // let result_i2 = findClosest(keysarray2, (i));
       try {
-        if (isNaN(baselineData.get(i + delta)) || isNaN(baselineData.get(i))) {
-          continue;
+        if ( isNaN( baselineData.get( i + delta ) ) || isNaN( baselineData.get( i ) ) ) {
+          continue
         }
-        differenceBaseline.set(i + delta, baselineData.get(i + delta) - baselineData.get(i));
+        differenceBaseline.set( i + delta, baselineData.get( i + delta ) - baselineData.get( i ) )
         // returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
-      } catch (error) {
-        console.log(error);
+      } catch ( error ) {
+        console.log( error )
       }
     }
-    let avgbins = [];
+    let avgbins = []
 
     // also don't know if we need findClosest() function calls for the two for loops below, for "past 6 hours" or "past day". Need better training data maybe (adjust end date on test campaign)
-    for (let dow = 0; dow < 7; dow++) {
-      let startDate = payload.compareStart;
-      while (new Date(startDate * 1000).getDay() !== dow) {
-        startDate += 60 * 60 * 24;
+    for ( let dow = 0; dow < 7; dow++ ) {
+      let startDate = payload.compareStart
+      while ( new Date( startDate * 1000 ).getDay() !== dow ) {
+        startDate += 60 * 60 * 24
       }
-      avgbins.push([]);
-      let begin = startDate;
-      for (let tod = 0; tod < (60 * 60 * 24) / delta; tod++) {
-        startDate = begin + tod * delta;
-        let count = 0;
-        let value = -1;
-        while (startDate <= payload.compareEnd) {
+      avgbins.push( [] )
+      let begin = startDate
+      for ( let tod = 0; tod < ( 60 * 60 * 24 ) / delta; tod++ ) {
+        startDate = begin + tod * delta
+        let count = 0
+        let value = -1
+        while ( startDate <= payload.compareEnd ) {
           try {
-            if (!isNaN(differenceBaseline.get(startDate))) {
-              count++;
-              value += differenceBaseline.get(startDate);
+            if ( !isNaN( differenceBaseline.get( startDate ) ) ) {
+              count++
+              value += differenceBaseline.get( startDate )
             }
-          } catch (error) {
-            console.log(error);
+          } catch ( error ) {
+            console.log( error )
           }
-          startDate += 60 * 60 * 24 * 7;
+          startDate += 60 * 60 * 24 * 7
         }
-        if (count > 0) value /= count;
-        avgbins[dow].push(value);
+        if ( count > 0 ) value /= count
+        avgbins[dow].push( value )
       }
     }
 
-    for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
-      let accumulator = 0;
-      let result;
-      let result_delta;
-      let result_i;
+    for ( let i = payload.dateStart; i <= payload.dateEnd; i += delta ) {
+      let accumulator = 0
+      let result
+      let result_delta
+      let result_i
 
       // If array is empty, don't use the nearest valid index algorithm (needed for past 6 hours / past day on Weatherford)
-      if (keysarray === undefined || keysarray.length === 0) {
-        result = delta + i;
-        result_delta = delta;
-        result_i = i;
+      if ( keysarray === undefined || keysarray.length === 0 ) {
+        result = delta + i
+        result_delta = delta
+        result_i = i
       } else {
-        result = findClosest(keysarray, delta + i);
-        result_delta = findClosest(keysarray, delta);
-        result_i = findClosest(keysarray, i);
+        result = findClosest( keysarray, delta + i )
+        result_delta = findClosest( keysarray, delta )
+        result_i = findClosest( keysarray, i )
       }
       try {
-        if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
-          continue;
+        if ( isNaN( resultDataObject.get( result ) ) || isNaN( resultDataObject.get( result_i ) ) ) {
+          continue
         }
         let baselinePoint =
-          avgbins[new Date(result * 1000).getDay()][Math.floor((result % (60 * 60 * 24)) / result_delta)];
-        if (baselinePoint !== -1) {
-          accumulator = ((resultDataObject.get(result) - resultDataObject.get(result_i)) / baselinePoint) * 100 - 100;
+          avgbins[new Date( result * 1000 ).getDay()][Math.floor( ( result % ( 60 * 60 * 24 ) ) / result_delta )]
+        if ( baselinePoint !== -1 ) {
+          accumulator = ( ( resultDataObject.get( result ) - resultDataObject.get( result_i ) ) / baselinePoint ) * 100 - 100
 
           // do not add data point to graph if datapoint is -100% (issue with Weatherford for campaign 8, near the end)
-          if (accumulator !== -100) {
+          if ( accumulator !== -100 ) {
             // line below has something to do with the graph with all buildings on it
-            returnData.push({ x: new Date(result * 1000), y: accumulator });
+            returnData.push( { x: new Date( result * 1000 ), y: accumulator } )
           }
         }
-      } catch (error) {
-        console.log(error);
+      } catch ( error ) {
+        console.log( error )
       }
     }
-    chartData.data = returnData;
+    chartData.data = returnData
   }
 
   /*
@@ -171,18 +171,18 @@ export default class LinePercModifier {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData(payload, store, module) {
-    if (payload.intervalUnit === 'day' && payload.dateInterval > 1) {
-      throw new Error('Time difference interval to large to work correctly');
+  async preGetData ( payload, store, module ) {
+    if ( payload.intervalUnit === 'day' && payload.dateInterval > 1 ) {
+      throw new Error( 'Time difference interval to large to work correctly' )
     }
-    payload.point = 'accumulated_real';
-    const meterGroupPath = module.getters.meterGroupPath;
+    payload.point = 'accumulated_real'
+    const meterGroupPath = module.getters.meterGroupPath
     const baselinePayload = {
       ...payload,
       dateStart: payload.compareStart,
-      dateEnd: payload.compareEnd,
-    };
-    let baselineData = await store.dispatch(meterGroupPath + '/getData', baselinePayload);
-    payload['baselineData'] = baselineData;
+      dateEnd: payload.compareEnd
+    }
+    let baselineData = await store.dispatch( meterGroupPath + '/getData', baselinePayload )
+    payload['baselineData'] = baselineData
   }
 }

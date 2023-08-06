@@ -1,21 +1,17 @@
 <template>
-  <div class='block' ref='block' @click='$emit("click")'>
-    <el-row style="padding:0">
-      <el-col :span='24' ref='imageContainer' class='imageContainer' v-loading='!loaded'>
-        <span class='campaignName'>{{ camp.name }}</span>
+  <div class="block" ref="block" @click="$emit('click')">
+    <el-row style="padding: 0">
+      <el-col :span="24" ref="imageContainer" class="imageContainer" v-loading="!loaded">
+        <span class="campaignName">{{ camp.name }}</span>
       </el-col>
     </el-row>
-    <el-row class='popped'>
-      <el-col :span='18' class='standings'>
-      </el-col>
-      <el-col :span='6' class='dates'>
-        {{ camp.dateStart | trunc }} - {{ camp.dateEnd | trunc }}
-      </el-col>
+    <el-row class="popped">
+      <el-col :span="18" class="standings"> </el-col>
+      <el-col :span="6" class="dates"> {{ camp.dateStart | trunc }} - {{ camp.dateEnd | trunc }} </el-col>
     </el-row>
   </div>
 </template>
 <script>
-
 export default {
   props: ['camp'],
   data () {
@@ -26,18 +22,18 @@ export default {
   },
   mounted () {
     // Load the media content
-    this.$refs.imageContainer.$el.style.backgroundImage = 'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/' + this.camp.media + '")'
+    this.$refs.imageContainer.$el.style.backgroundImage =
+      'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/' + this.camp.media + '")'
   },
   filters: {
-    trunc: function (val) {
-      const d = new Date(val)
-      return (d.getMonth() + 1) + '/' + (d.getDate()) + '/' + d.getFullYear()
+    trunc: function ( val ) {
+      const d = new Date( val )
+      return d.getMonth() + 1 + '/' + d.getDate() + '/' + d.getFullYear()
     }
   }
 }
-
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .imageContainer {
   height: 180px;
   width: 100%;
@@ -68,7 +64,7 @@ export default {
   cursor: pointer;
 }
 .block:hover .popped {
-    background-color: $--color-primary;
+  background-color: $--color-primary;
 }
 .block:hover .dates {
   color: $--color-white !important;
@@ -80,7 +76,7 @@ export default {
 .campaignName {
   font-size: 34px;
   color: $--color-white;
-  font-family: "StratumNO2";
+  font-family: 'StratumNO2';
 }
 .popped {
   background-color: $--color-black;
@@ -96,7 +92,7 @@ export default {
   color: $--color-primary;
 }
 .dates {
-  font-family: "StratumNO2";
+  font-family: 'StratumNO2';
   text-align: right;
   font-size: 22px;
   line-height: 5px;

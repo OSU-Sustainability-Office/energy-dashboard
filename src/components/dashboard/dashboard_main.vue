@@ -1,12 +1,12 @@
 <template>
-  <el-row class='stage'>
-    <el-col :span='4' class='full-height no-overflow' v-if='user.privilege >= 2'>
-      <sideview v-model='index'/>
+  <el-row class="stage">
+    <el-col :span="4" class="full-height no-overflow" v-if="user.privilege >= 2">
+      <sideview v-model="index" />
     </el-col>
-    <el-col :span='(user.privilege >= 2)?20:24' class='full-height'>
-      <directory v-if='index === "views"'/>
-      <alerts v-if='index === "alerts" && user.privilege >= 2'/>
-      <admin v-if='index === "admin" && user.privilege >= 5'/>
+    <el-col :span="user.privilege >= 2 ? 20 : 24" class="full-height">
+      <directory v-if="index === 'views'" />
+      <alerts v-if="index === 'alerts' && user.privilege >= 2" />
+      <admin v-if="index === 'admin' && user.privilege >= 5" />
     </el-col>
   </el-row>
 </template>
@@ -26,9 +26,7 @@ export default {
     admin
   },
   computed: {
-    ...mapGetters([
-      'user'
-    ])
+    ...mapGetters( ['user'] )
   },
   data () {
     return {
@@ -38,21 +36,21 @@ export default {
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .stage {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: calc(100vh - #{$--nav-height});
-    width: 100%;
-    margin: 0;
-    padding: 0;
-  }
-  .full-height {
-    height: 100%;
-    overflow: scroll;
-  }
-  .no-overflow {
-    overflow: hidden !important;
-  }
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: calc(100vh - #{$--nav-height});
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.full-height {
+  height: 100%;
+  overflow: scroll;
+}
+.no-overflow {
+  overflow: hidden !important;
+}
 </style>

@@ -7,66 +7,123 @@
 -->
 
 <template>
-<el-row class='stage'>
-<el-col :span='1'>
-  &nbsp;
-</el-col>
-<el-col class='main' ref="feature" :span='22'>
-    <card v-for="(card, index) in blocks" v-bind:key="index" :block="card" ref="displayedCards" @editModal='editModal'/>
+  <el-row class="stage">
+    <el-col :span="1"> &nbsp; </el-col>
+    <el-col class="main" ref="feature" :span="22">
+      <card
+        v-for="(card, index) in blocks"
+        v-bind:key="index"
+        :block="card"
+        ref="displayedCards"
+        @editModal="editModal"
+      />
 
-    <!-- <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()">
+      <!-- <div class="addFeatured" v-if='user.id === story.user_id' key="add" @click="addFeature()">
       <i class="fas fa-plus"></i>
       <div class='hiddenAddChart'>Click To Add Block</div>
     </div> -->
 
-  <el-dialog size='lg' :visible.sync='newCard' :title='(!form.name)? "New Block" : "Edit Block"' width="80%">
-      <el-form label-width='120px' label-position='left' :model='form' ref='form'>
-        <el-form-item label='Name: ' v-if='!story.public && !story.comparison' :rules="{required: true, message: 'A name is required', trigger: 'blur'}" prop='name'>
-            <label class='col-4'>Name:</label>
-            <el-input type="text" v-model='form.name' style='width: 100%;'></el-input>
-        </el-form-item>
-        <el-form-item label='From Date: ' :rules="[{validator: dateValidator, type: 'date', required: true, message: 'A from date is required', trigger: 'change'}]" prop='start'>
-            <label class='col-4 text-left'>From Date: </label> -->
-            <el-date-picker v-model='form.start' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a' }" style='width: 100%;'>
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label='To Date: ' :rules="{validator: dateValidator, type: 'date', required: true, message: 'A to date is required', trigger: 'change'}" prop='end'>
-            <label class='col-4 text-left'>To Date: </label>
-            <el-date-picker v-model='form.end' type='datetime' format='MM/dd/yyyy hh:mm a' :picker-options="{ format: 'hh:mm a'}" style='width: 100%;'>
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label='Interval: ' :rules="{required: true, message: 'An interval is required', trigger: 'blur'}" prop='intUnit'>
-          <label class='col-4'>Interval: </label>
-          <el-select v-model="form.intUnit" style='width: 100%;'>
-            <el-option :value="1" label='15 Minutes'></el-option>
-            <el-option :value="2" label='1 Hour'></el-option>
-            <el-option :value="3" label='1 Day'></el-option>
-            <el-option :value="4" label='1 week'></el-option>
-            <el-option :value="5" label='1 Month'></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if='!story.public && !story.comparison' label='Graph Type: ' :rules="{required: true, message: 'A graph type is required', trigger: 'blur'}" prop='graphType'>
-          <label class='col-4'>Graph Type: </label>
-          <el-select v-model="form.graphType" style='width: 100%;'>
-            <el-option :value='1' label='Line Chart'></el-option>
-            <el-option :value='2' label='Bar Chart'></el-option>
-            <el-option :value='3' label='Doughnut Chart'></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div v-if='!story.public'>
-        <label>Datasets: </label>
-        <featureController :index='form.index' :key='form.index' ref="featureController" />
-      </div>
-      <featureController v-if='story.public && !compareMode' :index='story.blocks.length' :key='story.blocks.length' ref="featureController" />
-      <span slot='footer'>
-            <el-button @click='cardDelete()' v-if='!story.public' type='danger'> Delete </el-button>
-            <el-button @click='cardSave()' type='primary'> Ok </el-button>
-            <el-button @click='cancel()' type='info'> Cancel </el-button>
-      </span>
-  </el-dialog>
-</el-col>
-</el-row>
+      <el-dialog size="lg" :visible.sync="newCard" :title="!form.name ? 'New Block' : 'Edit Block'" width="80%">
+        <el-form label-width="120px" label-position="left" :model="form" ref="form">
+          <el-form-item
+            label="Name: "
+            v-if="!story.public && !story.comparison"
+            :rules="{ required: true, message: 'A name is required', trigger: 'blur' }"
+            prop="name"
+          >
+            <label class="col-4">Name:</label>
+            <el-input type="text" v-model="form.name" style="width: 100%"></el-input>
+          </el-form-item>
+          <el-form-item
+            label="From Date: "
+            :rules="[
+              {
+                validator: dateValidator,
+                type: 'date',
+                required: true,
+                message: 'A from date is required',
+                trigger: 'change'
+              }
+            ]"
+            prop="start"
+          >
+            <label class="col-4 text-left">From Date: </label> -->
+            <el-date-picker
+              v-model="form.start"
+              type="datetime"
+              format="MM/dd/yyyy hh:mm a"
+              :picker-options="{ format: 'hh:mm a' }"
+              style="width: 100%"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item
+            label="To Date: "
+            :rules="{
+              validator: dateValidator,
+              type: 'date',
+              required: true,
+              message: 'A to date is required',
+              trigger: 'change'
+            }"
+            prop="end"
+          >
+            <label class="col-4 text-left">To Date: </label>
+            <el-date-picker
+              v-model="form.end"
+              type="datetime"
+              format="MM/dd/yyyy hh:mm a"
+              :picker-options="{ format: 'hh:mm a' }"
+              style="width: 100%"
+            >
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item
+            label="Interval: "
+            :rules="{ required: true, message: 'An interval is required', trigger: 'blur' }"
+            prop="intUnit"
+          >
+            <label class="col-4">Interval: </label>
+            <el-select v-model="form.intUnit" style="width: 100%">
+              <el-option :value="1" label="15 Minutes"></el-option>
+              <el-option :value="2" label="1 Hour"></el-option>
+              <el-option :value="3" label="1 Day"></el-option>
+              <el-option :value="4" label="1 week"></el-option>
+              <el-option :value="5" label="1 Month"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="!story.public && !story.comparison"
+            label="Graph Type: "
+            :rules="{ required: true, message: 'A graph type is required', trigger: 'blur' }"
+            prop="graphType"
+          >
+            <label class="col-4">Graph Type: </label>
+            <el-select v-model="form.graphType" style="width: 100%">
+              <el-option :value="1" label="Line Chart"></el-option>
+              <el-option :value="2" label="Bar Chart"></el-option>
+              <el-option :value="3" label="Doughnut Chart"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div v-if="!story.public">
+          <label>Datasets: </label>
+          <featureController :index="form.index" :key="form.index" ref="featureController" />
+        </div>
+        <featureController
+          v-if="story.public && !compareMode"
+          :index="story.blocks.length"
+          :key="story.blocks.length"
+          ref="featureController"
+        />
+        <span slot="footer">
+          <el-button @click="cardDelete()" v-if="!story.public" type="danger"> Delete </el-button>
+          <el-button @click="cardSave()" type="primary"> Ok </el-button>
+          <el-button @click="cancel()" type="info"> Cancel </el-button>
+        </span>
+      </el-dialog>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -108,71 +165,77 @@ export default {
   },
   methods: {
     updateCards: function () {
-      if (this.$refs.displayedCards && this.$refs.displayedCards.length >= 1) {
-        for (let card of this.$refs.displayedCards) {
+      if ( this.$refs.displayedCards && this.$refs.displayedCards.length >= 1 ) {
+        for ( let card of this.$refs.displayedCards ) {
           card.$refs.chartController.parse()
         }
       }
     },
-    dateValidator: function (rule, value, callback) {
-      if (!value) {
-        callback(new Error(rule.message))
+    dateValidator: function ( rule, value, callback ) {
+      if ( !value ) {
+        callback( new Error( rule.message ) )
       } else {
         callback()
       }
     },
     cardDelete: function () {
       this.newCard = false
-      this.$store.commit('removeBlock', { index: this.form.index })
-      this.$eventHub.$emit('reloadCharts')
+      this.$store.commit( 'removeBlock', { index: this.form.index } )
+      this.$eventHub.$emit( 'reloadCharts' )
     },
     cardSave: function () {
       let validators = []
-      if (this.$refs.featureController) {
-        validators.push(this.$refs.featureController.$refs.form.validate())
+      if ( this.$refs.featureController ) {
+        validators.push( this.$refs.featureController.$refs.form.validate() )
       }
-      validators.push(this.$refs.form.validate())
-      Promise.all(validators).then(async r => {
-        this.newCard = false
-        let card = {
-          name: this.form.name,
-          date_start: this.form.start.toISOString(),
-          date_end: this.form.end.toISOString(),
-          date_interval: this.interval(this.form.intUnit),
-          interval_unit: this.unit(this.form.intUnit),
-          story_id: this.story.id,
-          index: this.form.index,
-          graph_type: this.form.graphType,
-          id: this.form.id,
-          loaded: false
-        }
-        if (this.$refs.featureController) {
-          card.charts = []
-          for (const chart of this.$refs.featureController.form) {
-            const meters = await this.$store.dispatch('buildingMeters', { id: chart.group })
-            const newChart = {
-              id: chart.id,
-              name: (this.story.comparison) ? await this.buildings.find(e => { return e.id === chart.group }).name : chart.name,
-              group_id: chart.group,
-              point: (this.story.comparison) ? 'accumulated_real' : chart.point,
-              meters: [],
-              meter: (this.story.comparison) ? 0 : chart.meter
-            }
-            if (chart.meter === 0) {
-              newChart.meters = newChart.meters.concat(meters.filter(e => e.type === 'e'))
-            } else {
-              newChart.meters = newChart.meters.concat(meters.filter(e => e.meter_id === chart.meter))
-            }
-            card.charts.push(newChart)
+      validators.push( this.$refs.form.validate() )
+      Promise.all( validators )
+        .then( async r => {
+          this.newCard = false
+          let card = {
+            name: this.form.name,
+            date_start: this.form.start.toISOString(),
+            date_end: this.form.end.toISOString(),
+            date_interval: this.interval( this.form.intUnit ),
+            interval_unit: this.unit( this.form.intUnit ),
+            story_id: this.story.id,
+            index: this.form.index,
+            graph_type: this.form.graphType,
+            id: this.form.id,
+            loaded: false
           }
-        }
-        this.$store.dispatch('block', card).then(() => {
-          this.$refs.displayedCards[this.form.index].$refs.chartController.parse()
-        })
-      }).catch(() => {})
+          if ( this.$refs.featureController ) {
+            card.charts = []
+            for ( const chart of this.$refs.featureController.form ) {
+              const meters = await this.$store.dispatch( 'buildingMeters', { id: chart.group } )
+              const newChart = {
+                id: chart.id,
+                name: this.story.comparison
+                  ? await this.buildings.find( e => {
+                    return e.id === chart.group
+                  } ).name
+                  : chart.name,
+                group_id: chart.group,
+                point: this.story.comparison ? 'accumulated_real' : chart.point,
+                meters: [],
+                meter: this.story.comparison ? 0 : chart.meter
+              }
+              if ( chart.meter === 0 ) {
+                newChart.meters = newChart.meters.concat( meters.filter( e => e.type === 'e' ) )
+              } else {
+                newChart.meters = newChart.meters.concat( meters.filter( e => e.meter_id === chart.meter ) )
+              }
+              card.charts.push( newChart )
+            }
+          }
+          this.$store.dispatch( 'block', card ).then( () => {
+            this.$refs.displayedCards[this.form.index].$refs.chartController.parse()
+          } )
+        } )
+        .catch( () => {} )
     },
-    interval: function (i) {
-      switch (i) {
+    interval: function ( i ) {
+      switch ( i ) {
         case 1:
           return 15
         case 2:
@@ -185,8 +248,8 @@ export default {
           return 1
       }
     },
-    unit: function (i) {
-      switch (i) {
+    unit: function ( i ) {
+      switch ( i ) {
         case 1:
           return 'minute'
         case 2:
@@ -208,28 +271,30 @@ export default {
       this.form.id = null
       this.form.index = this.story.blocks.length
       this.newCard = true
-      if (this.$refs.featureController) {
-        this.$nextTick(() => {
-          this.$refs.featureController.form = [{
-            name: null,
-            meter: null,
-            point: null,
-            group: null,
-            id: null
-          }]
-        })
+      if ( this.$refs.featureController ) {
+        this.$nextTick( () => {
+          this.$refs.featureController.form = [
+            {
+              name: null,
+              meter: null,
+              point: null,
+              group: null,
+              id: null
+            }
+          ]
+        } )
       }
     },
-    reverseInt: function (unit, interval) {
-      if (interval === 15 && unit === 'minute') {
+    reverseInt: function ( unit, interval ) {
+      if ( interval === 15 && unit === 'minute' ) {
         return 1
-      } else if (interval === 1 && unit === 'hour') {
+      } else if ( interval === 1 && unit === 'hour' ) {
         return 2
-      } else if (interval === 1 && unit === 'day') {
+      } else if ( interval === 1 && unit === 'day' ) {
         return 3
-      } else if (interval === 7 && unit === 'day') {
+      } else if ( interval === 7 && unit === 'day' ) {
         return 4
-      } else if (interval === 1 && unit === 'month') {
+      } else if ( interval === 1 && unit === 'month' ) {
         return 5
       }
     },
@@ -241,31 +306,33 @@ export default {
       this.form.graphType = null
       this.form.id = null
       this.form.index = 0
-      if (this.$refs.featureController) {
-        this.$refs.featureController.form = [{
-          name: null,
-          meter: null,
-          point: null,
-          group: null,
-          id: null
-        }]
+      if ( this.$refs.featureController ) {
+        this.$refs.featureController.form = [
+          {
+            name: null,
+            meter: null,
+            point: null,
+            group: null,
+            id: null
+          }
+        ]
       }
 
       this.newCard = false
     },
-    editModal: function (index) {
-      this.form.name = this.block(index).name
-      this.form.end = new Date(this.block(index).date_end)
-      this.form.start = new Date(this.block(index).date_start)
-      this.form.intUnit = this.reverseInt(this.block(index).interval_unit, this.block(index).date_interval)
-      this.form.graphType = this.block(index).graph_type
-      this.form.id = this.block(index).id
+    editModal: function ( index ) {
+      this.form.name = this.block( index ).name
+      this.form.end = new Date( this.block( index ).date_end )
+      this.form.start = new Date( this.block( index ).date_start )
+      this.form.intUnit = this.reverseInt( this.block( index ).interval_unit, this.block( index ).date_interval )
+      this.form.graphType = this.block( index ).graph_type
+      this.form.id = this.block( index ).id
       this.form.index = index
       this.newCard = true
-      this.$nextTick(() => {
+      this.$nextTick( () => {
         this.$refs.featureController.form = []
         this.$refs.featureController.key = index
-        for (const chart of this.block(index).charts) {
+        for ( const chart of this.block( index ).charts ) {
           const newChart = {
             meter: chart.meter,
             name: chart.name,
@@ -273,21 +340,20 @@ export default {
             point: chart.point,
             id: chart.id
           }
-          this.$refs.featureController.form.push(newChart)
+          this.$refs.featureController.form.push( newChart )
         }
-      })
+      } )
     }
   }
-
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .stage {
   position: relative !important;
   top: 0 !important;
-  height: auto
+  height: auto;
 }
 .addFeatured {
   background-color: $--color-black;
@@ -319,10 +385,9 @@ export default {
   display: block;
 }
 .addFeatured:hover {
-  color: #C72F09;
+  color: #c72f09;
 }
 .addFeatured:active {
   color: #d76740;
 }
-
 </style>

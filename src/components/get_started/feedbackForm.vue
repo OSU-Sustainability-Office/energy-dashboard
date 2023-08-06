@@ -4,7 +4,7 @@
     <el-form-item label="Full Name" prop="name">
       <el-input v-model="ruleForm.name"></el-input>
     </el-form-item>
-     <el-form-item label="Email" prop="email">
+    <el-form-item label="Email" prop="email">
       <el-input v-model="ruleForm.email"></el-input>
     </el-form-item>
     <el-form-item label="Feedback" prop="desc">
@@ -26,27 +26,23 @@ export default {
         email: ''
       },
       rules: {
-        name: [
-          { required: true, message: 'Please input full name', trigger: 'blur' }
-        ],
-        email: [
-          { required: true, message: 'Please input email', trigger: 'change' }
-        ]
+        name: [{ required: true, message: 'Please input full name', trigger: 'blur' }],
+        email: [{ required: true, message: 'Please input email', trigger: 'change' }]
       }
     }
   },
   methods: {
-    submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!')
+    submitForm ( formName ) {
+      this.$refs[formName].validate( valid => {
+        if ( valid ) {
+          alert( 'submit!' )
         } else {
-          console.log('error submit!!')
+          console.log( 'error submit!!' )
           return false
         }
-      })
+      } )
     },
-    resetForm (formName) {
+    resetForm ( formName ) {
       this.$refs[formName].resetFields()
     }
   }

@@ -4,36 +4,36 @@
  *                the database with some mock-data.
  */
 
-const mysql = require('mysql');
+const mysql = require('mysql')
 const DB = mysql.createConnection({
   host: process.env.MYSQL_HOST,
   user: 'root',
   password: 'password',
   database: 'energy',
-  multipleStatements: true,
-});
+  multipleStatements: true
+})
 
-const fs = require('fs');
+const fs = require('fs')
 function formatInserts(filename, tablename) {
-  let text = fs.readFileSync(filename, 'utf-8');
+  let text = fs.readFileSync(filename, 'utf-8')
   return text
     .split('\n')
     .map(ln => ln.replace('``', tablename))
-    .join('');
+    .join('')
 }
 
 /*
     Create table schema equivalents for sqlite.
     Not all fields in the MySQL DB are replicated here.
 */
-console.log('building test database...');
+console.log('building test database...')
 DB.beginTransaction(err => {
   if (err) {
-    throw err;
+    throw err
   }
 
   // Let's just make one monster query
-  let gigantic_query_string = '';
+  let gigantic_query_string = ''
 
   // Remove tables if they already exist
   const tablenames = [
@@ -43,11 +43,11 @@ DB.beginTransaction(err => {
     'meter_group_relation',
     'campaigns',
     'campaign_groups',
-    'data',
-  ];
+    'data'
+  ]
 
   for (let name of tablenames) {
-    gigantic_query_string += `DROP TABLE IF EXISTS \`${name}\`;`;
+    gigantic_query_string += `DROP TABLE IF EXISTS \`${name}\`;`
     // DB.query(`DROP TABLE IF EXISTS ${name};`)
   }
 
@@ -59,7 +59,7 @@ DB.beginTransaction(err => {
         \`name\` text,
         hidden int,
         PRIMARY KEY (\`id\`)
-    );`;
+    );`
 
   gigantic_query_string += `CREATE TABLE meter_groups (
         \`id\` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -72,7 +72,7 @@ DB.beginTransaction(err => {
         \`building_id_2\` INTEGER,
         \`default\` INTEGER,
         PRIMARY KEY (\`id\`)
-    );`;
+    );`
 
   gigantic_query_string += `CREATE TABLE meter_group_relation (
         \`id\` INTEGER NOT NULL AUTO_INCREMENT,
@@ -80,7 +80,7 @@ DB.beginTransaction(err => {
         \`group_id\` INTEGER,
         \`operation\` INTEGER,
         PRIMARY KEY (\`id\`)
-    );`;
+    );`
 
   gigantic_query_string += `CREATE TABLE meters (
         \`id\` int NOT NULL AUTO_INCREMENT,
@@ -90,7 +90,7 @@ DB.beginTransaction(err => {
         \`negate\` INTEGER,
         \`class\` INTEGER,
         PRIMARY KEY (\`id\`)
-    );`;
+    );`
 
   gigantic_query_string += `CREATE TABLE campaigns (
         \`id\` int NOT NULL AUTO_INCREMENT,
@@ -102,7 +102,7 @@ DB.beginTransaction(err => {
         \`media\` TEXT,
         \`visible\` INTEGER,
         PRIMARY KEY (\`id\`)
-    );`;
+    );`
 
   gigantic_query_string += `CREATE TABLE campaign_groups (
         \`id\` int NOT NULL AUTO_INCREMENT,
@@ -110,7 +110,7 @@ DB.beginTransaction(err => {
         \`group_id\` INTEGER,
         \`campaign_id\` INTEGER,
         PRIMARY KEY (\`id\`)
-    );`;
+    );`
 
   gigantic_query_string += `CREATE TABLE data (
         \`id\` int NOT NULL AUTO_INCREMENT,
@@ -119,7 +119,7 @@ DB.beginTransaction(err => {
         \`time_seconds\` INTEGER,
         \`error\` TEXT,
         PRIMARY KEY (\`id\`)
-    );`;
+    );`
 
   /*
     The default node mysql driver (which we're using for our tests) uses a bunch callback
@@ -128,73 +128,73 @@ DB.beginTransaction(err => {
   DB.query(gigantic_query_string, err => {
     if (err)
       return DB.rollback(() => {
-        throw err;
-      });
-    console.log('Table schemas setup!');
+        throw err
+      })
+    console.log('Table schemas setup!')
 
     DB.query(formatInserts('tests/assertedData/buildings_insert.sql', 'buildings'), err => {
       if (err)
         return DB.rollback(() => {
-          throw err;
-        });
+          throw err
+        })
 
-      console.log('added data to the buildings table');
+      console.log('added data to the buildings table')
       DB.query(formatInserts('tests/assertedData/meter_groups_insert.sql', 'meter_groups'), err => {
         if (err)
           return DB.rollback(() => {
-            throw err;
-          });
-        console.log('added data to the meter_groups table!');
+            throw err
+          })
+        console.log('added data to the meter_groups table!')
 
         DB.query(formatInserts('tests/assertedData/meter_group_relation_insert.sql', 'meter_group_relation'), err => {
           if (err)
             return DB.rollback(() => {
-              throw err;
-            });
-          console.log('added data to the meter_group_relation table!');
+              throw err
+            })
+          console.log('added data to the meter_group_relation table!')
 
           DB.query(formatInserts('tests/assertedData/meters_insert.sql', 'meters'), err => {
             if (err)
               return DB.rollback(() => {
-                throw err;
-              });
-            console.log('added data to the meters table!');
+                throw err
+              })
+            console.log('added data to the meters table!')
 
             DB.query(formatInserts('tests/assertedData/campaigns_insert.sql', 'campaigns'), err => {
               if (err)
                 return DB.rollback(() => {
-                  throw err;
-                });
-              console.log('added data to the campaigns table!');
+                  throw err
+                })
+              console.log('added data to the campaigns table!')
 
               DB.query(formatInserts('tests/assertedData/campaign_groups_insert.sql', 'campaign_groups'), err => {
                 if (err)
                   return DB.rollback(() => {
-                    throw err;
-                  });
-                console.log('added data to the campaign_groups table!');
+                    throw err
+                  })
+                console.log('added data to the campaign_groups table!')
 
                 DB.query(formatInserts('tests/assertedData/data_insert.sql', 'data'), err => {
                   if (err)
                     return DB.rollback(() => {
-                      throw err;
-                    });
-                  console.log('added mock meter data!');
+                      throw err
+                    })
+                  console.log('added mock meter data!')
 
                   DB.commit(err => {
                     if (err)
                       return DB.rollback(() => {
-                        throw err;
-                      });
-                    console.log('built test database!');
-                    DB.end();
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    });
-  });
-});
+                        throw err
+                      })
+                    console.log('built test database!')
+                    DB.end()
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+})

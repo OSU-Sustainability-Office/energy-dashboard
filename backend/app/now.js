@@ -8,10 +8,10 @@
  *               (should be time for AWS services on us-west-2).
  */
 
-const Response = require('/opt/nodejs/response.js');
+const Response = require('/opt/nodejs/response.js')
 
 exports.systemtime = async (event, context) => {
-  let TimeResponse = new Response(event);
-  TimeResponse.body = Date.now().toString();
-  return TimeResponse;
-};
+  let TimeResponse = new Response(event)
+  TimeResponse.body = Date.now().toString()
+  return TimeResponse
+}

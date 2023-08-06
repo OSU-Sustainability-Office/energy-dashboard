@@ -5,38 +5,55 @@
   NOTE FOR LAPTOP SCREEN SIZES: Reference src/main.js for $window and $WINDOW_HEIGHT values
 -->
 <template>
-  <div class = "smaller-screen" v-if="isLaptopScreen">
-    <el-row class='stage-small'>
-      <el-row class='main-small'>
+  <div class="smaller-screen" v-if="isLaptopScreen">
+    <el-row class="stage-small">
+      <el-row class="main-small">
         <el-row class="title">
-          <el-col :span='23'>{{ building.name }}</el-col>
-          <el-col :span='1' class='close-box'><i class="fas fa-times" @click="hide()"></i></el-col>
+          <el-col :span="23">{{ building.name }}</el-col>
+          <el-col :span="1" class="close-box"><i class="fas fa-times" @click="hide()"></i></el-col>
         </el-row>
         <el-row>
-          <el-col :span='24' v-loading='building ? false : true'>
-            <div class="media-small" ref='media'></div>
+          <el-col :span="24" v-loading="building ? false : true">
+            <div class="media-small" ref="media"></div>
           </el-col>
         </el-row>
         <el-row class="graphcontrol-small">
-          <el-col :span='24'>
-            <el-col :span='24' class='buttonContainer'>
-              <switchButtons :blocks='buildingBlocks' :forceUpdate='false' ref='switchbutton' />
+          <el-col :span="24">
+            <el-col :span="24" class="buttonContainer">
+              <switchButtons :blocks="buildingBlocks" :forceUpdate="false" ref="switchbutton" />
             </el-col>
-            <el-row class='graphslide'>
-              <i class="left fas fa-angle-left" @click='prev()' ref="prevArrow"></i>
-              <i class="right fas fa-angle-right" @click='next()' ref="nextArrow"></i>
+            <el-row class="graphslide">
+              <i class="left fas fa-angle-left" @click="prev()" ref="prevArrow"></i>
+              <i class="right fas fa-angle-right" @click="next()" ref="nextArrow"></i>
             </el-row>
-            <el-row type='flex' class="graph" ref='scrollBox'>
-              <el-col class='inline' v-for='block in buildingBlocks' :key='block.id' :span='24' ref='slidingBox'>
-                <chartController :path='block.path' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200' :invertColors='true'/>
+            <el-row type="flex" class="graph" ref="scrollBox">
+              <el-col class="inline" v-for="block in buildingBlocks" :key="block.id" :span="24" ref="slidingBox">
+                <chartController
+                  :path="block.path"
+                  ref="chartController"
+                  class="chart"
+                  :styleC="{
+                    display: 'inline-block',
+                    width: 'calc(100% - 20px)',
+                    height: '100%',
+                    'margin-right': '10px',
+                    'margin-left': '10px'
+                  }"
+                  :height="200"
+                  :invertColors="true"
+                />
               </el-col>
             </el-row>
             <el-row class="bottomButtons">
-              <el-col :span='12'>
-                <el-button class='bigButton' @click="$emit('startCompare', building.id)">Compare</el-button>
+              <el-col :span="12">
+                <el-button class="bigButton" @click="$emit('startCompare', building.id)">Compare</el-button>
               </el-col>
-              <el-col :span='12'>
-                <el-button class='bigButton' @click='$router.push({path: `/building/${building.id}/${currentRange + 1}`})'>View Full Graph</el-button>
+              <el-col :span="12">
+                <el-button
+                  class="bigButton"
+                  @click="$router.push({ path: `/building/${building.id}/${currentRange + 1}` })"
+                  >View Full Graph</el-button
+                >
               </el-col>
             </el-row>
           </el-col>
@@ -44,38 +61,55 @@
       </el-row>
     </el-row>
   </div>
-  <div class = "bigger-screen" v-else>
-    <el-row class='stage'>
-      <el-row class='main'>
+  <div class="bigger-screen" v-else>
+    <el-row class="stage">
+      <el-row class="main">
         <el-row class="title">
-          <el-col :span='23'>{{ building.name }}</el-col>
-          <el-col :span='1' class='close-box'><i class="fas fa-times" @click="hide()"></i></el-col>
+          <el-col :span="23">{{ building.name }}</el-col>
+          <el-col :span="1" class="close-box"><i class="fas fa-times" @click="hide()"></i></el-col>
         </el-row>
         <el-row>
-          <el-col :span='24' v-loading='building ? false : true'>
-            <div class="media" ref='media'></div>
+          <el-col :span="24" v-loading="building ? false : true">
+            <div class="media" ref="media"></div>
           </el-col>
         </el-row>
         <el-row class="graphcontrol">
-          <el-col :span='24'>
-            <el-col :span='24' class='buttonContainer'>
-              <switchButtons :blocks='buildingBlocks' :forceUpdate='false' ref='switchbutton' />
+          <el-col :span="24">
+            <el-col :span="24" class="buttonContainer">
+              <switchButtons :blocks="buildingBlocks" :forceUpdate="false" ref="switchbutton" />
             </el-col>
-            <el-row class='graphslide'>
-              <i class="left fas fa-angle-left" @click='prev()' ref="prevArrow"></i>
-              <i class="right fas fa-angle-right" @click='next()' ref="nextArrow"></i>
+            <el-row class="graphslide">
+              <i class="left fas fa-angle-left" @click="prev()" ref="prevArrow"></i>
+              <i class="right fas fa-angle-right" @click="next()" ref="nextArrow"></i>
             </el-row>
-            <el-row type='flex' class="graph" ref='scrollBox'>
-              <el-col class='inline' v-for='block in buildingBlocks' :key='block.id' :span='24' ref='slidingBox'>
-                <chartController :path='block.path' ref="chartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='200' :invertColors='true'/>
+            <el-row type="flex" class="graph" ref="scrollBox">
+              <el-col class="inline" v-for="block in buildingBlocks" :key="block.id" :span="24" ref="slidingBox">
+                <chartController
+                  :path="block.path"
+                  ref="chartController"
+                  class="chart"
+                  :styleC="{
+                    display: 'inline-block',
+                    width: 'calc(100% - 20px)',
+                    height: '100%',
+                    'margin-right': '10px',
+                    'margin-left': '10px'
+                  }"
+                  :height="200"
+                  :invertColors="true"
+                />
               </el-col>
             </el-row>
             <el-row class="buttons">
-              <el-col :span='12'>
-                <el-button class='bigButton' @click="$emit('startCompare', building.id)">Compare</el-button>
+              <el-col :span="12">
+                <el-button class="bigButton" @click="$emit('startCompare', building.id)">Compare</el-button>
               </el-col>
-              <el-col :span='12'>
-                <el-button class='bigButton' @click='$router.push({path: `/building/${building.id}/${currentRange + 1}`})'>View Full Graph</el-button>
+              <el-col :span="12">
+                <el-button
+                  class="bigButton"
+                  @click="$router.push({ path: `/building/${building.id}/${currentRange + 1}` })"
+                  >View Full Graph</el-button
+                >
               </el-col>
             </el-row>
           </el-col>
@@ -93,7 +127,8 @@ export default {
   name: 'sideView',
   props: {},
   components: {
-    chartController, switchButtons
+    chartController,
+    switchButtons
   },
   data () {
     return {
@@ -103,11 +138,12 @@ export default {
       int: 1,
       index: 0,
       windowHeight: window.innerHeight,
-      windowUpdate: () => { this.windowHeight = window.innerHeight }
+      windowUpdate: () => {
+        this.windowHeight = window.innerHeight
+      }
     }
   },
   computed: {
-
     isLaptopScreen () {
       return this.windowHeight <= this.$WINDOW_HEIGHT
     },
@@ -132,64 +168,70 @@ export default {
 
     building: {
       get () {
-        return this.$store.getters['map/building'](this.$store.getters['modalController/data'].id)
+        return this.$store.getters['map/building']( this.$store.getters['modalController/data'].id )
       }
     }
   },
   mounted () {
-    window.addEventListener('resize', this.windowUpdate)
+    window.addEventListener( 'resize', this.windowUpdate )
   },
   beforeDestroy () {
-    window.removeEventListener('resize', this.windowUpdate)
+    window.removeEventListener( 'resize', this.windowUpdate )
   },
   methods: {
     hide: function () {
-      this.$emit('hide')
+      this.$emit( 'hide' )
     },
     next: function () {
-      if (this.index + 1 >= this.buildingBlocks.length) { return }
+      if ( this.index + 1 >= this.buildingBlocks.length ) {
+        return
+      }
       this.index++
     },
     prev: function () {
-      if (this.index - 1 < 0) { return }
+      if ( this.index - 1 < 0 ) {
+        return
+      }
       this.index--
     }
   },
   watch: {
     building: {
       immediate: true,
-      handler: async function (value) {
+      handler: async function ( value ) {
         this.index = 0
-        for (let block of this.buildingBlocks) {
-          await this.$store.dispatch(block.path + '/resetDefault')
+        for ( let block of this.buildingBlocks ) {
+          await this.$store.dispatch( block.path + '/resetDefault' )
         }
         this.$refs.prevArrow.style.display = 'none'
-        if (this.buildingBlocks.length > 1) {
+        if ( this.buildingBlocks.length > 1 ) {
           this.$refs.nextArrow.style.display = 'block'
         } else {
           this.$refs.nextArrow.style.display = 'none'
         }
-        if (this.media) {
-          this.$refs.media.style.backgroundImage = 'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' + this.media + '")'
+        if ( this.media ) {
+          this.$refs.media.style.backgroundImage =
+            'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' + this.media + '")'
         }
       }
     },
-    index: function (to, from) {
-      this.$refs.scrollBox.$children.forEach((child) => {
-        child.$el.style.transform = 'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
-      })
-      if (to < from) {
-        if (this.index <= 0) {
+    index: function ( to, from ) {
+      this.$refs.scrollBox.$children.forEach( child => {
+        child.$el.style.transform =
+          'translateX(' + ( -1 * this.index * ( this.$refs.scrollBox.$el.clientWidth + 20 ) ).toString() + 'px)'
+      } )
+      if ( to < from ) {
+        if ( this.index <= 0 ) {
           this.$refs.prevArrow.style.display = 'none'
         }
-        if (this.buildingBlocks.length > 1) {
+        if ( this.buildingBlocks.length > 1 ) {
           this.$refs.nextArrow.style.display = 'block'
         }
       } else {
-        if (this.index + 1 === this.buildingBlocks.length) {
+        if ( this.index + 1 === this.buildingBlocks.length ) {
           this.$refs.nextArrow.style.display = 'none'
         }
-        if (this.buildingBlocks.length > 1) {
+        if ( this.buildingBlocks.length > 1 ) {
           this.$refs.prevArrow.style.display = 'block'
         }
       }
@@ -197,7 +239,7 @@ export default {
   }
 }
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .stage {
   z-index: 401;
   display: block;
@@ -214,24 +256,24 @@ export default {
   position: absolute;
   left: 100%;
   bottom: 8%;
-  width: 900px !important;  // hard-coded value, might not be correct
-  margin-left: -930px;  // hard-coded value, might not be correct
+  width: 900px !important; // hard-coded value, might not be correct
+  margin-left: -930px; // hard-coded value, might not be correct
   height: 85% !important;
 }
 .main {
   padding: 0;
   border-radius: 5px;
   overflow: hidden;
-  background-color: rgb(26,26,26);
-  box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
+  background-color: rgb(26, 26, 26);
+  box-shadow: -1px 1px 6px rgba(0, 0, 0, 0.6);
 }
 .main-small {
   padding: 0;
   border-radius: 5px;
   overflow: hidden;
-  background-color: rgb(26,26,26);
-  box-shadow: -1px 1px 6px rgba(0,0,0,0.6);
-  height: 378px;  // hard-coded value, might not be correct
+  background-color: rgb(26, 26, 26);
+  box-shadow: -1px 1px 6px rgba(0, 0, 0, 0.6);
+  height: 378px; // hard-coded value, might not be correct
 }
 .title {
   padding: 0.3em;
@@ -239,11 +281,11 @@ export default {
   padding-right: 0.8em;
   font-size: 32px;
   height: auto;
-  background-color: rgb(215,63,9);
-  color: #FFF;
+  background-color: rgb(215, 63, 9);
+  color: #fff;
   font-family: 'StratumNo2';
   border-bottom: solid 1px #fff;
-  text-align: center;    // might as well center this for the big screen version too
+  text-align: center; // might as well center this for the big screen version too
 }
 .close-box {
   cursor: pointer;
@@ -263,7 +305,7 @@ export default {
   // deleted white border on bottom - might need to add back
   width: 450px;
   position: absolute;
-  top: 0px;  // hard-coded value, might not be correct
+  top: 0px; // hard-coded value, might not be correct
 }
 .graphcontrol {
   padding: 1.5em;
@@ -273,7 +315,7 @@ export default {
   width: 450px;
   margin-left: 450px;
   position: absolute;
-  top: 50px;  // hard-coded value, might not be correct
+  top: 50px; // hard-coded value, might not be correct
 }
 .rangeButtonParent {
   padding: 0.2em;
@@ -285,7 +327,7 @@ export default {
   width: 100%;
 }
 .rangeButton:not(.active):hover {
-  background-color: #000;//darken($--color-primary, 10%);
+  background-color: #000; //darken($--color-primary, 10%);
   color: $--color-white;
   border-color: $--color-white;
 }
@@ -355,9 +397,9 @@ export default {
   border-color: $--color-white;
 }
 .buttonContainer {
-  height: 60px;  // reduce padding above top buttons (week / 60 days /year)
+  height: 60px; // reduce padding above top buttons (week / 60 days /year)
 }
 .bottomButtons {
-  height: 25px;  // might not be needed, div pokes out on inspect element otherwise, but doesn't affect button padding
+  height: 25px; // might not be needed, div pokes out on inspect element otherwise, but doesn't affect button padding
 }
 </style>

@@ -7,16 +7,23 @@
 -->
 
 <template>
-  <el-dialog :visible.sync='toggle' :title='title' @open='form.name = name'>
-    <el-form :model='form' ref='form'>
-      <el-form-item label='Name: ' prop='name' :rules="[{required: true, message: 'A name is required', trigger: 'blur'}, {validator: checkDuplicate, trigger: 'blur'}]">
-        <el-input type='text' v-model='form.name' ></el-input>
+  <el-dialog :visible.sync="toggle" :title="title" @open="form.name = name">
+    <el-form :model="form" ref="form">
+      <el-form-item
+        label="Name: "
+        prop="name"
+        :rules="[
+          { required: true, message: 'A name is required', trigger: 'blur' },
+          { validator: checkDuplicate, trigger: 'blur' }
+        ]"
+      >
+        <el-input type="text" v-model="form.name"></el-input>
       </el-form-item>
     </el-form>
-    <span slot='footer'>
-      <el-button @click='deleteGroup()' type='danger' v-if='title === "Edit Group"'>Delete</el-button>
-      <el-button @click='saveGroup()' type='primary'>Save</el-button>
-      <el-button type='info' @click='toggle = false'>Cancel</el-button>
+    <span slot="footer">
+      <el-button @click="deleteGroup()" type="danger" v-if="title === 'Edit Group'">Delete</el-button>
+      <el-button @click="saveGroup()" type="primary">Save</el-button>
+      <el-button type="info" @click="toggle = false">Cancel</el-button>
     </span>
   </el-dialog>
 </template>
@@ -37,40 +44,37 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'stories'
-    ])
+    ...mapGetters( ['stories'] )
   },
   methods: {
     saveGroup: function () {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          this.$emit('save', {name: this.form.name, id: this.id})
+      this.$refs.form.validate( valid => {
+        if ( valid ) {
+          this.$emit( 'save', { name: this.form.name, id: this.id } )
           this.toggle = false
         }
-      })
+      } )
     },
-    checkDuplicate: function (rule, value, callback) {
+    checkDuplicate: function ( rule, value, callback ) {
       let b = false
-      for (const g of this.$parent.$parent.groups) {
-        if (g.name === value && (g.id !== this.id || g.id === null)) {
+      for ( const g of this.$parent.$parent.groups ) {
+        if ( g.name === value && ( g.id !== this.id || g.id === null ) ) {
           b = true
           break
         }
       }
-      if (b) {
-        callback(new Error('Can not have two groups with the same name'))
+      if ( b ) {
+        callback( new Error( 'Can not have two groups with the same name' ) )
       } else {
         callback()
       }
     },
     deleteGroup: function () {
-      this.$emit('delete', {id: this.id})
+      this.$emit( 'delete', { id: this.id } )
       this.toggle = false
     }
   }
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -1,5 +1,5 @@
 <template>
-  <transition name='fade'>
+  <transition name="fade">
     <span class="message" :key="keyValue">{{ commitments[i] | capatilize }}</span>
   </transition>
 </template>
@@ -29,22 +29,21 @@ export default {
   mounted () {
     var timeout = 100
     var i = 0
-    while (i < this.commitments.length - 1) {
-      setTimeout(() => {
+    while ( i < this.commitments.length - 1 ) {
+      setTimeout( () => {
         this.i++
         this.keyValue = !this.keyValue
-      }, timeout)
+      }, timeout )
       timeout += 90 * i
       i++
     }
   },
   filters: {
-    capatilize: function (value) {
+    capatilize: function ( value ) {
       return value.toUpperCase()
     }
   }
 }
-
 </script>
 
 <style scoped>

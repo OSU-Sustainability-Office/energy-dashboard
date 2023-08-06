@@ -19,6 +19,13 @@ Running `npm run serve` will run the front-end locally.
 
 To run the serverless backend API locally you'll want to run `sam local start-api` (docker will need to be running first).
 
+### Formatting
+
+Run both in order
+
+- `npm run prettier`
+- `npm run lint --fix`
+
 ### Documentation
 
 For more detailed information about how the dashboard front-end works internally, there's a README.md with the vue components described under the `documents/frontend` directory.

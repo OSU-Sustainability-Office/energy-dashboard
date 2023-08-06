@@ -6,19 +6,19 @@
  * @Copyright:  Oregon State University 2019
  */
 
-const Alert = require('/opt/nodejs/models/alert.js');
-const Response = require('/opt/nodejs/response.js');
-const User = require('/opt/nodejs/user.js');
+const Alert = require('/opt/nodejs/models/alert.js')
+const Response = require('/opt/nodejs/response.js')
+const User = require('/opt/nodejs/user.js')
 
 exports.get = async (event, context) => {
-  let response = new Response(event);
-  response.body = JSON.stringify((await new Alert(event.queryStringParameters['id']).get()).data);
-  return response;
-};
+  let response = new Response(event)
+  response.body = JSON.stringify((await new Alert(event.queryStringParameters['id']).get()).data)
+  return response
+}
 
 exports.post = async (event, context) => {
-  let response = new Response(event);
-  let user = new User(event, response);
+  let response = new Response(event)
+  let user = new User(event, response)
   try {
     response.body = JSON.stringify(
       (
@@ -27,42 +27,42 @@ exports.post = async (event, context) => {
           event.body.highThreshold,
           event.body.point,
           event.body.meterId,
-          user,
+          user
         )
-      ).data,
-    );
+      ).data
+    )
   } catch (err) {
-    response.body = err.message;
-    response.status = 400;
+    response.body = err.message
+    response.status = 400
   }
-};
+}
 
 exports.put = async (event, context) => {
-  let response = new Response(event);
-  let user = new User(event, response);
+  let response = new Response(event)
+  let user = new User(event, response)
   try {
     await Alert(event.body.id).update(
       event.body.lowThreshold,
       event.body.highThreshold,
       event.body.point,
       event.body.meterId,
-      user,
-    );
+      user
+    )
   } catch (error) {
-    response.body = error.message;
-    response.status = 400;
+    response.body = error.message
+    response.status = 400
   }
-  return response;
-};
+  return response
+}
 
 exports.delete = async (event, context) => {
-  let response = new Response(event);
-  let user = new User(event, response);
+  let response = new Response(event)
+  let user = new User(event, response)
   try {
-    await Alert(event.body.id).delete(user);
+    await Alert(event.body.id).delete(user)
   } catch (error) {
-    response.body = error.message;
-    response.status = 400;
+    response.body = error.message
+    response.status = 400
   }
-  return response;
-};
+  return response
+}

@@ -8,23 +8,22 @@
 
 <template>
   <el-row>
-    <el-col :span='24'>
-      <el-row class='search'>
-        <el-col :span='24'>
-          <el-input placeholder="Search" prefix-icon="el-icon-search" v-model='search'>
-          </el-input>
+    <el-col :span="24">
+      <el-row class="search">
+        <el-col :span="24">
+          <el-input placeholder="Search" prefix-icon="el-icon-search" v-model="search"> </el-input>
         </el-col>
       </el-row>
-      <el-row v-for='user in allUsers' :key='user.onid' class='user-row' ref="userrow" :userid='user.onid'>
-          <el-col :span='16'>{{ user.onid }}</el-col>
-          <el-col :span='8'>
-            Privileges:
-            <el-radio-group v-model="user.privilege" @change='updateUser(user)'>
-              <el-radio-button label="1">Regular</el-radio-button>
-              <el-radio-button label="2">Alerts</el-radio-button>
-              <el-radio-button label="5">Admin</el-radio-button>
-            </el-radio-group>
-          </el-col>
+      <el-row v-for="user in allUsers" :key="user.onid" class="user-row" ref="userrow" :userid="user.onid">
+        <el-col :span="16">{{ user.onid }}</el-col>
+        <el-col :span="8">
+          Privileges:
+          <el-radio-group v-model="user.privilege" @change="updateUser(user)">
+            <el-radio-button label="1">Regular</el-radio-button>
+            <el-radio-button label="2">Alerts</el-radio-button>
+            <el-radio-button label="5">Admin</el-radio-button>
+          </el-radio-group>
+        </el-col>
       </el-row>
     </el-col>
   </el-row>
@@ -33,8 +32,7 @@
 <script>
 export default {
   name: 'users',
-  components: {
-  },
+  components: {},
   props: [],
   data () {
     return {
@@ -43,15 +41,18 @@ export default {
     }
   },
   watch: {
-    search: function (v) {
-      let values = this.allUsers.filter(obj => (
-        // Check that the item's name includes query
-        (obj.onid && obj.onid.toLowerCase().includes(v.toLowerCase())))
-      ).map(e => {
-        return e.onid
-      })
-      for (let row of this.$refs.userrow) {
-        if (values.indexOf(row.$attrs.userid) < 0) {
+    search: function ( v ) {
+      let values = this.allUsers
+        .filter(
+          obj =>
+            // Check that the item's name includes query
+            obj.onid && obj.onid.toLowerCase().includes( v.toLowerCase() )
+        )
+        .map( e => {
+          return e.onid
+        } )
+      for ( let row of this.$refs.userrow ) {
+        if ( values.indexOf( row.$attrs.userid ) < 0 ) {
           row.$el.style.display = 'none'
         } else {
           row.$el.style.display = 'block'
@@ -60,13 +61,11 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('admin/users').then(users => {
+    this.$store.dispatch( 'admin/users' ).then( users => {
       this.allUsers = users
-    })
+    } )
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
     // updateUser: function (user) {
     //   this.$store.dispatch('updateUser', { privilege: user.privilege, id: user.id }).then(r => {
@@ -86,7 +85,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .search {
   padding-bottom: 1em;
 }
@@ -96,5 +95,4 @@ export default {
   margin: 0.2em;
   border-radius: 5px;
 }
-
 </style>
