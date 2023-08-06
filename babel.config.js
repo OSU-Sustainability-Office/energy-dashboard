@@ -7,20 +7,18 @@
  */
 
 module.exports = function (api) {
-  api.cache(true)
-  const presets = [
-    '@vue/app'
-  ]
+  api.cache(true);
+  const presets = ['@vue/app'];
 
-  const plugins = []
+  const plugins = [];
 
   // add babel-require hook so web-pack directives don't brick jest
   if (process.env.NODE_ENV === 'test') {
-    plugins.push('require-context-hook')
+    plugins.push('require-context-hook');
   }
 
   return {
     presets,
-    plugins
-  }
-}
+    plugins,
+  };
+};

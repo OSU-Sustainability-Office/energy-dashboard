@@ -2,25 +2,24 @@
   Filename: chart.module.js
   Info: Module representing a chart with the parameters needed for visualizing the meter data
 */
-import API from './api.js'
-import ChartModifiers from './chart_modifiers/index.js'
+import API from './api.js';
+import ChartModifiers from './chart_modifiers/index.js';
 
 const state = () => {
   return {
-    name: null,               // String
-    point: null,              // String (See metering points)
-    building: null,           // String buildingId
-    id: null,                 // Integer DB ID
+    name: null, // String
+    point: null, // String (See metering points)
+    building: null, // String buildingId
+    id: null, // Integer DB ID
     meterGroupPath: null,
     path: null,
     color: '#000000',
     promise: null,
-    modifierData: {}
-  }
-}
+    modifierData: {},
+  };
+};
 
 const actions = {
-
   // Example Payload
   // {
   //   "dateStart": 1590512400,
@@ -29,18 +28,18 @@ const actions = {
   //   "dateInterval": 1,
   //   "graphType": 1
   // }
-  async getData (store, payload) {
-    if (!store.getters.meterGroupPath) return
+  async getData(store, payload) {
+    if (!store.getters.meterGroupPath) return;
     const reqPayload = {
       point: store.getters.point,
       ...payload,
-      ...store.getters.modifierData
-    }
+      ...store.getters.modifierData,
+    };
 
-    const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
-    await chartModifier.preGetData(reqPayload, this, store)
+    const chartModifier = ChartModifiers(payload.graphType, reqPayload.point);
+    await chartModifier.preGetData(reqPayload, this, store);
 
-    let data = await this.dispatch(store.getters.meterGroupPath + '/getData', reqPayload)
+    let data = await this.dispatch(store.getters.meterGroupPath + '/getData', reqPayload);
     let chartData = {
       label: store.getters.name,
       backgroundColor: store.getters.color,
@@ -48,127 +47,134 @@ const actions = {
       fill: false,
       showLine: true,
       spanGaps: false,
-      data: data
-    }
+      data: data,
+    };
 
-    await chartModifier.postGetData(chartData, reqPayload, this, store)
+    await chartModifier.postGetData(chartData, reqPayload, this, store);
 
-    return chartData
+    return chartData;
   },
 
-  async changeChart (store, id) {
-    let chart = API.chart(id)
-    store.commit('promise', chart)
-    store.commit('id', id)
-    await chart
-    store.commit('name', chart.name)
-    store.commit('point', chart.point)
-    store.commit('building', chart.building)
-    store.commit('meterGroupPath', this.getters.meterGroup(chart.meterGroup).path)
+  async changeChart(store, id) {
+    let chart = API.chart(id);
+    store.commit('promise', chart);
+    store.commit('id', id);
+    await chart;
+    store.commit('name', chart.name);
+    store.commit('point', chart.point);
+    store.commit('building', chart.building);
+    store.commit('meterGroupPath', this.getters.meterGroup(chart.meterGroup).path);
   },
 
-  async update (store, payload) {
-    if (payload.name === store.getters.name && payload.point === store.getters.point && payload.building === store.getters.building && payload.meter === store.getters.meterGroupPath) {
-      return
+  async update(store, payload) {
+    if (
+      payload.name === store.getters.name &&
+      payload.point === store.getters.point &&
+      payload.building === store.getters.building &&
+      payload.meter === store.getters.meterGroupPath
+    ) {
+      return;
     }
-    let viewPath = store.getters.path.split('/')
-    viewPath.pop()
-    viewPath.pop()
-    viewPath = viewPath.join('/')
-    let viewUser = this.getters[viewPath + '/user']
+    let viewPath = store.getters.path.split('/');
+    viewPath.pop();
+    viewPath.pop();
+    viewPath = viewPath.join('/');
+    let viewUser = this.getters[viewPath + '/user'];
     if (viewUser && viewUser === this.getters['user/onid']) {
-      await API.chart({
-        id: store.getters.id,
-        name: payload.name,
-        point: payload.point,
-        meterGroup: this.getters[payload.meter + '/id'],
-        building: this.getters[payload.building + '/id']
-      }, 'put')
+      await API.chart(
+        {
+          id: store.getters.id,
+          name: payload.name,
+          point: payload.point,
+          meterGroup: this.getters[payload.meter + '/id'],
+          building: this.getters[payload.building + '/id'],
+        },
+        'put',
+      );
     }
-    store.commit('name', payload.name)
-    store.commit('point', payload.point)
-    store.commit('building', payload.building)
-    store.commit('meterGroupPath', payload.meter)
-  }
-
-}
+    store.commit('name', payload.name);
+    store.commit('point', payload.point);
+    store.commit('building', payload.building);
+    store.commit('meterGroupPath', payload.meter);
+  },
+};
 
 const mutations = {
-  path (state, path) {
-    state.path = path
+  path(state, path) {
+    state.path = path;
   },
 
-  modifierData (state, data) {
-    state.modifierData = data
+  modifierData(state, data) {
+    state.modifierData = data;
   },
 
-  promise (state, promise) {
-    state.promise = promise
+  promise(state, promise) {
+    state.promise = promise;
   },
 
-  color (state, color) {
-    state.color = color
+  color(state, color) {
+    state.color = color;
   },
 
-  name (state, name) {
-    state.name = name
+  name(state, name) {
+    state.name = name;
   },
 
-  point (state, point) {
-    state.point = point
+  point(state, point) {
+    state.point = point;
   },
 
-  building (state, building) {
-    state.building = building
+  building(state, building) {
+    state.building = building;
   },
 
-  id (state, id) {
-    state.id = id
+  id(state, id) {
+    state.id = id;
   },
 
-  meterGroupPath (state, meterGroupPath) {
-    state.meterGroupPath = meterGroupPath
-  }
-}
+  meterGroupPath(state, meterGroupPath) {
+    state.meterGroupPath = meterGroupPath;
+  },
+};
 
 const getters = {
-  promise (state) {
-    return state.promise
+  promise(state) {
+    return state.promise;
   },
 
-  modifierData (state) {
-    return state.modifierData
+  modifierData(state) {
+    return state.modifierData;
   },
 
-  color (state) {
-    return state.color
+  color(state) {
+    return state.color;
   },
 
-  path (state) {
-    return state.path
+  path(state) {
+    return state.path;
   },
 
-  name (state) {
-    return state.name
+  name(state) {
+    return state.name;
   },
 
-  point (state) {
-    return state.point
+  point(state) {
+    return state.point;
   },
 
-  building (state) {
-    return state.building
+  building(state) {
+    return state.building;
   },
 
-  id (state) {
-    return state.id
+  id(state) {
+    return state.id;
   },
 
-  meterGroupPath (state) {
-    return state.meterGroupPath
+  meterGroupPath(state) {
+    return state.meterGroupPath;
   },
 
-  pointString (state) {
+  pointString(state) {
     if (state.point) {
       const map = {
         accumulated_real: 'Net Energy Usage (kWh)',
@@ -206,15 +212,15 @@ const getters = {
         total_energy: 'Lifetime Cumulative Energy (kWh)',
         energy_change: 'Energy In Interval (kWh)',
         voltage: 'Voltage (V)',
-        current: 'Current (A)'
-      }
-      return map[state.point]
+        current: 'Current (A)',
+      };
+      return map[state.point];
     } else {
-      return ' '
+      return ' ';
     }
   },
 
-  unitString (state) {
+  unitString(state) {
     const map = {
       accumulated_real: 'kWh',
       real_power: 'W',
@@ -251,14 +257,13 @@ const getters = {
       total_energy: 'kWh',
       energy_change: 'kWh',
       voltage: 'V',
-      current: 'A'
-    }
-    return map[state.point]
-  }
-}
+      current: 'A',
+    };
+    return map[state.point];
+  },
+};
 
-const modules = {
-}
+const modules = {};
 
 export default {
   namespaced: true,
@@ -266,5 +271,5 @@ export default {
   actions,
   mutations,
   getters,
-  modules
-}
+  modules,
+};

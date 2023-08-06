@@ -7,7 +7,8 @@
  */
 
 module.exports = {
-  48: { // Veris Industries E51C2 Power Meter , Bi-dir, Full Data Set
+  48: {
+    // Veris Industries E51C2 Power Meter , Bi-dir, Full Data Set
     4: 'accumulated_real',
     22: 'real_power',
     23: 'reactive_power',
@@ -32,19 +33,22 @@ module.exports = {
     72: 'vphase_cn',
     73: 'cphase_a',
     74: 'cphase_b',
-    75: 'cphase_c'
+    75: 'cphase_c',
   },
-  27: { // Obvius, A8812 Internal I/O
+  27: {
+    // Obvius, A8812 Internal I/O
     // This device is unused but when it sends data a success should be returned
   },
-  17: { // Obvius, ModHopper, R9120-5
+  17: {
+    // Obvius, ModHopper, R9120-5
     4: 'cubic_feet',
     5: 'rate',
     6: 'instant',
     7: 'minimum',
-    8: 'maximum'
+    8: 'maximum',
   },
-  5: { // Veris Full-Data Energy Meter H8163-CB
+  5: {
+    // Veris Full-Data Energy Meter H8163-CB
     4: 'accumulated_real',
     5: 'real_power',
     6: 'reactive_power',
@@ -63,10 +67,10 @@ module.exports = {
     23: 'vphase_cn',
     24: 'cphase_a',
     25: 'cphase_b',
-    26: 'cphase_c'
-
+    26: 'cphase_c',
   },
-  2: { // Veris H8036-1600-4, Full-Data, Modbus, 1600 Amp
+  2: {
+    // Veris H8036-1600-4, Full-Data, Modbus, 1600 Amp
     4: 'accumulated_real',
     5: 'real_power',
     6: 'reactive_power',
@@ -85,15 +89,17 @@ module.exports = {
     23: 'vphase_cn',
     24: 'cphase_a',
     25: 'cphase_b',
-    26: 'cphase_c'
+    26: 'cphase_c',
   },
-  4444: { // Red Lion PAXCDC Test
+  4444: {
+    // Red Lion PAXCDC Test
     4: 'input',
     5: 'total',
     6: 'minimum',
-    7: 'maximum'
+    7: 'maximum',
   },
-  4025: { // Schneider_PM210
+  4025: {
+    // Schneider_PM210
     9: 'accumulated_real',
     8: 'real_power',
     13: 'vphase_ab',
@@ -104,9 +110,10 @@ module.exports = {
     18: 'vphase_cn',
     4: 'cphase_a',
     5: 'cphase_b',
-    6: 'cphase_c'
+    6: 'cphase_c',
   },
-  82: { // Siemens Sentron PAC3200 Power Meter
+  82: {
+    // Siemens Sentron PAC3200 Power Meter
     4: 'accumulated_real',
     46: 'real_power',
     47: 'reactive_power',
@@ -131,10 +138,10 @@ module.exports = {
     19: 'vphase_ac',
     20: 'cphase_a',
     21: 'cphase_b',
-    22: 'cphase_c'
-
+    22: 'cphase_c',
   },
-  4045: { // Square D PM620
+  4045: {
+    // Square D PM620
     15: 'accumulated_real',
     14: 'real_power',
     8: 'vphase_ab',
@@ -145,12 +152,13 @@ module.exports = {
     13: 'vphase_cn',
     4: 'cphase_a',
     5: 'cphase_b',
-    6: 'cphase_c'
+    6: 'cphase_c',
   },
-  9990001: { // Tesla Solar City Solar Panels
+  9990001: {
+    // Tesla Solar City Solar Panels
     0: 'current',
     1: 'voltage',
     2: 'energy_change',
-    3: 'total_energy'
-  }
-}
+    3: 'total_energy',
+  },
+};

@@ -5,55 +5,63 @@
  * @Last Modified Time:  Saturday June 15th 2019
  * @Copyright:  Oregon State University 2019
  */
-const DB = require('/opt/nodejs/sql-access.js')
+const DB = require('/opt/nodejs/sql-access.js');
 // const Building = require('/opt/nodejs/models/building.js')
 
 class Campaign {
-  constructor (id) {
-    this.id = id
-    this.buildings = []
-    this.dateStart = ''
-    this.dateEnd = ''
-    this.compareStart = ''
-    this.compareEnd = ''
-    this.name = ''
-    this.media = ''
-    this.meterGroupIDs = []
+  constructor(id) {
+    this.id = id;
+    this.buildings = [];
+    this.dateStart = '';
+    this.dateEnd = '';
+    this.compareStart = '';
+    this.compareEnd = '';
+    this.name = '';
+    this.media = '';
+    this.meterGroupIDs = [];
   }
 
-  static async create (name, dateStart, dateEnd, compareStart, compareEnd, media, buildings, user) {
+  static async create(name, dateStart, dateEnd, compareStart, compareEnd, media, buildings, user) {
     if (user.data.privilege <= 3) {
-      throw new Error('User does not have privelege to create campaigns')
+      throw new Error('User does not have privelege to create campaigns');
     }
-    await DB.connect()
-    let insertRow = await DB.query('INSERT INTO campaigns (date_start, date_end, compare_start, compare_end, media, name) VALUES (?, ?, ?, ?, ?, ?)', [dateStart, dateEnd, compareStart, compareEnd, media, name])
-    let campaign = Campaign(insertRow[0]['insert_id'])
-    campaign.dateStart = dateStart
-    campaign.dateEnd = dateEnd
-    campaign.compareEnd = compareStart
-    campaign.compareStart = compareEnd
-    campaign.name = name
-    campaign.media = media
-    campaign.buildings = buildings
-    let promises = []
+    await DB.connect();
+    let insertRow = await DB.query(
+      'INSERT INTO campaigns (date_start, date_end, compare_start, compare_end, media, name) VALUES (?, ?, ?, ?, ?, ?)',
+      [dateStart, dateEnd, compareStart, compareEnd, media, name],
+    );
+    let campaign = Campaign(insertRow[0]['insert_id']);
+    campaign.dateStart = dateStart;
+    campaign.dateEnd = dateEnd;
+    campaign.compareEnd = compareStart;
+    campaign.compareStart = compareEnd;
+    campaign.name = name;
+    campaign.media = media;
+    campaign.buildings = buildings;
+    let promises = [];
     for (let building of buildings) {
-      promises.push(DB.query('INSERT INTO campaign_groups (building_id, campaign_id) VALUES (?, ?)', [building, this.id]))
+      promises.push(
+        DB.query('INSERT INTO campaign_groups (building_id, campaign_id) VALUES (?, ?)', [building, this.id]),
+      );
     }
-    await Promise.all(promises)
-    return campaign
+    await Promise.all(promises);
+    return campaign;
   }
 
   // Queries the database for this campaign's data, and returns the data.
-  async get (expand = true) {
-    await DB.connect()
+  async get(expand = true) {
+    await DB.connect();
     // Query for this particular campaign, groups, and buildings
-    let campaignRows = await DB.query('SELECT campaigns.media, campaigns.id, campaigns.name, campaigns.date_start, campaigns.date_end, campaigns.compare_start, campaigns.compare_end, campaign_groups.group_id FROM campaigns LEFT JOIN campaign_groups ON campaigns.id = campaign_groups.campaign_id WHERE campaigns.id = ?', [this.id])
-    this.dateStart = campaignRows[0]['date_start']
-    this.dateEnd = campaignRows[0]['date_end']
-    this.compareEnd = campaignRows[0]['compare_end']
-    this.compareStart = campaignRows[0]['compare_start']
-    this.name = campaignRows[0]['name']
-    this.media = campaignRows[0]['media']
+    let campaignRows = await DB.query(
+      'SELECT campaigns.media, campaigns.id, campaigns.name, campaigns.date_start, campaigns.date_end, campaigns.compare_start, campaigns.compare_end, campaign_groups.group_id FROM campaigns LEFT JOIN campaign_groups ON campaigns.id = campaign_groups.campaign_id WHERE campaigns.id = ?',
+      [this.id],
+    );
+    this.dateStart = campaignRows[0]['date_start'];
+    this.dateEnd = campaignRows[0]['date_end'];
+    this.compareEnd = campaignRows[0]['compare_end'];
+    this.compareStart = campaignRows[0]['compare_start'];
+    this.name = campaignRows[0]['name'];
+    this.media = campaignRows[0]['media'];
     // for (let row of campaignRows) this.meterGroupIDs.push(row['group_id'])
 
     // If expand is true, include building information
@@ -70,41 +78,47 @@ class Campaign {
     //   // If the user does not wish to expand, just return the building's id
     //   this.buildings = campaignRows.map(row => row['building_id_2'])
     // }
-    this.meterGroupIDs = campaignRows.map(row => row['group_id'])
-    return this
+    this.meterGroupIDs = campaignRows.map(row => row['group_id']);
+    return this;
   }
 
-  async delete (user) {
+  async delete(user) {
     if (user.privilege > 3) {
-      await DB.query('DELETE campaigns WHERE id = ?', [this.id])
+      await DB.query('DELETE campaigns WHERE id = ?', [this.id]);
     } else {
-      throw new Error('User can not delete campaign')
+      throw new Error('User can not delete campaign');
     }
   }
 
-  async update (name, dateStart, dateEnd, compareStart, compareEnd, media, buildings, user) {
+  async update(name, dateStart, dateEnd, compareStart, compareEnd, media, buildings, user) {
     if (user.data.privilege <= 3) {
-      throw new Error('User does not have privelege to create campaigns')
+      throw new Error('User does not have privelege to create campaigns');
     }
-    await DB.connect()
-    this.dateStart = dateStart
-    this.dateEnd = dateEnd
-    this.compareEnd = compareStart
-    this.compareStart = compareEnd
-    this.name = name
-    this.media = media
-    this.buildings = buildings
-    await DB.query('DELETE campaign_groups WHERE campaign_id = ?', [this.id])
-    let promises = [DB.query('UPDATE campaigns SET date_start = ?, date_end = ?, compare_start = ?, compare_end = ?, name = ?, media = ? WHERE id = ?', [dateStart, dateEnd, compareStart, compareEnd, name, media, this.id])]
+    await DB.connect();
+    this.dateStart = dateStart;
+    this.dateEnd = dateEnd;
+    this.compareEnd = compareStart;
+    this.compareStart = compareEnd;
+    this.name = name;
+    this.media = media;
+    this.buildings = buildings;
+    await DB.query('DELETE campaign_groups WHERE campaign_id = ?', [this.id]);
+    let promises = [
+      DB.query(
+        'UPDATE campaigns SET date_start = ?, date_end = ?, compare_start = ?, compare_end = ?, name = ?, media = ? WHERE id = ?',
+        [dateStart, dateEnd, compareStart, compareEnd, name, media, this.id],
+      ),
+    ];
     for (let building of buildings) {
-      promises.push(DB.query('INSERT INTO campaign_groups (building_id, campaign_id) VALUES (?, ?)', [building, this.id]))
+      promises.push(
+        DB.query('INSERT INTO campaign_groups (building_id, campaign_id) VALUES (?, ?)', [building, this.id]),
+      );
     }
-    await Promise.all(promises)
-    return this
+    await Promise.all(promises);
+    return this;
   }
 
-  get
-  data () {
+  get data() {
     return {
       id: this.id,
       // buildings: this.buildings,
@@ -114,9 +128,9 @@ class Campaign {
       compareEnd: this.compareEnd,
       name: this.name,
       media: this.media,
-      meterGroupIDs: this.meterGroupIDs
-    }
+      meterGroupIDs: this.meterGroupIDs,
+    };
   }
 }
 
-module.exports = Campaign
+module.exports = Campaign;

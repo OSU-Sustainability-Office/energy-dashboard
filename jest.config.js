@@ -7,7 +7,6 @@
 // https://jestjs.io/docs/en/configuration.html
 
 module.exports = {
-
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
 
@@ -21,23 +20,15 @@ module.exports = {
   coverageDirectory: 'coverage',
 
   // A list of reporter names that Jest uses when writing coverage reports
-  coverageReporters: [
-    "json-summary"
-  ],
+  coverageReporters: ['json-summary'],
 
   // An array of file extensions your modules use
-  moduleFileExtensions: [
-    'js',
-    'json',
-    'jsx',
-    'node',
-    'vue'
-  ],
+  moduleFileExtensions: ['js', 'json', 'jsx', 'node', 'vue'],
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
   setupFiles: [
     './tests/setupJest.js',
-    'fake-indexeddb/auto' // used to mock indexedDB automatically
+    'fake-indexeddb/auto', // used to mock indexedDB automatically
   ],
 
   // The test environment that will be used for testing
@@ -56,21 +47,17 @@ module.exports = {
     '.*\\.(vue)$': '<rootDir>/node_modules/jest-vue-preprocessor',
     '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
-    '^.+\\.jsx?$': 'babel-jest'
+    '^.+\\.jsx?$': 'babel-jest',
   },
 
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1'
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
 
-  snapshotSerializers: [
-    'jest-serializer-vue'
-  ],
+  snapshotSerializers: ['jest-serializer-vue'],
 
-  testMatch: [
-    '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)'
-  ],
+  testMatch: ['**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)'],
 
   testURL: 'http://localhost/',
-  preset: '@vue/cli-plugin-unit-jest'
-}
+  preset: '@vue/cli-plugin-unit-jest',
+};

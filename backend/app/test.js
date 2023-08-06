@@ -9,6 +9,6 @@ exports.test = async (event, context) => {
   return {
     headers: {},
     statusCode: 200,
-    body: 'hello world, dynamic'
-  }
-}
+    body: 'hello world, dynamic',
+  };
+};
