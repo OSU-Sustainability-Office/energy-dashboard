@@ -12,7 +12,8 @@
     "test": "vue-cli-service test:unit --ci --detectOpenHandles",
     "frontend-badge": "make-coverage-badge",
     "backend-badge": "make-coverage-badge --report-path './backend/coverage/coverage-summary.json' --output-path './backend/coverage/badge.svg'",
-    "make-badges": "npm run frontend-badge && npm run backend-badge"
+    "make-badges": "npm run frontend-badge && npm run backend-badge",
+    "prettier": "prettier --write **/*.{js,ts,tsx,json,html,md,css,scss}"
   },
   "dependencies": {
     "ajv": "^6.11.0",
@@ -25,6 +26,7 @@
     "leaflet": "^1.6.0",
     "make-coverage-badge": "^1.2.0",
     "osmtogeojson": "^3.0.0-beta.4",
+    "prettier": "^3.0.1",
     "raw-loader": "^4.0.0",
     "vue": "2.6.14",
     "vue-async-computed": "^3.8.2",
