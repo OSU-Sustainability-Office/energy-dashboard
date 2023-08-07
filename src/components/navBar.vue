@@ -98,6 +98,7 @@ i {
     padding: 27px 30px;
     transition: all 0.2s ease-out;
     left: 20px;
+    margin-right: 20px;
     align-items: end;
     top: -50px;
   }
