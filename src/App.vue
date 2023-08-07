@@ -139,21 +139,16 @@ body {
 <style scoped lang="scss">
 @import '@/assets/style-variables.scss';
 
-/* Media query for mobile devices */
-@media only screen and (max-width: 768px) {
+/* Feature detection for touch devices (phones and tablets) */
+@supports (-webkit-touch-callout: none) {
+  /* Apply styles specifically for touch devices here */
+  /* Media query for mobile devices */
+  @media only screen and (max-width: 768px) {
   body {
     max-width: 100%;
     overflow-x: hidden; /* Hide horizontal scrollbar */
   }
 }
-
-/* Feature detection for touch devices (phones and tablets) */
-@supports (-webkit-touch-callout: none) {
-  /* Apply styles specifically for touch devices here */
-  body {
-    max-width: 100%;
-    overflow-x: hidden; /* Hide horizontal scrollbar */
-  }
 }
 .app {
   padding: 0;

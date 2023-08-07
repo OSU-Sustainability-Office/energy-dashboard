@@ -485,6 +485,7 @@ $sideMenu-width: 250px;
   z-index: 2000;
   width: $sideMenu-width;
   padding-top: 1em;
+  // margin-top: 10em;
 }
 .sideMenuGroupTitle {
   font-size: 18px;
