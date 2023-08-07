@@ -476,6 +476,7 @@ $sideMenu-width: 250px;
   width: 100%;
   height: calc(100vh - #{$--nav-height});
 }
+
 .sideMenu {
   background-color: $--color-black;
   height: calc(100% - 1em);
@@ -487,6 +488,21 @@ $sideMenu-width: 250px;
   padding-top: 1em;
   // margin-top: 10em;
 }
+
+@media only screen and (max-width: 768px) {
+  .sideMenu {
+  background-color: $--color-black;
+  height: calc(100% - 1em);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  width: $sideMenu-width;
+  padding-top: 1em;
+ margin-top: 10em;
+}
+}
+
 .sideMenuGroupTitle {
   font-size: 18px;
   color: #ffffff;
