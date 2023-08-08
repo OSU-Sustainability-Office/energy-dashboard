@@ -1,10 +1,6 @@
 <template>
   <el-row class="stage">
-    <el-col
-      :span="4"
-      class="full-height no-overflow"
-      v-if="user.privilege >= 2"
-    >
+    <el-col :span="4" class="full-height no-overflow" v-if="user.privilege >= 2">
       <sideview v-model="index" />
     </el-col>
     <el-col :span="user.privilege >= 2 ? 20 : 24" class="full-height">

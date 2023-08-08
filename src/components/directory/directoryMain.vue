@@ -17,9 +17,7 @@
       </el-col>
 
       <el-col :span="12" class="header-col" v-if="!publicDir">
-        <el-button @click="editGroup()" v-if="groups.length > 0">
-          Edit Current Group
-        </el-button>
+        <el-button @click="editGroup()" v-if="groups.length > 0"> Edit Current Group </el-button>
         <el-button @click="newGroup()"> Create New Group </el-button>
       </el-col>
     </el-header>
@@ -29,12 +27,7 @@
         <el-tab-pane v-for="(item, key) in groups" :key="key" :name="key">
           <span slot="label" class="tab-label">{{ key }}</span>
           <el-row type="flex" justify="left" class="story-flex">
-            <el-col
-              v-for="building in item"
-              :key="building.id"
-              :span="4"
-              class="storyContainer"
-            >
+            <el-col v-for="building in item" :key="building.id" :span="4" class="storyContainer">
               <storycard
                 :name="building.name"
                 :notools="publicDir !== null ? 1 : 0"
@@ -47,50 +40,41 @@
             </el-col>
             <el-col v-if="!publicDir" :span="4" class="storyContainer">
               <el-tooltip content="Create New View" placement="top">
-                <storycard
-                  :plus="true"
-                  :notools="1"
-                  class="storyCard"
-                  @click="openStoryEdit('', '', '', null)"
-                />
+                <storycard :plus="true" :notools="1" class="storyCard" @click="openStoryEdit('', '', '', null)" />
               </el-tooltip>
             </el-col>
             <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
-            <el-col v-for="n in 10" :key="n" :span="4" class="blankSlate">
-              &nbsp;
-            </el-col>
+            <el-col v-for="n in 10" :key="n" :span="4" class="blankSlate"> &nbsp; </el-col>
           </el-row>
         </el-tab-pane>
       </el-tabs>
-      <div class="blankGroups" v-if="groups.length === 0">
-        Create a new group to add views
-      </div>
+      <div class="blankGroups" v-if="groups.length === 0">Create a new group to add views</div>
     </el-main>
 
     <!-- Modal Views -->
     <editGroup
       ref="groupEditor"
       @save="
-        (event) => {
-          groupSave(event.name, event.id);
+        event => {
+          groupSave(event.name, event.id)
         }
       "
       @delete="
-        (event) => {
-          groupDelete(event.id);
+        event => {
+          groupDelete(event.id)
         }
       "
     />
     <editStory
       ref="storyEditor"
       @save="
-        (event) => {
-          storySave(event.name, event.description, event.media, event.id);
+        event => {
+          storySave(event.name, event.description, event.media, event.id)
         }
       "
       @delete="
-        (event) => {
-          deleteStory(event.id);
+        event => {
+          deleteStory(event.id)
         }
       "
     />
@@ -121,19 +105,17 @@ export default {
   watch: {
     search: function ( v ) {
       let values = this.groups
-        .find( ( e ) => {
+        .find( e => {
           return e.name === this.openName
         } )
         .stories.filter(
           ( story, index, arr ) =>
             // Check that the item's name includes query
-            ( story.name &&
-              story.name.toLowerCase().includes( v.toLowerCase() ) ) ||
+            ( story.name && story.name.toLowerCase().includes( v.toLowerCase() ) ) ||
             // Check that description includes query
-            ( story.description &&
-              story.description.toLowerCase().includes( v.toLowerCase() ) )
+            ( story.description && story.description.toLowerCase().includes( v.toLowerCase() ) )
         )
-        .map( ( e ) => {
+        .map( e => {
           return e.name
         } )
       for ( let card of this.$refs.card ) {
@@ -183,11 +165,11 @@ export default {
     }
     this.openName = Object.keys( this.groups )[0]
     // 0: id
-    this.$eventHub.$on( 'deleteStory', ( event ) => {
+    this.$eventHub.$on( 'deleteStory', event => {
       this.deleteStory( event[0] )
     } )
     // 0: name, 1: description, 2: media, 3: name, 4: id
-    this.$eventHub.$on( 'openStoryEdit', ( event ) => {
+    this.$eventHub.$on( 'openStoryEdit', event => {
       this.openStoryEdit( event[0], event[1], event[2], event[3], event[4] )
     } )
   },
@@ -196,7 +178,7 @@ export default {
     editGroup: function () {
       this.$refs.groupEditor.title = 'Edit Group'
       this.$refs.groupEditor.name = this.openName
-      this.$refs.groupEditor.id = this.groups.find( ( e ) => {
+      this.$refs.groupEditor.id = this.groups.find( e => {
         return e.name === this.openName
       } ).id
       this.$refs.groupEditor.toggle = true
@@ -206,7 +188,7 @@ export default {
         this.groups.push( { name: name, stories: [], id: null } )
         this.openName = name
       } else {
-        const g = this.groups.find( ( e ) => {
+        const g = this.groups.find( e => {
           return e.name === this.openName
         } )
         g.name = name
@@ -216,7 +198,7 @@ export default {
     },
     groupDelete: function ( id ) {
       this.$store.dispatch( 'deleteGroup', { id: id } )
-      const index = this.groups.map( ( e ) => e.id ).indexOf( id )
+      const index = this.groups.map( e => e.id ).indexOf( id )
       this.groups.splice( index, 1 )
       this.openName = this.groups[0].name
     },
@@ -239,7 +221,7 @@ export default {
       storyEditor.toggle = true
     },
     storySave: function ( name, description, media, id ) {
-      const openGroup = this.groups.find( ( e ) => {
+      const openGroup = this.groups.find( e => {
         return e.name === this.openName
       } )
       if ( openGroup.id ) {
@@ -263,7 +245,7 @@ export default {
           this.$store.dispatch( 'createStory', story )
         }
       } else {
-        this.$store.dispatch( 'createGroup', openGroup ).then( ( groupId ) => {
+        this.$store.dispatch( 'createGroup', openGroup ).then( groupId => {
           const story = {
             name: name,
             description: description,
@@ -277,18 +259,16 @@ export default {
       }
     },
     deleteStory: function ( id ) {
-      const openGroup = this.groups.find( ( e ) => {
+      const openGroup = this.groups.find( e => {
         return e.name === this.openName
       } )
-      const index = openGroup.stories.map( ( e ) => e.id ).indexOf( id )
-      this.$store
-        .dispatch( 'deleteStory', { id: id, group_id: openGroup.id } )
-        .then( () => {
-          openGroup.stories.splice( index, 1 )
-          if ( openGroup.stories.length === 0 ) {
-            this.groupDelete( openGroup.id )
-          }
-        } )
+      const index = openGroup.stories.map( e => e.id ).indexOf( id )
+      this.$store.dispatch( 'deleteStory', { id: id, group_id: openGroup.id } ).then( () => {
+        openGroup.stories.splice( index, 1 )
+        if ( openGroup.stories.length === 0 ) {
+          this.groupDelete( openGroup.id )
+        }
+      } )
     }
   }
 }

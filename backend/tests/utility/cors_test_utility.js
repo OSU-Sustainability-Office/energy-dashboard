@@ -27,82 +27,75 @@ exports.VerifyCORSResponse = (response, clientOrigin, serverOrigin) => {
   if (clientOrigin.scheme !== serverOrigin.scheme) {
     return {
       result: false,
-      reason: "CORS response scheme did not match request scheme.",
-    };
+      reason: 'CORS response scheme did not match request scheme.'
+    }
   }
   if (clientOrigin.port !== serverOrigin.port) {
     return {
       result: false,
-      reason: "CORS response port did not match request port.",
-    };
+      reason: 'CORS response port did not match request port.'
+    }
   }
   // extract response headers.  Not all of these need to be defined, which is OK.
   if (response.headers) {
-    const allowedOrigin = response.headers["Access-Control-Allow-Origin"];
-    const withCredentials =
-      response.headers["Access-Control-Allow-Credentials"];
-    const allowedMethods = response.headers["Access-Control-Allow-Methods"];
-    const statusCode = response.statusCode;
+    const allowedOrigin = response.headers['Access-Control-Allow-Origin']
+    const withCredentials = response.headers['Access-Control-Allow-Credentials']
+    const allowedMethods = response.headers['Access-Control-Allow-Methods']
+    const statusCode = response.statusCode
 
     // Make sure we aren't re-directing
     if ([301, 307, 308].includes(statusCode))
       return {
         result: false,
-        reason: "CORS request external redirect not allowed",
-      };
+        reason: 'CORS request external redirect not allowed'
+      }
 
     // Make sure they have specified an Origin.
     if (!allowedOrigin)
       return {
         result: false,
-        reason:
-          "CORS header 'Access-Control-Allow-Origin' missing.  Did you use the Request class?",
-      };
+        reason: "CORS header 'Access-Control-Allow-Origin' missing.  Did you use the Request class?"
+      }
 
     // Edge-case w/ wild card
-    if (allowedOrigin === "*") {
-      if (withCredentials !== "false")
+    if (allowedOrigin === '*') {
+      if (withCredentials !== 'false')
         return {
           result: false,
-          reason:
-            "Credential is not supported if the CORS header ‘Access-Control-Allow-Origin’ is ‘*’",
-        };
+          reason: 'Credential is not supported if the CORS header ‘Access-Control-Allow-Origin’ is ‘*’'
+        }
       return {
         result: true,
-        reason: "allowed origin is a wildcard, anyone can access this resource",
-      };
+        reason: 'allowed origin is a wildcard, anyone can access this resource'
+      }
     }
 
     // Make sure the origin matches production
-    const client = `${clientOrigin.scheme}://${clientOrigin.host}`;
+    const client = `${clientOrigin.scheme}://${clientOrigin.host}`
     if (allowedOrigin !== client) {
       return {
         result: false,
-        reason: `'Access-Control-Allow-Origin' does not match '${client}'`,
-      };
+        reason: `'Access-Control-Allow-Origin' does not match '${client}'`
+      }
     }
 
     // Make sure we're not returning bad method names.
     if (allowedMethods) {
-      const validMethods =
-        "GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH".split(
-          ", ",
-        );
-      for (method of allowedMethods.split(", ")) {
+      const validMethods = 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH'.split(', ')
+      for (method of allowedMethods.split(', ')) {
         if (!validMethods.includes(method)) {
           return {
             result: false,
-            reason: `invalid token: '${method}' in CORS header ‘Access-Control-Allow-Methods`,
-          };
+            reason: `invalid token: '${method}' in CORS header ‘Access-Control-Allow-Methods`
+          }
         }
       }
     }
 
-    return { result: true, resason: "no error detected" };
+    return { result: true, resason: 'no error detected' }
   }
   return {
     result: false,
-    reason:
-      "no headers specified,  did you remember to use the Response class?",
-  };
-};
+    reason: 'no headers specified,  did you remember to use the Response class?'
+  }
+}

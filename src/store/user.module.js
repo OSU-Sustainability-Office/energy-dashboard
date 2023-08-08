@@ -22,10 +22,7 @@ const actions = {
       let moduleSpace = store.getters.path + '/' + viewSpace
       this.registerModule( moduleSpace.split( '/' ), View )
       store.commit( viewSpace + '/path', moduleSpace )
-      let userViewPromise = store.dispatch(
-        viewSpace + '/loadBlocks',
-        view.blocks
-      )
+      let userViewPromise = store.dispatch( viewSpace + '/loadBlocks', view.blocks )
       store.commit( viewSpace + '/promise', userViewPromise )
       promises.push( userViewPromise )
       store.commit( viewSpace + '/name', view.name )
@@ -37,9 +34,7 @@ const actions = {
   },
 
   async newView ( store, payload ) {
-    let id = (
-      await API.view( null, { media: payload.media, name: payload.name }, 'post' )
-    ).id
+    let id = ( await API.view( null, { media: payload.media, name: payload.name }, 'post' ) ).id
     let viewSpace = 'view_' + id
     let moduleSpace = store.getters.path + '/' + viewSpace
     this.registerModule( moduleSpace.split( '/' ), View )
@@ -108,7 +103,7 @@ const getters = {
     return state.onid
   },
 
-  view: ( state ) => ( id ) => {
+  view: state => id => {
     let r = {}
     for ( let key of Object.keys( state ) ) {
       if ( key.search( /view_[0-9]+/ ) >= 0 ) {

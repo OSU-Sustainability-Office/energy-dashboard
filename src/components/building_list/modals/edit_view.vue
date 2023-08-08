@@ -1,6 +1,5 @@
-/* * @Author: you@you.you * @Date: Friday December 13th 2019 * @Last Modified
-By: Brogan Miner * @Last Modified Time: Friday December 13th 2019 * @Copyright:
-(c) Oregon State University 2019 */
+/* * @Author: you@you.you * @Date: Friday December 13th 2019 * @Last Modified By: Brogan Miner * @Last Modified Time:
+Friday December 13th 2019 * @Copyright: (c) Oregon State University 2019 */
 <template>
   <el-dialog
     size="lg"
@@ -16,7 +15,7 @@ By: Brogan Miner * @Last Modified Time: Friday December 13th 2019 * @Copyright:
         :rules="{
           required: true,
           message: 'A name is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
       >
         <el-input type="text" v-model="form.name"></el-input>
@@ -27,12 +26,8 @@ By: Brogan Miner * @Last Modified Time: Friday December 13th 2019 * @Copyright:
     </el-form>
     <mediapicker v-model="form.media" ref="picker" />
     <span slot="footer">
-      <el-button @click="deleteView()" type="danger" v-if="viewId"
-        >Delete</el-button
-      >
-      <el-button @click="saveView()" type="primary">{{
-        saveButtonText
-      }}</el-button>
+      <el-button @click="deleteView()" type="danger" v-if="viewId">Delete</el-button>
+      <el-button @click="saveView()" type="primary">{{ saveButtonText }}</el-button>
       <el-button type="info" @click="visible = false">Cancel</el-button>
     </span>
   </el-dialog>
@@ -89,8 +84,7 @@ export default {
     updateForm: function () {
       if ( this.viewId ) {
         this.form.name = this.$store.getters[this.view.path + '/name']
-        this.form.description =
-          this.$store.getters[this.view.path + '/description']
+        this.form.description = this.$store.getters[this.view.path + '/description']
         this.form.media = this.$store.getters[this.view.path + '/image']
       } else {
         this.form.name = ''

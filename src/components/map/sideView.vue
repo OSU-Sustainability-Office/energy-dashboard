@@ -10,9 +10,7 @@
       <el-row class="main-small">
         <el-row class="title">
           <el-col :span="23">{{ building.name }}</el-col>
-          <el-col :span="1" class="close-box"
-            ><i class="fas fa-times" @click="hide()"></i
-          ></el-col>
+          <el-col :span="1" class="close-box"><i class="fas fa-times" @click="hide()"></i></el-col>
         </el-row>
         <el-row>
           <el-col :span="24" v-loading="building ? false : true">
@@ -22,32 +20,14 @@
         <el-row class="graphcontrol-small">
           <el-col :span="24">
             <el-col :span="24" class="buttonContainer">
-              <switchButtons
-                :blocks="buildingBlocks"
-                :forceUpdate="false"
-                ref="switchbutton"
-              />
+              <switchButtons :blocks="buildingBlocks" :forceUpdate="false" ref="switchbutton" />
             </el-col>
             <el-row class="graphslide">
-              <i
-                class="left fas fa-angle-left"
-                @click="prev()"
-                ref="prevArrow"
-              ></i>
-              <i
-                class="right fas fa-angle-right"
-                @click="next()"
-                ref="nextArrow"
-              ></i>
+              <i class="left fas fa-angle-left" @click="prev()" ref="prevArrow"></i>
+              <i class="right fas fa-angle-right" @click="next()" ref="nextArrow"></i>
             </el-row>
             <el-row type="flex" class="graph" ref="scrollBox">
-              <el-col
-                class="inline"
-                v-for="block in buildingBlocks"
-                :key="block.id"
-                :span="24"
-                ref="slidingBox"
-              >
+              <el-col class="inline" v-for="block in buildingBlocks" :key="block.id" :span="24" ref="slidingBox">
                 <chartController
                   :path="block.path"
                   ref="chartController"
@@ -57,7 +37,7 @@
                     width: 'calc(100% - 20px)',
                     height: '100%',
                     'margin-right': '10px',
-                    'margin-left': '10px',
+                    'margin-left': '10px'
                   }"
                   :height="200"
                   :invertColors="true"
@@ -66,18 +46,14 @@
             </el-row>
             <el-row class="bottomButtons">
               <el-col :span="12">
-                <el-button
-                  class="bigButton"
-                  @click="$emit('startCompare', building.id)"
-                  >Compare</el-button
-                >
+                <el-button class="bigButton" @click="$emit('startCompare', building.id)">Compare</el-button>
               </el-col>
               <el-col :span="12">
                 <el-button
                   class="bigButton"
                   @click="
                     $router.push({
-                      path: `/building/${building.id}/${currentRange + 1}`,
+                      path: `/building/${building.id}/${currentRange + 1}`
                     })
                   "
                   >View Full Graph</el-button
@@ -94,9 +70,7 @@
       <el-row class="main">
         <el-row class="title">
           <el-col :span="23">{{ building.name }}</el-col>
-          <el-col :span="1" class="close-box"
-            ><i class="fas fa-times" @click="hide()"></i
-          ></el-col>
+          <el-col :span="1" class="close-box"><i class="fas fa-times" @click="hide()"></i></el-col>
         </el-row>
         <el-row>
           <el-col :span="24" v-loading="building ? false : true">
@@ -106,32 +80,14 @@
         <el-row class="graphcontrol">
           <el-col :span="24">
             <el-col :span="24" class="buttonContainer">
-              <switchButtons
-                :blocks="buildingBlocks"
-                :forceUpdate="false"
-                ref="switchbutton"
-              />
+              <switchButtons :blocks="buildingBlocks" :forceUpdate="false" ref="switchbutton" />
             </el-col>
             <el-row class="graphslide">
-              <i
-                class="left fas fa-angle-left"
-                @click="prev()"
-                ref="prevArrow"
-              ></i>
-              <i
-                class="right fas fa-angle-right"
-                @click="next()"
-                ref="nextArrow"
-              ></i>
+              <i class="left fas fa-angle-left" @click="prev()" ref="prevArrow"></i>
+              <i class="right fas fa-angle-right" @click="next()" ref="nextArrow"></i>
             </el-row>
             <el-row type="flex" class="graph" ref="scrollBox">
-              <el-col
-                class="inline"
-                v-for="block in buildingBlocks"
-                :key="block.id"
-                :span="24"
-                ref="slidingBox"
-              >
+              <el-col class="inline" v-for="block in buildingBlocks" :key="block.id" :span="24" ref="slidingBox">
                 <chartController
                   :path="block.path"
                   ref="chartController"
@@ -141,7 +97,7 @@
                     width: 'calc(100% - 20px)',
                     height: '100%',
                     'margin-right': '10px',
-                    'margin-left': '10px',
+                    'margin-left': '10px'
                   }"
                   :height="200"
                   :invertColors="true"
@@ -150,18 +106,14 @@
             </el-row>
             <el-row class="buttons">
               <el-col :span="12">
-                <el-button
-                  class="bigButton"
-                  @click="$emit('startCompare', building.id)"
-                  >Compare</el-button
-                >
+                <el-button class="bigButton" @click="$emit('startCompare', building.id)">Compare</el-button>
               </el-col>
               <el-col :span="12">
                 <el-button
                   class="bigButton"
                   @click="
                     $router.push({
-                      path: `/building/${building.id}/${currentRange + 1}`,
+                      path: `/building/${building.id}/${currentRange + 1}`
                     })
                   "
                   >View Full Graph</el-button
@@ -224,9 +176,7 @@ export default {
 
     building: {
       get () {
-        return this.$store.getters['map/building'](
-          this.$store.getters['modalController/data'].id
-        )
+        return this.$store.getters['map/building']( this.$store.getters['modalController/data'].id )
       }
     }
   },
@@ -269,22 +219,14 @@ export default {
         }
         if ( this.media ) {
           this.$refs.media.style.backgroundImage =
-            'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' +
-            this.media +
-            '")'
+            'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' + this.media + '")'
         }
       }
     },
     index: function ( to, from ) {
-      this.$refs.scrollBox.$children.forEach( ( child ) => {
+      this.$refs.scrollBox.$children.forEach( child => {
         child.$el.style.transform =
-          'translateX(' +
-          (
-            -1 *
-            this.index *
-            ( this.$refs.scrollBox.$el.clientWidth + 20 )
-          ).toString() +
-          'px)'
+          'translateX(' + ( -1 * this.index * ( this.$refs.scrollBox.$el.clientWidth + 20 ) ).toString() + 'px)'
       } )
       if ( to < from ) {
         if ( this.index <= 0 ) {
@@ -349,7 +291,7 @@ export default {
   height: auto;
   background-color: rgb(215, 63, 9);
   color: #fff;
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   border-bottom: solid 1px #fff;
   text-align: center; // might as well center this for the big screen version too
 }

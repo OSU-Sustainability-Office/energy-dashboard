@@ -1,6 +1,5 @@
-/* * @Author: you@you.you * @Date: Sunday February 2nd 2020 * @Last Modified By:
-Brogan Miner * @Last Modified Time: Sunday February 2nd 2020 * @Copyright: (c)
-Oregon State University 2020 */
+/* * @Author: you@you.you * @Date: Sunday February 2nd 2020 * @Last Modified By: Brogan Miner * @Last Modified Time:
+Sunday February 2nd 2020 * @Copyright: (c) Oregon State University 2020 */
 <template>
   <el-dialog
     size="lg"
@@ -16,7 +15,7 @@ Oregon State University 2020 */
         :rules="{
           required: true,
           message: 'A name is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
       >
         <el-input type="text" v-model="form.name"></el-input>
@@ -30,17 +29,14 @@ Oregon State University 2020 */
         :rules="{
           required: true,
           message: 'A group is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
       >
         <el-select v-model="form.group" style="width: 100%">
           <el-option label="Academics" value="Academics"></el-option>
           <el-option label="Residence" value="Residence"></el-option>
           <el-option label="Events & Admin" value="Events & Admin"></el-option>
-          <el-option
-            label="Athletics & Rec"
-            value="Athletics & Rec"
-          ></el-option>
+          <el-option label="Athletics & Rec" value="Athletics & Rec"></el-option>
           <el-option label="Dining" value="Dining"></el-option>
         </el-select>
       </el-form-item>
@@ -104,9 +100,7 @@ export default {
       get () {
         // This is wrapped because deleting a building will cause an error here
         try {
-          let buildingPath = this.$store.getters['map/building'](
-            this.buildingId
-          ).path
+          let buildingPath = this.$store.getters['map/building']( this.buildingId ).path
           return this.$store.getters[buildingPath + '/name']
         } catch ( error ) {
           return ''
@@ -115,9 +109,7 @@ export default {
     },
     visible: {
       get () {
-        return (
-          this.$store.getters['modalController/modalName'] === 'edit_building'
-        )
+        return this.$store.getters['modalController/modalName'] === 'edit_building'
       },
 
       set ( value ) {
@@ -130,9 +122,7 @@ export default {
   methods: {
     async saveBuilding () {
       if ( this.buildingId ) {
-        let buildingPath = this.$store.getters['map/building'](
-          this.buildingId
-        ).path
+        let buildingPath = this.$store.getters['map/building']( this.buildingId ).path
         // let passedMeters = []
         // for (let meter of this.form.meters) {
         //   if (meter.id.includes('newgroup')) {
@@ -175,9 +165,7 @@ export default {
     },
     updateForm () {
       if ( this.buildingId ) {
-        let buildingPath = this.$store.getters['map/building'](
-          this.buildingId
-        ).path
+        let buildingPath = this.$store.getters['map/building']( this.buildingId ).path
         this.form.name = this.buildingName
         this.form.media = this.$store.getters[buildingPath + '/image']
         this.form.group = this.$store.getters[buildingPath + '/group']

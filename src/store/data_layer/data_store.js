@@ -76,9 +76,9 @@ const actions = {
           .transaction( 'MeterReadings', 'readwrite' )
           .objectStore( 'MeterReadings' )
           .put( { meterId: meterId, meterData: { ...cache[meterId] } } )
-        request.onerror = ( event ) => reject( event )
-        request.onsuccess = ( event ) => resolve( event )
-      } ).catch( ( err ) => {
+        request.onerror = event => reject( event )
+        request.onsuccess = event => resolve( event )
+      } ).catch( err => {
         throw err
       } )
     }
@@ -105,13 +105,10 @@ const actions = {
 
     // connect to indexedDB instance
     await new Promise( ( resolve, reject ) => {
-      const db = window.indexedDB.open(
-        'OSU Sustainability Office Energy Dashboard Data Cache',
-        2
-      )
-      db.onerror = ( event ) => reject( event )
+      const db = window.indexedDB.open( 'OSU Sustainability Office Energy Dashboard Data Cache', 2 )
+      db.onerror = event => reject( event )
       // onupgradeneeded will be called if the database does not exist and/or exists with an older version
-      db.onupgradeneeded = ( event ) => {
+      db.onupgradeneeded = event => {
         switch ( event.oldVersion ) {
           // if oldVersion == 0, then indexedDB did not exist so we build it.
           case 0:
@@ -126,18 +123,16 @@ const actions = {
             break
         }
       }
-      db.onsuccess = ( event ) => resolve( event )
+      db.onsuccess = event => resolve( event )
     } )
-      .then( ( event ) => {
+      .then( event => {
         // Store reference to indexDB database in vuex store
         this.commit( 'dataStore/setDBInstance', {
           instance: event.target.result
         } )
       } )
-      .catch( ( event ) => {
-        console.log(
-          'An error occured when trying to use indexedDB API, is it enabled?'
-        )
+      .catch( event => {
+        console.log( 'An error occured when trying to use indexedDB API, is it enabled?' )
       } )
 
     // Then, load indexedDB into the dataStore's cache object
@@ -147,23 +142,19 @@ const actions = {
         .transaction( 'MeterReadings', 'readonly' )
         .objectStore( 'MeterReadings' )
         .getAll()
-      dataReqest.onsuccess = ( event ) => resolve( event )
-      dataReqest.onerror = ( event ) => resolve( event )
+      dataReqest.onsuccess = event => resolve( event )
+      dataReqest.onerror = event => resolve( event )
     } )
-      .then( ( event ) => {
+      .then( event => {
         // transform from indexedDB representation to cache-friendly variant
-        for (
-          let meterIndex = 0;
-          meterIndex < event.target.result.length;
-          meterIndex++
-        ) {
+        for ( let meterIndex = 0; meterIndex < event.target.result.length; meterIndex++ ) {
           let db_entry = event.target.result[meterIndex]
           newCacheObject[db_entry['meterId']] = db_entry['meterData']
         }
         this.commit( 'dataStore/overwriteCache', { newCache: newCacheObject } )
         console.log( 'data loaded from persistent cache' )
       } )
-      .catch( ( err ) => {
+      .catch( err => {
         console.log( err )
       } )
   },
@@ -201,12 +192,8 @@ const actions = {
     //  - the first timestamp
     //  - timestamps abutting a gap in the data larger than 15 minutes
     //  - the last timestamp
-    let timestamps = Object.keys(
-      this.getters['dataStore/cache'][payload.meterId][payload.uom]
-    )
-      .filter(
-        ( key ) => parseInt( key ) >= payload.start && parseInt( key ) <= payload.end
-      ) // Filter out irrelevant times
+    let timestamps = Object.keys( this.getters['dataStore/cache'][payload.meterId][payload.uom] )
+      .filter( key => parseInt( key ) >= payload.start && parseInt( key ) <= payload.end ) // Filter out irrelevant times
       .sort( ( a, b ) => parseInt( a ) - parseInt( b ) ) // Chronologically sort times
       .filter( ( key, index, array ) => {
         // Keep the first, the last, and any indices defining the start and/or end of a gap
@@ -217,7 +204,7 @@ const actions = {
           Math.abs( key - array[index + 1] ) > 900
         )
       } )
-      .map( ( ts ) => parseInt( ts, 10 ) ) // Parse them to integers
+      .map( ts => parseInt( ts, 10 ) ) // Parse them to integers
 
     // If no matching records are found, return the original interval
     if ( timestamps.length === 0 ) return [[payload.start, payload.end]]
@@ -273,15 +260,12 @@ const actions = {
     }
 
     for ( let dataset of requestedDatasets ) {
-      let missingIntervals = await this.dispatch(
-        'dataStore/findMissingIntervals',
-        {
-          meterId: dataset['id'],
-          start: dataset['startDate'],
-          end: dataset['endDate'],
-          uom: requestPoint
-        }
-      )
+      let missingIntervals = await this.dispatch( 'dataStore/findMissingIntervals', {
+        meterId: dataset['id'],
+        start: dataset['startDate'],
+        end: dataset['endDate'],
+        uom: requestPoint
+      } )
 
       if ( missingIntervals.length > 0 ) {
         requestObject.datasets.push( dataset )
@@ -291,9 +275,7 @@ const actions = {
     // Add missing data to cache
     if ( requestObject.datasets.length > 0 ) {
       // estimate our request size (will be an overestimate).
-      let requestSize = this.getters['dataStore/requestSize'](
-        requestObject.datasets
-      )
+      let requestSize = this.getters['dataStore/requestSize']( requestObject.datasets )
 
       // Array of promises
       const apiRequests = []
@@ -324,9 +306,7 @@ const actions = {
       }
 
       // hit API
-      const meterDataArray = await Promise.all(
-        apiRequests.map( ( reqObj ) => API.batchData( reqObj ) )
-      ).catch( ( err ) => {
+      const meterDataArray = await Promise.all( apiRequests.map( reqObj => API.batchData( reqObj ) ) ).catch( err => {
         console.log( 'Error accessing batchData api route:', err )
       } )
 
@@ -363,7 +343,7 @@ const actions = {
             } )
 
             // write to cache
-            dataset.forEach( ( datum ) => {
+            dataset.forEach( datum => {
               this.commit( 'dataStore/addToCache', {
                 datetime: datum.time,
                 meterId: id,
@@ -397,17 +377,13 @@ const actions = {
       let cacheKeys
       try {
         cache = this.getters['dataStore/cache'][id][requestPoint]
-        cacheKeys = Object.keys( cache ).filter(
-          ( key ) => key >= startDate && key <= endDate
-        )
+        cacheKeys = Object.keys( cache ).filter( key => key >= startDate && key <= endDate )
       } catch ( e ) {
         console.log( 'Data not found for meter: ' + id )
-        console.log(
-          'Is the meter connected to the internet and uploading data?'
-        )
+        console.log( 'Is the meter connected to the internet and uploading data?' )
         continue
       }
-      dataArrayObject[id] = cacheKeys.map( ( key ) => {
+      dataArrayObject[id] = cacheKeys.map( key => {
         let dataObj = {}
         dataObj[requestPoint] = cache[key]
         dataObj['time'] = parseInt( key )
@@ -432,34 +408,23 @@ const actions = {
   async getData ( store, payload ) {
     // First, check the non-persistent cahce object:
     // Does the cache contain the data?
-    let missingIntervals = await this.dispatch(
-      'dataStore/findMissingIntervals',
-      {
-        meterId: payload.meterId,
-        start: payload.start,
-        end: payload.end,
-        uom: payload.uom
-      }
-    )
+    let missingIntervals = await this.dispatch( 'dataStore/findMissingIntervals', {
+      meterId: payload.meterId,
+      start: payload.start,
+      end: payload.end,
+      uom: payload.uom
+    } )
 
     if ( missingIntervals.length > 0 ) {
       // The cache does not contain all of the data
       // Add it to the cache
       let promises = []
-      missingIntervals.forEach( async ( interval ) => {
+      missingIntervals.forEach( async interval => {
         // For each interval, request for the data
         if ( interval.length === 0 ) {
           interval.push( Math.round( new Date().getTime() / 1000 ) )
         }
-        promises.push(
-          API.data(
-            payload.meterId,
-            interval[0],
-            interval[1],
-            payload.uom,
-            payload.classInt
-          )
-        )
+        promises.push( API.data( payload.meterId, interval[0], interval[1], payload.uom, payload.classInt ) )
       } )
 
       // add to request store so we don't re-request this data in this session
@@ -471,7 +436,7 @@ const actions = {
       } )
 
       // Save all of the new data to the cache
-      const responses = await Promise.all( promises ).catch( ( err ) => {
+      const responses = await Promise.all( promises ).catch( err => {
         console.log( err )
       } )
 
@@ -481,9 +446,9 @@ const actions = {
       //   id: 4596804
       //   time: 1597284900
       // }
-      await responses.forEach( async ( datumArray ) => {
+      await responses.forEach( async datumArray => {
         // push data to our cache for future retrieval
-        datumArray.forEach( ( datum ) => {
+        datumArray.forEach( datum => {
           this.commit( 'dataStore/addToCache', {
             datetime: datum.time,
             meterId: payload.meterId,
@@ -499,9 +464,7 @@ const actions = {
     let cacheKeys
     try {
       cache = this.getters['dataStore/cache'][payload.meterId][payload.uom]
-      cacheKeys = Object.keys( cache ).filter(
-        ( key ) => key >= payload.start && key <= payload.end
-      ) // Filter out data that is not in our time range
+      cacheKeys = Object.keys( cache ).filter( key => key >= payload.start && key <= payload.end ) // Filter out data that is not in our time range
     } catch ( e ) {
       // Somehow, the data we expect to be in the cache is not there!
       // This occurs when we request for data that does not exist in our database.
@@ -518,7 +481,7 @@ const actions = {
     //       This reformatting issue should work itself out if we make every component consume a standardized datum class instance.
     // TODO: MAD 5.25.2022 ^ That is a good idea, I should do that.
     let dataArray = []
-    cacheKeys.forEach( ( key ) => {
+    cacheKeys.forEach( key => {
       let dataObj = {}
       dataObj[payload.uom] = cache[key]
       dataObj['time'] = parseInt( key )
@@ -540,8 +503,7 @@ const mutations = {
     if ( !state.cache[cacheEntry.meterId][cacheEntry.uom] ) {
       state.cache[cacheEntry.meterId][cacheEntry.uom] = {}
     }
-    state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] =
-      cacheEntry.value
+    state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] = cacheEntry.value
   },
 
   /*
@@ -623,10 +585,7 @@ const getters = {
         if ( getters.requestStore[uom] === undefined ) return false
         if ( getters.requestStore[uom][id] === undefined ) return false
         for ( let i = 0; i < getters.requestStore[uom][id].length; i++ ) {
-          if (
-            getters.requestStore[uom][id][i][0] <= start &&
-          getters.requestStore[uom][id][i][1] >= end
-          ) {
+          if ( getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end ) {
             return true
           }
         }
@@ -644,7 +603,7 @@ const getters = {
         return DATA_ITEM_SIZE * numItems
       },
 
-  requestSize: ( state, getters ) => ( requests ) => {
+  requestSize: ( state, getters ) => requests => {
     let totalSize = RESPONSE_HEADER_SIZE
     for ( let dataset of requests ) {
       totalSize += getters.dataSetSize( dataset )
@@ -653,7 +612,7 @@ const getters = {
   },
 
   // determines if size exceeds the lambda API response limit
-  requestSizeException: ( state, getters ) => ( requests ) => {
+  requestSizeException: ( state, getters ) => requests => {
     return getters.requestSize( requests ) >= RESPONSE_MAX_SIZE
   }
 }

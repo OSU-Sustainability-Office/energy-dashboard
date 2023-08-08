@@ -35,7 +35,7 @@ var v = new Vue( {
   el: '#app',
   router,
   store: new Vuex.Store( StoreConfig ),
-  render: ( h ) => h( App )
+  render: h => h( App )
 } )
 window.vue = v
 Vue.prototype.$WINDOW_HEIGHT = 1080

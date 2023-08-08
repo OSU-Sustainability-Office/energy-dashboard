@@ -40,9 +40,7 @@ describe( 'Testing Data Store Vuex Module', () => {
     axios.mockResolvedValue( { data: mockTime } )
 
     await localStore.dispatch( 'dataStore/loadSystemNow' )
-    return expect( localStore.getters['dataStore/SystemNow'] ).toBe(
-      Number( mockTime )
-    )
+    return expect( localStore.getters['dataStore/SystemNow'] ).toBe( Number( mockTime ) )
   } )
 
   it( 'Testing API Query', async () => {
@@ -54,10 +52,7 @@ describe( 'Testing Data Store Vuex Module', () => {
       uom: 'accumulated_real'
     }
 
-    const formattedData = await localStore.dispatch(
-      'dataStore/getData',
-      payload
-    )
+    const formattedData = await localStore.dispatch( 'dataStore/getData', payload )
 
     // make sure we recieved the expected number of responses
     expect( formattedData.length ).toEqual( mockMeterReadings.length )

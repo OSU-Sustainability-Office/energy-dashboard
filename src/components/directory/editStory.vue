@@ -7,7 +7,7 @@
         :rules="{
           required: true,
           message: 'A name is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
       >
         <el-input type="text" v-model="form.name"></el-input>
@@ -18,7 +18,7 @@
         :rules="{
           required: false,
           message: 'A name is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
       >
         <el-input type="text" v-model="form.description"></el-input>
@@ -26,9 +26,7 @@
     </el-form>
     <mediapicker v-model="form.media" ref="picker" />
     <span slot="footer">
-      <el-button @click="deleteStory()" type="danger" v-if="id !== null"
-        >Delete</el-button
-      >
+      <el-button @click="deleteStory()" type="danger" v-if="id !== null">Delete</el-button>
       <el-button @click="saveStory()" type="primary">Save</el-button>
       <el-button type="info" @click="toggle = false">Cancel</el-button>
     </span>

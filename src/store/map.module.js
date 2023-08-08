@@ -28,9 +28,7 @@ const actions = {
     store.commit( buildingSpace + '/hidden', payload.hidden )
     let mgPromises = []
     for ( let meterGroup of payload.meterGroups ) {
-      mgPromises.push(
-        store.dispatch( buildingSpace + '/loadMeterGroup', meterGroup )
-      )
+      mgPromises.push( store.dispatch( buildingSpace + '/loadMeterGroup', meterGroup ) )
     }
     await Promise.all( mgPromises )
     await store.dispatch( buildingSpace + '/buildDefaultBlocks' )
@@ -44,14 +42,11 @@ const actions = {
           await store.getters.promise
 
           // Fetch Building Geometry from Overpass if it exists
-          const buildings = store.getters.buildings.filter( ( b ) => b.mapId )
-          const IDs = buildings.map( ( b ) => b.mapId ).join( ',' )
+          const buildings = store.getters.buildings.filter( b => b.mapId )
+          const IDs = buildings.map( b => b.mapId ).join( ',' )
           const geometryOSM = await API.buildingFeature( IDs )
           const buildingParser = new DOMParser()
-          const buildingData = buildingParser.parseFromString(
-            geometryOSM,
-            'text/xml'
-          )
+          const buildingData = buildingParser.parseFromString( geometryOSM, 'text/xml' )
           const JSON = Geo( buildingData )
 
           // Setup dictionary
@@ -104,10 +99,7 @@ const actions = {
     let parser = new DOMParser()
     let xmlData = parser.parseFromString( features, 'text/xml' )
     let geojson = Geo( xmlData )
-    let ways = geojson.features.filter(
-      ( feature ) =>
-        feature.id.search( /way\/[0-9]+/ ) >= 0 && feature.properties.building
-    )
+    let ways = geojson.features.filter( feature => feature.id.search( /way\/[0-9]+/ ) >= 0 && feature.properties.building )
     let promises = []
     for ( let way of ways ) {
       promises.push( store.dispatch( 'buildingJSON', way.id.replace( 'way/', '' ) ) )
@@ -161,11 +153,11 @@ const getters = {
     return state.promise
   },
 
-  building: ( state ) => ( id ) => {
+  building: state => id => {
     return state['building_' + id.toString()]
   },
 
-  buildingGroups: ( state ) => {
+  buildingGroups: state => {
     let groups = new Set()
     for ( let key of Object.keys( state ) ) {
       if ( key.search( /building_/ ) >= 0 ) {
@@ -177,7 +169,7 @@ const getters = {
     return groups
   },
 
-  buildingsForGroup: ( state ) => ( group ) => {
+  buildingsForGroup: state => group => {
     let buildings = []
     for ( let key of Object.keys( state ) ) {
       if ( key.search( /building_/ ) >= 0 && state[key].group === group ) {
@@ -189,7 +181,7 @@ const getters = {
     return buildings
   },
 
-  buildings: ( state ) => {
+  buildings: state => {
     let buildings = []
     for ( let key of Object.keys( state ) ) {
       if ( key.search( /building_/ ) >= 0 ) {
@@ -201,14 +193,13 @@ const getters = {
     return buildings
   },
 
-  meterGroup: ( state ) => ( id ) => {
+  meterGroup: state => id => {
     let meterGroups = {}
     for ( let key of Object.keys( state ) ) {
       if ( key.search( /building_/ ) >= 0 ) {
         for ( let buildingKey of Object.keys( state[key] ) ) {
           if ( buildingKey.search( /meterGroup_/ >= 0 ) ) {
-            meterGroups[buildingKey.replace( 'meterGroup_', '' )] =
-              state[key][buildingKey]
+            meterGroups[buildingKey.replace( 'meterGroup_', '' )] = state[key][buildingKey]
           }
         }
       }

@@ -14,27 +14,27 @@ module.exports = {
   //collectCoverageFrom: undefined,
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  coverageDirectory: 'coverage',
 
-  setupFiles: ["./tests/setupBackendTests.js"],
+  setupFiles: ['./tests/setupBackendTests.js'],
 
-  modulePathIgnorePatterns: ["<rootDir>/dependencies/nodejs/"],
+  modulePathIgnorePatterns: ['<rootDir>/dependencies/nodejs/'],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "v8",
+  coverageProvider: 'v8',
 
   // A list of reporter names that Jest uses when writing coverage reports
-  coverageReporters: ["json-summary"],
+  coverageReporters: ['json-summary'],
 
   // The test environment that will be used for testing
-  testEnvironment: "node",
+  testEnvironment: 'node',
 
   // The glob patterns Jest uses to detect test files
   testMatch: [
     //   "**/__tests__/**/*.[jt]s?(x)",
-    "**/?(*.)+(spec|test).[tj]s?(x)",
+    '**/?(*.)+(spec|test).[tj]s?(x)'
   ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: ["/node_modules/", "/app/"],
-};
+  testPathIgnorePatterns: ['/node_modules/', '/app/']
+}

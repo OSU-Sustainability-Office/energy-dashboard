@@ -7,9 +7,7 @@
         <div class="contact-div">
           <p class="body">
             Please email us at
-            <a href="mailto:sustainability@oregonstate.edu"
-              >sustainability@oregonstate.edu</a
-            >
+            <a href="mailto:sustainability@oregonstate.edu">sustainability@oregonstate.edu</a>
             for feedback or questions, or check our
             <a href="/#/getstarted">FAQ</a>.
           </p>
@@ -36,7 +34,7 @@ export default {
 .title {
   font-size: 80px;
   color: black;
-  font-family: "open sans";
+  font-family: 'open sans';
 }
 .body {
   font-size: 28px;

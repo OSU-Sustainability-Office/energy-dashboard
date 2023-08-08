@@ -11,21 +11,10 @@
     <el-col :span="24">
       <el-row class="search">
         <el-col :span="24">
-          <el-input
-            placeholder="Search"
-            prefix-icon="el-icon-search"
-            v-model="search"
-          >
-          </el-input>
+          <el-input placeholder="Search" prefix-icon="el-icon-search" v-model="search"> </el-input>
         </el-col>
       </el-row>
-      <el-row
-        v-for="user in allUsers"
-        :key="user.onid"
-        class="user-row"
-        ref="userrow"
-        :userid="user.onid"
-      >
+      <el-row v-for="user in allUsers" :key="user.onid" class="user-row" ref="userrow" :userid="user.onid">
         <el-col :span="16">{{ user.onid }}</el-col>
         <el-col :span="8">
           Privileges:
@@ -55,11 +44,11 @@ export default {
     search: function ( v ) {
       let values = this.allUsers
         .filter(
-          ( obj ) =>
+          obj =>
             // Check that the item's name includes query
             obj.onid && obj.onid.toLowerCase().includes( v.toLowerCase() )
         )
-        .map( ( e ) => {
+        .map( e => {
           return e.onid
         } )
       for ( let row of this.$refs.userrow ) {
@@ -72,7 +61,7 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch( 'admin/users' ).then( ( users ) => {
+    this.$store.dispatch( 'admin/users' ).then( users => {
       this.allUsers = users
     } )
   },

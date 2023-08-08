@@ -48,7 +48,7 @@ export default {
     return ( await callAPI( 'admin/devices' ) ).data
   },
 
-  boundedFeatures: async ( payload ) => {
+  boundedFeatures: async payload => {
     return (
       await callAPI(
         `map?bbox=${payload.left},${payload.bottom},${payload.right},${payload.top}`,
@@ -61,7 +61,7 @@ export default {
       )
     ).data
   },
-  buildingFeature: async ( payload ) => {
+  buildingFeature: async payload => {
     return (
       await callAPI(
         `interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`,
@@ -100,14 +100,7 @@ export default {
     ).data
   },
   logout: async () => {
-    return (
-      await callAPI(
-        'logout',
-        null,
-        'get',
-        'https://api.sustainability.oregonstate.edu/v2/auth'
-      )
-    ).data
+    return ( await callAPI( 'logout', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth' ) ).data
   },
   buildings: async () => {
     return ( await callAPI( 'allbuildings' ) ).data
@@ -116,56 +109,33 @@ export default {
     let call = await callAPI( 'building', data, method )
     return { status: call.status, data: call.data }
   },
-  getBuildingByID: async ( id ) => {
+  getBuildingByID: async id => {
     let call = await callAPI( 'building?id=' + id, null, 'GET' )
     return { status: call.status, data: call.data }
   },
-  meterGroup: async ( id ) => {
+  meterGroup: async id => {
     return ( await callAPI( 'metergroup?id=' + id ) ).data
   },
-  meter: async ( id ) => {
+  meter: async id => {
     return ( await callAPI( 'meter?id=' + id ) ).data
   },
   data: async ( id, start, end, point, classInt ) => {
     return (
       await callAPI(
-        'data?id=' +
-          id +
-          '&startDate=' +
-          start +
-          '&endDate=' +
-          end +
-          '&point=' +
-          point +
-          '&meterClass=' +
-          classInt
+        'data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point + '&meterClass=' + classInt
       )
     ).data
   },
-  batchData: async ( requestArray ) => {
+  batchData: async requestArray => {
     // Why a POST request? Most browsers disallow GET requests to have payloads (i.e., a body field).
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
     // We're also increasing the timeeout to 2 minutes to account for really slow requests (e.g. LINC 1 year data)
     return (
-      await callAPI(
-        'batchData',
-        JSON.stringify( requestArray ),
-        'post',
-        process.env.VUE_APP_ROOT_API,
-        null,
-        120000
-      )
+      await callAPI( 'batchData', JSON.stringify( requestArray ), 'post', process.env.VUE_APP_ROOT_API, null, 120000 )
     ).data
   },
   user: async () => {
-    return (
-      await callAPI(
-        'user',
-        null,
-        'get',
-        'https://api.sustainability.oregonstate.edu/v2/auth'
-      )
-    ).data
+    return ( await callAPI( 'user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth' ) ).data
   },
   edashUser: async () => {
     return ( await callAPI( 'user' ) ).data

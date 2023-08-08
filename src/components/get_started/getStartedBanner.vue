@@ -34,14 +34,14 @@ export default {
 }
 #center {
   color: #ffffff;
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   font-size: 5.5em;
   justify-content: center;
   height: 3em;
   width: 100%;
   padding-top: 1em;
   padding-left: 10px;
-  background: url("/images/solar.jpg");
+  background: url('/images/solar.jpg');
   background-size: cover;
   background-repeat: no-repeat;
 }

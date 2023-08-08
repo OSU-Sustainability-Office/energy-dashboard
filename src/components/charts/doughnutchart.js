@@ -31,11 +31,7 @@ export default {
               // return ''
             },
             label: ( item, data ) => {
-              return (
-                data.datasets[0].data[item.index] +
-                ' ' +
-                this.$parent.unit( item.index )
-              )
+              return data.datasets[0].data[item.index] + ' ' + this.$parent.unit( item.index )
             },
             footer: ( item, data ) => {
               let start = new Date( this.$parent.dateStart )
@@ -85,17 +81,7 @@ export default {
       }
       let year = d.getYear().toString().slice( 1 )
       return (
-        ( d.getMonth() + 1 ).toString() +
-        '/' +
-        d.getDate() +
-        '/' +
-        year +
-        ' ' +
-        hours +
-        ':' +
-        minutes +
-        ' ' +
-        meridiem
+        ( d.getMonth() + 1 ).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem
       )
     }
   }

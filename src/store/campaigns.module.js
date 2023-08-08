@@ -25,7 +25,7 @@ const actions = {
         new Promise( async ( resolve, reject ) => {
           // Attempt to retrieve campaigns from the api
           let campaigns = await API.campaigns()
-          campaigns.forEach( ( c ) => {
+          campaigns.forEach( c => {
             const campaign = 'campaign_' + c.id.toString()
             const campaignPath = store.getters.path + '/' + campaign
 
@@ -37,22 +37,14 @@ const actions = {
             store.commit( campaign + '/id', c.id )
             store.commit(
               campaign + '/dateStart',
-              new Date( c.dateStart ).getTime() -
-                new Date().getTimezoneOffset() * 60 * 1000
+              new Date( c.dateStart ).getTime() - new Date().getTimezoneOffset() * 60 * 1000
             )
             store.commit(
               campaign + '/dateEnd',
-              new Date( c.dateEnd ).getTime() -
-                new Date().getTimezoneOffset() * 60 * 1000
+              new Date( c.dateEnd ).getTime() - new Date().getTimezoneOffset() * 60 * 1000
             )
-            store.commit(
-              campaign + '/compareStart',
-              new Date( c.compareStart ).getTime()
-            )
-            store.commit(
-              campaign + '/compareEnd',
-              new Date( c.compareEnd ).getTime()
-            )
+            store.commit( campaign + '/compareStart', new Date( c.compareStart ).getTime() )
+            store.commit( campaign + '/compareEnd', new Date( c.compareEnd ).getTime() )
             store.commit( campaign + '/media', c.media )
             store.commit( campaign + '/name', c.name )
           } )
@@ -71,15 +63,15 @@ const mutations = {
 }
 
 const getters = {
-  promise: ( state ) => {
+  promise: state => {
     return state.promise
   },
 
-  path: ( state ) => {
+  path: state => {
     return state.path
   },
 
-  campaigns: ( state ) => {
+  campaigns: state => {
     let campaigns = []
     for ( let key of Object.keys( state ) ) {
       if ( key.search( /campaign_/ ) >= 0 ) {
@@ -89,14 +81,14 @@ const getters = {
     return campaigns
   },
 
-  campaign: ( state ) => ( id ) => {
+  campaign: state => id => {
     let campaigns = []
     for ( let key of Object.keys( state ) ) {
       if ( key.search( /campaign_/ ) >= 0 ) {
         campaigns.push( state[key] )
       }
     }
-    const index = campaigns.map( ( o ) => o.id ).indexOf( parseInt( id ) )
+    const index = campaigns.map( o => o.id ).indexOf( parseInt( id ) )
     return campaigns[index]
   }
 }

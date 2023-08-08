@@ -12,10 +12,7 @@
       <el-row class="title" ref="title">
         <el-col :span="20">{{ block.name }}</el-col>
         <el-col :span="4" class="right"
-          >&nbsp;<i
-            class="fas fa-sliders-h"
-            @click="$emit('editModal', index)"
-          ></i
+          >&nbsp;<i class="fas fa-sliders-h" @click="$emit('editModal', index)"></i
         ></el-col>
       </el-row>
       <el-row>
@@ -144,7 +141,7 @@ export default {
   border-radius: 5px;
 }
 .title {
-  font-family: "StratumNO2";
+  font-family: 'StratumNO2';
   font-size: 2em;
 }
 .title .fas {

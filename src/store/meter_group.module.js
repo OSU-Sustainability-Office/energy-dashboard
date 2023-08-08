@@ -43,7 +43,7 @@ const actions = {
       let moduleSpace = store.getters.path + '/' + meterSpace
       this.registerModule( moduleSpace.split( '/' ), Meter )
       store.commit( meterSpace + '/path', moduleSpace )
-      store.dispatch( meterSpace + '/changeMeter', meterId ).then( ( meter ) => {
+      store.dispatch( meterSpace + '/changeMeter', meterId ).then( meter => {
         store.commit( 'type', meter.type )
       } )
     }
@@ -127,14 +127,8 @@ const actions = {
       }
 
       // Hit the data-layer with a batch-request
-      const batchedMeterData = await this.dispatch(
-        'dataStore/getBatchData',
-        dataLayerPayload
-      ).catch( ( err ) => {
-        console.log(
-          'The DataLayer threw an exception for our payload array, error message: ',
-          err
-        )
+      const batchedMeterData = await this.dispatch( 'dataStore/getBatchData', dataLayerPayload ).catch( err => {
+        console.log( 'The DataLayer threw an exception for our payload array, error message: ', err )
         console.log( 'Falling back to 1:1 requests...' )
         batchRequests = false
       } )
@@ -167,23 +161,12 @@ const actions = {
       for ( let dataPoint of data ) {
         if ( resultDataObject.get( dataPoint['time'] ) ) {
           if ( meter.negate ) {
-            resultDataObject.set(
-              dataPoint['time'],
-              resultDataObject.get( dataPoint['time'] ) -
-                dataPoint[payload.point]
-            )
+            resultDataObject.set( dataPoint['time'], resultDataObject.get( dataPoint['time'] ) - dataPoint[payload.point] )
           } else {
-            resultDataObject.set(
-              dataPoint['time'],
-              resultDataObject.get( dataPoint['time'] ) +
-                dataPoint[payload.point]
-            )
+            resultDataObject.set( dataPoint['time'], resultDataObject.get( dataPoint['time'] ) + dataPoint[payload.point] )
           }
         } else {
-          resultDataObject.set(
-            dataPoint['time'],
-            dataPoint[payload.point] * ( meter.negate ? -1 : 1 )
-          )
+          resultDataObject.set( dataPoint['time'], dataPoint[payload.point] * ( meter.negate ? -1 : 1 ) )
         }
       }
     }

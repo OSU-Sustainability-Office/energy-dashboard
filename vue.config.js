@@ -19,7 +19,7 @@ module.exports = {
       patterns: [path.resolve( __dirname, 'src/assets/style-variable.scss' )]
     }
   },
-  chainWebpack: ( config ) => {
+  chainWebpack: config => {
     config.module.rules.delete( 'svg' )
     // remove comments from vue build (shoutout to @tony19  https://stackoverflow.com/a/61768334/8638218)
     /* Doesn't work yet since we're using uglify-js instead of terset still on this version of vue-cli

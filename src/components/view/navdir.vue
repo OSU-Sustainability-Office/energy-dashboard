@@ -18,25 +18,21 @@
             @select="handleSelect"
           >
             <el-submenu index="1" :router="true">
-              <template slot="title" class="menu-title"
-                ><i class="fas fa-th-large"></i>{{ group1Name }}</template
-              >
+              <template slot="title" class="menu-title"><i class="fas fa-th-large"></i>{{ group1Name }}</template>
               <el-menu-item
                 class="group-item"
                 v-for="(groupS, index) in group1"
                 :key="groupS.id"
                 :index="'1-' + index"
                 :route="{
-                  path: (publicView ? '/buildings/' : '/view/') + groupS.id,
+                  path: (publicView ? '/buildings/' : '/view/') + groupS.id
                 }"
               >
                 <i class="fas fa-th-large"></i>{{ groupS.name }}
               </el-menu-item>
             </el-submenu>
             <el-submenu index="2" :router="false" v-if="publicView">
-              <template class="menu-title" slot="title"
-                ><i class="fas fa-building"></i>{{ group2Name }}</template
-              >
+              <template class="menu-title" slot="title"><i class="fas fa-building"></i>{{ group2Name }}</template>
               <el-menu-item
                 class="story-item"
                 v-for="(storyS, index) in group2"
@@ -123,9 +119,7 @@ export default {
       get () {
         if ( !this.viewOrBuilding ) return
         if ( this.publicView ) {
-          let buildings = this.$store.getters['map/buildingsForGroup'](
-            this.viewOrBuilding.group
-          )
+          let buildings = this.$store.getters['map/buildingsForGroup']( this.viewOrBuilding.group )
           let rValue = []
 
           for ( let building of buildings ) {
@@ -205,8 +199,8 @@ export default {
     },
     populate: function () {
       this.filteredGroups = []
-      this.group = this.stories.find( ( p ) => {
-        return p.stories.find( ( e ) => {
+      this.group = this.stories.find( p => {
+        return p.stories.find( e => {
           return e.name === this.story.name
         } )
       } )

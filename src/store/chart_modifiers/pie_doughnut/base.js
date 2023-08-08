@@ -47,9 +47,7 @@ export default class PieBaseModifier {
     let resultDataObject = chartData.data
     let returnData = []
     try {
-      const net =
-        resultDataObject.get( payload.dateEnd ) -
-        resultDataObject.get( payload.dateStart )
+      const net = resultDataObject.get( payload.dateEnd ) - resultDataObject.get( payload.dateStart )
       returnData.push( net )
     } catch ( error ) {
       console.log( error )

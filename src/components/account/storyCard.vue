@@ -7,13 +7,7 @@
 -->
 
 <template>
-  <div
-    class="storyCard"
-    ref="card"
-    @click="clicked($event)"
-    @mouseover="hover(true)"
-    @mouseleave="hover(false)"
-  >
+  <div class="storyCard" ref="card" @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
     <div class="toolbox" ref="toolbox" v-if="parseInt(notools) === 0">
       <el-tooltip content="Edit View" placement="top">
         <i class="fas fa-pencil-alt" @click.prevent="openEdit()"></i>
@@ -34,17 +28,7 @@
 import mediapicker from '@/components/account/mediapicker.vue'
 export default {
   name: 'storyCard',
-  props: [
-    'name',
-    'description',
-    'selected',
-    'media',
-    'story_id',
-    'index',
-    'notools',
-    'plus',
-    'group'
-  ],
+  props: ['name', 'description', 'selected', 'media', 'story_id', 'index', 'notools', 'plus', 'group'],
   components: {
     mediapicker
   },
@@ -94,18 +78,10 @@ export default {
       }
     },
     openEdit: function () {
-      this.$eventHub.$emit( 'openStoryEdit', [
-        this.name,
-        this.description,
-        this.media,
-        this.story_id
-      ] )
+      this.$eventHub.$emit( 'openStoryEdit', [this.name, this.description, this.media, this.story_id] )
     },
     clicked: function ( event ) {
-      if (
-        event.target.parentNode.classList.contains( 'toolbox' ) ||
-        event.target.classList.contains( 'toolbox' )
-      ) {
+      if ( event.target.parentNode.classList.contains( 'toolbox' ) || event.target.classList.contains( 'toolbox' ) ) {
         return
       }
       this.$emit( 'click' )
@@ -136,7 +112,7 @@ export default {
 }
 .storyName {
   color: rgb(215, 63, 9);
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   font-size: 1.7em;
   display: block;
   z-index: 1;
@@ -163,7 +139,7 @@ export default {
 }
 .storyDescription {
   color: #fff;
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   font-size: 1.2em;
   display: block;
   padding-left: 0.3em;

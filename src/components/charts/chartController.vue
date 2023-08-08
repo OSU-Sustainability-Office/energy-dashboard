@@ -9,11 +9,7 @@
     :style="`height: ${height}px; border-radius: 5px; overflow: hidden;`"
   >
     <linechart
-      v-if="
-        graphType === 1 &&
-        chartData &&
-        this.path !== 'map/building_35/block_175'
-      "
+      v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'"
       ref="linechart"
       v-bind:chartData="chartData"
       :style="styleC"
@@ -76,11 +72,7 @@
       width="1000"
       title="NWREC Data Solar Array"
     ></iframe>
-    <el-col
-      :span="24"
-      class="NoData"
-      :style="`height:${height}px;line-height:${height}px;`"
-      v-if="graphType == 100"
+    <el-col :span="24" class="NoData" :style="`height:${height}px;line-height:${height}px;`" v-if="graphType == 100"
       >Data Unavailable</el-col
     >
   </div>
@@ -120,16 +112,7 @@ export default {
       loading: true,
       chartData: null,
       watchTimeout: null,
-      colors: [
-        '#4A773C',
-        '#00859B',
-        '#FFB500',
-        '#AA9D2E',
-        '#D3832B',
-        '#0D5257',
-        '#7A6855',
-        '#C4D6A4'
-      ]
+      colors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4']
     }
   },
   created () {
@@ -144,8 +127,7 @@ export default {
     }
     if (
       this.path &&
-      ( this.path.split( '/' ).splice( 0, 1 )[0] === 'view' ||
-        this.path.split( '/' ).splice( 0, 1 )[0] === 'user' )
+      ( this.path.split( '/' ).splice( 0, 1 )[0] === 'view' || this.path.split( '/' ).splice( 0, 1 )[0] === 'user' )
     ) {
       /*
         Building views set the date once the page is loaded.
@@ -246,7 +228,7 @@ export default {
       this.loading = true
       this.$store
         .dispatch( this.path + '/getData' )
-        .then( ( data ) => {
+        .then( data => {
           if (
             this.chart &&
             ( this.graphType === 1 || this.graphType === 2 ) &&
@@ -255,9 +237,8 @@ export default {
           ) {
             this.chart.update()
             let timeDif =
-              new Date(
-                data.datasets[0].data[data.datasets[0].data.length - 1].x
-              ).getTime() - new Date( data.datasets[0].data[0].x ).getTime()
+              new Date( data.datasets[0].data[data.datasets[0].data.length - 1].x ).getTime() -
+              new Date( data.datasets[0].data[0].x ).getTime()
             let dif = 0
             if ( timeDif <= 24 * 60 * 60 * 1000 ) {
               dif = 2
@@ -268,8 +249,7 @@ export default {
             } else {
               this.chart.options.scales.xAxes[0].time.unit = 'day'
             }
-            this.chart.options.scales.yAxes[0].ticks.maxTicksLimit =
-              ( this.height / 200 ) * 8 - dif
+            this.chart.options.scales.yAxes[0].ticks.maxTicksLimit = ( this.height / 200 ) * 8 - dif
           }
           this.chartData = data
           console.log( this.path )
@@ -277,7 +257,7 @@ export default {
           // console.log('done loading!', this.path, data)
           // this.$store.getters[this.path]
         } )
-        .catch( ( err ) => {
+        .catch( err => {
           console.log( 'could not load data', err )
           this.loading = true
         } )
@@ -294,21 +274,9 @@ export default {
       let colors = []
       for ( let i in current ) {
         const percentage = ( current[i].y / baseline[i].y ) * 100 - 100
-        const redInt = [
-          parseInt( '0xd6', 16 ),
-          parseInt( '0x23', 16 ),
-          parseInt( '0x26', 16 )
-        ]
-        const greenInt = [
-          parseInt( '0x19', 16 ),
-          parseInt( '0xa2', 16 ),
-          parseInt( '0x3a', 16 )
-        ]
-        const typicalColor = [
-          redInt[0] - greenInt[0],
-          greenInt[1] - redInt[1],
-          greenInt[2] - redInt[2]
-        ]
+        const redInt = [parseInt( '0xd6', 16 ), parseInt( '0x23', 16 ), parseInt( '0x26', 16 )]
+        const greenInt = [parseInt( '0x19', 16 ), parseInt( '0xa2', 16 ), parseInt( '0x3a', 16 )]
+        const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
         const compare = Math.abs( percentage ) / 7.5
         const result = []
         if ( percentage < -7.5 ) {
@@ -328,15 +296,7 @@ export default {
           result.push( Math.round( typicalColor[1] - greenInt[1] * compare ) )
           result.push( Math.round( typicalColor[2] - greenInt[2] * compare ) )
         }
-        colors.push(
-          'rgb(' +
-            result[0].toString() +
-            ',' +
-            result[1].toString() +
-            ',' +
-            result[2].toString() +
-            ')'
-        )
+        colors.push( 'rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')' )
       }
       return colors
     },
@@ -350,8 +310,7 @@ export default {
         }
         let point = ''
         for ( let index in charts ) {
-          const chartPoint =
-            this.$store.getters[charts[index].path + '/pointString']
+          const chartPoint = this.$store.getters[charts[index].path + '/pointString']
           if ( !point.includes( chartPoint ) ) {
             if ( Number( index ) !== 0 ) {
               point += ' / '

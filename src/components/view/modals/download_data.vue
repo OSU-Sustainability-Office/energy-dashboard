@@ -1,15 +1,8 @@
-/* * @Author: you@you.you * @Date: Saturday December 21st 2019 * @Last Modified
-By: Brogan Miner * @Last Modified Time: Saturday December 21st 2019 *
-@Copyright: (c) Oregon State University 2019 */
+/* * @Author: you@you.you * @Date: Saturday December 21st 2019 * @Last Modified By: Brogan Miner * @Last Modified Time:
+Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
 
 <template>
-  <el-dialog
-    size="lg"
-    :visible.sync="visible"
-    title="Download Data"
-    width="80%"
-    @open="updateForm()"
-  >
+  <el-dialog size="lg" :visible.sync="visible" title="Download Data" width="80%" @open="updateForm()">
     <el-form label-width="150px" label-position="left" :model="form" ref="form">
       <el-form-item
         label="From Date: "
@@ -19,8 +12,8 @@ By: Brogan Miner * @Last Modified Time: Saturday December 21st 2019 *
             type: 'date',
             required: true,
             message: 'A from date is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ]"
         prop="start"
       >
@@ -41,7 +34,7 @@ By: Brogan Miner * @Last Modified Time: Saturday December 21st 2019 *
           type: 'date',
           required: true,
           message: 'A to date is required',
-          trigger: 'change',
+          trigger: 'change'
         }"
         prop="end"
       >
@@ -60,7 +53,7 @@ By: Brogan Miner * @Last Modified Time: Saturday December 21st 2019 *
         :rules="{
           required: true,
           message: 'An interval is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
         prop="intUnit"
       >
@@ -78,16 +71,11 @@ By: Brogan Miner * @Last Modified Time: Saturday December 21st 2019 *
         :rules="{
           required: true,
           message: 'Meter points are required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
         prop="points"
       >
-        <el-select
-          filterable
-          multiple
-          v-model="form.points"
-          style="width: 100%"
-        >
+        <el-select filterable multiple v-model="form.points" style="width: 100%">
           <el-option
             v-for="point in meterPoints"
             :value="point.value"
@@ -101,19 +89,10 @@ By: Brogan Miner * @Last Modified Time: Saturday December 21st 2019 *
         </el-col> -->
       <el-form-item label="Buildings: ">
         <el-row type="flex" justify="left" class="building_flex">
-          <el-col
-            v-for="building in form.buildings"
-            :label="building.name"
-            :key="building.id"
-            class="groupChecker"
-          >
+          <el-col v-for="building in form.buildings" :label="building.name" :key="building.id" class="groupChecker">
             <span class="buildingTitle">{{ building.name }}</span>
             <el-checkbox-group v-model="building.groups">
-              <div
-                v-for="group in groups(building.id)"
-                :key="group.id"
-                class="checkGroup"
-              >
+              <div v-for="group in groups(building.id)" :key="group.id" class="checkGroup">
                 <el-checkbox :label="group.id" :key="group.id"
                   ><span class="groupTitle">{{ group.name }}</span></el-checkbox
                 ><br />
@@ -123,27 +102,14 @@ By: Brogan Miner * @Last Modified Time: Saturday December 21st 2019 *
           <el-col v-for="i in 10" :key="i"> </el-col>
         </el-row>
         <el-row v-if="form.buildings.length === 0">
-          <el-col class="noBuildingText">
-            No Buildings selected to download data from
-          </el-col>
+          <el-col class="noBuildingText"> No Buildings selected to download data from </el-col>
         </el-row>
         <el-row v-if="buildingsFiltered.length > 0">
           <el-col :span="4">
-            <el-button
-              @click="addBuilding()"
-              type="primary"
-              class="buildingAddButton"
-            >
-              Add Building</el-button
-            >
+            <el-button @click="addBuilding()" type="primary" class="buildingAddButton"> Add Building</el-button>
           </el-col>
           <el-col :span="20">
-            <el-select
-              v-model="addBuildingId"
-              style="width: 100%"
-              class="buildingAddSelect"
-              filterable
-            >
+            <el-select v-model="addBuildingId" style="width: 100%" class="buildingAddSelect" filterable>
               <el-option
                 v-for="building in buildingsFiltered"
                 :value="building.id"
@@ -190,9 +156,7 @@ export default {
   computed: {
     visible: {
       get () {
-        return (
-          this.$store.getters['modalController/modalName'] === 'download_data'
-        )
+        return this.$store.getters['modalController/modalName'] === 'download_data'
       },
 
       set ( value ) {
@@ -206,13 +170,10 @@ export default {
         let points = []
         for ( let building of this.form.buildings ) {
           for ( let group of building.groups ) {
-            let meters =
-              this.$store.getters[
-                this.$store.getters['map/meterGroup']( group ).path + '/meters'
-              ]
+            let meters = this.$store.getters[this.$store.getters['map/meterGroup']( group ).path + '/meters']
             for ( let meter of meters ) {
               for ( let point of meter.points ) {
-                let index = points.map( ( o ) => o.value ).indexOf( point.value )
+                let index = points.map( o => o.value ).indexOf( point.value )
                 if ( index < 0 ) points.push( point )
               }
             }
@@ -225,12 +186,12 @@ export default {
       get () {
         if ( !this.buildings ) return []
         let buildingsCopy = new Array( ...this.buildings )
-        let buildingIds = buildingsCopy.map( ( o ) => parseInt( o.id ) )
+        let buildingIds = buildingsCopy.map( o => parseInt( o.id ) )
         for ( let building of this.form.buildings ) {
           let id = building.id
           let index = buildingIds.indexOf( parseInt( id ) )
           if ( index >= 0 ) buildingsCopy.splice( index, 1 )
-          buildingIds = buildingsCopy.map( ( o ) => parseInt( o.id ) )
+          buildingIds = buildingsCopy.map( o => parseInt( o.id ) )
         }
         return buildingsCopy
       }
@@ -254,9 +215,7 @@ export default {
     },
 
     groups: function ( buildingId ) {
-      return this.$store.getters[
-        this.$store.getters['map/building']( buildingId ).path + '/meterGroups'
-      ]
+      return this.$store.getters[this.$store.getters['map/building']( buildingId ).path + '/meterGroups']
     },
 
     download: async function () {
@@ -309,19 +268,15 @@ export default {
           graphType: 1
         }
         for ( let group of groups ) {
-          let groupPoints =
-            this.$store.getters[
-              this.$store.getters['map/meterGroup']( group ).path + '/points'
-            ]
-          let findex = groupPoints.map( ( o ) => o.value ).indexOf( req.point )
+          let groupPoints = this.$store.getters[this.$store.getters['map/meterGroup']( group ).path + '/points']
+          let findex = groupPoints.map( o => o.value ).indexOf( req.point )
           if ( findex >= 0 ) {
             promises.push(
               new Promise( async ( resolve, reject ) => {
                 const chartModifier = ChartModifier( req.graphType, req.point )
                 await chartModifier.preGetData( req, this.$store, null )
                 let data = await this.$store.dispatch(
-                  this.$store.getters['map/meterGroup']( group ).path +
-                    '/getData',
+                  this.$store.getters['map/meterGroup']( group ).path + '/getData',
                   req
                 )
                 // Mimic what the chart modifier expects so there is no issues
@@ -335,12 +290,7 @@ export default {
                   data: data
                 }
 
-                await chartModifier.postGetData(
-                  chartData,
-                  req,
-                  this.$store,
-                  null
-                )
+                await chartModifier.postGetData( chartData, req, this.$store, null )
                 resolve( {
                   point: map[point],
                   group: this.$store.getters['map/meterGroup']( group ).name,
@@ -360,12 +310,10 @@ export default {
         let stringRep = organizedData.join( '\n' )
         zip.file( `${dl.group} ${dl.point}.csv`, stringRep )
       }
-      zip.generateAsync( { type: 'blob' } ).then( ( blob ) => {
+      zip.generateAsync( { type: 'blob' } ).then( blob => {
         let a = window.document.createElement( 'a' )
         a.href = window.URL.createObjectURL( blob, { type: 'text/plain' } )
-        a.download = `EnergyData ${new Date(
-          this.form.start
-        ).toString()} - ${new Date( this.form.end ).toString()}`
+        a.download = `EnergyData ${new Date( this.form.start ).toString()} - ${new Date( this.form.end ).toString()}`
         document.body.appendChild( a )
         a.click()
         document.body.removeChild( a )
@@ -389,25 +337,13 @@ export default {
 
         let intUnit = this.intUnit( unit, interval )
 
-        if (
-          !this.form.start ||
-          this.form.start === '' ||
-          parseInt( start ) < this.form.start
-        ) {
+        if ( !this.form.start || this.form.start === '' || parseInt( start ) < this.form.start ) {
           this.form.start = parseInt( start )
         }
-        if (
-          !this.form.end ||
-          this.form.end === '' ||
-          parseInt( end ) > this.form.end
-        ) {
+        if ( !this.form.end || this.form.end === '' || parseInt( end ) > this.form.end ) {
           this.form.end = parseInt( end )
         }
-        if (
-          !this.form.intUnit ||
-          this.form.intUnit === '' ||
-          parseInt( intUnit ) < this.form.intUnit
-        ) {
+        if ( !this.form.intUnit || this.form.intUnit === '' || parseInt( intUnit ) < this.form.intUnit ) {
           this.form.intUnit = parseInt( intUnit )
         }
 
@@ -422,7 +358,7 @@ export default {
             id: this.$store.getters[bgPath + '/id'],
             groups: [this.$store.getters[mg + '/id']]
           }
-          let index = this.form.buildings.map( ( o ) => o.id ).indexOf( bldg.id )
+          let index = this.form.buildings.map( o => o.id ).indexOf( bldg.id )
           if ( index >= 0 ) {
             this.form.buildings[index].groups.push( bldg.groups[0] )
           } else {

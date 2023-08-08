@@ -1,6 +1,5 @@
-/* * @Author: you@you.you * @Date: Friday December 13th 2019 * @Last Modified
-By: Brogan Miner * @Last Modified Time: Friday December 13th 2019 * @Copyright:
-(c) Oregon State University 2019 */
+/* * @Author: you@you.you * @Date: Friday December 13th 2019 * @Last Modified By: Brogan Miner * @Last Modified Time:
+Friday December 13th 2019 * @Copyright: (c) Oregon State University 2019 */
 <template>
   <el-dialog size="lg" :visible.sync="visible" title="Delete View" width="80%">
     <span class="textMain"> Are you sure you want to delete this view? </span>
@@ -22,9 +21,7 @@ export default {
     },
     visible: {
       get () {
-        return (
-          this.$store.getters['modalController/modalName'] === 'confirm_delete'
-        )
+        return this.$store.getters['modalController/modalName'] === 'confirm_delete'
       },
 
       set ( value ) {

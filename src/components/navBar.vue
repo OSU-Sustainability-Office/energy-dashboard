@@ -5,12 +5,7 @@
 <template>
   <el-row class="sus-nav">
     <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">
-      <svgLogo
-        width="auto"
-        alt=""
-        class="sus-nav-image"
-        @click="$router.push({ path: '/map' })"
-      />
+      <svgLogo width="auto" alt="" class="sus-nav-image" @click="$router.push({ path: '/map' })" />
     </el-col>
     <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="20">
       <el-menu
@@ -22,34 +17,14 @@
         active-text-color="#1A1A1A"
         :router="true"
       >
-        <el-menu-item index="map" :route="{ path: '/map' }" ref="mapItem"
-          >Map</el-menu-item
-        >
-        <el-menu-item
-          index="buildings"
-          :route="{ path: '/buildings' }"
-          ref="buildingItem"
-          >Building List</el-menu-item
-        >
-        <el-menu-item
-          index="campaigns"
-          :route="{ path: '/campaigns' }"
-          ref="buildingItem"
-          >Campaigns</el-menu-item
-        >
+        <el-menu-item index="map" :route="{ path: '/map' }" ref="mapItem">Map</el-menu-item>
+        <el-menu-item index="buildings" :route="{ path: '/buildings' }" ref="buildingItem">Building List</el-menu-item>
+        <el-menu-item index="campaigns" :route="{ path: '/campaigns' }" ref="buildingItem">Campaigns</el-menu-item>
         <!--<el-menu-item v-if='onid' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item> -->
-        <el-menu-item
-          index="getStarted"
-          :route="{ path: '/getstarted' }"
-          ref="getStartedItem"
+        <el-menu-item index="getStarted" :route="{ path: '/getstarted' }" ref="getStartedItem"
           >Get Started</el-menu-item
         >
-        <el-menu-item
-          index="getStarted"
-          :route="{ path: '/contact' }"
-          ref="getStartedItem"
-          >Contact Us</el-menu-item
-        >
+        <el-menu-item index="getStarted" :route="{ path: '/contact' }" ref="getStartedItem">Contact Us</el-menu-item>
       </el-menu>
     </el-col>
     <!--
@@ -91,12 +66,7 @@ export default {
   watch: {
     '$route.path': function ( path ) {
       this.activeIndex = path.split( '/' )[1]
-      const buttons = [
-        this.$refs.mapItem,
-        this.$refs.buildingItem,
-        this.$refs.dashboardItem,
-        this.$refs.getStartedItem
-      ]
+      const buttons = [this.$refs.mapItem, this.$refs.buildingItem, this.$refs.dashboardItem, this.$refs.getStartedItem]
       for ( let item of buttons ) {
         if ( !item ) {
           continue
@@ -152,7 +122,7 @@ export default {
   color: $--color-white !important;
 }
 .sus-nav-menu > *:not(.is-active):hover:after {
-  content: "\a0";
+  content: '\a0';
   display: block;
   padding: 0 2px;
   line-height: 1px;

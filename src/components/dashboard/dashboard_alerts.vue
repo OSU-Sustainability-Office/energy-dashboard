@@ -9,36 +9,23 @@
 <template>
   <el-row class="row-stage">
     <el-col :span="24">
-      <el-row
-        class="alertrow"
-        v-for="(item, index) in alerts"
-        :key="item.id"
-        :span="24"
-      >
+      <el-row class="alertrow" v-for="(item, index) in alerts" :key="item.id" :span="24">
         <el-col :span="4" class="alertmeter">
           {{ item.building_name }}
           <br />
           <span class="metername">{{ item.meter_name }}</span>
         </el-col>
         <el-col :span="16">
-          <el-form
-            :inline="true"
-            :model="alertForm[item.id]"
-            class="form-inline"
-            ref="alertForm"
-          >
+          <el-form :inline="true" :model="alertForm[item.id]" class="form-inline" ref="alertForm">
             <el-form-item
               label="Measurement: "
               :rules="{
                 required: true,
                 message: 'A measurement is required',
-                trigger: 'blur',
+                trigger: 'blur'
               }"
             >
-              <el-select
-                v-model="item.point"
-                @change="updateAlert(item, index)"
-              >
+              <el-select v-model="item.point" @change="updateAlert(item, index)">
                 <el-option
                   v-for="(point, index) in points[item.meter_id]"
                   :value="point"
@@ -49,10 +36,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="Threshold: ">
-              <el-input-number
-                v-model="item.threshold"
-                @change="updateAlert(item, index)"
-              ></el-input-number>
+              <el-input-number v-model="item.threshold" @change="updateAlert(item, index)"></el-input-number>
             </el-form-item>
           </el-form>
         </el-col>
@@ -70,26 +54,12 @@
                 :rules="{
                   required: true,
                   message: 'A meter is required',
-                  trigger: 'blur',
+                  trigger: 'blur'
                 }"
               >
-                <el-select
-                  v-model="newAlertForm.meter"
-                  class="full-width"
-                  filterable
-                  :filter-method="meterSearch"
-                >
-                  <el-option-group
-                    v-for="(group, index) in Object.keys(meterSearched)"
-                    :key="index"
-                    :label="group"
-                  >
-                    <el-option
-                      v-for="meter in meters[group]"
-                      :key="meter.id"
-                      :value="meter.id"
-                      :label="meter.name"
-                    >
+                <el-select v-model="newAlertForm.meter" class="full-width" filterable :filter-method="meterSearch">
+                  <el-option-group v-for="(group, index) in Object.keys(meterSearched)" :key="index" :label="group">
+                    <el-option v-for="meter in meters[group]" :key="meter.id" :value="meter.id" :label="meter.name">
                     </el-option>
                   </el-option-group>
                 </el-select>
@@ -99,7 +69,7 @@
                 :rules="{
                   required: true,
                   message: 'A measurement is required',
-                  trigger: 'blur',
+                  trigger: 'blur'
                 }"
               >
                 <el-select v-model="newAlertForm.point" :key="updatePoint">
@@ -117,20 +87,16 @@
                 :rules="{
                   required: true,
                   message: 'A threshold is required',
-                  trigger: 'blur',
+                  trigger: 'blur'
                 }"
               >
-                <el-input-number
-                  v-model="newAlertForm.threshold"
-                ></el-input-number>
+                <el-input-number v-model="newAlertForm.threshold"></el-input-number>
               </el-form-item>
             </el-form>
 
             <span slot="footer">
               <el-button @click="newAlert()" type="primary"> Ok </el-button>
-              <el-button @click="creationModal = false" type="info">
-                Cancel
-              </el-button>
+              <el-button @click="creationModal = false" type="info"> Cancel </el-button>
             </span>
           </el-dialog>
         </el-col>
@@ -158,11 +124,11 @@ export default {
     }
   },
   mounted () {
-    this.$store.dispatch( 'metersByBuilding' ).then( ( r ) => {
+    this.$store.dispatch( 'metersByBuilding' ).then( r => {
       this.meters = r
       this.meterSearched = r
     } )
-    this.$store.dispatch( 'alerts' ).then( ( r ) => {
+    this.$store.dispatch( 'alerts' ).then( r => {
       for ( let alert of r ) {
         this.alertForm[alert.id] = {
           point: alert.point,
@@ -189,15 +155,13 @@ export default {
       },
       watch () {
         /* eslint-disable-next-line */
-        this.updated;
+        this.updated
       }
     }
   },
   methods: {
     meterSearch: function ( input ) {
-      const filtered = Object.keys( this.meters ).filter(
-        ( name ) => name.toLowerCase().indexOf( input.toLowerCase() ) >= 0
-      )
+      const filtered = Object.keys( this.meters ).filter( name => name.toLowerCase().indexOf( input.toLowerCase() ) >= 0 )
       let r = {}
       for ( let name of filtered ) {
         r[name] = this.meters[name]
@@ -205,7 +169,7 @@ export default {
       this.meterSearched = r
     },
     newAlert: function () {
-      this.$refs.newAlertForm.validate( ( valid ) => {
+      this.$refs.newAlertForm.validate( valid => {
         if ( valid ) {
           this.$store
             .dispatch( 'newAlert', {
@@ -224,7 +188,7 @@ export default {
       if ( this.timeoutMap[item.id] ) {
         clearTimeout( this.timeoutMap[item.id] )
       }
-      this.$refs.alertForm[index].validate( ( valid ) => {
+      this.$refs.alertForm[index].validate( valid => {
         if ( valid ) {
           this.timeoutMap[item.id] = setTimeout( () => {
             const payload = {
@@ -252,7 +216,7 @@ export default {
       } )
     },
     populatePoints: function ( id ) {
-      this.$store.dispatch( 'meterPoints', { id: id } ).then( ( r ) => {
+      this.$store.dispatch( 'meterPoints', { id: id } ).then( r => {
         this.points[id] = r
         this.updatePoint = !this.updatePoint
       } )

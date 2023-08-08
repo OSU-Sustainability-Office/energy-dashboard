@@ -1,44 +1,26 @@
 <template>
   <el-row class="stage">
     <el-col :span="24">
-      <el-menu
-        class="sideMenu"
-        mode="vertical"
-        backgroundColor="#1A1A1A"
-        @select="handleSelect"
-      >
+      <el-menu class="sideMenu" mode="vertical" backgroundColor="#1A1A1A" @select="handleSelect">
         <div class="colorByTitle">Group By:</div>
-        <switchButtons
-          :titles="['Category', 'Energy Trend']"
-          v-model="grouping"
-        />
+        <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
           <span slot="title" class="sideMenuGroupTitle">Key</span>
           <el-tooltip content="Click to toggle visibility" placement="right">
-            <el-menu-item
-              index="Academics"
-              :class="[isDisplayed('Academics') ? 'active' : 'notactive']"
+            <el-menu-item index="Academics" :class="[isDisplayed('Academics') ? 'active' : 'notactive']"
               ><span class="edu swatch"></span>Academics</el-menu-item
             >
           </el-tooltip>
-          <el-menu-item
-            index="Athletics & Rec"
-            :class="[isDisplayed('Athletics & Rec') ? 'active' : 'notactive']"
+          <el-menu-item index="Athletics & Rec" :class="[isDisplayed('Athletics & Rec') ? 'active' : 'notactive']"
             ><span class="ath swatch"></span>Athletics & Rec</el-menu-item
           >
-          <el-menu-item
-            index="Dining"
-            :class="[isDisplayed('Dining') ? 'active' : 'notactive']"
+          <el-menu-item index="Dining" :class="[isDisplayed('Dining') ? 'active' : 'notactive']"
             ><span class="din swatch"></span>Dining</el-menu-item
           >
-          <el-menu-item
-            index="Events & Admin"
-            :class="[isDisplayed('Events & Admin') ? 'active' : 'notactive']"
+          <el-menu-item index="Events & Admin" :class="[isDisplayed('Events & Admin') ? 'active' : 'notactive']"
             ><span class="com swatch"></span>Events & Admin</el-menu-item
           >
-          <el-menu-item
-            index="Residence"
-            :class="[isDisplayed('Residence') ? 'active' : 'notactive']"
+          <el-menu-item index="Residence" :class="[isDisplayed('Residence') ? 'active' : 'notactive']"
             ><span class="res swatch"></span>Residence</el-menu-item
           >
         </el-menu-item-group>
@@ -63,12 +45,7 @@
         </el-menu-item-group>
       </el-menu>
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
-        <l-map
-          style="height: 100%; width: 100%"
-          :zoom="zoom"
-          :center="center"
-          ref="map"
-        >
+        <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
@@ -80,23 +57,10 @@
           ></l-geo-json>
         </l-map>
       </div>
-      <prompt
-        v-if="askingForComparison"
-        @cancel="stopCompare"
-        @compare="showComparison"
-      />
+      <prompt v-if="askingForComparison" @cancel="stopCompare" @compare="showComparison" />
       <transition name="side">
-        <compareSide
-          v-if="showCompareSide"
-          @hide="showCompareSide = false"
-          :compareStories="compareStories"
-        />
-        <sideView
-          ref="sideview"
-          v-if="showSide"
-          @hide="showSide = false"
-          @startCompare="startCompare"
-        ></sideView>
+        <compareSide v-if="showCompareSide" @hide="showCompareSide = false" :compareStories="compareStories" />
+        <sideView ref="sideview" v-if="showSide" @hide="showSide = false" @startCompare="startCompare"></sideView>
       </transition>
     </el-col>
   </el-row>
@@ -123,9 +87,7 @@ export default {
   computed: {
     showSide: {
       get () {
-        return (
-          this.$store.getters['modalController/modalName'] === 'map_side_view'
-        )
+        return this.$store.getters['modalController/modalName'] === 'map_side_view'
       },
 
       set ( value ) {
@@ -134,10 +96,7 @@ export default {
     },
     showCompareSide: {
       get () {
-        return (
-          this.$store.getters['modalController/modalName'] ===
-          'map_compare_side'
-        )
+        return this.$store.getters['modalController/modalName'] === 'map_compare_side'
       },
 
       set ( value ) {
@@ -150,8 +109,7 @@ export default {
       zoom: 15.5,
       center: L.latLng( 44.565, -123.2785 ),
       url: 'https://api.mapbox.com/styles/v1/jack-woods/cjmi2qpp13u4o2spgb66d07ci/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
-      attribution:
-        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       map: null,
       polygonData: null,
       openBuilding: 0,
@@ -175,12 +133,8 @@ export default {
       mapLoaded: false,
       buildingOptions: {
         onEachFeature: ( feature, layer ) => {
-          layer.on( 'click', ( e ) => {
-            this.polyClick(
-              e.target.feature.properties.id,
-              e.target.feature,
-              layer.getBounds().getCenter()
-            )
+          layer.on( 'click', e => {
+            this.polyClick( e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter() )
           } )
           layer.on( 'mouseover', function ( e ) {
             if ( !e.target.setStyle ) return
@@ -192,16 +146,14 @@ export default {
               color: e.target.options.color
             }
             e.target.setStyle( { fillColor: '#000', color: '#000' } )
-            e.target
-              .bindTooltip( e.target.feature.properties.name )
-              .openTooltip()
+            e.target.bindTooltip( e.target.feature.properties.name ).openTooltip()
           } )
-          layer.on( 'mouseout', ( e ) => {
+          layer.on( 'mouseout', e => {
             if ( !e.target.setStyle ) return
             e.target.setStyle( { ...e.target.oldStyle } )
           } )
         },
-        style: ( feature ) => {
+        style: feature => {
           var color = '#000'
           switch ( feature.properties.group ) {
             case 'Residence':
@@ -244,10 +196,7 @@ export default {
         if ( this.askingForComparison && this.compareStories.indexOf( id ) < 0 ) {
           const data =
             "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/><path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"
-          const formed = encodeURI( 'data:image/svg+xml,' + data ).replace(
-            /#/g,
-            '%23'
-          )
+          const formed = encodeURI( 'data:image/svg+xml,' + data ).replace( /#/g, '%23' )
           const checkIcon = L.icon( {
             iconUrl: formed,
             iconSize: [20, 20],
@@ -262,9 +211,7 @@ export default {
           this.compareMarkers.push( marker )
           this.compareStories.push( id )
         } else if ( this.askingForComparison ) {
-          const removingMarkerIndex = this.compareMarkers.findIndex(
-            ( e ) => e.buildingId === id
-          )
+          const removingMarkerIndex = this.compareMarkers.findIndex( e => e.buildingId === id )
           if ( removingMarkerIndex === -1 ) {
             return
           }
@@ -285,19 +232,13 @@ export default {
     showComparison: async function ( target ) {
       this.askingForComparison = false
       this.removeAllMarkers()
-      let path = this.$store.getters['map/building'](
-        this.compareStories[0]
-      ).path
+      let path = this.$store.getters['map/building']( this.compareStories[0] ).path
       if ( target === 'q' ) {
-        let mgId =
-          this.$store.getters[path + '/primaryGroup']( 'Electricity' ).id
+        let mgId = this.$store.getters[path + '/primaryGroup']( 'Electricity' ).id
 
         let blockSpace = this.$store.getters[path + '/block']( mgId ).path
         await this.$store.dispatch( blockSpace + '/removeAllModifiers' )
-        await this.$store.dispatch(
-          blockSpace + '/addModifier',
-          'building_compare'
-        )
+        await this.$store.dispatch( blockSpace + '/addModifier', 'building_compare' )
         await this.$store.dispatch( blockSpace + '/updateModifier', {
           name: 'building_compare',
           data: {
@@ -322,10 +263,7 @@ export default {
 
       const data =
         "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/> <path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"
-      const formed = encodeURI( 'data:image/svg+xml,' + data ).replace(
-        /#/g,
-        '%23'
-      )
+      const formed = encodeURI( 'data:image/svg+xml,' + data ).replace( /#/g, '%23' )
       const checkIcon = L.icon( {
         iconUrl: formed,
         iconSize: [20, 20],
@@ -376,21 +314,9 @@ export default {
     computedColor: function ( percentage ) {
       // #d62326 - Bottom Red
       // #19a23a - Top Green
-      const redInt = [
-        parseInt( '0xd6', 16 ),
-        parseInt( '0x23', 16 ),
-        parseInt( '0x26', 16 )
-      ]
-      const greenInt = [
-        parseInt( '0x19', 16 ),
-        parseInt( '0xa2', 16 ),
-        parseInt( '0x3a', 16 )
-      ]
-      const typicalColor = [
-        redInt[0] - greenInt[0],
-        greenInt[1] - redInt[1],
-        greenInt[2] - redInt[2]
-      ]
+      const redInt = [parseInt( '0xd6', 16 ), parseInt( '0x23', 16 ), parseInt( '0x26', 16 )]
+      const greenInt = [parseInt( '0x19', 16 ), parseInt( '0xa2', 16 ), parseInt( '0x3a', 16 )]
+      const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
       const compare = Math.abs( percentage ) / 0.01
       const result = []
       if ( percentage < -0.01 ) {
@@ -410,15 +336,7 @@ export default {
         result.push( Math.round( typicalColor[1] - greenInt[1] * compare ) )
         result.push( Math.round( typicalColor[2] - greenInt[2] * compare ) )
       }
-      return (
-        'rgb(' +
-        result[0].toString() +
-        ',' +
-        result[1].toString() +
-        ',' +
-        result[2].toString() +
-        ')'
-      )
+      return 'rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')'
     }
   },
   async created () {
@@ -473,46 +391,26 @@ export default {
                   */
                     await this.$store.getters['map/promise']
                     // Retrieves building object from store using leaflet property id
-                    let building = this.$store.getters['map/building'](
-                      layer.feature.properties.id
-                    )
+                    let building = this.$store.getters['map/building']( layer.feature.properties.id )
                     await this.$store.getters[building.path + '/promise']
-                    let mg =
-                      this.$store.getters[building.path + '/primaryGroup'](
-                        'Electricity'
-                      )
+                    let mg = this.$store.getters[building.path + '/primaryGroup']( 'Electricity' )
                     if ( mg == null ) {
                       console.error( building.name, building.path, building )
                       resolve()
                     }
-                    let defaultBlock = this.$store.getters[
-                      building.path + '/block'
-                    ]( mg.id )
+                    let defaultBlock = this.$store.getters[building.path + '/block']( mg.id )
                     await this.$store.getters[defaultBlock.path + '/promise']
-                    let defaultChart =
-                      this.$store.getters[defaultBlock.path + '/charts'][0]
+                    let defaultChart = this.$store.getters[defaultBlock.path + '/charts'][0]
                     let currentDate = new Date()
-                    let minus60 = new Date(
-                      currentDate.getTime() - 60 * 24 * 60 * 60 * 1000
-                    )
+                    let minus60 = new Date( currentDate.getTime() - 60 * 24 * 60 * 60 * 1000 )
                     const reqPayload = {
-                      dateEnd: parseInt(
-                        ( currentDate.getTime() -
-                          ( currentDate.getTime() % 900 ) * 1000 ) /
-                          1000
-                      ),
-                      dateStart: parseInt(
-                        ( minus60.getTime() - ( minus60.getTime() % 900 ) * 1000 ) /
-                          1000
-                      ),
+                      dateEnd: parseInt( ( currentDate.getTime() - ( currentDate.getTime() % 900 ) * 1000 ) / 1000 ),
+                      dateStart: parseInt( ( minus60.getTime() - ( minus60.getTime() % 900 ) * 1000 ) / 1000 ),
                       intervalUnit: 'day',
                       dateInterval: 1,
                       graphType: 1
                     }
-                    let data = await this.$store.dispatch(
-                      defaultChart.path + '/getData',
-                      reqPayload
-                    )
+                    let data = await this.$store.dispatch( defaultChart.path + '/getData', reqPayload )
                     // Below is an algorithm to compute least squares linear regression
                     let meanY = 0
                     for ( let index = 0; index < data.data.length; index++ ) {
@@ -524,8 +422,7 @@ export default {
                     let accmxxyy = 0
                     for ( let index = 0; index < data.data.length; index++ ) {
                       accmxx += Math.pow( index - meanX, 2 ) // index - meanX
-                      accmxxyy +=
-                        ( data.data[index].y - meanY ) * ( index - meanX )
+                      accmxxyy += ( data.data[index].y - meanY ) * ( index - meanX )
                     }
                     // accmxx =
                     let slope = accmxxyy / accmxx
@@ -560,10 +457,7 @@ export default {
         for ( var layerKey of Object.keys( this.map._layers ) ) {
           let layer = this.map._layers[layerKey]
           if ( layer.feature ) {
-            if (
-              !val.includes( layer.feature.properties.group ) &&
-              this.grouping === 'Category'
-            ) {
+            if ( !val.includes( layer.feature.properties.group ) && this.grouping === 'Category' ) {
               this.map.removeLayer( layer )
             }
           }
@@ -575,7 +469,7 @@ export default {
 </script>
 
 <style>
-@import "../../../node_modules/leaflet/dist/leaflet.css";
+@import '../../../node_modules/leaflet/dist/leaflet.css';
 </style>
 <style scoped lang="scss">
 $sideMenu-width: 250px;
@@ -583,7 +477,7 @@ $sideMenu-width: 250px;
   color: $--color-white;
   font-size: 26px;
   text-align: center;
-  font-family: "stratumno2";
+  font-family: 'stratumno2';
 }
 .stage {
   padding: 0;
@@ -698,11 +592,7 @@ $sideMenu-width: 250px;
   height: 150px;
   border: solid 2px rgb(255, 255, 255);
   background: rgb(25, 162, 58);
-  background: linear-gradient(
-    180deg,
-    rgba(25, 162, 58, 1) 0%,
-    rgba(214, 35, 38, 1) 100%
-  );
+  background: linear-gradient(180deg, rgba(25, 162, 58, 1) 0%, rgba(214, 35, 38, 1) 100%);
   border-radius: 8px;
 }
 .trendBox {
@@ -722,8 +612,8 @@ $sideMenu-width: 250px;
   bottom: 20px;
 }
 .resetMapButton {
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
   display: flex;
   align-items: center;
   position: absolute;

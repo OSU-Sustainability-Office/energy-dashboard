@@ -6,19 +6,8 @@
 @Last modified time: 2019-03-25T14:19:59-07:00
 -->
 <template>
-  <el-col
-    :span="24"
-    style="width: 100%"
-    class="mapContainer"
-    ref="mapContainer"
-  >
-    <l-map
-      style="height: 100%; width: 100%"
-      :zoom="zoom"
-      :center="center"
-      ref="map"
-      v-loading="!polygonData"
-    >
+  <el-col :span="24" style="width: 100%" class="mapContainer" ref="mapContainer">
+    <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map" v-loading="!polygonData">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
       <l-geo-json
         v-for="building of this.polygonData"
@@ -62,24 +51,20 @@ export default {
   data () {
     return {
       zoom: 15.5,
-      loadedBounds: L.latLngBounds(
-        L.latLng( 44.565, -123.2785 ),
-        L.latLng( 44.565, -123.2785 )
-      ),
+      loadedBounds: L.latLngBounds( L.latLng( 44.565, -123.2785 ), L.latLng( 44.565, -123.2785 ) ),
       center: L.latLng( 44.565, -123.2785 ),
       url: 'https://api.mapbox.com/styles/v1/jack-woods/cjmi2qpp13u4o2spgb66d07ci/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
-      attribution:
-        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       map: null,
       polygonData: null,
       buildingOptions: {
         onEachFeature: ( feature, layer ) => {
-          layer.on( 'click', ( e ) => {
+          layer.on( 'click', e => {
             this.select( e.target.feature.id.replace( 'way/', '' ) )
             // window.vue.$eventHub.$emit('clickedEditPolygon', [feature.properties.id, layer.getBounds().getCenter(), layer])
             // document.execCommand('copy')
           } )
-          layer.on( 'mouseover', ( e ) => {
+          layer.on( 'mouseover', e => {
             if ( !e.target.setStyle ) return
             if ( e.target.feature.id.replace( 'way/', '' ) !== this.value ) {
               e.target.oldStyle = {
@@ -88,22 +73,17 @@ export default {
               }
               e.target.setStyle( { fillColor: '#FFF', color: '#FFF' } )
             }
-            e.target
-              .bindTooltip( e.target.feature.properties.name )
-              .openTooltip()
+            e.target.bindTooltip( e.target.feature.properties.name ).openTooltip()
           } )
-          layer.on( 'mouseout', ( e ) => {
-            if (
-              !e.target.setStyle ||
-              e.target.feature.id.replace( 'way/', '' ) === this.value
-            ) {
+          layer.on( 'mouseout', e => {
+            if ( !e.target.setStyle || e.target.feature.id.replace( 'way/', '' ) === this.value ) {
               return
             }
             e.target.setStyle( { ...e.target.oldStyle } )
             // window.vue.$eventHub.$emit('resetEditPolygon', [e.target])
           } )
         },
-        style: ( feature ) => {
+        style: feature => {
           // console.log(feature)
           var color = '#000'
           if ( feature.id.replace( 'way/', '' ) === this.value ) {
@@ -124,7 +104,7 @@ export default {
     this.$nextTick( async () => {
       this.map = this.$refs.map.mapObject
 
-      this.map.on( 'moveend', ( e ) => {
+      this.map.on( 'moveend', e => {
         let mapLeft = this.map.getBounds().getSouthWest().lng
         let mapBottom = this.map.getBounds().getSouthWest().lat
         let mapRight = this.map.getBounds().getNorthEast().lng
@@ -136,10 +116,7 @@ export default {
 
         let ways = []
         if ( fullBoundsRight < mapRight ) {
-          let bounds = L.latLngBounds(
-            L.latLng( fullBoundsTop, fullBoundsRight ),
-            L.latLng( fullBoundsBottom, mapRight )
-          )
+          let bounds = L.latLngBounds( L.latLng( fullBoundsTop, fullBoundsRight ), L.latLng( fullBoundsBottom, mapRight ) )
           // expand loaded bounds to right
           if ( bounds.isValid() ) {
             ways.push(
@@ -155,10 +132,7 @@ export default {
         }
 
         if ( fullBoundsLeft > mapLeft ) {
-          let bounds = L.latLngBounds(
-            L.latLng( fullBoundsTop, mapLeft ),
-            L.latLng( fullBoundsBottom, fullBoundsLeft )
-          )
+          let bounds = L.latLngBounds( L.latLng( fullBoundsTop, mapLeft ), L.latLng( fullBoundsBottom, fullBoundsLeft ) )
           // expand loaded bounds left
           if ( bounds.isValid() ) {
             ways.push(
@@ -174,10 +148,7 @@ export default {
         }
 
         if ( fullBoundsTop < mapTop ) {
-          let bounds = L.latLngBounds(
-            L.latLng( mapTop, mapLeft ),
-            L.latLng( fullBoundsTop, mapRight )
-          )
+          let bounds = L.latLngBounds( L.latLng( mapTop, mapLeft ), L.latLng( fullBoundsTop, mapRight ) )
           // expand loaded bounds upwards
           if ( bounds.isValid() ) {
             ways.push(
@@ -193,10 +164,7 @@ export default {
         }
 
         if ( fullBoundsBottom > mapBottom ) {
-          let bounds = L.latLngBounds(
-            L.latLng( fullBoundsBottom, mapLeft ),
-            L.latLng( mapBottom, mapRight )
-          )
+          let bounds = L.latLngBounds( L.latLng( fullBoundsBottom, mapLeft ), L.latLng( mapBottom, mapRight ) )
           // expand loaded bounds downwards
           if ( bounds.isValid() ) {
             ways.push(
@@ -210,13 +178,13 @@ export default {
             this.loadedBounds.extend( bounds )
           }
         }
-        Promise.all( ways ).then( ( data ) => {
+        Promise.all( ways ).then( data => {
           if ( !this.polygonData ) {
             this.polygonData = []
           }
 
           for ( let ways of data ) {
-            let mapP = this.polygonData.map( ( p ) => p.features[0].id )
+            let mapP = this.polygonData.map( p => p.features[0].id )
             for ( let b of ways ) {
               if ( mapP.indexOf( b.features[0].id ) < 0 ) {
                 this.polygonData.push( b )
@@ -238,10 +206,7 @@ export default {
       this.map.options.minZoom = 16
       this.map.options.maxZoom = 16
       if ( this.value ) {
-        let centerBuildingJSON = await this.$store.dispatch(
-          'map/buildingJSON',
-          this.value
-        )
+        let centerBuildingJSON = await this.$store.dispatch( 'map/buildingJSON', this.value )
         let centerBuilding = L.geoJSON( centerBuildingJSON )
         this.map.panTo( centerBuilding.getBounds().getCenter() )
       } else {

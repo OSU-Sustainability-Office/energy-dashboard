@@ -16,17 +16,13 @@
         :rules="{
           required: true,
           message: 'A name is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
         prop="name"
         v-if="personalView"
       >
         <!-- <label class='col-4'>Name:</label> -->
-        <el-input
-          type="text"
-          v-model="form.name"
-          style="width: 100%"
-        ></el-input>
+        <el-input type="text" v-model="form.name" style="width: 100%"></el-input>
       </el-form-item>
       <el-form-item
         label="From Date: "
@@ -36,8 +32,8 @@
             type: 'date',
             required: true,
             message: 'A from date is required',
-            trigger: 'change',
-          },
+            trigger: 'change'
+          }
         ]"
         prop="start"
       >
@@ -58,7 +54,7 @@
           type: 'date',
           required: true,
           message: 'A to date is required',
-          trigger: 'change',
+          trigger: 'change'
         }"
         prop="end"
       >
@@ -77,7 +73,7 @@
         :rules="{
           required: true,
           message: 'An interval is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
         prop="intUnit"
       >
@@ -95,7 +91,7 @@
         :rules="{
           required: true,
           message: 'A graph type is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
         prop="graphType"
         v-if="personalView"
@@ -114,7 +110,7 @@
         :rules="{
           required: true,
           message: 'A meter is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
       >
         <el-select
@@ -123,12 +119,7 @@
           style="width: 100%"
           @change="form[currentIndex].point = null"
         >
-          <el-option
-            v-for="item in meters"
-            :key="item.path"
-            :label="item.name"
-            :value="item.path"
-          ></el-option>
+          <el-option v-for="item in meters" :key="item.path" :label="item.name" :value="item.path"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item
@@ -136,7 +127,7 @@
         :rules="{
           required: true,
           message: 'A measurement is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
         prop="point"
         label="Measurement: "
@@ -167,13 +158,7 @@
             <el-button class="indexButton" @click="addGroup()">+</el-button>
           </el-col>
         </el-row>
-        <el-form
-          ref="form"
-          :model="form.sets[currentIndex]"
-          label-width="150px"
-          size="large"
-          label-position="left"
-        >
+        <el-form ref="form" :model="form.sets[currentIndex]" label-width="150px" size="large" label-position="left">
           <el-form-item
             v-if="currentIndex < form.sets.length"
             prop="building"
@@ -181,7 +166,7 @@
             :rules="{
               required: true,
               message: 'A building is required',
-              trigger: 'blur',
+              trigger: 'blur'
             }"
           >
             <el-select
@@ -191,8 +176,8 @@
               placeholder="Building"
               style="width: 100%"
               @change="
-                form.sets[currentIndex].meter = null;
-                form.sets[currentIndex].point = null;
+                form.sets[currentIndex].meter = null
+                form.sets[currentIndex].point = null
               "
             >
               <el-option
@@ -210,14 +195,10 @@
             :rules="{
               required: true,
               message: 'A set name is required',
-              trigger: 'blur',
+              trigger: 'blur'
             }"
           >
-            <el-input
-              type="text"
-              v-model="form.sets[currentIndex].name"
-              style="width: 100%"
-            ></el-input>
+            <el-input type="text" v-model="form.sets[currentIndex].name" style="width: 100%"></el-input>
           </el-form-item>
           <el-form-item
             v-if="currentIndex < form.sets.length"
@@ -226,7 +207,7 @@
             :rules="{
               required: true,
               message: 'A meter is required',
-              trigger: 'blur',
+              trigger: 'blur'
             }"
           >
             <el-select
@@ -235,12 +216,7 @@
               style="width: 100%"
               @change="form[currentIndex].point = null"
             >
-              <el-option
-                v-for="item in meters"
-                :key="item.path"
-                :label="item.name"
-                :value="item.path"
-              ></el-option>
+              <el-option v-for="item in meters" :key="item.path" :label="item.name" :value="item.path"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item
@@ -248,15 +224,12 @@
             :rules="{
               required: true,
               message: 'A measurement is required',
-              trigger: 'blur',
+              trigger: 'blur'
             }"
             prop="point"
             label="Measurement: "
           >
-            <el-select
-              v-model="form.sets[currentIndex].point"
-              style="width: 100%"
-            >
+            <el-select v-model="form.sets[currentIndex].point" style="width: 100%">
               <el-option
                 v-for="(point, index) in meterPoints"
                 :value="point.value"
@@ -268,19 +241,13 @@
         </el-form>
         <el-row class="deletebutton" v-if="form.sets.length > 1">
           <el-col :span="10">
-            <el-button @click="deleteChart()" type="danger"
-              >Delete Dataset</el-button
-            >
+            <el-button @click="deleteChart()" type="danger">Delete Dataset</el-button>
           </el-col>
         </el-row>
       </el-row>
     </div>
     <span slot="footer">
-      <el-button
-        @click="cardDelete()"
-        type="danger"
-        v-if="personalView && $store.getters['modalController/data'].path"
-      >
+      <el-button @click="cardDelete()" type="danger" v-if="personalView && $store.getters['modalController/data'].path">
         Delete
       </el-button>
       <el-button @click="cardSave()" type="primary"> Ok </el-button>
@@ -333,10 +300,7 @@ export default {
           viewPath = viewPath.join( '/' )
         }
         if ( viewPath ) {
-          if (
-            this.$store.getters[viewPath + '/user'] ===
-            this.$store.getters['user/onid']
-          ) {
+          if ( this.$store.getters[viewPath + '/user'] === this.$store.getters['user/onid'] ) {
             return true
           }
         }
@@ -352,17 +316,13 @@ export default {
 
     meters: {
       get () {
-        return this.$store.getters[
-          this.form.sets[this.currentIndex].building + '/meterGroups'
-        ]
+        return this.$store.getters[this.form.sets[this.currentIndex].building + '/meterGroups']
       }
     },
 
     meterPoints: {
       get () {
-        return this.$store.getters[
-          this.form.sets[this.currentIndex].meter + '/points'
-        ]
+        return this.$store.getters[this.form.sets[this.currentIndex].meter + '/points']
       }
     }
   },
@@ -409,24 +369,14 @@ export default {
           const chartPath = charts[index].path
           this.$store.dispatch( chartPath + '/update', this.form.sets[index] )
           // update legend name
-          this.$store.commit(
-            chartPath + '/name',
-            this.$store.getters[chartPath + '/pointString']
-          )
+          this.$store.commit( chartPath + '/name', this.$store.getters[chartPath + '/pointString'] )
         } else {
           this.$store.dispatch( blockPath + '/newChart', this.form.sets[index] )
         }
       }
       if ( this.form.sets.length < charts.length ) {
-        for (
-          let index = this.form.sets.length;
-          index < charts.length;
-          index++
-        ) {
-          this.$store.dispatch(
-            blockPath + '/removeChart',
-            charts[index].path.split( '/' ).pop()
-          )
+        for ( let index = this.form.sets.length; index < charts.length; index++ ) {
+          this.$store.dispatch( blockPath + '/removeChart', charts[index].path.split( '/' ).pop() )
         }
       }
 
@@ -605,8 +555,8 @@ export default {
   color: #606266;
   line-height: 40px;
   padding: 0 12px 0 0;
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
   font-weight: 400;
 }
 .pad-bottom {

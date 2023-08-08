@@ -10,77 +10,40 @@
     <el-row class="title">
       <el-col :span="24"> Leaderboard </el-col>
     </el-row>
-    <el-row
-      class="buildingScroll"
-      v-loading="!loaded"
-      element-loading-background="rgba(0, 0, 0, 0.8)"
-    >
+    <el-row class="buildingScroll" v-loading="!loaded" element-loading-background="rgba(0, 0, 0, 0.8)">
       <el-row class="buildingRow" v-if="!loaded"> &nbsp; </el-row>
-      <el-row
-        class="buildingRow"
-        v-for="block in blocks"
-        :key="block.path"
-        ref="buildingRows"
-      >
-        <el-col
-          v-if="loaded"
-          :class="[
-            value === block.path ? 'buildingCol selected' : 'buildingCol',
-          ]"
-          :span="24"
-        >
-          <div
-            :class="[value === block.path ? 'outerClip selected' : 'outerClip']"
-          >
+      <el-row class="buildingRow" v-for="block in blocks" :key="block.path" ref="buildingRows">
+        <el-col v-if="loaded" :class="[value === block.path ? 'buildingCol selected' : 'buildingCol']" :span="24">
+          <div :class="[value === block.path ? 'outerClip selected' : 'outerClip']">
             <div
               v-if="!isNaN(accumulatedPercentage(block.path))"
-              :class="[
-                value === block.path ? 'innerClip selected' : 'innerClip',
-              ]"
+              :class="[value === block.path ? 'innerClip selected' : 'innerClip']"
               :style="`background-color:${computedColor(block.path)};`"
               @click="buildingClick(block.path)"
             >
-              <i
-                class="fas fa-trophy"
-                v-if="place(block.path) <= 3 && place(block.path) >= 1"
-                ><span
-                  :class="[
-                    value === block.path
-                      ? 'innerTrophy selected'
-                      : 'innerTrophy',
-                  ]"
-                  >{{ place(block.path) }}</span
-                ></i
+              <i class="fas fa-trophy" v-if="place(block.path) <= 3 && place(block.path) >= 1"
+                ><span :class="[value === block.path ? 'innerTrophy selected' : 'innerTrophy']">{{
+                  place(block.path)
+                }}</span></i
               >
               {{ block.name }}
               {{
-                (accumulatedPercentage(block.path) > 0 ? "+" : "") +
-                (
-                  Math.round(100 * accumulatedPercentage(block.path)) / 100
-                ).toString() +
-                "%"
+                (accumulatedPercentage(block.path) > 0 ? '+' : '') +
+                (Math.round(100 * accumulatedPercentage(block.path)) / 100).toString() +
+                '%'
               }}
             </div>
 
             <!-- Display "No Data" on block, remove button functionality of block if NaN percentage detected-->
             <div
               v-else
-              :class="[
-                value === block.path ? 'innerClip selected' : 'innerClipNoData',
-              ]"
+              :class="[value === block.path ? 'innerClip selected' : 'innerClipNoData']"
               :style="`background-color:${computedColor(block.path)};`"
             >
-              <i
-                class="fas fa-trophy"
-                v-if="place(block.path) <= 3 && place(block.path) >= 1"
-                ><span
-                  :class="[
-                    value === block.path
-                      ? 'innerTrophy selected'
-                      : 'innerTrophy',
-                  ]"
-                  >{{ place(block.path) }}</span
-                ></i
+              <i class="fas fa-trophy" v-if="place(block.path) <= 3 && place(block.path) >= 1"
+                ><span :class="[value === block.path ? 'innerTrophy selected' : 'innerTrophy']">{{
+                  place(block.path)
+                }}</span></i
               >
               {{ block.name }}- No Data
             </div>
@@ -154,13 +117,12 @@ export default {
     },
     accumulatedPercentage: function ( path ) {
       if ( this.$store.getters[path + '/modifierData'] ) {
-        return this.$store.getters[path + '/modifierData']( 'campaign_linebar' )
-          .accumulatedPercentage
+        return this.$store.getters[path + '/modifierData']( 'campaign_linebar' ).accumulatedPercentage
       }
       return undefined
     },
     place: function ( path ) {
-      return this.blocks.map( ( b ) => b.path ).indexOf( path ) + 1
+      return this.blocks.map( b => b.path ).indexOf( path ) + 1
     },
     computedColor: function ( path ) {
       if ( !this.$store.getters[path + '/modifierData']( 'campaign_linebar' ) ) {
@@ -169,21 +131,9 @@ export default {
       const percentage = this.accumulatedPercentage( path )
       // #d62326 - Bottom Red
       // #19a23a - Top Green
-      const redInt = [
-        parseInt( '0xd6', 16 ),
-        parseInt( '0x23', 16 ),
-        parseInt( '0x26', 16 )
-      ]
-      const greenInt = [
-        parseInt( '0x19', 16 ),
-        parseInt( '0xa2', 16 ),
-        parseInt( '0x3a', 16 )
-      ]
-      const typicalColor = [
-        redInt[0] - greenInt[0],
-        greenInt[1] - redInt[1],
-        greenInt[2] - redInt[2]
-      ]
+      const redInt = [parseInt( '0xd6', 16 ), parseInt( '0x23', 16 ), parseInt( '0x26', 16 )]
+      const greenInt = [parseInt( '0x19', 16 ), parseInt( '0xa2', 16 ), parseInt( '0x3a', 16 )]
+      const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
       const compare = Math.abs( percentage ) / 7.5
       const result = []
 
@@ -208,15 +158,7 @@ export default {
         result.push( Math.round( typicalColor[1] - greenInt[1] * compare ) )
         result.push( Math.round( typicalColor[2] - greenInt[2] * compare ) )
       }
-      return (
-        'rgb(' +
-        result[0].toString() +
-        ',' +
-        result[1].toString() +
-        ',' +
-        result[2].toString() +
-        ')'
-      )
+      return 'rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')'
     }
   }
 }
@@ -225,7 +167,7 @@ export default {
 .title {
   font-size: 34px;
   color: $--color-white;
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   text-align: left;
   padding-bottom: 1em;
 }
@@ -246,7 +188,7 @@ export default {
 .buildingCol {
   font-size: 24px;
   color: $--color-white;
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   cursor: pointer;
 }
 .buildingCol.selected {
@@ -290,7 +232,7 @@ $clippath: polygon(2.5% 0%, 0% 100%, 97.5% 100%, 100% 0%);
   text-align: center;
   font-size: 16px;
   color: $--color-primary;
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
 }
 .innerTrophy.selected {
   color: $--color-white;

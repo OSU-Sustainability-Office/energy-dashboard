@@ -46,15 +46,10 @@ export default {
   },
   mounted () {
     // This is the first-timer pop-up window
-    if (
-      !document.cookie
-        .split( ';' )
-        .some( ( cookieString ) => cookieString.includes( 'firstTimer' ) )
-    ) {
+    if ( !document.cookie.split( ';' ).some( cookieString => cookieString.includes( 'firstTimer' ) ) ) {
       this.$msgbox( {
         title: 'First Timer?',
-        message:
-          'Take a look at the "Get Started" tab to learn more and for FAQ\'s!',
+        message: 'Take a look at the "Get Started" tab to learn more and for FAQ\'s!',
         showCancelButton: true,
         confirmButtonText: 'OK',
         cancelButtonText: 'Never Show This Message Again',
@@ -63,8 +58,7 @@ export default {
           if ( action === 'cancel' ) {
             const cookieDate = new Date()
             cookieDate.setFullYear( new Date().getFullYear() + 10 )
-            document.cookie =
-              'firstTimer=true; expires=' + cookieDate.toUTCString() + ';'
+            document.cookie = 'firstTimer=true; expires=' + cookieDate.toUTCString() + ';'
           }
         }
       } )
@@ -85,19 +79,19 @@ export default {
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css?family=Open+Sans");
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 @font-face {
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   src:
-    url("/fonts/StratumNo2-Bold.woff2") format("woff2"),
-    url("/fonts/StratumNo2-Bold.woff") format("woff"),
-    url("/fonts/StratumNo2-Bold.ttf") format("truetype"),
-    url("/fonts/StratumNo2-Bold.svg#StratumNo2-Bold") format("svg");
+    url('/fonts/StratumNo2-Bold.woff2') format('woff2'),
+    url('/fonts/StratumNo2-Bold.woff') format('woff'),
+    url('/fonts/StratumNo2-Bold.ttf') format('truetype'),
+    url('/fonts/StratumNo2-Bold.svg#StratumNo2-Bold') format('svg');
   font-weight: bold;
   font-style: normal;
 }
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -139,11 +133,11 @@ body {
 }
 </style>
 <style lang="scss">
-@import "~element-ui/packages/theme-chalk/src/index";
+@import '~element-ui/packages/theme-chalk/src/index';
 </style>
 
 <style scoped lang="scss">
-@import "@/assets/style-variables.scss";
+@import '@/assets/style-variables.scss';
 
 .app {
   padding: 0;

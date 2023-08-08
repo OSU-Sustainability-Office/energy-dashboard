@@ -23,34 +23,20 @@
       <div class='hiddenAddChart'>Click To Add Block</div>
     </div> -->
 
-      <el-dialog
-        size="lg"
-        :visible.sync="newCard"
-        :title="!form.name ? 'New Block' : 'Edit Block'"
-        width="80%"
-      >
-        <el-form
-          label-width="120px"
-          label-position="left"
-          :model="form"
-          ref="form"
-        >
+      <el-dialog size="lg" :visible.sync="newCard" :title="!form.name ? 'New Block' : 'Edit Block'" width="80%">
+        <el-form label-width="120px" label-position="left" :model="form" ref="form">
           <el-form-item
             label="Name: "
             v-if="!story.public && !story.comparison"
             :rules="{
               required: true,
               message: 'A name is required',
-              trigger: 'blur',
+              trigger: 'blur'
             }"
             prop="name"
           >
             <label class="col-4">Name:</label>
-            <el-input
-              type="text"
-              v-model="form.name"
-              style="width: 100%"
-            ></el-input>
+            <el-input type="text" v-model="form.name" style="width: 100%"></el-input>
           </el-form-item>
           <el-form-item
             label="From Date: "
@@ -60,8 +46,8 @@
                 type: 'date',
                 required: true,
                 message: 'A from date is required',
-                trigger: 'change',
-              },
+                trigger: 'change'
+              }
             ]"
             prop="start"
           >
@@ -82,7 +68,7 @@
               type: 'date',
               required: true,
               message: 'A to date is required',
-              trigger: 'change',
+              trigger: 'change'
             }"
             prop="end"
           >
@@ -101,7 +87,7 @@
             :rules="{
               required: true,
               message: 'An interval is required',
-              trigger: 'blur',
+              trigger: 'blur'
             }"
             prop="intUnit"
           >
@@ -120,7 +106,7 @@
             :rules="{
               required: true,
               message: 'A graph type is required',
-              trigger: 'blur',
+              trigger: 'blur'
             }"
             prop="graphType"
           >
@@ -134,11 +120,7 @@
         </el-form>
         <div v-if="!story.public">
           <label>Datasets: </label>
-          <featureController
-            :index="form.index"
-            :key="form.index"
-            ref="featureController"
-          />
+          <featureController :index="form.index" :key="form.index" ref="featureController" />
         </div>
         <featureController
           v-if="story.public && !compareMode"
@@ -147,9 +129,7 @@
           ref="featureController"
         />
         <span slot="footer">
-          <el-button @click="cardDelete()" v-if="!story.public" type="danger">
-            Delete
-          </el-button>
+          <el-button @click="cardDelete()" v-if="!story.public" type="danger"> Delete </el-button>
           <el-button @click="cardSave()" type="primary"> Ok </el-button>
           <el-button @click="cancel()" type="info"> Cancel </el-button>
         </span>
@@ -222,7 +202,7 @@ export default {
       }
       validators.push( this.$refs.form.validate() )
       Promise.all( validators )
-        .then( async ( r ) => {
+        .then( async r => {
           this.newCard = false
           let card = {
             name: this.form.name,
@@ -245,7 +225,7 @@ export default {
               const newChart = {
                 id: chart.id,
                 name: this.story.comparison
-                  ? await this.buildings.find( ( e ) => {
+                  ? await this.buildings.find( e => {
                     return e.id === chart.group
                   } ).name
                   : chart.name,
@@ -255,21 +235,15 @@ export default {
                 meter: this.story.comparison ? 0 : chart.meter
               }
               if ( chart.meter === 0 ) {
-                newChart.meters = newChart.meters.concat(
-                  meters.filter( ( e ) => e.type === 'e' )
-                )
+                newChart.meters = newChart.meters.concat( meters.filter( e => e.type === 'e' ) )
               } else {
-                newChart.meters = newChart.meters.concat(
-                  meters.filter( ( e ) => e.meter_id === chart.meter )
-                )
+                newChart.meters = newChart.meters.concat( meters.filter( e => e.meter_id === chart.meter ) )
               }
               card.charts.push( newChart )
             }
           }
           this.$store.dispatch( 'block', card ).then( () => {
-            this.$refs.displayedCards[
-              this.form.index
-            ].$refs.chartController.parse()
+            this.$refs.displayedCards[this.form.index].$refs.chartController.parse()
           } )
         } )
         .catch( () => {} )
@@ -364,10 +338,7 @@ export default {
       this.form.name = this.block( index ).name
       this.form.end = new Date( this.block( index ).date_end )
       this.form.start = new Date( this.block( index ).date_start )
-      this.form.intUnit = this.reverseInt(
-        this.block( index ).interval_unit,
-        this.block( index ).date_interval
-      )
+      this.form.intUnit = this.reverseInt( this.block( index ).interval_unit, this.block( index ).date_interval )
       this.form.graphType = this.block( index ).graph_type
       this.form.id = this.block( index ).id
       this.form.index = index

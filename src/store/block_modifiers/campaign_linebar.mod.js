@@ -6,7 +6,7 @@
  * @Copyright:  (c) Oregon State University 2020
  */
 export default class CampaignLineBarModifier {
-  static name = 'campaign_linebar';
+  static name = 'campaign_linebar'
 
   constructor ( store, module ) {
     /*
@@ -78,10 +78,7 @@ export default class CampaignLineBarModifier {
       compareStart: this.data.compareStart / 1000,
       compareEnd: this.data.compareEnd / 1000
     }
-    this.promise = store.dispatch(
-      moduleVuex.getters.charts[0].path + '/getData',
-      payload
-    )
+    this.promise = store.dispatch( moduleVuex.getters.charts[0].path + '/getData', payload )
   }
   async postData ( store, moduleVuex, data ) {
     /*
@@ -119,21 +116,9 @@ export default class CampaignLineBarModifier {
     for ( let i in current ) {
       const percentage = ( current[i].y / baseline[i].y ) * 100 - 100
       this.data.accumulatedPercentage += percentage
-      const redInt = [
-        parseInt( '0xd6', 16 ),
-        parseInt( '0x23', 16 ),
-        parseInt( '0x26', 16 )
-      ]
-      const greenInt = [
-        parseInt( '0x19', 16 ),
-        parseInt( '0xa2', 16 ),
-        parseInt( '0x3a', 16 )
-      ]
-      const typicalColor = [
-        redInt[0] - greenInt[0],
-        greenInt[1] - redInt[1],
-        greenInt[2] - redInt[2]
-      ]
+      const redInt = [parseInt( '0xd6', 16 ), parseInt( '0x23', 16 ), parseInt( '0x26', 16 )]
+      const greenInt = [parseInt( '0x19', 16 ), parseInt( '0xa2', 16 ), parseInt( '0x3a', 16 )]
+      const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
       const compare = Math.abs( percentage ) / 7.5
       const result = []
       if ( percentage < -7.5 ) {
@@ -153,15 +138,7 @@ export default class CampaignLineBarModifier {
         result.push( Math.round( typicalColor[1] - greenInt[1] * compare ) )
         result.push( Math.round( typicalColor[2] - greenInt[2] * compare ) )
       }
-      colors.push(
-        'rgb(' +
-          result[0].toString() +
-          ',' +
-          result[1].toString() +
-          ',' +
-          result[2].toString() +
-          ')'
-      )
+      colors.push( 'rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')' )
     }
     data.datasets[1].borderColor = colors[0]
     data.datasets[1].backgroundColor = colors

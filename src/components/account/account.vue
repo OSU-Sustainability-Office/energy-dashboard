@@ -9,16 +9,9 @@
 <template>
   <el-row class="stage">
     <el-col class="main">
-      <heropicture
-        :media="story.media"
-        :description="story.description"
-        :name="story.name"
-      ></heropicture>
+      <heropicture :media="story.media" :description="story.description" :name="story.name"></heropicture>
       <navdir ref="navdir" @update="update" @save="save"></navdir>
-      <featured
-        ref="featureBox"
-        :compareMode="$route.path.search('compare') > 0"
-      />
+      <featured ref="featureBox" :compareMode="$route.path.search('compare') > 0" />
     </el-col>
   </el-row>
 </template>
@@ -47,10 +40,7 @@ export default {
     ...mapGetters( ['story', 'block', 'user'] ),
     start: {
       get () {
-        if (
-          this.$route.path.search( 'building' ) > 0 ||
-          this.$route.path.search( 'compare' ) > 0
-        ) {
+        if ( this.$route.path.search( 'building' ) > 0 || this.$route.path.search( 'compare' ) > 0 ) {
           let d = new Date()
           switch ( parseInt( this.$route.params.range ) ) {
             case 0:
@@ -71,10 +61,7 @@ export default {
     },
     end: {
       get () {
-        if (
-          this.$route.path.search( 'building' ) > 0 ||
-          this.$route.path.search( 'compare' ) > 0
-        ) {
+        if ( this.$route.path.search( 'building' ) > 0 || this.$route.path.search( 'compare' ) > 0 ) {
           let d = new Date()
           return d.toISOString()
         }
@@ -82,10 +69,7 @@ export default {
     },
     unit: {
       get () {
-        if (
-          this.$route.path.search( 'building' ) > 0 ||
-          this.$route.path.search( 'compare' ) > 0
-        ) {
+        if ( this.$route.path.search( 'building' ) > 0 || this.$route.path.search( 'compare' ) > 0 ) {
           switch ( parseInt( this.$route.params.range ) ) {
             case 0:
               return 'hour'
@@ -101,10 +85,7 @@ export default {
     },
     interval: {
       get () {
-        if (
-          this.$route.path.search( 'building' ) > 0 ||
-          this.$route.path.search( 'compare' ) > 0
-        ) {
+        if ( this.$route.path.search( 'building' ) > 0 || this.$route.path.search( 'compare' ) > 0 ) {
           switch ( parseInt( this.$route.params.range ) ) {
             case 0:
               return 1
@@ -201,7 +182,7 @@ export default {
     update: function () {
       if ( this.$route.path.search( 'building' ) > 0 ) {
         this.path = ['Public']
-        this.$store.dispatch( 'story', this.$route.params.id ).then( ( r ) => {
+        this.$store.dispatch( 'story', this.$route.params.id ).then( r => {
           let promises = []
           for ( let b in r.blocks ) {
             let c = {
@@ -214,7 +195,7 @@ export default {
             promises.push( this.$store.dispatch( 'block', c ) )
           }
 
-          Promise.all( promises ).then( ( t ) => {
+          Promise.all( promises ).then( t => {
             this.$refs.featureBox.updateCards()
             this.$refs.navdir.populate()
           } )
@@ -229,7 +210,7 @@ export default {
             interval: this.interval,
             unit: this.unit
           } )
-          .then( async ( v ) => {
+          .then( async v => {
             // this.mediaArray = this.story.media
             // for (let chart of this.story.blocks[0].charts) {
             //   this.titles.push(chart.name)
@@ -242,7 +223,7 @@ export default {
           } )
       } else {
         if ( this.$route.params.id ) {
-          this.$store.dispatch( 'story', this.$route.params.id ).then( ( r ) => {
+          this.$store.dispatch( 'story', this.$route.params.id ).then( r => {
             this.$refs.featureBox.updateCards()
             if ( this.$refs.navdir ) {
               this.$refs.navdir.populate()

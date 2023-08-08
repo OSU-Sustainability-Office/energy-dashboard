@@ -94,10 +94,7 @@ const actions = {
       this.registerModule( moduleSpace.split( '/' ), Block )
       store.commit( blockSpace + '/path', moduleSpace )
       store.commit( blockSpace + '/shuffleChartColors' )
-      let viewBlockPromise = store.dispatch(
-        blockSpace + '/loadCharts',
-        block.charts
-      )
+      let viewBlockPromise = store.dispatch( blockSpace + '/loadCharts', block.charts )
       store.commit( blockSpace + '/promise', viewBlockPromise )
       promises.push( viewBlockPromise )
       store.commit( blockSpace + '/name', block.name )
@@ -190,7 +187,7 @@ const getters = {
     return state.description
   },
 
-  block: ( state ) => ( id ) => {
+  block: state => id => {
     return state['block_' + id]
   },
 

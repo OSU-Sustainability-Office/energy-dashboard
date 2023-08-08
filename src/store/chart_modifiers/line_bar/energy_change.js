@@ -100,25 +100,15 @@ export default class LineEnergyChange {
 
       try {
         let accumulator = 0
-        if (
-          isNaN( resultDataObject.get( result ) ) ||
-          isNaN( resultDataObject.get( result_i ) )
-        ) {
+        if ( isNaN( resultDataObject.get( result ) ) || isNaN( resultDataObject.get( result_i ) ) ) {
           continue
         }
         accumulator = resultDataObject.get( result )
         // Add proceeding values
-        const minimumInterval =
-          intervalUnitDelta['minute'] * payload.dateInterval
-        for (
-          let next = minimumInterval;
-          next < delta;
-          next += minimumInterval
-        ) {
+        const minimumInterval = intervalUnitDelta['minute'] * payload.dateInterval
+        for ( let next = minimumInterval; next < delta; next += minimumInterval ) {
           const nextReading = resultDataObject.get( result_i + ( delta + next ) )
-          accumulator = isNaN( nextReading )
-            ? accumulator
-            : accumulator + nextReading
+          accumulator = isNaN( nextReading ) ? accumulator : accumulator + nextReading
         }
         // console.log(accumulator)
 

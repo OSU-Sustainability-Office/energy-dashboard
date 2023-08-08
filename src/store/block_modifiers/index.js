@@ -9,7 +9,7 @@
 const modifiers = require.context( '.', false, /\.mod\.js$/ )
 const modules = {}
 
-modifiers.keys().forEach( ( key ) => {
+modifiers.keys().forEach( key => {
   modules[modifiers( key ).default.name] = modifiers( key ).default
 } )
 

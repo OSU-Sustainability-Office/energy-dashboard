@@ -22,22 +22,11 @@
           <div
             class="col"
             @click="select(image)"
-            :style="
-              'background-image:url(&quot;' +
-              api +
-              '/energy/images/' +
-              image +
-              '&size=0.1&quot;)'
-            "
+            :style="'background-image:url(&quot;' + api + '/energy/images/' + image + '&size=0.1&quot;)'"
             v-bind:class="[selected === index + 1 ? 'selected' : 'e']"
           ></div>
         </el-col>
-        <el-col
-          v-for="n in 10"
-          :key="n + 'bad'"
-          :span="6"
-          class="noHeight"
-        ></el-col>
+        <el-col v-for="n in 10" :key="n + 'bad'" :span="6" class="noHeight"></el-col>
       </el-row>
     </el-col>
   </el-row>
@@ -54,7 +43,7 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch( 'media' ).then( ( r ) => {
+    this.$store.dispatch( 'media' ).then( r => {
       this.images = []
       var index = 0
       for ( var i of r ) {
@@ -82,7 +71,7 @@ export default {
 <style scoped>
 label {
   color: white;
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 .selected {
   outline: solid 4px rgb(215, 63, 9);

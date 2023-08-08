@@ -39,10 +39,7 @@ const actions = {
     const chartModifier = ChartModifiers( payload.graphType, reqPayload.point )
     await chartModifier.preGetData( reqPayload, this, store )
 
-    let data = await this.dispatch(
-      store.getters.meterGroupPath + '/getData',
-      reqPayload
-    )
+    let data = await this.dispatch( store.getters.meterGroupPath + '/getData', reqPayload )
     let chartData = {
       label: store.getters.name,
       backgroundColor: store.getters.color,
@@ -66,10 +63,7 @@ const actions = {
     store.commit( 'name', chart.name )
     store.commit( 'point', chart.point )
     store.commit( 'building', chart.building )
-    store.commit(
-      'meterGroupPath',
-      this.getters.meterGroup( chart.meterGroup ).path
-    )
+    store.commit( 'meterGroupPath', this.getters.meterGroup( chart.meterGroup ).path )
   },
 
   async update ( store, payload ) {

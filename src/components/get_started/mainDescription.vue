@@ -1,20 +1,13 @@
 <template>
   <div>
-    <el-divider class="divider" content-position="left">
-      Why We Created The Energy Dashboard
-    </el-divider>
+    <el-divider class="divider" content-position="left"> Why We Created The Energy Dashboard </el-divider>
     <el-row>
-      The Energy Dashboard has been developed by the Oregon State University
-      Sustainability Office to enable members of the OSU community to access,
-      view, and analyze energy consumption trends.
+      The Energy Dashboard has been developed by the Oregon State University Sustainability Office to enable members of
+      the OSU community to access, view, and analyze energy consumption trends.
     </el-row>
-    <el-divider class="divider" content-position="left">
-      How To Use The "Map" Tab
-    </el-divider>
+    <el-divider class="divider" content-position="left"> How To Use The "Map" Tab </el-divider>
     <mapTab />
-    <el-divider class="divider" content-position="left">
-      How To Use The "Building List" Tab
-    </el-divider>
+    <el-divider class="divider" content-position="left"> How To Use The "Building List" Tab </el-divider>
     <buildingListTab />
   </div>
 </template>

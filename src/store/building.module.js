@@ -217,11 +217,11 @@ const getters = {
     return r
   },
 
-  block: ( state ) => ( id ) => {
+  block: state => id => {
     return state[`block_${id}`]
   },
 
-  primaryGroup: ( state ) => ( type ) => {
+  primaryGroup: state => type => {
     for ( let key of Object.keys( state ) ) {
       if ( key.search( /meterGroup_[0-9]+/ ) >= 0 ) {
         if ( state[key].default && state[key].type === type ) {

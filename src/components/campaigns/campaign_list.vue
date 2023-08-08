@@ -1,21 +1,14 @@
 <template>
   <el-row class="campaignlistview">
     <el-tabs v-model="activePane">
-      <el-tab-pane
-        label="Current Campaigns"
-        name="new"
-        ref="currentTab"
-        class="list"
-      >
+      <el-tab-pane label="Current Campaigns" name="new" ref="currentTab" class="list">
         <campaignBlock
           v-for="campaign in currentCampaigns"
           :camp="campaign"
           :key="campaign.id"
           @click="$router.push('/campaign/' + campaign.id)"
         />
-        <span class="noText" v-if="currentCampaigns.length <= 0 && loaded">
-          No Current Campaigns
-        </span>
+        <span class="noText" v-if="currentCampaigns.length <= 0 && loaded"> No Current Campaigns </span>
         <span class="noText" v-if="!loaded"> Loading... </span>
       </el-tab-pane>
       <el-tab-pane label="Past Campaigns" name="old" ref="pastTab" class="list">
@@ -25,9 +18,7 @@
           :key="campaign.id"
           @click="$router.push('/campaign/' + campaign.id)"
         />
-        <span class="noText" v-if="pastCampaigns.length <= 0 && loaded">
-          No Past Campaigns
-        </span>
+        <span class="noText" v-if="pastCampaigns.length <= 0 && loaded"> No Past Campaigns </span>
         <span class="noText" v-if="!loaded"> Loading... </span>
       </el-tab-pane>
     </el-tabs>
@@ -51,10 +42,7 @@ export default {
     await this.$store.dispatch( 'campaigns/loadCampaigns' )
     this.loaded = true
     for ( let camp of this.$store.getters['campaigns/campaigns'] ) {
-      if (
-        this.checkDate( camp.dateEnd ) &&
-        !camp.name.toLowerCase().startsWith( 'test' )
-      ) {
+      if ( this.checkDate( camp.dateEnd ) && !camp.name.toLowerCase().startsWith( 'test' ) ) {
         console.log( this.checkDate( camp.dateEnd ) )
         this.currentCampaigns.push( camp )
       } else if ( !camp.name.toLowerCase().startsWith( 'test' ) ) {

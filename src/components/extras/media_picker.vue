@@ -1,6 +1,5 @@
-/* * @Author: you@you.you * @Date: Saturday January 11th 2020 * @Last Modified
-By: Brogan Miner * @Last Modified Time: Saturday January 11th 2020 * @Copyright:
-(c) Oregon State University 2020 */
+/* * @Author: you@you.you * @Date: Saturday January 11th 2020 * @Last Modified By: Brogan Miner * @Last Modified Time:
+Saturday January 11th 2020 * @Copyright: (c) Oregon State University 2020 */
 <!--
 @Author: Brogan Miner <Brogan>
 @Date:   2019-01-04T10:08:23-08:00
@@ -25,22 +24,11 @@ By: Brogan Miner * @Last Modified Time: Saturday January 11th 2020 * @Copyright:
           <div
             class="col"
             @click="select(image)"
-            :style="
-              'background-image:url(&quot;' +
-              api +
-              '/image?name=' +
-              image +
-              '&size=2&quot;)'
-            "
+            :style="'background-image:url(&quot;' + api + '/image?name=' + image + '&size=2&quot;)'"
             v-bind:class="[selected === index + 1 ? 'selected' : 'e']"
           ></div>
         </el-col>
-        <el-col
-          v-for="n in 10"
-          :key="n + 'bad'"
-          :span="6"
-          class="noHeight"
-        ></el-col>
+        <el-col v-for="n in 10" :key="n + 'bad'" :span="6" class="noHeight"></el-col>
       </el-row>
     </el-col>
   </el-row>
@@ -57,7 +45,7 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch( 'map/imageList' ).then( ( r ) => {
+    this.$store.dispatch( 'map/imageList' ).then( r => {
       this.images = []
       var index = 0
       for ( var i of r ) {
@@ -84,7 +72,7 @@ export default {
 <style scoped>
 label {
   color: white;
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 .selected {
   outline: solid 4px rgb(215, 63, 9);

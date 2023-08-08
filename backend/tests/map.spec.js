@@ -5,34 +5,34 @@
  * @Description: Unit tests for API endpoints associated with
  *               the frontend Map VueX module
  */
-const testConfig = require("./assertedData/test_config.json");
-const CORSUtil = require("./utility/cors_test_utility.js");
-const server = testConfig["serverOrigin"];
-const client = testConfig["clientOrigin"];
+const testConfig = require('./assertedData/test_config.json')
+const CORSUtil = require('./utility/cors_test_utility.js')
+const server = testConfig['serverOrigin']
+const client = testConfig['clientOrigin']
 
 const MOCK_REQUEST_EVENT = {
   headers: {
-    origin: `${client.scheme}://${client.host}`,
-  },
-};
+    origin: `${client.scheme}://${client.host}`
+  }
+}
 
-const AllBuildings = require("../app/building.js");
+const AllBuildings = require('../app/building.js')
 
-describe("Testing map.module.js related API endpoints...", () => {
-  let response;
+describe('Testing map.module.js related API endpoints...', () => {
+  let response
 
-  it("/allbuildings returns substantial data", async () => {
-    response = await AllBuildings.all(MOCK_REQUEST_EVENT);
-    const jsonData = JSON.parse(response.body);
-    expect(jsonData.length).toBeGreaterThan(5);
-  });
+  it('/allbuildings returns substantial data', async () => {
+    response = await AllBuildings.all(MOCK_REQUEST_EVENT)
+    const jsonData = JSON.parse(response.body)
+    expect(jsonData.length).toBeGreaterThan(5)
+  })
 
-  it("/allbuildings returns CORS headers", async () => {
-    const corsResult = CORSUtil.VerifyCORSResponse(response, client, server);
+  it('/allbuildings returns CORS headers', async () => {
+    const corsResult = CORSUtil.VerifyCORSResponse(response, client, server)
     try {
-      expect(corsResult.result).toBe(true);
+      expect(corsResult.result).toBe(true)
     } catch {
-      throw new Error(corsResult.reason);
+      throw new Error(corsResult.reason)
     }
-  });
-});
+  })
+})

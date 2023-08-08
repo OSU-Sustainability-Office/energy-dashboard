@@ -13,22 +13,16 @@
         <el-col :span="23">
           <span>{{ name }} </span>
         </el-col>
-        <el-col :span="1" class="close-box"
-          ><i class="fas fa-times" @click="$emit('hide')"></i
-        ></el-col>
+        <el-col :span="1" class="close-box"><i class="fas fa-times" @click="$emit('hide')"></i></el-col>
       </el-row>
-      <el-row
-        class="pics"
-        v-loading="mediaArray.length < 0"
-        element-loading-background="rgba(0, 0, 0, 0.8)"
-      >
+      <el-row class="pics" v-loading="mediaArray.length < 0" element-loading-background="rgba(0, 0, 0, 0.8)">
         <el-col :span="24" class="nowrap">
           <div
             v-for="(media, index) in mediaArray"
             :class="classForIndex(index)"
-            :style="`background-image:url(${api}/image?name=${media}); width:calc(${
-              100 / mediaArray.length
-            }% + ${index === 0 ? '22.5px' : '55px'});`"
+            :style="`background-image:url(${api}/image?name=${media}); width:calc(${100 / mediaArray.length}% + ${
+              index === 0 ? '22.5px' : '55px'
+            });`"
             :key="media"
           ></div>
         </el-col>
@@ -46,7 +40,7 @@
               width: 'calc(100% - 20px)',
               height: '100%',
               'margin-right': '10px',
-              'margin-left': '10px',
+              'margin-left': '10px'
             }"
             :height="300"
           />
@@ -58,9 +52,9 @@
             class="bigButton"
             @click="
               $router.push({
-                path: `/compare/${encodeURI(
-                  JSON.stringify(buildings.map((o) => o.id)),
-                )}/${$refs.switcher.currentRange + 1}`,
+                path: `/compare/${encodeURI(JSON.stringify(buildings.map(o => o.id)))}/${
+                  $refs.switcher.currentRange + 1
+                }`
               })
             "
             >View Full Graph</el-button
@@ -93,17 +87,14 @@ export default {
     },
     block: {
       get () {
-        let mgId =
-          this.$store.getters[this.path + '/primaryGroup']( 'Electricity' ).id
+        let mgId = this.$store.getters[this.path + '/primaryGroup']( 'Electricity' ).id
         return this.$store.getters[this.path + '/block']( mgId )
       }
     },
     name: {
       get () {
         if ( !this.buildings ) return
-        let names = this.buildings.map(
-          ( building ) => this.$store.getters[building.path + '/name']
-        )
+        let names = this.buildings.map( building => this.$store.getters[building.path + '/name'] )
         let r = ''
         for ( let index in names ) {
           if ( index > 0 ) {
@@ -117,19 +108,14 @@ export default {
     buildings: {
       get () {
         if ( !this.block ) return
-        let buildingIds =
-          this.$store.getters[this.block.path + '/modifierData'](
-            'building_compare'
-          ).buildingIds
-        return buildingIds.map( ( id ) => this.$store.getters['map/building']( id ) )
+        let buildingIds = this.$store.getters[this.block.path + '/modifierData']( 'building_compare' ).buildingIds
+        return buildingIds.map( id => this.$store.getters['map/building']( id ) )
       }
     },
     mediaArray: {
       get () {
         if ( !this.buildings ) return
-        let buildingImages = this.buildings.map(
-          ( building ) => this.$store.getters[building.path + '/image']
-        )
+        let buildingImages = this.buildings.map( building => this.$store.getters[building.path + '/image'] )
         while ( buildingImages.length > 4 ) buildingImages.pop()
         return buildingImages
       }
@@ -196,7 +182,7 @@ export default {
   color: $--color-white;
   border-bottom: solid 1px $--color-white;
   font-size: 26px;
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   padding-top: 17px;
   padding-left: 20px;
   position: relative;

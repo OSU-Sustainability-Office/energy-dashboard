@@ -21,13 +21,7 @@
         <el-button class="indexButton" @click="addGroup()">+</el-button>
       </el-col>
     </el-row>
-    <el-form
-      ref="form"
-      :model="form[currentIndex]"
-      label-width="120px"
-      size="large"
-      label-position="left"
-    >
+    <el-form ref="form" :model="form[currentIndex]" label-width="120px" size="large" label-position="left">
       <el-form-item
         v-if="!story.public"
         prop="group"
@@ -35,7 +29,7 @@
         :rules="{
           required: true,
           message: 'A building is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
       >
         <el-select
@@ -45,16 +39,11 @@
           placeholder="Building"
           style="width: 100%"
           @change="
-            form[currentIndex].meter = 0;
-            form[currentIndex].point = null;
+            form[currentIndex].meter = 0
+            form[currentIndex].point = null
           "
         >
-          <el-option
-            v-for="(item, index) in buildings"
-            :key="index"
-            :label="item.name"
-            :value="item.id"
-          ></el-option>
+          <el-option v-for="(item, index) in buildings" :key="index" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item
@@ -64,14 +53,10 @@
         :rules="{
           required: true,
           message: 'A set name is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
       >
-        <el-input
-          type="text"
-          v-model="form[currentIndex].name"
-          style="width: 100%"
-        ></el-input>
+        <el-input type="text" v-model="form[currentIndex].name" style="width: 100%"></el-input>
       </el-form-item>
 
       <el-form-item
@@ -81,7 +66,7 @@
         :rules="{
           required: true,
           message: 'A meter is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
       >
         <el-select
@@ -105,7 +90,7 @@
         :rules="{
           required: true,
           message: 'A measurement is required',
-          trigger: 'blur',
+          trigger: 'blur'
         }"
         prop="point"
         label="Measurement: "
@@ -124,9 +109,7 @@
     </el-form>
     <el-row class="deletebutton" v-if="this.form.length > 1 && !story.public">
       <el-col :span="10">
-        <el-button @click="deleteChart()" type="danger"
-          >Delete Dataset</el-button
-        >
+        <el-button @click="deleteChart()" type="danger">Delete Dataset</el-button>
       </el-col>
     </el-row>
   </el-row>
@@ -236,7 +219,7 @@ export default {
       return new Promise( ( resolve, reject ) => {
         this.$store
           .dispatch( 'buildingMeters', { id: this.group[i] } )
-          .then( ( r ) => {
+          .then( r => {
             let p = []
             for ( let meter of r ) {
               if ( this.form[i].meter === 0 ) {
@@ -251,13 +234,13 @@ export default {
             }
             resolve( p )
           } )
-          .catch( ( e ) => {
+          .catch( e => {
             reject( e )
           } )
       } )
     },
     changeIndex: function ( index ) {
-      this.$refs.form.validate( ( valid ) => {
+      this.$refs.form.validate( valid => {
         if ( valid ) {
           this.currentIndex = index
         }
@@ -273,7 +256,7 @@ export default {
       }
     },
     addGroup: function () {
-      this.$refs.form.validate( ( valid ) => {
+      this.$refs.form.validate( valid => {
         if ( valid ) {
           this.form.push( {
             meter: null,

@@ -6,7 +6,7 @@
  * @Copyright:  (c) Oregon State University 2020
  */
 export default class CompareModifier {
-  static name = 'building_compare';
+  static name = 'building_compare'
 
   constructor ( store, module ) {
     /*
@@ -68,10 +68,7 @@ export default class CompareModifier {
     for ( let i in ids ) {
       if ( parseInt( i ) !== 0 ) {
         let id = ids[i]
-        let mgId =
-          store.getters[
-            store.getters['map/building']( id ).path + '/primaryGroup'
-          ]( 'Electricity' ).id
+        let mgId = store.getters[store.getters['map/building']( id ).path + '/primaryGroup']( 'Electricity' ).id
         charts.push( {
           id: id,
           name: this.buildingName( store, id ),
@@ -108,10 +105,7 @@ export default class CompareModifier {
       data.
     */
     if ( this.data.buildingIds[0] ) {
-      data.datasets[0].label = this.buildingName(
-        store,
-        this.data.buildingIds[0]
-      )
+      data.datasets[0].label = this.buildingName( store, this.data.buildingIds[0] )
     }
   }
 }

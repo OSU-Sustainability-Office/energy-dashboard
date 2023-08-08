@@ -10,17 +10,8 @@
       <navdir ref="navdir" v-if="navVis"></navdir>
       <el-row>
         <el-col :span="24" class="card_area">
-          <card
-            v-for="(card, index) in cards"
-            :key="index + '-' + view.id"
-            :path="card.path"
-          />
-          <div
-            class="addFeatured"
-            v-if="personalView"
-            key="add"
-            @click="addFeature()"
-          >
+          <card v-for="(card, index) in cards" :key="index + '-' + view.id" :path="card.path" />
+          <div class="addFeatured" v-if="personalView" key="add" @click="addFeature()">
             <i class="fas fa-plus"></i>
             <div class="hiddenAddChart">Click To Add Block</div>
           </div>
@@ -52,10 +43,7 @@ export default {
   },
   async created () {
     await this.$store.dispatch( 'map/loadMap' )
-    this.navVis =
-      this.personalView ||
-      this.$route.path.includes( 'building' ) ||
-      this.otherView
+    this.navVis = this.personalView || this.$route.path.includes( 'building' ) || this.otherView
     await this.$store.dispatch( 'user/user' )
     if ( !this.view.id ) {
       await this.$store.dispatch( 'view/changeView', this.$route.params.id )
@@ -79,10 +67,7 @@ export default {
           ( !this.view || this.view.id !== parseInt( this.$route.params.id ) )
         ) {
           this.$store.dispatch( 'view/changeView', this.$route.params.id )
-        } else if (
-          this.$route.path.includes( 'building' ) ||
-          this.$route.path.includes( 'compare' )
-        ) {
+        } else if ( this.$route.path.includes( 'building' ) || this.$route.path.includes( 'compare' ) ) {
           for ( let card of this.cards ) {
             this.$store.commit( card.path + '/dateStart', this.dateStart )
             this.$store.commit( card.path + '/dateEnd', this.dateEnd )
@@ -97,17 +82,12 @@ export default {
       handler: async function ( buildings ) {
         if ( this.$route.path.includes( 'compare' ) ) {
           if ( this.cards.length > 0 && this.cards[0] ) {
-            await this.$store.dispatch(
-              this.cards[0].path + '/removeAllModifiers'
-            )
-            await this.$store.dispatch(
-              this.cards[0].path + '/addModifier',
-              'building_compare'
-            )
+            await this.$store.dispatch( this.cards[0].path + '/removeAllModifiers' )
+            await this.$store.dispatch( this.cards[0].path + '/addModifier', 'building_compare' )
             await this.$store.dispatch( this.cards[0].path + '/updateModifier', {
               name: 'building_compare',
               data: {
-                buildingIds: buildings.map( ( building ) => building.id )
+                buildingIds: buildings.map( building => building.id )
               }
             } )
           }
@@ -138,14 +118,8 @@ export default {
             this.$nextTick( () => {
               this.$store.commit( card.path + '/dateStart', this.dateStart )
               this.$store.commit( card.path + '/dateEnd', this.dateEnd )
-              this.$store.commit(
-                card.path + '/dateInterval',
-                this.dateInterval
-              )
-              this.$store.commit(
-                card.path + '/intervalUnit',
-                this.intervalUnit
-              )
+              this.$store.commit( card.path + '/dateInterval', this.dateInterval )
+              this.$store.commit( card.path + '/intervalUnit', this.intervalUnit )
             } )
           }
         }
@@ -198,9 +172,7 @@ export default {
           }
           return view
         } else {
-          let userView = this.$store.getters['user/view'](
-            this.$route.params.id
-          )
+          let userView = this.$store.getters['user/view']( this.$route.params.id )
           if ( userView ) return userView
           else return this.$store.getters['view']
         }
@@ -209,27 +181,18 @@ export default {
     compareBuildings: {
       get () {
         if ( !this.$route.path.includes( 'compare' ) ) return null
-        return JSON.parse( decodeURI( this.$route.params.buildings ) ).map( ( id ) =>
-          this.$store.getters['map/building']( id )
-        )
+        return JSON.parse( decodeURI( this.$route.params.buildings ) ).map( id => this.$store.getters['map/building']( id ) )
       }
     },
     cards: {
       get () {
         if ( this.$route.path.includes( 'compare' ) ) {
-          if (
-            !this.compareBuildings ||
-            this.compareBuildings.length === 0 ||
-            !this.compareBuildings[0]
-          ) {
+          if ( !this.compareBuildings || this.compareBuildings.length === 0 || !this.compareBuildings[0] ) {
             return []
           }
-          let building = this.$store.getters['map/building'](
-            this.compareBuildings[0].id
-          )
+          let building = this.$store.getters['map/building']( this.compareBuildings[0].id )
           if ( !building ) return []
-          let group =
-            this.$store.getters[building.path + '/primaryGroup']( 'Electricity' )
+          let group = this.$store.getters[building.path + '/primaryGroup']( 'Electricity' )
           let block = this.$store.getters[building.path + '/block']( group.id )
           if ( !block ) return []
           return [this.$store.getters[building.path + '/block']( group.id )]
@@ -274,9 +237,7 @@ export default {
          produce a trendline of zero (horizontal line) which isn't particularly useful for anyone.
         */
         const isSolar =
-          this.$store.getters[
-            `map/building_${this.$route.params.id}/meterGroups`
-          ][0].type === 'Solar Panel'
+          this.$store.getters[`map/building_${this.$route.params.id}/meterGroups`][0].type === 'Solar Panel'
 
         switch ( parseInt( this.$route.params.range ) ) {
           case 1:

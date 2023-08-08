@@ -10,11 +10,7 @@
   <el-row>
     <el-col :span="24">
       <el-collapse v-model="activeName" accordion class="meterg-collapse">
-        <el-collapse-item
-          v-for="meter of this.value"
-          :name="meter.id"
-          :key="meter.id"
-        >
+        <el-collapse-item v-for="meter of this.value" :name="meter.id" :key="meter.id">
           <template slot="title">
             {{ meter.name }}
             <!-- <el-col :span='8'>
@@ -38,11 +34,7 @@
           <el-row>
             <el-col :span="2" class="inline-col"> Name: </el-col>
             <el-col :span="6">
-              <el-input
-                type="text"
-                v-model="meter.name"
-                class="inline-input"
-              ></el-input>
+              <el-input type="text" v-model="meter.name" class="inline-input"></el-input>
             </el-col>
             <el-col :span="8"> &nbsp; </el-col>
             <el-col :span="2"> Default: </el-col>
@@ -56,19 +48,10 @@
             </el-col>
           </el-row>
           <el-tabs type="card" @tab-click="handleClick">
-            <el-tab-pane
-              v-for="type in ['Electric', 'Steam', 'Gas']"
-              :label="type"
-              :key="type"
-            >
+            <el-tab-pane v-for="type in ['Electric', 'Steam', 'Gas']" :label="type" :key="type">
               <el-row>
                 <el-col :span="24">
-                  <el-input
-                    placeholder="Search"
-                    prefix-icon="el-icon-search"
-                    v-model="search"
-                  >
-                  </el-input>
+                  <el-input placeholder="Search" prefix-icon="el-icon-search" v-model="search"> </el-input>
                 </el-col>
               </el-row>
               <el-row>
@@ -78,33 +61,21 @@
                 <el-col :span="2"> Included </el-col>
                 <el-col :span="2"> Negate </el-col>
               </el-row>
-              <el-row
-                v-for="device of devicesForType(type)"
-                :key="device.id"
-                :id="device.id"
-                ref="device_row"
-              >
+              <el-row v-for="device of devicesForType(type)" :key="device.id" :id="device.id" ref="device_row">
                 <el-col :span="10">
                   {{ device.name }}
                   <span v-if="!device.name"> &nbsp; </span>
                 </el-col>
                 <el-col :span="6">
                   {{ device.address | address }}
-                  <span v-if="!device.address || !device.address.split('_')[0]">
-                    &nbsp;
-                  </span>
+                  <span v-if="!device.address || !device.address.split('_')[0]"> &nbsp; </span>
                 </el-col>
                 <el-col :span="4">
                   {{ device.address | port }}
-                  <span v-if="!device.address || !device.address.split('_')[1]">
-                    &nbsp;
-                  </span>
+                  <span v-if="!device.address || !device.address.split('_')[1]"> &nbsp; </span>
                 </el-col>
                 <el-col :span="2">
-                  <el-checkbox
-                    v-model="checkedBoxes[device.id][meter.id].include"
-                    @change="updateModel"
-                  ></el-checkbox>
+                  <el-checkbox v-model="checkedBoxes[device.id][meter.id].include" @change="updateModel"></el-checkbox>
                 </el-col>
                 <el-col :span="2">
                   <el-checkbox
@@ -120,9 +91,7 @@
       </el-collapse>
       <el-row>
         <el-col :span="24">
-          <el-button @click.stop="newGroup" type="default">
-            New Meter Group
-          </el-button>
+          <el-button @click.stop="newGroup" type="default"> New Meter Group </el-button>
         </el-col>
       </el-row>
     </el-col>
@@ -150,11 +119,11 @@ export default {
     search: function ( v ) {
       let values = this.allDevices
         .filter(
-          ( obj ) =>
+          obj =>
             // Check that the item's name includes query
             obj.name && obj.name.toLowerCase().includes( v.toLowerCase() )
         )
-        .map( ( e ) => {
+        .map( e => {
           return e.id
         } )
       for ( let row of this.$refs.device_row ) {
@@ -169,7 +138,7 @@ export default {
   methods: {
     handleClick () {
       let copiedValue = JSON.parse( JSON.stringify( this.value ) )
-      const index = this.value.map( ( o ) => o.id ).indexOf( this.activeName )
+      const index = this.value.map( o => o.id ).indexOf( this.activeName )
       copiedValue[index].meters = []
       this.$emit( 'input', copiedValue )
     },
@@ -220,33 +189,32 @@ export default {
             include: false,
             negate: false
           } )
-          this.checkedBoxes[device.id][meter.id].include =
-            meter.meters.find( ( m ) => m.id === device.id ) !== undefined
+          this.checkedBoxes[device.id][meter.id].include = meter.meters.find( m => m.id === device.id ) !== undefined
           this.checkedBoxes[device.id][meter.id].negate =
-            meter.meters.find( ( m ) => m.id === device.id ) !== undefined &&
-            meter.meters.find( ( m ) => m.id === device.id ).operation === 0
+            meter.meters.find( m => m.id === device.id ) !== undefined &&
+            meter.meters.find( m => m.id === device.id ).operation === 0
         }
       }
     },
     deleteGroup ( id ) {
       let copiedValue = JSON.parse( JSON.stringify( this.value ) )
-      copiedValue.splice( copiedValue.map( ( m ) => m.id ).indexOf( id ), 1 )
+      copiedValue.splice( copiedValue.map( m => m.id ).indexOf( id ), 1 )
       this.$emit( 'input', copiedValue )
     }
   },
   filters: {
-    address: ( value ) => {
+    address: value => {
       if ( !value ) return
       return value.split( '_' )[0]
     },
-    port: ( value ) => {
+    port: value => {
       if ( !value ) return
       return value.split( '_' )[1]
     }
   },
   computed: {},
   mounted () {
-    this.$store.dispatch( 'map/allDevices' ).then( ( devices ) => {
+    this.$store.dispatch( 'map/allDevices' ).then( devices => {
       for ( let device of devices ) {
         if ( device.type === 'Electricity' ) {
           device.type = 'Electric'

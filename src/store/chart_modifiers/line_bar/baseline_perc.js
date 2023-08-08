@@ -78,10 +78,7 @@ export default class LinePercModifier {
         if ( isNaN( baselineData.get( i + delta ) ) || isNaN( baselineData.get( i ) ) ) {
           continue
         }
-        differenceBaseline.set(
-          i + delta,
-          baselineData.get( i + delta ) - baselineData.get( i )
-        )
+        differenceBaseline.set( i + delta, baselineData.get( i + delta ) - baselineData.get( i ) )
         // returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
       } catch ( error ) {
         console.log( error )
@@ -134,22 +131,13 @@ export default class LinePercModifier {
         result_i = findClosest( keysarray, i )
       }
       try {
-        if (
-          isNaN( resultDataObject.get( result ) ) ||
-          isNaN( resultDataObject.get( result_i ) )
-        ) {
+        if ( isNaN( resultDataObject.get( result ) ) || isNaN( resultDataObject.get( result_i ) ) ) {
           continue
         }
         let baselinePoint =
-          avgbins[new Date( result * 1000 ).getDay()][
-            Math.floor( ( result % ( 60 * 60 * 24 ) ) / result_delta )
-          ]
+          avgbins[new Date( result * 1000 ).getDay()][Math.floor( ( result % ( 60 * 60 * 24 ) ) / result_delta )]
         if ( baselinePoint !== -1 ) {
-          accumulator =
-            ( ( resultDataObject.get( result ) - resultDataObject.get( result_i ) ) /
-              baselinePoint ) *
-              100 -
-            100
+          accumulator = ( ( resultDataObject.get( result ) - resultDataObject.get( result_i ) ) / baselinePoint ) * 100 - 100
 
           // do not add data point to graph if datapoint is -100% (issue with Weatherford for campaign 8, near the end)
           if ( accumulator !== -100 ) {
@@ -194,10 +182,7 @@ export default class LinePercModifier {
       dateStart: payload.compareStart,
       dateEnd: payload.compareEnd
     }
-    let baselineData = await store.dispatch(
-      meterGroupPath + '/getData',
-      baselinePayload
-    )
+    let baselineData = await store.dispatch( meterGroupPath + '/getData', baselinePayload )
     payload['baselineData'] = baselineData
   }
 }

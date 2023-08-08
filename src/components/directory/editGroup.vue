@@ -14,19 +14,14 @@
         prop="name"
         :rules="[
           { required: true, message: 'A name is required', trigger: 'blur' },
-          { validator: checkDuplicate, trigger: 'blur' },
+          { validator: checkDuplicate, trigger: 'blur' }
         ]"
       >
         <el-input type="text" v-model="form.name"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer">
-      <el-button
-        @click="deleteGroup()"
-        type="danger"
-        v-if="title === 'Edit Group'"
-        >Delete</el-button
-      >
+      <el-button @click="deleteGroup()" type="danger" v-if="title === 'Edit Group'">Delete</el-button>
       <el-button @click="saveGroup()" type="primary">Save</el-button>
       <el-button type="info" @click="toggle = false">Cancel</el-button>
     </span>
@@ -53,7 +48,7 @@ export default {
   },
   methods: {
     saveGroup: function () {
-      this.$refs.form.validate( ( valid ) => {
+      this.$refs.form.validate( valid => {
         if ( valid ) {
           this.$emit( 'save', { name: this.form.name, id: this.id } )
           this.toggle = false

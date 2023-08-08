@@ -11,31 +11,15 @@
     <el-col :span="24">
       <el-row>
         <el-col :span="20">
-          <el-input
-            placeholder="Search"
-            prefix-icon="el-icon-search"
-            v-model="search"
-          >
-          </el-input>
+          <el-input placeholder="Search" prefix-icon="el-icon-search" v-model="search"> </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button
-            @click="editBuilding(null)"
-            type="primary"
-            class="newButton"
-          >
-            New Building
-          </el-button>
+          <el-button @click="editBuilding(null)" type="primary" class="newButton"> New Building </el-button>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24" class="cards_col">
-          <el-row
-            type="flex"
-            justify="left"
-            class="card_flex"
-            v-loading="this.loading"
-          >
+          <el-row type="flex" justify="left" class="card_flex" v-loading="this.loading">
             <el-col
               v-for="building in buildings"
               :key="building.name"
@@ -53,9 +37,7 @@
                 ref="card"
               />
             </el-col>
-            <el-col v-for="n in 10" :key="n" :span="4" class="blankSlate">
-              &nbsp;
-            </el-col>
+            <el-col v-for="n in 10" :key="n" :span="4" class="blankSlate"> &nbsp; </el-col>
           </el-row>
         </el-col>
       </el-row>
@@ -98,11 +80,11 @@ export default {
     search: function ( v ) {
       let values = this.buildings
         .filter(
-          ( obj ) =>
+          obj =>
             // Check that the item's name includes query
             obj.name && obj.name.toLowerCase().includes( v.toLowerCase() )
         )
-        .map( ( e ) => {
+        .map( e => {
           return e.id
         } )
       for ( let row of this.$refs.card_container ) {

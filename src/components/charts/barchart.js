@@ -45,15 +45,7 @@ export default {
                 minutes = '0' + minutes
               }
               let year = d.getYear().toString().slice( 1 )
-              const dayCodes = [
-                'Sun',
-                'Mon',
-                'Tues',
-                'Wed',
-                'Thur',
-                'Fri',
-                'Sat'
-              ]
+              const dayCodes = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
               return (
                 dayCodes[d.getDay()] +
                 ' ' +

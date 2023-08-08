@@ -9,12 +9,12 @@ const axios = require( 'axios' )
 function GetMockData ( url, filename ) {
   axios
     .get( url )
-    .then( ( response ) => {
+    .then( response => {
       fs.writeFileSync( filename, JSON.stringify( response.data ), {
         encoding: 'utf8'
       } )
     } )
-    .catch( ( err ) => console.log( err ) )
+    .catch( err => console.log( err ) )
 }
 
 const api = 'https://api.sustainability.oregonstate.edu/v2/energy/'

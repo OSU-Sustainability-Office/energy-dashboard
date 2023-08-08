@@ -6,7 +6,7 @@
  * @Copyright:  (c) Oregon State University 2020
  */
 export default class BaseBlockModifier {
-  static name = 'base';
+  static name = 'base'
 
   constructor ( store, module ) {
     /*

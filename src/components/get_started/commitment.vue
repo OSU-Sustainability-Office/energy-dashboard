@@ -1,8 +1,6 @@
 <template>
   <transition name="fade">
-    <span class="message" :key="keyValue">{{
-      commitments[i] | capatilize
-    }}</span>
+    <span class="message" :key="keyValue">{{ commitments[i] | capatilize }}</span>
   </transition>
 </template>
 

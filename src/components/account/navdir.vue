@@ -11,12 +11,7 @@
     <el-col class="main">
       <el-row class="bar">
         <el-col :span="20">
-          <span
-            v-if="
-              (story.user_id !== user.id && !story.public) || story.id === null
-            "
-            >&nbsp;</span
-          >
+          <span v-if="(story.user_id !== user.id && !story.public) || story.id === null">&nbsp;</span>
           <el-menu
             mode="horizontal"
             class="menu"
@@ -24,41 +19,31 @@
             text-color="#1a1a1a"
             :router="true"
             @select="handleSelect"
-            v-if="
-              (story.user_id === user.id || story.public) && story.id !== null
-            "
+            v-if="(story.user_id === user.id || story.public) && story.id !== null"
           >
             <el-submenu index="1" :router="true">
-              <template slot="title" class="menu-title"
-                ><i class="fas fa-th-large"></i>{{ group.group }}</template
-              >
+              <template slot="title" class="menu-title"><i class="fas fa-th-large"></i>{{ group.group }}</template>
               <el-menu-item
                 class="group-item"
                 v-for="(groupS, index) in filteredGroups"
                 :key="groupS.id"
                 :index="'1-' + index"
                 :route="{
-                  path:
-                    (group.public ? '/buildinglist/' : '/dashboard/') +
-                    groupS.id,
+                  path: (group.public ? '/buildinglist/' : '/dashboard/') + groupS.id
                 }"
               >
                 <i class="fas fa-th-large"></i>{{ groupS.group }}
               </el-menu-item>
             </el-submenu>
             <el-submenu index="2" :router="false">
-              <template class="menu-title" slot="title"
-                ><i class="fas fa-building"></i>{{ story.name }}</template
-              >
+              <template class="menu-title" slot="title"><i class="fas fa-building"></i>{{ story.name }}</template>
               <el-menu-item
                 class="story-item"
                 v-for="(storyS, index) in navStories"
                 :key="storyS.id"
                 :index="'2-' + index"
                 :route="{
-                  path: group.public
-                    ? `/public/${storyS.id}/1`
-                    : `/view/${storyS.id}`,
+                  path: group.public ? `/public/${storyS.id}/1` : `/view/${storyS.id}`
                 }"
               >
                 <i class="fas fa-building"></i>{{ storyS.name }}
@@ -71,11 +56,7 @@
             <i class="fas fa-share-square" @click="copyUrl()"></i>
           </el-tooltip>
           <el-tooltip content="Click to save story" placement="top">
-            <i
-              class="fas fa-save"
-              v-if="story.user_id === user.id"
-              @click="$emit('save')"
-            ></i>
+            <i class="fas fa-save" v-if="story.user_id === user.id" @click="$emit('save')"></i>
           </el-tooltip>
           <el-tooltip content="Click to download data" placement="top">
             <i class="fas fa-download" @click="download()"></i>
@@ -170,11 +151,9 @@ export default {
         for ( let chart of block.charts ) {
           organizedData[0].push( chart.name + ' (' + map[chart.point] + ')' )
           // Consider a better way for this
-          let mappedData = organizedData
-            .slice( 1, organizedData.length )
-            .map( ( e ) => {
-              return e[0]
-            } )
+          let mappedData = organizedData.slice( 1, organizedData.length ).map( e => {
+            return e[0]
+          } )
           for ( let point of chart.data ) {
             let iDate = new Date( point.x )
 
@@ -192,9 +171,7 @@ export default {
               }
               organizedData.splice( index, 0, [iDate.toString(), point.y] )
             } else {
-              organizedData[mappedData.indexOf( iDate.toString() ) + 1].push(
-                point.y
-              )
+              organizedData[mappedData.indexOf( iDate.toString() ) + 1].push( point.y )
             }
           }
         }
@@ -221,8 +198,8 @@ export default {
     },
     populate: function () {
       this.filteredGroups = []
-      this.group = this.stories.find( ( p ) => {
-        return p.stories.find( ( e ) => {
+      this.group = this.stories.find( p => {
+        return p.stories.find( e => {
           return e.name === this.story.name
         } )
       } )

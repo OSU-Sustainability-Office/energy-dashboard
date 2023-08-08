@@ -25,7 +25,7 @@ export default {
 .title {
   font-size: 120px;
   color: rgb(223, 223, 223);
-  font-family: "open sans";
+  font-family: 'open sans';
 }
 .body {
   font-size: 28px;

@@ -14,57 +14,27 @@
       </el-row>
       <el-row>
         <el-col :span="24" class="cards_col">
-          <el-tabs
-            v-model="openName"
-            class="tab_row"
-            v-if="buildingList"
-            v-loading="this.loading"
-          >
+          <el-tabs v-model="openName" class="tab_row" v-if="buildingList" v-loading="this.loading">
             <el-tab-pane v-for="(item, key) in groups" :key="key" :name="key">
               <span slot="label" class="tab_label">{{ key }}</span>
               <el-row type="flex" justify="left" class="card_flex">
-                <el-col
-                  v-for="building in item"
-                  :key="building.name"
-                  :span="4"
-                  class="card_container"
-                >
+                <el-col v-for="building in item" :key="building.name" :span="4" class="card_container">
                   <viewCard
                     :plus="false"
                     :building="buildingList"
                     :id="building.id"
                     class="card"
-                    @click="
-                      $router.push({ path: `/building/${building.id}/2` })
-                    "
+                    @click="$router.push({ path: `/building/${building.id}/2` })"
                     ref="card"
                   />
                 </el-col>
                 <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
-                <el-col
-                  v-for="n in 10"
-                  :key="key + n"
-                  :span="4"
-                  class="blankSlate"
-                >
-                  &nbsp;
-                </el-col>
+                <el-col v-for="n in 10" :key="key + n" :span="4" class="blankSlate"> &nbsp; </el-col>
               </el-row>
             </el-tab-pane>
           </el-tabs>
-          <el-row
-            type="flex"
-            justify="left"
-            class="card_flex"
-            v-if="!buildingList"
-            v-loading="this.loading"
-          >
-            <el-col
-              v-for="view in groups"
-              :key="view.id"
-              :span="4"
-              class="card_container"
-            >
+          <el-row type="flex" justify="left" class="card_flex" v-if="!buildingList" v-loading="this.loading">
+            <el-col v-for="view in groups" :key="view.id" :span="4" class="card_container">
               <viewCard
                 :plus="false"
                 :building="buildingList"
@@ -76,19 +46,10 @@
             </el-col>
             <el-col :span="4" class="card_container">
               <el-tooltip content="Create New View" placement="top">
-                <viewCard
-                  :plus="true"
-                  :notools="1"
-                  class="card"
-                  :building="false"
-                  :id="1"
-                  @click="newView()"
-                />
+                <viewCard :plus="true" :notools="1" class="card" :building="false" :id="1" @click="newView()" />
               </el-tooltip>
             </el-col>
-            <el-col v-for="n in 10" :key="n" :span="4" class="blankSlate">
-              &nbsp;
-            </el-col>
+            <el-col v-for="n in 10" :key="n" :span="4" class="blankSlate"> &nbsp; </el-col>
           </el-row>
         </el-col>
       </el-row>
@@ -197,10 +158,9 @@ export default {
             // Check that the item's name includes query
             ( card.name && card.name.toLowerCase().includes( v.toLowerCase() ) ) ||
             // Check that description includes query
-            ( card.description &&
-              card.description.toLowerCase().includes( v.toLowerCase() ) )
+            ( card.description && card.description.toLowerCase().includes( v.toLowerCase() ) )
         )
-        .map( ( e ) => {
+        .map( e => {
           return e.id
         } )
       for ( let card of this.$refs.card ) {

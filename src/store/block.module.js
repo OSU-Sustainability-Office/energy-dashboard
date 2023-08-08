@@ -19,16 +19,7 @@ const state = () => {
     dateStart: null, // Epoch time
     dateEnd: null, // Epoch time
     id: null, // Integer DB ID
-    chartColors: [
-      '#4A773C',
-      '#00859B',
-      '#FFB500',
-      '#AA9D2E',
-      '#D3832B',
-      '#0D5257',
-      '#7A6855',
-      '#C4D6A4'
-    ],
+    chartColors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4'],
     timeZoneOffset: null
   }
 }
@@ -41,15 +32,13 @@ const actions = {
     store.commit( chartSpace + '/path', moduleSpace )
     store.commit(
       chartSpace + '/color',
-      store.getters.chartColors[
-        ( store.getters.charts.length - 1 ) % store.getters.chartColors.length
-      ]
+      store.getters.chartColors[( store.getters.charts.length - 1 ) % store.getters.chartColors.length]
     )
     store.dispatch( chartSpace + '/changeChart', id )
   },
 
   async addModifier ( store, modifierName ) {
-    const currentModNames = store.getters.modifiers.map( ( o ) => o.name )
+    const currentModNames = store.getters.modifiers.map( o => o.name )
 
     if ( currentModNames.indexOf( modifierName ) < 0 ) {
       const ModClass = BlockModifiers[modifierName]
@@ -65,7 +54,7 @@ const actions = {
   },
 
   async removeModifier ( store, modifierName ) {
-    const currentModNames = store.getters.modifiers.map( ( o ) => o.name )
+    const currentModNames = store.getters.modifiers.map( o => o.name )
     const modIndex = currentModNames.indexOf( modifierName )
     if ( modIndex < 0 ) {
       throw new Error( 'Modifier not found on block' )
@@ -94,9 +83,7 @@ const actions = {
 
   async updateModifier ( store, payload ) {
     // eslint-disable-next-line no-proto
-    const currentModNames = store.getters.modifiers.map(
-      ( o ) => o.__proto__.constructor.name
-    )
+    const currentModNames = store.getters.modifiers.map( o => o.__proto__.constructor.name )
     const modIndex = currentModNames.indexOf( payload.name )
     if ( modIndex < 0 ) {
       throw new Error( 'Modifier not found on block' )
@@ -123,20 +110,12 @@ const actions = {
       store.commit( chartSpace + '/id', chart.id )
       store.commit(
         chartSpace + '/color',
-        store.getters.chartColors[
-          ( store.getters.charts.length - 1 ) % store.getters.chartColors.length
-        ]
+        store.getters.chartColors[( store.getters.charts.length - 1 ) % store.getters.chartColors.length]
       )
       await this.getters['map/promise']
       await this.getters['map/allBuildingPromise']
-      store.commit(
-        chartSpace + '/building',
-        this.getters['map/meterGroup']( chart.meters ).building
-      )
-      store.commit(
-        chartSpace + '/meterGroupPath',
-        this.getters['map/meterGroup']( chart.meters ).path
-      )
+      store.commit( chartSpace + '/building', this.getters['map/meterGroup']( chart.meters ).building )
+      store.commit( chartSpace + '/meterGroupPath', this.getters['map/meterGroup']( chart.meters ).path )
       store.commit( chartSpace + '/promise', Promise.resolve() )
     }
   },
@@ -211,9 +190,7 @@ const actions = {
     store.commit( chartSpace + '/path', moduleSpace )
     store.commit(
       chartSpace + '/color',
-      store.getters.chartColors[
-        ( store.getters.charts.length - 1 ) % store.getters.chartColors.length
-      ]
+      store.getters.chartColors[( store.getters.charts.length - 1 ) % store.getters.chartColors.length]
     )
     store.commit( chartSpace + '/name', payload.name )
     store.commit( chartSpace + '/building', payload.building )
@@ -245,10 +222,7 @@ const actions = {
         let utilityType = ''
         if ( this.getters[payload.group.path + '/meters'].length > 0 ) {
           await this.getters[payload.group.path + '/meters'][0].promise
-          utilityType =
-            this.getters[
-              this.getters[payload.group.path + '/meters'][0].path + '/type'
-            ]
+          utilityType = this.getters[this.getters[payload.group.path + '/meters'][0].path + '/type']
         }
         store.commit( chartSpace + '/name', 'Total ' + utilityType )
         const pointMap = {
@@ -265,9 +239,7 @@ const actions = {
         }
         store.commit(
           chartSpace + '/color',
-          store.getters.chartColors[
-            ( store.getters.charts.length - 1 ) % store.getters.chartColors.length
-          ]
+          store.getters.chartColors[( store.getters.charts.length - 1 ) % store.getters.chartColors.length]
         )
         let buildingPath = store.getters.path.split( '/' )
         buildingPath.pop()
@@ -325,18 +297,16 @@ const actions = {
     }
     for ( let chart of store.getters.charts ) {
       if ( !chart.path ) continue
-      chartDataPromises.push(
-        this.dispatch( chart.path + '/getData', reqPayload )
-      )
+      chartDataPromises.push( this.dispatch( chart.path + '/getData', reqPayload ) )
     }
     let chartData = await Promise.all( chartDataPromises )
     if ( store.getters.graphType !== 100 ) {
       if ( store.getters.graphType === 3 || store.getters.graphType === 4 ) {
         data.datasets.push( {
-          data: chartData.map( ( o ) => o.data[0] ),
-          backgroundColor: chartData.map( ( o ) => o.backgroundColor )
+          data: chartData.map( o => o.data[0] ),
+          backgroundColor: chartData.map( o => o.backgroundColor )
         } )
-        data.labels = chartData.map( ( o ) => o.label )
+        data.labels = chartData.map( o => o.label )
       } else {
         data.datasets = chartData
       }
@@ -372,7 +342,7 @@ const mutations = {
   },
 
   removeMod ( state, mod ) {
-    const modIndex = state.modifiers.map( ( o ) => o.name ).indexOf( mod.nam )
+    const modIndex = state.modifiers.map( o => o.name ).indexOf( mod.nam )
     state.modifiers.splice( modIndex, 1 )
   },
 
@@ -426,15 +396,15 @@ const mutations = {
 }
 
 const getters = {
-  state: ( state ) => {
+  state: state => {
     return state
   },
 
-  timeZoneOffset: ( state ) => {
+  timeZoneOffset: state => {
     return state.timeZoneOffset
   },
 
-  modifierData: ( state ) => ( modifierName ) => {
+  modifierData: state => modifierName => {
     for ( let modifier of state.modifiers ) {
       // eslint-disable-next-line no-proto
       if ( modifier.__proto__.constructor.name === modifierName ) {
@@ -443,51 +413,51 @@ const getters = {
     }
   },
 
-  modifiers: ( state ) => {
+  modifiers: state => {
     return state.modifiers
   },
 
-  name: ( state ) => {
+  name: state => {
     return state.name
   },
 
-  path: ( state ) => {
+  path: state => {
     return state.path
   },
 
-  promise: ( state ) => {
+  promise: state => {
     return state.promise
   },
 
-  dateInterval: ( state ) => {
+  dateInterval: state => {
     return state.dateInterval
   },
 
-  intervalUnit: ( state ) => {
+  intervalUnit: state => {
     return state.intervalUnit
   },
 
-  graphType: ( state ) => {
+  graphType: state => {
     return state.graphType
   },
 
-  dateStart: ( state ) => {
+  dateStart: state => {
     return state.dateStart
   },
 
-  dateEnd: ( state ) => {
+  dateEnd: state => {
     return state.dateEnd
   },
 
-  id: ( state ) => {
+  id: state => {
     return state.id
   },
 
-  chartColors: ( state ) => {
+  chartColors: state => {
     return state.chartColors
   },
 
-  charts: ( state ) => {
+  charts: state => {
     let charts = []
     for ( let key of Object.keys( state ) ) {
       if ( key.search( /chart_/ ) >= 0 ) {
@@ -497,7 +467,7 @@ const getters = {
     return charts
   },
 
-  chart: ( state ) => ( id ) => {
+  chart: state => id => {
     return state[`chart_${id}`]
   }
 }

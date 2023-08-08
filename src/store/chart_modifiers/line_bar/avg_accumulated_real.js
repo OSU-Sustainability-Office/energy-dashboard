@@ -62,10 +62,7 @@ export default class LineAvgModifier {
         if ( isNaN( baselineData.get( i + delta ) ) || isNaN( baselineData.get( i ) ) ) {
           continue
         }
-        differenceBaseline.set(
-          i + delta,
-          baselineData.get( i + delta ) - baselineData.get( i )
-        )
+        differenceBaseline.set( i + delta, baselineData.get( i + delta ) - baselineData.get( i ) )
         // returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
       } catch ( error ) {
         console.log( error )
@@ -101,9 +98,7 @@ export default class LineAvgModifier {
     for ( let i = this.dateStart; i < this.dateEnd; i += delta ) {
       try {
         let baselinePoint =
-          avgbins[new Date( ( i + delta ) * 1000 ).getDay()][
-            Math.floor( ( ( i + delta ) % ( 60 * 60 * 24 ) ) / delta )
-          ]
+          avgbins[new Date( ( i + delta ) * 1000 ).getDay()][Math.floor( ( ( i + delta ) % ( 60 * 60 * 24 ) ) / delta )]
         returnData.push( { x: new Date( ( i + delta ) * 1000 ), y: baselinePoint } )
       } catch ( error ) {
         console.log( error )
@@ -111,7 +106,7 @@ export default class LineAvgModifier {
     }
     // console.log(returnData)
     // Prevent corrupted data from getting returned
-    if ( returnData.filter( ( o ) => !isNaN( o.y ) && o.y > -1 ).length > 0 ) {
+    if ( returnData.filter( o => !isNaN( o.y ) && o.y > -1 ).length > 0 ) {
       chartData.data = returnData
     } else {
       chartData.data = []
@@ -155,11 +150,7 @@ export default class LineAvgModifier {
         delta = 86400
         break
       case 'month':
-        let monthDays = new Date(
-          dataDate.getFullYear(),
-          dataDate.getMonth(),
-          0
-        ).getDate()
+        let monthDays = new Date( dataDate.getFullYear(), dataDate.getMonth(), 0 ).getDate()
         if ( dataDate.getDate() > monthDays ) monthDays = dataDate.getDate()
         delta = 60 * 60 * 24 * monthDays
         break

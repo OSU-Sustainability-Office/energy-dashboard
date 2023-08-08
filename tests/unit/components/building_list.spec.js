@@ -101,7 +101,7 @@ describe( 'Testing Building List Component', () => {
         await Tab.trigger( 'click' )
 
         // Grab the visible pane
-        let matchingPane = Panes.filter( ( wrapper ) => wrapper.isVisible() )
+        let matchingPane = Panes.filter( wrapper => wrapper.isVisible() )
 
         // We should find only one visible pane with valid id
         expect( matchingPane.length ).toEqual( 1 )
@@ -109,9 +109,7 @@ describe( 'Testing Building List Component', () => {
         expect( matchingPane.attributes( 'id' ) ).toEqual( `pane-${selector}` )
 
         // Make sure the visible pane is displaying the correct building names
-        const matchedBuildings = mockAllBuildings
-          .filter( ( b ) => b.group === selector && !b.hidden )
-          .map( ( b ) => b.name )
+        const matchedBuildings = mockAllBuildings.filter( b => b.group === selector && !b.hidden ).map( b => b.name )
         for ( let building of mockAllBuildings ) {
           if ( matchedBuildings.includes( building.name ) ) {
             expect( matchingPane.text() ).toMatch( building.name )

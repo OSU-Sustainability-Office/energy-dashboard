@@ -1,11 +1,7 @@
 <template>
   <el-row class="stage">
     <el-col :span="24" class="main">
-      <div
-        element-loading-background="rgba(0, 0, 0, 0.3)"
-        class="background"
-        ref="main"
-      >
+      <div element-loading-background="rgba(0, 0, 0, 0.3)" class="background" ref="main">
         <div class="title">{{ name }}</div>
         <div class="subtitle">{{ description }}</div>
       </div>
@@ -88,7 +84,7 @@ export default {
   overflow: hidden;
 }
 .title {
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   color: $--color-white;
   font-size: 3.2em;
   z-index: 5;
@@ -101,7 +97,7 @@ export default {
   text-overflow: ellipsis;
 }
 .subtitle {
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   color: #fff;
   font-size: 1.8em;
   position: absolute;
@@ -150,10 +146,6 @@ $border-width: 3px;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(
-    to bottom right,
-    rgba(0, 0, 0, 0.7),
-    rgba(0, 0, 0, 0.2)
-  );
+  background-image: linear-gradient(to bottom right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2));
 }
 </style>

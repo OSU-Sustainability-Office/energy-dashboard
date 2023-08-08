@@ -50,34 +50,26 @@ describe( 'Testing Map Module...', () => {
       // Check that the building object got loaded correctly
       for ( let attribute of Object.keys( building ) ) {
         if ( attribute !== 'meterGroups' ) {
-          expect(
-            localStore.getters[buildingModulePath + `/${attribute}`]
-          ).toEqual( building[attribute] )
+          expect( localStore.getters[buildingModulePath + `/${attribute}`] ).toEqual( building[attribute] )
         }
       }
 
       for ( let MeterGroup of building.meterGroups ) {
-        let MeterGroupModulePath =
-          buildingModulePath + '/meterGroup_' + MeterGroup.id.toString()
+        let MeterGroupModulePath = buildingModulePath + '/meterGroup_' + MeterGroup.id.toString()
 
         // Check that the Meter Groups got loaded correctly
         for ( let attribute of Object.keys( MeterGroup ) ) {
           if ( attribute !== 'meters' ) {
-            expect(
-              localStore.getters[MeterGroupModulePath + `/${attribute}`]
-            ).toEqual( MeterGroup[attribute] )
+            expect( localStore.getters[MeterGroupModulePath + `/${attribute}`] ).toEqual( MeterGroup[attribute] )
           }
         }
 
         for ( let Meter of MeterGroup.meters ) {
-          let MeterModulePath =
-            MeterGroupModulePath + '/meter_' + Meter.id.toString()
+          let MeterModulePath = MeterGroupModulePath + '/meter_' + Meter.id.toString()
 
           // Finally, check that the Meter module got loaded correctly
           for ( let attribute of Object.keys( Meter ) ) {
-            expect(
-              localStore.getters[MeterModulePath + `/${attribute}`]
-            ).toEqual( Meter[attribute] )
+            expect( localStore.getters[MeterModulePath + `/${attribute}`] ).toEqual( Meter[attribute] )
           }
         }
       }

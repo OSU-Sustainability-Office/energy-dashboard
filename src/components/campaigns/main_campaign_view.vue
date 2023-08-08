@@ -15,11 +15,7 @@
       <!-- Charts and the building selection list -->
       <el-row class="controlRow" v-if="loaded">
         <el-col :span="8" class="buildingContainer">
-          <buildingList
-            v-model="blockPath"
-            :loaded="loaded"
-            :path="campaignPath"
-          />
+          <buildingList v-model="blockPath" :loaded="loaded" :path="campaignPath" />
         </el-col>
         <el-col :span="16" class="otherSide">
           <div class="chartArea">
@@ -48,7 +44,7 @@
                 height: '340px',
                 'padding-right': '0.5em',
                 'padding-left': '0.5em',
-                'padding-top': '1em',
+                'padding-top': '1em'
               }"
               :invertColors="true"
               :height="362"
@@ -131,9 +127,7 @@ export default {
         if ( !this.campaignPath ) return []
         // We need to copy this or adding the default block will change the return value of
         // the store
-        let blocks = new Array(
-          ...this.$store.getters[this.campaignPath + '/blocks']
-        )
+        let blocks = new Array( ...this.$store.getters[this.campaignPath + '/blocks'] )
         blocks.push( this.$store.getters[this.campaignPath + '/defaultBlock'] )
         return blocks
       }
@@ -143,8 +137,7 @@ export default {
         if ( !this.$store.getters['campaigns/campaign']( this.$route.params.id ) ) {
           return null
         }
-        return this.$store.getters['campaigns/campaign']( this.$route.params.id )
-          .path
+        return this.$store.getters['campaigns/campaign']( this.$route.params.id ).path
       }
     },
     media: {
@@ -208,7 +201,7 @@ export default {
 .title {
   font-size: 34px;
   color: $--color-white;
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   text-align: left;
   padding-bottom: 1em;
 }

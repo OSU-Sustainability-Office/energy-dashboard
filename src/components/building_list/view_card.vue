@@ -1,11 +1,5 @@
 <template>
-  <div
-    class="card"
-    ref="card"
-    @click="clicked($event)"
-    @mouseover="hover(true)"
-    @mouseleave="hover(false)"
-  >
+  <div class="card" ref="card" @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
     <div class="toolbox" ref="toolbox" v-if="!plus && !building">
       <el-tooltip content="Edit View" placement="top">
         <i class="fas fa-pencil-alt" @click.prevent="openEdit()"></i>
@@ -85,10 +79,7 @@ export default {
       } )
     },
     clicked: function ( event ) {
-      if (
-        event.target.parentNode.classList.contains( 'toolbox' ) ||
-        event.target.classList.contains( 'toolbox' )
-      ) {
+      if ( event.target.parentNode.classList.contains( 'toolbox' ) || event.target.classList.contains( 'toolbox' ) ) {
         return
       }
       this.$emit( 'click' )
@@ -132,7 +123,7 @@ export default {
   font-size: 1.8em;
 }
 .name {
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   font-size: 1.7em;
   display: block;
   z-index: 1;
@@ -168,7 +159,7 @@ export default {
 }
 .description {
   color: #fff;
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   font-size: 1.2em;
   display: block;
   padding-left: 0.3em;

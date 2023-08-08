@@ -7,22 +7,10 @@
 -->
 
 <template>
-  <el-menu
-    class="menu-stage"
-    :default-active="index"
-    mode="vertical"
-    backgroundColor="#1A1A1A"
-    @select="handleSelect"
-  >
-    <el-menu-item index="views"
-      ><i class="fas fa-square"></i> Views</el-menu-item
-    >
-    <el-menu-item index="alerts"
-      ><i class="fas fa-bell"></i> Alerts</el-menu-item
-    >
-    <el-menu-item index="admin" v-if="user.privilege >= 5"
-      ><i class="fas fa-tools"></i> Admin</el-menu-item
-    >
+  <el-menu class="menu-stage" :default-active="index" mode="vertical" backgroundColor="#1A1A1A" @select="handleSelect">
+    <el-menu-item index="views"><i class="fas fa-square"></i> Views</el-menu-item>
+    <el-menu-item index="alerts"><i class="fas fa-bell"></i> Alerts</el-menu-item>
+    <el-menu-item index="admin" v-if="user.privilege >= 5"><i class="fas fa-tools"></i> Admin</el-menu-item>
   </el-menu>
 </template>
 

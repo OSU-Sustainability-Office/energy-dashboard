@@ -25,17 +25,8 @@
         </div>
       </el-row> -->
       <el-row class="reductionGrid" type="flex">
-        <el-col
-          class="gridCard"
-          v-for="(tip, index) in tips"
-          :key="index"
-          :span="8"
-        >
-          <div
-            @mouseenter="hoverShow = index"
-            @mouseleave="hoverShow = null"
-            style="height: 100%"
-          >
+        <el-col class="gridCard" v-for="(tip, index) in tips" :key="index" :span="8">
+          <div @mouseenter="hoverShow = index" @mouseleave="hoverShow = null" style="height: 100%">
             <el-col :span="24" class="gridCardOverlay">
               <img class="gridCardIcon" :src="'images/' + tip.icon + '.svg'" />
               <el-row class="gridCardTitle">
@@ -118,7 +109,7 @@ export default {
 .title {
   padding-left: 2em;
   color: $--color-black;
-  font-family: "StratumNO2";
+  font-family: 'StratumNO2';
   font-size: 34px;
 }
 .reductionGrid {
@@ -143,7 +134,7 @@ export default {
   line-height: 28px;
   font-size: 28px;
   top: 18px;
-  font-family: "StratumNO2";
+  font-family: 'StratumNO2';
 }
 .gridCard:hover .gridCardTitle {
   color: $--color-white;

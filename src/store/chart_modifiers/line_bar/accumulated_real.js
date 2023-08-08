@@ -62,11 +62,7 @@ export default class LineAccumulatedModifier {
         delta = 86400
         break
       case 'month':
-        monthDays = new Date(
-          startDate.getFullYear(),
-          startDate.getMonth() + 1,
-          0
-        ).getDate()
+        monthDays = new Date( startDate.getFullYear(), startDate.getMonth() + 1, 0 ).getDate()
         delta = 60 * 60 * 24 * monthDays
         break
     }
@@ -77,11 +73,7 @@ export default class LineAccumulatedModifier {
     for ( let i = payload.dateStart; i <= payload.dateEnd; i += delta ) {
       let oldDate = new Date( i * 1000 )
       if ( payload.intervalUnit === 'month' ) {
-        let monthDaysCurrent = new Date(
-          oldDate.getFullYear(),
-          oldDate.getMonth() + 1,
-          0
-        ).getDate()
+        let monthDaysCurrent = new Date( oldDate.getFullYear(), oldDate.getMonth() + 1, 0 ).getDate()
         delta += ( monthDaysCurrent - monthDays ) * 24 * 60 * 60
         monthDays = monthDaysCurrent
       }
@@ -105,27 +97,17 @@ export default class LineAccumulatedModifier {
 
       try {
         let accumulator = 0
-        if (
-          isNaN( resultDataObject.get( result ) ) ||
-          isNaN( resultDataObject.get( result_i ) )
-        ) {
+        if ( isNaN( resultDataObject.get( result ) ) || isNaN( resultDataObject.get( result_i ) ) ) {
           continue
         }
-        if (
-          Math.abs( resultDataObject.get( result ) ) <
-          Math.abs( resultDataObject.get( result_i ) )
-        ) {
+        if ( Math.abs( resultDataObject.get( result ) ) < Math.abs( resultDataObject.get( result_i ) ) ) {
           continue
         }
         // If either reading is zero that indicates a missing reading -- do not report.
-        if (
-          resultDataObject.get( result ) === 0 ||
-          resultDataObject.get( result_i ) === 0
-        ) {
+        if ( resultDataObject.get( result ) === 0 || resultDataObject.get( result_i ) === 0 ) {
           continue
         }
-        accumulator =
-          resultDataObject.get( result ) - resultDataObject.get( result_i )
+        accumulator = resultDataObject.get( result ) - resultDataObject.get( result_i )
 
         if ( payload.point === 'total' ) {
           // Steam meters report in 100s of lbs
@@ -173,11 +155,7 @@ export default class LineAccumulatedModifier {
         delta = 86400
         break
       case 'month':
-        let monthDays = new Date(
-          dataDate.getFullYear(),
-          dataDate.getMonth(),
-          0
-        ).getDate()
+        let monthDays = new Date( dataDate.getFullYear(), dataDate.getMonth(), 0 ).getDate()
         if ( dataDate.getDate() > monthDays ) monthDays = dataDate.getDate()
         delta = 60 * 60 * 24 * monthDays
         break

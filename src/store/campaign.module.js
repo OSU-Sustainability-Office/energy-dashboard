@@ -56,20 +56,11 @@ const actions = {
                   this.registerModule( moduleSpace.split( '/' ), Block )
                   store.commit( blockSpace + '/path', moduleSpace )
                   await store.dispatch( blockSpace + '/loadDefault', payload )
-                  store.commit(
-                    blockSpace + '/dateStart',
-                    store.getters.dateStart
-                  )
+                  store.commit( blockSpace + '/dateStart', store.getters.dateStart )
                   store.commit( blockSpace + '/dateEnd', store.getters.dateEnd )
                   store.commit( blockSpace + '/graphType', 2 )
-                  store.commit(
-                    blockSpace + '/name',
-                    this.getters[groupModule.building + '/name']
-                  )
-                  await store.dispatch(
-                    blockSpace + '/addModifier',
-                    'campaign_linebar'
-                  )
+                  store.commit( blockSpace + '/name', this.getters[groupModule.building + '/name'] )
+                  await store.dispatch( blockSpace + '/addModifier', 'campaign_linebar' )
                   await store.dispatch( blockSpace + '/updateModifier', {
                     name: 'campaign_linebar',
                     data: {
@@ -95,10 +86,7 @@ const actions = {
           store.commit( defaultBlockSpace + '/dateInterval', 1 )
           store.commit( defaultBlockSpace + '/intervalUnit', 'day' )
           store.commit( defaultBlockSpace + '/graphType', 1 )
-          store.commit(
-            defaultBlockSpace + '/dateStart',
-            store.getters.dateStart
-          )
+          store.commit( defaultBlockSpace + '/dateStart', store.getters.dateStart )
           store.commit( defaultBlockSpace + '/dateEnd', store.getters.dateEnd )
 
           // I dont think this works exactly right
@@ -111,10 +99,7 @@ const actions = {
                 await this.dispatch( block.path + '/getData' )
                 sortList.push( {
                   path: block.path,
-                  value:
-                    this.getters[block.path + '/modifierData'](
-                      'campaign_linebar'
-                    ).accumulatedPercentage
+                  value: this.getters[block.path + '/modifierData']( 'campaign_linebar' ).accumulatedPercentage
                 } )
                 resolve()
               } )
@@ -172,31 +157,31 @@ const mutations = {
 }
 
 const getters = {
-  promise: ( state ) => {
+  promise: state => {
     return state.promise
   },
 
-  meterGroupIDs: ( state ) => {
+  meterGroupIDs: state => {
     return state.meterGroupIDs
   },
 
-  name: ( state ) => {
+  name: state => {
     return state.name
   },
 
-  id: ( state ) => {
+  id: state => {
     return state.id
   },
 
-  path: ( state ) => {
+  path: state => {
     return state.path
   },
 
-  dateStart: ( state ) => {
+  dateStart: state => {
     return state.dateStart
   },
 
-  dateEnd: ( state ) => {
+  dateEnd: state => {
     let currentEpoch = new Date().getTime()
     currentEpoch = currentEpoch - ( currentEpoch % ( 900 * 1000 ) )
     if ( state.dateEnd > currentEpoch ) {
@@ -206,19 +191,19 @@ const getters = {
     }
   },
 
-  compareStart: ( state ) => {
+  compareStart: state => {
     return state.compareStart
   },
 
-  compareEnd: ( state ) => {
+  compareEnd: state => {
     return state.compareEnd
   },
 
-  media: ( state ) => {
+  media: state => {
     return state.media
   },
 
-  blocks: ( state ) => {
+  blocks: state => {
     let blocks = []
     for ( let key of Object.keys( state ) ) {
       if ( key.search( /block_[0-9]+/ ) >= 0 ) {
@@ -230,7 +215,7 @@ const getters = {
     return blocks
   },
 
-  defaultBlock: ( state ) => {
+  defaultBlock: state => {
     return state['block_default']
   }
 }

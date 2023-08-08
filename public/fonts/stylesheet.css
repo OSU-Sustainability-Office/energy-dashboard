@@ -1,10 +1,10 @@
 @font-face {
-  font-family: "StratumNo2";
+  font-family: 'StratumNo2';
   src:
-    url("StratumNo2-Bold.woff2") format("woff2"),
-    url("StratumNo2-Bold.woff") format("woff"),
-    url("StratumNo2-Bold.ttf") format("truetype"),
-    url("StratumNo2-Bold.svg#StratumNo2-Bold") format("svg");
+    url('StratumNo2-Bold.woff2') format('woff2'),
+    url('StratumNo2-Bold.woff') format('woff'),
+    url('StratumNo2-Bold.ttf') format('truetype'),
+    url('StratumNo2-Bold.svg#StratumNo2-Bold') format('svg');
   font-weight: bold;
   font-style: normal;
 }

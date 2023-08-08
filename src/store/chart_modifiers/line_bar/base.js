@@ -57,11 +57,7 @@ export default class LineBaseModifier {
         delta = 86400
         break
       case 'month':
-        monthDays = new Date(
-          startDate.getFullYear(),
-          startDate.getMonth() + 1,
-          0
-        ).getDate()
+        monthDays = new Date( startDate.getFullYear(), startDate.getMonth() + 1, 0 ).getDate()
         delta = 60 * 60 * 24 * monthDays
         break
     }
@@ -73,10 +69,7 @@ export default class LineBaseModifier {
     for ( let i = payload.dateStart; i <= payload.dateEnd; i += delta ) {
       try {
         let accumulator = 0
-        if (
-          isNaN( resultDataObject.get( i + delta ) ) ||
-          isNaN( resultDataObject.get( i ) )
-        ) {
+        if ( isNaN( resultDataObject.get( i + delta ) ) || isNaN( resultDataObject.get( i ) ) ) {
           continue
         }
         accumulator = resultDataObject.get( i + delta )
@@ -124,11 +117,7 @@ export default class LineBaseModifier {
         delta = 86400
         break
       case 'month':
-        let monthDays = new Date(
-          dataDate.getFullYear(),
-          dataDate.getMonth(),
-          0
-        ).getDate()
+        let monthDays = new Date( dataDate.getFullYear(), dataDate.getMonth(), 0 ).getDate()
         if ( dataDate.getDate() > monthDays ) monthDays = dataDate.getDate()
         delta = 60 * 60 * 24 * monthDays
         break

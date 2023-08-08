@@ -14,7 +14,7 @@ import DataStore from './data_layer/data_store.js'
 
 const StoreConfig = {
   getters: {
-    view: ( state ) => {
+    view: state => {
       return state['view']
     }
   },
