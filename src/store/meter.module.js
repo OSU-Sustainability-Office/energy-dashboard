@@ -9,11 +9,11 @@ import API from './api.js'
 
 const state = () => {
   return {
-    id: null,           // Integer DB ID
-    name: null,         // String
-    address: null,      // String
-    classInt: null,     // Int
-    negate: null,        // Bool
+    id: null, // Integer DB ID
+    name: null, // String
+    address: null, // String
+    classInt: null, // Int
+    negate: null, // Bool
     path: null,
     promise: null,
     type: '',
@@ -22,125 +22,125 @@ const state = () => {
 }
 
 const actions = {
-
-  async changeMeter (store, id) {
-    let meter = API.meter(id)
+  async changeMeter ( store, id ) {
+    let meter = API.meter( id )
     let wait = true
-    store.commit('promise', new Promise((resolve, reject) => {
-      let fn = () => {
-        if (wait) {
-          setTimeout(fn, 100)
-        } else {
-          resolve()
+    store.commit(
+      'promise',
+      new Promise( ( resolve, reject ) => {
+        let fn = () => {
+          if ( wait ) {
+            setTimeout( fn, 100 )
+          } else {
+            resolve()
+          }
         }
-      }
-      fn()
-    }))
+        fn()
+      } )
+    )
     meter = await meter
-    store.commit('id', id)
-    store.commit('name', meter.name)
-    store.commit('address', meter.address)
-    store.commit('classInt', meter.classInt)
-    store.commit('negate', meter.negate)
-    store.commit('points', meter.points)
-    store.commit('type', meter.type)
+    store.commit( 'id', id )
+    store.commit( 'name', meter.name )
+    store.commit( 'address', meter.address )
+    store.commit( 'classInt', meter.classInt )
+    store.commit( 'negate', meter.negate )
+    store.commit( 'points', meter.points )
+    store.commit( 'type', meter.type )
     wait = false
     return store.state
   },
 
-  async getData (store, payload) {
+  async getData ( store, payload ) {
     let start = payload.dateStart - 900
     let end = payload.dateEnd
     await store.getters.promise
-    return this.dispatch('dataStore/getData', {
+    return this.dispatch( 'dataStore/getData', {
       meterId: store.getters.id,
       start: start,
       end: end,
       uom: payload.point,
       classInt: store.getters.classInt
-    })
+    } )
   }
-
 }
 
 const mutations = {
-  path (state, path) {
+  path ( state, path ) {
     state.path = path
   },
 
-  name (state, name) {
+  name ( state, name ) {
     state.name = name
   },
 
-  address (state, address) {
+  address ( state, address ) {
     state.address = address
   },
 
-  classInt (state, classInt) {
+  classInt ( state, classInt ) {
     state.classInt = classInt
   },
 
-  negate (state, negate) {
+  negate ( state, negate ) {
     state.negate = negate
   },
 
-  id (state, id) {
+  id ( state, id ) {
     state.id = id
   },
 
-  promise (state, promise) {
+  promise ( state, promise ) {
     state.promise = promise
   },
 
-  type (state, type) {
+  type ( state, type ) {
     state.type = type
   },
 
-  points (state, points) {
+  points ( state, points ) {
     state.points = points
   }
-
 }
 
 const getters = {
-  path (state) {
+  path ( state ) {
     return state.path
   },
 
-  promise (state) {
+  promise ( state ) {
     return state.promise
   },
 
-  name (state) {
+  name ( state ) {
     return state.name
   },
 
-  address (state) {
+  address ( state ) {
     return state.address
   },
 
-  classInt (state) {
+  classInt ( state ) {
     return state.classInt
   },
 
-  negate (state) {
+  negate ( state ) {
     return state.negate
   },
 
-  id (state) {
+  id ( state ) {
     return state.id
   },
 
-  type (state) {
+  type ( state ) {
     return state.type
   },
 
-  points (state) {
+  points ( state ) {
     return state.points
   }
 }
 
-const modules = { }
+const modules = {}
 
 export default {
   namespaced: true,

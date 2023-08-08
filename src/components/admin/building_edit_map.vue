@@ -6,12 +6,29 @@
 @Last modified time: 2019-03-25T14:19:59-07:00
 -->
 <template>
-    <el-col :span='24' style='width: 100%' class='mapContainer' ref='mapContainer'>
-      <l-map style="height: 100%; width: 100%;" :zoom="zoom" :center="center" ref='map' v-loading='!polygonData'>
-        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-        <l-geo-json v-for='(building) of this.polygonData' :key='building.id' :geojson='building' :options='buildingOptions' ref="geoLayer"></l-geo-json>
-      </l-map>
-    </el-col>
+  <el-col
+    :span="24"
+    style="width: 100%"
+    class="mapContainer"
+    ref="mapContainer"
+  >
+    <l-map
+      style="height: 100%; width: 100%"
+      :zoom="zoom"
+      :center="center"
+      ref="map"
+      v-loading="!polygonData"
+    >
+      <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+      <l-geo-json
+        v-for="building of this.polygonData"
+        :key="building.id"
+        :geojson="building"
+        :options="buildingOptions"
+        ref="geoLayer"
+      ></l-geo-json>
+    </l-map>
+  </el-col>
 </template>
 <script>
 import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
@@ -27,13 +44,16 @@ export default {
   watch: {
     value: {
       immediate: false,
-      handler: function (id) {
-        for (let building of this.$refs.geoLayer) {
-          if (building.geojson.features[0].id.replace('way/', '') === id) {
-            building.mapObject.setStyle({ fillColor: '#D3832B', color: '#D3832B' })
-            this.map.panTo(building.mapObject.getBounds().getCenter())
+      handler: function ( id ) {
+        for ( let building of this.$refs.geoLayer ) {
+          if ( building.geojson.features[0].id.replace( 'way/', '' ) === id ) {
+            building.mapObject.setStyle( {
+              fillColor: '#D3832B',
+              color: '#D3832B'
+            } )
+            this.map.panTo( building.mapObject.getBounds().getCenter() )
           } else {
-            building.mapObject.setStyle({ fillColor: '#000', color: '#000' })
+            building.mapObject.setStyle( { fillColor: '#000', color: '#000' } )
           }
         }
       }
@@ -42,37 +62,51 @@ export default {
   data () {
     return {
       zoom: 15.5,
-      loadedBounds: L.latLngBounds(L.latLng(44.565, -123.2785), L.latLng(44.565, -123.2785)),
-      center: L.latLng(44.565, -123.2785),
+      loadedBounds: L.latLngBounds(
+        L.latLng( 44.565, -123.2785 ),
+        L.latLng( 44.565, -123.2785 )
+      ),
+      center: L.latLng( 44.565, -123.2785 ),
       url: 'https://api.mapbox.com/styles/v1/jack-woods/cjmi2qpp13u4o2spgb66d07ci/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
-      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      attribution:
+        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       map: null,
       polygonData: null,
       buildingOptions: {
-        onEachFeature: (feature, layer) => {
-          layer.on('click', e => {
-            this.select(e.target.feature.id.replace('way/', ''))
+        onEachFeature: ( feature, layer ) => {
+          layer.on( 'click', ( e ) => {
+            this.select( e.target.feature.id.replace( 'way/', '' ) )
             // window.vue.$eventHub.$emit('clickedEditPolygon', [feature.properties.id, layer.getBounds().getCenter(), layer])
             // document.execCommand('copy')
-          })
-          layer.on('mouseover', e => {
-            if (!e.target.setStyle) return
-            if (e.target.feature.id.replace('way/', '') !== this.value) {
-              e.target.oldStyle = { fillColor: e.target.options.fillColor, color: e.target.options.color }
-              e.target.setStyle({ fillColor: '#FFF', color: '#FFF' })
+          } )
+          layer.on( 'mouseover', ( e ) => {
+            if ( !e.target.setStyle ) return
+            if ( e.target.feature.id.replace( 'way/', '' ) !== this.value ) {
+              e.target.oldStyle = {
+                fillColor: e.target.options.fillColor,
+                color: e.target.options.color
+              }
+              e.target.setStyle( { fillColor: '#FFF', color: '#FFF' } )
             }
-            e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
-          })
-          layer.on('mouseout', e => {
-            if (!e.target.setStyle || e.target.feature.id.replace('way/', '') === this.value) return
-            e.target.setStyle({ ...e.target.oldStyle })
+            e.target
+              .bindTooltip( e.target.feature.properties.name )
+              .openTooltip()
+          } )
+          layer.on( 'mouseout', ( e ) => {
+            if (
+              !e.target.setStyle ||
+              e.target.feature.id.replace( 'way/', '' ) === this.value
+            ) {
+              return
+            }
+            e.target.setStyle( { ...e.target.oldStyle } )
             // window.vue.$eventHub.$emit('resetEditPolygon', [e.target])
-          })
+          } )
         },
-        style: (feature) => {
+        style: ( feature ) => {
           // console.log(feature)
           var color = '#000'
-          if (feature.id.replace('way/', '') === this.value) {
+          if ( feature.id.replace( 'way/', '' ) === this.value ) {
             color = '#D3832B'
           }
           return {
@@ -87,10 +121,10 @@ export default {
     }
   },
   async created () {
-    this.$nextTick(async () => {
+    this.$nextTick( async () => {
       this.map = this.$refs.map.mapObject
 
-      this.map.on('moveend', e => {
+      this.map.on( 'moveend', ( e ) => {
         let mapLeft = this.map.getBounds().getSouthWest().lng
         let mapBottom = this.map.getBounds().getSouthWest().lat
         let mapRight = this.map.getBounds().getNorthEast().lng
@@ -101,75 +135,95 @@ export default {
         let fullBoundsTop = this.loadedBounds.getNorthEast().lat
 
         let ways = []
-        if (fullBoundsRight < mapRight) {
-          let bounds = L.latLngBounds(L.latLng(fullBoundsTop, fullBoundsRight), L.latLng(fullBoundsBottom, mapRight))
+        if ( fullBoundsRight < mapRight ) {
+          let bounds = L.latLngBounds(
+            L.latLng( fullBoundsTop, fullBoundsRight ),
+            L.latLng( fullBoundsBottom, mapRight )
+          )
           // expand loaded bounds to right
-          if (bounds.isValid()) {
-            ways.push(this.$store.dispatch('map/boundedWays', {
-              left: bounds.getSouthWest().lng,
-              bottom: bounds.getSouthWest().lat,
-              right: bounds.getNorthEast().lng,
-              top: bounds.getNorthEast().lat
-            }))
-            this.loadedBounds.extend(bounds)
+          if ( bounds.isValid() ) {
+            ways.push(
+              this.$store.dispatch( 'map/boundedWays', {
+                left: bounds.getSouthWest().lng,
+                bottom: bounds.getSouthWest().lat,
+                right: bounds.getNorthEast().lng,
+                top: bounds.getNorthEast().lat
+              } )
+            )
+            this.loadedBounds.extend( bounds )
           }
         }
 
-        if (fullBoundsLeft > mapLeft) {
-          let bounds = L.latLngBounds(L.latLng(fullBoundsTop, mapLeft), L.latLng(fullBoundsBottom, fullBoundsLeft))
+        if ( fullBoundsLeft > mapLeft ) {
+          let bounds = L.latLngBounds(
+            L.latLng( fullBoundsTop, mapLeft ),
+            L.latLng( fullBoundsBottom, fullBoundsLeft )
+          )
           // expand loaded bounds left
-          if (bounds.isValid()) {
-            ways.push(this.$store.dispatch('map/boundedWays', {
-              left: bounds.getSouthWest().lng,
-              bottom: bounds.getSouthWest().lat,
-              right: bounds.getNorthEast().lng,
-              top: bounds.getNorthEast().lat
-            }))
-            this.loadedBounds.extend(bounds)
+          if ( bounds.isValid() ) {
+            ways.push(
+              this.$store.dispatch( 'map/boundedWays', {
+                left: bounds.getSouthWest().lng,
+                bottom: bounds.getSouthWest().lat,
+                right: bounds.getNorthEast().lng,
+                top: bounds.getNorthEast().lat
+              } )
+            )
+            this.loadedBounds.extend( bounds )
           }
         }
 
-        if (fullBoundsTop < mapTop) {
-          let bounds = L.latLngBounds(L.latLng(mapTop, mapLeft), L.latLng(fullBoundsTop, mapRight))
+        if ( fullBoundsTop < mapTop ) {
+          let bounds = L.latLngBounds(
+            L.latLng( mapTop, mapLeft ),
+            L.latLng( fullBoundsTop, mapRight )
+          )
           // expand loaded bounds upwards
-          if (bounds.isValid()) {
-            ways.push(this.$store.dispatch('map/boundedWays', {
-              left: bounds.getSouthWest().lng,
-              bottom: bounds.getSouthWest().lat,
-              right: bounds.getNorthEast().lng,
-              top: bounds.getNorthEast().lat
-            }))
-            this.loadedBounds.extend(bounds)
+          if ( bounds.isValid() ) {
+            ways.push(
+              this.$store.dispatch( 'map/boundedWays', {
+                left: bounds.getSouthWest().lng,
+                bottom: bounds.getSouthWest().lat,
+                right: bounds.getNorthEast().lng,
+                top: bounds.getNorthEast().lat
+              } )
+            )
+            this.loadedBounds.extend( bounds )
           }
         }
 
-        if (fullBoundsBottom > mapBottom) {
-          let bounds = L.latLngBounds(L.latLng(fullBoundsBottom, mapLeft), L.latLng(mapBottom, mapRight))
+        if ( fullBoundsBottom > mapBottom ) {
+          let bounds = L.latLngBounds(
+            L.latLng( fullBoundsBottom, mapLeft ),
+            L.latLng( mapBottom, mapRight )
+          )
           // expand loaded bounds downwards
-          if (bounds.isValid()) {
-            ways.push(this.$store.dispatch('map/boundedWays', {
-              left: bounds.getSouthWest().lng,
-              bottom: bounds.getSouthWest().lat,
-              right: bounds.getNorthEast().lng,
-              top: bounds.getNorthEast().lat
-            }))
-            this.loadedBounds.extend(bounds)
+          if ( bounds.isValid() ) {
+            ways.push(
+              this.$store.dispatch( 'map/boundedWays', {
+                left: bounds.getSouthWest().lng,
+                bottom: bounds.getSouthWest().lat,
+                right: bounds.getNorthEast().lng,
+                top: bounds.getNorthEast().lat
+              } )
+            )
+            this.loadedBounds.extend( bounds )
           }
         }
-        Promise.all(ways).then(data => {
-          if (!this.polygonData) {
+        Promise.all( ways ).then( ( data ) => {
+          if ( !this.polygonData ) {
             this.polygonData = []
           }
 
-          for (let ways of data) {
-            let mapP = this.polygonData.map(p => p.features[0].id)
-            for (let b of ways) {
-              if (mapP.indexOf(b.features[0].id) < 0) {
-                this.polygonData.push(b)
+          for ( let ways of data ) {
+            let mapP = this.polygonData.map( ( p ) => p.features[0].id )
+            for ( let b of ways ) {
+              if ( mapP.indexOf( b.features[0].id ) < 0 ) {
+                this.polygonData.push( b )
               }
             }
           }
-        })
+        } )
 
         // this.$store.dispatch('map/boundedWays', {
         //   left: this.map.getBounds().getSouthWest().lng,
@@ -179,16 +233,19 @@ export default {
         // }).then(data => {
         //   this.polygonData = data
         // })
-      })
+      } )
       this.map.options.zoom = 16
       this.map.options.minZoom = 16
       this.map.options.maxZoom = 16
-      if (this.value) {
-        let centerBuildingJSON = await this.$store.dispatch('map/buildingJSON', this.value)
-        let centerBuilding = L.geoJSON(centerBuildingJSON)
-        this.map.panTo(centerBuilding.getBounds().getCenter())
+      if ( this.value ) {
+        let centerBuildingJSON = await this.$store.dispatch(
+          'map/buildingJSON',
+          this.value
+        )
+        let centerBuilding = L.geoJSON( centerBuildingJSON )
+        this.map.panTo( centerBuilding.getBounds().getCenter() )
       } else {
-        this.map.panTo(this.center)
+        this.map.panTo( this.center )
       }
       // this.$store.dispatch('map/boundedWays', {
       //   left: this.map.getBounds().getSouthWest().lng,
@@ -204,7 +261,7 @@ export default {
       //     }
       //   }
       // })
-    })
+    } )
 
     // this.$store.dispatch('allmapdata').then(r => {
     //   this.polygonData = r
@@ -214,15 +271,15 @@ export default {
     // this.$eventHub.$on('resetEditPolygon', v => { this.$refs.geoLayer.forEach(e => { e.mapObject.resetStyle(v[0]) }) })
   },
   methods: {
-    select: function (id) {
-      this.$emit('input', id)
+    select: function ( id ) {
+      this.$emit( 'input', id )
       // this.$refs.geoLayer.forEach(geo => { geo.mapObject._layers.forEach(layer => { layer.setStyle({ fillColor: '#000', color: '#000' }); geo.mapObject.resetStyle(layer) }) })
       // feature.setStyle({ fillColor: '#D3832B', color: '#D3832B' })
     }
   }
 }
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .mapContainer {
   background-color: blue;
   height: 400px;

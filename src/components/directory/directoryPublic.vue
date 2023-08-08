@@ -1,5 +1,5 @@
 <template>
-  <directoryMain :publicDir='1' />
+  <directoryMain :publicDir="1" />
 </template>
 
 <script>

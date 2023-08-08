@@ -6,9 +6,9 @@
  * @Copyright:  (c) Oregon State University 2020
  */
 export default class BaseBlockModifier {
-  static name = 'base'
+  static name = 'base';
 
-  constructor (store, module) {
+  constructor ( store, module ) {
     /*
       Initialize the modifier here,
       this is only an example modifier that
@@ -19,7 +19,7 @@ export default class BaseBlockModifier {
     this.data = {}
   }
 
-  async onAdd (store, module) {
+  async onAdd ( store, module ) {
     /*
       Function is called when a modifier
       is added to a block. Store is Vuex store
@@ -27,7 +27,7 @@ export default class BaseBlockModifier {
     */
   }
 
-  async onRemove (store, module) {
+  async onRemove ( store, module ) {
     /*
       Function is called when a modifier
       is removed from a block. Store is Vuex store
@@ -35,7 +35,7 @@ export default class BaseBlockModifier {
     */
   }
 
-  async updateData (store, module, data) {
+  async updateData ( store, module, data ) {
     /*
       Function is called when a block
       updates modifier data. Store is Vuex store
@@ -46,11 +46,7 @@ export default class BaseBlockModifier {
     */
   }
 
-  async preData (store, module) {
+  async preData ( store, module ) {}
 
-  }
-
-  async postData (store, module, payload) {
-
-  }
+  async postData ( store, module, payload ) {}
 }

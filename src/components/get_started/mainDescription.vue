@@ -4,16 +4,18 @@
       Why We Created The Energy Dashboard
     </el-divider>
     <el-row>
-      The Energy Dashboard has been developed by the Oregon State University Sustainability Office to enable members of the OSU community to access, view, and analyze energy consumption trends.
+      The Energy Dashboard has been developed by the Oregon State University
+      Sustainability Office to enable members of the OSU community to access,
+      view, and analyze energy consumption trends.
     </el-row>
     <el-divider class="divider" content-position="left">
       How To Use The "Map" Tab
     </el-divider>
-      <mapTab />
+    <mapTab />
     <el-divider class="divider" content-position="left">
       How To Use The "Building List" Tab
     </el-divider>
-      <buildingListTab />
+    <buildingListTab />
   </div>
 </template>
 
@@ -36,12 +38,12 @@ export default {
 
 <style>
 .divider {
-  background-color: #D73F09;
+  background-color: #d73f09;
   margin-top: 40px;
   margin-bottom: 40px;
 }
 .create-image {
   width: 450px;
-  height: 300px
+  height: 300px;
 }
 </style>

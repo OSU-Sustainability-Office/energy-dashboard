@@ -1,13 +1,13 @@
 {
-    "clientOrigin" : {
-        "scheme": "https",
-        "port": 443,
-        "host": "dashboard.sustainability.oregonstate.edu"
-    },
-    "serverOrigin": {
-        "scheme": "https",
-        "port": 443,
-        "host": "api.sustainability.oregonstate.edu/v2/energy"
-    },
-    "so_namespace": "sustainability-office-lambda-common-layer/dependencies/nodejs"
+  "clientOrigin": {
+    "scheme": "https",
+    "port": 443,
+    "host": "dashboard.sustainability.oregonstate.edu"
+  },
+  "serverOrigin": {
+    "scheme": "https",
+    "port": 443,
+    "host": "api.sustainability.oregonstate.edu/v2/energy"
+  },
+  "so_namespace": "sustainability-office-lambda-common-layer/dependencies/nodejs"
 }

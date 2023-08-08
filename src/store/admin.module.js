@@ -5,26 +5,21 @@
 import API from './api.js'
 
 const state = () => {
-  return {
-  }
+  return {}
 }
 
 const actions = {
-  async users (store, payload) {
-    let users =  await API.users()
+  async users ( store, payload ) {
+    let users = await API.users()
     return users
   }
 }
 
-const getters = {
+const getters = {}
 
-}
+const mutations = {}
 
-const mutations = {
-
-}
-
-const modules = { }
+const modules = {}
 
 export default {
   namespaced: true,

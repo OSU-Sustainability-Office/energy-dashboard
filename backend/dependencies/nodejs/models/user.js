@@ -6,46 +6,45 @@
  * @Copyright:  (c) Oregon State University 2019
  */
 
-const DDB = require('/opt/nodejs/dynamo-access.js')
+const DDB = require("/opt/nodejs/dynamo-access.js");
 // const DB = require('/opt/nodejs/sql-access.js')
-const Story = require('/opt/nodejs/models/story.js')
-const Alert = require('/opt/nodejs/models/alert.js')
+const Story = require("/opt/nodejs/models/story.js");
+const Alert = require("/opt/nodejs/models/alert.js");
 
 class User {
-  constructor (onid) {
-    this.onid = onid
-    this.views = []
-    this.alerts = []
+  constructor(onid) {
+    this.onid = onid;
+    this.views = [];
+    this.alerts = [];
   }
 
-  async get () {
-    if (this.onid === '') return this
+  async get() {
+    if (this.onid === "") return this;
     // await DB.connect()
     // let userRow = await DB.query('SELECT * FROM users WHERE name = ?', [this.onid])
     // if (userRow.length === 1) {
     // this.privilege = userRow[0].privilege
-    this.views = await Story.storiesForUser(this.onid)
-    this.alerts = await Alert.alertsForUser(this.onid)
+    this.views = await Story.storiesForUser(this.onid);
+    this.alerts = await Alert.alertsForUser(this.onid);
     // }
-    return this
+    return this;
   }
 
-  static async all (user) {
+  static async all(user) {
     if (user.privilege > 3) {
-      DDB.initialize()
-      let users = (await DDB.query('lambda-users').scan({})).Items
-      return users
+      DDB.initialize();
+      let users = (await DDB.query("lambda-users").scan({})).Items;
+      return users;
     }
-    return ''
+    return "";
   }
 
-  get
-  data () {
+  get data() {
     return {
-      views: this.views.map(o => o.data),
-      alerts: this.alerts.map(o => o.data)
-    }
+      views: this.views.map((o) => o.data),
+      alerts: this.alerts.map((o) => o.data),
+    };
   }
 }
 
-module.exports = User
+module.exports = User;

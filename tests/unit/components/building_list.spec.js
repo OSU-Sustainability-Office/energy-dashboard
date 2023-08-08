@@ -1,10 +1,10 @@
 /**
-* @Author: Milan Donhowe
-* @Email: Milan.Donhowe@oregosntate.edu
-* @Date Created:       4/20/2021
-* @Date Last Modified: 4/23/2021
-* @Description: Vue Component Unit Test for building_list.vue
-*/
+ * @Author: Milan Donhowe
+ * @Email: Milan.Donhowe@oregosntate.edu
+ * @Date Created:       4/20/2021
+ * @Date Last Modified: 4/23/2021
+ * @Description: Vue Component Unit Test for building_list.vue
+ */
 
 // For mocking API
 // Import Vue Test Utils
@@ -28,9 +28,9 @@ import locale from 'element-ui/lib/locale/lang/en'
 // The Component Itself
 import buildingList from '@/components/building_list/building_list.vue'
 
-const axios = require('axios')
+const axios = require( 'axios' )
 
-jest.mock('axios')
+jest.mock( 'axios' )
 
 // Mock Vue Router object
 const $route = {
@@ -41,9 +41,9 @@ const $route = {
 
 // Create local vue instance w/ elements ui plugin.
 const localVue = createLocalVue()
-localVue.use(Vuex)
-localVue.use(Vuei18n)
-localVue.use(elm, { locale: locale })
+localVue.use( Vuex )
+localVue.use( Vuei18n )
+localVue.use( elm, { locale: locale } )
 localVue.config.lang = 'en'
 
 // SCRIPT-WIDE CONSTANTS
@@ -54,68 +54,72 @@ const TAB_SELECTOR = 'div.el-tabs__item'
 const PANE_SELECTOR = 'div.el-tab-pane'
 
 // Create Vuex Store instance
-const localStore = new Vuex.Store(cloneDeep({ ...StoreConfig,
-  modules: {
-    map: EDMap,
-    modalController: ModalController
-  } }))
+const localStore = new Vuex.Store(
+  cloneDeep( {
+    ...StoreConfig,
+    modules: {
+      map: EDMap,
+      modalController: ModalController
+    }
+  } )
+)
 
-describe('Testing Building List Component', () => {
-  it('Loading associated store', async () => {
-    axios.mockResolvedValue({ data: mockAllBuildings })
-    return localStore.dispatch('map/loadMap')
-  })
+describe( 'Testing Building List Component', () => {
+  it( 'Loading associated store', async () => {
+    axios.mockResolvedValue( { data: mockAllBuildings } )
+    return localStore.dispatch( 'map/loadMap' )
+  } )
 
   /* Load Component w/ router mock, local vue & vuex instances */
-  const ComponentWrapper = mount(buildingList, {
+  const ComponentWrapper = mount( buildingList, {
     localVue,
     mocks: {
       $route,
       $store: localStore
     }
-  })
+  } )
 
-  it('Renders building names on mount', async () => {
+  it( 'Renders building names on mount', async () => {
     const textContent = ComponentWrapper.text()
-    for (let building of mockAllBuildings) {
-      if (!building.hidden) expect(textContent).toMatch(building.name)
+    for ( let building of mockAllBuildings ) {
+      if ( !building.hidden ) expect( textContent ).toMatch( building.name )
     }
-  })
+  } )
 
-  it('Testing building filter', async () => {
-    const Tabs = ComponentWrapper.findAll(TAB_SELECTOR)
-    const Panes = ComponentWrapper.findAll(PANE_SELECTOR)
+  it( 'Testing building filter', async () => {
+    const Tabs = ComponentWrapper.findAll( TAB_SELECTOR )
+    const Panes = ComponentWrapper.findAll( PANE_SELECTOR )
 
     // Each tab has one corresponding pane.
-    expect(Tabs.length).toEqual(Panes.length)
+    expect( Tabs.length ).toEqual( Panes.length )
 
-    for (let tabIndex = 0; tabIndex < Tabs.length; tabIndex++) {
-      const Tab = Tabs.at(tabIndex)
+    for ( let tabIndex = 0; tabIndex < Tabs.length; tabIndex++ ) {
+      const Tab = Tabs.at( tabIndex )
       const selector = Tab.text().trim()
 
-      if (selector !== 'All') {
-        await Tab.trigger('click')
+      if ( selector !== 'All' ) {
+        await Tab.trigger( 'click' )
 
         // Grab the visible pane
-        let matchingPane = Panes.filter(wrapper => wrapper.isVisible())
+        let matchingPane = Panes.filter( ( wrapper ) => wrapper.isVisible() )
 
         // We should find only one visible pane with valid id
-        expect(matchingPane.length).toEqual(1)
-        matchingPane = matchingPane.at(0)
-        expect(matchingPane.attributes('id')).toEqual(`pane-${selector}`)
+        expect( matchingPane.length ).toEqual( 1 )
+        matchingPane = matchingPane.at( 0 )
+        expect( matchingPane.attributes( 'id' ) ).toEqual( `pane-${selector}` )
 
         // Make sure the visible pane is displaying the correct building names
         const matchedBuildings = mockAllBuildings
-          .filter(b => b.group === selector && !b.hidden)
-          .map(b => b.name)
-        for (let building of mockAllBuildings) {
-          if (matchedBuildings.includes(building.name)) {
-            expect(matchingPane.text()).toMatch(building.name)
+          .filter( ( b ) => b.group === selector && !b.hidden )
+          .map( ( b ) => b.name )
+        for ( let building of mockAllBuildings ) {
+          if ( matchedBuildings.includes( building.name ) ) {
+            expect( matchingPane.text() ).toMatch( building.name )
           } else {
-            expect(matchingPane.text()).not.toMatch(building.name)
+            expect( matchingPane.text() ).not.toMatch( building.name )
           }
         }
       }
     }
-  })
-})
+  } )
+} )

@@ -7,28 +7,64 @@
 -->
 
 <template>
-  <el-row class='stage_compareside'>
-    <el-col :span='24' class='innerContent'>
-      <el-row class='title'>
-        <el-col :span='23'>
+  <el-row class="stage_compareside">
+    <el-col :span="24" class="innerContent">
+      <el-row class="title">
+        <el-col :span="23">
           <span>{{ name }} </span>
         </el-col>
-        <el-col :span='1' class='close-box'><i class="fas fa-times" @click="$emit('hide')"></i></el-col>
+        <el-col :span="1" class="close-box"
+          ><i class="fas fa-times" @click="$emit('hide')"></i
+        ></el-col>
       </el-row>
-      <el-row class='pics' v-loading='mediaArray.length < 0' element-loading-background="rgba(0, 0, 0, 0.8)">
-        <el-col :span='24' class='nowrap'>
-          <div v-for='(media, index) in mediaArray' :class='classForIndex(index)' :style='`background-image:url(${api}/image?name=${media}); width:calc(${100 / mediaArray.length}% + ${ (index === 0)? "22.5px" : "55px"});`' :key='media'></div>
+      <el-row
+        class="pics"
+        v-loading="mediaArray.length < 0"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+      >
+        <el-col :span="24" class="nowrap">
+          <div
+            v-for="(media, index) in mediaArray"
+            :class="classForIndex(index)"
+            :style="`background-image:url(${api}/image?name=${media}); width:calc(${
+              100 / mediaArray.length
+            }% + ${index === 0 ? '22.5px' : '55px'});`"
+            :key="media"
+          ></div>
         </el-col>
       </el-row>
-      <switchButtons :blocks='[block]' ref='switcher' />
-      <el-row class='grid'>
-        <el-col :span='24'>
-          <chartController v-if='block' :path='block.path' ref="lineChartController"  class="chart" :styleC="{ 'display': 'inline-block', 'width': 'calc(100% - 20px)','height': '100%', 'margin-right': '10px', 'margin-left': '10px' }" :height='300'/>
+      <switchButtons :blocks="[block]" ref="switcher" />
+      <el-row class="grid">
+        <el-col :span="24">
+          <chartController
+            v-if="block"
+            :path="block.path"
+            ref="lineChartController"
+            class="chart"
+            :styleC="{
+              display: 'inline-block',
+              width: 'calc(100% - 20px)',
+              height: '100%',
+              'margin-right': '10px',
+              'margin-left': '10px',
+            }"
+            :height="300"
+          />
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span='20' :offset='2' class='buttonParent'>
-          <el-button class='bigButton' @click='$router.push({path: `/compare/${encodeURI(JSON.stringify(buildings.map(o => o.id)))}/${$refs.switcher.currentRange + 1}`})'>View Full Graph</el-button>
+        <el-col :span="20" :offset="2" class="buttonParent">
+          <el-button
+            class="bigButton"
+            @click="
+              $router.push({
+                path: `/compare/${encodeURI(
+                  JSON.stringify(buildings.map((o) => o.id)),
+                )}/${$refs.switcher.currentRange + 1}`,
+              })
+            "
+            >View Full Graph</el-button
+          >
         </el-col>
       </el-row>
     </el-col>
@@ -40,7 +76,8 @@ import switchButtons from '@/components/map/time_switch_buttons_big'
 
 export default {
   components: {
-    chartController, switchButtons
+    chartController,
+    switchButtons
   },
   props: [],
   data () {
@@ -56,17 +93,20 @@ export default {
     },
     block: {
       get () {
-        let mgId = this.$store.getters[this.path + '/primaryGroup']('Electricity').id
-        return this.$store.getters[this.path + '/block'](mgId)
+        let mgId =
+          this.$store.getters[this.path + '/primaryGroup']( 'Electricity' ).id
+        return this.$store.getters[this.path + '/block']( mgId )
       }
     },
     name: {
       get () {
-        if (!this.buildings) return
-        let names = this.buildings.map(building => this.$store.getters[building.path + '/name'])
+        if ( !this.buildings ) return
+        let names = this.buildings.map(
+          ( building ) => this.$store.getters[building.path + '/name']
+        )
         let r = ''
-        for (let index in names) {
-          if (index > 0) {
+        for ( let index in names ) {
+          if ( index > 0 ) {
             r += ' vs '
           }
           r += names[index]
@@ -76,16 +116,21 @@ export default {
     },
     buildings: {
       get () {
-        if (!this.block) return
-        let buildingIds = this.$store.getters[this.block.path + '/modifierData']('building_compare').buildingIds
-        return buildingIds.map(id => this.$store.getters['map/building'](id))
+        if ( !this.block ) return
+        let buildingIds =
+          this.$store.getters[this.block.path + '/modifierData'](
+            'building_compare'
+          ).buildingIds
+        return buildingIds.map( ( id ) => this.$store.getters['map/building']( id ) )
       }
     },
     mediaArray: {
       get () {
-        if (!this.buildings) return
-        let buildingImages = this.buildings.map(building => this.$store.getters[building.path + '/image'])
-        while (buildingImages.length > 4) buildingImages.pop()
+        if ( !this.buildings ) return
+        let buildingImages = this.buildings.map(
+          ( building ) => this.$store.getters[building.path + '/image']
+        )
+        while ( buildingImages.length > 4 ) buildingImages.pop()
         return buildingImages
       }
     }
@@ -99,24 +144,24 @@ export default {
   methods: {
     dateOffset: function () {
       var d = new Date()
-      if (this.currentRange === 0) {
-        d.setDate(d.getDate() - 7)
-      } else if (this.currentRange === 1) {
-        d.setMonth(d.getMonth() - 1)
-      } else if (this.currentRange === 2) {
-        d.setFullYear(d.getFullYear() - 1)
+      if ( this.currentRange === 0 ) {
+        d.setDate( d.getDate() - 7 )
+      } else if ( this.currentRange === 1 ) {
+        d.setMonth( d.getMonth() - 1 )
+      } else if ( this.currentRange === 2 ) {
+        d.setFullYear( d.getFullYear() - 1 )
       }
       return d.toISOString()
     },
     update: function () {
       this.$refs.lineChartController.parse()
     },
-    classForIndex: function (index) {
-      if (this.mediaArray.length === 1) {
+    classForIndex: function ( index ) {
+      if ( this.mediaArray.length === 1 ) {
         return 'slantImage unCut'
-      } else if (index === 0) {
+      } else if ( index === 0 ) {
         return 'slantImage leftEnd'
-      } else if (index + 1 === this.mediaArray.length || index >= 3) {
+      } else if ( index + 1 === this.mediaArray.length || index >= 3 ) {
         return 'slantImage rightEnd'
       } else {
         return 'slantImage'
@@ -125,7 +170,7 @@ export default {
   }
 }
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .stage_compareside {
   position: absolute;
   top: 0;
@@ -195,10 +240,10 @@ $border-width: 3px;
   left: -1 * $slope + $border-width;
 }
 .slantImage:nth-child(3) {
-  left: -2 * $slope + 2*$border-width;
+  left: -2 * $slope + 2 * $border-width;
 }
 .slantImage:nth-child(4) {
-  left: -3 * $slope + 3*$border-width;
+  left: -3 * $slope + 3 * $border-width;
 }
 .slantImage.rightEnd {
   clip-path: polygon(0% 100%, $slope 0%, 100% 0%, 100% 100%);
@@ -223,7 +268,7 @@ $border-width: 3px;
   width: 100%;
 }
 .rangeButton:not(.active):hover {
-  background-color: #000;//darken($--color-primary, 10%);
+  background-color: #000; //darken($--color-primary, 10%);
   color: $--color-white;
   border-color: $--color-white;
 }

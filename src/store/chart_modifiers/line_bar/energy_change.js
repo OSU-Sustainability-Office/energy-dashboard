@@ -46,7 +46,7 @@ export default class LineEnergyChange {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData (chartData, payload, store, module) {
+  async postGetData ( chartData, payload, store, module ) {
     let resultDataObject = chartData.data
     let returnData = []
     let delta = 1
@@ -56,65 +56,78 @@ export default class LineEnergyChange {
     chartData.fill = true
 
     // Finds the nearest valid keys for a given building. In this case, it handles solar meters that upload less than every 15 minutes.
-    function findClosest (array, num) {
-      return array.reduce(function (prev, curr) {
-        return (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev)
-      })
+    function findClosest ( array, num ) {
+      return array.reduce( function ( prev, curr ) {
+        return Math.abs( curr - num ) < Math.abs( prev - num ) ? curr : prev
+      } )
     }
 
     const intervalUnitDelta = {
-      'minute': 60,
-      'hour': 3600,
-      'day': 86400
+      minute: 60,
+      hour: 3600,
+      day: 86400
     }
 
     delta = intervalUnitDelta[payload.intervalUnit]
     delta *= payload.dateInterval
 
     // set the offset if there is one we need to account for
-    const offset = (payload.timeZoneOffset) ? payload.timeZoneOffset : 0
-    let keysarray = Array.from(resultDataObject.keys())
+    const offset = payload.timeZoneOffset ? payload.timeZoneOffset : 0
+    let keysarray = Array.from( resultDataObject.keys() )
 
     let shouldContinue = true
-    for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
+    for ( let i = payload.dateStart; i <= payload.dateEnd; i += delta ) {
       // handle the case where there is no data
-      if (keysarray === undefined || keysarray.length === 0) {
-        result = (delta + i)
+      if ( keysarray === undefined || keysarray.length === 0 ) {
+        result = delta + i
         result_i = i
-      }  else {
-        if (findClosest(keysarray, (i)) === findClosest(keysarray, (delta + i))) {
-          if (shouldContinue) {
+      } else {
+        if ( findClosest( keysarray, i ) === findClosest( keysarray, delta + i ) ) {
+          if ( shouldContinue ) {
             // The first time, the shouldContinue condition is true, set the result and result_i values
             shouldContinue = false
-            result = findClosest(keysarray, (delta + i))
-            result_i = findClosest(keysarray, (i))
+            result = findClosest( keysarray, delta + i )
+            result_i = findClosest( keysarray, i )
           } else {
             // The second time, the shouldContinue condition is false. Don't execute the remaining in the for loop, return to beginning of the for loop. (avoid duplicates)
             continue
           }
         } else {
-          result = findClosest(keysarray, (delta + i))
-          result_i = findClosest(keysarray, (i))
+          result = findClosest( keysarray, delta + i )
+          result_i = findClosest( keysarray, i )
         }
       }
 
       try {
         let accumulator = 0
-        if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
+        if (
+          isNaN( resultDataObject.get( result ) ) ||
+          isNaN( resultDataObject.get( result_i ) )
+        ) {
           continue
         }
-        accumulator = resultDataObject.get(result)
+        accumulator = resultDataObject.get( result )
         // Add proceeding values
-        const minimumInterval = intervalUnitDelta['minute'] * payload.dateInterval
-        for (let next = minimumInterval; next < delta; next += minimumInterval) {
-          const nextReading = resultDataObject.get(result_i + (delta + next))
-          accumulator =  (isNaN(nextReading)) ? accumulator : accumulator + nextReading
+        const minimumInterval =
+          intervalUnitDelta['minute'] * payload.dateInterval
+        for (
+          let next = minimumInterval;
+          next < delta;
+          next += minimumInterval
+        ) {
+          const nextReading = resultDataObject.get( result_i + ( delta + next ) )
+          accumulator = isNaN( nextReading )
+            ? accumulator
+            : accumulator + nextReading
         }
         // console.log(accumulator)
 
-        returnData.push({ x: (new Date((result + offset) * 1000)), y: accumulator })
-      } catch (error) {
-        console.log(error)
+        returnData.push( {
+          x: new Date( ( result + offset ) * 1000 ),
+          y: accumulator
+        } )
+      } catch ( error ) {
+        console.log( error )
       }
     }
     chartData.data = returnData
@@ -139,6 +152,5 @@ export default class LineEnergyChange {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData (payload, store, module) {
-  }
+  async preGetData ( payload, store, module ) {}
 }

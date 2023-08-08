@@ -7,23 +7,31 @@
 -->
 
 <template>
-  <el-row class='stage_prompt'>
-    <el-col :span='24'>
+  <el-row class="stage_prompt">
+    <el-col :span="24">
       <el-row>
-        <el-col class='text'>
-          Select buildings to compare
-        </el-col>
+        <el-col class="text"> Select buildings to compare </el-col>
       </el-row>
       <el-row>
         <el-col>
-          <el-dropdown split-button type="info" class='button' @click="handle('q')" @command="handle">
+          <el-dropdown
+            split-button
+            type="info"
+            class="button"
+            @click="handle('q')"
+            @command="handle"
+          >
             Compare
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command='q'>Quick Compare</el-dropdown-item>
-              <el-dropdown-item command='d'>Compare in FullScreen</el-dropdown-item>
+              <el-dropdown-item command="q">Quick Compare</el-dropdown-item>
+              <el-dropdown-item command="d"
+                >Compare in FullScreen</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
-          <el-button class='button' type='info' @click="$emit('cancel')">Cancel</el-button>
+          <el-button class="button" type="info" @click="$emit('cancel')"
+            >Cancel</el-button
+          >
         </el-col>
       </el-row>
     </el-col>
@@ -32,20 +40,20 @@
 <script>
 export default {
   methods: {
-    handle: function (command) {
-      this.$emit('compare', command)
+    handle: function ( command ) {
+      this.$emit( 'compare', command )
     }
   }
 }
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .stage_prompt {
   width: 400px;
   height: 150px;
   position: absolute;
   top: 20px;
   left: calc(50% - 150px);
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0, 0, 0, 0.8);
   color: $--color-white;
   z-index: 402;
   text-align: center;

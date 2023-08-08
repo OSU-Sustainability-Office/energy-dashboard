@@ -19,24 +19,21 @@ module.exports = {
     'plugin:vue/essential',
     // https://github.com/standard/standard/blob/master/docs/RULES-en.md
     'standard'
-
   ],
   // required to lint *.vue files
-  plugins: [
-    'vue',
-    'strict-vue'
-  ],
+  plugins: ['vue', 'strict-vue'],
   // add your custom rules here
   rules: {
     // allow async-await
     'no-multi-spaces': 'off',
     'generator-star-spacing': 'off',
-    'camelcase': [0, { 'properties': 'never' }],
+    camelcase: [0, { properties: 'never' }],
     'strict-vue/require-jsdoc': 'off',
     'strict-vue/no-root-store-calls': 'error',
     'strict-vue/no-root-store-assets': 'error',
     'vue/no-use-v-if-with-v-for': 'off',
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'space-in-parens': [1, 'always']
   }
 }

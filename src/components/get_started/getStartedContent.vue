@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-main>
-      <el-row >
+      <el-row>
         <getStartedBanner />
       </el-row>
       <el-row>
@@ -14,7 +14,7 @@
         <faq />
       </el-row>
     </el-main>
-</el-container>
+  </el-container>
 </template>
 
 <script>
@@ -34,11 +34,11 @@ export default {
 
 <style>
 .el-row {
-  margin-bottom: 0px
+  margin-bottom: 0px;
 }
 .faq {
   text-align: center;
   font-weight: bold;
-  color: #D73F09
+  color: #d73f09;
 }
 </style>
