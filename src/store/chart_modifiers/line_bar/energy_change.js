@@ -112,7 +112,10 @@ export default class LineEnergyChange {
         }
         // console.log(accumulator)
 
-        returnData.push( { x: new Date( ( result + offset ) * 1000 ), y: accumulator } )
+        returnData.push( {
+          x: new Date( ( result + offset ) * 1000 ),
+          y: accumulator
+        } )
       } catch ( error ) {
         console.log( error )
       }

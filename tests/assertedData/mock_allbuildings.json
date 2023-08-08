@@ -15,19 +15,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -67,19 +88,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -102,19 +144,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -137,19 +200,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -172,19 +256,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -207,19 +312,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -242,19 +368,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -277,19 +424,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -312,19 +480,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -347,19 +536,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -389,19 +599,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -431,19 +662,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -473,19 +725,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -515,19 +788,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -557,19 +851,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -599,19 +914,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -641,19 +977,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -683,19 +1040,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -725,19 +1103,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -777,19 +1176,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -812,19 +1232,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -854,19 +1295,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -896,19 +1358,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -948,19 +1431,40 @@
             "negate": true,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -983,19 +1487,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1025,19 +1550,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1067,19 +1613,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1119,19 +1686,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1171,19 +1759,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1206,19 +1815,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1269,19 +1899,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1311,19 +1962,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1363,19 +2035,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1415,19 +2108,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1467,19 +2181,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1502,19 +2237,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1575,19 +2331,40 @@
             "negate": true,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1648,19 +2425,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1700,7 +2498,10 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
@@ -1746,7 +2547,10 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
@@ -1792,19 +2596,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1844,19 +2669,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1879,19 +2725,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1921,19 +2788,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -1963,19 +2851,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2015,7 +2924,10 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
@@ -2083,19 +2995,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2135,19 +3068,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2187,19 +3141,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2277,19 +3252,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2329,7 +3325,10 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Voltage, Phase A-N (V)", "value": "vphase_an" },
               { "label": "Voltage, Phase B-N (V)", "value": "vphase_bn" },
               { "label": "Voltage, Phase C-N (V)", "value": "vphase_cn" },
@@ -2339,15 +3338,33 @@
               { "label": "Current, Phase A (A)", "value": "cphase_a" },
               { "label": "Current, Phase B (A)", "value": "cphase_b" },
               { "label": "Current, Phase C (A)", "value": "cphase_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2381,19 +3398,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2433,19 +3471,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2468,19 +3527,40 @@
             "negate": true,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2510,19 +3590,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2562,19 +3663,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2614,19 +3736,40 @@
             "negate": true,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2666,19 +3809,40 @@
             "negate": true,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2701,19 +3865,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2764,19 +3949,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2806,19 +4012,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2896,19 +4123,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -2969,19 +4217,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -3021,19 +4290,40 @@
             "negate": true,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
@@ -3073,19 +4363,40 @@
             "negate": false,
             "type": "Electricity",
             "points": [
-              { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" },
+              {
+                "label": "Net Energy Usage (kWh)",
+                "value": "accumulated_real"
+              },
               { "label": "Real Power (W)", "value": "real_power" },
               { "label": "Reactive Power (VAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
               { "label": "Real Power, Phase C (kW)", "value": "real_c" },
-              { "label": "Reactive Power, Phase A (kVAR)", "value": "reactive_a" },
-              { "label": "Reactive Power, Phase B (kVAR)", "value": "reactive_b" },
-              { "label": "Reactive Power, Phase C (kVAR)", "value": "reactive_c" },
-              { "label": "Apparent Power, Phase A (VA)", "value": "apparent_a" },
-              { "label": "Apparent Power, Phase B (VA)", "value": "apparent_b" },
-              { "label": "Apparent Power, Phase C (VA)", "value": "apparent_c" },
+              {
+                "label": "Reactive Power, Phase A (kVAR)",
+                "value": "reactive_a"
+              },
+              {
+                "label": "Reactive Power, Phase B (kVAR)",
+                "value": "reactive_b"
+              },
+              {
+                "label": "Reactive Power, Phase C (kVAR)",
+                "value": "reactive_c"
+              },
+              {
+                "label": "Apparent Power, Phase A (VA)",
+                "value": "apparent_a"
+              },
+              {
+                "label": "Apparent Power, Phase B (VA)",
+                "value": "apparent_b"
+              },
+              {
+                "label": "Apparent Power, Phase C (VA)",
+                "value": "apparent_c"
+              },
               { "label": "Power Factor, Phase A", "value": "pf_a" },
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },

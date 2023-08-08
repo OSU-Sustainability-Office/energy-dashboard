@@ -11,7 +11,11 @@
     <el-form ref="form" :model="form" label-width="120px">
       <el-form-item
         label="Building Name"
-        :rules="{ required: true, message: 'A building name is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A building name is required',
+          trigger: 'blur'
+        }"
       >
         <el-input v-model="form.name"></el-input>
       </el-form-item>

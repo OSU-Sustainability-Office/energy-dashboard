@@ -26,7 +26,11 @@
         v-if="!story.public"
         prop="group"
         label="Building: "
-        :rules="{ required: true, message: 'A building is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A building is required',
+          trigger: 'blur'
+        }"
       >
         <el-select
           ref="groups"
@@ -46,7 +50,11 @@
         v-if="!story.public && !story.comparison"
         prop="name"
         label="Set Name: "
-        :rules="{ required: true, message: 'A set name is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A set name is required',
+          trigger: 'blur'
+        }"
       >
         <el-input type="text" v-model="form[currentIndex].name" style="width: 100%"></el-input>
       </el-form-item>
@@ -55,7 +63,11 @@
         prop="meter"
         v-if="!story.comparison"
         label="Meter: "
-        :rules="{ required: true, message: 'A meter is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A meter is required',
+          trigger: 'blur'
+        }"
       >
         <el-select
           ref="submeters"
@@ -75,7 +87,11 @@
 
       <el-form-item
         v-if="!story.comparison"
-        :rules="{ required: true, message: 'A measurement is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A measurement is required',
+          trigger: 'blur'
+        }"
         prop="point"
         label="Measurement: "
       >
@@ -161,7 +177,9 @@ export default {
         if ( this.form.length === 0 ) {
           return
         }
-        return this.$store.dispatch( 'buildingMeters', { id: this.form[this.currentIndex].group } )
+        return this.$store.dispatch( 'buildingMeters', {
+          id: this.form[this.currentIndex].group
+        } )
       }
     },
     meterPoints: {
@@ -170,7 +188,9 @@ export default {
           return
         }
         if ( this.form[this.currentIndex].meter ) {
-          return this.$store.dispatch( 'meterPoints', { id: this.form[this.currentIndex].meter } )
+          return this.$store.dispatch( 'meterPoints', {
+            id: this.form[this.currentIndex].meter
+          } )
         } else {
           return ['accumulated_real']
         }
@@ -272,7 +292,10 @@ export default {
     deleteChart: function () {
       let r = this.form.splice( this.currentIndex, 1 )
       if ( r[0].id ) {
-        this.$store.commit( 'removeChart', { blockIndex: this.index, chartIndex: this.currentIndex } )
+        this.$store.commit( 'removeChart', {
+          blockIndex: this.index,
+          chartIndex: this.currentIndex
+        } )
       }
 
       this.currentIndex = 0

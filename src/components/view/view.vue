@@ -187,7 +187,9 @@ export default {
     cards: {
       get () {
         if ( this.$route.path.includes( 'compare' ) ) {
-          if ( !this.compareBuildings || this.compareBuildings.length === 0 || !this.compareBuildings[0] ) return []
+          if ( !this.compareBuildings || this.compareBuildings.length === 0 || !this.compareBuildings[0] ) {
+            return []
+          }
           let building = this.$store.getters['map/building']( this.compareBuildings[0].id )
           if ( !building ) return []
           let group = this.$store.getters[building.path + '/primaryGroup']( 'Electricity' )

@@ -26,7 +26,10 @@
       </div>
     </el-collapse-item>
     <el-collapse-item title="How can I submit questions or feedback?" name="7">
-      <div>Please email us at <a href="mailto:sustainability@oregonstate.edu">sustainability@oregonstate.edu</a>.</div>
+      <div>
+        Please email us at
+        <a href="mailto:sustainability@oregonstate.edu">sustainability@oregonstate.edu</a>.
+      </div>
     </el-collapse-item>
   </el-collapse>
 </template>

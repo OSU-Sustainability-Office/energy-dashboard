@@ -36,7 +36,10 @@ export default {
       handler: function ( id ) {
         for ( let building of this.$refs.geoLayer ) {
           if ( building.geojson.features[0].id.replace( 'way/', '' ) === id ) {
-            building.mapObject.setStyle( { fillColor: '#D3832B', color: '#D3832B' } )
+            building.mapObject.setStyle( {
+              fillColor: '#D3832B',
+              color: '#D3832B'
+            } )
             this.map.panTo( building.mapObject.getBounds().getCenter() )
           } else {
             building.mapObject.setStyle( { fillColor: '#000', color: '#000' } )
@@ -64,13 +67,18 @@ export default {
           layer.on( 'mouseover', e => {
             if ( !e.target.setStyle ) return
             if ( e.target.feature.id.replace( 'way/', '' ) !== this.value ) {
-              e.target.oldStyle = { fillColor: e.target.options.fillColor, color: e.target.options.color }
+              e.target.oldStyle = {
+                fillColor: e.target.options.fillColor,
+                color: e.target.options.color
+              }
               e.target.setStyle( { fillColor: '#FFF', color: '#FFF' } )
             }
             e.target.bindTooltip( e.target.feature.properties.name ).openTooltip()
           } )
           layer.on( 'mouseout', e => {
-            if ( !e.target.setStyle || e.target.feature.id.replace( 'way/', '' ) === this.value ) return
+            if ( !e.target.setStyle || e.target.feature.id.replace( 'way/', '' ) === this.value ) {
+              return
+            }
             e.target.setStyle( { ...e.target.oldStyle } )
             // window.vue.$eventHub.$emit('resetEditPolygon', [e.target])
           } )

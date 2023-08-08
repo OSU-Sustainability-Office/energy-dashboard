@@ -12,7 +12,11 @@ Friday December 13th 2019 * @Copyright: (c) Oregon State University 2019 */
       <el-form-item
         label="Title: "
         prop="name"
-        :rules="{ required: true, message: 'A name is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A name is required',
+          trigger: 'blur'
+        }"
       >
         <el-input type="text" v-model="form.name"></el-input>
       </el-form-item>

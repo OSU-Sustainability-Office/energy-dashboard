@@ -134,7 +134,9 @@ export default {
     },
     campaignPath: {
       get () {
-        if ( !this.$store.getters['campaigns/campaign']( this.$route.params.id ) ) return null
+        if ( !this.$store.getters['campaigns/campaign']( this.$route.params.id ) ) {
+          return null
+        }
         return this.$store.getters['campaigns/campaign']( this.$route.params.id ).path
       }
     },

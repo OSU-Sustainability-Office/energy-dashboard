@@ -13,7 +13,11 @@
     <el-form label-width="150px" label-position="left" :model="form" ref="form">
       <el-form-item
         label="Name: "
-        :rules="{ required: true, message: 'A name is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A name is required',
+          trigger: 'blur'
+        }"
         prop="name"
         v-if="personalView"
       >
@@ -66,7 +70,11 @@
       </el-form-item>
       <el-form-item
         label="Interval: "
-        :rules="{ required: true, message: 'An interval is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'An interval is required',
+          trigger: 'blur'
+        }"
         prop="intUnit"
       >
         <!-- <label class='col-4'>Interval: </label> -->
@@ -80,7 +88,11 @@
       </el-form-item>
       <el-form-item
         label="Graph Type: "
-        :rules="{ required: true, message: 'A graph type is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A graph type is required',
+          trigger: 'blur'
+        }"
         prop="graphType"
         v-if="personalView"
       >
@@ -95,7 +107,11 @@
         v-if="currentIndex < form.sets.length && !personalView && !compareView"
         prop="meter"
         label="Meter: "
-        :rules="{ required: true, message: 'A meter is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A meter is required',
+          trigger: 'blur'
+        }"
       >
         <el-select
           ref="submeters"
@@ -108,7 +124,11 @@
       </el-form-item>
       <el-form-item
         v-if="currentIndex < form.sets.length && !personalView && !compareView"
-        :rules="{ required: true, message: 'A measurement is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A measurement is required',
+          trigger: 'blur'
+        }"
         prop="point"
         label="Measurement: "
       >
@@ -143,7 +163,11 @@
             v-if="currentIndex < form.sets.length"
             prop="building"
             label="Building: "
-            :rules="{ required: true, message: 'A building is required', trigger: 'blur' }"
+            :rules="{
+              required: true,
+              message: 'A building is required',
+              trigger: 'blur'
+            }"
           >
             <el-select
               ref="groups"
@@ -168,7 +192,11 @@
             v-if="currentIndex < form.sets.length"
             prop="name"
             label="Set Name: "
-            :rules="{ required: true, message: 'A set name is required', trigger: 'blur' }"
+            :rules="{
+              required: true,
+              message: 'A set name is required',
+              trigger: 'blur'
+            }"
           >
             <el-input type="text" v-model="form.sets[currentIndex].name" style="width: 100%"></el-input>
           </el-form-item>
@@ -176,7 +204,11 @@
             v-if="currentIndex < form.sets.length"
             prop="meter"
             label="Meter: "
-            :rules="{ required: true, message: 'A meter is required', trigger: 'blur' }"
+            :rules="{
+              required: true,
+              message: 'A meter is required',
+              trigger: 'blur'
+            }"
           >
             <el-select
               ref="submeters"
@@ -189,7 +221,11 @@
           </el-form-item>
           <el-form-item
             v-if="currentIndex < form.sets.length"
-            :rules="{ required: true, message: 'A measurement is required', trigger: 'blur' }"
+            :rules="{
+              required: true,
+              message: 'A measurement is required',
+              trigger: 'blur'
+            }"
             prop="point"
             label="Measurement: "
           >

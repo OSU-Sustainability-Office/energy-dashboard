@@ -72,7 +72,9 @@ const actions = {
           meters: {}
         }
         for ( let meter of this.getters[group.path + '/meters'] ) {
-          payloadGroup.meters[meter.id] = { operation: parseInt( !meter.negate ) }
+          payloadGroup.meters[meter.id] = {
+            operation: parseInt( !meter.negate )
+          }
         }
         reqPayload.reqPayload.meters.push( payloadGroup )
       }
@@ -99,7 +101,10 @@ const actions = {
         let moduleSpace = store.getters.path + '/' + blockSpace
         this.registerModule( moduleSpace.split( '/' ), Block )
         store.commit( blockSpace + '/path', moduleSpace )
-        store.dispatch( blockSpace + '/loadDefault', { group: group, id: group.id } )
+        store.dispatch( blockSpace + '/loadDefault', {
+          group: group,
+          id: group.id
+        } )
       }
     }
   }

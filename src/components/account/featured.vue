@@ -28,7 +28,11 @@
           <el-form-item
             label="Name: "
             v-if="!story.public && !story.comparison"
-            :rules="{ required: true, message: 'A name is required', trigger: 'blur' }"
+            :rules="{
+              required: true,
+              message: 'A name is required',
+              trigger: 'blur'
+            }"
             prop="name"
           >
             <label class="col-4">Name:</label>
@@ -80,7 +84,11 @@
           </el-form-item>
           <el-form-item
             label="Interval: "
-            :rules="{ required: true, message: 'An interval is required', trigger: 'blur' }"
+            :rules="{
+              required: true,
+              message: 'An interval is required',
+              trigger: 'blur'
+            }"
             prop="intUnit"
           >
             <label class="col-4">Interval: </label>
@@ -95,7 +103,11 @@
           <el-form-item
             v-if="!story.public && !story.comparison"
             label="Graph Type: "
-            :rules="{ required: true, message: 'A graph type is required', trigger: 'blur' }"
+            :rules="{
+              required: true,
+              message: 'A graph type is required',
+              trigger: 'blur'
+            }"
             prop="graphType"
           >
             <label class="col-4">Graph Type: </label>
@@ -207,7 +219,9 @@ export default {
           if ( this.$refs.featureController ) {
             card.charts = []
             for ( const chart of this.$refs.featureController.form ) {
-              const meters = await this.$store.dispatch( 'buildingMeters', { id: chart.group } )
+              const meters = await this.$store.dispatch( 'buildingMeters', {
+                id: chart.group
+              } )
               const newChart = {
                 id: chart.id,
                 name: this.story.comparison

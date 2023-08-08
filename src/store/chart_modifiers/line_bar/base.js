@@ -73,7 +73,10 @@ export default class LineBaseModifier {
           continue
         }
         accumulator = resultDataObject.get( i + delta )
-        returnData.push( { x: new Date( ( i + delta + offset ) * 1000 ), y: accumulator } )
+        returnData.push( {
+          x: new Date( ( i + delta + offset ) * 1000 ),
+          y: accumulator
+        } )
       } catch ( error ) {
         console.log( error )
       }

@@ -50,7 +50,11 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
       </el-form-item>
       <el-form-item
         label="Interval: "
-        :rules="{ required: true, message: 'An interval is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'An interval is required',
+          trigger: 'blur'
+        }"
         prop="intUnit"
       >
         <!-- <label class='col-4'>Interval: </label> -->
@@ -64,7 +68,11 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
       </el-form-item>
       <el-form-item
         label="Points: "
-        :rules="{ required: true, message: 'Meter points are required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'Meter points are required',
+          trigger: 'blur'
+        }"
         prop="points"
       >
         <el-select filterable multiple v-model="form.points" style="width: 100%">

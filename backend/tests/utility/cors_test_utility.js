@@ -25,10 +25,16 @@
 */
 exports.VerifyCORSResponse = (response, clientOrigin, serverOrigin) => {
   if (clientOrigin.scheme !== serverOrigin.scheme) {
-    return { result: false, reason: 'CORS response scheme did not match request scheme.' }
+    return {
+      result: false,
+      reason: 'CORS response scheme did not match request scheme.'
+    }
   }
   if (clientOrigin.port !== serverOrigin.port) {
-    return { result: false, reason: 'CORS response port did not match request port.' }
+    return {
+      result: false,
+      reason: 'CORS response port did not match request port.'
+    }
   }
   // extract response headers.  Not all of these need to be defined, which is OK.
   if (response.headers) {
@@ -39,7 +45,10 @@ exports.VerifyCORSResponse = (response, clientOrigin, serverOrigin) => {
 
     // Make sure we aren't re-directing
     if ([301, 307, 308].includes(statusCode))
-      return { result: false, reason: 'CORS request external redirect not allowed' }
+      return {
+        result: false,
+        reason: 'CORS request external redirect not allowed'
+      }
 
     // Make sure they have specified an Origin.
     if (!allowedOrigin)
@@ -55,7 +64,10 @@ exports.VerifyCORSResponse = (response, clientOrigin, serverOrigin) => {
           result: false,
           reason: 'Credential is not supported if the CORS header ‘Access-Control-Allow-Origin’ is ‘*’'
         }
-      return { result: true, reason: 'allowed origin is a wildcard, anyone can access this resource' }
+      return {
+        result: true,
+        reason: 'allowed origin is a wildcard, anyone can access this resource'
+      }
     }
 
     // Make sure the origin matches production
@@ -72,12 +84,18 @@ exports.VerifyCORSResponse = (response, clientOrigin, serverOrigin) => {
       const validMethods = 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH'.split(', ')
       for (method of allowedMethods.split(', ')) {
         if (!validMethods.includes(method)) {
-          return { result: false, reason: `invalid token: '${method}' in CORS header ‘Access-Control-Allow-Methods` }
+          return {
+            result: false,
+            reason: `invalid token: '${method}' in CORS header ‘Access-Control-Allow-Methods`
+          }
         }
       }
     }
 
     return { result: true, resason: 'no error detected' }
   }
-  return { result: false, reason: 'no headers specified,  did you remember to use the Response class?' }
+  return {
+    result: false,
+    reason: 'no headers specified,  did you remember to use the Response class?'
+  }
 }

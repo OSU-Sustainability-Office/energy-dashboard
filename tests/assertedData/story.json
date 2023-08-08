@@ -33,7 +33,15 @@
           "id": 476,
           "meter": 0,
           "meters": [
-            { "chart_id": 476, "group_id": 8, "id": 121, "meter_id": 1, "negate": null, "operation": 1, "type": "e" }
+            {
+              "chart_id": 476,
+              "group_id": 8,
+              "id": 121,
+              "meter_id": 1,
+              "negate": null,
+              "operation": 1,
+              "type": "e"
+            }
           ],
           "name": "Tebau Hall Electricty",
           "point": "accumulated_real"

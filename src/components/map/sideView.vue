@@ -51,7 +51,11 @@
               <el-col :span="12">
                 <el-button
                   class="bigButton"
-                  @click="$router.push({ path: `/building/${building.id}/${currentRange + 1}` })"
+                  @click="
+                    $router.push({
+                      path: `/building/${building.id}/${currentRange + 1}`
+                    })
+                  "
                   >View Full Graph</el-button
                 >
               </el-col>
@@ -107,7 +111,11 @@
               <el-col :span="12">
                 <el-button
                   class="bigButton"
-                  @click="$router.push({ path: `/building/${building.id}/${currentRange + 1}` })"
+                  @click="
+                    $router.push({
+                      path: `/building/${building.id}/${currentRange + 1}`
+                    })
+                  "
                   >View Full Graph</el-button
                 >
               </el-col>

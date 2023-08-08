@@ -141,7 +141,10 @@ export default {
             if ( e.target.feature.id === 'way/1100972272' ) {
               e.target.feature.properties.name = 'OSU Operations'
             }
-            e.target.oldStyle = { fillColor: e.target.options.fillColor, color: e.target.options.color }
+            e.target.oldStyle = {
+              fillColor: e.target.options.fillColor,
+              color: e.target.options.color
+            }
             e.target.setStyle( { fillColor: '#000', color: '#000' } )
             e.target.bindTooltip( e.target.feature.properties.name ).openTooltip()
           } )
@@ -199,9 +202,11 @@ export default {
             iconSize: [20, 20],
             shadowUrl: ''
           } )
-          const marker = L.marker( center, { icon: checkIcon, bubblingMouseEvents: true, interactive: false } ).addTo(
-            this.map
-          )
+          const marker = L.marker( center, {
+            icon: checkIcon,
+            bubblingMouseEvents: true,
+            interactive: false
+          } ).addTo( this.map )
           marker.buildingId = id
           this.compareMarkers.push( marker )
           this.compareStories.push( id )
@@ -245,7 +250,9 @@ export default {
           path: path
         } )
       } else {
-        this.$router.push( { path: `/compare/${encodeURI( JSON.stringify( this.compareStories ) )}/2` } )
+        this.$router.push( {
+          path: `/compare/${encodeURI( JSON.stringify( this.compareStories ) )}/2`
+        } )
       }
     },
     startCompare: function ( buildingId ) {
@@ -276,9 +283,11 @@ export default {
       if ( !center ) {
         return
       }
-      const marker = L.marker( center, { icon: checkIcon, bubblingMouseEvents: true, interactive: false } ).addTo(
-        this.map
-      )
+      const marker = L.marker( center, {
+        icon: checkIcon,
+        bubblingMouseEvents: true,
+        interactive: false
+      } ).addTo( this.map )
       marker.buildingId = buildingId
       this.compareMarkers.push( marker )
     },

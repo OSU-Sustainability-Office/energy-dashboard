@@ -4,14 +4,22 @@
       <el-form-item
         label="Title: "
         prop="name"
-        :rules="{ required: true, message: 'A name is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A name is required',
+          trigger: 'blur'
+        }"
       >
         <el-input type="text" v-model="form.name"></el-input>
       </el-form-item>
       <el-form-item
         label="Sub-Title: "
         prop="description"
-        :rules="{ required: false, message: 'A name is required', trigger: 'blur' }"
+        :rules="{
+          required: false,
+          message: 'A name is required',
+          trigger: 'blur'
+        }"
       >
         <el-input type="text" v-model="form.description"></el-input>
       </el-form-item>

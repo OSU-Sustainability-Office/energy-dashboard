@@ -12,7 +12,11 @@ Sunday February 2nd 2020 * @Copyright: (c) Oregon State University 2020 */
       <el-form-item
         label="Name: "
         prop="name"
-        :rules="{ required: true, message: 'A name is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A name is required',
+          trigger: 'blur'
+        }"
       >
         <el-input type="text" v-model="form.name"></el-input>
       </el-form-item>
@@ -22,7 +26,11 @@ Sunday February 2nd 2020 * @Copyright: (c) Oregon State University 2020 */
       <el-form-item
         prop="group"
         label="Group: "
-        :rules="{ required: true, message: 'A group is required', trigger: 'blur' }"
+        :rules="{
+          required: true,
+          message: 'A group is required',
+          trigger: 'blur'
+        }"
       >
         <el-select v-model="form.group" style="width: 100%">
           <el-option label="Academics" value="Academics"></el-option>

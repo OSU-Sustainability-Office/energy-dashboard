@@ -19,7 +19,11 @@
           <el-form :inline="true" :model="alertForm[item.id]" class="form-inline" ref="alertForm">
             <el-form-item
               label="Measurement: "
-              :rules="{ required: true, message: 'A measurement is required', trigger: 'blur' }"
+              :rules="{
+                required: true,
+                message: 'A measurement is required',
+                trigger: 'blur'
+              }"
             >
               <el-select v-model="item.point" @change="updateAlert(item, index)">
                 <el-option
@@ -47,7 +51,11 @@
             <el-form :model="newAlertForm" ref="newAlertForm">
               <el-form-item
                 label="Meter: "
-                :rules="{ required: true, message: 'A meter is required', trigger: 'blur' }"
+                :rules="{
+                  required: true,
+                  message: 'A meter is required',
+                  trigger: 'blur'
+                }"
               >
                 <el-select v-model="newAlertForm.meter" class="full-width" filterable :filter-method="meterSearch">
                   <el-option-group v-for="(group, index) in Object.keys(meterSearched)" :key="index" :label="group">
@@ -58,7 +66,11 @@
               </el-form-item>
               <el-form-item
                 label="Measurement: "
-                :rules="{ required: true, message: 'A measurement is required', trigger: 'blur' }"
+                :rules="{
+                  required: true,
+                  message: 'A measurement is required',
+                  trigger: 'blur'
+                }"
               >
                 <el-select v-model="newAlertForm.point" :key="updatePoint">
                   <el-option
@@ -72,7 +84,11 @@
               </el-form-item>
               <el-form-item
                 label="Threshold: "
-                :rules="{ required: true, message: 'A threshold is required', trigger: 'blur' }"
+                :rules="{
+                  required: true,
+                  message: 'A threshold is required',
+                  trigger: 'blur'
+                }"
               >
                 <el-input-number v-model="newAlertForm.threshold"></el-input-number>
               </el-form-item>

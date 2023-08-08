@@ -113,7 +113,9 @@ const actions = {
           // if oldVersion == 0, then indexedDB did not exist so we build it.
           case 0:
             // stores meter readings
-            event.target.result.createObjectStore( 'MeterReadings', { keyPath: 'meterId' } )
+            event.target.result.createObjectStore( 'MeterReadings', {
+              keyPath: 'meterId'
+            } )
             break
           // remove dead request store for older indexed database instances
           case 1:
@@ -125,7 +127,9 @@ const actions = {
     } )
       .then( event => {
         // Store reference to indexDB database in vuex store
-        this.commit( 'dataStore/setDBInstance', { instance: event.target.result } )
+        this.commit( 'dataStore/setDBInstance', {
+          instance: event.target.result
+        } )
       } )
       .catch( event => {
         console.log( 'An error occured when trying to use indexedDB API, is it enabled?' )
@@ -287,7 +291,9 @@ const actions = {
         const batchSize = Math.ceil( requestSize / RESPONSE_MAX_SIZE )
 
         // Initialize divided request objects
-        for ( let _ = 0; _ < batchSize; _++ ) apiRequests.push( { ...requestObject, datasets: [] } )
+        for ( let _ = 0; _ < batchSize; _++ ) {
+          apiRequests.push( { ...requestObject, datasets: [] } )
+        }
 
         // Distribute the datasets evenly.
         for ( let i = 0; i < requestObject.datasets.length; i++ ) {
@@ -415,7 +421,9 @@ const actions = {
       let promises = []
       missingIntervals.forEach( async interval => {
         // For each interval, request for the data
-        if ( interval.length === 0 ) interval.push( Math.round( new Date().getTime() / 1000 ) )
+        if ( interval.length === 0 ) {
+          interval.push( Math.round( new Date().getTime() / 1000 ) )
+        }
         promises.push( API.data( payload.meterId, interval[0], interval[1], payload.uom, payload.classInt ) )
       } )
 
@@ -492,7 +500,9 @@ const mutations = {
   //  value: a numerical value representing the data
   addToCache: ( state, cacheEntry ) => {
     if ( !state.cache[cacheEntry.meterId] ) state.cache[cacheEntry.meterId] = {}
-    if ( !state.cache[cacheEntry.meterId][cacheEntry.uom] ) state.cache[cacheEntry.meterId][cacheEntry.uom] = {}
+    if ( !state.cache[cacheEntry.meterId][cacheEntry.uom] ) {
+      state.cache[cacheEntry.meterId][cacheEntry.uom] = {}
+    }
     state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] = cacheEntry.value
   },
 
@@ -575,7 +585,9 @@ const getters = {
         if ( getters.requestStore[uom] === undefined ) return false
         if ( getters.requestStore[uom][id] === undefined ) return false
         for ( let i = 0; i < getters.requestStore[uom][id].length; i++ ) {
-          if ( getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end ) return true
+          if ( getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end ) {
+            return true
+          }
         }
         return false
       },

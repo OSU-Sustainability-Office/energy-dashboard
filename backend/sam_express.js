@@ -147,7 +147,9 @@
                 HTTPS.get(layerUrl, data => {
                   data.pipe(zipFile)
                   zipFile.on('finish', () => {
-                    const extractor = Unzip.Extract({ path: 'express_build/opt' })
+                    const extractor = Unzip.Extract({
+                      path: 'express_build/opt'
+                    })
                     FileSystem.createReadStream(layer + '.zip').pipe(extractor)
                     extractor.on('close', () => {
                       FileSystem.unlinkSync(layer + '.zip')

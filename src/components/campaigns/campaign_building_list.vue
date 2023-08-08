@@ -125,7 +125,9 @@ export default {
       return this.blocks.map( b => b.path ).indexOf( path ) + 1
     },
     computedColor: function ( path ) {
-      if ( !this.$store.getters[path + '/modifierData']( 'campaign_linebar' ) ) return
+      if ( !this.$store.getters[path + '/modifierData']( 'campaign_linebar' ) ) {
+        return
+      }
       const percentage = this.accumulatedPercentage( path )
       // #d62326 - Bottom Red
       // #19a23a - Top Green

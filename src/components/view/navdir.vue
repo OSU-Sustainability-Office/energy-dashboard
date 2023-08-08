@@ -24,7 +24,9 @@
                 v-for="(groupS, index) in group1"
                 :key="groupS.id"
                 :index="'1-' + index"
-                :route="{ path: (publicView ? '/buildings/' : '/view/') + groupS.id }"
+                :route="{
+                  path: (publicView ? '/buildings/' : '/view/') + groupS.id
+                }"
               >
                 <i class="fas fa-th-large"></i>{{ groupS.name }}
               </el-menu-item>

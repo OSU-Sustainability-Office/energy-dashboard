@@ -185,7 +185,10 @@ export default {
       for ( let device of this.allDevices ) {
         this.$set( this.checkedBoxes, device.id, {} )
         for ( let meter of this.value ) {
-          this.$set( this.checkedBoxes[device.id], meter.id, { include: false, negate: false } )
+          this.$set( this.checkedBoxes[device.id], meter.id, {
+            include: false,
+            negate: false
+          } )
           this.checkedBoxes[device.id][meter.id].include = meter.meters.find( m => m.id === device.id ) !== undefined
           this.checkedBoxes[device.id][meter.id].negate =
             meter.meters.find( m => m.id === device.id ) !== undefined &&

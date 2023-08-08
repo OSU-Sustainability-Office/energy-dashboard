@@ -28,7 +28,9 @@
                 v-for="(groupS, index) in filteredGroups"
                 :key="groupS.id"
                 :index="'1-' + index"
-                :route="{ path: (group.public ? '/buildinglist/' : '/dashboard/') + groupS.id }"
+                :route="{
+                  path: (group.public ? '/buildinglist/' : '/dashboard/') + groupS.id
+                }"
               >
                 <i class="fas fa-th-large"></i>{{ groupS.group }}
               </el-menu-item>
@@ -40,7 +42,9 @@
                 v-for="(storyS, index) in navStories"
                 :key="storyS.id"
                 :index="'2-' + index"
-                :route="{ path: group.public ? `/public/${storyS.id}/1` : `/view/${storyS.id}` }"
+                :route="{
+                  path: group.public ? `/public/${storyS.id}/1` : `/view/${storyS.id}`
+                }"
               >
                 <i class="fas fa-building"></i>{{ storyS.name }}
               </el-menu-item>

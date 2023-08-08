@@ -10,7 +10,9 @@ function GetMockData ( url, filename ) {
   axios
     .get( url )
     .then( response => {
-      fs.writeFileSync( filename, JSON.stringify( response.data ), { encoding: 'utf8' } )
+      fs.writeFileSync( filename, JSON.stringify( response.data ), {
+        encoding: 'utf8'
+      } )
     } )
     .catch( err => console.log( err ) )
 }
