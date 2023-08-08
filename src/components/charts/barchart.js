@@ -30,21 +30,21 @@ export default {
         },
         tooltips: {
           callbacks: {
-            title: function (item, data) {
-              let d = new Date(item[0].xLabel)
+            title: function ( item, data ) {
+              let d = new Date( item[0].xLabel )
               let meridiem = 'am'
               let hours = d.getHours()
-              if (hours > 12) {
+              if ( hours > 12 ) {
                 hours -= 12
                 meridiem = 'pm'
-              } else if (hours === 0) {
+              } else if ( hours === 0 ) {
                 hours = 12
               }
               let minutes = d.getMinutes()
-              if (minutes < 10) {
+              if ( minutes < 10 ) {
                 minutes = '0' + minutes
               }
-              let year = d.getYear().toString().slice(1)
+              let year = d.getYear().toString().slice( 1 )
               const dayCodes = [
                 'Sun',
                 'Mon',
@@ -54,10 +54,30 @@ export default {
                 'Fri',
                 'Sat'
               ]
-              return (dayCodes[d.getDay()] + ' ' + (d.getMonth() + 1).toString() + '/' + d.getDate() + '/' + year + ' ' + hours + ':' + minutes + ' ' + meridiem)
+              return (
+                dayCodes[d.getDay()] +
+                ' ' +
+                ( d.getMonth() + 1 ).toString() +
+                '/' +
+                d.getDate() +
+                '/' +
+                year +
+                ' ' +
+                hours +
+                ':' +
+                minutes +
+                ' ' +
+                meridiem
+              )
             },
-            label: (item, data) => {
-              return this.$parent.chartData.datasets[item.datasetIndex].label + ': ' + parseFloat(item.yLabel).toFixed(2) + ' ' + this.$parent.unit(item.datasetIndex)
+            label: ( item, data ) => {
+              return (
+                this.$parent.chartData.datasets[item.datasetIndex].label +
+                ': ' +
+                parseFloat( item.yLabel ).toFixed( 2 ) +
+                ' ' +
+                this.$parent.unit( item.datasetIndex )
+              )
             }
           }
         },
@@ -75,12 +95,12 @@ export default {
             fontColor: this.primaryColor,
             fontFamily: 'Open Sans'
           },
-          onHover: function (e) {
+          onHover: function ( e ) {
             e.target.style.cursor = 'pointer'
           }
         },
         hover: {
-          onHover: function (e) {
+          onHover: function ( e ) {
             e.target.style.cursor = 'default'
           }
         },
@@ -92,63 +112,67 @@ export default {
         responsive: true, // my new default options
         maintainAspectRatio: false, // my new default options
         scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: false,
-              fontSize: 12,
-              fontColor: this.primaryColor,
-              fontFamily: 'Open Sans'
-            },
-            gridLines: {
-              display: true, // my new default options
-              color: this.secondaryColor
-            },
-            scaleLabel: {
-              display: (this.$parent.buildLabel('y') !== ''),
-              labelString: this.$parent.buildLabel('y'),
-              fontSize: 12,
-              fontColor: this.primaryColor,
-              fontFamily: 'Open Sans'
-            }
-          }],
-          xAxes: [{
-            type: 'time',
-            bounds: 'data',
-            gridLines: {
-              display: true, // my new default options
-              color: this.secondaryColor
-            },
-            ticks: {
-              fontSize: 14,
-              fontColor: this.primaryColor,
-              fontFamily: 'Open Sans',
-              autoSkip: true,
-              stepSize: 10,
-              source: 'data'
-            },
-            scaleLabel: {
-              display: (this.$parent.buildLabel('y') !== ''),
-              labelString: this.$parent.buildLabel('x'),
-              fontSize: 12,
-              fontColor: this.primaryColor,
-              fontFamily: 'Open Sans'
-            },
-            time: {
-              unit: 'day',
-              unitStepSize: 15,
-              displayFormats: {
-                'day': 'M/DD',
-                'hour': 'dd h:mm a',
-                'minute': 'h:mm a'
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: false,
+                fontSize: 12,
+                fontColor: this.primaryColor,
+                fontFamily: 'Open Sans'
+              },
+              gridLines: {
+                display: true, // my new default options
+                color: this.secondaryColor
+              },
+              scaleLabel: {
+                display: this.$parent.buildLabel( 'y' ) !== '',
+                labelString: this.$parent.buildLabel( 'y' ),
+                fontSize: 12,
+                fontColor: this.primaryColor,
+                fontFamily: 'Open Sans'
               }
             }
-          }]
+          ],
+          xAxes: [
+            {
+              type: 'time',
+              bounds: 'data',
+              gridLines: {
+                display: true, // my new default options
+                color: this.secondaryColor
+              },
+              ticks: {
+                fontSize: 14,
+                fontColor: this.primaryColor,
+                fontFamily: 'Open Sans',
+                autoSkip: true,
+                stepSize: 10,
+                source: 'data'
+              },
+              scaleLabel: {
+                display: this.$parent.buildLabel( 'y' ) !== '',
+                labelString: this.$parent.buildLabel( 'x' ),
+                fontSize: 12,
+                fontColor: this.primaryColor,
+                fontFamily: 'Open Sans'
+              },
+              time: {
+                unit: 'day',
+                unitStepSize: 15,
+                displayFormats: {
+                  day: 'M/DD',
+                  hour: 'dd h:mm a',
+                  minute: 'h:mm a'
+                }
+              }
+            }
+          ]
         }
       }
     }
   },
   mounted () {
-    this.renderChart(this.chartData, this.options)
+    this.renderChart( this.chartData, this.options )
   },
   watch: {
     // chartData: function(value) {
@@ -156,7 +180,7 @@ export default {
     // }
   },
   methods: {
-    setOptions: function (opts) {
+    setOptions: function ( opts ) {
       this.options = opts
       this.$data._chart.options = this.options
       // this.renderChart(this.chartData, this.options)

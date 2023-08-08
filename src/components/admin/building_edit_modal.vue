@@ -7,16 +7,28 @@
 -->
 
 <template>
-  <el-dialog title="Edit Building" :visible.sync="visible" width="80%" size='lg'>
+  <el-dialog
+    title="Edit Building"
+    :visible.sync="visible"
+    width="80%"
+    size="lg"
+  >
     <el-form ref="form" :model="form" label-width="200px">
-      <el-form-item label="Building Name" :rules="{required: true, message: 'A building name is required', trigger: 'blur'}">
+      <el-form-item
+        label="Building Name"
+        :rules="{
+          required: true,
+          message: 'A building name is required',
+          trigger: 'blur',
+        }"
+      >
         <el-input v-model="form.name"></el-input>
       </el-form-item>
-      <el-form-item label="Building Location" >
-        <editMap v-model='form.buildingId' />
+      <el-form-item label="Building Location">
+        <editMap v-model="form.buildingId" />
       </el-form-item>
       <el-form-item label="Building Meters">
-        <editMeters v-model='form.meters' />
+        <editMeters v-model="form.meters" />
       </el-form-item>
     </el-form>
   </el-dialog>
@@ -45,16 +57,16 @@ export default {
     }
   },
   methods: {
-    display: function (building) {
+    display: function ( building ) {
       this.form.name = building.name
       this.form.storyID = building.id
-      this.$store.dispatch('buildingIDForStory', building.id).then(r => {
+      this.$store.dispatch( 'buildingIDForStory', building.id ).then( ( r ) => {
         this.form.buildingId = r.building
         this.form.meterGroupID = r.group
-        this.$store.dispatch('buildingMeters', { id: r.group }).then(d => {
+        this.$store.dispatch( 'buildingMeters', { id: r.group } ).then( ( d ) => {
           this.form.meters = d
-        })
-      })
+        } )
+      } )
       this.visible = true
     }
   }
@@ -62,6 +74,4 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang='scss'>
-
-</style>
+<style scoped lang="scss"></style>

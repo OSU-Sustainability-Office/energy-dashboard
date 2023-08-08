@@ -6,26 +6,18 @@
 @Last modified time: 2019-02-11T10:30:35-08:00
 -->
 
-<template>
-
-</template>
+<template></template>
 
 <script>
 export default {
   name: 'campaigns',
-  components: {
-  },
+  components: {},
   props: [],
   data () {
-    return {
-    }
+    return {}
   },
-  created () {
-
-  },
-  methods: {
-
-  }
+  created () {},
+  methods: {}
 }
 </script>
 
@@ -46,5 +38,4 @@ export default {
 .section {
   padding-bottom: 2em;
 }
-
 </style>

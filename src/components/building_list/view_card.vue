@@ -1,16 +1,22 @@
 <template>
-  <div class="card" ref='card' @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
-    <div class="toolbox" ref="toolbox" v-if='!plus && !building'>
+  <div
+    class="card"
+    ref="card"
+    @click="clicked($event)"
+    @mouseover="hover(true)"
+    @mouseleave="hover(false)"
+  >
+    <div class="toolbox" ref="toolbox" v-if="!plus && !building">
       <el-tooltip content="Edit View" placement="top">
-        <i class="fas fa-pencil-alt" @click.prevent='openEdit()'></i>
+        <i class="fas fa-pencil-alt" @click.prevent="openEdit()"></i>
       </el-tooltip>
       <el-tooltip content="Delete View" placement="top">
         <i class="fas fa-times" @click="deleteView()"></i>
       </el-tooltip>
     </div>
-    <span class="name" v-if='!plus'>{{name}}</span>
-    <span class="description" v-if='!plus'>{{description}}</span>
-    <div class='plus' v-if='plus'>
+    <span class="name" v-if="!plus">{{ name }}</span>
+    <span class="description" v-if="!plus">{{ description }}</span>
+    <div class="plus" v-if="plus">
       <i class="fas fa-plus"></i>
     </div>
   </div>
@@ -25,8 +31,11 @@ export default {
     }
   },
   mounted () {
-    if (this.media) {
-      this.$refs.card.style.background = 'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' + this.media + '") center/cover no-repeat'
+    if ( this.media ) {
+      this.$refs.card.style.background =
+        'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' +
+        this.media +
+        '") center/cover no-repeat'
     } else {
       this.$refs.card.style.backgroundColor = 'rgb(26,26,26)'
     }
@@ -35,10 +44,10 @@ export default {
   computed: {
     buildingOrStory: {
       get () {
-        if (this.building) {
-          return this.$store.getters['map/building'](this.id)
+        if ( this.building ) {
+          return this.$store.getters['map/building']( this.id )
         } else {
-          return this.$store.getters['user/view'](this.id)
+          return this.$store.getters['user/view']( this.id )
         }
       }
     },
@@ -60,9 +69,9 @@ export default {
   },
 
   methods: {
-    hover: function (enter) {
-      if (this.$refs.toolbox) {
-        if (enter) {
+    hover: function ( enter ) {
+      if ( this.$refs.toolbox ) {
+        if ( enter ) {
           this.$refs.toolbox.style.display = 'block'
         } else {
           this.$refs.toolbox.style.display = 'none'
@@ -70,28 +79,31 @@ export default {
       }
     },
     openEdit: function () {
-      this.$store.dispatch('modalController/openModal', {
+      this.$store.dispatch( 'modalController/openModal', {
         name: 'edit_view',
         id: this.id
-      })
+      } )
     },
-    clicked: function (event) {
-      if (event.target.parentNode.classList.contains('toolbox') || event.target.classList.contains('toolbox')) {
+    clicked: function ( event ) {
+      if (
+        event.target.parentNode.classList.contains( 'toolbox' ) ||
+        event.target.classList.contains( 'toolbox' )
+      ) {
         return
       }
-      this.$emit('click')
+      this.$emit( 'click' )
     },
     deleteView: function () {
-      this.$store.dispatch('modalController/openModal', {
+      this.$store.dispatch( 'modalController/openModal', {
         name: 'confirm_delete',
         id: this.id
-      })
+      } )
     }
   },
 
   watch: {
-    selected: function (value) {
-      if (value) {
+    selected: function ( value ) {
+      if ( value ) {
         this.$refs.card.style.borderColor = 'rgb(215,63,9)'
         this.$refs.card.style.borderWidth = '4px'
       } else {
@@ -103,7 +115,7 @@ export default {
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .toolbox {
   position: absolute;
   right: 10px;
@@ -112,16 +124,15 @@ export default {
   cursor: pointer;
 }
 .fas {
-  color: #FFFFFF88;
+  color: #ffffff88;
   font-size: 1.5em;
   padding-left: 0.2em;
-
 }
 .fas.fa-times {
   font-size: 1.8em;
 }
 .name {
-  font-family: 'StratumNo2';
+  font-family: "StratumNo2";
   font-size: 1.7em;
   display: block;
   z-index: 1;
@@ -129,7 +140,7 @@ export default {
 .card {
   color: $--color-white;
   position: relative;
-  border: 2.5px solid rgb(0,0,0);
+  border: 2.5px solid rgb(0, 0, 0);
   padding: 1em;
   height: 150px;
   margin: 1em;
@@ -138,7 +149,6 @@ export default {
   margin: auto;
   cursor: pointer;
   transition: box-shadow 0.2s ease-in-out;
-
 }
 
 .card:hover {
@@ -157,8 +167,8 @@ export default {
   z-index: 0;
 }
 .description {
-  color: #FFF;
-  font-family: 'StratumNo2';
+  color: #fff;
+  font-family: "StratumNo2";
   font-size: 1.2em;
   display: block;
   padding-left: 0.3em;
@@ -173,9 +183,9 @@ export default {
   font-size: 6em;
   line-height: 150px;
   text-align: center;
-  width: calc(100% - .33em);
+  width: calc(100% - 0.33em);
 }
 .plus .fas {
-  color: rgb(215,63,9) !important;
+  color: rgb(215, 63, 9) !important;
 }
 </style>

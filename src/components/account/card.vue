@@ -7,21 +7,33 @@
 -->
 
 <template>
-  <el-row class="card" ref='card'>
-    <el-col :span='24'>
-      <el-row class='title' ref='title'>
-        <el-col :span='20'>{{ block.name }}</el-col>
-        <el-col :span='4' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='$emit("editModal",index)'></i></el-col>
+  <el-row class="card" ref="card">
+    <el-col :span="24">
+      <el-row class="title" ref="title">
+        <el-col :span="20">{{ block.name }}</el-col>
+        <el-col :span="4" class="right"
+          >&nbsp;<i
+            class="fas fa-sliders-h"
+            @click="$emit('editModal', index)"
+          ></i
+        ></el-col>
       </el-row>
       <el-row>
-        <chartController :randomColors='1' :block='block' :graphType='parseInt(block.graphType)' ref="chartController"  class="chart" :styleC='style' :height='"500px"'/>
+        <chartController
+          :randomColors="1"
+          :block="block"
+          :graphType="parseInt(block.graphType)"
+          ref="chartController"
+          class="chart"
+          :styleC="style"
+          :height="'500px'"
+        />
       </el-row>
-  </el-col>
+    </el-col>
   </el-row>
 </template>
 
 <script>
-
 import chartController from '@/components/charts/chartController'
 import featureController from '@/components/account/featureController'
 import { mapGetters } from 'vuex'
@@ -30,7 +42,8 @@ export default {
   name: 'card',
   props: ['block', 'featured'],
   components: {
-    chartController, featureController
+    chartController,
+    featureController
   },
   data () {
     return {
@@ -42,9 +55,9 @@ export default {
       date_end: '',
       graphtype: 1,
       style: {
-        'display': 'inline-block',
-        'width': '100%',
-        'height': '400px',
+        display: 'inline-block',
+        width: '100%',
+        height: '400px',
         'padding-right': '0.5em',
         'padding-left': '0.5em',
         'padding-top': '1em'
@@ -59,20 +72,20 @@ export default {
       // 4 1 week
       // 5 1 month
       get: function () {
-        if (this.interval === 15 && this.interval_unit === 'minute') {
+        if ( this.interval === 15 && this.interval_unit === 'minute' ) {
           return 1
-        } else if (this.interval === 1 && this.interval_unit === 'hour') {
+        } else if ( this.interval === 1 && this.interval_unit === 'hour' ) {
           return 2
-        } else if (this.interval === 1 && this.interval_unit === 'day') {
+        } else if ( this.interval === 1 && this.interval_unit === 'day' ) {
           return 3
-        } else if (this.interval === 7 && this.interval_unit === 'day') {
+        } else if ( this.interval === 7 && this.interval_unit === 'day' ) {
           return 4
-        } else if (this.interval === 1 && this.interval_unit === 'month') {
+        } else if ( this.interval === 1 && this.interval_unit === 'month' ) {
           return 5
         }
       },
-      set: function (v) {
-        switch (v) {
+      set: function ( v ) {
+        switch ( v ) {
           case 1:
             this.interval = 15
             this.interval_unit = 'minute'
@@ -120,7 +133,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .card {
   background-color: $--color-black;
   padding: 2em;
@@ -131,7 +144,7 @@ export default {
   border-radius: 5px;
 }
 .title {
-  font-family: 'StratumNO2';
+  font-family: "StratumNO2";
   font-size: 2em;
 }
 .title .fas {
@@ -144,5 +157,4 @@ export default {
 .right {
   text-align: right;
 }
-
 </style>

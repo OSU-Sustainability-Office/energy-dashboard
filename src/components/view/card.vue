@@ -87,7 +87,7 @@ export default {
       get () {
         let name = this.$store.getters[this.path + '/name']
         // console.log(this.path)
-        if (name && name !== '') {
+        if ( name && name !== '' ) {
           return name
         } else {
           return '\xa0'
@@ -96,12 +96,12 @@ export default {
     },
     personalView: {
       get () {
-        return this.path.includes('user')
+        return this.path.includes( 'user' )
       }
     },
     publicView: {
       get () {
-        return this.path.includes('building')
+        return this.path.includes( 'building' )
       }
     },
     intunit: {
@@ -111,22 +111,22 @@ export default {
       // 4 1 week
       // 5 1 month
       get: function () {
-        if (this.interval === 15 && this.interval_unit === 'minute') {
+        if ( this.interval === 15 && this.interval_unit === 'minute' ) {
           return 1
-        } else if (this.interval === 1 && this.interval_unit === 'hour') {
+        } else if ( this.interval === 1 && this.interval_unit === 'hour' ) {
           return 2
-        } else if (this.interval === 1 && this.interval_unit === 'day') {
+        } else if ( this.interval === 1 && this.interval_unit === 'day' ) {
           return 3
-        } else if (this.interval === 7 && this.interval_unit === 'day') {
+        } else if ( this.interval === 7 && this.interval_unit === 'day' ) {
           return 4
-        } else if (this.interval === 1 && this.interval_unit === 'month') {
+        } else if ( this.interval === 1 && this.interval_unit === 'month' ) {
           return 5
         } else {
           return 1
         }
       },
-      set: function (v) {
-        switch (v) {
+      set: function ( v ) {
+        switch ( v ) {
           case 1:
             this.interval = 15
             this.interval_unit = 'minute'
@@ -177,10 +177,10 @@ export default {
   },
   methods: {
     openModal: function () {
-      this.$store.dispatch('modalController/openModal', {
+      this.$store.dispatch( 'modalController/openModal', {
         name: 'edit_card',
         path: this.path
-      })
+      } )
     },
     cardSave: async function () {
       // this.editcard = false
@@ -202,14 +202,14 @@ export default {
     // Moves chart data to its previously occuring interval
     previousInterval: function () {
       let currentStartPoint = this.$store.getters[this.path + '/dateStart']
-      this.$store.commit(this.path + '/dateStart', this.nextStartpoint)
-      this.$store.commit(this.path + '/dateEnd', currentStartPoint)
+      this.$store.commit( this.path + '/dateStart', this.nextStartpoint )
+      this.$store.commit( this.path + '/dateEnd', currentStartPoint )
     },
     // Moves chart data to its next occuring interval
     nextInterval: function () {
       let currentEndPoint = this.$store.getters[this.path + '/dateEnd']
-      this.$store.commit(this.path + '/dateEnd', this.nextEndpoint)
-      this.$store.commit(this.path + '/dateStart', currentEndPoint)
+      this.$store.commit( this.path + '/dateEnd', this.nextEndpoint )
+      this.$store.commit( this.path + '/dateStart', currentEndPoint )
     }
   }
 }

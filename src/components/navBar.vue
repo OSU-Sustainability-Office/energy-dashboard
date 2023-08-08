@@ -3,27 +3,62 @@
   Info: Navgiation bar component
 -->
 <template>
-    <el-row class='sus-nav'>
-      <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">
-        <svgLogo width="auto" alt="" class='sus-nav-image' @click='$router.push({path: "/map"})'/>
-      </el-col>
-      <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="20">
-        <el-menu :default-active='activeIndex' mode='horizontal' backgroundColor='rgba(0,0,0,0)' class='sus-nav-menu' text-color='#FFFFFF' active-text-color='#1A1A1A' :router='true'>
-          <el-menu-item index="map" :route='{path: "/map"}' ref='mapItem'>Map</el-menu-item>
-          <el-menu-item index="buildings" :route='{path: "/buildings"}' ref='buildingItem'>Building List</el-menu-item>
-          <el-menu-item index="campaigns" :route='{path: "/campaigns"}' ref='buildingItem'>Campaigns</el-menu-item>
-          <!--<el-menu-item v-if='onid' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item> -->
-          <el-menu-item index="getStarted" :route='{path: "/getstarted"}' ref='getStartedItem'>Get Started</el-menu-item>
-          <el-menu-item index="getStarted" :route='{path: "/contact"}' ref='getStartedItem'>Contact Us</el-menu-item>
-        </el-menu>
-      </el-col>
-      <!--
+  <el-row class="sus-nav">
+    <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">
+      <svgLogo
+        width="auto"
+        alt=""
+        class="sus-nav-image"
+        @click="$router.push({ path: '/map' })"
+      />
+    </el-col>
+    <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="20">
+      <el-menu
+        :default-active="activeIndex"
+        mode="horizontal"
+        backgroundColor="rgba(0,0,0,0)"
+        class="sus-nav-menu"
+        text-color="#FFFFFF"
+        active-text-color="#1A1A1A"
+        :router="true"
+      >
+        <el-menu-item index="map" :route="{ path: '/map' }" ref="mapItem"
+          >Map</el-menu-item
+        >
+        <el-menu-item
+          index="buildings"
+          :route="{ path: '/buildings' }"
+          ref="buildingItem"
+          >Building List</el-menu-item
+        >
+        <el-menu-item
+          index="campaigns"
+          :route="{ path: '/campaigns' }"
+          ref="buildingItem"
+          >Campaigns</el-menu-item
+        >
+        <!--<el-menu-item v-if='onid' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item> -->
+        <el-menu-item
+          index="getStarted"
+          :route="{ path: '/getstarted' }"
+          ref="getStartedItem"
+          >Get Started</el-menu-item
+        >
+        <el-menu-item
+          index="getStarted"
+          :route="{ path: '/contact' }"
+          ref="getStartedItem"
+          >Contact Us</el-menu-item
+        >
+      </el-menu>
+    </el-col>
+    <!--
       <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
         <a class='sus-nav-sign' v-if='onid && $route.path !== "/"' :href='logoutLink'>Sign Out</a>
         <a class='sus-nav-sign' v-if='!onid && $route.path !== "/"' :href='loginLink'>Sign In</a>
       </el-col>
       -->
-    </el-row>
+  </el-row>
 </template>
 <script>
 import svgLogo from '../../public/images/logo.svg'
@@ -35,7 +70,10 @@ export default {
   },
   data () {
     return {
-      loginLink: 'https://api.sustainability.oregonstate.edu/v2/auth/login?returnURI=' + process.env.VUE_APP_HOST_ADDRESS + '/#/map',
+      loginLink:
+        'https://api.sustainability.oregonstate.edu/v2/auth/login?returnURI=' +
+        process.env.VUE_APP_HOST_ADDRESS +
+        '/#/map',
       logoutLink: 'https://api.sustainability.oregonstate.edu/v2/auth/logout',
       activeIndex: ''
     }
@@ -48,27 +86,32 @@ export default {
     }
   },
   mounted () {
-    this.activeIndex = this.$route.path.split('/')[1]
+    this.activeIndex = this.$route.path.split( '/' )[1]
   },
   watch: {
-    '$route.path': function (path) {
-      this.activeIndex = path.split('/')[1]
-      const buttons = [this.$refs.mapItem, this.$refs.buildingItem, this.$refs.dashboardItem, this.$refs.getStartedItem]
-      for (let item of buttons) {
-        if (!item) {
+    '$route.path': function ( path ) {
+      this.activeIndex = path.split( '/' )[1]
+      const buttons = [
+        this.$refs.mapItem,
+        this.$refs.buildingItem,
+        this.$refs.dashboardItem,
+        this.$refs.getStartedItem
+      ]
+      for ( let item of buttons ) {
+        if ( !item ) {
           continue
         }
-        if (this.activeIndex !== item.index) {
-          item.$el.classList.remove('is-active')
+        if ( this.activeIndex !== item.index ) {
+          item.$el.classList.remove( 'is-active' )
         } else {
-          item.$el.classList.add('is-active')
+          item.$el.classList.add( 'is-active' )
         }
       }
     }
   }
 }
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .sus-nav {
   background-color: $--color-primary !important;
   border-bottom: solid 1px $--color-white;
@@ -101,11 +144,11 @@ export default {
 }
 .sus-nav-menu > *:not(.is-active):hover {
   color: $--color-black !important;
-  background-color: rgba(0,0,0,0) !important;
+  background-color: rgba(0, 0, 0, 0) !important;
 }
 .sus-nav-menu > *.is-active {
   border-bottom: none !important;
-  background-color: rgba(0,0,0,0.3) !important;
+  background-color: rgba(0, 0, 0, 0.3) !important;
   color: $--color-white !important;
 }
 .sus-nav-menu > *:not(.is-active):hover:after {
@@ -116,7 +159,7 @@ export default {
   border-bottom: 3px solid #000;
 }
 .sus-nav-sign {
-  color: #FFFFFF !important;
+  color: #ffffff !important;
   height: $--nav-height !important;
   line-height: $--nav-height !important;
   text-decoration: none;

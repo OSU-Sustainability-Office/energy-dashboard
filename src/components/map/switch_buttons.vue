@@ -3,14 +3,22 @@
   Description: Component for button input on the side-view bar (the category/energy trend)
 -->
 <template>
-  <el-row class='buttons'>
-    <el-col v-for='(title, index) in titles' :key= 'title' :style='`width: ${100.0 / titles.length}%; left: ${-13.33 * index}px`' class='rangeButtonParent' v-bind:class="{ active: value === title }" ref='buttonParents'>
-      <el-button class='rangeButton' @click='$emit("input", title)'>{{ title }}</el-button>
+  <el-row class="buttons">
+    <el-col
+      v-for="(title, index) in titles"
+      :key="title"
+      :style="`width: ${100.0 / titles.length}%; left: ${-13.33 * index}px`"
+      class="rangeButtonParent"
+      v-bind:class="{ active: value === title }"
+      ref="buttonParents"
+    >
+      <el-button class="rangeButton" @click="$emit('input', title)">{{
+        title
+      }}</el-button>
     </el-col>
   </el-row>
 </template>
 <script>
-
 export default {
   props: ['titles', 'value'],
   data () {
@@ -18,18 +26,13 @@ export default {
       currentRange: -1
     }
   },
-  mounted () {
-
-  },
-  computed: {
-  },
-  watch: {
-  },
-  methods: {
-  }
+  mounted () {},
+  computed: {},
+  watch: {},
+  methods: {}
 }
 </script>
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .buttons {
   left: 6.65px;
   padding: 10px;
@@ -46,25 +49,51 @@ $clipInset: 10px;
   width: 100%;
   padding: $parentPadding;
   background-color: darken($--color-white, 30%);
-  clip-path: polygon(#{$clipInset/$buttonHeight * ($buttonHeight + 2*$parentPadding)} 0%, 0% 100%, calc(100% - #{$clipInset/$buttonHeight * ($buttonHeight + 2*$parentPadding)}) 100%, 100% 0%);
-  margin: 0!important;
+  clip-path: polygon(
+    #{$clipInset/$buttonHeight * ($buttonHeight + 2 * $parentPadding)} 0%,
+    0% 100%,
+    calc(
+        100% - #{$clipInset/$buttonHeight * ($buttonHeight + 2 * $parentPadding)}
+      )
+      100%,
+    100% 0%
+  );
+  margin: 0 !important;
 }
 .rangeButtonParent:not(.active) {
   top: (($activePadding + $activeheight) - ($buttonHeight + $parentPadding))/2;
 }
 .rangeButtonParent:first-child {
   border-radius: 5px 0px 0px 5px;
-  clip-path: polygon(0% 0%, 0% 100%, calc(100% - #{$clipInset/$buttonHeight * ($buttonHeight + 2*$parentPadding)}) 100%, 100% 0%);
+  clip-path: polygon(
+    0% 0%,
+    0% 100%,
+    calc(
+        100% - #{$clipInset/$buttonHeight * ($buttonHeight + 2 * $parentPadding)}
+      )
+      100%,
+    100% 0%
+  );
 }
 
 .rangeButtonParent:last-child {
   // left: -26px;
   border-radius: 0px 5px 5px 0px;
-  clip-path: polygon(#{$clipInset/$buttonHeight * ($buttonHeight + 2*$parentPadding)} 0%, 0% 100%, 100% 100%, 100% 0%);
+  clip-path: polygon(
+    #{$clipInset/$buttonHeight * ($buttonHeight + 2 * $parentPadding)} 0%,
+    0% 100%,
+    100% 100%,
+    100% 0%
+  );
 }
 .rangeButton {
   border-radius: 0px;
-  clip-path: polygon(#{$clipInset} 0%, 0% 100%, calc(100% - #{$clipInset}) 100%, 100% 0%);
+  clip-path: polygon(
+    #{$clipInset} 0%,
+    0% 100%,
+    calc(100% - #{$clipInset}) 100%,
+    100% 0%
+  );
   background-color: $--color-black;
   color: darken($--color-white, 30%);
   border: 0px !important;
@@ -84,39 +113,75 @@ $clipInset: 10px;
 }
 .rangeButtonParent:not(.active):hover .rangeButton {
   z-index: 3;
-  background-color: $--color-black;//darken($--color-primary, 10%);
+  background-color: $--color-black; //darken($--color-primary, 10%);
   color: $--color-white;
   border: 0px;
 }
 
 .rangeButtonParent:not(.active):hover {
   z-index: 2;
-  background-color: $--color-white;//darken($--color-primary, 10%);
+  background-color: $--color-white; //darken($--color-primary, 10%);
 }
 
 .rangeButtonParent.active {
-  clip-path: polygon(#{$clipInset/$buttonHeight * ($activeheight + 2*$activePadding)} 0%, 0% 100%, calc(100% - #{$clipInset/$buttonHeight * ($activeheight + 2*$activePadding)}) 100%, 100% 0%);
+  clip-path: polygon(
+    #{$clipInset/$buttonHeight * ($activeheight + 2 * $activePadding)} 0%,
+    0% 100%,
+    calc(
+        100% - #{$clipInset/$buttonHeight * ($activeheight + 2 * $activePadding)}
+      )
+      100%,
+    100% 0%
+  );
   padding: $activePadding;
   background-color: $--color-white;
   z-index: 2;
 }
 
 .rangeButtonParent:first-child.active {
-  clip-path: polygon(0% 0%, 0% 100%, calc(100% - #{$clipInset/$buttonHeight * ($activeheight + 2*$activePadding)}) 100%, 100% 0%);
+  clip-path: polygon(
+    0% 0%,
+    0% 100%,
+    calc(
+        100% - #{$clipInset/$buttonHeight * ($activeheight + 2 * $activePadding)}
+      )
+      100%,
+    100% 0%
+  );
 }
 .rangeButtonParent:last-child.active {
-  clip-path: polygon(#{$clipInset/$buttonHeight * ($activeheight + 2*$activePadding)} 0%, 0% 100%, 100% 100%, 100% 0%);
+  clip-path: polygon(
+    #{$clipInset/$buttonHeight * ($activeheight + 2 * $activePadding)} 0%,
+    0% 100%,
+    100% 100%,
+    100% 0%
+  );
 }
 .rangeButtonParent.active .rangeButton {
-  clip-path: polygon(#{$clipInset/$buttonHeight * $activeheight} 0%, 0% 100%, calc(100% - #{$clipInset/$buttonHeight * $activeheight}) 100%, 100% 0%);
+  clip-path: polygon(
+    #{$clipInset/$buttonHeight * $activeheight} 0%,
+    0% 100%,
+    calc(100% - #{$clipInset/$buttonHeight * $activeheight}) 100%,
+    100% 0%
+  );
 }
 .rangeButtonParent:first-child.active .rangeButton {
-  clip-path: polygon(0% 0%, 0% 100%, calc(100% - #{$clipInset/$buttonHeight * $activeheight}) 100%, 100% 0%);
+  clip-path: polygon(
+    0% 0%,
+    0% 100%,
+    calc(100% - #{$clipInset/$buttonHeight * $activeheight}) 100%,
+    100% 0%
+  );
 }
 .rangeButtonParent:last-child.active .rangeButton {
-  clip-path: polygon(#{$clipInset/$buttonHeight * $activeheight} 0%, 0% 100%, 100% 100%, 100% 0%);
+  clip-path: polygon(
+    #{$clipInset/$buttonHeight * $activeheight} 0%,
+    0% 100%,
+    100% 100%,
+    100% 0%
+  );
 }
-.rangeButtonParent.active .rangeButton{
+.rangeButtonParent.active .rangeButton {
   background-color: $--color-primary;
   color: $--color-white;
   height: $activeheight;

@@ -1,1 +1,117 @@
-[{"group": "Residence", "id": 2, "public": 1, "stories": [{"description": "Electric", "group_id": 2, "group_name": "Residence", "group_public": 1, "id": 95, "media": "20150416_TebeauHall_HO3514.jpg", "name": "Tebeau Hall", "public": 1}, {"description": "Electric", "group_id": 2, "group_name": "Residence", "group_public": 1, "id": 100, "media": "mcnary_2.JPG", "name": "McNary Hall", "public": 1}, {"description": "Electric", "group_id": 2, "group_name": "Residence", "group_public": 1, "id": 102, "media": "hawley_2.jpg", "name": "Hawley Hall", "public": 1}]}, {"group": "Events & Admin", "id": 4, "public": 1, "stories": [{"description": "Electric", "group_id": 4, "group_name": "Events & Admin", "group_public": 1, "id": 96, "media": "1320_Campus_3742.jpg", "name": "Memorial Union", "public": 1}]}, {"group": "Academics", "id": 1, "public": 1, "stories": [{"description": "Electric", "group_id": 1, "group_name": "Academics", "group_public": 1, "id": 97, "media": "milne.jpg", "name": "Milne Computer Center", "public": 1}, {"description": "Electric", "group_id": 1, "group_name": "Academics", "group_public": 1, "id": 98, "media": "4172-Campus-0442.jpg", "name": "Dryden Hall", "public": 1}]}, {"group": "Dining", "id": 5, "public": 1, "stories": [{"description": "Electric", "group_id": 5, "group_name": "Dining", "group_public": 1, "id": 99, "media": "mcnary_dining.jpg", "name": "McNary Dining Hall", "public": 1}]}, {"group": "Athletics & Rec", "id": 6, "public": 1, "stories": [{"description": "Electric, Steam", "group_id": 6, "group_name": "Athletics & Rec", "group_public": 1, "id": 101, "media": "heathermiller_20180425_030.jpg", "name": "Dixon Recreation Center", "public": 1}]}]
+[
+  {
+    "group": "Residence",
+    "id": 2,
+    "public": 1,
+    "stories": [
+      {
+        "description": "Electric",
+        "group_id": 2,
+        "group_name": "Residence",
+        "group_public": 1,
+        "id": 95,
+        "media": "20150416_TebeauHall_HO3514.jpg",
+        "name": "Tebeau Hall",
+        "public": 1
+      },
+      {
+        "description": "Electric",
+        "group_id": 2,
+        "group_name": "Residence",
+        "group_public": 1,
+        "id": 100,
+        "media": "mcnary_2.JPG",
+        "name": "McNary Hall",
+        "public": 1
+      },
+      {
+        "description": "Electric",
+        "group_id": 2,
+        "group_name": "Residence",
+        "group_public": 1,
+        "id": 102,
+        "media": "hawley_2.jpg",
+        "name": "Hawley Hall",
+        "public": 1
+      }
+    ]
+  },
+  {
+    "group": "Events & Admin",
+    "id": 4,
+    "public": 1,
+    "stories": [
+      {
+        "description": "Electric",
+        "group_id": 4,
+        "group_name": "Events & Admin",
+        "group_public": 1,
+        "id": 96,
+        "media": "1320_Campus_3742.jpg",
+        "name": "Memorial Union",
+        "public": 1
+      }
+    ]
+  },
+  {
+    "group": "Academics",
+    "id": 1,
+    "public": 1,
+    "stories": [
+      {
+        "description": "Electric",
+        "group_id": 1,
+        "group_name": "Academics",
+        "group_public": 1,
+        "id": 97,
+        "media": "milne.jpg",
+        "name": "Milne Computer Center",
+        "public": 1
+      },
+      {
+        "description": "Electric",
+        "group_id": 1,
+        "group_name": "Academics",
+        "group_public": 1,
+        "id": 98,
+        "media": "4172-Campus-0442.jpg",
+        "name": "Dryden Hall",
+        "public": 1
+      }
+    ]
+  },
+  {
+    "group": "Dining",
+    "id": 5,
+    "public": 1,
+    "stories": [
+      {
+        "description": "Electric",
+        "group_id": 5,
+        "group_name": "Dining",
+        "group_public": 1,
+        "id": 99,
+        "media": "mcnary_dining.jpg",
+        "name": "McNary Dining Hall",
+        "public": 1
+      }
+    ]
+  },
+  {
+    "group": "Athletics & Rec",
+    "id": 6,
+    "public": 1,
+    "stories": [
+      {
+        "description": "Electric, Steam",
+        "group_id": 6,
+        "group_name": "Athletics & Rec",
+        "group_public": 1,
+        "id": 101,
+        "media": "heathermiller_20180425_030.jpg",
+        "name": "Dixon Recreation Center",
+        "public": 1
+      }
+    ]
+  }
+]
