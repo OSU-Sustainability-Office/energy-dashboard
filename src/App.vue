@@ -139,10 +139,8 @@ body {
 <style scoped lang="scss">
 @import '@/assets/style-variables.scss';
 
-
-
-  /* Media query for mobile devices */
-  @media only screen and (max-width: 768px) {
+/* Media query for mobile devices */
+@media only screen and (max-width: 768px) {
   body {
     max-width: 100%;
     overflow-x: hidden; /* Hide horizontal scrollbar */
@@ -175,5 +173,4 @@ body {
   padding: 0;
   width: 100%;
 }
-
 </style>

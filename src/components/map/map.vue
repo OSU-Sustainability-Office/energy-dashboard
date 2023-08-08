@@ -500,16 +500,16 @@ $sideMenu-width: 250px;
 
 @media only screen and (max-width: 768px) {
   .sideMenu {
-  background-color: $--color-black;
-  height: calc(100% - 1em);
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2000;
-  width: $sideMenu-width;
-  padding-top: 1em;
- margin-top: 10em;
-}
+    background-color: $--color-black;
+    height: calc(100% - 1em);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+    width: $sideMenu-width;
+    padding-top: 1em;
+    margin-top: 10em;
+  }
 }
 
 .sideMenuGroupTitle {
