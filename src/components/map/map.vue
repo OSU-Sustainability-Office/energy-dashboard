@@ -1,7 +1,13 @@
 <template>
   <el-row class="stage">
     <el-col :span="24">
-      <el-menu class="sideMenu" mode="vertical" backgroundColor="#1A1A1A" @select="handleSelect">
+      <el-menu
+        class="sideMenu"
+        mode="vertical"
+        backgroundColor="#1A1A1A"
+        @select="handleSelect"
+        :style="{ marginTop: marginTop + 'px' }"
+      >
         <div class="colorByTitle">Group By:</div>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
@@ -495,20 +501,20 @@ $sideMenu-width: 250px;
   z-index: 2000;
   width: $sideMenu-width;
   padding-top: 1em;
-  // margin-top: 10em;
+  margin-top: 0em;
 }
 
 @media only screen and (max-width: 768px) {
   .sideMenu {
     background-color: $--color-black;
-    height: calc(100% - 1em);
+    height: calc(70% - 1em);
     position: absolute;
-    top: 0;
-    left: 0;
+    left: calc(100% - #{$sideMenu-width});
     z-index: 2000;
     width: $sideMenu-width;
     padding-top: 1em;
-    margin-top: 10em;
+    top: 180px;
+    bottom: 0px;
   }
 }
 
@@ -521,7 +527,7 @@ $sideMenu-width: 250px;
   background-color: blue;
   position: absolute;
   top: 0;
-  left: 250px;
+  left: 0px;
   height: 100%;
   width: calc(100% - #{$sideMenu-width});
 }

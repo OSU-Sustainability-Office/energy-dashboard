@@ -1,145 +1,125 @@
-<!--
-  Filename: navBar.vue
-  Info: Navgiation bar component
--->
 <template>
-  <el-row class="sus-nav">
-    <el-col :xs="9" :sm="7" :md="5" :lg="4" :xl="3">
-      <svgLogo width="auto" alt="" class="sus-nav-image" @click="$router.push({ path: '/map' })" />
-    </el-col>
-    <el-col :xs="13" :sm="15" :md="15" :lg="18" :xl="20">
-      <el-menu
-        :default-active="activeIndex"
-        mode="horizontal"
-        backgroundColor="rgba(0,0,0,0)"
-        class="sus-nav-menu"
-        text-color="#FFFFFF"
-        active-text-color="#1A1A1A"
-        :router="true"
+  <div>
+    <div class="nav-menu">
+      <i
+        class="fas fa-bars"
+        @click="
+          showMenu()
+          changeMarginTop()
+        "
       >
-        <el-menu-item index="map" :route="{ path: '/map' }" ref="mapItem">Map</el-menu-item>
-        <el-menu-item index="buildings" :route="{ path: '/buildings' }" ref="buildingItem">Building List</el-menu-item>
-        <el-menu-item index="campaigns" :route="{ path: '/campaigns' }" ref="buildingItem">Campaigns</el-menu-item>
-        <!--<el-menu-item v-if='onid' index="dashboard" :route='{path: "/dashboard"}' ref='dashboardItem'>My Dashboard</el-menu-item> -->
-        <el-menu-item index="getStarted" :route="{ path: '/getstarted' }" ref="getStartedItem"
-          >Get Started</el-menu-item
-        >
-        <el-menu-item index="getStarted" :route="{ path: '/contact' }" ref="getStartedItem">Contact Us</el-menu-item>
-      </el-menu>
-    </el-col>
-    <!--
-      <el-col :xs="2" :sm="2" :md="4" :lg="2" :xl="1">
-        <a class='sus-nav-sign' v-if='onid && $route.path !== "/"' :href='logoutLink'>Sign Out</a>
-        <a class='sus-nav-sign' v-if='!onid && $route.path !== "/"' :href='loginLink'>Sign In</a>
-      </el-col>
-      -->
-  </el-row>
+      </i>
+      <div class="nav-content" :class="this.showMobileMenu ? 'open-menu' : 'closed-menu'">
+        <div class="logo"><svgLogo width="160px" alt="" @click="$router.push({ path: '/map' })" /></div>
+        <ul class="nav-items">
+          <li class="navLi"><a href="/#/map" class="navLink" rel="noreferrer"> Map </a></li>
+          <li class="navLi"><a href="/#/buildings" class="navLink" rel="noreferrer"> Building List </a></li>
+          <li class="navLi"><a href="/#/campaigns" class="navLink" rel="noreferrer"> Campaigns </a></li>
+          <li class="navLi"><a href="/#/getstarted" class="navLink" rel="noreferrer"> Get Started </a></li>
+          <li class="navLi"><a href="/#/contact" class="navLink" rel="noreferrer"> Contact </a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </template>
+
 <script>
 import svgLogo from '../../public/images/logo.svg'
 
 export default {
-  name: 'navigbar',
   components: {
     svgLogo
   },
   data () {
     return {
-      loginLink:
-        'https://api.sustainability.oregonstate.edu/v2/auth/login?returnURI=' +
-        process.env.VUE_APP_HOST_ADDRESS +
-        '/#/map',
-      logoutLink: 'https://api.sustainability.oregonstate.edu/v2/auth/logout',
-      activeIndex: ''
+      showMobileMenu: false
     }
   },
-  computed: {
-    onid: {
-      get () {
-        return this.$store.getters['user/onid']
-      }
-    }
-  },
-  mounted () {
-    this.activeIndex = this.$route.path.split( '/' )[1]
-  },
-  watch: {
-    '$route.path': function ( path ) {
-      this.activeIndex = path.split( '/' )[1]
-      const buttons = [this.$refs.mapItem, this.$refs.buildingItem, this.$refs.dashboardItem, this.$refs.getStartedItem]
-      for ( let item of buttons ) {
-        if ( !item ) {
-          continue
-        }
-        if ( this.activeIndex !== item.index ) {
-          item.$el.classList.remove( 'is-active' )
-        } else {
-          item.$el.classList.add( 'is-active' )
-        }
-      }
+  methods: {
+    showMenu () {
+      this.showMobileMenu = !this.showMobileMenu
     }
   }
 }
 </script>
-<style scoped lang="scss">
-.sus-nav {
+
+<style lang="scss" scoped>
+.nav-menu {
+  background-color: white;
+}
+.nav-content {
+  display: flex;
+  justify-content: left;
+  padding: 5px 20px;
+  align-items: left;
+  padding-top: 10px;
+  left: 10px;
   background-color: $--color-primary !important;
-  border-bottom: solid 1px $--color-white;
-  height: $--nav-height !important;
-  z-index: 2000;
-  padding-left: 2em;
-  padding-right: 2em;
-  overflow: hidden;
 }
-.sus-nav-image {
-  padding-top: 1px;
-  padding-bottom: 1px;
-  height: $--nav-height - 2px;
-  cursor: pointer;
+.nav-items {
+  display: flex;
+  justify-content: center;
+  align-items: left;
+  list-style: none;
+  margin: 0;
+  padding-top: 18px;
+  li {
+    padding: 0 10px;
+  }
 }
-.sus-nav-menu {
-  height: $--nav-height !important;
-  border: none !important;
+i {
+  display: none;
 }
-.sus-nav-menu > * {
-  padding-top: 5px;
-  height: $--nav-height - 2px !important;
-  color: $--color-white;
-  border: none;
+.navLi {
+  padding-top: 10px;
 }
-.el-menu-item {
-  color: $--color-white !important;
-  border: none !important;
-  height: 100% !important;
+.navLink {
+  color: white;
+  margin-top: 10px;
+  font-size: 16px;
 }
-.sus-nav-menu > *:not(.is-active):hover {
-  color: $--color-black !important;
-  background-color: rgba(0, 0, 0, 0) !important;
-}
-.sus-nav-menu > *.is-active {
-  border-bottom: none !important;
-  background-color: rgba(0, 0, 0, 0.3) !important;
-  color: $--color-white !important;
-}
-.sus-nav-menu > *:not(.is-active):hover:after {
-  content: '\a0';
-  display: block;
-  padding: 0 2px;
-  line-height: 1px;
-  border-bottom: 3px solid #000;
-}
-.sus-nav-sign {
-  color: #ffffff !important;
-  height: $--nav-height !important;
-  line-height: $--nav-height !important;
-  text-decoration: none;
-  cursor: pointer;
-  transition: color 0.2s ease;
-  font-size: 1.1em;
-  text-overflow: ellipsis;
-}
-.sus-nav-sign:hover {
-  color: #000000 !important;
-  text-decoration: none;
+
+// Mobile version - hidden hamburger menu
+@media screen and (max-width: 768px) {
+  .nav-menu {
+    padding-left: -200;
+    padding-bottom: -20;
+    top: -20px;
+    position: absolute;
+    width: 100%;
+    background-color: $--color-primary !important;
+  }
+  .open-menu {
+    opacity: 1;
+    height: 180px;
+  }
+  .closed-menu {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+  }
+  .nav-content {
+    flex-direction: column;
+    z-index: 500;
+    position: relative;
+    padding: 27px 30px;
+    transition: all 0.2s ease-out;
+    left: 20px;
+    margin-right: 300px;
+    align-items: start;
+    top: -50px;
+  }
+  .nav-items {
+    flex-direction: column;
+    align-items: left;
+    padding-top: 0px;
+  }
+  i {
+    display: block;
+    text-align: left;
+    padding-left: 10px;
+
+    padding-top: 23px;
+  }
 }
 </style>
