@@ -504,6 +504,20 @@ $sideMenu-width: 250px;
   margin-top: 0em;
 }
 
+.sideMenuGroupTitle {
+  font-size: 18px;
+  color: #ffffff;
+  font-weight: bolder;
+}
+.mapContainer {
+  background-color: blue;
+  position: absolute;
+  top: 0;
+  left: 250px;
+  height: 100%;
+  width: calc(100% - #{$sideMenu-width});
+}
+
 @media only screen and (max-width: 768px) {
   .sideMenu {
     background-color: $--color-black;
@@ -516,20 +530,14 @@ $sideMenu-width: 250px;
     top: 180px;
     bottom: 0px;
   }
-}
-
-.sideMenuGroupTitle {
-  font-size: 18px;
-  color: #ffffff;
-  font-weight: bolder;
-}
-.mapContainer {
+  .mapContainer {
   background-color: blue;
   position: absolute;
   top: 0;
   left: 0px;
   height: 100%;
   width: calc(100% - #{$sideMenu-width});
+}
 }
 
 .side-enter-active,
