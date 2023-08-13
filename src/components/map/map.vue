@@ -130,7 +130,7 @@ export default {
       ele: [],
       compareMarkers: [],
       rKey: 1,
-      message: '',
+      message: true,
       askingForComparison: false,
       selected: [
         'Residence',

@@ -11,7 +11,7 @@ export default {
   name: 'UsrMsg',
   data () {
     return {
-      flag: false
+      flag: true
     }
   },
   methods: {
