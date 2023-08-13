@@ -9,6 +9,7 @@
         :style="{ marginTop: marginTop + 'px' }"
       >
         <div class="colorByTitle">Group By:</div>
+        <div class="colorByTitle"><UsrMsg /><Results /></div>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
           <span slot="title" class="sideMenuGroupTitle">Key</span>
@@ -78,6 +79,8 @@ import prompt from '@/components/map/map_prompt'
 import compareSide from '@/components/map/map_compareside'
 import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons'
+import Results from '@/components/map/Results'
+import UsrMsg from '@/components/UsrMsg'
 
 export default {
   name: 'featured',
@@ -88,7 +91,9 @@ export default {
     LGeoJson,
     prompt,
     compareSide,
-    switchButtons
+    switchButtons,
+    Results,
+    UsrMsg
   },
   computed: {
     showSide: {
