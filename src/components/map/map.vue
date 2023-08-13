@@ -1,9 +1,14 @@
 <template>
   <el-row class="stage">
     <el-col :span="24">
-      <el-menu class="sideMenu" mode="vertical" backgroundColor="#1A1A1A" @select="handleSelect">
+      <el-menu
+        v-if="message === true"
+        class="sideMenu"
+        mode="vertical"
+        backgroundColor="#1A1A1A"
+        @select="handleSelect"
+      >
         <div class="colorByTitle">Group By:</div>
-        <div class="colorByTitle"><Results /></div>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
           <span slot="title" class="sideMenuGroupTitle">Key</span>
@@ -73,10 +78,15 @@ import prompt from '@/components/map/map_prompt'
 import compareSide from '@/components/map/map_compareside'
 import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons'
-import Results from '@/components/map/Results'
+import { EventBus } from '../../event-bus'
 
 export default {
   name: 'featured',
+  props: {
+    msg: {
+      type: String
+    }
+  },
   components: {
     LMap,
     LTileLayer,
@@ -84,8 +94,7 @@ export default {
     LGeoJson,
     prompt,
     compareSide,
-    switchButtons,
-    Results
+    switchButtons
   },
   computed: {
     showSide: {
@@ -121,6 +130,7 @@ export default {
       ele: [],
       compareMarkers: [],
       rKey: 1,
+      message: '',
       askingForComparison: false,
       selected: [
         'Residence',
@@ -345,6 +355,10 @@ export default {
   async created () {
     await this.$store.dispatch( 'map/loadGeometry' )
     this.mapLoaded = true
+    EventBus.$on( 'inputData', inputWord => {
+      this.message = inputWord
+      console.log( this.message )
+    } )
   },
   mounted () {
     this.$nextTick( () => {
