@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <input placeholder="Enter Text Here" v-model="tempMessage" @keyup.enter="submit" />
+    <button @click="toggleFlag">{{ flag ? 'True' : 'False' }}</button>
   </div>
 </template>
 
@@ -11,13 +11,13 @@ export default {
   name: 'UsrMsg',
   data () {
     return {
-      tempMessage: ''
+      flag: false
     }
   },
   methods: {
-    submit: function () {
-      EventBus.$emit( 'inputData', this.tempMessage )
-      this.tempMessage = ''
+    toggleFlag: function () {
+      this.flag = !this.flag
+      EventBus.$emit( 'inputData', this.flag )
     }
   }
 }

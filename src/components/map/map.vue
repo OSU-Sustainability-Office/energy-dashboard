@@ -1,13 +1,7 @@
 <template>
   <el-row class="stage">
     <el-col :span="24">
-      <el-menu
-        class="sideMenu"
-        mode="vertical"
-        backgroundColor="#1A1A1A"
-        @select="handleSelect"
-        :style="{ marginTop: marginTop + 'px' }"
-      >
+      <el-menu class="sideMenu" mode="vertical" backgroundColor="#1A1A1A" @select="handleSelect">
         <div class="colorByTitle">Group By:</div>
         <div class="colorByTitle"><Results /></div>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />

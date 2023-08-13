@@ -1,8 +1,6 @@
 <template>
   <div>
-    <li v-for="(message, index) in messageList" :item="message" :key="index">
-      {{ message }}
-    </li>
+    <li v-if="message === true">test</li>
   </div>
 </template>
 
@@ -17,12 +15,13 @@ export default {
   },
   data: function () {
     return {
-      messageList: []
+      message: ''
     }
   },
   created () {
     EventBus.$on( 'inputData', inputWord => {
-      this.messageList.push( inputWord )
+      this.message = inputWord
+      console.log( this.message )
     } )
   }
 }
