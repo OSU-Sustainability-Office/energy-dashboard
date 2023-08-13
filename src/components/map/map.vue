@@ -536,7 +536,7 @@ $sideMenu-width: 250px;
     top: 0;
     left: 0px;
     height: 100%;
-    width: calc(100% - #{$sideMenu-width});
+    width: calc(100%);
   }
 }
 

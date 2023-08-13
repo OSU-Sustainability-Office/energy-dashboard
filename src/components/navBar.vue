@@ -104,7 +104,7 @@ i {
     position: relative;
     padding: 27px 30px;
     transition: all 0.2s ease-out;
-    left: 20px;
+    left: calc(60%);
     margin-right: 300px;
     align-items: start;
     top: -50px;
