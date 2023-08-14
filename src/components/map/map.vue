@@ -50,6 +50,55 @@
           <el-menu-item index='Up Trend' :class="[(isDisplayed('Up Trend') ? 'active' : 'notactive')]"><span class='up swatch'></span>Up Trend</el-menu-item> -->
         </el-menu-item-group>
       </el-menu>
+      <el-menu
+        v-if="message === true"
+        class="sideMenu-2"
+        mode="vertical"
+        backgroundColor="#1A1A1A"
+        @select="handleSelect"
+      >
+        <div class="colorByTitle">Group By:</div>
+        <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
+        <el-menu-item-group v-if="grouping === 'Category'">
+          <span slot="title" class="sideMenuGroupTitle">Key</span>
+          <el-tooltip content="Click to toggle visibility" placement="right">
+            <el-menu-item index="Academics" :class="[isDisplayed('Academics') ? 'active' : 'notactive']"
+              ><span class="edu swatch"></span>Academics</el-menu-item
+            >
+          </el-tooltip>
+          <el-menu-item index="Athletics & Rec" :class="[isDisplayed('Athletics & Rec') ? 'active' : 'notactive']"
+            ><span class="ath swatch"></span>Athletics & Rec</el-menu-item
+          >
+          <el-menu-item index="Dining" :class="[isDisplayed('Dining') ? 'active' : 'notactive']"
+            ><span class="din swatch"></span>Dining</el-menu-item
+          >
+          <el-menu-item index="Events & Admin" :class="[isDisplayed('Events & Admin') ? 'active' : 'notactive']"
+            ><span class="com swatch"></span>Events & Admin</el-menu-item
+          >
+          <el-menu-item index="Residence" :class="[isDisplayed('Residence') ? 'active' : 'notactive']"
+            ><span class="res swatch"></span>Residence</el-menu-item
+          >
+        </el-menu-item-group>
+        <el-menu-item-group v-if="grouping === 'Energy Trend'">
+          <span slot="title" class="sideMenuGroupTitle">Key</span>
+          <el-col class="trendBox">
+            <div class="trendGradient">&nbsp;</div>
+            <div class="trendTopLabel">
+              Reducing Energy <br />
+              Usage
+            </div>
+            <div class="trendBottomLabel">
+              Increasing Energy <br />
+              Usage
+            </div>
+          </el-col>
+          <!-- <el-tooltip content="Click to toggle visibility" placement="right">
+            <el-menu-item index='Down Trend' :class="[(isDisplayed('Down Trend') ? 'active' : 'notactive')]"><span class='down swatch'></span>Down Trend</el-menu-item>
+          </el-tooltip>
+          <el-menu-item index='Stable Trend' :class="[(isDisplayed('Stable Trend') ? 'active' : 'notactive')]"><span class='stable swatch'></span>Stable Trend</el-menu-item>
+          <el-menu-item index='Up Trend' :class="[(isDisplayed('Up Trend') ? 'active' : 'notactive')]"><span class='up swatch'></span>Up Trend</el-menu-item> -->
+        </el-menu-item-group>
+      </el-menu>
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
@@ -359,6 +408,7 @@ export default {
       this.message = inputWord
       console.log( this.message )
     } )
+    this.map.zoomControl.setPosition( 'topright' )
   },
   mounted () {
     this.$nextTick( () => {
@@ -515,6 +565,18 @@ $sideMenu-width: 250px;
   margin-top: 0em;
 }
 
+.sideMenu-2 {
+  background-color: $--color-black;
+  height: calc(100% - 1em);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  width: $sideMenu-width;
+  padding-top: 1em;
+  margin-top: 0em;
+}
+
 .sideMenuGroupTitle {
   font-size: 18px;
   color: #ffffff;
@@ -530,6 +592,12 @@ $sideMenu-width: 250px;
 }
 
 @media only screen and (max-width: 768px) {
+  .stage {
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    height: calc(95.5vh - #{$--nav-height});
+  }
   .sideMenu {
     background-color: $--color-black;
     height: calc(70% - 1em);
@@ -538,7 +606,18 @@ $sideMenu-width: 250px;
     z-index: 2000;
     width: $sideMenu-width;
     padding-top: 1em;
-    top: 180px;
+    top: 170px;
+    bottom: 0px;
+  }
+  .sideMenu-2 {
+    background-color: $--color-black;
+    height: calc(70% - 1em);
+    position: absolute;
+    left: calc(100% - #{$sideMenu-width});
+    z-index: 2000;
+    width: $sideMenu-width;
+    padding-top: 1em;
+    top: 170px;
     bottom: 0px;
   }
   .mapContainer {
@@ -660,7 +739,7 @@ $sideMenu-width: 250px;
   align-items: center;
   position: absolute;
   top: 10px;
-  left: 55px;
+  right: 55px;
   width: 90px;
   height: 50px;
   background-color: white;

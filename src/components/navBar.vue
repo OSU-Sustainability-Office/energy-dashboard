@@ -1,14 +1,7 @@
 <template>
   <div>
     <div class="nav-menu">
-      <i
-        class="fas fa-bars"
-        @click="
-          showMenu()
-          changeMarginTop()
-        "
-      >
-      </i>
+      <i class="fas fa-bars" @click="showMenu()"> </i>
       <div class="nav-content" :class="this.showMobileMenu ? 'open-menu' : 'closed-menu'">
         <div class="logo"><svgLogo width="160px" alt="" @click="$router.push({ path: '/map' })" /></div>
         <ul class="nav-items">
@@ -107,7 +100,7 @@ i {
     position: relative;
     padding: 27px 30px;
     transition: all 0.2s ease-out;
-    left: calc(60%);
+    left: calc(5%);
     margin-right: 300px;
     align-items: start;
     top: -50px;
