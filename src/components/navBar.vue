@@ -6,11 +6,17 @@
         <div class="logo"><svgLogo width="160px" alt="" @click="$router.push({ path: '/map' })" /></div>
         <ul class="nav-items">
           <UsrMsg />
-          <li class="navLi"><a href="/#/map" class="navLink" rel="noreferrer"> Map </a></li>
-          <li class="navLi"><a href="/#/buildings" class="navLink" rel="noreferrer"> Building List </a></li>
-          <li class="navLi"><a href="/#/campaigns" class="navLink" rel="noreferrer"> Campaigns </a></li>
-          <li class="navLi"><a href="/#/getstarted" class="navLink" rel="noreferrer"> Get Started </a></li>
-          <li class="navLi"><a href="/#/contact" class="navLink" rel="noreferrer"> Contact </a></li>
+          <li class="navLi"><a href="/#/map" class="navLink" rel="noreferrer" @click="showMenu()"> Map </a></li>
+          <li class="navLi">
+            <a href="/#/buildings" class="navLink" rel="noreferrer" @click="showMenu()"> Building List </a>
+          </li>
+          <li class="navLi">
+            <a href="/#/campaigns" class="navLink" rel="noreferrer" @click="showMenu()"> Campaigns </a>
+          </li>
+          <li class="navLi">
+            <a href="/#/getstarted" class="navLink" rel="noreferrer" @click="showMenu()"> Get Started </a>
+          </li>
+          <li class="navLi"><a href="/#/contact" class="navLink" rel="noreferrer" @click="showMenu()"> Contact </a></li>
         </ul>
       </div>
     </div>
@@ -118,7 +124,6 @@ i {
     display: block;
     text-align: left;
     padding-left: 10px;
-
     padding-top: 23px;
   }
 }
