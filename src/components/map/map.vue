@@ -596,7 +596,7 @@ $sideMenu-width: 250px;
     padding: 0;
     position: absolute;
     width: 100%;
-    height: calc(95.5vh - #{$--nav-height});
+    height: calc(100vh - #{$--nav-height});
   }
   .sideMenu {
     background-color: $--color-black;
@@ -604,10 +604,10 @@ $sideMenu-width: 250px;
     position: absolute;
     left: calc(100% - #{$sideMenu-width});
     z-index: 2000;
-    width: $sideMenu-width;
+    width: $sideMenu-width - 10px;
     padding-top: 1em;
-    top: 170px;
-    bottom: 0px;
+    top: 150px;
+    bottom: 100px;
   }
   .sideMenu-2 {
     background-color: $--color-black;
@@ -615,10 +615,10 @@ $sideMenu-width: 250px;
     position: absolute;
     left: calc(100% - #{$sideMenu-width});
     z-index: 2000;
-    width: $sideMenu-width;
+    width: $sideMenu-width - 10px;
     padding-top: 1em;
-    top: 170px;
-    bottom: 0px;
+    top: 150px;
+    bottom: 100px;
   }
   .mapContainer {
     background-color: blue;
