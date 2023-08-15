@@ -91,7 +91,7 @@ i {
   }
   .closed-menu {
     opacity: 0;
-    height: 0;
+    height: 180px;
     padding: 0;
   }
   .nav-content {
@@ -109,6 +109,7 @@ i {
     flex-direction: column;
     align-items: left;
     padding-top: 0px;
+    margin-left:-40px;
   }
   i {
     display: block;

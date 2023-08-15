@@ -610,7 +610,7 @@ $sideMenu-width: 250px;
     z-index: 2000;
     width: $sideMenu-width - 10px;
     padding-top: 1em;
-    top: 80px;
+    top: 90px;
     bottom: 100px;
   }
   .sideMenu-2 {
@@ -621,7 +621,7 @@ $sideMenu-width: 250px;
     z-index: 2000;
     width: $sideMenu-width - 10px;
     padding-top: 1em;
-    top: 80px;
+    top: 90px;
     bottom: 100px;
   }
   .mapContainer {
