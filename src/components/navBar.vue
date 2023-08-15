@@ -101,7 +101,7 @@ i {
     padding: 27px 30px;
     transition: all 0.2s ease-out;
     left: calc(5%);
-    width: 180px;
+    width: 120px;
     align-items: start;
     top: -50px;
   }
