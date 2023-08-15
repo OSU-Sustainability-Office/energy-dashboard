@@ -98,12 +98,12 @@ i {
     flex-direction: column;
     z-index: 500;
     position: relative;
-    padding: 27px 30px;
     transition: all 0.2s ease-out;
     left: calc(5%);
     width: 120px;
     align-items: start;
-    top: -50px;
+    top: -25px;
+    padding-bottom: 5vh;
   }
   .nav-items {
     flex-direction: column;
