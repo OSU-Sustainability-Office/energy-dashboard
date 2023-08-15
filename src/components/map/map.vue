@@ -596,7 +596,7 @@ $sideMenu-width: 250px;
     padding: 0;
     position: absolute;
     width: 100%;
-    height: calc(100vh - #{$--nav-height});
+    height: calc(89.5vh);
   }
   .sideMenu {
     background-color: $--color-black;
