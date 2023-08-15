@@ -596,7 +596,7 @@ $sideMenu-width: 250px;
     padding: 0;
     position: absolute;
     width: 100%;
-    height: calc(75vh);
+    height: 100%;
   }
 
   .el-menu-item {
