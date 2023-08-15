@@ -66,7 +66,7 @@ export default {
 i {
   display: none;
   margin-top: 20px;
-  margin-left: 10px;
+  margin-left: 5px;
 }
 .navLi {
   padding-top: 10px;
@@ -101,11 +101,12 @@ i {
     z-index: 500;
     position: relative;
     transition: all 0.2s ease-out;
-    left: calc(6%);
+    left: calc(8.5%);
     width: 120px;
     align-items: start;
     top: -25px;
     padding-bottom: 5vh;
+    padding-left: 5px;
   }
   .nav-items {
     flex-direction: column;
