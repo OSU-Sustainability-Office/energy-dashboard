@@ -596,7 +596,11 @@ $sideMenu-width: 250px;
     padding: 0;
     position: absolute;
     width: 100%;
-    height: calc(89.5vh);
+    height: calc(75vh);
+  }
+
+  .el-menu-item {
+    margin-top: -10px;
   }
   .sideMenu {
     background-color: $--color-black;
@@ -606,7 +610,7 @@ $sideMenu-width: 250px;
     z-index: 2000;
     width: $sideMenu-width - 10px;
     padding-top: 1em;
-    top: 90px;
+    top: 80px;
     bottom: 100px;
   }
   .sideMenu-2 {
@@ -617,7 +621,7 @@ $sideMenu-width: 250px;
     z-index: 2000;
     width: $sideMenu-width - 10px;
     padding-top: 1em;
-    top: 90px;
+    top: 80px;
     bottom: 100px;
   }
   .mapContainer {
