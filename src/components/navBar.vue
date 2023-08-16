@@ -5,7 +5,6 @@
       <div class="nav-content" :class="this.showMobileMenu ? 'open-menu' : 'closed-menu'">
         <div class="logo"><svgLogo width="160px" alt="" @click="$router.push({ path: '/map' })" /></div>
         <ul class="nav-items">
-          <UsrMsg />
           <li class="navLi"><a href="/#/map" class="navLink" rel="noreferrer" @click="showMenu()"> Map </a></li>
           <li class="navLi">
             <a href="/#/buildings" class="navLink" rel="noreferrer" @click="showMenu()"> Building List </a>
@@ -25,12 +24,10 @@
 
 <script>
 import svgLogo from '../../public/images/logo.svg'
-import UsrMsg from '@/components/UsrMsg'
 
 export default {
   components: {
-    svgLogo,
-    UsrMsg
+    svgLogo
   },
   data () {
     return {

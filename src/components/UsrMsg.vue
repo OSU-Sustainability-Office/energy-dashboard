@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <button @click="toggleFlag">{{ flag ? 'True' : 'False' }}</button>
+    <button @click="toggleFlag">{{ flag ? 'Hide Building Menu' : 'Show Building Menu' }}</button>
   </div>
 </template>
 

@@ -50,58 +50,11 @@
           <el-menu-item index='Up Trend' :class="[(isDisplayed('Up Trend') ? 'active' : 'notactive')]"><span class='up swatch'></span>Up Trend</el-menu-item> -->
         </el-menu-item-group>
       </el-menu>
-      <el-menu
-        v-if="message === true"
-        class="sideMenu-2"
-        mode="vertical"
-        backgroundColor="#1A1A1A"
-        @select="handleSelect"
-      >
-        <div class="colorByTitle">Group By:</div>
-        <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
-        <el-menu-item-group v-if="grouping === 'Category'">
-          <span slot="title" class="sideMenuGroupTitle">Key</span>
-          <el-tooltip content="Click to toggle visibility" placement="right">
-            <el-menu-item index="Academics" :class="[isDisplayed('Academics') ? 'active' : 'notactive']"
-              ><span class="edu swatch"></span>Academics</el-menu-item
-            >
-          </el-tooltip>
-          <el-menu-item index="Athletics & Rec" :class="[isDisplayed('Athletics & Rec') ? 'active' : 'notactive']"
-            ><span class="ath swatch"></span>Athletics & Rec</el-menu-item
-          >
-          <el-menu-item index="Dining" :class="[isDisplayed('Dining') ? 'active' : 'notactive']"
-            ><span class="din swatch"></span>Dining</el-menu-item
-          >
-          <el-menu-item index="Events & Admin" :class="[isDisplayed('Events & Admin') ? 'active' : 'notactive']"
-            ><span class="com swatch"></span>Events & Admin</el-menu-item
-          >
-          <el-menu-item index="Residence" :class="[isDisplayed('Residence') ? 'active' : 'notactive']"
-            ><span class="res swatch"></span>Residence</el-menu-item
-          >
-        </el-menu-item-group>
-        <el-menu-item-group v-if="grouping === 'Energy Trend'">
-          <span slot="title" class="sideMenuGroupTitle">Key</span>
-          <el-col class="trendBox">
-            <div class="trendGradient">&nbsp;</div>
-            <div class="trendTopLabel">
-              Reducing Energy <br />
-              Usage
-            </div>
-            <div class="trendBottomLabel">
-              Increasing Energy <br />
-              Usage
-            </div>
-          </el-col>
-          <!-- <el-tooltip content="Click to toggle visibility" placement="right">
-            <el-menu-item index='Down Trend' :class="[(isDisplayed('Down Trend') ? 'active' : 'notactive')]"><span class='down swatch'></span>Down Trend</el-menu-item>
-          </el-tooltip>
-          <el-menu-item index='Stable Trend' :class="[(isDisplayed('Stable Trend') ? 'active' : 'notactive')]"><span class='stable swatch'></span>Stable Trend</el-menu-item>
-          <el-menu-item index='Up Trend' :class="[(isDisplayed('Up Trend') ? 'active' : 'notactive')]"><span class='up swatch'></span>Up Trend</el-menu-item> -->
-        </el-menu-item-group>
-      </el-menu>
+
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
+          <UsrMsg class="hideMenuButton" />
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
             v-for="building of this.$store.getters['map/buildings']"
@@ -128,6 +81,7 @@ import compareSide from '@/components/map/map_compareside'
 import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons'
 import { EventBus } from '../../event-bus'
+import UsrMsg from '@/components/UsrMsg'
 
 export default {
   name: 'featured',
@@ -143,7 +97,8 @@ export default {
     LGeoJson,
     prompt,
     compareSide,
-    switchButtons
+    switchButtons,
+    UsrMsg
   },
   computed: {
     showSide: {
@@ -565,16 +520,22 @@ $sideMenu-width: 250px;
   margin-top: 0em;
 }
 
-.sideMenu-2 {
-  background-color: $--color-black;
-  height: calc(100% - 1em);
+.hideMenuButton {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
+  display: flex;
+  align-items: center;
   position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2000;
-  width: $sideMenu-width;
-  padding-top: 1em;
-  margin-top: 0em;
+  top: 46em;
+  right: 15px;
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  border-radius: 4.5px;
+  opacity: 1;
+  justify-content: center;
+  z-index: 500;
+  cursor: pointer;
 }
 
 .sideMenuGroupTitle {
@@ -615,14 +576,11 @@ $sideMenu-width: 250px;
   }
   .sideMenu-2 {
     background-color: $--color-black;
-    height: calc(70% - 1em);
-    position: absolute;
+    height: 1em;
     left: calc(100% - #{$sideMenu-width});
+    position: absolute;
     z-index: 2000;
-    width: $sideMenu-width - 10px;
-    padding-top: 1em;
-    top: 90px;
-    bottom: 100px;
+    top: 20px;
   }
   .mapContainer {
     background-color: blue;
@@ -631,6 +589,24 @@ $sideMenu-width: 250px;
     left: 0px;
     height: 100%;
     width: calc(100%);
+  }
+
+  .hideMenuButton {
+    font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+      sans-serif;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 46em;
+    right: 15px;
+    background-color: white;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    background-clip: padding-box;
+    border-radius: 4.5px;
+    opacity: 1;
+    justify-content: center;
+    z-index: 500;
+    cursor: pointer;
   }
 }
 
