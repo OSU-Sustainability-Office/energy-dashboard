@@ -134,7 +134,7 @@ export default {
       ele: [],
       compareMarkers: [],
       rKey: 1,
-      message: true,
+      message: this.message,
       askingForComparison: false,
       selected: [
         'Residence',
@@ -359,6 +359,7 @@ export default {
   async created () {
     await this.$store.dispatch( 'map/loadGeometry' )
     this.mapLoaded = true
+    this.message = window.innerWidth > 768
     EventBus.$on( 'inputData', inputWord => {
       this.message = inputWord
       console.log( this.message )

@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <button @click="toggleFlag" class="toggleButton">{{ flag ? 'Hide Building Menu' : 'Show Building Menu' }}</button>
+    <button @click="toggleFlag" class="toggleButton">{{ buttonText }}</button>
   </div>
 </template>
 
@@ -11,13 +11,33 @@ export default {
   name: 'UsrMsg',
   data () {
     return {
-      flag: true
+      flag: true,
+      flag2: false
+    }
+  },
+  computed: {
+    isSmallScreen () {
+      return window.innerWidth < 768 // Adjust this threshold as needed
+    },
+    buttonText () {
+      return this.isSmallScreen
+        ? this.flag2
+          ? 'Hide Building Menu'
+          : 'Show Building Menu'
+        : this.flag
+          ? 'Hide Building Menu'
+          : 'Show Building Menu'
     }
   },
   methods: {
     toggleFlag: function () {
-      this.flag = !this.flag
-      EventBus.$emit( 'inputData', this.flag )
+      if ( this.isSmallScreen ) {
+        this.flag2 = !this.flag2
+        EventBus.$emit( 'inputData', this.flag2 )
+      } else {
+        this.flag = !this.flag
+        EventBus.$emit( 'inputData', this.flag )
+      }
     }
   }
 }
