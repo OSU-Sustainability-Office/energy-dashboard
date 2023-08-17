@@ -553,16 +553,8 @@ $sideMenu-width: 250px;
     z-index: 2000;
     width: $sideMenu-width - 10px;
     padding-top: 1em;
-    top: 90px;
+    top: 120px;
     bottom: 100px;
-  }
-  .sideMenu-2 {
-    background-color: $--color-black;
-    height: 1em;
-    left: calc(100% - #{$sideMenu-width});
-    position: absolute;
-    z-index: 2000;
-    top: 20px;
   }
   .mapContainer {
     background-color: blue;
@@ -579,7 +571,7 @@ $sideMenu-width: 250px;
     display: flex;
     align-items: center;
     position: absolute;
-    top: 46em;
+    top: 7em;
     right: 15px;
     background-color: white;
     border: 2px solid rgba(0, 0, 0, 0.2);
@@ -588,7 +580,6 @@ $sideMenu-width: 250px;
     opacity: 1;
     justify-content: center;
     z-index: 500;
-    cursor: pointer;
   }
 }
 
@@ -599,7 +590,7 @@ $sideMenu-width: 250px;
     display: flex;
     align-items: center;
     position: absolute;
-    top: 46em;
+    top: 7em;
     left: 10px;
     background-color: white;
     border: 2px solid rgba(0, 0, 0, 0.2);
@@ -608,7 +599,6 @@ $sideMenu-width: 250px;
     opacity: 1;
     justify-content: center;
     z-index: 500;
-    cursor: pointer;
   }
 }
 

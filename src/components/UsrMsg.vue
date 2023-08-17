@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <button @click="toggleFlag">{{ flag ? 'Hide Building Menu' : 'Show Building Menu' }}</button>
+    <button @click="toggleFlag" class="toggleButton">{{ flag ? 'Hide Building Menu' : 'Show Building Menu' }}</button>
   </div>
 </template>
 
@@ -22,3 +22,9 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.toggleButton {
+  cursor: pointer;
+}
+</style>
