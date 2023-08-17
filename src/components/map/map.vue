@@ -527,7 +527,7 @@ $sideMenu-width: 250px;
   align-items: center;
   position: absolute;
   top: 46em;
-  right: 15px;
+  left: 10px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -598,7 +598,7 @@ $sideMenu-width: 250px;
     align-items: center;
     position: absolute;
     top: 46em;
-    right: 15px;
+    left: 400px;
     background-color: white;
     border: 2px solid rgba(0, 0, 0, 0.2);
     background-clip: padding-box;
@@ -607,6 +607,7 @@ $sideMenu-width: 250px;
     justify-content: center;
     z-index: 500;
     cursor: pointer;
+    margin-right: 10px;
   }
 }
 
