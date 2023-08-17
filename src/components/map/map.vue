@@ -520,24 +520,6 @@ $sideMenu-width: 250px;
   margin-top: 0em;
 }
 
-.hideMenuButton {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
-    sans-serif;
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: 46em;
-  left: 10px;
-  background-color: white;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  background-clip: padding-box;
-  border-radius: 4.5px;
-  opacity: 1;
-  justify-content: center;
-  z-index: 500;
-  cursor: pointer;
-}
-
 .sideMenuGroupTitle {
   font-size: 18px;
   color: #ffffff;
@@ -598,7 +580,7 @@ $sideMenu-width: 250px;
     align-items: center;
     position: absolute;
     top: 46em;
-    left: 400px;
+    right: 15px;
     background-color: white;
     border: 2px solid rgba(0, 0, 0, 0.2);
     background-clip: padding-box;
@@ -607,7 +589,26 @@ $sideMenu-width: 250px;
     justify-content: center;
     z-index: 500;
     cursor: pointer;
-    margin-right: 10px;
+  }
+}
+
+@media only screen and (min-width: 769px) {
+  .hideMenuButton {
+    font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+      sans-serif;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 46em;
+    left: 10px;
+    background-color: white;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    background-clip: padding-box;
+    border-radius: 4.5px;
+    opacity: 1;
+    justify-content: center;
+    z-index: 500;
+    cursor: pointer;
   }
 }
 
