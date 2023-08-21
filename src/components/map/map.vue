@@ -552,6 +552,57 @@ $sideMenu-width: 250px;
     background-color: $--color-black;
     height: calc(70% - 8em);
     position: absolute;
+    left: calc(100% - #{$sideMenu-width});
+    z-index: 2000;
+    width: $sideMenu-width - 10px;
+    padding-top: 1em;
+    top: 120px;
+    bottom: 100px;
+  }
+  .mapContainer {
+    background-color: blue;
+    position: absolute;
+    top: 0;
+    left: 0px;
+    height: 100%;
+    width: calc(100%);
+  }
+
+  .hideMenuButton {
+    font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+      sans-serif;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 7em;
+    right: 15px;
+    background-color: white;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    background-clip: padding-box;
+    border-radius: 4.5px;
+    opacity: 1;
+    justify-content: center;
+    z-index: 500;
+  }
+}
+
+@media only screen and (min-width: 400px) and (max-width: 844px) {
+  .stage {
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .el-menu-item {
+    margin-top: -10px;
+    margin-bottom: -20px;
+  }
+
+  .sideMenu {
+    background-color: $--color-black;
+    height: calc(70% - 8em);
+    position: absolute;
     left: calc(80% - #{$sideMenu-width});
     z-index: 2000;
     width: $sideMenu-width - 10px;
