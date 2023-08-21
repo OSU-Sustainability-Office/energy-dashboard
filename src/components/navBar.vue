@@ -81,7 +81,7 @@ i {
 }
 
 // Mobile version - hidden hamburger menu
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 844px) {
   .nav-menu {
     padding-left: -200;
     padding-bottom: -20;

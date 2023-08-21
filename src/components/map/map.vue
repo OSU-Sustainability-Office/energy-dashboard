@@ -359,7 +359,7 @@ export default {
   async created () {
     await this.$store.dispatch( 'map/loadGeometry' )
     this.mapLoaded = true
-    this.message = window.innerWidth > 768
+    this.message = window.innerWidth > 844
     EventBus.$on( 'inputData', inputWord => {
       this.message = inputWord
       console.log( this.message )
@@ -535,7 +535,7 @@ $sideMenu-width: 250px;
   width: calc(100% - #{$sideMenu-width});
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 844px) {
   .stage {
     padding: 0;
     position: absolute;
@@ -584,7 +584,7 @@ $sideMenu-width: 250px;
   }
 }
 
-@media only screen and (min-width: 769px) {
+@media only screen and (min-width: 844px) {
   .hideMenuButton {
     font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
       sans-serif;

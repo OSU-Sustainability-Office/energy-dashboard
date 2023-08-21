@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     isSmallScreen () {
-      return window.innerWidth < 768 // Adjust this threshold as needed
+      return window.innerWidth < 844 // Adjust this threshold as needed
     },
     buttonText () {
       return this.isSmallScreen
