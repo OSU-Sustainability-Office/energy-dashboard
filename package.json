@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "serve": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve --open",
-    "build": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service build --mode=production",
+    "build": "SET NODE_OPTIONS=--openssl-legacy-provider && node --max_old_space_size=4096 node_modules/.bin/vue-cli-service build --mode=production",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "build-stage": "node --max_old_space_size=4096 node_modules/.bin/vue-cli-service build --mode staging",
+    "build-stage": "SET NODE_OPTIONS=--openssl-legacy-provider && node --max_old_space_size=4096 node_modules/.bin/vue-cli-service build --mode staging",
     "start": "bash start_service.sh",
     "test": "vue-cli-service test:unit --ci --detectOpenHandles",
     "frontend-badge": "make-coverage-badge",
