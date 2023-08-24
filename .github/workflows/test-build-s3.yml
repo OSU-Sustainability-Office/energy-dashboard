@@ -39,6 +39,8 @@ jobs:
         run: |
           npm install
       - name: npm build frontend
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
         run: |
           npm run build-stage
       - name: deploy frontend to s3
