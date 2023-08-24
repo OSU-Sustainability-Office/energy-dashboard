@@ -13,7 +13,7 @@ This Energy Dashboard has been developed by the Oregon State University Sustaina
 
 ### Testing Locally
 
-We recommend setting up `nvm` to set your node installation to version 16 (`nvm use 16`).
+We recommend setting up `nvm` to set your node installation to version 18 (`nvm use 18`).
 
 Running `npm run serve` will run the front-end locally.
 
