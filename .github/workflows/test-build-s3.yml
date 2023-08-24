@@ -1,9 +1,8 @@
 name: S3 Test Build
 on:
-  push:
-    branches-ignore:
+  pull_request:
+    branches:
       - master
-      - gh-pages
 
 jobs:
   unit-tests:
