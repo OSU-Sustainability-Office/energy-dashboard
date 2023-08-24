@@ -8,7 +8,7 @@ Description: >
 Globals:
   Function:
     Timeout: 15
-    Runtime: nodejs16.x
+    Runtime: nodejs18.x
   Api:
     # enable CORS; to make more specific, change the origin wildcard
     # to a particular domain name, e.g. "'www.example.com'"
@@ -730,5 +730,6 @@ Resources:
               - nodejs10.x
               - nodejs12.x
               - nodejs16.x
+              - nodejs18.x
             LicenseInfo: 'MIT'
             RetentionPolicy: Retain
