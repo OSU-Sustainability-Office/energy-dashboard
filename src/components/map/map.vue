@@ -550,7 +550,7 @@ $sideMenu-width: 250px;
 
   .sideMenu {
     background-color: $--color-black;
-    height: calc(70% - 8em);
+    height: 10em;
     position: absolute;
     left: calc(100% - #{$sideMenu-width});
     z-index: 2000;
