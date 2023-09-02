@@ -90,13 +90,6 @@ export default {
   font-weight: bold;
   font-style: normal;
 }
-@media only screen and (max-width: 844px) {
-  .el-message-box {
-    position: absolute !important;
-    top: 30vh !important;
-    left: 10vh !important;
-  }
-}
 body {
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
