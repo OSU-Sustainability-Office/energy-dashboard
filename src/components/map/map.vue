@@ -557,7 +557,6 @@ $sideMenu-width: 250px;
     width: $sideMenu-width - 10px;
     padding-top: 1em;
     top: 120px;
-    bottom: 100px;
   }
   .mapContainer {
     background-color: blue;
