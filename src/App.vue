@@ -90,6 +90,9 @@ export default {
   font-weight: bold;
   font-style: normal;
 }
+.el-message-box {
+  vertical-align: super !important;
+}
 body {
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
