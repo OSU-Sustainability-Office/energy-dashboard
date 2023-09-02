@@ -263,7 +263,7 @@ export default {
   display: block;
   position: absolute;
   left: 100%;
-  bottom: 8%;
+  bottom: 0%;
   width: 900px !important; // hard-coded value, might not be correct
   margin-left: -930px; // hard-coded value, might not be correct
   height: 85% !important;
@@ -281,7 +281,7 @@ export default {
   overflow: hidden;
   background-color: rgb(26, 26, 26);
   box-shadow: -1px 1px 6px rgba(0, 0, 0, 0.6);
-  height: 378px; // hard-coded value, might not be correct
+  height: 390px; // hard-coded value, might not be correct
 }
 .title {
   padding: 0.3em;
@@ -323,7 +323,7 @@ export default {
   width: 450px;
   margin-left: 450px;
   position: absolute;
-  top: 50px; // hard-coded value, might not be correct
+  top: 55px; // hard-coded value, might not be correct
 }
 .rangeButtonParent {
   padding: 0.2em;
