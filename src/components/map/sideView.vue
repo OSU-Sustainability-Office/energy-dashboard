@@ -153,7 +153,7 @@ export default {
   },
   computed: {
     isLaptopScreen () {
-      return this.windowHeight <= this.$WINDOW_HEIGHT
+      return this.windowHeight <= '2000px'
     },
 
     currentRange: {
@@ -252,8 +252,8 @@ export default {
   z-index: 401;
   display: block;
   position: absolute;
-  left: 100%;
-  bottom: 8%;
+  left: 80%;
+  bottom: 13%;
   width: 450px !important;
   margin-left: -470px;
   height: 85% !important;
