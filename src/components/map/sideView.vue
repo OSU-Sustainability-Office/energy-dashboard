@@ -2,70 +2,8 @@
   Filename: sideView.vue
   Description: Despite the name this references the pop-up building modal window on the map
                NOT the actually right-hand side view (that's handled directly in the map.vue component)
-  NOTE FOR LAPTOP SCREEN SIZES: Reference src/main.js for $window and $WINDOW_HEIGHT values
 -->
 <template>
-  <div class="smaller-screen" v-if="isLaptopScreen">
-    <el-row class="stage-small">
-      <el-row class="main-small">
-        <el-row class="title">
-          <el-col :span="23">{{ building.name }}</el-col>
-          <el-col :span="1" class="close-box"><i class="fas fa-times" @click="hide()"></i></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24" v-loading="building ? false : true">
-            <div class="media-small" ref="media"></div>
-          </el-col>
-        </el-row>
-        <el-row class="graphcontrol-small">
-          <el-col :span="24">
-            <el-col :span="24" class="buttonContainer">
-              <switchButtons :blocks="buildingBlocks" :forceUpdate="false" ref="switchbutton" />
-            </el-col>
-            <el-row class="graphslide">
-              <i class="left fas fa-angle-left" @click="prev()" ref="prevArrow"></i>
-              <i class="right fas fa-angle-right" @click="next()" ref="nextArrow"></i>
-            </el-row>
-            <el-row type="flex" class="graph" ref="scrollBox">
-              <el-col class="inline" v-for="block in buildingBlocks" :key="block.id" :span="24" ref="slidingBox">
-                <chartController
-                  :path="block.path"
-                  ref="chartController"
-                  class="chart"
-                  :styleC="{
-                    display: 'inline-block',
-                    width: 'calc(100% - 20px)',
-                    height: '100%',
-                    'margin-right': '10px',
-                    'margin-left': '10px'
-                  }"
-                  :height="200"
-                  :invertColors="true"
-                />
-              </el-col>
-            </el-row>
-            <el-row class="bottomButtons">
-              <el-col :span="12">
-                <el-button class="bigButton" @click="$emit('startCompare', building.id)">Compare</el-button>
-              </el-col>
-              <el-col :span="12">
-                <el-button
-                  class="bigButton"
-                  @click="
-                    $router.push({
-                      path: `/building/${building.id}/${currentRange + 1}`
-                    })
-                  "
-                  >View Full Graph</el-button
-                >
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
-      </el-row>
-    </el-row>
-  </div>
-  <div class="bigger-screen" v-else>
     <el-row class="stage">
       <el-row class="main">
         <el-row class="title">
@@ -124,7 +62,6 @@
         </el-row>
       </el-row>
     </el-row>
-  </div>
 </template>
 
 <script>
@@ -152,9 +89,6 @@ export default {
     }
   },
   computed: {
-    isLaptopScreen () {
-      return this.windowHeight <= '2000px'
-    },
 
     currentRange: {
       get () {
@@ -258,30 +192,12 @@ export default {
   margin-left: -470px;
   height: 85% !important;
 }
-.stage-small {
-  z-index: 401;
-  display: block;
-  position: absolute;
-  left: 100%;
-  bottom: 0%;
-  width: 900px !important; // hard-coded value, might not be correct
-  margin-left: -930px; // hard-coded value, might not be correct
-  height: 85% !important;
-}
 .main {
   padding: 0;
   border-radius: 5px;
   overflow: hidden;
   background-color: rgb(26, 26, 26);
   box-shadow: -1px 1px 6px rgba(0, 0, 0, 0.6);
-}
-.main-small {
-  padding: 0;
-  border-radius: 5px;
-  overflow: hidden;
-  background-color: rgb(26, 26, 26);
-  box-shadow: -1px 1px 6px rgba(0, 0, 0, 0.6);
-  height: 390px; // hard-coded value, might not be correct
 }
 .title {
   padding: 0.3em;
@@ -305,25 +221,8 @@ export default {
   background-position: center;
   border-bottom: solid 1px #fff;
 }
-.media-small {
-  height: 320px;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  // deleted white border on bottom - might need to add back
-  width: 450px;
-  position: absolute;
-  top: 0px; // hard-coded value, might not be correct
-}
 .graphcontrol {
   padding: 1.5em;
-}
-.graphcontrol-small {
-  padding: 0.5em;
-  width: 450px;
-  margin-left: 450px;
-  position: absolute;
-  top: 55px; // hard-coded value, might not be correct
 }
 .rangeButtonParent {
   padding: 0.2em;
