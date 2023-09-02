@@ -4,64 +4,64 @@
                NOT the actually right-hand side view (that's handled directly in the map.vue component)
 -->
 <template>
-    <el-row class="stage">
-      <el-row class="main">
-        <el-row class="title">
-          <el-col :span="23">{{ building.name }}</el-col>
-          <el-col :span="1" class="close-box"><i class="fas fa-times" @click="hide()"></i></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24" v-loading="building ? false : true">
-            <div class="media" ref="media"></div>
+  <el-row class="stage">
+    <el-row class="main">
+      <el-row class="title">
+        <el-col :span="23">{{ building.name }}</el-col>
+        <el-col :span="1" class="close-box"><i class="fas fa-times" @click="hide()"></i></el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24" v-loading="building ? false : true">
+          <div class="media" ref="media"></div>
+        </el-col>
+      </el-row>
+      <el-row class="graphcontrol">
+        <el-col :span="24">
+          <el-col :span="24" class="buttonContainer">
+            <switchButtons :blocks="buildingBlocks" :forceUpdate="false" ref="switchbutton" />
           </el-col>
-        </el-row>
-        <el-row class="graphcontrol">
-          <el-col :span="24">
-            <el-col :span="24" class="buttonContainer">
-              <switchButtons :blocks="buildingBlocks" :forceUpdate="false" ref="switchbutton" />
+          <el-row class="graphslide">
+            <i class="left fas fa-angle-left" @click="prev()" ref="prevArrow"></i>
+            <i class="right fas fa-angle-right" @click="next()" ref="nextArrow"></i>
+          </el-row>
+          <el-row type="flex" class="graph" ref="scrollBox">
+            <el-col class="inline" v-for="block in buildingBlocks" :key="block.id" :span="24" ref="slidingBox">
+              <chartController
+                :path="block.path"
+                ref="chartController"
+                class="chart"
+                :styleC="{
+                  display: 'inline-block',
+                  width: 'calc(100% - 20px)',
+                  height: '100%',
+                  'margin-right': '10px',
+                  'margin-left': '10px'
+                }"
+                :height="200"
+                :invertColors="true"
+              />
             </el-col>
-            <el-row class="graphslide">
-              <i class="left fas fa-angle-left" @click="prev()" ref="prevArrow"></i>
-              <i class="right fas fa-angle-right" @click="next()" ref="nextArrow"></i>
-            </el-row>
-            <el-row type="flex" class="graph" ref="scrollBox">
-              <el-col class="inline" v-for="block in buildingBlocks" :key="block.id" :span="24" ref="slidingBox">
-                <chartController
-                  :path="block.path"
-                  ref="chartController"
-                  class="chart"
-                  :styleC="{
-                    display: 'inline-block',
-                    width: 'calc(100% - 20px)',
-                    height: '100%',
-                    'margin-right': '10px',
-                    'margin-left': '10px'
-                  }"
-                  :height="200"
-                  :invertColors="true"
-                />
-              </el-col>
-            </el-row>
-            <el-row class="buttons">
-              <el-col :span="12">
-                <el-button class="bigButton" @click="$emit('startCompare', building.id)">Compare</el-button>
-              </el-col>
-              <el-col :span="12">
-                <el-button
-                  class="bigButton"
-                  @click="
-                    $router.push({
-                      path: `/building/${building.id}/${currentRange + 1}`
-                    })
-                  "
-                  >View Full Graph</el-button
-                >
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
+          </el-row>
+          <el-row class="buttons">
+            <el-col :span="12">
+              <el-button class="bigButton" @click="$emit('startCompare', building.id)">Compare</el-button>
+            </el-col>
+            <el-col :span="12">
+              <el-button
+                class="bigButton"
+                @click="
+                  $router.push({
+                    path: `/building/${building.id}/${currentRange + 1}`
+                  })
+                "
+                >View Full Graph</el-button
+              >
+            </el-col>
+          </el-row>
+        </el-col>
       </el-row>
     </el-row>
+  </el-row>
 </template>
 
 <script>
@@ -89,7 +89,6 @@ export default {
     }
   },
   computed: {
-
     currentRange: {
       get () {
         return this.$refs.switchbutton.currentRange
