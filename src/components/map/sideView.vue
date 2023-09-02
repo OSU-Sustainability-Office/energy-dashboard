@@ -185,7 +185,7 @@ export default {
   z-index: 401;
   display: block;
   position: absolute;
-  left: 90%;
+  left: 80%;
   bottom: 13%;
   width: 450px !important;
   margin-left: -470px;
