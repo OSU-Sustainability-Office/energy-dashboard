@@ -246,4 +246,16 @@ export default {
   top: -0.5em;
   font-size: 12px !important;
 }
+
+@media only screen and (max-width: 600px) {
+  .buildingContainer {
+    padding-right: 0em;
+  }
+  .otherSide {
+    padding-left: 0em;
+  }
+  .title {
+    padding-left: 2em;
+  }
+}
 </style>
