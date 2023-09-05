@@ -122,7 +122,7 @@ describe('Testing data_layer related API endpoints...', () => {
     // Check that we can upload data
     let response = await MeterData.upload(mockRequest, undefined)
     expect(response.statusCode).toBe(200)
-    /*
+    
     // Check that data was written
     let energy_data = await DB.query('SELECT * from ' + meter_id)
     expect(energy_data.length).toBe(solarData.length)
@@ -165,7 +165,7 @@ describe('Testing data_layer related API endpoints...', () => {
     console.log(jsonData)
     expect(jsonData['data'][0]['readings'].length).toBe(solarData.length)
     expect(jsonData['data'][0]['readings'][0]['reading']).toBe(3665740)
-    */
+    
   })
 /*
   const meter_id = 'M' + '007c9349-72ba-450c-aa1f-4e5a77b68f79'.replace(/-/g, 'M')
