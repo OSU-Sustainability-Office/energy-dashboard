@@ -187,7 +187,7 @@ export default {
 .top_col {
   position: absolute;
   margin: 0;
-  width: 100vw;
+  width: 100%;
   padding: 1em;
 }
 
