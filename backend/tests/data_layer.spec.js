@@ -10,7 +10,7 @@ const CORSUtil = require('./utility/cors_test_utility.js')
 const server = testConfig['serverOrigin']
 const client = testConfig['clientOrigin']
 // const solarData = require('./assertedData/mock_solar_data.json')
-const DB = require('/opt/nodejs/sql-access.js')
+// const DB = require('/opt/nodejs/sql-access.js')
 
 const MOCK_REQUEST_EVENT = {
   headers: {
@@ -104,6 +104,8 @@ describe('Testing data_layer related API endpoints...', () => {
     expect(jsonData['data'][1]['readings'].length).toBeGreaterThan(10)
 
   })
+
+  // TODO maybe: fix solar meter upload test below
 /*
   const meter_id = 'M' + '007c9349-72ba-450c-aa1f-4e5a77b68f79'.replace(/-/g, 'M')
   it('mock solar data upload...', async () => {
