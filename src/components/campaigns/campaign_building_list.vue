@@ -237,4 +237,10 @@ $clippath: polygon(2.5% 0%, 0% 100%, 97.5% 100%, 100% 0%);
 .innerTrophy.selected {
   color: $--color-white;
 }
+
+@media only screen and (max-width: 600px) {
+  .buildingCol {
+    font-size: 18px;
+  }
+}
 </style>
