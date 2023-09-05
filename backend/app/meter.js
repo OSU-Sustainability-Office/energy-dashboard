@@ -1,215 +1,231 @@
 /*
-  Filename: meter.js
-  Description: API Endpoint logic for meter data upload & retrieval
- */
+* Filename: data_layer.spec.js
+* Description: Unit tests for API endpoints associated with
+*               the data_layer (or data_store) VueX module
+*/
 
+// CORS testing utility requires
+const testConfig = require('./assertedData/test_config.json')
+const CORSUtil = require('./utility/cors_test_utility.js')
+const server = testConfig['serverOrigin']
+const client = testConfig['clientOrigin']
+const solarData = require('./assertedData/mock_solar_data.json')
 const DB = require('/opt/nodejs/sql-access.js')
-const Meter = require('/opt/nodejs/models/meter.js')
-const Response = require('/opt/nodejs/response.js')
-const User = require('/opt/nodejs/user.js')
-const MultipartParse = require('/opt/nodejs/node_modules/aws-lambda-multipart-parser')
-const ZLib = require('zlib')
-const Compress = require('/opt/nodejs/models/compress.js')
 
-exports.get = async (event, context) => {
-  let response = new Response(event)
-  response.body = JSON.stringify((await new Meter(event.queryStringParameters['id']).get()).data)
-  return response
-}
-
-exports.all = async (event, context) => {
-  let response = new Response(event)
-  let user = new User(event, response)
-  await user.resolved
-
-  response.body = JSON.stringify(await Meter.all(user))
-
-  return response
-}
-
-// Check integral parameters.
-function parseParameters({ id, startDate, endDate }) {
-  return {
-    id: parseInt(id, 10),
-    startDate: parseInt(startDate, 10),
-    endDate: parseInt(endDate, 10)
+const MOCK_REQUEST_EVENT = {
+  headers: {
+    origin: `${client.scheme}://${client.host}`
+  },
+  queryStringParameters: {
+    'id': 9,
+    'point': 'accumulated_real',
+    'startDate': 1603854900,
+    'endDate': 1613618100,
+    'meterClass': 48
   }
 }
-function verifyParameters({ id, startDate, endDate }) {
-  return ![id, startDate, endDate].some(isNaN)
-}
-// Get data for multiple meters => {id -> [{}...], ...}
-/*
-  Ok, assume a batch request involves the same point & meter class
-  {
-    point,
-    meterClass,
-    datasets [{
-      id,
-      startDate,
-      endDate
-    }]
-  }
-*/
-exports.batchData = async (event, context) => {
-  const request = JSON.parse(event.body)
-  const meterList = request.datasets.map(parseParameters).filter(verifyParameters)
-  const { point, meterClass } = request
-  const response = new Response(event)
-  response.body = { data: [] }
-  // Get data for each Response [inefficient, should switch to transaction eventually]
-  for (let query of meterList) {
-    response.body.data.push({
-      id: query.id,
-      readings: await new Meter(query.id).sparseDownload(point, query.startDate, query.endDate, meterClass)
-    })
-  }
-  response.body = JSON.stringify(response.body)
-  return response //Compress(event, response)
-}
 
-// GET data for single meter
-exports.data = async (event, context) => {
-  let response = new Response(event)
-  response.body = JSON.stringify(
-    await new Meter(event.queryStringParameters['id']).download(
-      event.queryStringParameters['point'],
-      event.queryStringParameters['startDate'],
-      event.queryStringParameters['endDate'],
-      event.queryStringParameters['meterClass']
-    )
-  )
-  return response //Compress(event, response)
-}
+// Lambda functions
+const RemoteSystemNow = require('../app/now.js')
+const MeterData = require('../app/meter.js')
 
-// Meter Data Upload Route (currently only for solar panels)
-exports.upload = async (event, context) => {
-  let response = new Response(event)
+// The unit tests
+describe('Testing data_layer related API endpoints...', () => {
+  let response
 
-  const payload = JSON.parse(event.body)
-  const pwd = payload['pwd']
-  const meter_id = payload['id']
-  const meter_data = payload['body']
+  it('/systemtime should return valid timestamp (number)', async () => {
+    response = await RemoteSystemNow.systemtime(MOCK_REQUEST_EVENT)
+    expect(isNaN(response.body)).toBe(false)
+  })
 
-  if (pwd !== process.env.ACQUISUITE_PASS) {
-    response.statusCode = 400
-    return response
-  }
-
-  await DB.connect()
-  let row = []
-  try {
-    row = await DB.query(`SHOW TABLES LIKE ?;`, [meter_id])
-  } catch {
-    response.statusCode = 400
-    return response
-  }
-
-  let query_string = `INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`energy_change\`, \`tableid\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.totalYieldYesterday}', '${meter_data.tableID}');`
-
-  try {
-    await DB.query(query_string)
-  } catch (err) {
-    if (err.code !== 'ER_DUP_ENTRY') {
-      response.statusCode = 400
-      response.body = 'meter data does not fit database schema: ' + ', code: ' + err.code
-      return response
-    }
-  }
-  response.statusCode = 200
-  return response
-}
-/*
-  This endpoint handles data uploads from Aquisuites
-*/
-exports.post = async (event, context) => {
-  let response = new Response(event)
-
-  event.body = Buffer.from(event.body, 'base64').toString('binary')
-  const body = await MultipartParse.parse(event, false)
-
-  response.headers = {
-    ...response.headers,
-    'Content-Type': 'application/xml'
-  }
-  if (body.MODE !== 'LOGFILEUPLOAD') {
-    response.body = '<pre>\nSUCCESS\n</pre>'
-    return response
-  }
-
-  if (body.PASSWORD === process.env.ACQUISUITE_PASS) {
-    response.body = '<pre>\nSUCCESS\n</pre>'
-    let meter
+  it('/systemtime should return proper CORS headers', () => {
+    const corsResult = CORSUtil.VerifyCORSResponse(response, client, server)
     try {
-      meter = await new Meter(null, body.SERIALNUMBER + '_' + body.MODBUSDEVICE).get()
-    } catch (err) {
-      if (err.name === 'MeterNotFound') {
-        meter = await Meter.create(
-          body.MODBUSDEVICENAME,
-          body.SERIALNUMBER + '_' + body.MODBUSDEVICE,
-          body.MODBUSDEVICECLASS
-        )
-      } else {
-        console.log(err)
-        response.body = '<pre>\nFAILURE\n</pre>'
-        return response
+      expect(corsResult.result).toBe(true)
+    } catch {
+      throw new Error(corsResult.reason)
+    }
+  })
+
+  it('/data should return data...', async () => {
+    response = await MeterData.data(MOCK_REQUEST_EVENT)
+    const jsonData = JSON.parse(response.body)
+    expect(jsonData.length).toBeGreaterThan(5)
+  })
+
+  it('/data should return CORS headers...', async () => {
+    const corsResult = CORSUtil.VerifyCORSResponse(response, client, server)
+    try {
+      expect(corsResult.result).toBe(true)
+    } catch {
+      throw new Error(corsResult.reason)
+    }
+  })
+
+  it('/batchData should return data for multiple metres...', async () => {
+    /*
+      Ok, assume a batch request involves the same point & meter class
+      {
+        point,
+        meterClass,
+        datasets [{
+          id,
+          startDate,
+          endDate
+        }]
       }
-    }
-    try {
-      let table = await new Promise((resolve, reject) => {
-        let file
-        for (let object of Object.values(body)) {
-          if (object.type && object.type === 'file') {
-            file = object
-            break
-          }
-        }
-        if (!file) reject(new Error('File not found in request'))
-        ZLib.unzip(Buffer.from(file.content, 'binary'), (error, result) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(result.toString('ascii').split('\n'))
-          }
-        })
+    */
+    const batchRequest = {
+      headers: {
+        ...MOCK_REQUEST_EVENT.headers
+      },
+      body: JSON.stringify({
+        point: 'accumulated_real',
+        meterClass: 5,
+        datasets: [
+          { id: 92, startDate: 1641684600, endDate: 1642207500 },
+          { id: 93, startDate: 1641684600, endDate: 1642207500 }
+        ]
       })
-      for (let entry of table) {
-        let cols = entry.split(',')
-
-        if (parseInt(cols[0].toString().substring(15, 17)) % 15 === 0) {
-          await meter.upload(cols)
-        }
-      }
-    } catch (err) {
-      console.log(err)
-      response.body = '<pre>\nFAILURE\n</pre>'
     }
-  } else {
-    response.body = '<pre>\nFAILURE\n</pre>'
-  }
-  return response
-}
+    response = await MeterData.batchData(batchRequest)
+    const jsonData = JSON.parse(response.body)
+    // Response should be of type:
+    /*
+    {
+      data: [{
+        id: <id>,
+        readings: [{time, reading}]
+      },...]
+    }
+    */
+    expect(jsonData['data'].length).toBe(2)
+    expect(jsonData['data'][0]['readings'].length).toBeGreaterThan(10)
+    expect(jsonData['data'][1]['readings'].length).toBeGreaterThan(10)
 
-exports.put = async (event, context) => {
-  let response = new Response(event)
-  let user = new User(event, response)
-  try {
-    await Meter(event.body.id).update(event.body.name, event.body.classInt, event.body.negate, user)
-  } catch (error) {
-    response.body = error.message
-    response.status = 400
-  }
-  return response
-}
+  })
+  const meter_id = 'Solar_Meters'
+  it('mock solar data upload...', async () => {
+    process.env.ACQUISUITE_PASS = 'test_pwd'
+    // Have to make meter_id acceptable for SQL commands
+    const mockRequest = {
+      headers: {
+        ...MOCK_REQUEST_EVENT.headers
+      },
+      body: JSON.stringify({
+        id: meter_id,
+        body: solarData,
+        pwd: process.env.ACQUISUITE_PASS,
+        type: 'solar'
+      })
+    }
+    // Check that we can upload data
+    let response = await MeterData.upload(mockRequest, undefined)
+    expect(response.statusCode).toBe(200)
+    // Check that data was written
+    let energy_data = await DB.query('SELECT * from ' + meter_id)
+    expect(energy_data.length).toBe(solarData.length)
+    // Check that meter was added to Meters table
+    const [{ 'id': meter_normalized_id }] = await DB.query('SELECT id FROM meters WHERE name = ?;', [meter_id])
 
-exports.delete = async (event, context) => {
-  let response = new Response(event)
-  let user = new User(event, response)
-  try {
-    await Meter(event.body.id).delete(user)
-  } catch (error) {
-    response.body = error.message
-    response.status = 400
-  }
-  return response
-}
+    // Check that we can GET data
+    const mockReadRequest = {
+      headers: {
+        origin: `${client.scheme}://${client.host}`
+      },
+      queryStringParameters: {
+        'id': meter_normalized_id,
+        'point': 'total_energy',
+        'startDate': 1693785599,
+        'endDate': 1693785600,
+        'meterClass': 9990001
+      }
+    }
+    let EnergyResponse = await MeterData.data(mockReadRequest)
+    const meter_data = JSON.parse(EnergyResponse.body)
+    expect(meter_data.length).toBe(solarData.length)
+    expect(meter_data[0]['total_energy']).toBe(3665740)
+    // Make sure batch route works too
+    const batchRequest = {
+      headers: {
+        ...MOCK_REQUEST_EVENT.headers
+      },
+      body: JSON.stringify({
+        point: 'total_energy',
+        meterClass: 9990001,
+        datasets: [
+          { id: meter_normalized_id, startDate: 1627974000, endDate: 1627976700 }
+        ]
+      })
+    }
+
+    response = await MeterData.batchData(batchRequest)
+    const jsonData = JSON.parse(response.body)
+    console.log(jsonData)
+    expect(jsonData['data'][0]['readings'].length).toBe(solarData.length)
+    expect(jsonData['data'][0]['readings'][0]['reading']).toBe(3665740)
+  })
+/*
+  const meter_id = 'M' + '007c9349-72ba-450c-aa1f-4e5a77b68f79'.replace(/-/g, 'M')
+  it('mock solar data upload...', async () => {
+    process.env.ACQUISUITE_PASS = 'test_pwd'
+    // Have to make meter_id acceptable for SQL commands
+    const mockRequest = {
+      headers: {
+        ...MOCK_REQUEST_EVENT.headers
+      },
+      body: JSON.stringify({
+        id: meter_id,
+        body: solarData,
+        pwd: process.env.ACQUISUITE_PASS,
+        type: 'solar'
+      })
+    }
+    // Check that we can upload data
+    let response = await MeterData.upload(mockRequest, undefined)
+    expect(response.statusCode).toBe(200)
+    // Check that data was written
+    let energy_data = await DB.query('SELECT * from ' + meter_id)
+    expect(energy_data.length).toBe(solarData.length)
+    // Check that meter was added to Meters table
+    const [{ 'id': meter_normalized_id }] = await DB.query('SELECT id FROM meters WHERE name = ?;', [meter_id])
+
+    // Check that we can GET data
+    const mockReadRequest = {
+      headers: {
+        origin: `${client.scheme}://${client.host}`
+      },
+      queryStringParameters: {
+        'id': meter_normalized_id,
+        'point': 'total_energy',
+        'startDate': 1627974000,
+        'endDate': 1627976700,
+        'meterClass': 9990001
+      }
+    }
+    let EnergyResponse = await MeterData.data(mockReadRequest)
+    const meter_data = JSON.parse(EnergyResponse.body)
+    expect(meter_data.length).toBe(solarData.length)
+    expect(meter_data[0]['total_energy']).toBe(3665740)
+    // Make sure batch route works too
+    const batchRequest = {
+      headers: {
+        ...MOCK_REQUEST_EVENT.headers
+      },
+      body: JSON.stringify({
+        point: 'total_energy',
+        meterClass: 9990001,
+        datasets: [
+          { id: meter_normalized_id, startDate: 1627974000, endDate: 1627976700 }
+        ]
+      })
+    }
+
+    response = await MeterData.batchData(batchRequest)
+    const jsonData = JSON.parse(response.body)
+    console.log(jsonData)
+    expect(jsonData['data'][0]['readings'].length).toBe(solarData.length)
+    expect(jsonData['data'][0]['readings'][0]['reading']).toBe(3665740)
+  })
+  */
+})
