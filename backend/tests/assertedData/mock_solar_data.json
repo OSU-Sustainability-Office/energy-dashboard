@@ -1,16 +1,8 @@
-[
+
   {
     "tableID": "SEC_Solar",
     "time": "2023-9-3T23:59:59",
     "time_seconds": 1693785599,
     "PVSystem": "SECsolar",
     "totalYieldYesterday": "107.71"
-  },
-  {
-    "tableID": "OSU_Operations_Total",
-    "time": "2023-9-3T23:59:59",
-    "time_seconds": 1693785599,
-    "PVSystem": "OSU Operations Total",
-    "totalYieldYesterday": "1231.70"
   }
-]
