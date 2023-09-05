@@ -13,7 +13,7 @@
             <a href="/#/campaigns" class="navLink" rel="noreferrer" @click="showMenu()"> Campaigns </a>
           </li>
           <li class="navLi">
-            <a href="/#/getstarted" class="navLink" rel="noreferrer" @click="showMenu()"> Get Started </a>
+            <a href="/#/getstarted" class="navLink" rel="noreferrer" @click="showMenu()"> FAQ </a>
           </li>
           <li class="navLi"><a href="/#/contact" class="navLink" rel="noreferrer" @click="showMenu()"> Contact </a></li>
         </ul>
@@ -62,6 +62,7 @@ export default {
   list-style: none;
   margin: 0;
   padding-top: 18px;
+  margin-left: -30px;
   li {
     padding: 0 10px;
   }
@@ -81,7 +82,7 @@ i {
 }
 
 // Mobile version - hidden hamburger menu
-@media screen and (max-width: 844px) {
+@media screen and (max-width: 599px) {
   .nav-menu {
     padding-left: -200;
     padding-bottom: -20;
