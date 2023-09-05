@@ -1,8 +1,34 @@
-
+[
   {
-    "tableID": "SEC_Solar",
-    "time": "2023-9-3T23:59:59",
-    "time_seconds": 1693785599,
-    "PVSystem": "SECsolar",
-    "totalYieldYesterday": "107.71"
+    "time": "2021-08-03T00:00:00",
+    "time_seconds": 1627974000,
+    "current": "2.00",
+    "voltage": "122.30",
+    "total_energy": "3665742.80",
+    "energy_change": "0.00"
+  },
+  {
+    "time": "2021-08-03T00:15:00",
+    "time_seconds": 1627974900,
+    "current": "2.00",
+    "voltage": "122.19",
+    "total_energy": "3665742.80",
+    "energy_change": "0.00"
+  },
+  {
+    "time": "2021-08-03T00:30:00",
+    "time_seconds": 1627975800,
+    "current": "2.00",
+    "voltage": "121.51",
+    "total_energy": "3665742.80",
+    "energy_change": "0.00"
+  },
+  {
+    "time": "2021-08-03T00:45:00",
+    "time_seconds": 1627976700,
+    "current": "2.00",
+    "voltage": "122.10",
+    "total_energy": "3665742.80",
+    "energy_change": "0.00"
   }
+]
