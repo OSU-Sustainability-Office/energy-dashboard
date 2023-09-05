@@ -143,7 +143,7 @@ body {
 @import '@/assets/style-variables.scss';
 
 /* Media query for mobile devices */
-@media only screen and (max-width: 844px) {
+@media only screen and (max-width: 600px) {
   body {
     max-width: 100%;
     overflow-x: hidden; /* Hide horizontal scrollbar */

@@ -80,49 +80,4 @@ i {
   margin-top: 10px;
   font-size: 16px;
 }
-
-// Mobile version - hidden hamburger menu
-@media screen and (max-width: 599px) {
-  .nav-menu {
-    padding-left: -200;
-    padding-bottom: -20;
-    top: -20px;
-    position: absolute;
-    width: 100%;
-    background-color: $--color-primary !important;
-  }
-  .open-menu {
-    opacity: 1;
-    height: 180px;
-  }
-  .closed-menu {
-    opacity: 0;
-    height: 0px;
-    padding: 0;
-  }
-  .nav-content {
-    flex-direction: column;
-    z-index: 500;
-    position: relative;
-    transition: all 0.2s ease-out;
-    left: calc(8.5%);
-    width: 150px;
-    align-items: start;
-    top: -25px;
-    padding-bottom: 5vh;
-    padding-left: 5px;
-  }
-  .nav-items {
-    flex-direction: column;
-    align-items: left;
-    padding-top: 0px;
-    margin-left: -40px;
-  }
-  i {
-    display: block;
-    text-align: left;
-    padding-left: 10px;
-    padding-top: 23px;
-  }
-}
 </style>

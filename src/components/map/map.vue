@@ -535,7 +535,7 @@ $sideMenu-width: 250px;
   width: calc(100% - #{$sideMenu-width});
 }
 
-@media only screen and (max-width: 844px) {
+@media only screen and (max-width: 600px) {
   .stage {
     padding: 0;
     position: absolute;
@@ -574,25 +574,6 @@ $sideMenu-width: 250px;
     align-items: center;
     position: absolute;
     top: 7em;
-    background-color: white;
-    border: 2px solid rgba(0, 0, 0, 0.2);
-    background-clip: padding-box;
-    border-radius: 4.5px;
-    opacity: 1;
-    justify-content: center;
-    z-index: 500;
-  }
-}
-
-@media only screen and (min-width: 845px) {
-  .hideMenuButton {
-    font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
-      sans-serif;
-    display: flex;
-    align-items: center;
-    position: absolute;
-    top: 7em;
-    left: 10px;
     background-color: white;
     border: 2px solid rgba(0, 0, 0, 0.2);
     background-clip: padding-box;
