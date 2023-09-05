@@ -364,7 +364,7 @@ export default {
       this.message = inputWord
       console.log( this.message )
     } )
-    this.map.zoomControl.setPosition( 'topright' )
+    this.map.zoomControl.setPosition( 'topleft' )
   },
   mounted () {
     this.$nextTick( () => {
@@ -552,7 +552,7 @@ $sideMenu-width: 250px;
     background-color: $--color-black;
     height: 10em;
     position: absolute;
-    left: calc(100% - #{$sideMenu-width});
+    left: 0;
     z-index: 2000;
     width: $sideMenu-width - 10px;
     padding-top: 1em;
@@ -574,7 +574,6 @@ $sideMenu-width: 250px;
     align-items: center;
     position: absolute;
     top: 7em;
-    right: 10px;
     background-color: white;
     border: 2px solid rgba(0, 0, 0, 0.2);
     background-clip: padding-box;
@@ -713,7 +712,7 @@ $sideMenu-width: 250px;
   align-items: center;
   position: absolute;
   top: 10px;
-  right: 50px;
+  left: 50px;
   width: 90px;
   height: 50px;
   background-color: white;

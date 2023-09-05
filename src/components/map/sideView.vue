@@ -185,10 +185,9 @@ export default {
   z-index: 401;
   display: block;
   position: absolute;
-  left: 80%;
+  left: 25%;
   bottom: 13%;
   width: 440px !important;
-  margin-left: -470px;
   height: 85% !important;
 }
 .main {
