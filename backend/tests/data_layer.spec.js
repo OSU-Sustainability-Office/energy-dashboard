@@ -121,6 +121,7 @@ describe('Testing data_layer related API endpoints...', () => {
     }
     // Check that we can upload data
     let response = await MeterData.upload(mockRequest, undefined)
+    console.log(response.body)
     expect(response.statusCode).toBe(200)
     // Check that data was written
     let energy_data = await DB.query('SELECT * from ' + meter_id)
