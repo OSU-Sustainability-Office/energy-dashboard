@@ -96,7 +96,7 @@ i {
   }
   .closed-menu {
     opacity: 0;
-    height: 180px;
+    height: 0px;
     padding: 0;
   }
   .nav-content {
