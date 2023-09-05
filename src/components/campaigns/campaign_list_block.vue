@@ -6,8 +6,8 @@
       </el-col>
     </el-row>
     <el-row class="popped">
-      <el-col :span="18" class="standings"> </el-col>
-      <el-col :span="6" class="dates"> {{ camp.dateStart | trunc }} - {{ camp.dateEnd | trunc }} </el-col>
+      <el-col :span="6" class="standings"> </el-col>
+      <el-col :span="16" class="dates"> {{ camp.dateStart | trunc }} - {{ camp.dateEnd | trunc }} </el-col>
     </el-row>
   </div>
 </template>
