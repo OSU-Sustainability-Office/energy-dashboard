@@ -237,7 +237,7 @@ export default {
   padding-right: 1em;
   padding-bottom: 1em;
   // min-height: calc(100vh - #{$--nav-height} - 200px);
-  height: calc(400px + 5em);
+  height: calc(450px + 5em);
 }
 .timeSwitchButtons {
   text-align: right;
