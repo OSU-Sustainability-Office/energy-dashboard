@@ -9,8 +9,8 @@ const testConfig = require('./assertedData/test_config.json')
 const CORSUtil = require('./utility/cors_test_utility.js')
 const server = testConfig['serverOrigin']
 const client = testConfig['clientOrigin']
-const solarData = require('./assertedData/mock_solar_data.json')
-const DB = require('/opt/nodejs/sql-access.js')
+// const solarData = require('./assertedData/mock_solar_data.json')
+// const DB = require('/opt/nodejs/sql-access.js')
 
 const MOCK_REQUEST_EVENT = {
   headers: {
