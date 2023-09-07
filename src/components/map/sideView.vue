@@ -175,9 +175,9 @@ export default {
   z-index: 401;
   display: block;
   position: absolute;
-  left: 25%;
+  left: 29.5%;
   bottom: 13%;
-  width: 440px !important;
+  width: 420px !important;
   height: 85% !important;
 }
 .main {
