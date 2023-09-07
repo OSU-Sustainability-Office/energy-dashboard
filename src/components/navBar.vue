@@ -1,21 +1,20 @@
 <template>
   <div>
     <div class="nav-menu">
-      <i class="fas fa-bars" @click="showMenu()"> </i>
-      <div class="nav-content" :class="this.showMobileMenu ? 'open-menu' : 'closed-menu'">
+      <div class="nav-content">
         <div class="logo"><svgLogo width="160px" alt="" @click="$router.push({ path: '/map' })" /></div>
         <ul class="nav-items">
-          <li class="navLi"><a href="/#/map" class="navLink" rel="noreferrer" @click="showMenu()"> Map </a></li>
+          <li class="navLi"><router-link to="/map" class="navLink">Map</router-link></li>
           <li class="navLi">
-            <a href="/#/buildings" class="navLink" rel="noreferrer" @click="showMenu()"> Building List </a>
+            <router-link to="/buildings" class="navLink">Building List</router-link>
           </li>
           <li class="navLi">
-            <a href="/#/campaigns" class="navLink" rel="noreferrer" @click="showMenu()"> Campaigns </a>
+            <router-link to="/campaigns" class="navLink">Campaigns</router-link>
           </li>
           <li class="navLi">
-            <a href="/#/getstarted" class="navLink" rel="noreferrer" @click="showMenu()"> FAQ </a>
+            <router-link to="/getstarted" class="navLink">FAQ</router-link>
           </li>
-          <li class="navLi"><a href="/#/contact" class="navLink" rel="noreferrer" @click="showMenu()"> Contact </a></li>
+          <li class="navLi"><router-link to="/contact" class="navLink">Contact</router-link></li>
         </ul>
       </div>
     </div>
@@ -49,9 +48,9 @@ export default {
 .nav-content {
   display: flex;
   justify-content: left;
-  padding: 5px 20px;
+  padding: 0px 20px;
   align-items: left;
-  padding-top: 10px;
+  padding-top: 0px;
   left: 10px;
   background-color: $--color-primary !important;
 }
@@ -61,10 +60,12 @@ export default {
   align-items: left;
   list-style: none;
   margin: 0;
-  padding-top: 18px;
+  padding-top: 0px;
   margin-left: -30px;
   li {
-    padding: 0 10px;
+    padding: 25px 0px;
+    padding-right: 10px;
+    padding-left: 10px;
   }
 }
 i {
@@ -73,11 +74,23 @@ i {
   margin-left: 5px;
 }
 .navLi {
-  padding-top: 10px;
+  padding-top: 28px;
 }
 .navLink {
   color: white;
   margin-top: 10px;
   font-size: 16px;
+}
+.router-link-active {
+  background-color: rgba(0, 0, 0, 0.3);
+  padding-bottom: 25px;
+  padding-top: 28px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-left: -10px;
+  margin-right: -10px;
+}
+.logo {
+  padding-top: 10px;
 }
 </style>
