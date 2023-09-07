@@ -546,7 +546,7 @@ $sideMenu-width: 250px;
   align-items: center;
   position: absolute;
   top: 7em;
-  left: 0.7em;
+  left: 0em;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
