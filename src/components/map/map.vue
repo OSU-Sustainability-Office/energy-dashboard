@@ -546,6 +546,7 @@ $sideMenu-width: 250px;
   align-items: center;
   position: absolute;
   top: 7em;
+  left: 1em;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -665,7 +666,7 @@ $sideMenu-width: 250px;
   position: absolute;
   top: 10px;
   left: 50px;
-  width: 90px;
+  width: 100px;
   height: 50px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
@@ -675,5 +676,6 @@ $sideMenu-width: 250px;
   justify-content: center;
   z-index: 500;
   cursor: pointer;
+  font-size: 16px;
 }
 </style>

@@ -46,5 +46,6 @@ export default {
 <style scoped lang="scss">
 .toggleButton {
   cursor: pointer;
+  font-size: 16px;
 }
 </style>
