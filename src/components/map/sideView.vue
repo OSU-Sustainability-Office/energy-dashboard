@@ -81,11 +81,7 @@ export default {
       title: '',
       unit: 'day',
       int: 1,
-      index: 0,
-      windowHeight: window.innerHeight,
-      windowUpdate: () => {
-        this.windowHeight = window.innerHeight
-      }
+      index: 0
     }
   },
   computed: {
@@ -112,12 +108,6 @@ export default {
         return this.$store.getters['map/building']( this.$store.getters['modalController/data'].id )
       }
     }
-  },
-  mounted () {
-    window.addEventListener( 'resize', this.windowUpdate )
-  },
-  beforeDestroy () {
-    window.removeEventListener( 'resize', this.windowUpdate )
   },
   methods: {
     hide: function () {

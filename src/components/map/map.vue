@@ -123,7 +123,7 @@ export default {
   data () {
     return {
       zoom: 15.5,
-      center: L.latLng( 44.565, -123.2785 ),
+      center: L.latLng( 44.56335, -123.2858 ),
       url: 'https://api.mapbox.com/styles/v1/jack-woods/cjmi2qpp13u4o2spgb66d07ci/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       map: null,
@@ -239,7 +239,7 @@ export default {
       }
     },
     resetMap () {
-      this.map.setView( L.latLng( 44.565, -123.2785 ), 15.5 )
+      this.map.setView( L.latLng( 44.56335, -123.2858 ), 15.5 )
     },
     removeAllMarkers: function () {
       for ( let marker of this.compareMarkers ) {
@@ -506,19 +506,23 @@ $sideMenu-width: 250px;
   padding: 0;
   position: absolute;
   width: 100%;
-  height: calc(100vh - #{$--nav-height});
+  height: 100%;
+}
+
+.el-menu-item {
+  margin-top: -10px;
+  margin-bottom: -20px;
 }
 
 .sideMenu {
   background-color: $--color-black;
-  height: calc(100% - 1em);
+  height: 25em;
   position: absolute;
-  top: 0;
   left: 0;
   z-index: 2000;
-  width: $sideMenu-width;
+  width: $sideMenu-width - 10px;
   padding-top: 1em;
-  margin-top: 0em;
+  top: 120px;
 }
 
 .sideMenuGroupTitle {
@@ -530,58 +534,25 @@ $sideMenu-width: 250px;
   background-color: blue;
   position: absolute;
   top: 0;
-  left: 250px;
+  left: 0px;
   height: 100%;
-  width: calc(100% - #{$sideMenu-width});
+  width: calc(100%);
 }
 
-@media only screen and (max-width: 600px) {
-  .stage {
-    padding: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-  }
-
-  .el-menu-item {
-    margin-top: -10px;
-    margin-bottom: -20px;
-  }
-
-  .sideMenu {
-    background-color: $--color-black;
-    height: 10em;
-    position: absolute;
-    left: 0;
-    z-index: 2000;
-    width: $sideMenu-width - 10px;
-    padding-top: 1em;
-    top: 120px;
-  }
-  .mapContainer {
-    background-color: blue;
-    position: absolute;
-    top: 0;
-    left: 0px;
-    height: 100%;
-    width: calc(100%);
-  }
-
-  .hideMenuButton {
-    font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
-      sans-serif;
-    display: flex;
-    align-items: center;
-    position: absolute;
-    top: 7em;
-    background-color: white;
-    border: 2px solid rgba(0, 0, 0, 0.2);
-    background-clip: padding-box;
-    border-radius: 4.5px;
-    opacity: 1;
-    justify-content: center;
-    z-index: 500;
-  }
+.hideMenuButton {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 7em;
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  border-radius: 4.5px;
+  opacity: 1;
+  justify-content: center;
+  z-index: 500;
 }
 
 .side-enter-active,
