@@ -666,7 +666,7 @@ $sideMenu-width: 250px;
   position: absolute;
   top: 10px;
   left: 50px;
-  width: 115px;
+  width: 90px;
   height: 50px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
@@ -676,6 +676,6 @@ $sideMenu-width: 250px;
   justify-content: center;
   z-index: 500;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
 }
 </style>
