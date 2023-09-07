@@ -92,5 +92,6 @@ i {
 }
 .logo {
   padding-top: 10px;
+  cursor: pointer;
 }
 </style>
