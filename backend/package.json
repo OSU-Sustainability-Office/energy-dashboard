@@ -19,6 +19,7 @@
     "mysql": "^2.18.1",
     "osmtogeojson": "^3.0.0-beta.4",
     "rimraf": "^3.0.0",
+    "source-map": "^0.8.0-beta.0",
     "unzip": "^0.1.11",
     "yaml": "^1.6.0"
   },
