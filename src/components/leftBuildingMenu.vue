@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div>
     <button @click="toggleFlag" class="toggleButton">{{ buttonText }}</button>
   </div>
 </template>
@@ -8,7 +8,7 @@
 import { EventBus } from '../event-bus'
 
 export default {
-  name: 'UsrMsg',
+  name: 'leftBuildingMenu',
   data () {
     return {
       flag: true,

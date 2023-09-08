@@ -54,7 +54,7 @@
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
-          <UsrMsg class="hideMenuButton" />
+          <leftBuildingMenu class="hideMenuButton" />
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
             v-for="building of this.$store.getters['map/buildings']"
@@ -81,7 +81,7 @@ import compareSide from '@/components/map/map_compareside'
 import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons'
 import { EventBus } from '../../event-bus'
-import UsrMsg from '@/components/UsrMsg'
+import leftBuildingMenu from '@/components/leftBuildingMenu'
 
 export default {
   name: 'featured',
@@ -98,7 +98,7 @@ export default {
     prompt,
     compareSide,
     switchButtons,
-    UsrMsg
+    leftBuildingMenu
   },
   computed: {
     showSide: {
@@ -362,7 +362,6 @@ export default {
     this.message = window.innerWidth > 844
     EventBus.$on( 'inputData', inputWord => {
       this.message = inputWord
-      console.log( this.message )
     } )
     this.map.zoomControl.setPosition( 'topleft' )
   },
