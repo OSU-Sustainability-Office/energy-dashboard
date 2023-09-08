@@ -1,8 +1,8 @@
 /*
-* Filename: data_layer.spec.js
-* Description: Unit tests for API endpoints associated with
-*               the data_layer (or data_store) VueX module
-*/
+ * Filename: data_layer.spec.js
+ * Description: Unit tests for API endpoints associated with
+ *               the data_layer (or data_store) VueX module
+ */
 
 // CORS testing utility requires
 const testConfig = require('./assertedData/test_config.json')
@@ -17,11 +17,11 @@ const MOCK_REQUEST_EVENT = {
     origin: `${client.scheme}://${client.host}`
   },
   queryStringParameters: {
-    'id': 9,
-    'point': 'accumulated_real',
-    'startDate': 1603854900,
-    'endDate': 1613618100,
-    'meterClass': 48
+    id: 9,
+    point: 'accumulated_real',
+    startDate: 1603854900,
+    endDate: 1613618100,
+    meterClass: 48
   }
 }
 
@@ -102,11 +102,10 @@ describe('Testing data_layer related API endpoints...', () => {
     expect(jsonData['data'].length).toBe(2)
     expect(jsonData['data'][0]['readings'].length).toBeGreaterThan(10)
     expect(jsonData['data'][1]['readings'].length).toBeGreaterThan(10)
-
   })
 
   // TODO maybe: fix solar meter upload test below
-/*
+  /*
   const meter_id = 'M' + '007c9349-72ba-450c-aa1f-4e5a77b68f79'.replace(/-/g, 'M')
   it('mock solar data upload...', async () => {
     process.env.ACQUISUITE_PASS = 'test_pwd'

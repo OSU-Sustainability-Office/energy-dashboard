@@ -49,7 +49,7 @@ export default {
     if ( !document.cookie.split( ';' ).some( cookieString => cookieString.includes( 'firstTimer' ) ) ) {
       this.$msgbox( {
         title: 'First Timer?',
-        message: 'Take a look at the "Get Started" tab to learn more and for FAQ\'s!',
+        message: 'Take a look at the "FAQ" tab for some info on how to get started!',
         showCancelButton: true,
         confirmButtonText: 'OK',
         cancelButtonText: 'Never Show This Message Again',
@@ -89,6 +89,9 @@ export default {
     url('/fonts/StratumNo2-Bold.svg#StratumNo2-Bold') format('svg');
   font-weight: bold;
   font-style: normal;
+}
+.el-message-box {
+  width: 350px !important;
 }
 body {
   font-family: 'Open Sans', sans-serif;
@@ -139,6 +142,13 @@ body {
 <style scoped lang="scss">
 @import '@/assets/style-variables.scss';
 
+/* Media query for mobile devices */
+@media only screen and (max-width: 600px) {
+  body {
+    max-width: 100%;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+  }
+}
 .app {
   padding: 0;
   margin: 0;

@@ -48,4 +48,9 @@ export default {
   width: 50%;
   padding: 10px;
 }
+@media only screen and (max-width: 600px) {
+  .center {
+    width: 80%;
+  }
+}
 </style>

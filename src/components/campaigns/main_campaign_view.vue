@@ -20,10 +20,12 @@
         <el-col :span="16" class="otherSide">
           <div class="chartArea">
             <el-row class="title">
-              <el-col :span="12">
+              <el-col :span="30">
                 {{ currentTitle }}
               </el-col>
-              <el-col :span="12" class="timeSwitchButtons">
+            </el-row>
+            <el-row class="timeframe-labels">
+              <el-col :span="30" class="timeSwitchButtons">
                 <switchButtons
                   :blocks="blocks"
                   :campaign="true"
@@ -203,6 +205,14 @@ export default {
   color: $--color-white;
   font-family: 'StratumNo2';
   text-align: left;
+  padding-left: 1em;
+  padding-bottom: 1em;
+}
+.timeframe-labels {
+  font-size: 34px;
+  color: $--color-white;
+  font-family: 'StratumNo2';
+  text-align: left;
   padding-bottom: 1em;
 }
 .controlRow {
@@ -227,7 +237,7 @@ export default {
   padding-right: 1em;
   padding-bottom: 1em;
   // min-height: calc(100vh - #{$--nav-height} - 200px);
-  height: calc(400px + 5em);
+  height: calc(450px + 5em);
 }
 .timeSwitchButtons {
   text-align: right;
@@ -235,5 +245,17 @@ export default {
   position: relative;
   top: -0.5em;
   font-size: 12px !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .buildingContainer {
+    padding-right: 0em;
+  }
+  .otherSide {
+    padding-left: 0em;
+  }
+  .title {
+    padding-left: 2em;
+  }
 }
 </style>

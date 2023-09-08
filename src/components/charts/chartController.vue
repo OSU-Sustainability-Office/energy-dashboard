@@ -167,7 +167,7 @@ export default {
       if ( this.$route.path.startsWith( '/map' ) ) {
         return 'scaled-iframe'
       } else {
-        return ''
+        return 'building-iframe'
       }
     },
     promise: {
@@ -352,5 +352,15 @@ export default {
 .scaled-iframe {
   transform: scale(0.4);
   transform-origin: top left;
+}
+.building-iframe {
+  height: 600px;
+  width: 1000px;
+}
+@media only screen and (max-width: 600px) {
+  .building-iframe {
+    height: 600px;
+    width: 600px;
+  }
 }
 </style>

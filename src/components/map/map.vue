@@ -1,7 +1,13 @@
 <template>
   <el-row class="stage">
     <el-col :span="24">
-      <el-menu class="sideMenu" mode="vertical" backgroundColor="#1A1A1A" @select="handleSelect">
+      <el-menu
+        v-if="message === true"
+        class="sideMenu"
+        mode="vertical"
+        backgroundColor="#1A1A1A"
+        @select="handleSelect"
+      >
         <div class="colorByTitle">Group By:</div>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
@@ -44,9 +50,11 @@
           <el-menu-item index='Up Trend' :class="[(isDisplayed('Up Trend') ? 'active' : 'notactive')]"><span class='up swatch'></span>Up Trend</el-menu-item> -->
         </el-menu-item-group>
       </el-menu>
+
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
+          <leftBuildingMenu class="hideMenuButton" />
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
             v-for="building of this.$store.getters['map/buildings']"
@@ -72,9 +80,16 @@ import prompt from '@/components/map/map_prompt'
 import compareSide from '@/components/map/map_compareside'
 import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons'
+import { EventBus } from '../../event-bus'
+import leftBuildingMenu from '@/components/leftBuildingMenu'
 
 export default {
   name: 'featured',
+  props: {
+    msg: {
+      type: String
+    }
+  },
   components: {
     LMap,
     LTileLayer,
@@ -82,7 +97,8 @@ export default {
     LGeoJson,
     prompt,
     compareSide,
-    switchButtons
+    switchButtons,
+    leftBuildingMenu
   },
   computed: {
     showSide: {
@@ -107,7 +123,7 @@ export default {
   data () {
     return {
       zoom: 15.5,
-      center: L.latLng( 44.565, -123.2785 ),
+      center: L.latLng( 44.56335, -123.2858 ),
       url: 'https://api.mapbox.com/styles/v1/jack-woods/cjmi2qpp13u4o2spgb66d07ci/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       map: null,
@@ -118,6 +134,7 @@ export default {
       ele: [],
       compareMarkers: [],
       rKey: 1,
+      message: this.message,
       askingForComparison: false,
       selected: [
         'Residence',
@@ -222,7 +239,7 @@ export default {
       }
     },
     resetMap () {
-      this.map.setView( L.latLng( 44.565, -123.2785 ), 15.5 )
+      this.map.setView( L.latLng( 44.56335, -123.2858 ), 15.5 )
     },
     removeAllMarkers: function () {
       for ( let marker of this.compareMarkers ) {
@@ -342,6 +359,11 @@ export default {
   async created () {
     await this.$store.dispatch( 'map/loadGeometry' )
     this.mapLoaded = true
+    this.message = window.innerWidth > 844
+    EventBus.$on( 'inputData', inputWord => {
+      this.message = inputWord
+    } )
+    this.map.zoomControl.setPosition( 'topleft' )
   },
   mounted () {
     this.$nextTick( () => {
@@ -483,18 +505,25 @@ $sideMenu-width: 250px;
   padding: 0;
   position: absolute;
   width: 100%;
-  height: calc(100vh - #{$--nav-height});
+  height: 100%;
 }
+
+.el-menu-item {
+  margin-top: -10px;
+  margin-bottom: -20px;
+}
+
 .sideMenu {
   background-color: $--color-black;
-  height: calc(100% - 1em);
+  height: 25em;
   position: absolute;
-  top: 0;
   left: 0;
   z-index: 2000;
-  width: $sideMenu-width;
+  width: $sideMenu-width - 10px;
   padding-top: 1em;
+  top: 120px;
 }
+
 .sideMenuGroupTitle {
   font-size: 18px;
   color: #ffffff;
@@ -504,9 +533,26 @@ $sideMenu-width: 250px;
   background-color: blue;
   position: absolute;
   top: 0;
-  left: 250px;
+  left: 0px;
   height: 100%;
-  width: calc(100% - #{$sideMenu-width});
+  width: calc(100%);
+}
+
+.hideMenuButton {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 7em;
+  left: 0em;
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  border-radius: 4.5px;
+  opacity: 1;
+  justify-content: center;
+  z-index: 500;
 }
 
 .side-enter-active,
@@ -618,8 +664,8 @@ $sideMenu-width: 250px;
   align-items: center;
   position: absolute;
   top: 10px;
-  left: 55px;
-  width: 90px;
+  left: 50px;
+  width: 110px;
   height: 50px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
@@ -629,5 +675,6 @@ $sideMenu-width: 250px;
   justify-content: center;
   z-index: 500;
   cursor: pointer;
+  font-size: 15px;
 }
 </style>
