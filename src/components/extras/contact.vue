@@ -9,7 +9,7 @@
             Please email us at
             <a href="mailto:sustainability@oregonstate.edu">sustainability@oregonstate.edu</a>
             for feedback or questions, or check our
-            <a href="/#/getstarted">FAQ</a>.
+            <a href="/#/getstarted">FAQ</a>
           </p>
         </div>
       </div>
