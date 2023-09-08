@@ -49,7 +49,7 @@ export default {
     if ( !document.cookie.split( ';' ).some( cookieString => cookieString.includes( 'firstTimer' ) ) ) {
       this.$msgbox( {
         title: 'First Timer?',
-        message: 'Take a look at the "Get Started" tab to learn more and for FAQ\'s!',
+        message: 'Take a look at the "FAQ" tab for some info on how to get started!',
         showCancelButton: true,
         confirmButtonText: 'OK',
         cancelButtonText: 'Never Show This Message Again',

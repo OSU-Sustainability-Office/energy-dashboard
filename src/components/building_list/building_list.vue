@@ -207,10 +207,14 @@ export default {
   width: 100%;
 }
 /*--- Tabs   ---*/
-.tab_label {
-  font-size: 16px;
+tab_label {
+  font-size: 14px;
 }
 
+/*-- for reducing el-tabs padding: https://www.jianshu.com/p/9db8679de026 --*/
+::v-deep .el-tabs__item {
+  padding: 0 10px;
+}
 /*--- Flex Box   ---*/
 .card_flex {
   flex-wrap: wrap !important;
