@@ -10,19 +10,19 @@
   <el-row class="stage_compareside">
     <el-col :span="24" class="innerContent">
       <el-row class="title">
-        <el-col :span="23">
+        <el-col :span="22">
           <span>{{ name }} </span>
         </el-col>
-        <el-col :span="1" class="close-box"><i class="fas fa-times" @click="$emit('hide')"></i></el-col>
+        <div class="close-box"><i class="fas fa-times" @click="$emit('hide')"></i></div>
       </el-row>
       <el-row class="pics" v-loading="mediaArray.length < 0" element-loading-background="rgba(0, 0, 0, 0.8)">
         <el-col :span="24" class="nowrap">
           <div
             v-for="(media, index) in mediaArray"
             :class="classForIndex(index)"
-            :style="`background-image:url(${api}/image?name=${media}); width:calc(${100 / mediaArray.length}% + ${
-              index === 0 ? '22.5px' : '55px'
-            });`"
+            :style="`background-image:url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${media}); width:calc(${
+              100 / mediaArray.length
+            }% + ${index === 0 ? '22.5px' : '55px'});`"
             :key="media"
           ></div>
         </el-col>
@@ -42,7 +42,8 @@
               'margin-right': '10px',
               'margin-left': '10px'
             }"
-            :height="300"
+            :height="225"
+            :invertColors="true"
           />
         </el-col>
       </el-row>
@@ -160,13 +161,10 @@ export default {
 .stage_compareside {
   position: absolute;
   top: 0;
-  left: 250px;
-  width: calc(100% - 250px);
+  left: 29.5%;
+  width: 420px;
   z-index: 401;
-  padding-left: 200px;
-  padding-right: 20px;
-  padding-top: 50px;
-  padding-bottom: 50px;
+  padding-top: 10px;
 }
 .innerContent {
   position: relative;

@@ -10,7 +10,10 @@
   <el-row class="stage_prompt">
     <el-col :span="24">
       <el-row>
-        <el-col class="text"> Select buildings to compare </el-col>
+        <el-col class="text">
+          Select buildings to compare. <br /><br />
+          <el-row>NOTE: Only buildings with Electricity data are valid for comparison!</el-row>
+        </el-col>
       </el-row>
       <el-row>
         <el-col>
