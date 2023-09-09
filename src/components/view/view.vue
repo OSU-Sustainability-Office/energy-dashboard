@@ -156,7 +156,7 @@ export default {
           const view = {
             name: '',
             image: [],
-            description: 'Electrcity',
+            description: 'Electricity',
             id: -1
           }
           for ( let index in this.compareBuildings ) {
