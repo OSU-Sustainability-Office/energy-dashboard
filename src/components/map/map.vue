@@ -29,6 +29,9 @@
           <el-menu-item index="Residence" :class="[isDisplayed('Residence') ? 'active' : 'notactive']"
             ><span class="res swatch"></span>Residence</el-menu-item
           >
+          <el-menu-item index="Solar" :class="[isDisplayed('Solar') ? 'active' : 'notactive']"
+            ><span class="sol swatch"></span>Solar</el-menu-item
+          >
         </el-menu-item-group>
         <el-menu-item-group v-if="grouping === 'Energy Trend'">
           <span slot="title" class="sideMenuGroupTitle">Key</span>
@@ -142,6 +145,7 @@ export default {
         'Dining',
         'Academics',
         'Events & Admin',
+        'Solar',
         'Stable Trend',
         'Up Trend',
         'Down Trend'
@@ -187,6 +191,9 @@ export default {
               break
             case 'Dining':
               color = '#4A773C'
+              break
+            case 'Solar':
+              color = '#4169E1'
               break
             default:
               break
@@ -398,6 +405,9 @@ export default {
                     break
                   case 'Dining':
                     color = '#4A773C'
+                    break
+                  case 'Solar':
+                    color = '#4169E1'
                     break
                   default:
                     break
@@ -616,6 +626,10 @@ $sideMenu-width: 250px;
 .active .com.swatch {
   background-color: #7a6855b3;
   border-color: #7a6855;
+}
+.active .sol.swatch {
+  background-color: #4169e1;
+  border-color: #00008b;
 }
 .label {
   color: #000;
