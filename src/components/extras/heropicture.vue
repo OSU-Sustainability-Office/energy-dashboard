@@ -15,7 +15,7 @@
             :class="classForIndex(index)"
             :style="`background-image:linear-gradient(to right bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2)),url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${media}); width:calc(${
               100 / 2
-            }%); height:200px`"
+            }% + 19.5px); height:200px`"
             :key="media + 2"
           ></div>
           <div
@@ -24,7 +24,7 @@
             :class="classForIndex(index)"
             :style="`background-image:linear-gradient(to right bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2)),url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${media}); width:calc(${
               100 / 3
-            }%); height:200px`"
+            }% + 26px); height:200px`"
             :key="media + 3"
           ></div>
           <div
@@ -33,7 +33,7 @@
             :class="classForIndex(index)"
             :style="`background-image:linear-gradient(to right bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2)),url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${media}); width:calc(${
               100 / 4
-            }%); height:200px`"
+            }% + 29px); height:200px`"
             :key="media + 4"
           ></div>
           <div class="title">{{ name }}</div>
@@ -101,6 +101,7 @@ export default {
   background-repeat: no-repeat;
   white-space: nowrap;
   overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 .title {
   font-family: 'StratumNo2';
