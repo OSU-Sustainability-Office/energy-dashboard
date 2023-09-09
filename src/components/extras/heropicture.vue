@@ -2,6 +2,18 @@
   <el-row class="stage">
     <el-col :span="24" class="main">
       <div
+        element-loading-background="rgba(0, 0, 0, 0.3)"
+        class="background"
+        ref="main"
+        v-if="this.media[0].length <= 1"
+        :style="`background-image:url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${this.media}); width:calc(100%); height:100%`"
+      >
+        <div class="title">{{ name }}</div>
+        <div class="subtitle">{{ description }}</div>
+      </div>
+
+      <div
+        v-else
         v-for="(media, index) in this.media"
         :class="'slantImage leftEnd'"
         :style="`background-image:url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${media}); width:calc(100%); height:100px`"
@@ -24,7 +36,6 @@ export default {
     // imageString is a string containing the image filename in the S3 bucket. ie: mcnary_2.jpg
     media: function ( imageString ) {
       this.$refs.main.style.backgroundImage = ''
-      console.log( imageString )
       if ( imageString.length > 0 ) {
         console.log( this.media )
         imageString = imageString[0]
