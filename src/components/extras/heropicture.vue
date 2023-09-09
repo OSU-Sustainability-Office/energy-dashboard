@@ -1,24 +1,45 @@
 <template>
   <el-row class="stage">
     <el-col :span="24" class="main">
-      <div
-        element-loading-background="rgba(0, 0, 0, 0.3)"
-        class="background"
-        ref="main"
-        v-if="this.media[0].length <= 1"
-        :style="`background-image:url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${this.media}); width:calc(100%); height:100%`"
-      >
-        <div class="title">{{ name }}</div>
-        <div class="subtitle">{{ description }}</div>
-      </div>
+      <div v-if="this.media">
+        <div element-loading-background="rgba(0, 0, 0, 0.3)" class="background" ref="main">
+          <div
+            v-if="this.media[0].length <= 1 || this.media.length <= 1"
+            :style="`background-image:linear-gradient(to right bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2)),url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${this.media}); width:calc(100%); height:100%`"
+            :key="media"
+          ></div>
 
-      <div
-        v-else
-        v-for="(media, index) in this.media"
-        :class="'slantImage leftEnd'"
-        :style="`background-image:url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${media}); width:calc(100%); height:100px`"
-        :key="media"
-      ></div>
+          <div
+            v-else-if="this.mediaArray.length === 2"
+            v-for="(media, index) in this.media"
+            :class="classForIndex(index)"
+            :style="`background-image:linear-gradient(to right bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2)),url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${media}); width:calc(${
+              100 / 2
+            }%); height:200px`"
+            :key="media + 2"
+          ></div>
+          <div
+            v-else-if="this.mediaArray.length === 3"
+            v-for="(media, index) in this.media"
+            :class="classForIndex(index)"
+            :style="`background-image:linear-gradient(to right bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2)),url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${media}); width:calc(${
+              100 / 3
+            }%); height:200px`"
+            :key="media + 3"
+          ></div>
+          <div
+            v-else-if="this.mediaArray.length >= 4"
+            v-for="(media, index) in this.media"
+            :class="classForIndex(index)"
+            :style="`background-image:linear-gradient(to right bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2)),url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${media}); width:calc(${
+              100 / 4
+            }%); height:200px`"
+            :key="media + 4"
+          ></div>
+          <div class="title">{{ name }}</div>
+          <div class="subtitle">{{ description }}</div>
+        </div>
+      </div>
     </el-col>
   </el-row>
 </template>
@@ -32,39 +53,19 @@ export default {
       api: process.env.VUE_APP_ROOT_API
     }
   },
-  watch: {
-    // imageString is a string containing the image filename in the S3 bucket. ie: mcnary_2.jpg
-    media: function ( imageString ) {
-      this.$refs.main.style.backgroundImage = ''
-      if ( imageString.length > 0 ) {
-        console.log( this.media )
-        imageString = imageString[0]
+  computed: {
+    mediaArray: {
+      get () {
+        if ( this.media[0].length <= 1 ) return
+        return this.media
       }
-      if ( imageString ) {
-        this.$refs.main.style.backgroundImage =
-          'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)), url("https://osu-energy-images.s3-us-west-2.amazonaws.com/' +
-          imageString +
-          '")'
-      } else {
-        this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
-      }
-    }
-  },
-  mounted () {
-    this.$refs.main.style.backgroundImage = ''
-
-    if ( this.media ) {
-      this.$refs.main.style.backgroundImage =
-        'linear-gradient(to bottom right, rgba(0, 0, 0, 0.7),  rgba(0, 0, 0, 0.2)),url("https://osu-energy-images.s3-us-west-2.amazonaws.com/' +
-        this.media +
-        '")'
-    } else {
-      this.$refs.main.style.backgroundColor = 'rgb(26,26,26)'
     }
   },
   methods: {
     classForIndex: function ( index ) {
-      if ( this.media.length === 1 ) {
+      if ( !this.mediaArray.length ) {
+        return 'slantImage unCut'
+      } else if ( this.mediaArray.length === 1 ) {
         return 'slantImage unCut'
       } else if ( index === 0 ) {
         return 'slantImage leftEnd'

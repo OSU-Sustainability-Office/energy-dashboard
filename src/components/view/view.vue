@@ -236,8 +236,12 @@ export default {
          energy absorbed over a time frame, so any range greater than an hour will make ChartJS
          produce a trendline of zero (horizontal line) which isn't particularly useful for anyone.
         */
-        const isSolar =
-          this.$store.getters[`map/building_${this.$route.params.id}/meterGroups`][0].type === 'Solar Panel'
+        let isSolar = ''
+        if ( this.$store.getters[`map/building_${this.$route.params.id}/meterGroups`] ) {
+          isSolar = this.$store.getters[`map/building_${this.$route.params.id}/meterGroups`][0].type === 'Solar Panel'
+        } else {
+          isSolar = false
+        }
 
         switch ( parseInt( this.$route.params.range ) ) {
           case 1:
