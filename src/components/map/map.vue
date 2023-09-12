@@ -58,6 +58,15 @@
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
           <button class="searchMapButton" @click="searchMap()">Search Map</button>
+          <ul class="searchMapResult">
+            <li
+              v-for="searchGroup of this.searchGroup"
+              @click="getResult(searchGroup)"
+              :key="searchGroup.feature.properties.name"
+            >
+              {{ searchGroup.feature.properties.name }}
+            </li>
+          </ul>
           <el-input v-model="search" class="searchMapInput">
             <i class="el-icon-search el-input__icon" slot="prefix"></i>
           </el-input>
@@ -129,6 +138,7 @@ export default {
   },
   data () {
     return {
+      searchGroup: [],
       search: '',
       zoom: 15.5,
       center: L.latLng( 44.56335, -123.2858 ),
@@ -274,6 +284,7 @@ export default {
       console.log( this.$store.getters['map/building']( 1 ).geoJSON )
       console.log( this.map._layers )
       var realLayer = ''
+      console.log( Object.values( this.$store.getters['map/buildings'] )[0] )
       for ( let layer of Object.values( this.map._layers ) ) {
         // console.log(layer)
         if (
@@ -294,6 +305,12 @@ export default {
       }
 
       // this.map.removeLayer( realMarker )
+    },
+    getResult ( searchResult ) {
+      console.log( searchResult.feature.properties.name )
+      searchResult
+        .bindTooltip( searchResult.feature.properties.name, { permanent: true, fillColor: '#000', color: '#000' } )
+        .openTooltip()
     },
     removeAllMarkers: function () {
       for ( let marker of this.compareMarkers ) {
@@ -548,6 +565,10 @@ console.log(res2[0][1]);
       }
     },
     search: function ( v ) {
+      if ( v === '' ) {
+        this.searchGroup = []
+        return
+      }
       console.log( v )
       var searchGroup = []
       for ( let layer of Object.values( this.map._layers ) ) {
@@ -568,6 +589,7 @@ console.log(res2[0][1]);
         // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
       }
       console.log( searchGroup )
+      this.searchGroup = searchGroup
     },
     selected: function ( val ) {
       this.rKey++
@@ -804,10 +826,29 @@ $sideMenu-width: 250px;
   display: flex;
   align-items: center;
   position: absolute;
-  top: 10px;
+  top: 80px;
   left: 450px;
   width: 110px;
   height: 50px;
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  border-radius: 4.5px;
+  opacity: 1;
+  justify-content: center;
+  z-index: 500;
+  cursor: pointer;
+  font-size: 15px;
+}
+.searchMapResult {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
+  align-items: center;
+  position: absolute;
+  top: 10px;
+  left: 850px;
+  width: 110px;
+  height: 500px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
