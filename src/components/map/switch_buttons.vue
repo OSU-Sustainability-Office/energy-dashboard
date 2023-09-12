@@ -36,13 +36,14 @@ export default {
   padding: 10px;
   height: 80px !important;
 }
-$buttonHeight: 40px;
+$buttonHeight: 35px;
 $parentPadding: 2px;
-$activeheight: 45px;
+$activeheight: 35px;
 $activePadding: 2.5px;
 $clipInset: 10px;
 
 .rangeButtonParent {
+  top: 45px;
   position: relative;
   width: 100%;
   padding: $parentPadding;
@@ -56,7 +57,7 @@ $clipInset: 10px;
   margin: 0 !important;
 }
 .rangeButtonParent:not(.active) {
-  top: (($activePadding + $activeheight) - ($buttonHeight + $parentPadding))/2;
+  top: 45px;
 }
 .rangeButtonParent:first-child {
   border-radius: 5px 0px 0px 5px;

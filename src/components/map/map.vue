@@ -9,9 +9,21 @@
         @select="handleSelect"
       >
         <div class="colorByTitle">Group By:</div>
+        <div class="searchResultDiv">
+          <p
+            class="searchMapResult"
+            v-for="searchGroup of this.searchGroup.slice(0, 7)"
+            @click="getResult(searchGroup)"
+            :key="searchGroup.feature.properties.name"
+          >
+            {{ searchGroup.feature.properties.name }}
+          </p>
+        </div>
+        <el-input v-model="search" class="searchMapInput">
+          <i class="el-icon-search el-input__icon" slot="prefix"></i>
+        </el-input>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
-          <span slot="title" class="sideMenuGroupTitle">Key</span>
           <el-tooltip content="Click to toggle visibility" placement="right">
             <el-menu-item index="Academics" :class="[isDisplayed('Academics') ? 'active' : 'notactive']"
               ><span class="edu swatch"></span>Academics</el-menu-item
@@ -34,7 +46,6 @@
           >
         </el-menu-item-group>
         <el-menu-item-group v-if="grouping === 'Energy Trend'">
-          <span slot="title" class="sideMenuGroupTitle">Key</span>
           <el-col class="trendBox">
             <div class="trendGradient">&nbsp;</div>
             <div class="trendTopLabel">
@@ -57,19 +68,6 @@
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
-          <button class="searchMapButton" @click="searchMap()">Search Map</button>
-          <ul class="searchMapResult">
-            <li
-              v-for="searchGroup of this.searchGroup"
-              @click="getResult(searchGroup)"
-              :key="searchGroup.feature.properties.name"
-            >
-              {{ searchGroup.feature.properties.name }}
-            </li>
-          </ul>
-          <el-input v-model="search" class="searchMapInput">
-            <i class="el-icon-search el-input__icon" slot="prefix"></i>
-          </el-input>
           <leftBuildingMenu class="hideMenuButton" />
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
@@ -279,32 +277,6 @@ export default {
         // console.log(realLayer)
         // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
       }
-    },
-    searchMap () {
-      console.log( this.$store.getters['map/building']( 1 ).geoJSON )
-      console.log( this.map._layers )
-      var realLayer = ''
-      console.log( Object.values( this.$store.getters['map/buildings'] )[0] )
-      for ( let layer of Object.values( this.map._layers ) ) {
-        // console.log(layer)
-        if (
-          layer.feature &&
-          layer.feature.geometry &&
-          layer.feature.geometry.type === 'Polygon' &&
-          layer.feature.properties.id === '3'
-        ) {
-          realLayer = layer
-          console.log( layer )
-          realLayer
-            .bindTooltip( layer.feature.properties.name, { permanent: true, fillColor: '#000', color: '#000' } )
-            .openTooltip()
-          // layer.bindTooltip('dfsdfdsd' ).openTooltip()
-        }
-        // console.log(realLayer)
-        // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
-      }
-
-      // this.map.removeLayer( realMarker )
     },
     getResult ( searchResult ) {
       console.log( searchResult.feature.properties.name )
@@ -628,19 +600,27 @@ $sideMenu-width: 250px;
 }
 
 .el-menu-item {
-  margin-top: -10px;
-  margin-bottom: -20px;
+  height: 30px;
+  position: static;
 }
 
 .sideMenu {
   background-color: $--color-black;
-  height: 25em;
+  height: 38em;
   position: absolute;
   left: 0;
   z-index: 2000;
   width: $sideMenu-width - 10px;
-  padding-top: 1em;
-  top: 120px;
+  padding-top: 0.5em;
+  bottom: 10px;
+}
+
+::v-deep .el-menu-item-group__title {
+  margin-top: -40px;
+}
+
+.el-menu-item-group {
+  margin-top: 40px;
 }
 
 .sideMenuGroupTitle {
@@ -663,8 +643,8 @@ $sideMenu-width: 250px;
   display: flex;
   align-items: center;
   position: absolute;
-  top: 7em;
-  left: 0em;
+  top: 65px;
+  left: 50px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -800,36 +780,16 @@ $sideMenu-width: 250px;
   cursor: pointer;
   font-size: 15px;
 }
-.searchMapButton {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
-    sans-serif;
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: 10px;
-  left: 250px;
-  width: 110px;
-  height: 50px;
-  background-color: white;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  background-clip: padding-box;
-  border-radius: 4.5px;
-  opacity: 1;
-  justify-content: center;
-  z-index: 500;
-  cursor: pointer;
-  font-size: 15px;
-}
 .searchMapInput {
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
     sans-serif;
   display: flex;
   align-items: center;
   position: absolute;
-  top: 80px;
-  left: 450px;
-  width: 110px;
-  height: 50px;
+  top: 45px;
+  left: 10px;
+  width: 210px;
+  height: 40px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -844,11 +804,14 @@ $sideMenu-width: 250px;
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
     sans-serif;
   align-items: center;
-  position: absolute;
-  top: 10px;
-  left: 850px;
-  width: 110px;
-  height: 500px;
+  padding-left: 10px;
+  position: relative;
+  top: 45px;
+  left: 10px;
+  width: 210px;
+  white-space: nowrap;
+  overflow: hidden;
+  height: 25px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -858,5 +821,10 @@ $sideMenu-width: 250px;
   z-index: 500;
   cursor: pointer;
   font-size: 15px;
+  margin-bottom: -15px;
+}
+.searchResultDiv {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 </style>
