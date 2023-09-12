@@ -57,6 +57,10 @@
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
+          <button class="searchMapButton" @click="searchMap()">Search Map</button>
+          <el-input v-model="search" class="searchMapInput">
+            <i class="el-icon-search el-input__icon" slot="prefix"></i>
+          </el-input>
           <leftBuildingMenu class="hideMenuButton" />
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
@@ -125,6 +129,7 @@ export default {
   },
   data () {
     return {
+      search: '',
       zoom: 15.5,
       center: L.latLng( 44.56335, -123.2858 ),
       url: 'https://api.mapbox.com/styles/v1/jack-woods/cjmi2qpp13u4o2spgb66d07ci/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
@@ -155,6 +160,9 @@ export default {
       buildingOptions: {
         onEachFeature: ( feature, layer ) => {
           layer.on( 'click', e => {
+            console.log( e.target.feature.properties.id )
+            console.log( e.target.feature )
+            console.log( layer.getBounds().getCenter() )
             this.polyClick( e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter() )
           } )
           layer.on( 'mouseover', function ( e ) {
@@ -166,6 +174,8 @@ export default {
               fillColor: e.target.options.fillColor,
               color: e.target.options.color
             }
+            console.log( e.target )
+            console.log( layer.getBounds().getCenter() )
             e.target.setStyle( { fillColor: '#000', color: '#000' } )
             e.target.bindTooltip( e.target.feature.properties.name ).openTooltip()
           } )
@@ -247,6 +257,43 @@ export default {
     },
     resetMap () {
       this.map.setView( L.latLng( 44.56335, -123.2858 ), 15.5 )
+      var realLayer = ''
+      for ( let layer of Object.values( this.map._layers ) ) {
+        // console.log(layer)
+        if ( layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon' ) {
+          realLayer = layer
+          // console.log( layer )
+          realLayer.unbindTooltip()
+          // layer.bindTooltip('dfsdfdsd' ).openTooltip()
+        }
+        // console.log(realLayer)
+        // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
+      }
+    },
+    searchMap () {
+      console.log( this.$store.getters['map/building']( 1 ).geoJSON )
+      console.log( this.map._layers )
+      var realLayer = ''
+      for ( let layer of Object.values( this.map._layers ) ) {
+        // console.log(layer)
+        if (
+          layer.feature &&
+          layer.feature.geometry &&
+          layer.feature.geometry.type === 'Polygon' &&
+          layer.feature.properties.id === '3'
+        ) {
+          realLayer = layer
+          console.log( layer )
+          realLayer
+            .bindTooltip( layer.feature.properties.name, { permanent: true, fillColor: '#000', color: '#000' } )
+            .openTooltip()
+          // layer.bindTooltip('dfsdfdsd' ).openTooltip()
+        }
+        // console.log(realLayer)
+        // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
+      }
+
+      // this.map.removeLayer( realMarker )
     },
     removeAllMarkers: function () {
       for ( let marker of this.compareMarkers ) {
@@ -322,6 +369,23 @@ export default {
       this.removeAllMarkers()
     },
     isDisplayed: function ( v ) {
+      /*
+      const obj = this.map._layers
+      function convertObjectToList(obj) {
+ return Object.keys(obj).map(function(key){
+   let currElement = [key, obj[key]];
+   return currElement
+ });
+}
+
+var res = convertObjectToList(obj);
+var res2 = convertObjectToList(res[1][1]._layers)
+
+console.log(res2[0][1]);
+      console.log(this.map._layers)
+      */
+      // console.log(this.$store.getters['map/building']( 1 ))
+      // console.log(this.$store.getters['map/buildings'])
       if ( this.selected.indexOf( v ) >= 0 ) {
         return true
       } else {
@@ -380,6 +444,7 @@ export default {
   watch: {
     grouping: {
       handler: function ( value ) {
+        this.search = ''
         this.rKey++
         this.mapLoaded = false
         this.$nextTick( async () => {
@@ -481,6 +546,28 @@ export default {
           this.mapLoaded = true
         } )
       }
+    },
+    search: function ( v ) {
+      console.log( v )
+      var searchGroup = []
+      for ( let layer of Object.values( this.map._layers ) ) {
+        // console.log(layer)
+        if (
+          layer.feature &&
+          layer.feature.geometry &&
+          layer.feature.geometry.type === 'Polygon' &&
+          layer.feature.properties.name !== undefined
+        ) {
+          // console.log( layer.feature.properties.name)
+          if ( layer.feature.properties.name.toLowerCase().includes( v.toLowerCase() ) ) {
+            searchGroup.push( layer )
+          }
+          //  searchGroup.push(layer)
+        }
+        // console.log(realLayer)
+        // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
+      }
+      console.log( searchGroup )
     },
     selected: function ( val ) {
       this.rKey++
@@ -679,6 +766,46 @@ $sideMenu-width: 250px;
   position: absolute;
   top: 10px;
   left: 50px;
+  width: 110px;
+  height: 50px;
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  border-radius: 4.5px;
+  opacity: 1;
+  justify-content: center;
+  z-index: 500;
+  cursor: pointer;
+  font-size: 15px;
+}
+.searchMapButton {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 10px;
+  left: 250px;
+  width: 110px;
+  height: 50px;
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  border-radius: 4.5px;
+  opacity: 1;
+  justify-content: center;
+  z-index: 500;
+  cursor: pointer;
+  font-size: 15px;
+}
+.searchMapInput {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 10px;
+  left: 450px;
   width: 110px;
   height: 50px;
   background-color: white;
