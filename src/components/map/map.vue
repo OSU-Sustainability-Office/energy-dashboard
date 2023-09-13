@@ -19,7 +19,7 @@
             {{ searchGroup.feature.properties.name }}
           </p>
         </div>
-        <el-input v-model="search" class="searchMapInput">
+        <el-input v-model="search" class="searchMapInput" placeholder = "Search for buildings">
           <i class="el-icon-search el-input__icon" slot="prefix"></i>
         </el-input>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
@@ -798,7 +798,7 @@ $sideMenu-width: 250px;
   justify-content: center;
   z-index: 500;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 16px;
 }
 .searchMapResult {
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
@@ -820,7 +820,7 @@ $sideMenu-width: 250px;
   justify-content: center;
   z-index: 500;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 16px;
   margin-bottom: -15px;
 }
 .searchResultDiv {
