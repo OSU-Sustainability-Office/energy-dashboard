@@ -606,13 +606,12 @@ $sideMenu-width: 250px;
 
 .sideMenu {
   background-color: $--color-black;
-  height: 38em;
   position: absolute;
   left: 0;
   z-index: 2000;
   width: $sideMenu-width - 10px;
   padding-top: 0.5em;
-  bottom: 10px;
+  top: 100px;
 }
 
 ::v-deep .el-menu-item-group__title {
@@ -621,6 +620,7 @@ $sideMenu-width: 250px;
 
 .el-menu-item-group {
   margin-top: 40px;
+  margin-bottom: 30px;
 }
 
 .sideMenuGroupTitle {
