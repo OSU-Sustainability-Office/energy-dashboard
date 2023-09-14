@@ -108,6 +108,10 @@ import switchButtons from '@/components/map/switch_buttons'
 import { EventBus } from '../../event-bus'
 import leftBuildingMenu from '@/components/leftBuildingMenu'
 
+const DEFAULT_LAT = 44.56335
+const DEFAULT_LON = -123.2858
+const DEFAULT_ZOOM = 15.5
+
 export default {
   name: 'featured',
   props: {
@@ -149,8 +153,8 @@ export default {
     return {
       searchGroup: [],
       search: '',
-      zoom: 15.5,
-      center: L.latLng( 44.56335, -123.2858 ),
+      zoom: DEFAULT_ZOOM,
+      center: L.latLng( DEFAULT_LAT, DEFAULT_LON ),
       url: 'https://api.mapbox.com/styles/v1/jack-woods/cjmi2qpp13u4o2spgb66d07ci/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       map: null,
@@ -179,9 +183,6 @@ export default {
       buildingOptions: {
         onEachFeature: ( feature, layer ) => {
           layer.on( 'click', e => {
-            console.log( e.target.feature.properties.id )
-            console.log( e.target.feature )
-            console.log( layer.getBounds().getCenter() )
             this.polyClick( e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter() )
           } )
           layer.on( 'mouseover', function ( e ) {
@@ -193,8 +194,6 @@ export default {
               fillColor: e.target.options.fillColor,
               color: e.target.options.color
             }
-            console.log( e.target )
-            console.log( layer.getBounds().getCenter() )
             e.target.setStyle( { fillColor: '#000', color: '#000' } )
             e.target.bindTooltip( e.target.feature.properties.name ).openTooltip()
           } )
@@ -275,39 +274,18 @@ export default {
       }
     },
     resetMap () {
-      this.map.setView( L.latLng( 44.56335, -123.2858 ), 15.5 )
-      var realLayer = ''
+      this.map.setView( L.latLng( DEFAULT_LAT, DEFAULT_LON ), DEFAULT_ZOOM )
       for ( let layer of Object.values( this.map._layers ) ) {
-        // console.log(layer)
-
-        realLayer = layer
-        // console.log( layer )
-        realLayer.unbindTooltip()
-        // layer.bindTooltip('dfsdfdsd' ).openTooltip()
-
-        // console.log(realLayer)
-        // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
+        layer.unbindTooltip()
       }
     },
     getResult ( searchResult ) {
-      var realLayer = ''
       for ( let layer of Object.values( this.map._layers ) ) {
-        // console.log(layer)
-
-        realLayer = layer
-        // console.log( layer )
-        realLayer.unbindTooltip()
-        // layer.bindTooltip('dfsdfdsd' ).openTooltip()
-
-        // console.log(realLayer)
-        // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
+        layer.unbindTooltip()
       }
-      console.log( searchResult.getBounds().getCenter() )
       let searchLatLng = searchResult.getBounds().getCenter()
       searchLatLng.lng = searchLatLng.lng - 0.003
-      console.log( searchLatLng )
-      this.map.setView( L.latLng( searchLatLng ), 15.5 )
-      console.log( searchResult.feature.properties.name )
+      this.map.setView( L.latLng( searchLatLng ), DEFAULT_ZOOM )
       searchResult
         .bindTooltip( searchResult.feature.properties.name, { permanent: true, fillColor: '#000', color: '#000' } )
         .openTooltip()
@@ -389,23 +367,6 @@ export default {
       this.removeAllMarkers()
     },
     isDisplayed: function ( v ) {
-      /*
-      const obj = this.map._layers
-      function convertObjectToList(obj) {
- return Object.keys(obj).map(function(key){
-   let currElement = [key, obj[key]];
-   return currElement
- });
-}
-
-var res = convertObjectToList(obj);
-var res2 = convertObjectToList(res[1][1]._layers)
-
-console.log(res2[0][1]);
-      console.log(this.map._layers)
-      */
-      // console.log(this.$store.getters['map/building']( 1 ))
-      // console.log(this.$store.getters['map/buildings'])
       if ( this.selected.indexOf( v ) >= 0 ) {
         return true
       } else {
@@ -572,27 +533,20 @@ console.log(res2[0][1]);
         this.searchGroup = []
         return
       }
-      console.log( v )
       var searchGroup = []
       for ( let layer of Object.values( this.map._layers ) ) {
-        // console.log( layer )
         if ( layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon' ) {
           if ( layer.feature.id === 'way/1100972272' ) {
             layer.feature.properties.name = 'OSU Operations'
           }
 
           if ( layer.feature.properties.name !== undefined ) {
-            // console.log( layer.feature.properties.name)
             if ( layer.feature.properties.name.toLowerCase().includes( v.toLowerCase() ) ) {
               searchGroup.push( layer )
             }
-            //  searchGroup.push(layer)
           }
         }
-        // console.log(realLayer)
-        // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
       }
-      // console.log( searchGroup )
       this.searchGroup = searchGroup
     },
     selected: function ( val ) {
