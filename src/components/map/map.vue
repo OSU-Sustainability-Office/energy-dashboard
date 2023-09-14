@@ -601,7 +601,7 @@ $sideMenu-width: 250px;
 }
 
 ::v-deep .el-menu-item-group__title {
-  margin-top: -45px;
+  margin-top: -50px;
 }
 
 .el-menu-item-group {
@@ -629,13 +629,6 @@ $sideMenu-width: 250px;
   top: 80px;
   left: 10px;
 }
-
-@media only screen and (max-width: 600px) {
-  .hideMenuButton {
-    left: 0px;
-  }
-}
-
 .side-enter-active,
 .side-leave-active {
   transition: all 1s;
@@ -807,7 +800,7 @@ $sideMenu-width: 250px;
   z-index: 500;
   cursor: pointer;
   font-size: 16px;
-  margin-bottom: -15px;
+  margin-bottom: -18px;
 }
 .searchMapResult:hover {
   background-color: #FAFA33;
@@ -827,5 +820,13 @@ $sideMenu-width: 250px;
 .searchResultDiv {
   margin-top: 10px;
   margin-bottom: 0px;
+}
+@media only screen and (max-width: 600px) {
+  .hideMenuButton {
+    left: 0px;
+  }
+  .searchResultDiv {
+  margin-top: 15px;
+}
 }
 </style>
