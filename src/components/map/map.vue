@@ -281,7 +281,7 @@ export default {
     getResult ( searchResult ) {
       console.log( searchResult.getBounds().getCenter() )
       let searchLatLng = searchResult.getBounds().getCenter()
-      searchLatLng.lng = searchLatLng.lng - 0.007
+      searchLatLng.lng = searchLatLng.lng - 0.006
       console.log( searchLatLng )
       this.map.setView( L.latLng( searchLatLng ), 15.5 )
       console.log( searchResult.feature.properties.name )
