@@ -570,18 +570,19 @@ console.log(res2[0][1]);
       console.log( v )
       var searchGroup = []
       for ( let layer of Object.values( this.map._layers ) ) {
-        // console.log(layer)
-        if (
-          layer.feature &&
-          layer.feature.geometry &&
-          layer.feature.geometry.type === 'Polygon' &&
-          layer.feature.properties.name !== undefined
-        ) {
-          // console.log( layer.feature.properties.name)
-          if ( layer.feature.properties.name.toLowerCase().includes( v.toLowerCase() ) ) {
-            searchGroup.push( layer )
+        console.log( layer )
+        if ( layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon' ) {
+          if ( layer.feature.id === 'way/1100972272' ) {
+            layer.feature.properties.name = 'OSU Operations'
           }
-          //  searchGroup.push(layer)
+
+          if ( layer.feature.properties.name !== undefined ) {
+            // console.log( layer.feature.properties.name)
+            if ( layer.feature.properties.name.toLowerCase().includes( v.toLowerCase() ) ) {
+              searchGroup.push( layer )
+            }
+            //  searchGroup.push(layer)
+          }
         }
         // console.log(realLayer)
         // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
