@@ -268,17 +268,29 @@ export default {
       var realLayer = ''
       for ( let layer of Object.values( this.map._layers ) ) {
         // console.log(layer)
-        if ( layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon' ) {
-          realLayer = layer
-          // console.log( layer )
-          realLayer.unbindTooltip()
-          // layer.bindTooltip('dfsdfdsd' ).openTooltip()
-        }
+
+        realLayer = layer
+        // console.log( layer )
+        realLayer.unbindTooltip()
+        // layer.bindTooltip('dfsdfdsd' ).openTooltip()
+
         // console.log(realLayer)
         // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
       }
     },
     getResult ( searchResult ) {
+      var realLayer = ''
+      for ( let layer of Object.values( this.map._layers ) ) {
+        // console.log(layer)
+
+        realLayer = layer
+        // console.log( layer )
+        realLayer.unbindTooltip()
+        // layer.bindTooltip('dfsdfdsd' ).openTooltip()
+
+        // console.log(realLayer)
+        // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
+      }
       console.log( searchResult.getBounds().getCenter() )
       let searchLatLng = searchResult.getBounds().getCenter()
       searchLatLng.lng = searchLatLng.lng - 0.004
