@@ -798,6 +798,8 @@ $sideMenu-width: 250px;
   justify-content: center;
   z-index: 500;
   cursor: pointer;
+}
+::v-deep .el-input__inner {
   font-size: 16px;
 }
 .searchMapResult {
