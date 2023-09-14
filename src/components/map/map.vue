@@ -16,8 +16,10 @@
             @click="getResult(searchGroup)"
             :key="searchGroup.feature.properties.name"
           >
-          <span class = "longBuildingName" v-if ="searchGroup.feature.properties.name.length > 29">{{ searchGroup.feature.properties.name }}</span>
-          <span v-else>{{ searchGroup.feature.properties.name }}</span>
+            <span class="longBuildingName" v-if="searchGroup.feature.properties.name.length > 29">{{
+              searchGroup.feature.properties.name
+            }}</span>
+            <span v-else>{{ searchGroup.feature.properties.name }}</span>
           </p>
         </div>
         <el-input v-model="search" class="searchMapInput" placeholder="Search for buildings">
