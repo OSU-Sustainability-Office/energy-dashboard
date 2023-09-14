@@ -19,7 +19,7 @@
             {{ searchGroup.feature.properties.name }}
           </p>
         </div>
-        <el-input v-model="search" class="searchMapInput" placeholder = "Search for buildings">
+        <el-input v-model="search" class="searchMapInput" placeholder="Search for buildings">
           <i class="el-icon-search el-input__icon" slot="prefix"></i>
         </el-input>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
@@ -279,8 +279,11 @@ export default {
       }
     },
     getResult ( searchResult ) {
-      console.log(searchResult.getBounds().getCenter())
-      this.map.setView( L.latLng( searchResult.getBounds().getCenter() ), 15.5 )
+      console.log( searchResult.getBounds().getCenter() )
+      let searchLatLng = searchResult.getBounds().getCenter()
+      searchLatLng.lng = searchLatLng.lng - 0.005
+      console.log( searchLatLng )
+      this.map.setView( L.latLng( searchLatLng ), 15.5 )
       console.log( searchResult.feature.properties.name )
       searchResult
         .bindTooltip( searchResult.feature.properties.name, { permanent: true, fillColor: '#000', color: '#000' } )
