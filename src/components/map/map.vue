@@ -16,7 +16,8 @@
             @click="getResult(searchGroup)"
             :key="searchGroup.feature.properties.name"
           >
-            {{ searchGroup.feature.properties.name }}
+          <span class = "longBuildingName" v-if ="searchGroup.feature.properties.name.length > 29">{{ searchGroup.feature.properties.name }}</span>
+          <span v-else>{{ searchGroup.feature.properties.name }}</span>
           </p>
         </div>
         <el-input v-model="search" class="searchMapInput" placeholder="Search for buildings">
@@ -855,6 +856,15 @@ $sideMenu-width: 250px;
   cursor: pointer;
   font-size: 16px;
   margin-bottom: -15px;
+}
+.longBuildingName {
+  position: absolute;
+  white-space: nowrap;
+  transform: translateX(0);
+  transition: 1.5s;
+}
+.longBuildingName:hover {
+  transform: translateX(calc(200px - 100%));
 }
 .el-icon-close {
   cursor: pointer;
