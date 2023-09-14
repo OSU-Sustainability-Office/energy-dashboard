@@ -21,6 +21,12 @@
         </div>
         <el-input v-model="search" class="searchMapInput" placeholder="Search for buildings">
           <i class="el-icon-search el-input__icon" slot="prefix"></i>
+          <i
+            class="el-icon-close el-input__icon"
+            slot="suffix"
+            @click="resetSearchInput()"
+            v-if="this.search != ''"
+          ></i>
         </el-input>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
@@ -300,6 +306,9 @@ export default {
       searchResult
         .bindTooltip( searchResult.feature.properties.name, { permanent: true, fillColor: '#000', color: '#000' } )
         .openTooltip()
+    },
+    resetSearchInput () {
+      this.search = ''
     },
     removeAllMarkers: function () {
       for ( let marker of this.compareMarkers ) {
@@ -814,7 +823,9 @@ $sideMenu-width: 250px;
   opacity: 1;
   justify-content: center;
   z-index: 500;
-  cursor: pointer;
+}
+::v-deep .el-input__icon {
+  color: #d73f09;
 }
 ::v-deep .el-input__inner {
   font-size: 16px;
@@ -841,6 +852,9 @@ $sideMenu-width: 250px;
   cursor: pointer;
   font-size: 16px;
   margin-bottom: -15px;
+}
+.el-icon-close {
+  cursor: pointer;
 }
 .searchResultDiv {
   margin-top: 10px;
