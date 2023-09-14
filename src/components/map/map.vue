@@ -74,7 +74,9 @@
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
-          <leftBuildingMenu class="hideMenuButton" />
+          <div @click="resetSearchInput()">
+            <leftBuildingMenu class="hideMenuButton" />
+          </div>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
             v-for="building of this.$store.getters['map/buildings']"
