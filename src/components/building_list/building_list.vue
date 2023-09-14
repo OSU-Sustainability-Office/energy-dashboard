@@ -7,8 +7,14 @@
     <el-col :span="24" class="top_col">
       <el-row class="search_row">
         <el-col :span="24" class="search_col">
-          <el-input v-model="search">
-            <i class="el-icon-search el-input__icon" slot="prefix"></i>
+          <el-input v-model="search" class="searchInput" placeholder="Search for buildings">
+            <i class="el-icon-search el-input__icon" slot="prefix"></i
+            ><i
+              class="el-icon-close el-input__icon"
+              slot="suffix"
+              @click="resetSearchInput()"
+              v-if="this.search != ''"
+            ></i>
           </el-input>
         </el-col>
       </el-row>
@@ -177,6 +183,9 @@ export default {
       this.$store.dispatch( 'modalController/openModal', {
         name: 'edit_view'
       } )
+    },
+    resetSearchInput () {
+      this.search = ''
     }
   }
 }
@@ -247,5 +256,14 @@ export default {
   top: 1em;
   width: 100%;
   text-align: center;
+}
+.el-icon-close {
+  cursor: pointer;
+}
+::v-deep .el-input__icon {
+  color: #d73f09;
+}
+::v-deep .el-input__suffix {
+  font-size: 28px;
 }
 </style>

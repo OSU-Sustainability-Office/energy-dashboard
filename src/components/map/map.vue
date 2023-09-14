@@ -9,9 +9,30 @@
         @select="handleSelect"
       >
         <div class="colorByTitle">Group By:</div>
+        <div class="searchResultDiv">
+          <p
+            class="searchMapResult"
+            v-for="searchGroup of this.searchGroup.slice(0, 7)"
+            @click="getResult(searchGroup)"
+            :key="searchGroup.feature.properties.name"
+          >
+            <span class="longBuildingName" v-if="searchGroup.feature.properties.name.length > 29">{{
+              searchGroup.feature.properties.name
+            }}</span>
+            <span v-else>{{ searchGroup.feature.properties.name }}</span>
+          </p>
+        </div>
+        <el-input v-model="search" class="searchMapInput" placeholder="Search for buildings">
+          <i class="el-icon-search el-input__icon" slot="prefix"></i>
+          <i
+            class="el-icon-close el-input__icon"
+            slot="suffix"
+            @click="resetSearchInput()"
+            v-if="this.search != ''"
+          ></i>
+        </el-input>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
-          <span slot="title" class="sideMenuGroupTitle">Key</span>
           <el-tooltip content="Click to toggle visibility" placement="right">
             <el-menu-item index="Academics" :class="[isDisplayed('Academics') ? 'active' : 'notactive']"
               ><span class="edu swatch"></span>Academics</el-menu-item
@@ -34,7 +55,6 @@
           >
         </el-menu-item-group>
         <el-menu-item-group v-if="grouping === 'Energy Trend'">
-          <span slot="title" class="sideMenuGroupTitle">Key</span>
           <el-col class="trendBox">
             <div class="trendGradient">&nbsp;</div>
             <div class="trendTopLabel">
@@ -57,7 +77,9 @@
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
-          <leftBuildingMenu class="hideMenuButton" />
+          <div @click="resetSearchInput()">
+            <leftBuildingMenu class="hideMenuButton" />
+          </div>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
             v-for="building of this.$store.getters['map/buildings']"
@@ -85,6 +107,10 @@ import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons'
 import { EventBus } from '../../event-bus'
 import leftBuildingMenu from '@/components/leftBuildingMenu'
+
+const DEFAULT_LAT = 44.56335
+const DEFAULT_LON = -123.2858
+const DEFAULT_ZOOM = 15.5
 
 export default {
   name: 'featured',
@@ -125,8 +151,10 @@ export default {
   },
   data () {
     return {
-      zoom: 15.5,
-      center: L.latLng( 44.56335, -123.2858 ),
+      searchGroup: [],
+      search: '',
+      zoom: DEFAULT_ZOOM,
+      center: L.latLng( DEFAULT_LAT, DEFAULT_LON ),
       url: 'https://api.mapbox.com/styles/v1/jack-woods/cjmi2qpp13u4o2spgb66d07ci/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       map: null,
@@ -246,7 +274,24 @@ export default {
       }
     },
     resetMap () {
-      this.map.setView( L.latLng( 44.56335, -123.2858 ), 15.5 )
+      this.map.setView( L.latLng( DEFAULT_LAT, DEFAULT_LON ), DEFAULT_ZOOM )
+      for ( let layer of Object.values( this.map._layers ) ) {
+        layer.unbindTooltip()
+      }
+    },
+    getResult ( searchResult ) {
+      for ( let layer of Object.values( this.map._layers ) ) {
+        layer.unbindTooltip()
+      }
+      let searchLatLng = searchResult.getBounds().getCenter()
+      searchLatLng.lng = searchLatLng.lng - 0.003
+      this.map.setView( L.latLng( searchLatLng ), DEFAULT_ZOOM )
+      searchResult
+        .bindTooltip( searchResult.feature.properties.name, { permanent: true, fillColor: '#000', color: '#000' } )
+        .openTooltip()
+    },
+    resetSearchInput () {
+      this.search = ''
     },
     removeAllMarkers: function () {
       for ( let marker of this.compareMarkers ) {
@@ -380,6 +425,7 @@ export default {
   watch: {
     grouping: {
       handler: function ( value ) {
+        this.search = ''
         this.rKey++
         this.mapLoaded = false
         this.$nextTick( async () => {
@@ -482,6 +528,27 @@ export default {
         } )
       }
     },
+    search: function ( v ) {
+      if ( v === '' ) {
+        this.searchGroup = []
+        return
+      }
+      var searchGroup = []
+      for ( let layer of Object.values( this.map._layers ) ) {
+        if ( layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon' ) {
+          if ( layer.feature.id === 'way/1100972272' ) {
+            layer.feature.properties.name = 'OSU Operations'
+          }
+
+          if ( layer.feature.properties.name !== undefined ) {
+            if ( layer.feature.properties.name.toLowerCase().includes( v.toLowerCase() ) ) {
+              searchGroup.push( layer )
+            }
+          }
+        }
+      }
+      this.searchGroup = searchGroup
+    },
     selected: function ( val ) {
       this.rKey++
       this.$nextTick( () => {
@@ -519,19 +586,27 @@ $sideMenu-width: 250px;
 }
 
 .el-menu-item {
-  margin-top: -10px;
-  margin-bottom: -20px;
+  height: 30px;
+  position: static;
 }
 
 .sideMenu {
   background-color: $--color-black;
-  height: 25em;
   position: absolute;
   left: 0;
   z-index: 2000;
   width: $sideMenu-width - 10px;
-  padding-top: 1em;
-  top: 120px;
+  padding-top: 0.5em;
+  top: 110px;
+}
+
+::v-deep .el-menu-item-group__title {
+  margin-top: -50px;
+}
+
+.el-menu-item-group {
+  margin-top: 45px;
+  margin-bottom: 27px;
 }
 
 .sideMenuGroupTitle {
@@ -549,22 +624,11 @@ $sideMenu-width: 250px;
 }
 
 .hideMenuButton {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
-    sans-serif;
   display: flex;
-  align-items: center;
   position: absolute;
-  top: 7em;
-  left: 0em;
-  background-color: white;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  background-clip: padding-box;
-  border-radius: 4.5px;
-  opacity: 1;
-  justify-content: center;
-  z-index: 500;
+  top: 80px;
+  left: 10px;
 }
-
 .side-enter-active,
 .side-leave-active {
   transition: all 1s;
@@ -680,7 +744,7 @@ $sideMenu-width: 250px;
   top: 10px;
   left: 50px;
   width: 110px;
-  height: 50px;
+  height: 63px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -690,5 +754,79 @@ $sideMenu-width: 250px;
   z-index: 500;
   cursor: pointer;
   font-size: 15px;
+}
+.searchMapInput {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 45px;
+  left: 10px;
+  width: 220px;
+  height: 40px;
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  border-radius: 4.5px;
+  opacity: 1;
+  justify-content: center;
+  z-index: 500;
+}
+::v-deep .el-input__icon {
+  color: #d73f09;
+}
+::v-deep .el-input__suffix {
+  font-size: 28px;
+}
+.searchMapResult {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
+    sans-serif;
+  align-items: center;
+  padding-left: 10px;
+  position: relative;
+  top: 40px;
+  left: 10px;
+  width: 210px;
+  white-space: nowrap;
+  overflow: hidden;
+  height: 25px;
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  border-radius: 4.5px;
+  opacity: 1;
+  justify-content: center;
+  z-index: 500;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: -18px;
+}
+.searchMapResult:hover {
+  background-color: #fafa33;
+}
+.longBuildingName {
+  position: absolute;
+  white-space: nowrap;
+  transform: translateX(0);
+  transition: 1.5s;
+}
+.longBuildingName:hover {
+  transform: translateX(calc(200px - 100%));
+}
+.el-icon-close {
+  cursor: pointer;
+}
+.searchResultDiv {
+  margin-top: 10px;
+  margin-bottom: 0px;
+}
+@media only screen and (max-width: 600px) {
+  .hideMenuButton {
+    left: 0px;
+  }
+  .searchResultDiv {
+    margin-top: 15px;
+  }
 }
 </style>
