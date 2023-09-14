@@ -820,7 +820,7 @@ $sideMenu-width: 250px;
   position: absolute;
   top: 45px;
   left: 10px;
-  width: 210px;
+  width: 220px;
   height: 40px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
