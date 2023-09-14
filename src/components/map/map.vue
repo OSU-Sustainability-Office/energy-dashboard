@@ -630,6 +630,12 @@ $sideMenu-width: 250px;
   left: 10px;
 }
 
+@media only screen and (max-width: 600px) {
+  .hideMenuButton {
+    left: 0px;
+  }
+}
+
 .side-enter-active,
 .side-leave-active {
   transition: all 1s;
@@ -804,7 +810,7 @@ $sideMenu-width: 250px;
   margin-bottom: -15px;
 }
 .searchMapResult:hover {
-  background-color: #faf4d4;
+  background-color: #FAFA33;
 }
 .longBuildingName {
   position: absolute;
