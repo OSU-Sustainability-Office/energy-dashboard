@@ -597,16 +597,16 @@ $sideMenu-width: 250px;
   z-index: 2000;
   width: $sideMenu-width - 10px;
   padding-top: 0.5em;
-  top: 100px;
+  top: 110px;
 }
 
 ::v-deep .el-menu-item-group__title {
-  margin-top: -40px;
+  margin-top: -45px;
 }
 
 .el-menu-item-group {
-  margin-top: 40px;
-  margin-bottom: 30px;
+  margin-top: 45px;
+  margin-bottom: 27px;
 }
 
 .sideMenuGroupTitle {
@@ -626,8 +626,8 @@ $sideMenu-width: 250px;
 .hideMenuButton {
   display: flex;
   position: absolute;
-  top: 65px;
-  left: 50px;
+  top: 80px;
+  left: 10px;
 }
 
 .side-enter-active,
@@ -745,7 +745,7 @@ $sideMenu-width: 250px;
   top: 10px;
   left: 50px;
   width: 110px;
-  height: 50px;
+  height: 63px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -786,7 +786,7 @@ $sideMenu-width: 250px;
   align-items: center;
   padding-left: 10px;
   position: relative;
-  top: 45px;
+  top: 40px;
   left: 10px;
   width: 210px;
   white-space: nowrap;
@@ -803,6 +803,9 @@ $sideMenu-width: 250px;
   font-size: 16px;
   margin-bottom: -15px;
 }
+.searchMapResult:hover {
+  background-color: #faf4d4;
+}
 .longBuildingName {
   position: absolute;
   white-space: nowrap;
@@ -817,6 +820,6 @@ $sideMenu-width: 250px;
 }
 .searchResultDiv {
   margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 </style>

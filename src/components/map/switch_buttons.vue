@@ -43,7 +43,7 @@ $activePadding: 2.5px;
 $clipInset: 10px;
 
 .rangeButtonParent {
-  top: 45px;
+  top: 50px;
   position: relative;
   width: 100%;
   padding: $parentPadding;
@@ -57,7 +57,7 @@ $clipInset: 10px;
   margin: 0 !important;
 }
 .rangeButtonParent:not(.active) {
-  top: 45px;
+  top: 50px;
 }
 .rangeButtonParent:first-child {
   border-radius: 5px 0px 0px 5px;
