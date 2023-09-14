@@ -803,7 +803,7 @@ $sideMenu-width: 250px;
   margin-bottom: -18px;
 }
 .searchMapResult:hover {
-  background-color: #FAFA33;
+  background-color: #fafa33;
 }
 .longBuildingName {
   position: absolute;
@@ -826,7 +826,7 @@ $sideMenu-width: 250px;
     left: 0px;
   }
   .searchResultDiv {
-  margin-top: 15px;
-}
+    margin-top: 15px;
+  }
 }
 </style>
