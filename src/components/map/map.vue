@@ -279,6 +279,8 @@ export default {
       }
     },
     getResult ( searchResult ) {
+      console.log(searchResult.getBounds().getCenter())
+      this.map.setView( L.latLng( searchResult.getBounds().getCenter() ), 15.5 )
       console.log( searchResult.feature.properties.name )
       searchResult
         .bindTooltip( searchResult.feature.properties.name, { permanent: true, fillColor: '#000', color: '#000' } )
