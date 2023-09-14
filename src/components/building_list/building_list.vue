@@ -263,4 +263,7 @@ export default {
 ::v-deep .el-input__icon {
   color: #d73f09;
 }
+::v-deep .el-input__suffix {
+  font-size: 28px;
+}
 </style>

@@ -572,7 +572,7 @@ console.log(res2[0][1]);
       console.log( v )
       var searchGroup = []
       for ( let layer of Object.values( this.map._layers ) ) {
-        console.log( layer )
+        // console.log( layer )
         if ( layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon' ) {
           if ( layer.feature.id === 'way/1100972272' ) {
             layer.feature.properties.name = 'OSU Operations'
@@ -589,7 +589,7 @@ console.log(res2[0][1]);
         // console.log(realLayer)
         // realLayer.bindTooltip('dfsdfdsd' ).openTooltip()
       }
-      console.log( searchGroup )
+      // console.log( searchGroup )
       this.searchGroup = searchGroup
     },
     selected: function ( val ) {
@@ -830,8 +830,8 @@ $sideMenu-width: 250px;
 ::v-deep .el-input__icon {
   color: #d73f09;
 }
-::v-deep .el-input__inner {
-  font-size: 16px;
+::v-deep .el-input__suffix {
+  font-size: 28px;
 }
 .searchMapResult {
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
