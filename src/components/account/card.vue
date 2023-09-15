@@ -32,15 +32,12 @@
 
 <script>
 import chartController from '@/components/charts/chartController'
-import featureController from '@/components/account/featureController'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'card',
   props: ['block', 'featured'],
   components: {
-    chartController,
-    featureController
+    chartController
   },
   data () {
     return {
@@ -79,6 +76,8 @@ export default {
           return 4
         } else if ( this.interval === 1 && this.interval_unit === 'month' ) {
           return 5
+        } else {
+          return ''
         }
       },
       set: function ( v ) {
@@ -110,17 +109,6 @@ export default {
   methods: {
     cardSave: async function () {
       this.editcard = false
-      let charts = await this.$refs.featureController.saveCharts()
-      let block = {
-        name: this.tempName,
-        index: this.index,
-        date_interval: this.interval,
-        interval_unit: this.interval_unit,
-        date_start: this.date_start,
-        date_end: this.date_end,
-        graph_type: this.graphtype,
-        charts: charts
-      }
       // this.$store.dispatch('block', block).then(() => {
       //   this.$refs.chartController.parse()
       // })

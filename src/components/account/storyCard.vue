@@ -25,13 +25,9 @@
 </template>
 
 <script>
-import mediapicker from '@/components/account/mediapicker.vue'
 export default {
   name: 'storyCard',
   props: ['name', 'description', 'selected', 'media', 'story_id', 'index', 'notools', 'plus', 'group'],
-  components: {
-    mediapicker
-  },
   mounted () {
     if ( this.media ) {
       this.$refs.card.style.background =

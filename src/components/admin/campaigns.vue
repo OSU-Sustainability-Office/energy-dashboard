@@ -6,8 +6,6 @@
 @Last modified time: 2019-02-11T10:30:35-08:00
 -->
 
-<template></template>
-
 <script>
 export default {
   name: 'campaigns',
@@ -23,8 +21,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.meterControl {
-}
 .meterGroup {
   padding-bottom: 1em;
 }

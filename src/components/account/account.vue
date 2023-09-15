@@ -56,6 +56,8 @@ export default {
               break
           }
           return d.toISOString()
+        } else {
+          return ''
         }
       }
     },
@@ -64,6 +66,8 @@ export default {
         if ( this.$route.path.search( 'building' ) > 0 || this.$route.path.search( 'compare' ) > 0 ) {
           let d = new Date()
           return d.toISOString()
+        } else {
+          return ''
         }
       }
     },
@@ -80,6 +84,8 @@ export default {
             default:
               return 'minute'
           }
+        } else {
+          return ''
         }
       }
     },
@@ -96,6 +102,8 @@ export default {
             default:
               return 15
           }
+        } else {
+          return ''
         }
       }
     }

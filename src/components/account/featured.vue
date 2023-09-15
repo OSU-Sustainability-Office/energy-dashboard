@@ -141,7 +141,6 @@
 <script>
 import card from '@/components/account/card'
 import featureController from '@/components/account/featureController'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'featured',
