@@ -1,7 +1,7 @@
 /* * @Author: you@you.you * @Date: Friday December 13th 2019 * @Last Modified By: Brogan Miner * @Last Modified Time:
 Friday December 13th 2019 * @Copyright: (c) Oregon State University 2019 */
 <template>
-  <el-dialog size="lg" :visible.sync="visible" title="Delete View" width="80%">
+  <el-dialog :visible.sync="visible" title="Delete View" width="80%">
     <span class="textMain"> Are you sure you want to delete this view? </span>
     <span slot="footer">
       <el-button @click="viewDelete()" type="danger"> Delete </el-button>

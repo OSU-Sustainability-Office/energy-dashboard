@@ -2,7 +2,7 @@
 Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
 
 <template>
-  <el-dialog size="lg" :visible.sync="visible" title="Download Data" width="80%" @open="updateForm()">
+  <el-dialog :visible.sync="visible" title="Download Data" width="80%" @open="updateForm()">
     <el-form label-width="150px" label-position="left" :model="form" ref="form">
       <el-form-item
         label="From Date: "
