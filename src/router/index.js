@@ -13,7 +13,6 @@ import notfound from '@/components/extras/404.vue'
 import contact from '@/components/extras/contact.vue'
 import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
 import buildingList from '@/components/building_list/building_list.vue'
-// import admin from '@/components/admin/admin.vue'
 
 Vue.use( Router )
 
@@ -23,10 +22,6 @@ export default new Router( {
       path: '/',
       redirect: '/map'
     },
-    // {
-    //   path: '/admin',
-    //   component: admin
-    // },
     {
       path: '/dashboard/',
       component: buildingList

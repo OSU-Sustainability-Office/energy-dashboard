@@ -39,42 +39,18 @@
               </el-row>
             </el-tab-pane>
           </el-tabs>
-          <el-row type="flex" justify="left" class="card_flex" v-if="!buildingList" v-loading="this.loading">
-            <el-col v-for="view in groups" :key="view.id" :span="4" class="card_container">
-              <viewCard
-                :plus="false"
-                :building="buildingList"
-                :id="view.id"
-                class="card"
-                @click="$router.push({ path: `/view/${view.id}` })"
-                ref="card"
-              />
-            </el-col>
-            <el-col :span="4" class="card_container">
-              <el-tooltip content="Create New View" placement="top">
-                <viewCard :plus="true" :notools="1" class="card" :building="false" :id="1" @click="newView()" />
-              </el-tooltip>
-            </el-col>
-            <el-col v-for="n in 10" :key="n" :span="4" class="blankSlate"> &nbsp; </el-col>
-          </el-row>
         </el-col>
       </el-row>
     </el-col>
-    <deleteView />
-    <editView />
   </el-row>
 </template>
 
 <script>
 import viewCard from '@/components/building_list/view_card.vue'
-import deleteView from '@/components/building_list/modals/confirm_delete.vue'
-import editView from '@/components/building_list/modals/edit_view.vue'
 
 export default {
   components: {
-    viewCard,
-    deleteView,
-    editView
+    viewCard
   },
   data () {
     return {
@@ -179,11 +155,6 @@ export default {
     }
   },
   methods: {
-    newView: function () {
-      this.$store.dispatch( 'modalController/openModal', {
-        name: 'edit_view'
-      } )
-    },
     resetSearchInput () {
       this.search = ''
     }

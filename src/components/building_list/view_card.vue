@@ -1,18 +1,7 @@
 <template>
   <div class="card" ref="card" @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
-    <div class="toolbox" ref="toolbox" v-if="!plus && !building">
-      <el-tooltip content="Edit View" placement="top">
-        <i class="fas fa-pencil-alt" @click.prevent="openEdit()"></i>
-      </el-tooltip>
-      <el-tooltip content="Delete View" placement="top">
-        <i class="fas fa-times" @click="deleteView()"></i>
-      </el-tooltip>
-    </div>
     <span class="name" v-if="!plus">{{ name }}</span>
     <span class="description" v-if="!plus">{{ description }}</span>
-    <div class="plus" v-if="plus">
-      <i class="fas fa-plus"></i>
-    </div>
   </div>
 </template>
 
@@ -72,23 +61,11 @@ export default {
         }
       }
     },
-    openEdit: function () {
-      this.$store.dispatch( 'modalController/openModal', {
-        name: 'edit_view',
-        id: this.id
-      } )
-    },
     clicked: function ( event ) {
       if ( event.target.parentNode.classList.contains( 'toolbox' ) || event.target.classList.contains( 'toolbox' ) ) {
         return
       }
       this.$emit( 'click' )
-    },
-    deleteView: function () {
-      this.$store.dispatch( 'modalController/openModal', {
-        name: 'confirm_delete',
-        id: this.id
-      } )
     }
   },
 
