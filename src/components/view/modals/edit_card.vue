@@ -3,7 +3,7 @@
   Info: Modal for editing "full-view" chart settings.
 -->
 <template>
-  <el-dialog :visible.sync="visible" :title="form.new ? 'New Block' : 'Edit Block'" width="80%" @open="updateForm()">
+  <el-dialog size="lg" :visible.sync="visible" :title="form.new ? 'New Block' : 'Edit Block'" width="80%" @open="updateForm()">
     <el-form label-width="150px" label-position="left" :model="form" ref="form">
       <el-form-item
         label="Name: "
@@ -152,7 +152,7 @@
             <el-button class="indexButton" @click="addGroup()">+</el-button>
           </el-col>
         </el-row>
-        <el-form ref="form" :model="form.sets[currentIndex]" label-width="150px" label-position="left">
+        <el-form ref="form" :model="form.sets[currentIndex]" label-width="150px" size="large" label-position="left">
           <el-form-item
             v-if="currentIndex < form.sets.length"
             prop="building"
