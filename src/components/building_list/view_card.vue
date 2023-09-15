@@ -61,23 +61,11 @@ export default {
         }
       }
     },
-    openEdit: function () {
-      this.$store.dispatch( 'modalController/openModal', {
-        name: 'edit_view',
-        id: this.id
-      } )
-    },
     clicked: function ( event ) {
       if ( event.target.parentNode.classList.contains( 'toolbox' ) || event.target.classList.contains( 'toolbox' ) ) {
         return
       }
       this.$emit( 'click' )
-    },
-    deleteView: function () {
-      this.$store.dispatch( 'modalController/openModal', {
-        name: 'confirm_delete',
-        id: this.id
-      } )
     }
   },
 

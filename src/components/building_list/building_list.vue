@@ -155,11 +155,6 @@ export default {
     }
   },
   methods: {
-    newView: function () {
-      this.$store.dispatch( 'modalController/openModal', {
-        name: 'edit_view'
-      } )
-    },
     resetSearchInput () {
       this.search = ''
     }
