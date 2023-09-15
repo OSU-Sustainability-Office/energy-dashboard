@@ -44,7 +44,6 @@ module.exports = {
   // watchman: true,
   transform: {
     '^.+\\.js$': '<rootDir>/node_modules/babel-jest',
-    '.*\\.(vue)$': '<rootDir>/node_modules/jest-vue-preprocessor',
     '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '^.+\\.jsx?$': 'babel-jest'
