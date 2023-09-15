@@ -9,7 +9,6 @@ import User from './user.module.js'
 import Campaigns from './campaigns.module.js'
 import EDMap from './map.module.js'
 import ModalController from './modal_controller.module.js'
-import Admin from './admin.module.js'
 import DataStore from './data_layer/data_store.js'
 
 const StoreConfig = {
@@ -21,7 +20,6 @@ const StoreConfig = {
 
   modules: {
     view: View,
-    admin: Admin,
     campaigns: Campaigns,
     map: EDMap,
     user: User,

@@ -7,7 +7,6 @@
         :description="view && view.description ? view.description : ''"
         :name="view && view.name ? view.name : ''"
       />
-      <navdir ref="navdir" v-if="navVis"></navdir>
       <el-row>
         <el-col :span="24" class="card_area">
           <card v-for="(card, index) in cards" :key="index + '-' + view.id" :path="card.path" />
@@ -26,24 +25,16 @@
 <script>
 import card from '@/components/view/card'
 import heropicture from '@/components/extras/heropicture'
-import navdir from '@/components/view/navdir'
 import editCard from '@/components/view/modals/edit_card'
 
 export default {
   components: {
     card,
     heropicture,
-    navdir,
     editCard
-  },
-  data () {
-    return {
-      navVis: false
-    }
   },
   async created () {
     await this.$store.dispatch( 'map/loadMap' )
-    this.navVis = this.personalView || this.$route.path.includes( 'building' ) || this.otherView
     await this.$store.dispatch( 'user/user' )
     if ( !this.view.id ) {
       await this.$store.dispatch( 'view/changeView', this.$route.params.id )
