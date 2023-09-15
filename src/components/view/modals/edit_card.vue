@@ -3,7 +3,13 @@
   Info: Modal for editing "full-view" chart settings.
 -->
 <template>
-  <el-dialog size="lg" :visible.sync="visible" :title="form.new ? 'New Block' : 'Edit Block'" width="80%" @open="updateForm()">
+    <el-dialog
+      size="lg"
+      :visible.sync="visible"
+      :title="form.new ? 'New Block' : 'Edit Block'"
+      width="80%"
+      @open="updateForm()"
+    >
     <el-form label-width="150px" label-position="left" :model="form" ref="form">
       <el-form-item
         label="Name: "
