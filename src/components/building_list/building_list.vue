@@ -115,7 +115,7 @@ export default {
           console.log( Object.keys( r2 ) )
           if ( this.buildingList ) {
             for ( let i = 0; i < Object.keys( r2 ).length; i++ ) {
-              if ( Object.keys( r2 )[i] === 'Events & Admin, Solar' ) {
+              if ( Object.keys( r2 )[i].split( ', ' ).length > 1 ) {
                 console.log( 'gotcha' )
                 console.log( Object.keys( r2 )[i] )
                 console.log( Object.keys( r2 )[i].split( ', ' ) )
@@ -154,28 +154,6 @@ export default {
     },
     search: function ( v ) {
       let groups
-      /*
-      console.log(this.groups)
-      console.log(Object.keys(this.groups))
-      if (this.buildingList ) {
-        for (let i = 0; i < Object.keys(this.groups).length; i++) {
-          if (Object.keys(this.groups)[i] === 'Events & Admin, Solar') {
-            console.log('gotcha')
-            console.log(Object.keys(this.groups)[i])
-            console.log(Object.keys(this.groups)[i].split(', '))
-            for (let j = 0; j < Object.keys(this.groups)[i].split(', ').length; j++) {
-              console.log(Object.keys(this.groups)[i].split(', ')[j])
-              console.log(this.groups[Object.keys(this.groups)[i].split(', ')[j]])
-              console.log(Object.values(this.groups)[i])
-              this.groups[Object.keys(this.groups)[i].split(', ')[j]].push(Object.values(this.groups)[i][0])
-              console.log(this.groups[Object.keys(this.groups)[i].split(', ')[j]])
-             // this.groups[Object.keys(this.groups)[i].split(', ')[j]].push(Object.values(this.groups)[i])
-            }
-            console.log(Object.values(this.groups)[i][0])
-          }
-        }
-      }
-      */
       if ( this.buildingList ) {
         groups = Object.values( this.groups ).reduce( ( a, c ) => {
           for ( let d of c ) a.push( d )
