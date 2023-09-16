@@ -374,6 +374,8 @@ export default {
       }
     },
     handleSelect: function ( string ) {
+      console.log( this.$store.getters['map/buildings'] )
+      console.log( this.selected )
       if ( this.selected.indexOf( string ) >= 0 ) {
         this.selected.splice( this.selected.indexOf( string ), 1 )
       } else {
@@ -556,8 +558,26 @@ export default {
         for ( var layerKey of Object.keys( this.map._layers ) ) {
           let layer = this.map._layers[layerKey]
           if ( layer.feature ) {
-            if ( !val.includes( layer.feature.properties.group ) && this.grouping === 'Category' ) {
-              this.map.removeLayer( layer )
+            console.log( layer.feature.properties.group )
+            console.log( layer.feature.properties.group.split( ', ' ) )
+            if ( layer.feature.properties.group.split( ', ' ).length > 1 ) {
+              let categoryCoverage = 0
+              for ( let i = 0; i < layer.feature.properties.group.split( ', ' ).length; i++ ) {
+                console.log( layer.feature.properties.group.split( ', ' )[i] )
+                if ( !val.includes( layer.feature.properties.group.split( ', ' )[i] ) && this.grouping === 'Category' ) {
+                  console.log( layer.feature.properties.group.split( ', ' )[i] )
+                  categoryCoverage++
+                }
+              }
+              console.log( categoryCoverage )
+              if ( categoryCoverage >= layer.feature.properties.group.split( ', ' ).length ) {
+                this.map.removeLayer( layer )
+              }
+              console.log( 'here' )
+            } else {
+              if ( !val.includes( layer.feature.properties.group ) && this.grouping === 'Category' ) {
+                this.map.removeLayer( layer )
+              }
             }
           }
         }
