@@ -186,6 +186,7 @@ export default {
             this.polyClick( e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter() )
           } )
           layer.on( 'mouseover', function ( e ) {
+            console.log( e.target )
             if ( !e.target.setStyle ) return
             if ( e.target.feature.id === 'way/1100972272' ) {
               e.target.feature.properties.name = 'OSU Operations'
@@ -239,6 +240,7 @@ export default {
   },
   methods: {
     polyClick: function ( id, feature, center ) {
+      console.log( center )
       if ( !this.askingForComparison ) {
         window.vue.$store.dispatch( 'modalController/openModal', {
           name: 'map_side_view',
@@ -278,6 +280,31 @@ export default {
       for ( let layer of Object.values( this.map._layers ) ) {
         layer.unbindTooltip()
       }
+      L.polygon(
+        [
+          [44.56639145, -123.27533365],
+          [44.57639145, -123.27533365],
+          [44.57639145, -123.26533365],
+          [44.56639145, -123.26533365]
+        ],
+        { fillColor: 'url(#stripes)', fillOpacity: 1 }
+      ).addTo( this.map )
+
+      let fillPalette = ['orange', 'green', 'blue']
+
+      let gradientString = `<linearGradient id="stripes" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset=0 stop-color=${fillPalette[0]} />
+<stop offset=33% stop-color=${fillPalette[0]} />
+<stop offset=33% stop-color=${fillPalette[1]} />
+<stop offset=66% stop-color=${fillPalette[1]} />
+<stop offset=66% stop-color=${fillPalette[2]} />
+<stop offset=100% stop-color=${fillPalette[2]} />
+</linearGradient>`
+
+      let svg = document.getElementsByTagName( 'svg' )[0]
+      let svgDefs = document.createElementNS( 'http://www.w3.org/2000/svg', 'defs' )
+      svgDefs.insertAdjacentHTML( 'afterbegin', gradientString )
+      svg.appendChild( svgDefs )
     },
     getResult ( searchResult ) {
       for ( let layer of Object.values( this.map._layers ) ) {
@@ -557,6 +584,41 @@ export default {
         this.map = this.$refs.map.mapObject
         for ( var layerKey of Object.keys( this.map._layers ) ) {
           let layer = this.map._layers[layerKey]
+          if ( layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon' ) {
+            if ( layer.feature.properties.name === 'OSU 35th Street Solar Field' ) {
+              console.log( layer.feature.properties.name )
+              console.log( layer.feature.geometry.coordinates )
+              console.log( layer.feature.geometry.coordinates[0].length )
+              let transform2darr = []
+              for ( var i = 0; i < layer.feature.geometry.coordinates[0].length; i++ ) {
+                let latvar = layer.feature.geometry.coordinates[0][i][1]
+                let longvar = layer.feature.geometry.coordinates[0][i][0]
+                let tarr = []
+                tarr.push( latvar )
+                tarr.push( longvar )
+                transform2darr.push( tarr )
+              }
+              console.log( transform2darr )
+
+              L.polygon( transform2darr, { fillColor: 'url(#stripes)', fillOpacity: 1 } ).addTo( this.map )
+
+              let fillPalette = ['orange', 'green', 'blue']
+
+              let gradientString = `<linearGradient id="stripes" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset=0 stop-color=${fillPalette[0]} />
+                <stop offset=33% stop-color=${fillPalette[0]} />
+                <stop offset=33% stop-color=${fillPalette[1]} />
+                <stop offset=66% stop-color=${fillPalette[1]} />
+                <stop offset=66% stop-color=${fillPalette[2]} />
+                <stop offset=100% stop-color=${fillPalette[2]} />
+                </linearGradient>`
+
+              let svg = document.getElementsByTagName( 'svg' )[0]
+              let svgDefs = document.createElementNS( 'http://www.w3.org/2000/svg', 'defs' )
+              svgDefs.insertAdjacentHTML( 'afterbegin', gradientString )
+              svg.appendChild( svgDefs )
+            }
+          }
           if ( layer.feature ) {
             console.log( layer.feature.properties.group )
             console.log( layer.feature.properties.group.split( ', ' ) )
