@@ -92,6 +92,7 @@
         </l-map>
       </div>
       <prompt v-if="askingForComparison" @cancel="stopCompare" @compare="showComparison" />
+      <prompt_error v-if="building_compare_error" @cancel="stopCompareError" @compare="showComparison" />
       <transition name="side">
         <compareSide v-if="showCompareSide" @hide="showCompareSide = false" :compareStories="compareStories" />
         <sideView ref="sideview" v-if="showSide" @hide="showSide = false" @startCompare="startCompare"></sideView>
@@ -104,6 +105,7 @@ import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
 import sideView from '@/components/map/sideView'
 import compareButton from '@/components/map/compareButton'
 import prompt from '@/components/map/map_prompt'
+import prompt_error from '@/components/map/prompt_error'
 import compareSide from '@/components/map/map_compareside'
 import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons'
@@ -127,6 +129,7 @@ export default {
     sideView,
     LGeoJson,
     prompt,
+    prompt_error,
     compareSide,
     switchButtons,
     leftBuildingMenu,
@@ -170,6 +173,7 @@ export default {
       rKey: 1,
       message: this.message,
       askingForComparison: false,
+      building_compare_error: false,
       selected: [
         'Residence',
         'Athletics & Rec',
@@ -307,8 +311,18 @@ export default {
       console.log( this.compareStories[0] )
       if ( this.compareStories[0] === undefined ) {
         this.compareStories.shift()
+        if ( this.compareStories[0] === undefined ) {
+          this.showSide = false
+          this.building_compare_error = true
+        }
       }
+      console.log( this.compareStories[0] )
       let path = this.$store.getters['map/building']( this.compareStories[0] ).path
+      console.log( this.$store.getters['map/building']( this.compareStories[0] ).description )
+      if ( this.$store.getters['map/building']( this.compareStories[0] ).description !== 'Electricity' ) {
+        this.showSide = false
+        this.building_compare_error = true
+      }
       if ( target === 'q' ) {
         let mgId = this.$store.getters[path + '/primaryGroup']( 'Electricity' ).id
 
@@ -369,6 +383,12 @@ export default {
     },
     stopCompare: function () {
       this.askingForComparison = false
+      this.showSide = true
+      this.compareStories = []
+      this.removeAllMarkers()
+    },
+    stopCompareError: function () {
+      this.building_compare_error = false
       this.showSide = true
       this.compareStories = []
       this.removeAllMarkers()
