@@ -77,6 +77,7 @@
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
+          <compareButton @startCompare="startCompare"></compareButton>
           <div @click="resetSearchInput()">
             <leftBuildingMenu class="hideMenuButton" />
           </div>
@@ -101,6 +102,7 @@
 <script>
 import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
 import sideView from '@/components/map/sideView'
+import compareButton from '@/components/map/compareButton'
 import prompt from '@/components/map/map_prompt'
 import compareSide from '@/components/map/map_compareside'
 import L from 'leaflet'
@@ -127,7 +129,8 @@ export default {
     prompt,
     compareSide,
     switchButtons,
-    leftBuildingMenu
+    leftBuildingMenu,
+    compareButton
   },
   computed: {
     showSide: {
@@ -301,6 +304,10 @@ export default {
     showComparison: async function ( target ) {
       this.askingForComparison = false
       this.removeAllMarkers()
+      console.log( this.compareStories[0] )
+      if ( this.compareStories[0] === undefined ) {
+        this.compareStories.shift()
+      }
       let path = this.$store.getters['map/building']( this.compareStories[0] ).path
       if ( target === 'q' ) {
         let mgId = this.$store.getters[path + '/primaryGroup']( 'Electricity' ).id
@@ -743,7 +750,7 @@ $sideMenu-width: 250px;
   position: absolute;
   top: 10px;
   left: 50px;
-  width: 110px;
+  width: 90px;
   height: 63px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);

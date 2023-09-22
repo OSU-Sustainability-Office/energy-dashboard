@@ -83,6 +83,7 @@ export default {
   computed: {
     path: {
       get () {
+        console.log( this.$store.getters['modalController/data'].path )
         return this.$store.getters['modalController/data'].path
       }
     },
