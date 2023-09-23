@@ -308,7 +308,6 @@ export default {
     showComparison: async function ( target ) {
       this.askingForComparison = false
       this.removeAllMarkers()
-      console.log( this.compareStories[0] )
       if ( this.compareStories[0] === undefined ) {
         this.compareStories.shift()
         if ( this.compareStories[0] === undefined ) {
@@ -316,9 +315,7 @@ export default {
           this.building_compare_error = true
         }
       }
-      console.log( this.compareStories[0] )
       let path = this.$store.getters['map/building']( this.compareStories[0] ).path
-      console.log( this.$store.getters['map/building']( this.compareStories[0] ).description )
       if ( this.$store.getters['map/building']( this.compareStories[0] ).description !== 'Electricity' ) {
         this.showSide = false
         this.building_compare_error = true

@@ -1,11 +1,3 @@
-<!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-01-03T12:39:57-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-01-27T15:39:07-08:00
--->
-
 <template>
   <el-row class="stage_prompt">
     <el-col :span="24">
@@ -27,13 +19,7 @@
   </el-row>
 </template>
 <script>
-export default {
-  methods: {
-    handle: function ( command ) {
-      this.$emit( 'compare', command )
-    }
-  }
-}
+export default {}
 </script>
 <style lang="scss" scoped>
 .stage_prompt {
