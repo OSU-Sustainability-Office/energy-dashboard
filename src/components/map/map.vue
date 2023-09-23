@@ -77,6 +77,7 @@
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
+          <compareButton @startCompare="startCompare"></compareButton>
           <div @click="resetSearchInput()">
             <leftBuildingMenu class="hideMenuButton" />
           </div>
@@ -91,6 +92,7 @@
         </l-map>
       </div>
       <prompt v-if="askingForComparison" @cancel="stopCompare" @compare="showComparison" />
+      <prompt_error v-if="building_compare_error" @cancel="stopCompareError" @compare="showComparison" />
       <transition name="side">
         <compareSide v-if="showCompareSide" @hide="showCompareSide = false" :compareStories="compareStories" />
         <sideView ref="sideview" v-if="showSide" @hide="showSide = false" @startCompare="startCompare"></sideView>
@@ -101,7 +103,9 @@
 <script>
 import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
 import sideView from '@/components/map/sideView'
+import compareButton from '@/components/map/compareButton'
 import prompt from '@/components/map/map_prompt'
+import prompt_error from '@/components/map/prompt_error'
 import compareSide from '@/components/map/map_compareside'
 import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons'
@@ -125,9 +129,11 @@ export default {
     sideView,
     LGeoJson,
     prompt,
+    prompt_error,
     compareSide,
     switchButtons,
-    leftBuildingMenu
+    leftBuildingMenu,
+    compareButton
   },
   computed: {
     showSide: {
@@ -167,6 +173,7 @@ export default {
       rKey: 1,
       message: this.message,
       askingForComparison: false,
+      building_compare_error: false,
       selected: [
         'Residence',
         'Athletics & Rec',
@@ -301,7 +308,18 @@ export default {
     showComparison: async function ( target ) {
       this.askingForComparison = false
       this.removeAllMarkers()
+      if ( this.compareStories[0] === undefined ) {
+        this.compareStories.shift()
+        if ( this.compareStories[0] === undefined ) {
+          this.showSide = false
+          this.building_compare_error = true
+        }
+      }
       let path = this.$store.getters['map/building']( this.compareStories[0] ).path
+      if ( this.$store.getters['map/building']( this.compareStories[0] ).description !== 'Electricity' ) {
+        this.showSide = false
+        this.building_compare_error = true
+      }
       if ( target === 'q' ) {
         let mgId = this.$store.getters[path + '/primaryGroup']( 'Electricity' ).id
 
@@ -363,6 +381,13 @@ export default {
     stopCompare: function () {
       this.askingForComparison = false
       this.showSide = true
+      this.compareStories = []
+      this.removeAllMarkers()
+    },
+    stopCompareError: function () {
+      this.building_compare_error = false
+      this.showSide = true
+      this.askingForComparison = true
       this.compareStories = []
       this.removeAllMarkers()
     },
@@ -593,11 +618,10 @@ $sideMenu-width: 250px;
 .sideMenu {
   background-color: $--color-black;
   position: absolute;
-  left: 0;
   z-index: 2000;
   width: $sideMenu-width - 10px;
   padding-top: 0.5em;
-  top: 110px;
+  top: 170px;
 }
 
 ::v-deep .el-menu-item-group__title {
@@ -626,7 +650,7 @@ $sideMenu-width: 250px;
 .hideMenuButton {
   display: flex;
   position: absolute;
-  top: 80px;
+  top: 125px;
   left: 10px;
 }
 .side-enter-active,

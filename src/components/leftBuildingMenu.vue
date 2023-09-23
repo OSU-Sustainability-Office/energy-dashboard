@@ -58,5 +58,6 @@ export default {
   opacity: 1;
   justify-content: center;
   z-index: 500;
+  height: 40px;
 }
 </style>
