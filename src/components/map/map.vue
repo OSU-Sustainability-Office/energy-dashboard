@@ -847,7 +847,7 @@ $sideMenu-width: 250px;
 }
 @media only screen and (max-width: 600px) {
   .hideMenuButton {
-    left: 10px;
+    left: 0px;
   }
   .searchResultDiv {
     margin-top: 15px;
