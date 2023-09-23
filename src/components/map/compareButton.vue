@@ -1,8 +1,3 @@
-<!--
-  Filename: sideView.vue
-  Description: Despite the name this references the pop-up building modal window on the map
-               NOT the actually right-hand side view (that's handled directly in the map.vue component)
--->
 <template>
   <button class="bigButton" @click="$emit('startCompare')">Compare Buildings</button>
 </template>
