@@ -16,10 +16,10 @@ export default {
   display: flex;
   align-items: center;
   position: absolute;
-  top: 10px;
-  left: 150px;
-  width: 110px;
-  height: 63px;
+  top: 78px;
+  left: 10px;
+  width: 150px;
+  height: 40px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;

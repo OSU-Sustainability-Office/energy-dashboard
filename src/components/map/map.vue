@@ -618,11 +618,10 @@ $sideMenu-width: 250px;
 .sideMenu {
   background-color: $--color-black;
   position: absolute;
-  left: 0;
   z-index: 2000;
   width: $sideMenu-width - 10px;
   padding-top: 0.5em;
-  top: 110px;
+  top: 170px;
 }
 
 ::v-deep .el-menu-item-group__title {
@@ -651,7 +650,7 @@ $sideMenu-width: 250px;
 .hideMenuButton {
   display: flex;
   position: absolute;
-  top: 80px;
+  top: 125px;
   left: 10px;
 }
 .side-enter-active,
@@ -766,10 +765,10 @@ $sideMenu-width: 250px;
   display: flex;
   align-items: center;
   position: absolute;
-  top: 10px;
+  top: 20px;
   left: 50px;
-  width: 90px;
-  height: 63px;
+  width: 110px;
+  height: 40px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -848,7 +847,7 @@ $sideMenu-width: 250px;
 }
 @media only screen and (max-width: 600px) {
   .hideMenuButton {
-    left: 0px;
+    left: 10px;
   }
   .searchResultDiv {
     margin-top: 15px;
