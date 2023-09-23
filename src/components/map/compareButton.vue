@@ -18,7 +18,7 @@ export default {
   position: absolute;
   top: 78px;
   left: 10px;
-  width: 160px;
+  width: 170px;
   height: 40px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
