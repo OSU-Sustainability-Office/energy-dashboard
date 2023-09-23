@@ -20,14 +20,7 @@
       </el-row>
       <el-row>
         <el-col>
-          <el-dropdown split-button type="info" class="button" @click="handle('q')" @command="handle">
-            Compare
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="q">Quick Compare</el-dropdown-item>
-              <el-dropdown-item command="d">Compare in FullScreen</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-          <el-button class="button" type="info" @click="$emit('cancel')">Cancel</el-button>
+          <el-button class="button" type="info" @click="$emit('cancel')">Go back</el-button>
         </el-col>
       </el-row>
     </el-col>

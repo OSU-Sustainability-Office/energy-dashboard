@@ -390,6 +390,7 @@ export default {
     stopCompareError: function () {
       this.building_compare_error = false
       this.showSide = true
+      this.askingForComparison = true
       this.compareStories = []
       this.removeAllMarkers()
     },
