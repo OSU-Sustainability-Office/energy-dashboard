@@ -18,7 +18,7 @@ export default {
   position: absolute;
   top: 78px;
   left: 10px;
-  width: 170px;
+  width: 150px;
   height: 40px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
@@ -29,5 +29,11 @@ export default {
   z-index: 500;
   cursor: pointer;
   font-size: 15px;
+}
+@media only screen and (max-width: 600px) {
+  .bigButton {
+    width: 170px;
+    left: 0px;
+  }
 }
 </style>
