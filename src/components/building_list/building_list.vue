@@ -23,6 +23,11 @@
           <el-tabs v-model="openName" class="tab_row" v-if="buildingList" v-loading="this.loading">
             <el-tab-pane v-for="(item, key) in groups" :key="key" :name="key">
               <span slot="label" class="tab_label">{{ key }}</span>
+              <h3>Energy Type</h3>
+              <el-radio v-model="selectedOption" label="All">All</el-radio>
+              <el-radio v-model="selectedOption" label="Electricity">Electricity</el-radio>
+              <el-radio v-model="selectedOption" label="Steam">Steam</el-radio>
+              <el-radio v-model="selectedOption" label="Solar Panel">Solar Panel</el-radio>
               <el-row type="flex" justify="left" class="card_flex">
                 <el-col v-for="building in item" :key="building.name" :span="4" class="card_container">
                   <viewCard
@@ -54,6 +59,7 @@ export default {
   },
   data () {
     return {
+      selectedOption: 'All',
       search: '',
       openName: '',
       publicDir: true,
@@ -124,6 +130,43 @@ export default {
         this.openName = Object.keys( this.groups )[0]
       }
     },
+    selectedOption ( newVal ) {
+      console.log( newVal )
+      console.log( this.$store.getters['map/buildings'] )
+      let allBuildings = this.$store.getters['map/buildings']
+      let values = []
+      for ( let i = 0; i < allBuildings.length; i++ ) {
+        let descArray = allBuildings[i].description.split( ', ' )
+        // console.log(descArray)
+        let descLength = 0
+        if ( newVal === 'All' ) {
+          values.push( allBuildings[i].id )
+        } else {
+          for ( let i = 0; i < descArray.length; i++ ) {
+            console.log( descArray[i] )
+            if ( newVal.includes( descArray[i] ) ) {
+              descLength += 1
+              console.log( descLength )
+              // this.map.removeLayer( layer )
+              // console.log('hmm')
+            }
+          }
+          console.log( descLength )
+          if ( descLength > 0 ) {
+            console.log( allBuildings[i].id )
+            values.push( allBuildings[i].id )
+          }
+        }
+      }
+      console.log( values )
+      for ( let card of this.$refs.card ) {
+        if ( values.indexOf( card.id ) < 0 ) {
+          card.$el.parentNode.style.display = 'none'
+        } else {
+          card.$el.parentNode.style.display = 'block'
+        }
+      }
+    },
     search: function ( v ) {
       let groups
       if ( this.buildingList ) {
@@ -145,6 +188,7 @@ export default {
         .map( e => {
           return e.id
         } )
+      console.log( values )
       for ( let card of this.$refs.card ) {
         if ( values.indexOf( card.id ) < 0 ) {
           card.$el.parentNode.style.display = 'none'
