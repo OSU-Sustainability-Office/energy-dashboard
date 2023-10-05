@@ -150,7 +150,6 @@ export default {
         .map( e => {
           return e.id
         } )
-      console.log( values )
       for ( let card of this.$refs.card ) {
         if ( values.indexOf( card.id ) < 0 ) {
           card.$el.parentNode.style.display = 'none'

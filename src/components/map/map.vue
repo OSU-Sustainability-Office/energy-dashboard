@@ -461,29 +461,18 @@ export default {
   watch: {
     selectedOption ( newVal ) {
       this.rKey++
-      console.log( newVal )
       this.$nextTick( () => {
         this.map = this.$refs.map.mapObject
         for ( var layerKey of Object.keys( this.map._layers ) ) {
           let layer = this.map._layers[layerKey]
-          // console.log(this.$store.getters['map/building']( 28 ))
           if ( layer.feature && newVal !== 'All' ) {
-            console.log( layer.feature.properties.id )
-            // console.log( this.$store.getters['map/building']( layer.feature.properties.id ).description )
-            console.log( layer.feature.properties.group )
             let descArray = this.$store.getters['map/building']( layer.feature.properties.id ).description.split( ', ' )
-            console.log( descArray )
             let descLength = 0
             for ( let i = 0; i < descArray.length; i++ ) {
-              console.log( descArray[i] )
               if ( newVal.includes( descArray[i] ) ) {
                 descLength += 1
-                console.log( descLength )
-                // this.map.removeLayer( layer )
-                // console.log('hmm')
               }
             }
-            console.log( descLength )
             if ( descLength === 0 ) {
               this.map.removeLayer( layer )
             }
