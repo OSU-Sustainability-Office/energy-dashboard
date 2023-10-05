@@ -23,6 +23,11 @@
           <el-tabs v-model="openName" class="tab_row" v-if="buildingList" v-loading="this.loading">
             <el-tab-pane v-for="(item, key) in groups" :key="key" :name="key">
               <span slot="label" class="tab_label">{{ key }}</span>
+              <el-radio v-model="search" label="">All</el-radio>
+              <el-radio v-model="search" label="Electricity">Electricity</el-radio>
+              <el-radio v-model="search" label="Steam">Steam</el-radio>
+              <el-radio v-model="search" label="Solar Panel">Solar</el-radio>
+              <el-radio v-model="search" label="Gas">Gas</el-radio>
               <el-row type="flex" justify="left" class="card_flex">
                 <el-col v-for="building in item" :key="building.name" :span="4" class="card_container">
                   <viewCard
