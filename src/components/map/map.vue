@@ -50,14 +50,19 @@
           <el-menu-item index="Residence" :class="[isDisplayed('Residence') ? 'active' : 'notactive']"
             ><span class="res swatch"></span>Residence</el-menu-item
           >
-          <el-menu-item index="Solar" :class="[isDisplayed('Solar') ? 'active' : 'notactive']"
-            ><span class="sol swatch"></span>Solar</el-menu-item
+          <el-menu-item index="Operations" :class="[isDisplayed('Operations') ? 'active' : 'notactive']"
+            ><span class="operations swatch"></span>Operations</el-menu-item
           >
-          <h3>Energy Type</h3>
-          <el-radio v-model="selectedOption" label="All">All</el-radio>
-          <el-radio v-model="selectedOption" label="Electricity">Electricity</el-radio>
-          <el-radio v-model="selectedOption" label="Steam">Steam</el-radio>
-          <el-radio v-model="selectedOption" label="Solar Panel">Solar Panel</el-radio>
+          <div class="energyRadioGroup">
+            <div class="colorByTitle">Energy Type:</div>
+            <div class="energyRadioButtons">
+              <el-radio v-model="selectedOption" label="All">All</el-radio>
+              <el-radio v-model="selectedOption" label="Electricity">Electricity</el-radio>
+              <el-radio v-model="selectedOption" label="Steam">Steam</el-radio>
+              <el-radio v-model="selectedOption" label="Solar Panel">Solar</el-radio>
+              <el-radio v-model="selectedOption" label="Gas">Gas</el-radio>
+            </div>
+          </div>
         </el-menu-item-group>
         <el-menu-item-group v-if="grouping === 'Energy Trend'">
           <el-col class="trendBox">
@@ -181,17 +186,15 @@ export default {
       askingForComparison: false,
       building_compare_error: false,
       selected: [
-        'Residence',
         'Athletics & Rec',
         'Dining',
         'Academics',
         'Events & Admin',
-        'Solar',
+        'Operations',
+        'Residence',
         'Stable Trend',
         'Up Trend',
-        'Down Trend',
-        'Steam',
-        'Electricity'
+        'Down Trend'
       ],
       show: false,
       mapLoaded: false,
@@ -232,11 +235,11 @@ export default {
             case 'Athletics & Rec':
               color = '#FFB500'
               break
+            case 'Operations':
+              color = '#4169E1'
+              break
             case 'Dining':
               color = '#4A773C'
-              break
-            case 'Solar':
-              color = '#4169E1'
               break
             default:
               break
@@ -502,9 +505,6 @@ export default {
               if ( this.grouping === 'Category' ) {
                 var color = '#000'
                 switch ( layer.feature.properties.group ) {
-                  case 'Residence':
-                    color = '#D3832B'
-                    break
                   case 'Academics':
                     color = '#0D5257'
                     break
@@ -517,8 +517,11 @@ export default {
                   case 'Dining':
                     color = '#4A773C'
                     break
-                  case 'Solar':
+                  case 'Operations':
                     color = '#4169E1'
+                    break
+                  case 'Residence':
+                    color = '#D3832B'
                     break
                   default:
                     break
@@ -643,6 +646,16 @@ $sideMenu-width: 250px;
   text-align: center;
   font-family: 'stratumno2';
 }
+.energyRadioButtons {
+  margin-left: 20px;
+  margin-top: 15px;
+}
+.energyRadioGroup {
+  margin-top: 20px;
+}
+.el-radio {
+  color: white;
+}
 .stage {
   padding: 0;
   position: absolute;
@@ -755,7 +768,7 @@ $sideMenu-width: 250px;
   background-color: #7a6855b3;
   border-color: #7a6855;
 }
-.active .sol.swatch {
+.active .operations.swatch {
   background-color: #4169e1;
   border-color: #00008b;
 }
