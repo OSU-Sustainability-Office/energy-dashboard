@@ -105,7 +105,7 @@ exports.upload = async (event, context) => {
     return response
   }
 
-  let query_string = `INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`energy_change\`, \`tableid\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.totalYieldYesterday}', '${meter_data.tableID}');`
+  let query_string = `INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`energy_change\`, \`MeterID\`, \`MeterName\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.totalYieldYesterday}', '${meter_data.meterID}', '${meter_data.meterName}');`
 
   try {
     await DB.query(query_string)

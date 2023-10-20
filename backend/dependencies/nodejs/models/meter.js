@@ -144,12 +144,6 @@ class Meter {
       if (String(meterClass).startsWith('999')) {
         // get table name from meter table
         let [{ name: meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id])
-        const meterLookupTable = {
-          121: 'SEC_OSU_Op_Lube',
-          122: 'SEC_OSU_Op',
-          123: 'SEC_Solar',
-          124: 'OSU_Operations_Total'
-        }
         if (meter_table_name.startsWith('M')) {
           return DB.query(
             'SELECT ' +
@@ -161,7 +155,10 @@ class Meter {
               ' WHERE time_seconds >= ? AND time_seconds <= ?',
             [startTime, endTime]
           )
-        } else {
+        }
+
+        // may have to modify the below to be else-if, if we are going to have multiple custom webscraper tables (Solar_Meters, etc)
+        else {
           return DB.query(
             'SELECT ' +
               point +
@@ -169,8 +166,8 @@ class Meter {
               this.id +
               "' as id FROM " +
               meter_table_name +
-              ' WHERE time_seconds >= ? AND time_seconds <= ? AND tableID = ?',
-            [startTime, endTime, meterLookupTable[this.id]]
+              ' WHERE time_seconds >= ? AND time_seconds <= ? AND MeterID = ?',
+            [startTime, endTime, this.id]
           )
         }
       }
