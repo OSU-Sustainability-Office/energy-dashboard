@@ -42,7 +42,7 @@ export default {
 <style lang="scss" scoped>
 .stage_prompt {
   width: 400px;
-  height: 170px;
+  height: 150px;
   position: absolute;
   top: 20px;
   left: calc(50% - 200px);
@@ -53,7 +53,7 @@ export default {
 }
 .text {
   padding: 1.5em;
-  font-size: 20px;
+  font-size: 18px;
 }
 .button {
   border: solid 1px $--color-white;
@@ -71,7 +71,7 @@ export default {
     top: 100px;
     width: 330px;
     left: 250px;
-    height: 180px;
+    height: 190px;
   }
 }
 </style>
