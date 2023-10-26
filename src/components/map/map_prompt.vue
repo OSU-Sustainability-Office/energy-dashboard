@@ -11,7 +11,7 @@
     <el-col :span="24">
       <el-row>
         <el-col class="text">
-          Select buildings to compare. <br /><br />
+          Select buildings by clicking on map or using building menu search bar. <br /><br />
           <el-row>NOTE: Only buildings with Electricity data are valid for comparison!</el-row>
         </el-col>
       </el-row>
@@ -42,7 +42,7 @@ export default {
 <style lang="scss" scoped>
 .stage_prompt {
   width: 400px;
-  height: 150px;
+  height: 170px;
   position: absolute;
   top: 20px;
   left: calc(50% - 200px);
@@ -68,7 +68,7 @@ export default {
 }
 @media only screen and (max-width: 600px) {
   .stage_prompt {
-    top: 80px;
+    top: 100px;
     width: 330px;
     left: 250px;
     height: 180px;
