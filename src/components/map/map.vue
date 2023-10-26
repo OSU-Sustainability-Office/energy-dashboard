@@ -307,14 +307,48 @@ export default {
       searchResult
         .bindTooltip( searchResult.feature.properties.name, { permanent: true, fillColor: '#000', color: '#000' } )
         .openTooltip()
+
+      if ( this.askingForComparison && this.compareStories.indexOf( searchResult.feature.properties.id ) < 0 ) {
+        const data =
+          "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/><path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"
+        const formed = encodeURI( 'data:image/svg+xml,' + data ).replace( /#/g, '%23' )
+        let searchCenter = searchResult.getBounds().getCenter()
+        const checkIcon = L.icon( {
+          iconUrl: formed,
+          iconSize: [20, 20],
+          shadowUrl: ''
+        } )
+        const marker = L.marker( searchCenter, {
+          icon: checkIcon,
+          bubblingMouseEvents: true,
+          interactive: false
+        } ).addTo( this.map )
+        marker.buildingId = searchResult.feature.properties.id
+        this.compareMarkers.push( marker )
+        this.compareStories.push( searchResult.feature.properties.id )
+      } else if ( this.askingForComparison ) {
+        const removingMarkerIndex = this.compareMarkers.findIndex(
+          e => e.buildingId === searchResult.feature.properties.id
+        )
+        if ( removingMarkerIndex === -1 ) {
+          return
+        }
+        const marker = this.compareMarkers.splice( removingMarkerIndex, 1 )[0]
+        this.map.removeLayer( marker )
+        this.compareStories.splice( this.compareStories.indexOf( searchResult.feature.properties.id ), 1 )
+      }
     },
     resetSearchInput () {
       this.search = ''
+      for ( let layer of Object.values( this.map._layers ) ) {
+        layer.unbindTooltip()
+      }
     },
     removeAllMarkers: function () {
       for ( let marker of this.compareMarkers ) {
         this.map.removeLayer( marker )
       }
+      this.compareMarkers = []
     },
     showComparison: async function ( target ) {
       this.askingForComparison = false
@@ -326,31 +360,39 @@ export default {
           this.building_compare_error = true
         }
       }
-      let path = this.$store.getters['map/building']( this.compareStories[0] ).path
-      if ( this.$store.getters['map/building']( this.compareStories[0] ).description !== 'Electricity' ) {
+
+      try {
+        if ( this.building_compare_error === false ) {
+          let path = this.$store.getters['map/building']( this.compareStories[0] ).path
+
+          if ( target === 'q' ) {
+            let mgId = this.$store.getters[path + '/primaryGroup']( 'Electricity' ).id
+
+            let blockSpace = this.$store.getters[path + '/block']( mgId ).path
+            await this.$store.dispatch( blockSpace + '/removeAllModifiers' )
+            await this.$store.dispatch( blockSpace + '/addModifier', 'building_compare' )
+            await this.$store.dispatch( blockSpace + '/updateModifier', {
+              name: 'building_compare',
+              data: {
+                buildingIds: this.compareStories
+              }
+            } )
+            window.vue.$store.dispatch( 'modalController/openModal', {
+              name: 'map_compare_side',
+              path: path
+            } )
+          } else {
+            this.$router.push( {
+              path: `/compare/${encodeURI( JSON.stringify( this.compareStories ) )}/2`
+            } )
+          }
+        }
+      } catch ( err ) {
+        // uncomment this to see exact errors in debug
+        // console.error(err)
         this.showSide = false
         this.building_compare_error = true
-      }
-      if ( target === 'q' ) {
-        let mgId = this.$store.getters[path + '/primaryGroup']( 'Electricity' ).id
-
-        let blockSpace = this.$store.getters[path + '/block']( mgId ).path
-        await this.$store.dispatch( blockSpace + '/removeAllModifiers' )
-        await this.$store.dispatch( blockSpace + '/addModifier', 'building_compare' )
-        await this.$store.dispatch( blockSpace + '/updateModifier', {
-          name: 'building_compare',
-          data: {
-            buildingIds: this.compareStories
-          }
-        } )
-        window.vue.$store.dispatch( 'modalController/openModal', {
-          name: 'map_compare_side',
-          path: path
-        } )
-      } else {
-        this.$router.push( {
-          path: `/compare/${encodeURI( JSON.stringify( this.compareStories ) )}/2`
-        } )
+        this.compareStories.shift()
       }
     },
     startCompare: function ( buildingId ) {
@@ -459,17 +501,17 @@ export default {
     } )
   },
   watch: {
-    selectedOption ( newVal ) {
+    selectedOption ( energyFilter ) {
       this.rKey++
       this.$nextTick( () => {
         this.map = this.$refs.map.mapObject
         for ( var layerKey of Object.keys( this.map._layers ) ) {
           let layer = this.map._layers[layerKey]
-          if ( layer.feature && newVal !== 'All' ) {
+          if ( layer.feature && energyFilter !== 'All' ) {
             let descArray = this.$store.getters['map/building']( layer.feature.properties.id ).description.split( ', ' )
             let descLength = 0
             for ( let i = 0; i < descArray.length; i++ ) {
-              if ( newVal.includes( descArray[i] ) ) {
+              if ( energyFilter.includes( descArray[i] ) ) {
                 descLength += 1
               }
             }
