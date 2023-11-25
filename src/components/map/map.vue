@@ -201,6 +201,7 @@ export default {
       buildingOptions: {
         onEachFeature: ( feature, layer ) => {
           layer.on( 'click', e => {
+            this.building_compare_error = false
             this.polyClick( e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter() )
           } )
           layer.on( 'mouseover', function ( e ) {
@@ -396,6 +397,7 @@ export default {
       }
     },
     startCompare: function ( buildingId ) {
+      this.building_compare_error = false
       this.showSide = false
       this.askingForComparison = true
       this.compareStories = []
