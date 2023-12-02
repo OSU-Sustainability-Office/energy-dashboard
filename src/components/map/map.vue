@@ -204,17 +204,14 @@ export default {
             this.building_compare_error = false
             this.polyClick( e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter() )
           } )
-          layer.on( 'mouseover', function ( e ) {
-            if ( !e.target.setStyle ) return
-            if ( e.target.feature.id === 'way/1100972272' ) {
-              e.target.feature.properties.name = 'OSU Operations'
-            }
+          layer.on( 'mouseover', e => {
+            if ( !e.target.setStyle ) return 
             e.target.oldStyle = {
               fillColor: e.target.options.fillColor,
               color: e.target.options.color
             }
             e.target.setStyle( { fillColor: '#000', color: '#000' } )
-            e.target.bindTooltip( e.target.feature.properties.name ).openTooltip()
+            e.target.bindTooltip( this.$store.getters['map/building']( e.target.feature.properties.id ).name ).openTooltip()
           } )
           layer.on( 'mouseout', e => {
             if ( !e.target.setStyle ) return
