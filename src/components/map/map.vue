@@ -205,7 +205,7 @@ export default {
             this.polyClick( e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter() )
           } )
           layer.on( 'mouseover', e => {
-            if ( !e.target.setStyle ) return 
+            if ( !e.target.setStyle ) return
             e.target.oldStyle = {
               fillColor: e.target.options.fillColor,
               color: e.target.options.color
@@ -634,9 +634,7 @@ export default {
       var searchGroup = []
       for ( let layer of Object.values( this.map._layers ) ) {
         if ( layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon' ) {
-          if ( layer.feature.id === 'way/1100972272' ) {
-            layer.feature.properties.name = 'OSU Operations'
-          }
+          layer.feature.properties.name = this.$store.getters['map/building']( layer.feature.properties.id ).name
 
           if ( layer.feature.properties.name !== undefined ) {
             if ( layer.feature.properties.name.toLowerCase().includes( v.toLowerCase() ) ) {
