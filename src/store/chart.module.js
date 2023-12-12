@@ -35,11 +35,33 @@ const actions = {
       ...payload,
       ...store.getters.modifierData
     }
+    console.log( store.getters.name )
+    let initdatestart = reqPayload.dateStart
+    if ( store.getters.name === 'Total Electricity' ) {
+      reqPayload.dateStart = 1700341200
+    }
+    console.log( reqPayload )
 
     const chartModifier = ChartModifiers( payload.graphType, reqPayload.point )
     await chartModifier.preGetData( reqPayload, this, store )
 
     let data = await this.dispatch( store.getters.meterGroupPath + '/getData', reqPayload )
+
+    if ( store.getters.name === 'Total Electricity' ) {
+      // console.log( data )
+      let testmap = new Map()
+      for ( let newkey of data.keys() ) {
+        // console.log(newkey)
+
+        // align new key with original datestart
+        testmap.set( newkey - ( reqPayload.dateStart - initdatestart ), data.get( newkey ) )
+      }
+      console.log( testmap )
+
+      // comment out the 2 lines below to test experimental moving chart left
+      // data = testmap
+      // reqPayload.dateStart = initdatestart
+    }
     let chartData = {
       label: store.getters.name,
       backgroundColor: store.getters.color,

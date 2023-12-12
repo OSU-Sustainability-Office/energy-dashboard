@@ -224,6 +224,7 @@ const actions = {
           await this.getters[payload.group.path + '/meters'][0].promise
           utilityType = this.getters[this.getters[payload.group.path + '/meters'][0].path + '/type']
         }
+        // something here is important with name assign
         store.commit( chartSpace + '/name', 'Total ' + utilityType )
         const pointMap = {
           Electricity: 'accumulated_real',

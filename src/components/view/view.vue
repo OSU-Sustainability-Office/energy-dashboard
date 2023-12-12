@@ -81,6 +81,7 @@ export default {
       immediate: true,
       handler: async function ( buildings ) {
         if ( this.$route.path.includes( 'compare' ) ) {
+          console.log( this.cards[0] )
           if ( this.cards.length > 0 && this.cards[0] ) {
             await this.$store.dispatch( this.cards[0].path + '/removeAllModifiers' )
             await this.$store.dispatch( this.cards[0].path + '/addModifier', 'building_compare' )
@@ -116,6 +117,7 @@ export default {
           for ( let card of this.cards ) {
             if ( !card.path ) return
             this.$nextTick( () => {
+              console.log( card )
               this.$store.commit( card.path + '/dateStart', this.dateStart )
               this.$store.commit( card.path + '/dateEnd', this.dateEnd )
               this.$store.commit( card.path + '/dateInterval', this.dateInterval )
