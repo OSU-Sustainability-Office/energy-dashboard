@@ -21,27 +21,27 @@ const state = () => {
 }
 
 const actions = {
-  loadBlock ( store, payload ) {
+  loadBlock (store, payload) {
     let blockSpace = 'block_' + payload.id.toString()
     let moduleSpace = store.getters.path + '/' + blockSpace
 
-    this.registerModule( moduleSpace.split( '/' ), Block )
+    this.registerModule(moduleSpace.split('/'), Block)
 
-    store.commit( blockSpace + '/path', moduleSpace )
-    store.dispatch( blockSpace + '/changeBlock', payload.id )
+    store.commit(blockSpace + '/path', moduleSpace)
+    store.dispatch(blockSpace + '/changeBlock', payload.id)
   },
 
-  async delete ( store ) {
-    await API.view( null, { id: store.getters.id }, 'delete' )
+  async delete (store) {
+    await API.view(null, { id: store.getters.id }, 'delete')
   },
 
-  async deleteBlock ( store, id ) {
-    let block = store.getters.block( id )
-    await API.block( { id: id }, 'delete' )
-    this.unregisterModule( block.path.split( '/' ) )
+  async deleteBlock (store, id) {
+    let block = store.getters.block(id)
+    await API.block({ id: id }, 'delete')
+    this.unregisterModule(block.path.split('/'))
   },
 
-  async newBlock ( store, payload ) {
+  async newBlock (store, payload) {
     let id = (
       await API.block(
         {
@@ -59,22 +59,22 @@ const actions = {
 
     let blockSpace = 'block_' + id.toString()
     let moduleSpace = store.getters.path + '/' + blockSpace
-    this.registerModule( moduleSpace.split( '/' ), Block )
-    store.commit( blockSpace + '/path', moduleSpace )
-    store.commit( blockSpace + '/id', id )
-    store.commit( blockSpace + '/name', payload.name )
-    store.commit( blockSpace + '/dateInterval', payload.dateInterval )
-    store.commit( blockSpace + '/intervalUnit', payload.intervalUnit )
-    store.commit( blockSpace + '/graphType', payload.graphType )
-    store.commit( blockSpace + '/dateStart', payload.dateStart )
-    store.commit( blockSpace + '/dateEnd', payload.dateEnd )
-    store.commit( blockSpace + '/shuffleChartColors' )
+    this.registerModule(moduleSpace.split('/'), Block)
+    store.commit(blockSpace + '/path', moduleSpace)
+    store.commit(blockSpace + '/id', id)
+    store.commit(blockSpace + '/name', payload.name)
+    store.commit(blockSpace + '/dateInterval', payload.dateInterval)
+    store.commit(blockSpace + '/intervalUnit', payload.intervalUnit)
+    store.commit(blockSpace + '/graphType', payload.graphType)
+    store.commit(blockSpace + '/dateStart', payload.dateStart)
+    store.commit(blockSpace + '/dateEnd', payload.dateEnd)
+    store.commit(blockSpace + '/shuffleChartColors')
     return moduleSpace
   },
 
-  async save ( store, payload ) {
-    store.commit( 'name', payload.name )
-    store.commit( 'image', payload.media )
+  async save (store, payload) {
+    store.commit('name', payload.name)
+    store.commit('image', payload.media)
     await API.view(
       store.getters.id,
       {
@@ -86,46 +86,46 @@ const actions = {
     )
   },
 
-  async loadBlocks ( store, blocks ) {
+  async loadBlocks (store, blocks) {
     let promises = []
-    for ( let block of blocks ) {
+    for (let block of blocks) {
       let blockSpace = 'block_' + block.id
       let moduleSpace = store.getters.path + '/' + blockSpace
-      this.registerModule( moduleSpace.split( '/' ), Block )
-      store.commit( blockSpace + '/path', moduleSpace )
-      store.commit( blockSpace + '/shuffleChartColors' )
-      let viewBlockPromise = store.dispatch( blockSpace + '/loadCharts', block.charts )
-      store.commit( blockSpace + '/promise', viewBlockPromise )
-      promises.push( viewBlockPromise )
-      store.commit( blockSpace + '/name', block.name )
-      store.commit( blockSpace + '/dateInterval', block.dateInterval )
-      store.commit( blockSpace + '/intervalUnit', block.intervalUnit )
-      store.commit( blockSpace + '/graphType', block.graphType )
-      store.commit( blockSpace + '/dateStart', block.dateStart )
-      store.commit( blockSpace + '/dateEnd', block.dateEnd )
-      store.commit( blockSpace + '/id', block.id )
+      this.registerModule(moduleSpace.split('/'), Block)
+      store.commit(blockSpace + '/path', moduleSpace)
+      store.commit(blockSpace + '/shuffleChartColors')
+      let viewBlockPromise = store.dispatch(blockSpace + '/loadCharts', block.charts)
+      store.commit(blockSpace + '/promise', viewBlockPromise)
+      promises.push(viewBlockPromise)
+      store.commit(blockSpace + '/name', block.name)
+      store.commit(blockSpace + '/dateInterval', block.dateInterval)
+      store.commit(blockSpace + '/intervalUnit', block.intervalUnit)
+      store.commit(blockSpace + '/graphType', block.graphType)
+      store.commit(blockSpace + '/dateStart', block.dateStart)
+      store.commit(blockSpace + '/dateEnd', block.dateEnd)
+      store.commit(blockSpace + '/id', block.id)
     }
 
-    await Promise.all( promises )
+    await Promise.all(promises)
   },
 
-  async changeView ( store, id ) {
-    console.log( 'Changing stuff' )
-    if ( id !== store.getters.id ) {
+  async changeView (store, id) {
+    console.log('Changing stuff')
+    if (id !== store.getters.id) {
       store.commit(
         'promise',
-        new Promise( async ( resolve, reject ) => {
-          for ( let block of store.getters.blocks ) {
-            this.unregisterModule( block.path.split( '/' ) )
+        new Promise(async (resolve, reject) => {
+          for (let block of store.getters.blocks) {
+            this.unregisterModule(block.path.split('/'))
           }
-          let view = await API.view( id )
-          store.commit( 'name', view.name )
-          store.commit( 'user', view.user )
-          store.commit( 'image', view.media )
-          store.commit( 'id', id )
-          await store.dispatch( 'loadBlocks', view.blocks )
+          let view = await API.view(id)
+          store.commit('name', view.name)
+          store.commit('user', view.user)
+          store.commit('image', view.media)
+          store.commit('id', id)
+          await store.dispatch('loadBlocks', view.blocks)
           resolve()
-        } )
+        })
       )
     }
     return store.getters.promise
@@ -133,57 +133,57 @@ const actions = {
 }
 
 const mutations = {
-  path ( state, path ) {
+  path (state, path) {
     state.path = path
   },
 
-  promise ( state, promise ) {
+  promise (state, promise) {
     state.promise = promise
   },
 
-  name ( state, name ) {
+  name (state, name) {
     state.name = name
   },
 
-  user ( state, user ) {
+  user (state, user) {
     state.user = user
   },
 
-  image ( state, image ) {
+  image (state, image) {
     state.image = image
   },
 
-  id ( state, id ) {
+  id (state, id) {
     state.id = id
   }
 }
 
 const getters = {
-  path ( state ) {
+  path (state) {
     return state.path
   },
 
-  promise ( state ) {
+  promise (state) {
     return state.promise
   },
 
-  name ( state ) {
+  name (state) {
     return state.name
   },
 
-  user ( state ) {
+  user (state) {
     return state.user
   },
 
-  image ( state ) {
+  image (state) {
     return state.image
   },
 
-  id ( state ) {
+  id (state) {
     return state.id
   },
 
-  description ( state ) {
+  description (state) {
     return state.description
   },
 
@@ -191,11 +191,11 @@ const getters = {
     return state['block_' + id]
   },
 
-  blocks ( state ) {
+  blocks (state) {
     let r = []
-    for ( let key of Object.keys( state ) ) {
-      if ( key.search( /block_[0-9]+/ ) >= 0 ) {
-        r.push( state[key] )
+    for (let key of Object.keys(state)) {
+      if (key.search(/block_[0-9]+/) >= 0) {
+        r.push(state[key])
       }
     }
     return r

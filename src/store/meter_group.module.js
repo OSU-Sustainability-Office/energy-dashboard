@@ -18,74 +18,74 @@ const state = () => {
 }
 
 const actions = {
-  async changeGroup ( store, payload ) {
-    let group = API.meterGroup( payload.id )
+  async changeGroup (store, payload) {
+    let group = API.meterGroup(payload.id)
     let wait = true
     store.commit(
       'promise',
-      new Promise( ( resolve, reject ) => {
+      new Promise((resolve, reject) => {
         let fn = () => {
-          if ( wait ) {
-            setTimeout( fn, 100 )
+          if (wait) {
+            setTimeout(fn, 100)
           } else {
             resolve()
           }
         }
         fn()
-      } )
+      })
     )
     group = await group
-    store.commit( 'id', payload.id )
-    store.commit( 'name', group.name )
-    store.commit( 'default', group.default )
-    for ( let meterId of group.meters ) {
+    store.commit('id', payload.id)
+    store.commit('name', group.name)
+    store.commit('default', group.default)
+    for (let meterId of group.meters) {
       let meterSpace = 'meter_' + meterId.toString()
       let moduleSpace = store.getters.path + '/' + meterSpace
-      this.registerModule( moduleSpace.split( '/' ), Meter )
-      store.commit( meterSpace + '/path', moduleSpace )
-      store.dispatch( meterSpace + '/changeMeter', meterId ).then( meter => {
-        store.commit( 'type', meter.type )
-      } )
+      this.registerModule(moduleSpace.split('/'), Meter)
+      store.commit(meterSpace + '/path', moduleSpace)
+      store.dispatch(meterSpace + '/changeMeter', meterId).then(meter => {
+        store.commit('type', meter.type)
+      })
     }
     wait = false
     return store.state
   },
 
-  async loadMeter ( store, meter ) {
+  async loadMeter (store, meter) {
     let meterSpace = 'meter_' + meter.id.toString()
     let moduleSpace = store.getters.path + '/' + meterSpace
-    this.registerModule( moduleSpace.split( '/' ), Meter )
-    store.commit( meterSpace + '/path', moduleSpace )
-    store.commit( meterSpace + '/id', meter.id )
-    store.commit( meterSpace + '/name', meter.name )
-    store.commit( meterSpace + '/address', meter.address )
-    store.commit( meterSpace + '/classInt', meter.classInt )
-    store.commit( meterSpace + '/negate', meter.negate )
-    store.commit( meterSpace + '/type', meter.type )
-    store.commit( meterSpace + '/points', meter.points )
+    this.registerModule(moduleSpace.split('/'), Meter)
+    store.commit(meterSpace + '/path', moduleSpace)
+    store.commit(meterSpace + '/id', meter.id)
+    store.commit(meterSpace + '/name', meter.name)
+    store.commit(meterSpace + '/address', meter.address)
+    store.commit(meterSpace + '/classInt', meter.classInt)
+    store.commit(meterSpace + '/negate', meter.negate)
+    store.commit(meterSpace + '/type', meter.type)
+    store.commit(meterSpace + '/points', meter.points)
   },
 
-  async getData ( store, payload ) {
+  async getData (store, payload) {
     let resultDataObject = new Map()
 
     // Solar Panel Data Support
-    if ( store.getters.type === 'Solar Panel' ) {
-      payload.dateStart = payload.dateStart - ( payload.dateStart % 900 )
-      payload.dateEnd = payload.dateEnd - ( payload.dateEnd % 900 )
+    if (store.getters.type === 'Solar Panel') {
+      payload.dateStart = payload.dateStart - (payload.dateStart % 900)
+      payload.dateEnd = payload.dateEnd - (payload.dateEnd % 900)
       let promiseObject = {}
-      for ( let meter of store.getters.meters ) {
-        let promise = this.dispatch( meter.path + '/getData', payload )
+      for (let meter of store.getters.meters) {
+        let promise = this.dispatch(meter.path + '/getData', payload)
         promiseObject[meter.id] = promise
       }
-      for ( let meter of store.getters.meters ) {
+      for (let meter of store.getters.meters) {
         let data = await promiseObject[meter.id]
         // For some reason if the array is empty it sometimes forgets it is an array
-        if ( !Array.isArray( data ) || data.length === 0 ) {
+        if (!Array.isArray(data) || data.length === 0) {
           continue
         }
         // move object -> map
-        for ( let dataPoint of data ) {
-          resultDataObject.set( dataPoint['time'], dataPoint[payload.point] )
+        for (let dataPoint of data) {
+          resultDataObject.set(dataPoint['time'], dataPoint[payload.point])
         }
       }
       return resultDataObject
@@ -101,11 +101,11 @@ const actions = {
       /*
         To decide if this should allow more points later, but there are a lot that do not make sense or can not be directly added together
       */
-      throw new Error( 'Can not add together non-total metering points' )
+      throw new Error('Can not add together non-total metering points')
     }
 
-    payload.dateStart = payload.dateStart - ( payload.dateStart % 900 )
-    payload.dateEnd = payload.dateEnd - ( payload.dateEnd % 900 )
+    payload.dateStart = payload.dateStart - (payload.dateStart % 900)
+    payload.dateEnd = payload.dateEnd - (payload.dateEnd % 900)
 
     let promiseObject = {}
     // Still need to call a meter function to setup the payload
@@ -114,37 +114,37 @@ const actions = {
     // if we're requesting data for multiple meters, make a batch request.
     let batchRequests = store.getters.meters.length > 5
 
-    if ( batchRequests ) {
+    if (batchRequests) {
       const dataLayerPayload = []
-      for ( let meter of store.getters.meters ) {
-        dataLayerPayload.push( {
+      for (let meter of store.getters.meters) {
+        dataLayerPayload.push({
           meterId: this.getters[meter.path + '/id'],
           start: payload.dateStart - 900,
           end: payload.dateEnd,
           uom: payload.point,
           classInt: this.getters[meter.path + '/classInt']
-        } )
+        })
       }
 
       // Hit the data-layer with a batch-request
-      const batchedMeterData = await this.dispatch( 'dataStore/getBatchData', dataLayerPayload ).catch( err => {
-        console.log( 'The DataLayer threw an exception for our payload array, error message: ', err )
-        console.log( 'Falling back to 1:1 requests...' )
+      const batchedMeterData = await this.dispatch('dataStore/getBatchData', dataLayerPayload).catch(err => {
+        console.log('The DataLayer threw an exception for our payload array, error message: ', err)
+        console.log('Falling back to 1:1 requests...')
         batchRequests = false
-      } )
-      if ( batchRequests ) {
+      })
+      if (batchRequests) {
         // push the return'd data to the promiseObject
-        for ( let meter of store.getters.meters ) {
-          promiseObject[meter.id] = new Promise( ( resolve, reject ) => {
-            resolve( batchedMeterData[meter.id] )
-          } )
+        for (let meter of store.getters.meters) {
+          promiseObject[meter.id] = new Promise((resolve, reject) => {
+            resolve(batchedMeterData[meter.id])
+          })
         }
       }
     }
     // request data per-meter, 1 request per meter.
-    if ( !batchRequests ) {
-      for ( let meter of store.getters.meters ) {
-        let promise = this.dispatch( meter.path + '/getData', payload )
+    if (!batchRequests) {
+      for (let meter of store.getters.meters) {
+        let promise = this.dispatch(meter.path + '/getData', payload)
         promiseObject[meter.id] = promise
       }
     }
@@ -152,21 +152,21 @@ const actions = {
       The following section is possibly the most important computation the dashboard does
       since the meters sometimes need to be negated to get the correct meter reading.
     */
-    for ( let meter of store.getters.meters ) {
+    for (let meter of store.getters.meters) {
       let data = await promiseObject[meter.id]
       // For some reason if the array is empty it sometimes forgets it is an array
-      if ( !Array.isArray( data ) || data.length === 0 ) {
+      if (!Array.isArray(data) || data.length === 0) {
         continue
       }
-      for ( let dataPoint of data ) {
-        if ( resultDataObject.get( dataPoint['time'] ) ) {
-          if ( meter.negate ) {
-            resultDataObject.set( dataPoint['time'], resultDataObject.get( dataPoint['time'] ) - dataPoint[payload.point] )
+      for (let dataPoint of data) {
+        if (resultDataObject.get(dataPoint['time'])) {
+          if (meter.negate) {
+            resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) - dataPoint[payload.point])
           } else {
-            resultDataObject.set( dataPoint['time'], resultDataObject.get( dataPoint['time'] ) + dataPoint[payload.point] )
+            resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) + dataPoint[payload.point])
           }
         } else {
-          resultDataObject.set( dataPoint['time'], dataPoint[payload.point] * ( meter.negate ? -1 : 1 ) )
+          resultDataObject.set(dataPoint['time'], dataPoint[payload.point] * (meter.negate ? -1 : 1))
         }
       }
     }
@@ -176,78 +176,78 @@ const actions = {
 }
 
 const mutations = {
-  path ( state, path ) {
+  path (state, path) {
     state.path = path
   },
 
-  building ( state, building ) {
+  building (state, building) {
     state.building = building
   },
 
-  promise ( state, promise ) {
+  promise (state, promise) {
     state.promise = promise
   },
 
-  name ( state, name ) {
+  name (state, name) {
     state.name = name
   },
 
-  id ( state, id ) {
+  id (state, id) {
     state.id = id
   },
 
-  default ( state, value ) {
+  default (state, value) {
     state.default = value
   },
 
-  type ( state, value ) {
+  type (state, value) {
     state.type = value
   }
 }
 
 const getters = {
-  path ( state ) {
+  path (state) {
     return state.path
   },
 
-  promise ( state ) {
+  promise (state) {
     return state.promise
   },
 
-  name ( state ) {
+  name (state) {
     return state.name
   },
 
-  id ( state ) {
+  id (state) {
     return state.id
   },
 
-  building ( state ) {
+  building (state) {
     return state.building
   },
 
-  meters ( state ) {
+  meters (state) {
     let r = []
-    for ( let c of Object.keys( state ) ) {
-      if ( c.search( /meter_/ ) >= 0 ) {
-        r.push( state[c] )
+    for (let c of Object.keys(state)) {
+      if (c.search(/meter_/) >= 0) {
+        r.push(state[c])
       }
     }
     return r
   },
 
-  type ( state ) {
+  type (state) {
     return state.type
   },
 
-  points ( state ) {
+  points (state) {
     let r = []
-    for ( let c of Object.keys( state ) ) {
-      if ( c.search( /meter_/ ) >= 0 ) {
-        r.push( state[c] )
+    for (let c of Object.keys(state)) {
+      if (c.search(/meter_/) >= 0) {
+        r.push(state[c])
       }
     }
-    if ( r.length > 1 ) {
+    if (r.length > 1) {
       // Need to change this incase steam meters are grouped etc
       return [{ label: 'Net Energy Usage (kWh)', value: 'accumulated_real' }]
     } else {
@@ -255,7 +255,7 @@ const getters = {
     }
   },
 
-  default ( state ) {
+  default (state) {
     return state.default
   }
 }

@@ -45,26 +45,26 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch( 'map/imageList' ).then( r => {
+    this.$store.dispatch('map/imageList').then(r => {
       this.images = []
       var index = 0
-      for ( var i of r ) {
-        this.images.push( i )
-        if ( i === this.value ) {
+      for (var i of r) {
+        this.images.push(i)
+        if (i === this.value) {
           this.selected = index
         }
         index++
       }
-    } )
+    })
   },
   watch: {
-    value: function ( value ) {
-      this.selected = this.images.indexOf( this.value ) + 1
+    value: function (value) {
+      this.selected = this.images.indexOf(this.value) + 1
     }
   },
   methods: {
-    select: function ( image ) {
-      this.$emit( 'input', image )
+    select: function (image) {
+      this.$emit('input', image)
     }
   }
 }

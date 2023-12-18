@@ -40,13 +40,13 @@ export default class LineBaseModifier {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData ( chartData, payload, store, module ) {
+  async postGetData (chartData, payload, store, module) {
     let resultDataObject = chartData.data
     let returnData = []
     let delta = 1
-    let startDate = new Date( payload.dateStart * 1000 )
+    let startDate = new Date(payload.dateStart * 1000)
     let monthDays = 1
-    switch ( payload.intervalUnit ) {
+    switch (payload.intervalUnit) {
       case 'minute':
         delta = 60
         break
@@ -57,7 +57,7 @@ export default class LineBaseModifier {
         delta = 86400
         break
       case 'month':
-        monthDays = new Date( startDate.getFullYear(), startDate.getMonth() + 1, 0 ).getDate()
+        monthDays = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate()
         delta = 60 * 60 * 24 * monthDays
         break
     }
@@ -66,19 +66,19 @@ export default class LineBaseModifier {
     // set the offset if there is one we need to account for
     const offset = payload.timeZoneOffset ? payload.timeZoneOffset : 0
 
-    for ( let i = payload.dateStart; i <= payload.dateEnd; i += delta ) {
+    for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
       try {
         let accumulator = 0
-        if ( isNaN( resultDataObject.get( i + delta ) ) || isNaN( resultDataObject.get( i ) ) ) {
+        if (isNaN(resultDataObject.get(i + delta)) || isNaN(resultDataObject.get(i))) {
           continue
         }
-        accumulator = resultDataObject.get( i + delta )
-        returnData.push( {
-          x: new Date( ( i + delta + offset ) * 1000 ),
+        accumulator = resultDataObject.get(i + delta)
+        returnData.push({
+          x: new Date((i + delta + offset) * 1000),
           y: accumulator
-        } )
-      } catch ( error ) {
-        console.log( error )
+        })
+      } catch (error) {
+        console.log(error)
       }
     }
     chartData.data = returnData
@@ -103,10 +103,10 @@ export default class LineBaseModifier {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData ( payload, store, module ) {
+  async preGetData (payload, store, module) {
     let delta = 1
-    let dataDate = new Date( payload.dateStart * 1000 )
-    switch ( payload.intervalUnit ) {
+    let dataDate = new Date(payload.dateStart * 1000)
+    switch (payload.intervalUnit) {
       case 'minute':
         delta = 60
         break
@@ -117,12 +117,12 @@ export default class LineBaseModifier {
         delta = 86400
         break
       case 'month':
-        let monthDays = new Date( dataDate.getFullYear(), dataDate.getMonth(), 0 ).getDate()
-        if ( dataDate.getDate() > monthDays ) monthDays = dataDate.getDate()
+        let monthDays = new Date(dataDate.getFullYear(), dataDate.getMonth(), 0).getDate()
+        if (dataDate.getDate() > monthDays) monthDays = dataDate.getDate()
         delta = 60 * 60 * 24 * monthDays
         break
     }
     delta *= payload.dateInterval
-    payload.dateStart = payload.dateStart - delta - ( payload.dateStart % 900 )
+    payload.dateStart = payload.dateStart - delta - (payload.dateStart % 900)
   }
 }

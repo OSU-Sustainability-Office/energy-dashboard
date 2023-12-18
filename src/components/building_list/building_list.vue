@@ -66,12 +66,12 @@ export default {
     }
   },
   async mounted () {
-    if ( this.buildingList ) {
+    if (this.buildingList) {
       await this.$store.getters['map/promise']
-      if ( this.$route.params.group && this.groups[this.$route.params.group] ) {
+      if (this.$route.params.group && this.groups[this.$route.params.group]) {
         this.openName = this.$route.params.group
       } else {
-        this.openName = Object.keys( this.groups )[0]
+        this.openName = Object.keys(this.groups)[0]
       }
       this.loading = false
     } else {
@@ -82,26 +82,26 @@ export default {
   computed: {
     buildingList: {
       get () {
-        return this.$route.path.includes( 'buildings' )
+        return this.$route.path.includes('buildings')
       }
     },
 
     groups: {
       get () {
-        if ( this.buildingList ) {
+        if (this.buildingList) {
           let r = {}
           // await this.$store.getters['map/promise']
           let buildings = this.$store.getters['map/buildings']
-          for ( let building of buildings ) {
-            if ( r['All'] ) {
-              r['All'].push( building )
-              r['All'].sort( ( a, b ) => ( a.name > b.name ? 1 : -1 ) )
+          for (let building of buildings) {
+            if (r['All']) {
+              r['All'].push(building)
+              r['All'].sort((a, b) => (a.name > b.name ? 1 : -1))
             } else {
               r['All'] = [building]
             }
-            if ( r[building.group] ) {
-              r[building.group].push( building )
-              r[building.group].sort( ( a, b ) => ( a.name > b.name ? 1 : -1 ) )
+            if (r[building.group]) {
+              r[building.group].push(building)
+              r[building.group].sort((a, b) => (a.name > b.name ? 1 : -1))
             } else {
               r[building.group] = [building]
             }
@@ -109,9 +109,9 @@ export default {
           let r2 = {
             All: r['All']
           }
-          let keys = Object.keys( r ).sort()
-          for ( let key of keys ) {
-            if ( key !== 'All' ) r2[key] = r[key]
+          let keys = Object.keys(r).sort()
+          for (let key of keys) {
+            if (key !== 'All') r2[key] = r[key]
           }
           return r2
         } else {
@@ -121,37 +121,37 @@ export default {
     }
   },
   watch: {
-    groups: function ( value ) {
+    groups: function (value) {
       this.search = ''
-      if ( this.$route.params.group && this.groups[this.$route.params.group] ) {
+      if (this.$route.params.group && this.groups[this.$route.params.group]) {
         this.openName = this.$route.params.group
       } else {
-        this.openName = Object.keys( this.groups )[0]
+        this.openName = Object.keys(this.groups)[0]
       }
     },
-    search: function ( v ) {
+    search: function (v) {
       let groups
-      if ( this.buildingList ) {
-        groups = Object.values( this.groups ).reduce( ( a, c ) => {
-          for ( let d of c ) a.push( d )
+      if (this.buildingList) {
+        groups = Object.values(this.groups).reduce((a, c) => {
+          for (let d of c) a.push(d)
           return a
-        }, [] )
+        }, [])
       } else {
         groups = this.groups
       }
       let values = groups
         .filter(
-          ( card, index, arr ) =>
+          (card, index, arr) =>
             // Check that the item's name includes query
-            ( card.name && card.name.toLowerCase().includes( v.toLowerCase() ) ) ||
+            (card.name && card.name.toLowerCase().includes(v.toLowerCase())) ||
             // Check that description includes query
-            ( card.description && card.description.toLowerCase().includes( v.toLowerCase() ) )
+            (card.description && card.description.toLowerCase().includes(v.toLowerCase()))
         )
-        .map( e => {
+        .map(e => {
           return e.id
-        } )
-      for ( let card of this.$refs.card ) {
-        if ( values.indexOf( card.id ) < 0 ) {
+        })
+      for (let card of this.$refs.card) {
+        if (values.indexOf(card.id) < 0) {
           card.$el.parentNode.style.display = 'none'
         } else {
           card.$el.parentNode.style.display = 'block'

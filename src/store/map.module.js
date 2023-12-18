@@ -15,115 +15,115 @@ const state = () => {
 }
 
 const actions = {
-  async loadBuilding ( store, payload ) {
+  async loadBuilding (store, payload) {
     let buildingSpace = 'building_' + payload.id.toString()
     let moduleSpace = store.getters.path + '/' + buildingSpace
-    this.registerModule( moduleSpace.split( '/' ), Building )
-    store.commit( buildingSpace + '/path', moduleSpace )
-    store.commit( buildingSpace + '/mapId', payload.mapId )
-    store.commit( buildingSpace + '/name', payload.name )
-    store.commit( buildingSpace + '/group', payload.group )
-    store.commit( buildingSpace + '/image', payload.image )
-    store.commit( buildingSpace + '/id', payload.id )
-    store.commit( buildingSpace + '/hidden', payload.hidden )
+    this.registerModule(moduleSpace.split('/'), Building)
+    store.commit(buildingSpace + '/path', moduleSpace)
+    store.commit(buildingSpace + '/mapId', payload.mapId)
+    store.commit(buildingSpace + '/name', payload.name)
+    store.commit(buildingSpace + '/group', payload.group)
+    store.commit(buildingSpace + '/image', payload.image)
+    store.commit(buildingSpace + '/id', payload.id)
+    store.commit(buildingSpace + '/hidden', payload.hidden)
     let mgPromises = []
-    for ( let meterGroup of payload.meterGroups ) {
-      mgPromises.push( store.dispatch( buildingSpace + '/loadMeterGroup', meterGroup ) )
+    for (let meterGroup of payload.meterGroups) {
+      mgPromises.push(store.dispatch(buildingSpace + '/loadMeterGroup', meterGroup))
     }
-    await Promise.all( mgPromises )
-    await store.dispatch( buildingSpace + '/buildDefaultBlocks' )
+    await Promise.all(mgPromises)
+    await store.dispatch(buildingSpace + '/buildDefaultBlocks')
   },
 
-  async loadGeometry ( store ) {
-    if ( store.getters.jsonPromise === null ) {
+  async loadGeometry (store) {
+    if (store.getters.jsonPromise === null) {
       store.commit(
         'jsonPromise',
-        new Promise( async ( resolve, reject ) => {
+        new Promise(async (resolve, reject) => {
           await store.getters.promise
 
           // Fetch Building Geometry from Overpass if it exists
-          const buildings = store.getters.buildings.filter( b => b.mapId )
-          const IDs = buildings.map( b => b.mapId ).join( ',' )
-          const geometryOSM = await API.buildingFeature( IDs )
+          const buildings = store.getters.buildings.filter(b => b.mapId)
+          const IDs = buildings.map(b => b.mapId).join(',')
+          const geometryOSM = await API.buildingFeature(IDs)
           const buildingParser = new DOMParser()
-          const buildingData = buildingParser.parseFromString( geometryOSM, 'text/xml' )
-          const JSON = Geo( buildingData )
+          const buildingData = buildingParser.parseFromString(geometryOSM, 'text/xml')
+          const JSON = Geo(buildingData)
 
           // Setup dictionary
           const ways = new Map()
-          for ( let feature of JSON.features ) {
-            if ( feature.id.includes( 'way' ) ) {
-              ways.set( feature.id, feature )
+          for (let feature of JSON.features) {
+            if (feature.id.includes('way')) {
+              ways.set(feature.id, feature)
             }
           }
 
           // Commit GeoJSON to each building module
-          for ( let building of buildings ) {
-            let way = ways.get( `way/${building.mapId}` )
-            if ( way ) {
+          for (let building of buildings) {
+            let way = ways.get(`way/${building.mapId}`)
+            if (way) {
               way.properties.id = building.id
               way.properties.group = building.group
-              this.commit( building.path + '/geoJSON', way )
+              this.commit(building.path + '/geoJSON', way)
             }
           }
 
           resolve()
-        } )
+        })
       )
     }
     return store.getters.jsonPromise
   },
 
-  async deleteBuilding ( store, payload ) {
+  async deleteBuilding (store, payload) {
     let buildingPath = ['map', 'building_' + payload.id]
-    this.unregisterModule( buildingPath )
-    API.building( 'delete', payload )
+    this.unregisterModule(buildingPath)
+    API.building('delete', payload)
   },
 
-  async newBuilding ( store, payload ) {
-    let building = await API.building( 'post', {
+  async newBuilding (store, payload) {
+    let building = await API.building('post', {
       image: payload.image,
       group: payload.group,
       mapId: payload.mapId,
       meters: payload.meters
-    } )
-    store.dispatch( 'loadBuilding', { id: building.data.id } )
+    })
+    store.dispatch('loadBuilding', { id: building.data.id })
   },
 
-  async allDevices ( store, payload ) {
+  async allDevices (store, payload) {
     return API.devices()
   },
 
-  async boundedWays ( store, payload ) {
-    let features = await API.boundedFeatures( payload )
+  async boundedWays (store, payload) {
+    let features = await API.boundedFeatures(payload)
     let parser = new DOMParser()
-    let xmlData = parser.parseFromString( features, 'text/xml' )
-    let geojson = Geo( xmlData )
-    let ways = geojson.features.filter( feature => feature.id.search( /way\/[0-9]+/ ) >= 0 && feature.properties.building )
+    let xmlData = parser.parseFromString(features, 'text/xml')
+    let geojson = Geo(xmlData)
+    let ways = geojson.features.filter(feature => feature.id.search(/way\/[0-9]+/) >= 0 && feature.properties.building)
     let promises = []
-    for ( let way of ways ) {
-      promises.push( store.dispatch( 'buildingJSON', way.id.replace( 'way/', '' ) ) )
+    for (let way of ways) {
+      promises.push(store.dispatch('buildingJSON', way.id.replace('way/', '')))
     }
-    return Promise.all( promises )
+    return Promise.all(promises)
   },
 
-  async imageList ( store ) {
+  async imageList (store) {
     return API.images()
   },
 
-  async loadMap ( store ) {
-    if ( store.getters.promise === null ) {
+  async loadMap (store) {
+    if (store.getters.promise === null) {
       store.commit(
         'promise',
-        new Promise( async ( resolve, reject ) => {
+        new Promise(async (resolve, reject) => {
           let buildingsResolved = await API.buildings()
           let buildingPromises = []
-          for ( let building of buildingsResolved ) {
-            buildingPromises.push( store.dispatch( 'loadBuilding', building ) )
+          for (let building of buildingsResolved) {
+            buildingPromises.push(store.dispatch('loadBuilding', building))
           }
-          await Promise.all( buildingPromises )
+          await Promise.all(buildingPromises)
           resolve()
-        } )
+        })
       )
     }
     return store.getters.promise
@@ -131,25 +131,25 @@ const actions = {
 }
 
 const mutations = {
-  promise ( state, promise ) {
+  promise (state, promise) {
     state.promise = promise
   },
 
-  jsonPromise: ( state, promise ) => {
+  jsonPromise: (state, promise) => {
     state.jsonPromise = promise
   }
 }
 
 const getters = {
-  path ( state ) {
+  path (state) {
     return state.path
   },
 
-  jsonPromise ( state ) {
+  jsonPromise (state) {
     return state.jsonPromise
   },
 
-  promise ( state ) {
+  promise (state) {
     return state.promise
   },
 
@@ -159,10 +159,10 @@ const getters = {
 
   buildingGroups: state => {
     let groups = new Set()
-    for ( let key of Object.keys( state ) ) {
-      if ( key.search( /building_/ ) >= 0 ) {
-        if ( state[key].group ) {
-          groups.add( state[key].group )
+    for (let key of Object.keys(state)) {
+      if (key.search(/building_/) >= 0) {
+        if (state[key].group) {
+          groups.add(state[key].group)
         }
       }
     }
@@ -171,10 +171,10 @@ const getters = {
 
   buildingsForGroup: state => group => {
     let buildings = []
-    for ( let key of Object.keys( state ) ) {
-      if ( key.search( /building_/ ) >= 0 && state[key].group === group ) {
-        if ( !state[key].hidden ) {
-          buildings.push( state[key] )
+    for (let key of Object.keys(state)) {
+      if (key.search(/building_/) >= 0 && state[key].group === group) {
+        if (!state[key].hidden) {
+          buildings.push(state[key])
         }
       }
     }
@@ -183,10 +183,10 @@ const getters = {
 
   buildings: state => {
     let buildings = []
-    for ( let key of Object.keys( state ) ) {
-      if ( key.search( /building_/ ) >= 0 ) {
-        if ( !state[key].hidden ) {
-          buildings.push( state[key] )
+    for (let key of Object.keys(state)) {
+      if (key.search(/building_/) >= 0) {
+        if (!state[key].hidden) {
+          buildings.push(state[key])
         }
       }
     }
@@ -195,11 +195,11 @@ const getters = {
 
   meterGroup: state => id => {
     let meterGroups = {}
-    for ( let key of Object.keys( state ) ) {
-      if ( key.search( /building_/ ) >= 0 ) {
-        for ( let buildingKey of Object.keys( state[key] ) ) {
-          if ( buildingKey.search( /meterGroup_/ >= 0 ) ) {
-            meterGroups[buildingKey.replace( 'meterGroup_', '' )] = state[key][buildingKey]
+    for (let key of Object.keys(state)) {
+      if (key.search(/building_/) >= 0) {
+        for (let buildingKey of Object.keys(state[key])) {
+          if (buildingKey.search(/meterGroup_/ >= 0)) {
+            meterGroups[buildingKey.replace('meterGroup_', '')] = state[key][buildingKey]
           }
         }
       }
