@@ -183,6 +183,7 @@ export default {
     compareBuildings: {
       get () {
         if ( !this.$route.path.includes( 'compare' ) ) return null
+        console.log( this.$route.params.buildings )
         return JSON.parse( decodeURI( this.$route.params.buildings ) ).map( id => this.$store.getters['map/building']( id ) )
       }
     },
@@ -192,7 +193,9 @@ export default {
           if ( !this.compareBuildings || this.compareBuildings.length === 0 || !this.compareBuildings[0] ) {
             return []
           }
+          console.log( this.compareBuildings )
           let building = this.$store.getters['map/building']( this.compareBuildings[0].id )
+          console.log( building )
           if ( !building ) return []
           let group = this.$store.getters[building.path + '/primaryGroup']( 'Electricity' )
           let block = this.$store.getters[building.path + '/block']( group.id )
