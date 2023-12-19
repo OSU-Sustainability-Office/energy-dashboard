@@ -54,6 +54,13 @@ export default class CompareModifier {
   }
 
   async removeOldCharts (store, mod, ids) {
+    // If we change the chartspace / chart id to support duplicate charts of the same building, we need to update this function
+    // E.g. if we make the chartspace from chart_<number> to chart_<number>_<another number>, the function below needs to support
+    // new syntax
+
+    // Also, see updateData function right above this, as well as view.vue line 90ish for call order
+
+    // Also, see block.module's unloadChart (this function calls unloadChart)
     // Consider moving await out of for loop
     for (let i in ids) {
       if (parseInt(i) !== 0) {
@@ -64,6 +71,9 @@ export default class CompareModifier {
   }
 
   async addCharts (store, mod, ids) {
+    // where adding new charts for comparison is handled. Either here or maybe in view.vue we need to rework
+    // to handle multiple charts of the same building via different chartname or something
+    console.log(mod.getters)
     let charts = []
     for (let i in ids) {
       if (parseInt(i) !== 0) {

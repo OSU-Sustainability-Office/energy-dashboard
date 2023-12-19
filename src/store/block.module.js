@@ -100,6 +100,7 @@ const actions = {
 
   async loadCharts (store, charts) {
     for (let chart of charts) {
+      // Duplicate chartSpace values trigger VueX getter error, need to fix this to support multiple charts
       let chartSpace = 'chart_' + chart.id
       let moduleSpace = store.getters.path + '/' + chartSpace
       this.registerModule(moduleSpace.split('/'), Chart)
@@ -224,7 +225,7 @@ const actions = {
           await this.getters[payload.group.path + '/meters'][0].promise
           utilityType = this.getters[this.getters[payload.group.path + '/meters'][0].path + '/type']
         }
-        // something here is important with name assign
+        // this defines the "default chart", "Total Electricity"
         store.commit(chartSpace + '/name', 'Total ' + utilityType)
         const pointMap = {
           Electricity: 'accumulated_real',
@@ -315,7 +316,7 @@ const actions = {
     for (let mod of store.getters.modifiers) {
       await mod.postData(this, store, data)
     }
-    // console.log(data, 'is chart data!')
+    console.log(data, 'is chart data!')
     return data
   }
 }

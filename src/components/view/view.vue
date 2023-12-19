@@ -81,9 +81,13 @@ export default {
       immediate: true,
       handler: async function (buildings) {
         if (this.$route.path.includes('compare')) {
+          // this.cards array only has one element in it
           console.log(this.cards[0])
           if (this.cards.length > 0 && this.cards[0]) {
+            console.log(buildings.map(building => building.id))
             await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
+            // addModifier and updateModifier below call src\store\block_modifiers\building_compare.mod.js
+            // and src\store\block.module.js to add new charts to comparison / remove old charts (duplicate chart path triggers error)
             await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
             await this.$store.dispatch(this.cards[0].path + '/updateModifier', {
               name: 'building_compare',
@@ -115,6 +119,7 @@ export default {
           }
         } else {
           for (let card of this.cards) {
+            console.log(card)
             if (!card.path) return
             this.$nextTick(() => {
               console.log(card)
