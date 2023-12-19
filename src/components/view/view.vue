@@ -85,13 +85,13 @@ export default {
           if (this.cards.length > 0 && this.cards[0]) {
             console.log(buildings.map(building => building.id))
             await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
-            // addModifier and updateModifier below call block.module.js, then building_compare.mod.js
-            // See addModifier and updateModifier functions in block.module.js code
-            // and src\store\block.module.js to add new charts to comparison / remove old charts (duplicate chart path triggers error)
+            // addModifier and updateModifier below call block.module.js, which then calls building_compare.mod.js
+            // See addModifier and updateModifier functions in block.module.js
+            // See addCharts and RemoveOldCharts in building_compare.mod.js
             await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
 
             // buildingIds below defines which buildingId are sent to block.module.js and then building_compare.mod.js,
-            // which also affects chartSpace naming
+            // which also affects chartSpace naming (duplicate chart path triggers error)
             await this.$store.dispatch(this.cards[0].path + '/updateModifier', {
               name: 'building_compare',
               data: {
