@@ -36,15 +36,29 @@ const actions = {
       ...store.getters.modifierData
     }
     console.log(store.getters.name)
-    let initdatestart = reqPayload.dateStart
+
+    // Reference: https://www.unixtimestamp.com/index.php
+    // Reference: https://playcode.io/1457582
+    let oct = 1697587199
+    let nov = 1700265599
+    let dec = 1702857599
+
+    // Grab the default value. Building page URL = `http://localhost:8080/#/compare/["16","29"] > building 16 is default
+    // Need a better way of doing this in future
     if (store.getters.name === 'Total Electricity') {
-      reqPayload.dateStart = 1700341200
+      reqPayload.dateStart = nov
+      reqPayload.dateEnd = dec
+    } else {
+      reqPayload.dateStart = oct
+      reqPayload.dateEnd = nov
     }
     console.log(reqPayload)
 
     const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
     await chartModifier.preGetData(reqPayload, this, store)
 
+    // This is the only API call you need for the data (avoid chart going to zero after shifting left).
+    // I just forgot to set the dateEnd for both scenarios earlier
     let data = await this.dispatch(store.getters.meterGroupPath + '/getData', reqPayload)
 
     if (store.getters.name === 'Total Electricity') {
@@ -54,13 +68,14 @@ const actions = {
         // console.log(newkey)
 
         // align new key with original datestart
-        testmap.set(newkey - (reqPayload.dateStart - initdatestart), data.get(newkey))
+        testmap.set(newkey - (nov - oct), data.get(newkey))
       }
       console.log(testmap)
 
-      // comment out the 2 lines below to test experimental moving chart left
+      // comment out the 3 lines below to test experimental moving chart left
       // data = testmap
-      // reqPayload.dateStart = initdatestart
+      // reqPayload.dateStart = oct
+      // reqPayload.dateEnd = nov
     }
     let chartData = {
       label: store.getters.name,
