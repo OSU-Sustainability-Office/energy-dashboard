@@ -82,13 +82,14 @@ export default {
       handler: async function (buildings) {
         if (this.$route.path.includes('compare')) {
           // this.cards array only has one element in it
-          console.log(this.cards[0])
           if (this.cards.length > 0 && this.cards[0]) {
             console.log(buildings.map(building => building.id))
             await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
             // addModifier and updateModifier below call src\store\block_modifiers\building_compare.mod.js
             // and src\store\block.module.js to add new charts to comparison / remove old charts (duplicate chart path triggers error)
             await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
+
+            // buildingIds below defines which buildingId are sent to building_compare.mod.js, which also affects chartSpace naming
             await this.$store.dispatch(this.cards[0].path + '/updateModifier', {
               name: 'building_compare',
               data: {
@@ -198,6 +199,8 @@ export default {
           if (!this.compareBuildings || this.compareBuildings.length === 0 || !this.compareBuildings[0]) {
             return []
           }
+          // unintuituively, this.compareBuildings[0].block_<some number> has all the comparison charts in it, and
+          // every other element in this.compareBuildings is ignored
           console.log(this.compareBuildings)
           let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
           console.log(building)

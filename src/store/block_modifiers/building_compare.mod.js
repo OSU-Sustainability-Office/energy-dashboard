@@ -76,6 +76,9 @@ export default class CompareModifier {
     console.log(mod.getters)
     let charts = []
     for (let i in ids) {
+      // they ignore index of 0 here due to loadDefault function in block.module.js ("Total Electricity" default block),
+      // which is called every time in addition to whatever is in loadCharts function of block.module.js (all charts in
+      // comparison after the first one)
       if (parseInt(i) !== 0) {
         let id = ids[i]
         let mgId = store.getters[store.getters['map/building'](id).path + '/primaryGroup']('Electricity').id
