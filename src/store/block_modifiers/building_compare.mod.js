@@ -39,6 +39,8 @@ export default class CompareModifier {
     await this.removeOldCharts(store, module, this.data.buildingIds)
   }
 
+  // I *think* updateModifier function from block.module.js lands here, not sure.
+  // updateData function below calls addCharts and removeOldCharts
   async updateData (store, mod, data) {
     /*
       Function is called when a block
@@ -90,6 +92,7 @@ export default class CompareModifier {
         })
       }
     }
+    // block.module.js loadCharts function is called here
     await store.dispatch(mod.getters.path + '/loadCharts', charts)
   }
 

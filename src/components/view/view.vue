@@ -86,15 +86,20 @@ export default {
             console.log(buildings.map(building => building.id))
             await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
             // addModifier and updateModifier below call block.module.js, which then calls building_compare.mod.js
-            // See addModifier and updateModifier functions in block.module.js
-            // See addCharts and RemoveOldCharts in building_compare.mod.js
             await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
 
-            // buildingIds below defines which buildingId are sent to block.module.js and then building_compare.mod.js,
-            // which also affects chartSpace naming (duplicate chart path triggers error)
+            // Full call order: view.vue's compareBuildings() > block.module.js's updateModifier >
+            // building_compare.mod.js's updateData() > building_compare.mod.js's addCharts() > block.module.js's loadCharts()
+
+            // Alternatively (building_compare_mod.js's updateData calls two things):
+            // view.vue's compareBuildings() > block.module.js's updateModifier > building_compare.mod.js's updateData() >
+            // building_compare.mod.js's removeOldCharts() > block.module.js's unloadChart()
+
             await this.$store.dispatch(this.cards[0].path + '/updateModifier', {
               name: 'building_compare',
               data: {
+                // buildingIds below defines which buildingId are sent to block.module.js and then building_compare.mod.js,
+                // which also affects chartSpace naming (duplicate chart path triggers error)
                 buildingIds: buildings.map(building => building.id)
               }
             })
@@ -122,7 +127,6 @@ export default {
           }
         } else {
           for (let card of this.cards) {
-            console.log(card)
             if (!card.path) return
             this.$nextTick(() => {
               console.log(card)

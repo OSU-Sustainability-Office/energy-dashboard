@@ -369,6 +369,7 @@ export default {
           const chartPath = charts[index].path
           this.$store.dispatch(chartPath + '/update', this.form.sets[index])
           // update legend name
+          // line below is what "resets" the chart name, maybe comment it out but needs more testing
           this.$store.commit(chartPath + '/name', this.$store.getters[chartPath + '/pointString'])
         } else {
           this.$store.dispatch(blockPath + '/newChart', this.form.sets[index])

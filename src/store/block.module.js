@@ -89,6 +89,8 @@ const actions = {
       throw new Error('Modifier not found on block')
     } else {
       const updatingMod = store.getters.modifiers[modIndex]
+
+      // I think this calls building_compare.mod.js's updateData function
       await updatingMod.updateData(this, store, payload.data)
     }
   },
@@ -115,6 +117,14 @@ const actions = {
       )
       await this.getters['map/promise']
       await this.getters['map/allBuildingPromise']
+      console.log(chartSpace)
+      // Example chartSpace: chart_29
+      // As a generalization, the first part of whatever is the input of store.commit determines where it goes. Check src/store
+      // Example: store.commit('chart_<something>`) will go to src\store\chart.module.js, 
+      // store.commit('map/<something>') will go to src\store\map.module.js
+      
+      // Example: store.commit(chartSpace/building) > search "buildings" in "mutations" section (I think), in chart.module file
+      // Mutations = change store value, getters = retrieve value. https://vuex.vuejs.org/guide/mutations
       store.commit(chartSpace + '/building', this.getters['map/meterGroup'](chart.meters).building)
       store.commit(chartSpace + '/meterGroupPath', this.getters['map/meterGroup'](chart.meters).path)
       store.commit(chartSpace + '/promise', Promise.resolve())
