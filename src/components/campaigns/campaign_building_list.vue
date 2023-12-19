@@ -62,101 +62,101 @@ export default {
     }
   },
   mounted () {
-    if ( this.path ) {
-      this.$emit( 'input', this.path + '/block_default' )
+    if (this.path) {
+      this.$emit('input', this.path + '/block_default')
     }
   },
   computed: {
     blocks: {
       get () {
         let blocks = this.$store.getters[this.path + '/blocks']
-        if ( !blocks ) {
+        if (!blocks) {
           return []
         }
-        blocks.sort( ( a, b ) => {
+        blocks.sort((a, b) => {
           try {
-            const aPercentage = this.accumulatedPercentage( a.path )
-            const bPercentage = this.accumulatedPercentage( b.path )
-            if ( aPercentage > bPercentage ) {
+            const aPercentage = this.accumulatedPercentage(a.path)
+            const bPercentage = this.accumulatedPercentage(b.path)
+            if (aPercentage > bPercentage) {
               return 1
             } else {
               return -1
             }
-          } catch ( error ) {
+          } catch (error) {
             return 1
           }
-        } )
+        })
 
         // Sort blocks with NaN percentages (no data) to the bottom
-        blocks.sort( ( a, b ) => {
+        blocks.sort((a, b) => {
           try {
-            const aPercentage = this.accumulatedPercentage( a.path )
-            const bPercentage = this.accumulatedPercentage( b.path )
-            if ( isNaN( aPercentage ) && !isNaN( bPercentage ) ) {
+            const aPercentage = this.accumulatedPercentage(a.path)
+            const bPercentage = this.accumulatedPercentage(b.path)
+            if (isNaN(aPercentage) && !isNaN(bPercentage)) {
               return 1
-            } else if ( isNaN( aPercentage ) || isNaN( bPercentage ) ) {
+            } else if (isNaN(aPercentage) || isNaN(bPercentage)) {
               return -1
             } else {
               return 1
             }
-          } catch ( error ) {
+          } catch (error) {
             return 1
           }
-        } )
+        })
         return blocks
       }
     }
   },
   methods: {
-    buildingClick: function ( building ) {
-      if ( this.value === building ) {
-        this.$emit( 'input', this.path + '/block_default' )
+    buildingClick: function (building) {
+      if (this.value === building) {
+        this.$emit('input', this.path + '/block_default')
       } else {
-        this.$emit( 'input', building )
+        this.$emit('input', building)
       }
     },
-    accumulatedPercentage: function ( path ) {
-      if ( this.$store.getters[path + '/modifierData'] ) {
-        return this.$store.getters[path + '/modifierData']( 'campaign_linebar' ).accumulatedPercentage
+    accumulatedPercentage: function (path) {
+      if (this.$store.getters[path + '/modifierData']) {
+        return this.$store.getters[path + '/modifierData']('campaign_linebar').accumulatedPercentage
       }
       return undefined
     },
-    place: function ( path ) {
-      return this.blocks.map( b => b.path ).indexOf( path ) + 1
+    place: function (path) {
+      return this.blocks.map(b => b.path).indexOf(path) + 1
     },
-    computedColor: function ( path ) {
-      if ( !this.$store.getters[path + '/modifierData']( 'campaign_linebar' ) ) {
+    computedColor: function (path) {
+      if (!this.$store.getters[path + '/modifierData']('campaign_linebar')) {
         return
       }
-      const percentage = this.accumulatedPercentage( path )
+      const percentage = this.accumulatedPercentage(path)
       // #d62326 - Bottom Red
       // #19a23a - Top Green
-      const redInt = [parseInt( '0xd6', 16 ), parseInt( '0x23', 16 ), parseInt( '0x26', 16 )]
-      const greenInt = [parseInt( '0x19', 16 ), parseInt( '0xa2', 16 ), parseInt( '0x3a', 16 )]
+      const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]
+      const greenInt = [parseInt('0x19', 16), parseInt('0xa2', 16), parseInt('0x3a', 16)]
       const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
-      const compare = Math.abs( percentage ) / 7.5
+      const compare = Math.abs(percentage) / 7.5
       const result = []
 
-      if ( percentage < -7.5 ) {
-        result.push( greenInt[0] )
-        result.push( greenInt[1] )
-        result.push( greenInt[2] )
-      } else if ( percentage > 7.5 ) {
-        result.push( redInt[0] )
-        result.push( redInt[1] )
-        result.push( redInt[2] )
-      } else if ( percentage < 0 ) {
-        result.push( Math.round( typicalColor[0] - redInt[0] * compare ) )
-        result.push( Math.round( typicalColor[1] + redInt[1] * compare ) )
-        result.push( Math.round( typicalColor[2] + redInt[2] * compare ) )
-      } else if ( isNaN( percentage ) ) {
-        result.push( greenInt[0] )
-        result.push( greenInt[0] )
-        result.push( greenInt[0] )
+      if (percentage < -7.5) {
+        result.push(greenInt[0])
+        result.push(greenInt[1])
+        result.push(greenInt[2])
+      } else if (percentage > 7.5) {
+        result.push(redInt[0])
+        result.push(redInt[1])
+        result.push(redInt[2])
+      } else if (percentage < 0) {
+        result.push(Math.round(typicalColor[0] - redInt[0] * compare))
+        result.push(Math.round(typicalColor[1] + redInt[1] * compare))
+        result.push(Math.round(typicalColor[2] + redInt[2] * compare))
+      } else if (isNaN(percentage)) {
+        result.push(greenInt[0])
+        result.push(greenInt[0])
+        result.push(greenInt[0])
       } else {
-        result.push( Math.round( typicalColor[0] + greenInt[0] * compare ) )
-        result.push( Math.round( typicalColor[1] - greenInt[1] * compare ) )
-        result.push( Math.round( typicalColor[2] - greenInt[2] * compare ) )
+        result.push(Math.round(typicalColor[0] + greenInt[0] * compare))
+        result.push(Math.round(typicalColor[1] - greenInt[1] * compare))
+        result.push(Math.round(typicalColor[2] - greenInt[2] * compare))
       }
       return 'rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')'
     }

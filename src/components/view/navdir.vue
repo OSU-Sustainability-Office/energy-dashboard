@@ -91,23 +91,23 @@ export default {
   computed: {
     viewOrBuilding: {
       get () {
-        if ( this.publicView ) {
-          return this.$store.getters['map/building']( this.$route.params.id )
+        if (this.publicView) {
+          return this.$store.getters['map/building'](this.$route.params.id)
         } else {
-          let view = this.$store.getters['user/view']( this.$route.params.id )
-          if ( !view ) view = this.$store.getters['view']
+          let view = this.$store.getters['user/view'](this.$route.params.id)
+          if (!view) view = this.$store.getters['view']
           return view
         }
       }
     },
     group1: {
       get () {
-        if ( this.publicView ) {
+        if (this.publicView) {
           let groups = this.$store.getters['map/buildingGroups']
           let rValue = []
 
-          for ( let group of groups ) {
-            rValue.push( { name: group, id: group } )
+          for (let group of groups) {
+            rValue.push({ name: group, id: group })
           }
           return rValue
         } else {
@@ -117,13 +117,13 @@ export default {
     },
     group2: {
       get () {
-        if ( !this.viewOrBuilding ) return
-        if ( this.publicView ) {
-          let buildings = this.$store.getters['map/buildingsForGroup']( this.viewOrBuilding.group )
+        if (!this.viewOrBuilding) return
+        if (this.publicView) {
+          let buildings = this.$store.getters['map/buildingsForGroup'](this.viewOrBuilding.group)
           let rValue = []
 
-          for ( let building of buildings ) {
-            rValue.push( { name: building.name, id: building.id } )
+          for (let building of buildings) {
+            rValue.push({ name: building.name, id: building.id })
           }
           return rValue
         } else {
@@ -133,8 +133,8 @@ export default {
     },
     group1Name: {
       get () {
-        if ( !this.viewOrBuilding ) return
-        if ( this.publicView ) {
+        if (!this.viewOrBuilding) return
+        if (this.publicView) {
           return this.viewOrBuilding.group
         } else {
           return this.viewOrBuilding.name
@@ -143,18 +143,18 @@ export default {
     },
     group2Name: {
       get () {
-        if ( !this.viewOrBuilding ) return
+        if (!this.viewOrBuilding) return
         return this.viewOrBuilding.name
       }
     },
     publicView: {
       get () {
-        return this.$route.path.includes( 'building' )
+        return this.$route.path.includes('building')
       }
     },
     otherView: {
       get () {
-        if ( this.viewOrBuilding.path === 'view' ) {
+        if (this.viewOrBuilding.path === 'view') {
           return true
         }
         return false
@@ -163,62 +163,62 @@ export default {
   },
   methods: {
     update: async function () {
-      this.path = this.$route.path.split( '/' )
-      if ( this.path.includes( 'building' ) ) {
+      this.path = this.$route.path.split('/')
+      if (this.path.includes('building')) {
         // Public View
         this.public = true
         this.dontShow = false
       } else {
         // Personal View
         this.public = false
-        if ( !this.viewOrBuilding ) {
+        if (!this.viewOrBuilding) {
           this.dontShow = true
         }
       }
     },
     copyUrl: function () {
-      const el = document.createElement( 'textArea' )
+      const el = document.createElement('textArea')
       el.value = window.location.href
-      el.setAttribute( 'readonly', '' )
+      el.setAttribute('readonly', '')
       el.style.position = 'absolute'
       el.style.left = '-9999px'
-      document.body.appendChild( el )
+      document.body.appendChild(el)
       el.select()
-      document.execCommand( 'copy' )
-      document.body.removeChild( el )
-      this.$message( {
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      this.$message({
         message: 'Link copied to clipboard',
         type: 'success'
-      } )
+      })
     },
     download: function () {
-      this.$store.dispatch( 'modalController/openModal', {
+      this.$store.dispatch('modalController/openModal', {
         name: 'download_data',
         view: this.viewOrBuilding.path
-      } )
+      })
     },
     populate: function () {
       this.filteredGroups = []
-      this.group = this.stories.find( p => {
-        return p.stories.find( e => {
+      this.group = this.stories.find(p => {
+        return p.stories.find(e => {
           return e.name === this.story.name
-        } )
-      } )
-      if ( !this.group ) {
+        })
+      })
+      if (!this.group) {
         return
       }
-      for ( let story of this.stories ) {
-        if ( story.public === this.group.public ) {
-          this.filteredGroups.push( story )
+      for (let story of this.stories) {
+        if (story.public === this.group.public) {
+          this.filteredGroups.push(story)
         }
       }
       this.navStories = this.group.stories
     },
-    handleSelect: function ( index ) {
-      if ( index[0] === '2' ) {
-        this.$nextTick( () => {
-          this.$emit( 'update' )
-        } )
+    handleSelect: function (index) {
+      if (index[0] === '2') {
+        this.$nextTick(() => {
+          this.$emit('update')
+        })
       }
     }
   }

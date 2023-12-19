@@ -14,9 +14,9 @@ import contact from '@/components/extras/contact.vue'
 import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
 import buildingList from '@/components/building_list/building_list.vue'
 
-Vue.use( Router )
+Vue.use(Router)
 
-export default new Router( {
+export default new Router({
   routes: [
     {
       path: '/',
@@ -72,4 +72,4 @@ export default new Router( {
       component: notfound
     }
   ]
-} )
+})

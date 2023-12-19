@@ -40,10 +40,10 @@ export default class LineAvgModifier {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData ( chartData, payload, store, module ) {
+  async postGetData (chartData, payload, store, module) {
     let returnData = []
     let delta = 1
-    switch ( payload.intervalUnit ) {
+    switch (payload.intervalUnit) {
       case 'minute':
         delta = 60
         break
@@ -57,56 +57,56 @@ export default class LineAvgModifier {
     delta *= payload.dateInterval
     let baselineData = chartData.data
     let differenceBaseline = new Map()
-    for ( let i = payload.dateStart; i <= payload.dateEnd; i += delta ) {
+    for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
       try {
-        if ( isNaN( baselineData.get( i + delta ) ) || isNaN( baselineData.get( i ) ) ) {
+        if (isNaN(baselineData.get(i + delta)) || isNaN(baselineData.get(i))) {
           continue
         }
-        differenceBaseline.set( i + delta, baselineData.get( i + delta ) - baselineData.get( i ) )
+        differenceBaseline.set(i + delta, baselineData.get(i + delta) - baselineData.get(i))
         // returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
-      } catch ( error ) {
-        console.log( error )
+      } catch (error) {
+        console.log(error)
       }
     }
     let avgbins = []
-    for ( let dow = 0; dow < 7; dow++ ) {
+    for (let dow = 0; dow < 7; dow++) {
       let startDate = payload.dateStart
-      while ( new Date( startDate * 1000 ).getDay() !== dow ) {
+      while (new Date(startDate * 1000).getDay() !== dow) {
         startDate += 60 * 60 * 24
       }
-      avgbins.push( [] )
+      avgbins.push([])
       let begin = startDate
-      for ( let tod = 0; tod < ( 60 * 60 * 24 ) / delta; tod++ ) {
+      for (let tod = 0; tod < (60 * 60 * 24) / delta; tod++) {
         startDate = begin + tod * delta
         let count = 0
         let value = -1
-        while ( startDate <= payload.dateEnd ) {
+        while (startDate <= payload.dateEnd) {
           try {
-            if ( !isNaN( differenceBaseline.get( startDate ) ) ) {
+            if (!isNaN(differenceBaseline.get(startDate))) {
               count++
-              value += differenceBaseline.get( startDate )
+              value += differenceBaseline.get(startDate)
             }
-          } catch ( error ) {
-            console.log( error )
+          } catch (error) {
+            console.log(error)
           }
           startDate += 60 * 60 * 24 * 7
         }
-        if ( count > 0 ) value /= count
-        avgbins[dow].push( value )
+        if (count > 0) value /= count
+        avgbins[dow].push(value)
       }
     }
-    for ( let i = this.dateStart; i < this.dateEnd; i += delta ) {
+    for (let i = this.dateStart; i < this.dateEnd; i += delta) {
       try {
         let baselinePoint =
-          avgbins[new Date( ( i + delta ) * 1000 ).getDay()][Math.floor( ( ( i + delta ) % ( 60 * 60 * 24 ) ) / delta )]
-        returnData.push( { x: new Date( ( i + delta ) * 1000 ), y: baselinePoint } )
-      } catch ( error ) {
-        console.log( error )
+          avgbins[new Date((i + delta) * 1000).getDay()][Math.floor(((i + delta) % (60 * 60 * 24)) / delta)]
+        returnData.push({ x: new Date((i + delta) * 1000), y: baselinePoint })
+      } catch (error) {
+        console.log(error)
       }
     }
     // console.log(returnData)
     // Prevent corrupted data from getting returned
-    if ( returnData.filter( o => !isNaN( o.y ) && o.y > -1 ).length > 0 ) {
+    if (returnData.filter(o => !isNaN(o.y) && o.y > -1).length > 0) {
       chartData.data = returnData
     } else {
       chartData.data = []
@@ -133,13 +133,13 @@ export default class LineAvgModifier {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData ( payload, store, module ) {
-    if ( payload.intervalUnit === 'day' && payload.dateInterval > 1 ) {
-      throw new Error( 'Time difference interval too large to work correctly' )
+  async preGetData (payload, store, module) {
+    if (payload.intervalUnit === 'day' && payload.dateInterval > 1) {
+      throw new Error('Time difference interval too large to work correctly')
     }
     let delta = 1
-    let dataDate = new Date( payload.dateStart * 1000 )
-    switch ( payload.intervalUnit ) {
+    let dataDate = new Date(payload.dateStart * 1000)
+    switch (payload.intervalUnit) {
       case 'minute':
         delta = 60
         break
@@ -150,13 +150,13 @@ export default class LineAvgModifier {
         delta = 86400
         break
       case 'month':
-        let monthDays = new Date( dataDate.getFullYear(), dataDate.getMonth(), 0 ).getDate()
-        if ( dataDate.getDate() > monthDays ) monthDays = dataDate.getDate()
+        let monthDays = new Date(dataDate.getFullYear(), dataDate.getMonth(), 0).getDate()
+        if (dataDate.getDate() > monthDays) monthDays = dataDate.getDate()
         delta = 60 * 60 * 24 * monthDays
         break
     }
     delta *= payload.dateInterval
-    payload.dateStart = payload.dateStart - delta - ( payload.dateStart % 900 )
+    payload.dateStart = payload.dateStart - delta - (payload.dateStart % 900)
 
     this.dateStart = payload.dateStart
     this.dateEnd = payload.dateEnd

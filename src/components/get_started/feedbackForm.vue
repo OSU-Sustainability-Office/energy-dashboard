@@ -38,17 +38,17 @@ export default {
     }
   },
   methods: {
-    submitForm ( formName ) {
-      this.$refs[formName].validate( valid => {
-        if ( valid ) {
-          alert( 'submit!' )
+    submitForm (formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          alert('submit!')
         } else {
-          console.log( 'error submit!!' )
+          console.log('error submit!!')
           return false
         }
-      } )
+      })
     },
-    resetForm ( formName ) {
+    resetForm (formName) {
       this.$refs[formName].resetFields()
     }
   }

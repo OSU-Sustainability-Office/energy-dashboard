@@ -33,8 +33,8 @@
 <script>
 export default {
   methods: {
-    handle: function ( command ) {
-      this.$emit( 'compare', command )
+    handle: function (command) {
+      this.$emit('compare', command)
     }
   }
 }

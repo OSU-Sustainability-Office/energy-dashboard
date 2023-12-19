@@ -14,7 +14,7 @@ export default {
     }
   },
   mounted () {
-    if ( this.media ) {
+    if (this.media) {
       this.$refs.card.style.background =
         'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' +
         this.media +
@@ -27,10 +27,10 @@ export default {
   computed: {
     buildingOrStory: {
       get () {
-        if ( this.building ) {
-          return this.$store.getters['map/building']( this.id )
+        if (this.building) {
+          return this.$store.getters['map/building'](this.id)
         } else {
-          return this.$store.getters['user/view']( this.id )
+          return this.$store.getters['user/view'](this.id)
         }
       }
     },
@@ -52,26 +52,26 @@ export default {
   },
 
   methods: {
-    hover: function ( enter ) {
-      if ( this.$refs.toolbox ) {
-        if ( enter ) {
+    hover: function (enter) {
+      if (this.$refs.toolbox) {
+        if (enter) {
           this.$refs.toolbox.style.display = 'block'
         } else {
           this.$refs.toolbox.style.display = 'none'
         }
       }
     },
-    clicked: function ( event ) {
-      if ( event.target.parentNode.classList.contains( 'toolbox' ) || event.target.classList.contains( 'toolbox' ) ) {
+    clicked: function (event) {
+      if (event.target.parentNode.classList.contains('toolbox') || event.target.classList.contains('toolbox')) {
         return
       }
-      this.$emit( 'click' )
+      this.$emit('click')
     }
   },
 
   watch: {
-    selected: function ( value ) {
-      if ( value ) {
+    selected: function (value) {
+      if (value) {
         this.$refs.card.style.borderColor = 'rgb(215,63,9)'
         this.$refs.card.style.borderWidth = '4px'
       } else {

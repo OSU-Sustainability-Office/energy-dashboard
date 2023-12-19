@@ -98,26 +98,26 @@ export default {
   computed: {
     days: {
       get () {
-        if ( !this.campaignPath ) return ''
+        if (!this.campaignPath) return ''
         let start = this.campaignStart
         let end = this.campaignEnd
 
-        return Math.floor( ( end - start ) / ( 1000 * 60 * 60 * 24 ) ) + 1
+        return Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1
       }
     },
     campaignStart: {
       get () {
-        if ( !this.campaignPath ) return ''
+        if (!this.campaignPath) return ''
         return this.$store.getters[this.campaignPath + '/dateStart']
       }
     },
     campaignEnd: {
       get () {
-        if ( !this.campaignPath ) return ''
+        if (!this.campaignPath) return ''
         let end = this.$store.getters[this.campaignPath + '/dateEnd']
         let current = new Date().getTime()
 
-        if ( current < end ) {
+        if (current < end) {
           return current
         } else {
           return end
@@ -126,39 +126,39 @@ export default {
     },
     blocks: {
       get () {
-        if ( !this.campaignPath ) return []
+        if (!this.campaignPath) return []
         // We need to copy this or adding the default block will change the return value of
         // the store
-        let blocks = new Array( ...this.$store.getters[this.campaignPath + '/blocks'] )
-        blocks.push( this.$store.getters[this.campaignPath + '/defaultBlock'] )
+        let blocks = new Array(...this.$store.getters[this.campaignPath + '/blocks'])
+        blocks.push(this.$store.getters[this.campaignPath + '/defaultBlock'])
         return blocks
       }
     },
     campaignPath: {
       get () {
-        if ( !this.$store.getters['campaigns/campaign']( this.$route.params.id ) ) {
+        if (!this.$store.getters['campaigns/campaign'](this.$route.params.id)) {
           return null
         }
-        return this.$store.getters['campaigns/campaign']( this.$route.params.id ).path
+        return this.$store.getters['campaigns/campaign'](this.$route.params.id).path
       }
     },
     media: {
       get () {
-        if ( !this.campaignPath ) return ''
+        if (!this.campaignPath) return ''
         return this.$store.getters[this.campaignPath + '/media']
       }
     },
     name: {
       get () {
-        if ( !this.campaignPath ) return ''
+        if (!this.campaignPath) return ''
         return this.$store.getters[this.campaignPath + '/name']
       }
     }
   },
   async mounted () {
     this.loaded = false
-    await this.$store.dispatch( 'campaigns/loadCampaigns' )
-    await this.$store.dispatch( this.campaignPath + '/buildBlocks' )
+    await this.$store.dispatch('campaigns/loadCampaigns')
+    await this.$store.dispatch(this.campaignPath + '/buildBlocks')
     this.blockPath = this.campaignPath + '/block_default'
     this.loaded = true
   },

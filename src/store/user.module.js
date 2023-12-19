@@ -15,61 +15,61 @@ const state = () => {
 }
 
 const actions = {
-  async loadViews ( store, views ) {
+  async loadViews (store, views) {
     let promises = []
-    for ( let view of views ) {
+    for (let view of views) {
       let viewSpace = 'view_' + view.id
       let moduleSpace = store.getters.path + '/' + viewSpace
-      this.registerModule( moduleSpace.split( '/' ), View )
-      store.commit( viewSpace + '/path', moduleSpace )
-      let userViewPromise = store.dispatch( viewSpace + '/loadBlocks', view.blocks )
-      store.commit( viewSpace + '/promise', userViewPromise )
-      promises.push( userViewPromise )
-      store.commit( viewSpace + '/name', view.name )
-      store.commit( viewSpace + '/image', view.media )
-      store.commit( viewSpace + '/id', view.id )
-      store.commit( viewSpace + '/user', store.getters.onid )
+      this.registerModule(moduleSpace.split('/'), View)
+      store.commit(viewSpace + '/path', moduleSpace)
+      let userViewPromise = store.dispatch(viewSpace + '/loadBlocks', view.blocks)
+      store.commit(viewSpace + '/promise', userViewPromise)
+      promises.push(userViewPromise)
+      store.commit(viewSpace + '/name', view.name)
+      store.commit(viewSpace + '/image', view.media)
+      store.commit(viewSpace + '/id', view.id)
+      store.commit(viewSpace + '/user', store.getters.onid)
     }
-    await Promise.all( promises )
+    await Promise.all(promises)
   },
 
-  async newView ( store, payload ) {
-    let id = ( await API.view( null, { media: payload.media, name: payload.name }, 'post' ) ).id
+  async newView (store, payload) {
+    let id = (await API.view(null, { media: payload.media, name: payload.name }, 'post')).id
     let viewSpace = 'view_' + id
     let moduleSpace = store.getters.path + '/' + viewSpace
-    this.registerModule( moduleSpace.split( '/' ), View )
-    store.commit( viewSpace + '/path', moduleSpace )
-    store.commit( viewSpace + '/name', payload.name )
-    store.commit( viewSpace + '/image', payload.media )
-    store.commit( viewSpace + '/id', id )
+    this.registerModule(moduleSpace.split('/'), View)
+    store.commit(viewSpace + '/path', moduleSpace)
+    store.commit(viewSpace + '/name', payload.name)
+    store.commit(viewSpace + '/image', payload.media)
+    store.commit(viewSpace + '/id', id)
   },
 
-  async deleteView ( store, id ) {
-    let view = store.getters.view( id )
-    await this.dispatch( view.path + '/delete' )
-    this.unregisterModule( view.path.split( '/' ) )
+  async deleteView (store, id) {
+    let view = store.getters.view(id)
+    await this.dispatch(view.path + '/delete')
+    this.unregisterModule(view.path.split('/'))
   },
 
-  async user ( store ) {
-    if ( store.getters.promise === null ) {
+  async user (store) {
+    if (store.getters.promise === null) {
       store.commit(
         'promise',
-        new Promise( async ( resolve, reject ) => {
+        new Promise(async (resolve, reject) => {
           try {
             let data = await API.user()
-            if ( data.onid !== '' ) {
-              store.commit( 'onid', data.onid )
+            if (data.onid !== '') {
+              store.commit('onid', data.onid)
               let edashData = await API.edashUser()
-              store.commit( 'privilege', edashData.privilege )
+              store.commit('privilege', edashData.privilege)
               // await store.dispatch('loadViews', edashData.appData['energyDashboard'].views)
               // store.commit('alerts', edashData.alerts)
             }
-            resolve( store.getters )
-          } catch ( error ) {
-            reject( error )
+            resolve(store.getters)
+          } catch (error) {
+            reject(error)
             // Do nothing, likely failed because no cookie has been made yet (user not logged in)
           }
-        } )
+        })
       )
     }
     return store.getters.promise
@@ -77,65 +77,65 @@ const actions = {
 }
 
 const mutations = {
-  onid ( state, onid ) {
+  onid (state, onid) {
     state.onid = onid
   },
 
-  privilege ( state, privilege ) {
+  privilege (state, privilege) {
     state.privilege = privilege
   },
 
-  views ( state, views ) {
+  views (state, views) {
     state.views = views
   },
 
-  alerts ( state, alerts ) {
+  alerts (state, alerts) {
     state.alerts = alerts
   },
 
-  promise ( state, promise ) {
+  promise (state, promise) {
     state.promise = promise
   }
 }
 
 const getters = {
-  onid ( state ) {
+  onid (state) {
     return state.onid
   },
 
   view: state => id => {
     let r = {}
-    for ( let key of Object.keys( state ) ) {
-      if ( key.search( /view_[0-9]+/ ) >= 0 ) {
-        r[key.replace( 'view_', '' )] = state[key]
+    for (let key of Object.keys(state)) {
+      if (key.search(/view_[0-9]+/) >= 0) {
+        r[key.replace('view_', '')] = state[key]
       }
     }
     return r[id]
   },
 
-  promise ( state ) {
+  promise (state) {
     return state.promise
   },
 
-  privilege ( state ) {
+  privilege (state) {
     return state.privilege
   },
 
-  views ( state ) {
+  views (state) {
     let r = []
-    for ( let key of Object.keys( state ) ) {
-      if ( key.search( /view_[0-9]+/ ) >= 0 ) {
-        r.push( state[key] )
+    for (let key of Object.keys(state)) {
+      if (key.search(/view_[0-9]+/) >= 0) {
+        r.push(state[key])
       }
     }
     return r
   },
 
-  alerts ( state ) {
+  alerts (state) {
     return state.alerts
   },
 
-  path ( state ) {
+  path (state) {
     return state.path
   }
 }
