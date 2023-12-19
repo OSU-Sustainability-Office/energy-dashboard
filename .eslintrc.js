@@ -34,6 +34,6 @@ module.exports = {
     'vue/no-use-v-if-with-v-for': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'space-in-parens': [1, 'always']
+    'space-in-parens': [1, 'never']
   }
 }

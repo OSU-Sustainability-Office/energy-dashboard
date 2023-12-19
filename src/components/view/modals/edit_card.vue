@@ -278,29 +278,29 @@ export default {
         return this.$store.getters['modalController/modalName'] === 'edit_card'
       },
 
-      set ( value ) {
-        if ( value === false ) {
-          this.$store.dispatch( 'modalController/closeModal' )
+      set (value) {
+        if (value === false) {
+          this.$store.dispatch('modalController/closeModal')
         }
       }
     },
     compareView: {
       get () {
-        return this.$route.path.includes( 'compare' )
+        return this.$route.path.includes('compare')
       }
     },
     personalView: {
       get () {
         let viewPath = this.$store.getters['modalController/data'].path
-        if ( !viewPath ) {
+        if (!viewPath) {
           viewPath = this.$store.getters['modalController/data'].view
         } else {
-          viewPath = viewPath.split( '/' )
+          viewPath = viewPath.split('/')
           viewPath.pop()
-          viewPath = viewPath.join( '/' )
+          viewPath = viewPath.join('/')
         }
-        if ( viewPath ) {
-          if ( this.$store.getters[viewPath + '/user'] === this.$store.getters['user/onid'] ) {
+        if (viewPath) {
+          if (this.$store.getters[viewPath + '/user'] === this.$store.getters['user/onid']) {
             return true
           }
         }
@@ -331,52 +331,52 @@ export default {
     cardDelete: async function () {
       let blockPath = this.$store.getters['modalController/data'].path
       let blockId = this.$store.getters[blockPath + '/id']
-      let viewPath = blockPath.split( '/' )
+      let viewPath = blockPath.split('/')
       viewPath.pop()
-      viewPath = viewPath.join( '/' )
+      viewPath = viewPath.join('/')
 
-      this.$store.dispatch( viewPath + '/deleteBlock', blockId )
+      this.$store.dispatch(viewPath + '/deleteBlock', blockId)
       this.visible = false
     },
 
     cardSave: async function () {
       let blockPath = this.$store.getters['modalController/data'].path
-      if ( !blockPath ) {
+      if (!blockPath) {
         let view = this.$store.getters['modalController/data'].view
-        blockPath = await this.$store.dispatch( view + '/newBlock', {
+        blockPath = await this.$store.dispatch(view + '/newBlock', {
           dateStart: this.form.start,
           dateEnd: this.form.end,
           graphType: this.form.graphType,
           name: this.form.name,
-          dateInterval: this.date( this.form.intUnit ),
-          intervalUnit: this.interval( this.form.intUnit )
-        } )
+          dateInterval: this.date(this.form.intUnit),
+          intervalUnit: this.interval(this.form.intUnit)
+        })
       } else {
-        this.$store.dispatch( blockPath + '/update', {
+        this.$store.dispatch(blockPath + '/update', {
           dateStart: this.form.start,
           dateEnd: this.form.end,
           graphType: this.form.graphType,
           name: this.form.name,
-          dateInterval: this.date( this.form.intUnit ),
-          intervalUnit: this.interval( this.form.intUnit )
-        } )
+          dateInterval: this.date(this.form.intUnit),
+          intervalUnit: this.interval(this.form.intUnit)
+        })
       }
 
       const charts = this.$store.getters[blockPath + '/charts']
 
-      for ( let index in this.form.sets ) {
-        if ( index < charts.length ) {
+      for (let index in this.form.sets) {
+        if (index < charts.length) {
           const chartPath = charts[index].path
-          this.$store.dispatch( chartPath + '/update', this.form.sets[index] )
+          this.$store.dispatch(chartPath + '/update', this.form.sets[index])
           // update legend name
-          this.$store.commit( chartPath + '/name', this.$store.getters[chartPath + '/pointString'] )
+          this.$store.commit(chartPath + '/name', this.$store.getters[chartPath + '/pointString'])
         } else {
-          this.$store.dispatch( blockPath + '/newChart', this.form.sets[index] )
+          this.$store.dispatch(blockPath + '/newChart', this.form.sets[index])
         }
       }
-      if ( this.form.sets.length < charts.length ) {
-        for ( let index = this.form.sets.length; index < charts.length; index++ ) {
-          this.$store.dispatch( blockPath + '/removeChart', charts[index].path.split( '/' ).pop() )
+      if (this.form.sets.length < charts.length) {
+        for (let index = this.form.sets.length; index < charts.length; index++) {
+          this.$store.dispatch(blockPath + '/removeChart', charts[index].path.split('/').pop())
         }
       }
 
@@ -384,13 +384,13 @@ export default {
     },
 
     deleteChart: function () {
-      this.form.sets.splice( this.currentIndex, 1 )
+      this.form.sets.splice(this.currentIndex, 1)
       this.currentIndex = 0
     },
 
     updateForm: function () {
       const blockPath = this.$store.getters['modalController/data'].path
-      if ( blockPath ) {
+      if (blockPath) {
         this.form.new = false
 
         this.form.name = this.$store.getters[blockPath + '/name']
@@ -403,14 +403,14 @@ export default {
         this.form.graphType = this.$store.getters[blockPath + '/graphType']
 
         this.form.sets = []
-        for ( let chart of this.$store.getters[blockPath + '/charts'] ) {
+        for (let chart of this.$store.getters[blockPath + '/charts']) {
           const chartSet = {
             name: chart.name,
             building: this.$store.getters[chart.meterGroupPath + '/building'],
             meter: chart.meterGroupPath,
             point: chart.point
           }
-          this.form.sets.push( chartSet )
+          this.form.sets.push(chartSet)
         }
       } else {
         this.form.new = true
@@ -429,15 +429,15 @@ export default {
         ]
       }
     },
-    dateValidator: function ( rule, value, callback ) {
-      if ( !value ) {
-        callback( new Error( rule.message ) )
+    dateValidator: function (rule, value, callback) {
+      if (!value) {
+        callback(new Error(rule.message))
       } else {
         callback()
       }
     },
-    interval: function ( intUnit ) {
-      switch ( intUnit ) {
+    interval: function (intUnit) {
+      switch (intUnit) {
         case 1:
           return 'minute'
         case 2:
@@ -452,8 +452,8 @@ export default {
           return 'minute'
       }
     },
-    date: function ( intUnit ) {
-      switch ( intUnit ) {
+    date: function (intUnit) {
+      switch (intUnit) {
         case 1:
           return 15
         case 2:
@@ -469,39 +469,39 @@ export default {
       }
     },
 
-    intUnit: function ( intervalUnit, dateInterval ) {
-      if ( dateInterval === 15 && intervalUnit === 'minute' ) {
+    intUnit: function (intervalUnit, dateInterval) {
+      if (dateInterval === 15 && intervalUnit === 'minute') {
         return 1
-      } else if ( dateInterval === 1 && intervalUnit === 'hour' ) {
+      } else if (dateInterval === 1 && intervalUnit === 'hour') {
         return 2
-      } else if ( dateInterval === 1 && intervalUnit === 'day' ) {
+      } else if (dateInterval === 1 && intervalUnit === 'day') {
         return 3
-      } else if ( dateInterval === 7 && intervalUnit === 'day' ) {
+      } else if (dateInterval === 7 && intervalUnit === 'day') {
         return 4
-      } else if ( dateInterval === 1 && intervalUnit === 'month' ) {
+      } else if (dateInterval === 1 && intervalUnit === 'month') {
         return 5
       }
     },
 
-    buttonVariant: function ( index ) {
-      if ( index === this.currentIndex ) {
+    buttonVariant: function (index) {
+      if (index === this.currentIndex) {
         return 'primary'
       } else {
         return 'info'
       }
     },
 
-    changeIndex: function ( index ) {
+    changeIndex: function (index) {
       this.currentIndex = index
     },
 
     addGroup: function () {
-      this.form.sets.push( {
+      this.form.sets.push({
         name: '',
         building: '',
         meter: '',
         point: ''
-      } )
+      })
     }
   }
 }

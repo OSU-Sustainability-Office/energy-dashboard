@@ -39,37 +39,37 @@ export default {
     }
   },
   async mounted () {
-    await this.$store.dispatch( 'campaigns/loadCampaigns' )
+    await this.$store.dispatch('campaigns/loadCampaigns')
     this.loaded = true
-    for ( let camp of this.$store.getters['campaigns/campaigns'] ) {
-      if ( this.checkDate( camp.dateEnd ) && !camp.name.toLowerCase().startsWith( 'test' ) ) {
-        console.log( this.checkDate( camp.dateEnd ) )
-        this.currentCampaigns.push( camp )
-      } else if ( !camp.name.toLowerCase().startsWith( 'test' ) ) {
-        this.pastCampaigns.push( camp )
+    for (let camp of this.$store.getters['campaigns/campaigns']) {
+      if (this.checkDate(camp.dateEnd) && !camp.name.toLowerCase().startsWith('test')) {
+        console.log(this.checkDate(camp.dateEnd))
+        this.currentCampaigns.push(camp)
+      } else if (!camp.name.toLowerCase().startsWith('test')) {
+        this.pastCampaigns.push(camp)
       } else if (
-        this.checkDate( camp.dateEnd ) &&
-        camp.name.toLowerCase().startsWith( 'test' ) &&
+        this.checkDate(camp.dateEnd) &&
+        camp.name.toLowerCase().startsWith('test') &&
         process.env.VUE_APP_HOST_ADDRESS === 'http://localhost:8080'
       ) {
-        this.currentCampaigns.push( camp )
+        this.currentCampaigns.push(camp)
       } else if (
-        camp.name.toLowerCase().startsWith( 'test' ) &&
+        camp.name.toLowerCase().startsWith('test') &&
         process.env.VUE_APP_HOST_ADDRESS === 'http://localhost:8080'
       ) {
-        this.pastCampaigns.push( camp )
+        this.pastCampaigns.push(camp)
       }
     }
-    this.currentCampaigns.sort( ( a, b ) => {
-      return new Date( b.dateEnd ).getTime() - new Date( a.dateEnd ).getTime()
-    } )
-    this.pastCampaigns.sort( ( a, b ) => {
-      return new Date( b.dateEnd ).getTime() - new Date( a.dateEnd ).getTime()
-    } )
+    this.currentCampaigns.sort((a, b) => {
+      return new Date(b.dateEnd).getTime() - new Date(a.dateEnd).getTime()
+    })
+    this.pastCampaigns.sort((a, b) => {
+      return new Date(b.dateEnd).getTime() - new Date(a.dateEnd).getTime()
+    })
   },
   methods: {
-    checkDate: function ( end ) {
-      return new Date().getTime() < new Date( end ).getTime()
+    checkDate: function (end) {
+      return new Date().getTime() < new Date(end).getTime()
     }
   }
 }

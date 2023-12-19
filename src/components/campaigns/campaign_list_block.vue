@@ -26,8 +26,8 @@ export default {
       'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/' + this.camp.media + '")'
   },
   filters: {
-    trunc: function ( val ) {
-      const d = new Date( val )
+    trunc: function (val) {
+      const d = new Date(val)
       return d.getMonth() + 1 + '/' + d.getDate() + '/' + d.getFullYear()
     }
   }

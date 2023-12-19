@@ -88,17 +88,17 @@ export default {
     },
     block: {
       get () {
-        let mgId = this.$store.getters[this.path + '/primaryGroup']( 'Electricity' ).id
-        return this.$store.getters[this.path + '/block']( mgId )
+        let mgId = this.$store.getters[this.path + '/primaryGroup']('Electricity').id
+        return this.$store.getters[this.path + '/block'](mgId)
       }
     },
     name: {
       get () {
-        if ( !this.buildings ) return
-        let names = this.buildings.map( building => this.$store.getters[building.path + '/name'] )
+        if (!this.buildings) return
+        let names = this.buildings.map(building => this.$store.getters[building.path + '/name'])
         let r = ''
-        for ( let index in names ) {
-          if ( index > 0 ) {
+        for (let index in names) {
+          if (index > 0) {
             r += ' vs '
           }
           r += names[index]
@@ -108,16 +108,16 @@ export default {
     },
     buildings: {
       get () {
-        if ( !this.block ) return
-        let buildingIds = this.$store.getters[this.block.path + '/modifierData']( 'building_compare' ).buildingIds
-        return buildingIds.map( id => this.$store.getters['map/building']( id ) )
+        if (!this.block) return
+        let buildingIds = this.$store.getters[this.block.path + '/modifierData']('building_compare').buildingIds
+        return buildingIds.map(id => this.$store.getters['map/building'](id))
       }
     },
     mediaArray: {
       get () {
-        if ( !this.buildings ) return
-        let buildingImages = this.buildings.map( building => this.$store.getters[building.path + '/image'] )
-        while ( buildingImages.length > 4 ) buildingImages.pop()
+        if (!this.buildings) return
+        let buildingImages = this.buildings.map(building => this.$store.getters[building.path + '/image'])
+        while (buildingImages.length > 4) buildingImages.pop()
         return buildingImages
       }
     }
@@ -131,24 +131,24 @@ export default {
   methods: {
     dateOffset: function () {
       var d = new Date()
-      if ( this.currentRange === 0 ) {
-        d.setDate( d.getDate() - 7 )
-      } else if ( this.currentRange === 1 ) {
-        d.setMonth( d.getMonth() - 1 )
-      } else if ( this.currentRange === 2 ) {
-        d.setFullYear( d.getFullYear() - 1 )
+      if (this.currentRange === 0) {
+        d.setDate(d.getDate() - 7)
+      } else if (this.currentRange === 1) {
+        d.setMonth(d.getMonth() - 1)
+      } else if (this.currentRange === 2) {
+        d.setFullYear(d.getFullYear() - 1)
       }
       return d.toISOString()
     },
     update: function () {
       this.$refs.lineChartController.parse()
     },
-    classForIndex: function ( index ) {
-      if ( this.mediaArray.length === 1 ) {
+    classForIndex: function (index) {
+      if (this.mediaArray.length === 1) {
         return 'slantImage unCut'
-      } else if ( index === 0 ) {
+      } else if (index === 0) {
         return 'slantImage leftEnd'
-      } else if ( index + 1 === this.mediaArray.length || index >= 3 ) {
+      } else if (index + 1 === this.mediaArray.length || index >= 3) {
         return 'slantImage rightEnd'
       } else {
         return 'slantImage'

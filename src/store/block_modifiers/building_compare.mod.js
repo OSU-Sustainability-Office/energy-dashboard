@@ -8,7 +8,7 @@
 export default class CompareModifier {
   static name = 'building_compare'
 
-  constructor ( store, module ) {
+  constructor (store, module) {
     /*
       Initialize the modifier here,
       this is only an example modifier that
@@ -22,7 +22,7 @@ export default class CompareModifier {
     }
   }
 
-  async onAdd ( store, module ) {
+  async onAdd (store, module) {
     /*
       Function is called when a modifier
       is added to a block. Store is Vuex store
@@ -30,57 +30,57 @@ export default class CompareModifier {
     */
   }
 
-  async onRemove ( store, module ) {
+  async onRemove (store, module) {
     /*
       Function is called when a modifier
       is removed from a block. Store is Vuex store
       module is block module.
     */
-    await this.removeOldCharts( store, module, this.data.buildingIds )
+    await this.removeOldCharts(store, module, this.data.buildingIds)
   }
 
-  async updateData ( store, mod, data ) {
+  async updateData (store, mod, data) {
     /*
       Function is called when a block
       updates modifier data. Store is Vuex store
       module is block module, data is new incoming
       data.
     */
-    if ( data.buildingIds ) {
-      await this.removeOldCharts( store, mod, this.data.buildingIds )
+    if (data.buildingIds) {
+      await this.removeOldCharts(store, mod, this.data.buildingIds)
       this.data.buildingIds = data.buildingIds
-      await this.addCharts( store, mod, this.data.buildingIds )
+      await this.addCharts(store, mod, this.data.buildingIds)
     }
   }
 
-  async removeOldCharts ( store, mod, ids ) {
+  async removeOldCharts (store, mod, ids) {
     // Consider moving await out of for loop
-    for ( let i in ids ) {
-      if ( parseInt( i ) !== 0 ) {
+    for (let i in ids) {
+      if (parseInt(i) !== 0) {
         let id = ids[i]
-        await store.dispatch( mod.getters.path + '/unloadChart', id )
+        await store.dispatch(mod.getters.path + '/unloadChart', id)
       }
     }
   }
 
-  async addCharts ( store, mod, ids ) {
+  async addCharts (store, mod, ids) {
     let charts = []
-    for ( let i in ids ) {
-      if ( parseInt( i ) !== 0 ) {
+    for (let i in ids) {
+      if (parseInt(i) !== 0) {
         let id = ids[i]
-        let mgId = store.getters[store.getters['map/building']( id ).path + '/primaryGroup']( 'Electricity' ).id
-        charts.push( {
+        let mgId = store.getters[store.getters['map/building'](id).path + '/primaryGroup']('Electricity').id
+        charts.push({
           id: id,
-          name: this.buildingName( store, id ),
+          name: this.buildingName(store, id),
           point: 'accumulated_real',
           meters: mgId
-        } )
+        })
       }
     }
-    await store.dispatch( mod.getters.path + '/loadCharts', charts )
+    await store.dispatch(mod.getters.path + '/loadCharts', charts)
   }
 
-  async preData ( store, module, data ) {
+  async preData (store, module, data) {
     /*
       Function is called when a block
       updates modifier data. Store is Vuex store
@@ -89,23 +89,23 @@ export default class CompareModifier {
     */
   }
 
-  color ( index, module ) {
+  color (index, module) {
     return module.getters.chartColors[index]
   }
 
-  buildingName ( store, id ) {
-    return store.getters[store.getters['map/building']( id ).path + '/name']
+  buildingName (store, id) {
+    return store.getters[store.getters['map/building'](id).path + '/name']
   }
 
-  async postData ( store, module, data ) {
+  async postData (store, module, data) {
     /*
       Function is called when a block
       updates modifier data. Store is Vuex store
       module is block module, data is new incoming
       data.
     */
-    if ( this.data.buildingIds[0] ) {
-      data.datasets[0].label = this.buildingName( store, this.data.buildingIds[0] )
+    if (this.data.buildingIds[0]) {
+      data.datasets[0].label = this.buildingName(store, this.data.buildingIds[0])
     }
   }
 }

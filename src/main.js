@@ -18,11 +18,11 @@ import 'element-ui/lib/theme-chalk/reset.css'
 import '@/assets/style-variables.scss'
 
 // Link Vue Instance w/ Vuex Interface
-Vue.use( Vuex )
+Vue.use(Vuex)
 // Compatibility stuff for Element UI
-Vue.use( Vuei18n )
-Vue.use( elm, { locale: locale } )
-Vue.use( AsyncComputed )
+Vue.use(Vuei18n)
+Vue.use(elm, { locale: locale })
+Vue.use(AsyncComputed)
 
 // Should probably offload this to a .env
 // let REMINDER = "ReMEmBER TO RESET THE VALUES HERE FRIENDO"
@@ -31,10 +31,10 @@ Vue.config.devtools = false
 Vue.config.lang = 'en'
 
 /* eslint-disable no-new */
-var v = new Vue( {
+var v = new Vue({
   el: '#app',
   router,
-  store: new Vuex.Store( StoreConfig ),
-  render: h => h( App )
-} )
+  store: new Vuex.Store(StoreConfig),
+  render: h => h(App)
+})
 window.vue = v

@@ -26,9 +26,9 @@ export default {
   },
   async created () {
     // On load, grab building/meter/map information from the API.
-    await this.$store.dispatch( 'map/loadMap' )
+    await this.$store.dispatch('map/loadMap')
     // Also check if user is logged in.
-    this.$store.dispatch( 'user/user' )
+    this.$store.dispatch('user/user')
   },
   data () {
     return {
@@ -46,28 +46,28 @@ export default {
   },
   mounted () {
     // This is the first-timer pop-up window
-    if ( !document.cookie.split( ';' ).some( cookieString => cookieString.includes( 'firstTimer' ) ) ) {
-      this.$msgbox( {
+    if (!document.cookie.split(';').some(cookieString => cookieString.includes('firstTimer'))) {
+      this.$msgbox({
         title: 'First Timer?',
         message: 'Take a look at the "FAQ" tab for some info on how to get started!',
         showCancelButton: true,
         confirmButtonText: 'OK',
         cancelButtonText: 'Never Show This Message Again',
         distinguishCancelAndClose: true,
-        callback: function ( action ) {
-          if ( action === 'cancel' ) {
+        callback: function (action) {
+          if (action === 'cancel') {
             const cookieDate = new Date()
-            cookieDate.setFullYear( new Date().getFullYear() + 10 )
+            cookieDate.setFullYear(new Date().getFullYear() + 10)
             document.cookie = 'firstTimer=true; expires=' + cookieDate.toUTCString() + ';'
           }
         }
-      } )
+      })
     }
   },
   watch: {
-    $route: function ( to, from ) {
+    $route: function (to, from) {
       // transition in
-      if ( to.path.length > from.path.length ) {
+      if (to.path.length > from.path.length) {
         this.transitionName = 'pageTo'
       } else {
         // transition out

@@ -30,26 +30,26 @@ export default {
         },
         tooltips: {
           callbacks: {
-            title: function ( item, data ) {
-              let d = new Date( item[0].xLabel )
+            title: function (item, data) {
+              let d = new Date(item[0].xLabel)
               let meridiem = 'am'
               let hours = d.getHours()
-              if ( hours > 12 ) {
+              if (hours > 12) {
                 hours -= 12
                 meridiem = 'pm'
-              } else if ( hours === 0 ) {
+              } else if (hours === 0) {
                 hours = 12
               }
               let minutes = d.getMinutes()
-              if ( minutes < 10 ) {
+              if (minutes < 10) {
                 minutes = '0' + minutes
               }
-              let year = d.getYear().toString().slice( 1 )
+              let year = d.getYear().toString().slice(1)
               const dayCodes = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
               return (
                 dayCodes[d.getDay()] +
                 ' ' +
-                ( d.getMonth() + 1 ).toString() +
+                (d.getMonth() + 1).toString() +
                 '/' +
                 d.getDate() +
                 '/' +
@@ -62,13 +62,13 @@ export default {
                 meridiem
               )
             },
-            label: ( item, data ) => {
+            label: (item, data) => {
               return (
                 this.$parent.chartData.datasets[item.datasetIndex].label +
                 ': ' +
-                parseFloat( item.yLabel ).toFixed( 2 ) +
+                parseFloat(item.yLabel).toFixed(2) +
                 ' ' +
-                this.$parent.unit( item.datasetIndex )
+                this.$parent.unit(item.datasetIndex)
               )
             }
           }
@@ -87,12 +87,12 @@ export default {
             fontColor: this.primaryColor,
             fontFamily: 'Open Sans'
           },
-          onHover: function ( e ) {
+          onHover: function (e) {
             e.target.style.cursor = 'pointer'
           }
         },
         hover: {
-          onHover: function ( e ) {
+          onHover: function (e) {
             e.target.style.cursor = 'default'
           }
         },
@@ -117,8 +117,8 @@ export default {
                 color: this.secondaryColor
               },
               scaleLabel: {
-                display: this.$parent.buildLabel( 'y' ) !== '',
-                labelString: this.$parent.buildLabel( 'y' ),
+                display: this.$parent.buildLabel('y') !== '',
+                labelString: this.$parent.buildLabel('y'),
                 fontSize: 12,
                 fontColor: this.primaryColor,
                 fontFamily: 'Open Sans'
@@ -142,8 +142,8 @@ export default {
                 source: 'data'
               },
               scaleLabel: {
-                display: this.$parent.buildLabel( 'y' ) !== '',
-                labelString: this.$parent.buildLabel( 'x' ),
+                display: this.$parent.buildLabel('y') !== '',
+                labelString: this.$parent.buildLabel('x'),
                 fontSize: 12,
                 fontColor: this.primaryColor,
                 fontFamily: 'Open Sans'
@@ -164,7 +164,7 @@ export default {
     }
   },
   mounted () {
-    this.renderChart( this.chartData, this.options )
+    this.renderChart(this.chartData, this.options)
   },
   watch: {
     // chartData: function(value) {
@@ -172,7 +172,7 @@ export default {
     // }
   },
   methods: {
-    setOptions: function ( opts ) {
+    setOptions: function (opts) {
       this.options = opts
       this.$data._chart.options = this.options
       // this.renderChart(this.chartData, this.options)

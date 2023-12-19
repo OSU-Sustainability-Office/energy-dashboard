@@ -130,7 +130,7 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
 
 <script>
 import ChartModifier from '@/store/chart_modifiers/index'
-var JSZip = require( 'jszip' )
+var JSZip = require('jszip')
 export default {
   data () {
     return {
@@ -148,8 +148,8 @@ export default {
   watch: {
     buildingsFiltered: {
       immediate: true,
-      handler: function ( value ) {
-        if ( value.length > 0 ) this.addBuildingId = value[0].id
+      handler: function (value) {
+        if (value.length > 0) this.addBuildingId = value[0].id
       }
     }
   },
@@ -159,22 +159,22 @@ export default {
         return this.$store.getters['modalController/modalName'] === 'download_data'
       },
 
-      set ( value ) {
-        if ( value === false ) {
-          this.$store.dispatch( 'modalController/closeModal' )
+      set (value) {
+        if (value === false) {
+          this.$store.dispatch('modalController/closeModal')
         }
       }
     },
     meterPoints: {
       get () {
         let points = []
-        for ( let building of this.form.buildings ) {
-          for ( let group of building.groups ) {
-            let meters = this.$store.getters[this.$store.getters['map/meterGroup']( group ).path + '/meters']
-            for ( let meter of meters ) {
-              for ( let point of meter.points ) {
-                let index = points.map( o => o.value ).indexOf( point.value )
-                if ( index < 0 ) points.push( point )
+        for (let building of this.form.buildings) {
+          for (let group of building.groups) {
+            let meters = this.$store.getters[this.$store.getters['map/meterGroup'](group).path + '/meters']
+            for (let meter of meters) {
+              for (let point of meter.points) {
+                let index = points.map(o => o.value).indexOf(point.value)
+                if (index < 0) points.push(point)
               }
             }
           }
@@ -184,14 +184,14 @@ export default {
     },
     buildingsFiltered: {
       get () {
-        if ( !this.buildings ) return []
-        let buildingsCopy = new Array( ...this.buildings )
-        let buildingIds = buildingsCopy.map( o => parseInt( o.id ) )
-        for ( let building of this.form.buildings ) {
+        if (!this.buildings) return []
+        let buildingsCopy = new Array(...this.buildings)
+        let buildingIds = buildingsCopy.map(o => parseInt(o.id))
+        for (let building of this.form.buildings) {
           let id = building.id
-          let index = buildingIds.indexOf( parseInt( id ) )
-          if ( index >= 0 ) buildingsCopy.splice( index, 1 )
-          buildingIds = buildingsCopy.map( o => parseInt( o.id ) )
+          let index = buildingIds.indexOf(parseInt(id))
+          if (index >= 0) buildingsCopy.splice(index, 1)
+          buildingIds = buildingsCopy.map(o => parseInt(o.id))
         }
         return buildingsCopy
       }
@@ -208,14 +208,14 @@ export default {
     addBuilding: function () {
       const building = {
         id: this.addBuildingId,
-        name: this.$store.getters['map/building']( this.addBuildingId ).name,
+        name: this.$store.getters['map/building'](this.addBuildingId).name,
         groups: []
       }
-      this.form.buildings.push( building )
+      this.form.buildings.push(building)
     },
 
-    groups: function ( buildingId ) {
-      return this.$store.getters[this.$store.getters['map/building']( buildingId ).path + '/meterGroups']
+    groups: function (buildingId) {
+      return this.$store.getters[this.$store.getters['map/building'](buildingId).path + '/meterGroups']
     },
 
     download: async function () {
@@ -255,28 +255,28 @@ export default {
         baseline_percentage: 'Percentage (%)'
       }
       let promises = []
-      for ( let point of this.form.points ) {
-        let groups = this.form.buildings.reduce( ( acc, cur ) => {
-          return acc.concat( cur.groups )
-        }, [] )
+      for (let point of this.form.points) {
+        let groups = this.form.buildings.reduce((acc, cur) => {
+          return acc.concat(cur.groups)
+        }, [])
         const req = {
           point: point,
-          dateStart: parseInt( this.form.start / 1000 ),
-          dateEnd: parseInt( this.form.end / 1000 ),
-          intervalUnit: this.interval( this.form.intUnit ),
-          dateInterval: this.date( this.form.intUnit ),
+          dateStart: parseInt(this.form.start / 1000),
+          dateEnd: parseInt(this.form.end / 1000),
+          intervalUnit: this.interval(this.form.intUnit),
+          dateInterval: this.date(this.form.intUnit),
           graphType: 1
         }
-        for ( let group of groups ) {
-          let groupPoints = this.$store.getters[this.$store.getters['map/meterGroup']( group ).path + '/points']
-          let findex = groupPoints.map( o => o.value ).indexOf( req.point )
-          if ( findex >= 0 ) {
+        for (let group of groups) {
+          let groupPoints = this.$store.getters[this.$store.getters['map/meterGroup'](group).path + '/points']
+          let findex = groupPoints.map(o => o.value).indexOf(req.point)
+          if (findex >= 0) {
             promises.push(
-              new Promise( async ( resolve, reject ) => {
-                const chartModifier = ChartModifier( req.graphType, req.point )
-                await chartModifier.preGetData( req, this.$store, null )
+              new Promise(async (resolve, reject) => {
+                const chartModifier = ChartModifier(req.graphType, req.point)
+                await chartModifier.preGetData(req, this.$store, null)
                 let data = await this.$store.dispatch(
-                  this.$store.getters['map/meterGroup']( group ).path + '/getData',
+                  this.$store.getters['map/meterGroup'](group).path + '/getData',
                   req
                 )
                 // Mimic what the chart modifier expects so there is no issues
@@ -290,34 +290,34 @@ export default {
                   data: data
                 }
 
-                await chartModifier.postGetData( chartData, req, this.$store, null )
-                resolve( {
+                await chartModifier.postGetData(chartData, req, this.$store, null)
+                resolve({
                   point: map[point],
-                  group: this.$store.getters['map/meterGroup']( group ).name,
+                  group: this.$store.getters['map/meterGroup'](group).name,
                   data: chartData.data
-                } )
-              } )
+                })
+              })
             )
           }
         }
       }
-      let dlData = await Promise.all( promises )
-      for ( let dl of dlData ) {
+      let dlData = await Promise.all(promises)
+      for (let dl of dlData) {
         let organizedData = [`Time,${dl.point}`]
-        for ( let d of dl.data ) {
-          organizedData.push( `${d.x},${d.y}` )
+        for (let d of dl.data) {
+          organizedData.push(`${d.x},${d.y}`)
         }
-        let stringRep = organizedData.join( '\n' )
-        zip.file( `${dl.group} ${dl.point}.csv`, stringRep )
+        let stringRep = organizedData.join('\n')
+        zip.file(`${dl.group} ${dl.point}.csv`, stringRep)
       }
-      zip.generateAsync( { type: 'blob' } ).then( blob => {
-        let a = window.document.createElement( 'a' )
-        a.href = window.URL.createObjectURL( blob, { type: 'text/plain' } )
-        a.download = `EnergyData ${new Date( this.form.start ).toString()} - ${new Date( this.form.end ).toString()}`
-        document.body.appendChild( a )
+      zip.generateAsync({ type: 'blob' }).then(blob => {
+        let a = window.document.createElement('a')
+        a.href = window.URL.createObjectURL(blob, { type: 'text/plain' })
+        a.download = `EnergyData ${new Date(this.form.start).toString()} - ${new Date(this.form.end).toString()}`
+        document.body.appendChild(a)
         a.click()
-        document.body.removeChild( a )
-      } )
+        document.body.removeChild(a)
+      })
     },
 
     updateForm: function () {
@@ -328,54 +328,54 @@ export default {
       this.form.intUnit = 5
 
       const path = this.$store.getters['modalController/data'].view
-      for ( let block of this.$store.getters[path + '/blocks'] ) {
+      for (let block of this.$store.getters[path + '/blocks']) {
         let start = this.$store.getters[block.path + '/dateStart']
         let end = this.$store.getters[block.path + '/dateEnd']
 
         let interval = this.$store.getters[block.path + '/dateInterval']
         let unit = this.$store.getters[block.path + '/intervalUnit']
 
-        let intUnit = this.intUnit( unit, interval )
+        let intUnit = this.intUnit(unit, interval)
 
-        if ( !this.form.start || this.form.start === '' || parseInt( start ) < this.form.start ) {
-          this.form.start = parseInt( start )
+        if (!this.form.start || this.form.start === '' || parseInt(start) < this.form.start) {
+          this.form.start = parseInt(start)
         }
-        if ( !this.form.end || this.form.end === '' || parseInt( end ) > this.form.end ) {
-          this.form.end = parseInt( end )
+        if (!this.form.end || this.form.end === '' || parseInt(end) > this.form.end) {
+          this.form.end = parseInt(end)
         }
-        if ( !this.form.intUnit || this.form.intUnit === '' || parseInt( intUnit ) < this.form.intUnit ) {
-          this.form.intUnit = parseInt( intUnit )
+        if (!this.form.intUnit || this.form.intUnit === '' || parseInt(intUnit) < this.form.intUnit) {
+          this.form.intUnit = parseInt(intUnit)
         }
 
-        for ( let chart of this.$store.getters[block.path + '/charts'] ) {
+        for (let chart of this.$store.getters[block.path + '/charts']) {
           let mg = chart.meterGroupPath
           let bgPath = this.$store.getters[mg + '/building']
-          if ( this.form.points.indexOf( chart.point ) < 0 ) {
-            this.form.points.push( chart.point )
+          if (this.form.points.indexOf(chart.point) < 0) {
+            this.form.points.push(chart.point)
           }
           const bldg = {
             name: this.$store.getters[bgPath + '/name'],
             id: this.$store.getters[bgPath + '/id'],
             groups: [this.$store.getters[mg + '/id']]
           }
-          let index = this.form.buildings.map( o => o.id ).indexOf( bldg.id )
-          if ( index >= 0 ) {
-            this.form.buildings[index].groups.push( bldg.groups[0] )
+          let index = this.form.buildings.map(o => o.id).indexOf(bldg.id)
+          if (index >= 0) {
+            this.form.buildings[index].groups.push(bldg.groups[0])
           } else {
-            this.form.buildings.push( bldg )
+            this.form.buildings.push(bldg)
           }
         }
       }
     },
-    dateValidator: function ( rule, value, callback ) {
-      if ( !value ) {
-        callback( new Error( rule.message ) )
+    dateValidator: function (rule, value, callback) {
+      if (!value) {
+        callback(new Error(rule.message))
       } else {
         callback()
       }
     },
-    interval: function ( intUnit ) {
-      switch ( intUnit ) {
+    interval: function (intUnit) {
+      switch (intUnit) {
         case 1:
           return 'minute'
         case 2:
@@ -390,8 +390,8 @@ export default {
           return 'minute'
       }
     },
-    date: function ( intUnit ) {
-      switch ( intUnit ) {
+    date: function (intUnit) {
+      switch (intUnit) {
         case 1:
           return 15
         case 2:
@@ -407,16 +407,16 @@ export default {
       }
     },
 
-    intUnit: function ( intervalUnit, dateInterval ) {
-      if ( dateInterval === 15 && intervalUnit === 'minute' ) {
+    intUnit: function (intervalUnit, dateInterval) {
+      if (dateInterval === 15 && intervalUnit === 'minute') {
         return 1
-      } else if ( dateInterval === 1 && intervalUnit === 'hour' ) {
+      } else if (dateInterval === 1 && intervalUnit === 'hour') {
         return 2
-      } else if ( dateInterval === 1 && intervalUnit === 'day' ) {
+      } else if (dateInterval === 1 && intervalUnit === 'day') {
         return 3
-      } else if ( dateInterval === 7 && intervalUnit === 'day' ) {
+      } else if (dateInterval === 7 && intervalUnit === 'day') {
         return 4
-      } else if ( dateInterval === 1 && intervalUnit === 'month' ) {
+      } else if (dateInterval === 1 && intervalUnit === 'month') {
         return 5
       }
     }

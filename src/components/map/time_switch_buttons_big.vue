@@ -31,9 +31,9 @@ export default {
   watch: {
     blocks: {
       immediate: true,
-      handler: async function ( value ) {
+      handler: async function (value) {
         this.currentRange = -1
-        if ( this.campaign ) {
+        if (this.campaign) {
           this.currentRange = 2
         } else {
           this.currentRange = 1
@@ -42,22 +42,22 @@ export default {
     },
     currentRange: {
       immediate: true,
-      handler: async function ( value ) {
-        if ( value < 0 ) return
+      handler: async function (value) {
+        if (value < 0) return
         let intervalUnit = 'minute'
         let dateInterval = 15
         let time = new Date().getTime()
-        let dateEnd = time - ( time % ( 900 * 1000 ) )
+        let dateEnd = time - (time % (900 * 1000))
         let startModifier = 7 * 24 * 60 * 60 * 1000
-        if ( !this.campaign ) {
-          if ( value === 0 ) {
+        if (!this.campaign) {
+          if (value === 0) {
             intervalUnit = 'hour'
             dateInterval = 6
             startModifier = 7 * 24 * 60 * 60 * 1000
-          } else if ( value === 1 ) {
+          } else if (value === 1) {
             // start 60 days ago
             startModifier = 60 * 24 * 60 * 60 * 1000
-            if ( this.blocks[0].name === 'Solar Panel' ) {
+            if (this.blocks[0].name === 'Solar Panel') {
               intervalUnit = 'hour'
               dateInterval = 1
               // We push it back 1 day since solar data is day older than regular meter data
@@ -74,11 +74,11 @@ export default {
           }
         } else {
           dateEnd = this.campaignDateEnd
-          if ( value === 0 ) {
+          if (value === 0) {
             intervalUnit = 'minute'
             dateInterval = 15
             startModifier = 6 * 60 * 60 * 1000
-          } else if ( value === 1 ) {
+          } else if (value === 1) {
             intervalUnit = 'hour'
             dateInterval = 2
             startModifier = 24 * 60 * 60 * 1000
@@ -87,18 +87,18 @@ export default {
             dateInterval = 1
           }
         }
-        let dateStart = new Date( dateEnd ).getTime() - startModifier
-        if ( this.campaign && value === 2 ) {
+        let dateStart = new Date(dateEnd).getTime() - startModifier
+        if (this.campaign && value === 2) {
           dateStart = this.campaignDateStart
         }
 
-        for ( let block of this.blocks ) {
+        for (let block of this.blocks) {
           // if (!block.promise) continue
           await block.promise
-          this.$store.commit( block.path + '/dateInterval', dateInterval )
-          this.$store.commit( block.path + '/intervalUnit', intervalUnit )
-          this.$store.commit( block.path + '/dateStart', dateStart )
-          this.$store.commit( block.path + '/dateEnd', dateEnd )
+          this.$store.commit(block.path + '/dateInterval', dateInterval)
+          this.$store.commit(block.path + '/intervalUnit', intervalUnit)
+          this.$store.commit(block.path + '/dateStart', dateStart)
+          this.$store.commit(block.path + '/dateEnd', dateEnd)
 
           /* Forces the campaign accumulated real stats to update
              Probably a better way to do this but for now it will
@@ -114,8 +114,8 @@ export default {
             So, I'm adding a prop-flag to toggle it... for now!
               - Milan
           */
-          if ( this.forceUpdate ) {
-            this.$store.dispatch( block.path + '/getData' )
+          if (this.forceUpdate) {
+            this.$store.dispatch(block.path + '/getData')
           }
         }
       }
@@ -123,18 +123,18 @@ export default {
   },
   methods: {
     dateOffset: function () {
-      let dateS = new Date( this.story.date_end )
+      let dateS = new Date(this.story.date_end)
       let dateN = new Date()
       let d = dateN
-      if ( this.campaign && dateN > dateS ) {
+      if (this.campaign && dateN > dateS) {
         d = dateS
       }
-      if ( this.currentRange === 0 ) {
-        this.campaign ? d.setHours( d.getHours() - 6 ) : d.setDate( d.getDate() - 7 )
-      } else if ( this.currentRange === 1 ) {
-        this.campaign ? d.setDate( d.getDate() - 1 ) : d.setDate( d.getDate() - 60 )
-      } else if ( this.currentRange === 2 ) {
-        this.campaign ? ( d = new Date( this.story.date_start ) ) : d.setFullYear( d.getFullYear() - 1 )
+      if (this.currentRange === 0) {
+        this.campaign ? d.setHours(d.getHours() - 6) : d.setDate(d.getDate() - 7)
+      } else if (this.currentRange === 1) {
+        this.campaign ? d.setDate(d.getDate() - 1) : d.setDate(d.getDate() - 60)
+      } else if (this.currentRange === 2) {
+        this.campaign ? (d = new Date(this.story.date_start)) : d.setFullYear(d.getFullYear() - 1)
       }
       return d.toISOString()
     }

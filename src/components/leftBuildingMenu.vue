@@ -31,12 +31,12 @@ export default {
   },
   methods: {
     toggleFlag: function () {
-      if ( this.isSmallScreen ) {
+      if (this.isSmallScreen) {
         this.flag2 = !this.flag2
-        EventBus.$emit( 'inputData', this.flag2 )
+        EventBus.$emit('inputData', this.flag2)
       } else {
         this.flag = !this.flag
-        EventBus.$emit( 'inputData', this.flag )
+        EventBus.$emit('inputData', this.flag)
       }
     }
   }

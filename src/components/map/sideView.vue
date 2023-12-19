@@ -105,22 +105,22 @@ export default {
 
     building: {
       get () {
-        return this.$store.getters['map/building']( this.$store.getters['modalController/data'].id )
+        return this.$store.getters['map/building'](this.$store.getters['modalController/data'].id)
       }
     }
   },
   methods: {
     hide: function () {
-      this.$emit( 'hide' )
+      this.$emit('hide')
     },
     next: function () {
-      if ( this.index + 1 >= this.buildingBlocks.length ) {
+      if (this.index + 1 >= this.buildingBlocks.length) {
         return
       }
       this.index++
     },
     prev: function () {
-      if ( this.index - 1 < 0 ) {
+      if (this.index - 1 < 0) {
         return
       }
       this.index--
@@ -129,40 +129,40 @@ export default {
   watch: {
     building: {
       immediate: true,
-      handler: async function ( value ) {
+      handler: async function (value) {
         this.index = 0
-        for ( let block of this.buildingBlocks ) {
-          await this.$store.dispatch( block.path + '/resetDefault' )
+        for (let block of this.buildingBlocks) {
+          await this.$store.dispatch(block.path + '/resetDefault')
         }
         this.$refs.prevArrow.style.display = 'none'
-        if ( this.buildingBlocks.length > 1 ) {
+        if (this.buildingBlocks.length > 1) {
           this.$refs.nextArrow.style.display = 'block'
         } else {
           this.$refs.nextArrow.style.display = 'none'
         }
-        if ( this.media ) {
+        if (this.media) {
           this.$refs.media.style.backgroundImage =
             'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' + this.media + '")'
         }
       }
     },
-    index: function ( to, from ) {
-      this.$refs.scrollBox.$children.forEach( child => {
+    index: function (to, from) {
+      this.$refs.scrollBox.$children.forEach(child => {
         child.$el.style.transform =
-          'translateX(' + ( -1 * this.index * ( this.$refs.scrollBox.$el.clientWidth + 20 ) ).toString() + 'px)'
-      } )
-      if ( to < from ) {
-        if ( this.index <= 0 ) {
+          'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
+      })
+      if (to < from) {
+        if (this.index <= 0) {
           this.$refs.prevArrow.style.display = 'none'
         }
-        if ( this.buildingBlocks.length > 1 ) {
+        if (this.buildingBlocks.length > 1) {
           this.$refs.nextArrow.style.display = 'block'
         }
       } else {
-        if ( this.index + 1 === this.buildingBlocks.length ) {
+        if (this.index + 1 === this.buildingBlocks.length) {
           this.$refs.nextArrow.style.display = 'none'
         }
-        if ( this.buildingBlocks.length > 1 ) {
+        if (this.buildingBlocks.length > 1) {
           this.$refs.prevArrow.style.display = 'block'
         }
       }

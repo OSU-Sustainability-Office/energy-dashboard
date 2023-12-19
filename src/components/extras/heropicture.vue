@@ -56,20 +56,20 @@ export default {
   computed: {
     mediaArray: {
       get () {
-        if ( this.media[0].length <= 1 ) return
+        if (this.media[0].length <= 1) return
         return this.media
       }
     }
   },
   methods: {
-    classForIndex: function ( index ) {
-      if ( !this.mediaArray.length ) {
+    classForIndex: function (index) {
+      if (!this.mediaArray.length) {
         return 'slantImage unCut'
-      } else if ( this.mediaArray.length === 1 ) {
+      } else if (this.mediaArray.length === 1) {
         return 'slantImage unCut'
-      } else if ( index === 0 ) {
+      } else if (index === 0) {
         return 'slantImage leftEnd'
-      } else if ( index + 1 === this.media.length || index >= 3 ) {
+      } else if (index + 1 === this.media.length || index >= 3) {
         return 'slantImage rightEnd'
       } else {
         return 'slantImage'

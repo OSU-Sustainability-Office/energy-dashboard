@@ -28,35 +28,35 @@ const actions = {
   //   "dateInterval": 1,
   //   "graphType": 1
   // }
-  async getData ( store, payload ) {
-    if ( !store.getters.meterGroupPath ) return
+  async getData (store, payload) {
+    if (!store.getters.meterGroupPath) return
     const reqPayload = {
       point: store.getters.point,
       ...payload,
       ...store.getters.modifierData
     }
-    console.log( store.getters.name )
+    console.log(store.getters.name)
     let initdatestart = reqPayload.dateStart
-    if ( store.getters.name === 'Total Electricity' ) {
+    if (store.getters.name === 'Total Electricity') {
       reqPayload.dateStart = 1700341200
     }
-    console.log( reqPayload )
+    console.log(reqPayload)
 
-    const chartModifier = ChartModifiers( payload.graphType, reqPayload.point )
-    await chartModifier.preGetData( reqPayload, this, store )
+    const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
+    await chartModifier.preGetData(reqPayload, this, store)
 
-    let data = await this.dispatch( store.getters.meterGroupPath + '/getData', reqPayload )
+    let data = await this.dispatch(store.getters.meterGroupPath + '/getData', reqPayload)
 
-    if ( store.getters.name === 'Total Electricity' ) {
+    if (store.getters.name === 'Total Electricity') {
       // console.log( data )
       let testmap = new Map()
-      for ( let newkey of data.keys() ) {
+      for (let newkey of data.keys()) {
         // console.log(newkey)
 
         // align new key with original datestart
-        testmap.set( newkey - ( reqPayload.dateStart - initdatestart ), data.get( newkey ) )
+        testmap.set(newkey - (reqPayload.dateStart - initdatestart), data.get(newkey))
       }
-      console.log( testmap )
+      console.log(testmap)
 
       // comment out the 2 lines below to test experimental moving chart left
       // data = testmap
@@ -72,23 +72,23 @@ const actions = {
       data: data
     }
 
-    await chartModifier.postGetData( chartData, reqPayload, this, store )
+    await chartModifier.postGetData(chartData, reqPayload, this, store)
 
     return chartData
   },
 
-  async changeChart ( store, id ) {
-    let chart = API.chart( id )
-    store.commit( 'promise', chart )
-    store.commit( 'id', id )
+  async changeChart (store, id) {
+    let chart = API.chart(id)
+    store.commit('promise', chart)
+    store.commit('id', id)
     await chart
-    store.commit( 'name', chart.name )
-    store.commit( 'point', chart.point )
-    store.commit( 'building', chart.building )
-    store.commit( 'meterGroupPath', this.getters.meterGroup( chart.meterGroup ).path )
+    store.commit('name', chart.name)
+    store.commit('point', chart.point)
+    store.commit('building', chart.building)
+    store.commit('meterGroupPath', this.getters.meterGroup(chart.meterGroup).path)
   },
 
-  async update ( store, payload ) {
+  async update (store, payload) {
     if (
       payload.name === store.getters.name &&
       payload.point === store.getters.point &&
@@ -97,12 +97,12 @@ const actions = {
     ) {
       return
     }
-    let viewPath = store.getters.path.split( '/' )
+    let viewPath = store.getters.path.split('/')
     viewPath.pop()
     viewPath.pop()
-    viewPath = viewPath.join( '/' )
+    viewPath = viewPath.join('/')
     let viewUser = this.getters[viewPath + '/user']
-    if ( viewUser && viewUser === this.getters['user/onid'] ) {
+    if (viewUser && viewUser === this.getters['user/onid']) {
       await API.chart(
         {
           id: store.getters.id,
@@ -114,90 +114,90 @@ const actions = {
         'put'
       )
     }
-    store.commit( 'name', payload.name )
-    store.commit( 'point', payload.point )
-    store.commit( 'building', payload.building )
-    store.commit( 'meterGroupPath', payload.meter )
+    store.commit('name', payload.name)
+    store.commit('point', payload.point)
+    store.commit('building', payload.building)
+    store.commit('meterGroupPath', payload.meter)
   }
 }
 
 const mutations = {
-  path ( state, path ) {
+  path (state, path) {
     state.path = path
   },
 
-  modifierData ( state, data ) {
+  modifierData (state, data) {
     state.modifierData = data
   },
 
-  promise ( state, promise ) {
+  promise (state, promise) {
     state.promise = promise
   },
 
-  color ( state, color ) {
+  color (state, color) {
     state.color = color
   },
 
-  name ( state, name ) {
+  name (state, name) {
     state.name = name
   },
 
-  point ( state, point ) {
+  point (state, point) {
     state.point = point
   },
 
-  building ( state, building ) {
+  building (state, building) {
     state.building = building
   },
 
-  id ( state, id ) {
+  id (state, id) {
     state.id = id
   },
 
-  meterGroupPath ( state, meterGroupPath ) {
+  meterGroupPath (state, meterGroupPath) {
     state.meterGroupPath = meterGroupPath
   }
 }
 
 const getters = {
-  promise ( state ) {
+  promise (state) {
     return state.promise
   },
 
-  modifierData ( state ) {
+  modifierData (state) {
     return state.modifierData
   },
 
-  color ( state ) {
+  color (state) {
     return state.color
   },
 
-  path ( state ) {
+  path (state) {
     return state.path
   },
 
-  name ( state ) {
+  name (state) {
     return state.name
   },
 
-  point ( state ) {
+  point (state) {
     return state.point
   },
 
-  building ( state ) {
+  building (state) {
     return state.building
   },
 
-  id ( state ) {
+  id (state) {
     return state.id
   },
 
-  meterGroupPath ( state ) {
+  meterGroupPath (state) {
     return state.meterGroupPath
   },
 
-  pointString ( state ) {
-    if ( state.point ) {
+  pointString (state) {
+    if (state.point) {
       const map = {
         accumulated_real: 'Net Energy Usage (kWh)',
         real_power: 'Real Power (W)',
@@ -242,7 +242,7 @@ const getters = {
     }
   },
 
-  unitString ( state ) {
+  unitString (state) {
     const map = {
       accumulated_real: 'kWh',
       real_power: 'W',
