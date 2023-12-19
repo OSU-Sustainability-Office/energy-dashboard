@@ -120,10 +120,10 @@ const actions = {
       console.log(chartSpace)
       // Example chartSpace: chart_29
       // As a generalization, the first part of whatever is the input of store.commit determines where it goes. Check src/store
-      // Example: store.commit('chart_<something>`) will go to src\store\chart.module.js, 
+      // Example: store.commit('chart_<something>`) will go to src\store\chart.module.js,
       // store.commit('map/<something>') will go to src\store\map.module.js
-      
-      // Example: store.commit(chartSpace/building) > search "buildings" in "mutations" section (I think), in chart.module file
+
+      // Example: store.commit(chartSpace/building) > search "buildings" in "mutations" section, in chart.module file
       // Mutations = change store value, getters = retrieve value. https://vuex.vuejs.org/guide/mutations
       store.commit(chartSpace + '/building', this.getters['map/meterGroup'](chart.meters).building)
       store.commit(chartSpace + '/meterGroupPath', this.getters['map/meterGroup'](chart.meters).path)

@@ -147,6 +147,9 @@ const mutations = {
   },
 
   building (state, building) {
+    // example call triggered from block.module.js's updateCharts()
+    // commented out for now as this triggers many times
+    // console.log(building)
     state.building = building
   },
 
