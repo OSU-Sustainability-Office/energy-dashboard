@@ -95,6 +95,11 @@ export default {
             // view.vue's compareBuildings() > block.module.js's updateModifier > building_compare.mod.js's updateData() >
             // building_compare.mod.js's removeOldCharts() > block.module.js's unloadChart()
 
+            console.log(this.cards[0].path)
+            // Example this.cards[0].path: map/building_29/block_79
+
+            // Example call order: map.module.js's map() getter > building.module.js's building() getter >
+            // block.module's updateModifier function (I think)
             await this.$store.dispatch(this.cards[0].path + '/updateModifier', {
               name: 'building_compare',
               data: {
