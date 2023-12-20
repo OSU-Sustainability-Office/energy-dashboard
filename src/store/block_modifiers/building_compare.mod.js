@@ -120,8 +120,20 @@ export default class CompareModifier {
       module is block module, data is new incoming
       data.
     */
+    console.log(this.data.buildingIds)
+    console.log(data.datasets)
     if (this.data.buildingIds[0]) {
       data.datasets[0].label = this.buildingName(store, this.data.buildingIds[0])
     }
+    // along with the section in edit_card.vue, this also controls how the chart name is updated.
+    // comment it out for now just in case
+    /*
+   for (let i = 0; i < data.datasets.length;) {
+    if (this.data.buildingIds[i]) {
+      data.datasets[i].label = this.buildingName(store, this.data.buildingIds[i])
+      i += 1
+    }
+  }
+  */
   }
 }

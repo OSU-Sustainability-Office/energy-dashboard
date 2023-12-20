@@ -45,6 +45,10 @@ const actions = {
 
     // Grab the default value. Building page URL = `http://localhost:8080/#/compare/["16","29"] > building 16 is default
     // Need a better way of doing this in future
+
+    // As noted in edit_card.vue line 371 ish, the chart name will change after editing the timeframe via the edit card
+    // web UI component. So we need a better way of distinguishing charts from each other, or rework how the rename
+    // system works.
     if (store.getters.name === 'Total Electricity') {
       reqPayload.dateStart = nov
       reqPayload.dateEnd = dec
