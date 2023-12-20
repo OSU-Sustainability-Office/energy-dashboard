@@ -65,18 +65,18 @@ const actions = {
       // console.log( data )
       let testmap = new Map()
       for (let newkey of data.keys()) {
-        // console.log(newkey)
-
         // align new key with original datestart
         testmap.set(newkey - (nov - oct), data.get(newkey))
       }
-      console.log(testmap)
 
       // comment out the 3 lines below to test experimental moving chart left
       // data = testmap
-      // reqPayload.dateStart = oct
+      // reqPayload.dateStart = oct - (nov - oct - (dec - nov)) // shift date start left to account for different month length
       // reqPayload.dateEnd = nov
     }
+
+    console.log(data)
+
     let chartData = {
       label: store.getters.name,
       backgroundColor: store.getters.color,
