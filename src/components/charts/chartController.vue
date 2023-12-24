@@ -235,24 +235,42 @@ export default {
             data.datasets.length >= 1 &&
             data.datasets[0].data.length >= 1
           ) {
-            this.chart.update()
-            let timeDif =
-              new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x).getTime() -
-              new Date(data.datasets[0].data[0].x).getTime()
-            let dif = 0
-            if (timeDif <= 24 * 60 * 60 * 1000) {
-              dif = 2
-              this.chart.options.scales.xAxes[0].time.unit = 'minute'
-            } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
-              dif = 1
-              this.chart.options.scales.xAxes[0].time.unit = 'hour'
-            } else {
-              this.chart.options.scales.xAxes[0].time.unit = 'day'
-            }
-            this.chart.options.scales.yAxes[0].ticks.maxTicksLimit = (this.height / 200) * 8 - dif
+              this.chart.update()
+
+              // if multiple chart timeperiods, find chart with largest date range
+              if (data.datasets.length > 1 && data.datasets[0].multStart.length > 1) {
+
+                // find chart with largest dataset
+                let largestChart = data.datasets[0]
+                for (let i in data.datasets) {
+                  if (data.datasets[i].data.length > largestChart.data.length) {
+                    largestChart = data.datasets[i]
+                  }
+                }
+
+                // map all other datasets to the largest dataset
+                this.mapXValues(largestChart, data.datasets)
+              } 
+
+              let timeDif =
+                new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x).getTime() -
+                new Date(data.datasets[0].data[0].x).getTime()
+              let dif = 0
+              if (timeDif <= 24 * 60 * 60 * 1000) {
+                dif = 2
+                this.chart.options.scales.xAxes[0].time.unit = 'minute'
+              } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
+                dif = 1
+                this.chart.options.scales.xAxes[0].time.unit = 'hour'
+              } else {
+                this.chart.options.scales.xAxes[0].time.unit = 'day'
+              }
+              this.chart.options.scales.yAxes[0].ticks.maxTicksLimit = (this.height / 200) * 8 - dif
           }
           this.chartData = data
+
           console.log(this.path)
+          console.log(this.chartData)
           this.loading = false
           // console.log('done loading!', this.path, data)
           // this.$store.getters[this.path]
@@ -336,6 +354,25 @@ export default {
           return date1.toDateString() + ' to ' + date2.toDateString()
         } else {
           return ' '
+        }
+      }
+    },
+    // Map x-values of all datasets to the x-values of the largest dataset when dealing with
+    // multiple time periods so that the charts are overlapped/aligned
+    mapXValues: function (largestChart, charts) {
+      for (let chart of charts){
+        // check if current chart is the largest chart, don't map if so
+        // may need a better way to differentiate charts, but this works for now
+        // and accounts for have two charts that are the same length
+        if (chart.backgroundColor != largestChart.backgroundColor) {
+          //loop through all data points in current chart and map x-value to largest chart
+          //also create a datapoint for the original x-value so that we can display it on tooltip hover
+          for (let i in chart.data) {
+            if (chart.data[i].y != null){
+              chart.data[i].originalX = chart.data[i].x
+              chart.data[i].x = largestChart.data[i].x
+            }
+          }
         }
       }
     }

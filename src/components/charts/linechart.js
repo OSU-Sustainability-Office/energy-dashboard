@@ -31,7 +31,9 @@ export default {
         tooltips: {
           callbacks: {
             title: function (item, data) {
-              let d = new Date(item[0].xLabel)
+              let originalXlabel = data.datasets[item[0].datasetIndex].data[item[0].index].originalX
+              // use originalXlabel if it exists, otherwise use the default xLabel
+              let d = new Date(originalXlabel || item[0].xLabel)
               let meridiem = 'am'
               let hours = d.getHours()
               if (hours > 12) {
