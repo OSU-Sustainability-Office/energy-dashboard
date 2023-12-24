@@ -251,7 +251,18 @@
         Delete
       </el-button>
       <el-button @click="cardSave()" type="primary"> Ok </el-button>
-      <el-button @click="visible = false" type="info"> Cancel </el-button>
+      <el-button @click="timeSave()" type="primary" v-if="compareOneBuildingView">
+        Save Time Period {{ this.form.tempMultStart.length + 1 }}</el-button
+      >
+      <el-button
+        @click="
+          visible = false
+          cancelTimeSave()
+        "
+        type="info"
+      >
+        Cancel
+      </el-button>
     </span>
   </el-dialog>
 </template>
@@ -268,7 +279,9 @@ export default {
         end: '',
         intUnit: 1,
         graphType: 1,
-        sets: []
+        sets: [],
+        tempMultStart: [],
+        tempMultEnd: []
       }
     }
   },
@@ -287,6 +300,12 @@ export default {
     compareView: {
       get () {
         return this.$route.path.includes('compare')
+      }
+    },
+    // Check only one building is in comparison, e.g. for "save time period" button
+    compareOneBuildingView: {
+      get () {
+        return this.$route.path.includes('compare') && JSON.parse(JSON.stringify(this.form.sets)).length === 1
       }
     },
     personalView: {
@@ -352,6 +371,7 @@ export default {
           intervalUnit: this.interval(this.form.intUnit)
         })
       } else {
+        console.log(this.form.start)
         this.$store.dispatch(blockPath + '/update', {
           dateStart: this.form.start,
           dateEnd: this.form.end,
@@ -368,7 +388,12 @@ export default {
       for (let index in this.form.sets) {
         if (index < charts.length) {
           const chartPath = charts[index].path
+          // console.log(chartPath)
+          this.form.sets[0].multStart = this.form.tempMultStart
+          this.form.sets[0].multEnd = this.form.tempMultEnd
+          // console.log(this.form.sets[0])
           this.$store.dispatch(chartPath + '/update', this.form.sets[index])
+          // console.log(this.$store.getters[blockPath + '/charts'])
           // update legend name
           // line below is what "resets" the chart name, maybe comment it out but needs more testing
           this.$store.commit(chartPath + '/name', this.$store.getters[chartPath + '/pointString'])
@@ -383,6 +408,18 @@ export default {
       }
 
       this.visible = false
+    },
+
+    timeSave: function () {
+      // Made a dummy temporary state array because directly pushing to this.form.sets[0].multStart caused
+      // issues with state.getters updating too soon, inconsistencies with converting Unix to English in chart.module.js
+      this.form.tempMultStart.push(this.form.start)
+      this.form.tempMultEnd.push(this.form.end)
+    },
+
+    cancelTimeSave: function () {
+      this.form.tempMultStart = []
+      this.form.tempMultEnd = []
     },
 
     deleteChart: function () {
@@ -406,11 +443,29 @@ export default {
 
         this.form.sets = []
         for (let chart of this.$store.getters[blockPath + '/charts']) {
-          const chartSet = {
+          console.log(chart)
+          let chartSet = {
             name: chart.name,
             building: this.$store.getters[chart.meterGroupPath + '/building'],
             meter: chart.meterGroupPath,
             point: chart.point
+          }
+          if (this.compareOneBuildingView) {
+            let blockpath = this.$store.getters['modalController/data'].path
+            // console.log(blockpath)
+            let searchTerm = 'block_'
+            let chartIndex = blockpath.indexOf(searchTerm)
+            // console.log(blockpath.slice(chartIndex + searchTerm.length))
+            let blockID = blockpath.slice(chartIndex + searchTerm.length)
+            // console.log(this.$store.getters[blockpath + '/chart_' + blockID + '/multStart'])
+            chartSet = {
+              name: chart.name,
+              building: this.$store.getters[chart.meterGroupPath + '/building'],
+              meter: chart.meterGroupPath,
+              point: chart.point,
+              multStart: this.$store.getters[blockpath + '/chart_' + blockID + '/multStart'],
+              multEnd: this.$store.getters[blockpath + '/chart_' + blockID + '/multEnd']
+            }
           }
           this.form.sets.push(chartSet)
         }

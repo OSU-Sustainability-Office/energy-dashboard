@@ -75,6 +75,23 @@ export default {
             this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
           }
         }
+        // Reset multStart and multEnd variables whenever you are on a comparison page for just 1 building
+        let buildingComparisonNumber = JSON.parse(decodeURI(this.$route.params.buildings)).length
+        if (this.$route.path.includes('compare') && buildingComparisonNumber === 1) {
+          for (let card of this.cards) {
+            if (!card.path) return
+            this.$nextTick(() => {
+              let blockpath = this.cards[0].path
+              let searchTerm = 'block_'
+              let chartIndex = blockpath.indexOf(searchTerm)
+              // console.log(blockpath.slice(chartIndex + searchTerm.length))
+              let blockID = blockpath.slice(chartIndex + searchTerm.length)
+              // console.log(blockpath + '/chart_' + blockID + '/multStart')
+              this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultStart', [this.dateStart])
+              this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultEnd', [this.dateEnd])
+            })
+          }
+        }
       }
     },
     compareBuildings: {
@@ -83,7 +100,8 @@ export default {
         if (this.$route.path.includes('compare')) {
           // this.cards array only has one element in it
           if (this.cards.length > 0 && this.cards[0]) {
-            console.log(buildings.map(building => building.id))
+            // console.log(buildings.map(building => building.id))
+            // console.log(this.cards[0].path)
             await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
             // addModifier and updateModifier below call block.module.js, which then calls building_compare.mod.js
             await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
@@ -95,7 +113,7 @@ export default {
             // view.vue's compareBuildings() > block.module.js's updateModifier > building_compare.mod.js's updateData() >
             // building_compare.mod.js's removeOldCharts() > block.module.js's unloadChart()
 
-            console.log(this.cards[0].path)
+            // console.log(this.cards[0].path)
             // Example this.cards[0].path: map/building_29/block_79
 
             // Example call order: map.module.js's map() getter > building.module.js's building() getter >
@@ -115,6 +133,7 @@ export default {
     view: {
       immediate: true,
       handler: async function (value) {
+        console.log(this.cards)
         if (this.$route.path.includes('building')) {
           for (let card of this.cards) {
             if (!card.path) return
@@ -134,12 +153,30 @@ export default {
           for (let card of this.cards) {
             if (!card.path) return
             this.$nextTick(() => {
-              console.log(card)
               this.$store.commit(card.path + '/dateStart', this.dateStart)
               this.$store.commit(card.path + '/dateEnd', this.dateEnd)
               this.$store.commit(card.path + '/dateInterval', this.dateInterval)
               this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
             })
+          }
+          // Reset multStart and multEnd variables whenever you are on a comparison page for just 1 building
+          let buildingComparisonNumber = JSON.parse(decodeURI(this.$route.params.buildings)).length
+          // console.log(buildingComparisonNumber)
+          if (this.$route.path.includes('compare') && buildingComparisonNumber === 1) {
+            for (let card of this.cards) {
+              if (!card.path) return
+              this.$nextTick(() => {
+                let blockpath = this.cards[0].path
+                let searchTerm = 'block_'
+                let chartIndex = blockpath.indexOf(searchTerm)
+                // console.log(blockpath.slice(chartIndex + searchTerm.length))
+                let blockID = blockpath.slice(chartIndex + searchTerm.length)
+                // console.log(blockpath + '/chart_' + blockID + '/multStart')
+                this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultStart', [this.dateStart])
+                this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultEnd', [this.dateEnd])
+                // console.log(this.$store.getters)
+              })
+            }
           }
         }
       }
@@ -200,7 +237,7 @@ export default {
     compareBuildings: {
       get () {
         if (!this.$route.path.includes('compare')) return null
-        console.log(this.$route.params.buildings)
+        // console.log(this.$route.params.buildings)
         return JSON.parse(decodeURI(this.$route.params.buildings)).map(id => this.$store.getters['map/building'](id))
       }
     },
@@ -212,9 +249,9 @@ export default {
           }
           // unintuituively, this.compareBuildings[0].block_<some number> has all the comparison charts in it, and
           // every other element in this.compareBuildings is ignored
-          console.log(this.compareBuildings)
+          // console.log(this.compareBuildings)
           let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
-          console.log(building)
+          // console.log(building)
           if (!building) return []
           let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
           let block = this.$store.getters[building.path + '/block'](group.id)

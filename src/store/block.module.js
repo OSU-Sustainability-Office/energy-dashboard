@@ -102,6 +102,7 @@ const actions = {
 
   async loadCharts (store, charts) {
     for (let chart of charts) {
+      // 12/23/2023 edit: We can bypass the chartSpace issue by using block.module.js's getData() function.
       // Duplicate chartSpace values trigger VueX getter error, need to fix this to support multiple charts
       let chartSpace = 'chart_' + chart.id
       let moduleSpace = store.getters.path + '/' + chartSpace
@@ -132,6 +133,8 @@ const actions = {
   },
 
   async update (store, payload) {
+    console.log(payload)
+    console.log(store.getters)
     if (
       payload.name === store.getters.name &&
       payload.dateInterval === store.getters.dateInterval &&
@@ -153,6 +156,8 @@ const actions = {
     store.commit('graphType', payload.graphType)
     store.commit('dateStart', payload.dateStart)
     store.commit('dateEnd', payload.dateEnd)
+    console.log(payload)
+    console.log(store.getters)
     if (user && user === this.getters['user/onid']) {
       payload.id = store.getters.id
       payload.dateStart = new Date(store.getters.dateStart).toISOString()
@@ -295,7 +300,7 @@ const actions = {
       labels: [],
       datasets: []
     }
-    const reqPayload = {
+    let reqPayload = {
       dateStart: parseInt(store.getters.dateStart / 1000),
       dateEnd: parseInt(store.getters.dateEnd / 1000),
       intervalUnit: store.getters.intervalUnit,
@@ -307,10 +312,34 @@ const actions = {
     for (let mod of store.getters.modifiers) {
       await mod.preData(this, store, reqPayload)
     }
+    console.log(store.getters)
     for (let chart of store.getters.charts) {
       if (!chart.path) continue
-      chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
+      // Section below is called whenever you press "Ok" on the Edit Menu or whenever
+      // you load / reload a page with a graph on it.
+      // This allows putting multiple graphs on the same screen without worrying about the
+      // chartSpace issue
+      let multStartArray = JSON.parse(JSON.stringify(chart.multStart))
+      let multEndArray = JSON.parse(JSON.stringify(chart.multEnd))
+      if (multStartArray.length > 1 && multEndArray.length > 1) {
+        for (let i in multStartArray) {
+          reqPayload = {
+            dateStart: parseInt(multStartArray[i] / 1000),
+            dateEnd: parseInt(multEndArray[i] / 1000),
+            intervalUnit: store.getters.intervalUnit,
+            dateInterval: store.getters.dateInterval,
+            graphType: store.getters.graphType,
+            timeZoneOffset: store.getters.timeZoneOffset,
+            // See chart.module.js file for rest of color stuff. Might be a better way to do this
+            color: store.getters.chartColors[parseInt(i) + 1]
+          }
+          chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
+        }
+      } else {
+        chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
+      }
     }
+    console.log(chartDataPromises)
     let chartData = await Promise.all(chartDataPromises)
     if (store.getters.graphType !== 100) {
       if (store.getters.graphType === 3 || store.getters.graphType === 4) {

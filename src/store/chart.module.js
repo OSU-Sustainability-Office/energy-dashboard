@@ -12,6 +12,8 @@ const state = () => {
     building: null, // String buildingId
     id: null, // Integer DB ID
     meterGroupPath: null,
+    multStart: [],
+    multEnd: [],
     path: null,
     color: '#000000',
     promise: null,
@@ -35,13 +37,18 @@ const actions = {
       ...payload,
       ...store.getters.modifierData
     }
-    console.log(store.getters.name)
+    // console.log(store.getters)
 
     // Reference: https://www.unixtimestamp.com/index.php
     // Reference: https://playcode.io/1457582
     let oct = 1697587199
     let nov = 1700265599
-    let dec = 1702857599
+    // let dec = 1702857599
+
+    // UPDATE (12/23/2023)
+
+    // Need to update stuff below. Just changing the chart dates can now be done via
+    // the Edit Menu UI, but need to update function for aligning the charts / shift charts left
 
     // Grab the default value. Building page URL = `http://localhost:8080/#/compare/["16","29"] > building 16 is default
     // Need a better way of doing this in future
@@ -49,6 +56,8 @@ const actions = {
     // As noted in edit_card.vue line 371 ish, the chart name will change after editing the timeframe via the edit card
     // web UI component. So we need a better way of distinguishing charts from each other, or rework how the rename
     // system works.
+
+    /*
     if (store.getters.name === 'Total Electricity') {
       reqPayload.dateStart = nov
       reqPayload.dateEnd = dec
@@ -57,7 +66,8 @@ const actions = {
       reqPayload.dateEnd = nov
     }
     console.log(reqPayload)
-
+    */
+    console.log(reqPayload)
     const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
     await chartModifier.preGetData(reqPayload, this, store)
 
@@ -81,17 +91,27 @@ const actions = {
 
     console.log(data)
 
+    let colorPayload = store.getters.color
+
+    if (reqPayload.color) {
+      colorPayload = reqPayload.color
+    }
+
     let chartData = {
       label: store.getters.name,
-      backgroundColor: store.getters.color,
-      borderColor: store.getters.color,
+      backgroundColor: colorPayload,
+      borderColor: colorPayload,
       fill: false,
       showLine: true,
       spanGaps: false,
-      data: data
+      data: data,
+      multStart: store.getters.multStart,
+      multEnd: store.getters.multEnd
     }
 
     await chartModifier.postGetData(chartData, reqPayload, this, store)
+
+    console.log(chartData)
 
     return chartData
   },
@@ -108,11 +128,15 @@ const actions = {
   },
 
   async update (store, payload) {
+    console.log(payload)
+    console.log(store.getters)
     if (
       payload.name === store.getters.name &&
       payload.point === store.getters.point &&
       payload.building === store.getters.building &&
-      payload.meter === store.getters.meterGroupPath
+      payload.meter === store.getters.meterGroupPath &&
+      payload.multStart === store.getters.multStart &&
+      payload.multEnd === store.getters.multEnd
     ) {
       return
     }
@@ -137,6 +161,8 @@ const actions = {
     store.commit('point', payload.point)
     store.commit('building', payload.building)
     store.commit('meterGroupPath', payload.meter)
+    store.commit('multStart', payload.multStart)
+    store.commit('multEnd', payload.multEnd)
   }
 }
 
@@ -178,6 +204,49 @@ const mutations = {
 
   meterGroupPath (state, meterGroupPath) {
     state.meterGroupPath = meterGroupPath
+  },
+
+  // Function to convert plain text date format from Edit Form to Unix Timestamps
+  // See similar dateStart / dateEnd mutation functions in block.module.js
+  multStart (state, multStart) {
+    for (let i in multStart) {
+      if (typeof multStart[i] === 'string') {
+        console.log('helloooo')
+        state.multStart[i] = new Date(multStart[i]).getTime()
+      } else if (typeof multStart[i] === 'number') {
+        state.multStart[i] = multStart[i]
+      } else if (multStart[i] instanceof Date) {
+        state.multStart[i] = multStart[i].getTime()
+      } else {
+        throw new Error('Unrecognized format sent to multStart')
+      }
+    }
+  },
+
+  // Function to remove all elements from VueX state array and insert a placeholder value
+  // You only need a mutation for this when you are dealing with global state (state.commit, this.store.getters, etc)
+  clearAndSetMultStart (state, payload) {
+    state.multStart = []
+    state.multStart.push(...payload)
+  },
+
+  multEnd (state, multEnd) {
+    for (let i in multEnd) {
+      if (typeof multEnd[i] === 'string') {
+        state.multEnd[i] = new Date(multEnd[i]).getTime()
+      } else if (typeof multEnd[i] === 'number') {
+        state.multEnd[i] = multEnd[i]
+      } else if (multEnd[i] instanceof Date) {
+        state.multEnd[i] = multEnd[i].getTime()
+      } else {
+        throw new Error('Unrecognized format sent to multEnd')
+      }
+    }
+  },
+
+  clearAndSetMultEnd (state, payload) {
+    state.multEnd = []
+    state.multEnd.push(...payload)
   }
 }
 
@@ -216,6 +285,14 @@ const getters = {
 
   meterGroupPath (state) {
     return state.meterGroupPath
+  },
+
+  multStart (state) {
+    return state.multStart
+  },
+
+  multEnd (state) {
+    return state.multEnd
   },
 
   pointString (state) {
