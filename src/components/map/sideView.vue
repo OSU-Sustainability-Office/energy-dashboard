@@ -75,7 +75,7 @@ export default {
     chartController,
     switchButtons
   },
-  data () {
+  data() {
     return {
       api: process.env.VUE_APP_ROOT_API,
       title: '',
@@ -86,25 +86,25 @@ export default {
   },
   computed: {
     currentRange: {
-      get () {
+      get() {
         return this.$refs.switchbutton.currentRange
       }
     },
 
     media: {
-      get () {
+      get() {
         return this.building.image
       }
     },
 
     buildingBlocks: {
-      get () {
+      get() {
         return this.$store.getters[this.building.path + '/blocks']
       }
     },
 
     building: {
-      get () {
+      get() {
         return this.$store.getters['map/building'](this.$store.getters['modalController/data'].id)
       }
     }

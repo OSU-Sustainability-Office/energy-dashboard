@@ -18,7 +18,7 @@ const state = () => {
 }
 
 const actions = {
-  async changeGroup (store, payload) {
+  async changeGroup(store, payload) {
     let group = API.meterGroup(payload.id)
     let wait = true
     store.commit(
@@ -51,7 +51,7 @@ const actions = {
     return store.state
   },
 
-  async loadMeter (store, meter) {
+  async loadMeter(store, meter) {
     let meterSpace = 'meter_' + meter.id.toString()
     let moduleSpace = store.getters.path + '/' + meterSpace
     this.registerModule(moduleSpace.split('/'), Meter)
@@ -65,7 +65,7 @@ const actions = {
     store.commit(meterSpace + '/points', meter.points)
   },
 
-  async getData (store, payload) {
+  async getData(store, payload) {
     let resultDataObject = new Map()
 
     // Solar Panel Data Support
@@ -176,57 +176,57 @@ const actions = {
 }
 
 const mutations = {
-  path (state, path) {
+  path(state, path) {
     state.path = path
   },
 
-  building (state, building) {
+  building(state, building) {
     state.building = building
   },
 
-  promise (state, promise) {
+  promise(state, promise) {
     state.promise = promise
   },
 
-  name (state, name) {
+  name(state, name) {
     state.name = name
   },
 
-  id (state, id) {
+  id(state, id) {
     state.id = id
   },
 
-  default (state, value) {
+  default(state, value) {
     state.default = value
   },
 
-  type (state, value) {
+  type(state, value) {
     state.type = value
   }
 }
 
 const getters = {
-  path (state) {
+  path(state) {
     return state.path
   },
 
-  promise (state) {
+  promise(state) {
     return state.promise
   },
 
-  name (state) {
+  name(state) {
     return state.name
   },
 
-  id (state) {
+  id(state) {
     return state.id
   },
 
-  building (state) {
+  building(state) {
     return state.building
   },
 
-  meters (state) {
+  meters(state) {
     let r = []
     for (let c of Object.keys(state)) {
       if (c.search(/meter_/) >= 0) {
@@ -236,11 +236,11 @@ const getters = {
     return r
   },
 
-  type (state) {
+  type(state) {
     return state.type
   },
 
-  points (state) {
+  points(state) {
     let r = []
     for (let c of Object.keys(state)) {
       if (c.search(/meter_/) >= 0) {
@@ -255,7 +255,7 @@ const getters = {
     }
   },
 
-  default (state) {
+  default(state) {
     return state.default
   }
 }

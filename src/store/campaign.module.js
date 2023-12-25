@@ -21,7 +21,7 @@ const state = () => {
 }
 
 const actions = {
-  async buildBlocks (store) {
+  async buildBlocks(store) {
     if (store.getters.promise === null) {
       store.commit(
         'promise',

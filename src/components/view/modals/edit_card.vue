@@ -269,7 +269,7 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       currentIndex: 0,
       form: {
@@ -287,29 +287,29 @@ export default {
   },
   computed: {
     visible: {
-      get () {
+      get() {
         return this.$store.getters['modalController/modalName'] === 'edit_card'
       },
 
-      set (value) {
+      set(value) {
         if (value === false) {
           this.$store.dispatch('modalController/closeModal')
         }
       }
     },
     compareView: {
-      get () {
+      get() {
         return this.$route.path.includes('compare')
       }
     },
     // Check only one building is in comparison, e.g. for "save time period" button
     compareOneBuildingView: {
-      get () {
+      get() {
         return this.$route.path.includes('compare') && JSON.parse(JSON.stringify(this.form.sets)).length === 1
       }
     },
     personalView: {
-      get () {
+      get() {
         let viewPath = this.$store.getters['modalController/data'].path
         if (!viewPath) {
           viewPath = this.$store.getters['modalController/data'].view
@@ -328,19 +328,19 @@ export default {
     },
 
     buildings: {
-      get () {
+      get() {
         return this.$store.getters['map/buildings']
       }
     },
 
     meters: {
-      get () {
+      get() {
         return this.$store.getters[this.form.sets[this.currentIndex].building + '/meterGroups']
       }
     },
 
     meterPoints: {
-      get () {
+      get() {
         return this.$store.getters[this.form.sets[this.currentIndex].meter + '/points']
       }
     }

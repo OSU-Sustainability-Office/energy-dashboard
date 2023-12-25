@@ -24,18 +24,18 @@ export default {
   components: {
     navigbar
   },
-  async created () {
+  async created() {
     // On load, grab building/meter/map information from the API.
     await this.$store.dispatch('map/loadMap')
     // Also check if user is logged in.
     this.$store.dispatch('user/user')
   },
-  data () {
+  data() {
     return {
       transitionName: 'pageTo'
     }
   },
-  beforeDestroy () {},
+  beforeDestroy() {},
   methods: {
     disableScroll: function () {
       this.$refs.main.$el.style.overflow = 'hidden'
@@ -44,7 +44,7 @@ export default {
       this.$refs.main.$el.style.overflow = 'auto'
     }
   },
-  mounted () {
+  mounted() {
     // This is the first-timer pop-up window
     if (!document.cookie.split(';').some(cookieString => cookieString.includes('firstTimer'))) {
       this.$msgbox({

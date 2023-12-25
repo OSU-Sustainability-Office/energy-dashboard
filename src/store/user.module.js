@@ -15,7 +15,7 @@ const state = () => {
 }
 
 const actions = {
-  async loadViews (store, views) {
+  async loadViews(store, views) {
     let promises = []
     for (let view of views) {
       let viewSpace = 'view_' + view.id
@@ -33,7 +33,7 @@ const actions = {
     await Promise.all(promises)
   },
 
-  async newView (store, payload) {
+  async newView(store, payload) {
     let id = (await API.view(null, { media: payload.media, name: payload.name }, 'post')).id
     let viewSpace = 'view_' + id
     let moduleSpace = store.getters.path + '/' + viewSpace
@@ -44,13 +44,13 @@ const actions = {
     store.commit(viewSpace + '/id', id)
   },
 
-  async deleteView (store, id) {
+  async deleteView(store, id) {
     let view = store.getters.view(id)
     await this.dispatch(view.path + '/delete')
     this.unregisterModule(view.path.split('/'))
   },
 
-  async user (store) {
+  async user(store) {
     if (store.getters.promise === null) {
       store.commit(
         'promise',
@@ -77,29 +77,29 @@ const actions = {
 }
 
 const mutations = {
-  onid (state, onid) {
+  onid(state, onid) {
     state.onid = onid
   },
 
-  privilege (state, privilege) {
+  privilege(state, privilege) {
     state.privilege = privilege
   },
 
-  views (state, views) {
+  views(state, views) {
     state.views = views
   },
 
-  alerts (state, alerts) {
+  alerts(state, alerts) {
     state.alerts = alerts
   },
 
-  promise (state, promise) {
+  promise(state, promise) {
     state.promise = promise
   }
 }
 
 const getters = {
-  onid (state) {
+  onid(state) {
     return state.onid
   },
 
@@ -113,15 +113,15 @@ const getters = {
     return r[id]
   },
 
-  promise (state) {
+  promise(state) {
     return state.promise
   },
 
-  privilege (state) {
+  privilege(state) {
     return state.privilege
   },
 
-  views (state) {
+  views(state) {
     let r = []
     for (let key of Object.keys(state)) {
       if (key.search(/view_[0-9]+/) >= 0) {
@@ -131,11 +131,11 @@ const getters = {
     return r
   },
 
-  alerts (state) {
+  alerts(state) {
     return state.alerts
   },
 
-  path (state) {
+  path(state) {
     return state.path
   }
 }

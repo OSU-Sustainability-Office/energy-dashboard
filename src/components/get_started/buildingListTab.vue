@@ -18,7 +18,7 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       buildingPic: 'https://energy-dashboard.s3-us-west-2.amazonaws.com/images/buildingPic.jpg',
       buildingStep1:

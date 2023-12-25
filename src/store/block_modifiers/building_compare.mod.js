@@ -8,7 +8,7 @@
 export default class CompareModifier {
   static name = 'building_compare'
 
-  constructor (store, module) {
+  constructor(store, module) {
     /*
       Initialize the modifier here,
       this is only an example modifier that
@@ -22,7 +22,7 @@ export default class CompareModifier {
     }
   }
 
-  async onAdd (store, module) {
+  async onAdd(store, module) {
     /*
       Function is called when a modifier
       is added to a block. Store is Vuex store
@@ -30,7 +30,7 @@ export default class CompareModifier {
     */
   }
 
-  async onRemove (store, module) {
+  async onRemove(store, module) {
     /*
       Function is called when a modifier
       is removed from a block. Store is Vuex store
@@ -41,7 +41,7 @@ export default class CompareModifier {
 
   // I *think* updateModifier function from block.module.js lands here, not sure.
   // updateData function below calls addCharts and removeOldCharts
-  async updateData (store, mod, data) {
+  async updateData(store, mod, data) {
     /*
       Function is called when a block
       updates modifier data. Store is Vuex store
@@ -55,7 +55,7 @@ export default class CompareModifier {
     }
   }
 
-  async removeOldCharts (store, mod, ids) {
+  async removeOldCharts(store, mod, ids) {
     // If we change the chartspace / chart id to support duplicate charts of the same building, we need to update this function
     // E.g. if we make the chartspace from chart_<number> to chart_<number>_<another number>, the function below needs to support
     // new syntax
@@ -73,7 +73,7 @@ export default class CompareModifier {
     }
   }
 
-  async addCharts (store, mod, ids) {
+  async addCharts(store, mod, ids) {
     // where adding new charts for comparison is handled. Either here or maybe in view.vue we need to rework
     // to handle multiple charts of the same building via different chartname or something
     // console.log(mod.getters)
@@ -97,7 +97,7 @@ export default class CompareModifier {
     await store.dispatch(mod.getters.path + '/loadCharts', charts)
   }
 
-  async preData (store, module, data) {
+  async preData(store, module, data) {
     /*
       Function is called when a block
       updates modifier data. Store is Vuex store
@@ -106,15 +106,15 @@ export default class CompareModifier {
     */
   }
 
-  color (index, module) {
+  color(index, module) {
     return module.getters.chartColors[index]
   }
 
-  buildingName (store, id) {
+  buildingName(store, id) {
     return store.getters[store.getters['map/building'](id).path + '/name']
   }
 
-  async postData (store, module, data) {
+  async postData(store, module, data) {
     /*
       Function is called when a block
       updates modifier data. Store is Vuex store

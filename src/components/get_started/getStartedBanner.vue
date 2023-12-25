@@ -14,13 +14,13 @@ export default {
   components: {
     commitment
   },
-  data () {
+  data() {
     return {
       activeNames: ['1']
     }
   },
   methods: {
-    handleChange (val) {
+    handleChange(val) {
       console.log(val)
     }
   }

@@ -47,7 +47,7 @@
 export default {
   name: 'heropicture',
   props: ['media', 'name', 'description'],
-  data () {
+  data() {
     return {
       arrayType: false,
       api: process.env.VUE_APP_ROOT_API
@@ -55,7 +55,7 @@ export default {
   },
   computed: {
     mediaArray: {
-      get () {
+      get() {
         if (this.media[0].length <= 1) return
         return this.media
       }

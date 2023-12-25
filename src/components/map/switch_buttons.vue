@@ -19,12 +19,12 @@
 <script>
 export default {
   props: ['titles', 'value'],
-  data () {
+  data() {
     return {
       currentRange: -1
     }
   },
-  mounted () {},
+  mounted() {},
   computed: {},
   watch: {},
   methods: {}

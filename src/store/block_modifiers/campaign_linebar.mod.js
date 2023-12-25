@@ -8,7 +8,7 @@
 export default class CampaignLineBarModifier {
   static name = 'campaign_linebar'
 
-  constructor (store, module) {
+  constructor(store, module) {
     /*
       Initialize the modifier here,
       this is only an example modifier that
@@ -25,7 +25,7 @@ export default class CampaignLineBarModifier {
     }
   }
 
-  async onAdd (store, module) {
+  async onAdd(store, module) {
     /*
       Function is called when a modifier
       is added to a block. Store is Vuex store
@@ -33,7 +33,7 @@ export default class CampaignLineBarModifier {
     */
   }
 
-  async onRemove (store, moduleVuex) {
+  async onRemove(store, moduleVuex) {
     /*
       Function is called when a modifier
       is removed from a block. Store is Vuex store
@@ -41,7 +41,7 @@ export default class CampaignLineBarModifier {
     */
   }
 
-  async updateData (store, moduleVuex, data) {
+  async updateData(store, moduleVuex, data) {
     /*
       Function is called when a block
       updates modifier data. Store is Vuex store
@@ -57,7 +57,7 @@ export default class CampaignLineBarModifier {
     }
   }
 
-  async preData (store, moduleVuex) {
+  async preData(store, moduleVuex) {
     /*
       Function is called when a block
       updates modifier data. Store is Vuex store
@@ -80,7 +80,7 @@ export default class CampaignLineBarModifier {
     }
     this.promise = store.dispatch(moduleVuex.getters.charts[0].path + '/getData', payload)
   }
-  async postData (store, moduleVuex, data) {
+  async postData(store, moduleVuex, data) {
     /*
       Function is called when a block
       updates modifier data. Store is Vuex store

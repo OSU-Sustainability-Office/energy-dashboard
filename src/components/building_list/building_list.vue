@@ -57,7 +57,7 @@ export default {
   components: {
     viewCard
   },
-  data () {
+  data() {
     return {
       search: '',
       openName: '',
@@ -65,7 +65,7 @@ export default {
       loading: true
     }
   },
-  async mounted () {
+  async mounted() {
     if (this.buildingList) {
       await this.$store.getters['map/promise']
       if (this.$route.params.group && this.groups[this.$route.params.group]) {
@@ -81,13 +81,13 @@ export default {
   },
   computed: {
     buildingList: {
-      get () {
+      get() {
         return this.$route.path.includes('buildings')
       }
     },
 
     groups: {
-      get () {
+      get() {
         if (this.buildingList) {
           let r = {}
           // await this.$store.getters['map/promise']
@@ -160,7 +160,7 @@ export default {
     }
   },
   methods: {
-    resetSearchInput () {
+    resetSearchInput() {
       this.search = ''
     }
   }

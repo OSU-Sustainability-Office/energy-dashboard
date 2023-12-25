@@ -36,7 +36,7 @@ export default class LinePercModifier {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData (chartData, payload, store, module) {
+  async postGetData(chartData, payload, store, module) {
     let resultDataObject = chartData.data
 
     // array that stores keys for the resultDataObject (used for finding nearest valid keys for Weatherford)
@@ -46,7 +46,7 @@ export default class LinePercModifier {
 
     // Finds the nearest valid keys for a given building (mostly intended for correcting manual meter uploads, e.g. Weatherford.)
     // Other buildings with automatic meter upload should have the same keys after this function is run.
-    function findClosest (array, num) {
+    function findClosest(array, num) {
       return array.reduce(function (prev, curr) {
         return Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev
       })
@@ -171,7 +171,7 @@ export default class LinePercModifier {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData (payload, store, module) {
+  async preGetData(payload, store, module) {
     if (payload.intervalUnit === 'day' && payload.dateInterval > 1) {
       throw new Error('Time difference interval to large to work correctly')
     }

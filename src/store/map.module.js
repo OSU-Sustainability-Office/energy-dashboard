@@ -15,7 +15,7 @@ const state = () => {
 }
 
 const actions = {
-  async loadBuilding (store, payload) {
+  async loadBuilding(store, payload) {
     let buildingSpace = 'building_' + payload.id.toString()
     let moduleSpace = store.getters.path + '/' + buildingSpace
     this.registerModule(moduleSpace.split('/'), Building)
@@ -34,7 +34,7 @@ const actions = {
     await store.dispatch(buildingSpace + '/buildDefaultBlocks')
   },
 
-  async loadGeometry (store) {
+  async loadGeometry(store) {
     if (store.getters.jsonPromise === null) {
       store.commit(
         'jsonPromise',
@@ -74,13 +74,13 @@ const actions = {
     return store.getters.jsonPromise
   },
 
-  async deleteBuilding (store, payload) {
+  async deleteBuilding(store, payload) {
     let buildingPath = ['map', 'building_' + payload.id]
     this.unregisterModule(buildingPath)
     API.building('delete', payload)
   },
 
-  async newBuilding (store, payload) {
+  async newBuilding(store, payload) {
     let building = await API.building('post', {
       image: payload.image,
       group: payload.group,
@@ -90,11 +90,11 @@ const actions = {
     store.dispatch('loadBuilding', { id: building.data.id })
   },
 
-  async allDevices (store, payload) {
+  async allDevices(store, payload) {
     return API.devices()
   },
 
-  async boundedWays (store, payload) {
+  async boundedWays(store, payload) {
     let features = await API.boundedFeatures(payload)
     let parser = new DOMParser()
     let xmlData = parser.parseFromString(features, 'text/xml')
@@ -107,11 +107,11 @@ const actions = {
     return Promise.all(promises)
   },
 
-  async imageList (store) {
+  async imageList(store) {
     return API.images()
   },
 
-  async loadMap (store) {
+  async loadMap(store) {
     if (store.getters.promise === null) {
       store.commit(
         'promise',
@@ -131,7 +131,7 @@ const actions = {
 }
 
 const mutations = {
-  promise (state, promise) {
+  promise(state, promise) {
     state.promise = promise
   },
 
@@ -141,15 +141,15 @@ const mutations = {
 }
 
 const getters = {
-  path (state) {
+  path(state) {
     return state.path
   },
 
-  jsonPromise (state) {
+  jsonPromise(state) {
     return state.jsonPromise
   },
 
-  promise (state) {
+  promise(state) {
     return state.promise
   },
 

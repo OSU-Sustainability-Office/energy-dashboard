@@ -73,7 +73,7 @@ export default {
     downloader
   },
   up: 0,
-  data () {
+  data() {
     return {
       groupName: '',
       filteredGroups: [],
@@ -85,12 +85,12 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     this.update()
   },
   computed: {
     viewOrBuilding: {
-      get () {
+      get() {
         if (this.publicView) {
           return this.$store.getters['map/building'](this.$route.params.id)
         } else {
@@ -101,7 +101,7 @@ export default {
       }
     },
     group1: {
-      get () {
+      get() {
         if (this.publicView) {
           let groups = this.$store.getters['map/buildingGroups']
           let rValue = []
@@ -116,7 +116,7 @@ export default {
       }
     },
     group2: {
-      get () {
+      get() {
         if (!this.viewOrBuilding) return
         if (this.publicView) {
           let buildings = this.$store.getters['map/buildingsForGroup'](this.viewOrBuilding.group)
@@ -132,7 +132,7 @@ export default {
       }
     },
     group1Name: {
-      get () {
+      get() {
         if (!this.viewOrBuilding) return
         if (this.publicView) {
           return this.viewOrBuilding.group
@@ -142,18 +142,18 @@ export default {
       }
     },
     group2Name: {
-      get () {
+      get() {
         if (!this.viewOrBuilding) return
         return this.viewOrBuilding.name
       }
     },
     publicView: {
-      get () {
+      get() {
         return this.$route.path.includes('building')
       }
     },
     otherView: {
-      get () {
+      get() {
         if (this.viewOrBuilding.path === 'view') {
           return true
         }

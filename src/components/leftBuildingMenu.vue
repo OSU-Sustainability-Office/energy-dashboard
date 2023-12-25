@@ -9,24 +9,24 @@ import { EventBus } from '../event-bus'
 
 export default {
   name: 'leftBuildingMenu',
-  data () {
+  data() {
     return {
       flag: true,
       flag2: false
     }
   },
   computed: {
-    isSmallScreen () {
+    isSmallScreen() {
       return window.innerWidth < 844 // Adjust this threshold as needed
     },
-    buttonText () {
+    buttonText() {
       return this.isSmallScreen
         ? this.flag2
           ? 'Hide Building Menu'
           : 'Show Building Menu'
         : this.flag
-          ? 'Hide Building Menu'
-          : 'Show Building Menu'
+        ? 'Hide Building Menu'
+        : 'Show Building Menu'
     }
   },
   methods: {

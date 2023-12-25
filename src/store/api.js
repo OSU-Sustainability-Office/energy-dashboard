@@ -1,7 +1,7 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true
 
-function callAPI (
+function callAPI(
   route,
   data = null,
   method = 'get',
