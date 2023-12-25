@@ -37,14 +37,14 @@ Saturday January 11th 2020 * @Copyright: (c) Oregon State University 2020 */
 export default {
   name: 'mediapicker',
   props: ['value'],
-  data() {
+  data () {
     return {
       images: [],
       selected: 0,
       api: process.env.VUE_APP_ROOT_API
     }
   },
-  created() {
+  created () {
     this.$store.dispatch('map/imageList').then(r => {
       this.images = []
       var index = 0

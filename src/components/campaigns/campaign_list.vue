@@ -30,7 +30,7 @@ export default {
   components: {
     campaignBlock
   },
-  data() {
+  data () {
     return {
       loaded: false,
       activePane: 'new',
@@ -38,7 +38,7 @@ export default {
       pastCampaigns: []
     }
   },
-  async mounted() {
+  async mounted () {
     await this.$store.dispatch('campaigns/loadCampaigns')
     this.loaded = true
     for (let camp of this.$store.getters['campaigns/campaigns']) {

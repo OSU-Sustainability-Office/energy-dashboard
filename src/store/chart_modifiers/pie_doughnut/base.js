@@ -43,7 +43,7 @@ export default class PieBaseModifier {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData(chartData, payload, store, module) {
+  async postGetData (chartData, payload, store, module) {
     let resultDataObject = chartData.data
     let returnData = []
     try {
@@ -74,5 +74,5 @@ export default class PieBaseModifier {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData(payload, store, module) {}
+  async preGetData (payload, store, module) {}
 }

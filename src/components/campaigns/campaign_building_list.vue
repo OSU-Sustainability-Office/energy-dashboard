@@ -56,19 +56,19 @@
 <script>
 export default {
   props: ['path', 'loaded', 'value'],
-  data() {
+  data () {
     return {
       activePath: null
     }
   },
-  mounted() {
+  mounted () {
     if (this.path) {
       this.$emit('input', this.path + '/block_default')
     }
   },
   computed: {
     blocks: {
-      get() {
+      get () {
         let blocks = this.$store.getters[this.path + '/blocks']
         if (!blocks) {
           return []

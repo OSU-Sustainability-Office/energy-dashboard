@@ -25,7 +25,7 @@ const state = () => {
 }
 
 const actions = {
-  loadChart(store, id) {
+  loadChart (store, id) {
     let chartSpace = 'chart_' + id.toString()
     let moduleSpace = store.getters.path + '/' + chartSpace
     this.registerModule(moduleSpace.split('/'), Chart)
@@ -37,7 +37,7 @@ const actions = {
     store.dispatch(chartSpace + '/changeChart', id)
   },
 
-  async addModifier(store, modifierName) {
+  async addModifier (store, modifierName) {
     const currentModNames = store.getters.modifiers.map(o => o.name)
 
     if (currentModNames.indexOf(modifierName) < 0) {
@@ -53,7 +53,7 @@ const actions = {
     }
   },
 
-  async removeModifier(store, modifierName) {
+  async removeModifier (store, modifierName) {
     const currentModNames = store.getters.modifiers.map(o => o.name)
     const modIndex = currentModNames.indexOf(modifierName)
     if (modIndex < 0) {
@@ -65,11 +65,11 @@ const actions = {
     }
   },
 
-  async resetDefault(store) {
+  async resetDefault (store) {
     await store.dispatch('removeAllModifiers')
   },
 
-  async removeAllModifiers(store) {
+  async removeAllModifiers (store) {
     for (let modIndex in store.getters.modifiers) {
       if (modIndex < 0) {
         throw new Error('Modifier not found on block')
@@ -81,7 +81,7 @@ const actions = {
     }
   },
 
-  async updateModifier(store, payload) {
+  async updateModifier (store, payload) {
     // eslint-disable-next-line no-proto
     const currentModNames = store.getters.modifiers.map(o => o.__proto__.constructor.name)
     const modIndex = currentModNames.indexOf(payload.name)
@@ -95,12 +95,12 @@ const actions = {
     }
   },
 
-  async unloadChart(store, chartId) {
+  async unloadChart (store, chartId) {
     let chart = store.getters.chart(chartId)
     this.unregisterModule(chart.path.split('/'))
   },
 
-  async loadCharts(store, charts) {
+  async loadCharts (store, charts) {
     for (let chart of charts) {
       // 12/23/2023 edit: We can bypass the chartSpace issue by using block.module.js's getData() function.
       // Duplicate chartSpace values trigger VueX getter error, need to fix this to support multiple charts
@@ -132,7 +132,7 @@ const actions = {
     }
   },
 
-  async update(store, payload) {
+  async update (store, payload) {
     console.log(payload)
     console.log(store.getters)
     if (
@@ -166,7 +166,7 @@ const actions = {
     }
   },
 
-  async changeBlock(store, id) {
+  async changeBlock (store, id) {
     store.commit('shuffleChartColors')
     for (let chart of store.getters.charts) {
       this.unregisterModule(chart.path.split('/'))
@@ -187,7 +187,7 @@ const actions = {
     }
   },
 
-  async newChart(store, payload) {
+  async newChart (store, payload) {
     let id = (
       await API.chart(
         {
@@ -214,7 +214,7 @@ const actions = {
     store.commit(chartSpace + '/meterGroupPath', payload.meter)
   },
 
-  async removeChart(store, name) {
+  async removeChart (store, name) {
     for (let chart of store.getters.charts) {
       let chartKey = chart.path.split('/').pop()
       if (chartKey === name) {
@@ -227,7 +227,7 @@ const actions = {
   },
 
   // Default block for Aqcuisuites & Tesla Solar Panels
-  async loadDefault(store, payload) {
+  async loadDefault (store, payload) {
     store.commit(
       'promise',
       new Promise(async (resolve, reject) => {
@@ -294,7 +294,7 @@ const actions = {
     return store.getters.promise
   },
 
-  async getData(store) {
+  async getData (store) {
     let chartDataPromises = []
     let data = {
       labels: [],
@@ -361,15 +361,15 @@ const actions = {
 }
 
 const mutations = {
-  path(state, path) {
+  path (state, path) {
     state.path = path
   },
   // seconds to add from starting time_seconds in dateStart
-  timeZoneOffset(state, offset) {
+  timeZoneOffset (state, offset) {
     state.timeZoneOffset = offset
   },
 
-  shuffleChartColors(state) {
+  shuffleChartColors (state) {
     for (var i = state.chartColors.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1))
       var temp = state.chartColors[i]
@@ -378,36 +378,36 @@ const mutations = {
     }
   },
 
-  addMod(state, mod) {
+  addMod (state, mod) {
     state.modifiers.push(mod)
   },
 
-  removeMod(state, mod) {
+  removeMod (state, mod) {
     const modIndex = state.modifiers.map(o => o.name).indexOf(mod.nam)
     state.modifiers.splice(modIndex, 1)
   },
 
-  promise(state, promise) {
+  promise (state, promise) {
     state.promise = promise
   },
 
-  name(state, name) {
+  name (state, name) {
     state.name = name
   },
 
-  dateInterval(state, dateInterval) {
+  dateInterval (state, dateInterval) {
     state.dateInterval = dateInterval
   },
 
-  intervalUnit(state, intervalUnit) {
+  intervalUnit (state, intervalUnit) {
     state.intervalUnit = intervalUnit
   },
 
-  graphType(state, graphType) {
+  graphType (state, graphType) {
     state.graphType = graphType
   },
 
-  dateStart(state, dateStart) {
+  dateStart (state, dateStart) {
     if (typeof dateStart === 'string') {
       state.dateStart = new Date(dateStart).getTime()
     } else if (typeof dateStart === 'number') {
@@ -419,7 +419,7 @@ const mutations = {
     }
   },
 
-  dateEnd(state, dateEnd) {
+  dateEnd (state, dateEnd) {
     if (typeof dateEnd === 'string') {
       state.dateEnd = new Date(dateEnd).getTime()
     } else if (typeof dateEnd === 'number') {
@@ -431,7 +431,7 @@ const mutations = {
     }
   },
 
-  id(state, id) {
+  id (state, id) {
     state.id = id
   }
 }

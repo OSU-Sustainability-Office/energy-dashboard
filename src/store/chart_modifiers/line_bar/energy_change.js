@@ -46,7 +46,7 @@ export default class LineEnergyChange {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData(chartData, payload, store, module) {
+  async postGetData (chartData, payload, store, module) {
     let resultDataObject = chartData.data
     let returnData = []
     let delta = 1
@@ -56,7 +56,7 @@ export default class LineEnergyChange {
     chartData.fill = true
 
     // Finds the nearest valid keys for a given building. In this case, it handles solar meters that upload less than every 15 minutes.
-    function findClosest(array, num) {
+    function findClosest (array, num) {
       return array.reduce(function (prev, curr) {
         return Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev
       })
@@ -142,5 +142,5 @@ export default class LineEnergyChange {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData(payload, store, module) {}
+  async preGetData (payload, store, module) {}
 }

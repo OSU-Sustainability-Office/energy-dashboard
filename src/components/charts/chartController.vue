@@ -98,7 +98,7 @@ export default {
     doughnutchart,
     piechart
   },
-  mounted() {
+  mounted () {
     console.log(this.$route.path)
   },
   watch: {
@@ -106,7 +106,7 @@ export default {
       this.updateChart()
     }
   },
-  data() {
+  data () {
     return {
       unsubscribe: null,
       loading: true,
@@ -115,7 +115,7 @@ export default {
       colors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4']
     }
   },
-  created() {
+  created () {
     if (parseInt(this.randomColors) === 1) {
       // DurstenFeld Shuffle
       for (var i = this.colors.length - 1; i > 0; i--) {
@@ -163,7 +163,7 @@ export default {
     })
   },
   computed: {
-    iframeClass() {
+    iframeClass () {
       if (this.$route.path.startsWith('/map')) {
         return 'scaled-iframe'
       } else {
@@ -171,22 +171,22 @@ export default {
       }
     },
     promise: {
-      get() {
+      get () {
         return this.$store.getters[this.path + '/promise']
       }
     },
     dateStart: {
-      get() {
+      get () {
         return this.$store.getters[this.path + '/dateStart']
       }
     },
     dateEnd: {
-      get() {
+      get () {
         return this.$store.getters[this.path + '/dateEnd']
       }
     },
     graphType: {
-      get() {
+      get () {
         if (this.chartData) {
           let noData = true
           for (let set of this.chartData.datasets) {
@@ -203,7 +203,7 @@ export default {
       }
     },
     chart: {
-      get() {
+      get () {
         switch (this.graphType) {
           case 1:
             return this.$refs.linechart
@@ -219,7 +219,7 @@ export default {
       }
     }
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.unsubscribe()
   },
   methods: {
@@ -364,8 +364,8 @@ export default {
         // may need a better way to differentiate charts, but this works for now
         // and accounts for have two charts that are the same length
         if (chart.backgroundColor != largestChart.backgroundColor) {
-          //loop through all data points in current chart and map x-value to largest chart
-          //also create a datapoint for the original x-value so that we can display it on tooltip hover
+          // loop through all data points in current chart and map x-value to largest chart
+          // also create a datapoint for the original x-value so that we can display it on tooltip hover
           for (let i in chart.data) {
             if (chart.data[i].y != null) {
               chart.data[i].originalX = chart.data[i].x

@@ -21,7 +21,7 @@ export default {
     mapTab,
     buildingListTab
   },
-  data() {
+  data () {
     return {
       pic1: '/images/solar.jpg'
     }

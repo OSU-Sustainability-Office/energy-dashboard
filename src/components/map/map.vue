@@ -147,25 +147,25 @@ export default {
   },
   computed: {
     showSide: {
-      get() {
+      get () {
         return this.$store.getters['modalController/modalName'] === 'map_side_view'
       },
 
-      set(value) {
+      set (value) {
         this.$store.dispatch('modalController/closeModal')
       }
     },
     showCompareSide: {
-      get() {
+      get () {
         return this.$store.getters['modalController/modalName'] === 'map_compare_side'
       },
 
-      set(value) {
+      set (value) {
         this.$store.dispatch('modalController/closeModal')
       }
     }
   },
-  data() {
+  data () {
     return {
       selectedOption: 'All',
       searchGroup: [],
@@ -289,13 +289,13 @@ export default {
         }
       }
     },
-    resetMap() {
+    resetMap () {
       this.map.setView(L.latLng(DEFAULT_LAT, DEFAULT_LON), DEFAULT_ZOOM)
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
       }
     },
-    getResult(searchResult) {
+    getResult (searchResult) {
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
       }
@@ -336,7 +336,7 @@ export default {
         this.compareStories.splice(this.compareStories.indexOf(searchResult.feature.properties.id), 1)
       }
     },
-    resetSearchInput() {
+    resetSearchInput () {
       this.search = ''
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
@@ -485,7 +485,7 @@ export default {
       return 'rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')'
     }
   },
-  async created() {
+  async created () {
     await this.$store.dispatch('map/loadGeometry')
     this.mapLoaded = true
     this.message = window.innerWidth > 844
@@ -494,13 +494,13 @@ export default {
     })
     this.map.zoomControl.setPosition('topleft')
   },
-  mounted() {
+  mounted () {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject
     })
   },
   watch: {
-    selectedOption(energyFilter) {
+    selectedOption (energyFilter) {
       this.rKey++
       this.$nextTick(() => {
         this.map = this.$refs.map.mapObject

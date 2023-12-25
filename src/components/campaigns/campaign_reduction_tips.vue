@@ -48,7 +48,7 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       hoverShow: null,
       tips: [
@@ -95,7 +95,7 @@ export default {
       ]
     }
   },
-  created() {}
+  created () {}
 }
 </script>
 <style scoped lang="scss">

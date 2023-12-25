@@ -20,9 +20,9 @@
 export default {
   name: 'contact',
   props: [],
-  data() {},
+  data () {},
   watch: {},
-  mounted() {},
+  mounted () {},
   methods: {}
 }
 </script>

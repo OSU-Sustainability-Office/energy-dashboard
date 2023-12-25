@@ -36,12 +36,12 @@ export default {
     navdir,
     editCard
   },
-  data() {
+  data () {
     return {
       navVis: false
     }
   },
-  async created() {
+  async created () {
     await this.$store.dispatch('map/loadMap')
     this.navVis = this.personalView || this.$route.path.includes('building') || this.otherView
     await this.$store.dispatch('user/user')
@@ -184,7 +184,7 @@ export default {
   },
   computed: {
     personalView: {
-      get() {
+      get () {
         if (
           this.view &&
           this.view.user === this.$store.getters['user/onid'] &&
@@ -196,7 +196,7 @@ export default {
       }
     },
     otherView: {
-      get() {
+      get () {
         if (this.view.path === 'view') {
           return true
         }
@@ -204,7 +204,7 @@ export default {
       }
     },
     view: {
-      get() {
+      get () {
         if (this.$route.path.includes('building')) {
           return this.$store.getters['map/building'](this.$route.params.id)
         } else if (this.$route.path.includes('compare')) {
@@ -235,14 +235,14 @@ export default {
       }
     },
     compareBuildings: {
-      get() {
+      get () {
         if (!this.$route.path.includes('compare')) return null
         // console.log(this.$route.params.buildings)
         return JSON.parse(decodeURI(this.$route.params.buildings)).map(id => this.$store.getters['map/building'](id))
       }
     },
     cards: {
-      get() {
+      get () {
         if (this.$route.path.includes('compare')) {
           if (!this.compareBuildings || this.compareBuildings.length === 0 || !this.compareBuildings[0]) {
             return []
@@ -264,7 +264,7 @@ export default {
       }
     },
     dateStart: {
-      get() {
+      get () {
         let startModifier = 7 * 24 * 60 * 60 * 1000
         switch (parseInt(this.$route.params.range)) {
           case 1:
@@ -284,13 +284,13 @@ export default {
       }
     },
     dateEnd: {
-      get() {
+      get () {
         let d = new Date()
         return d.getTime()
       }
     },
     intervalUnit: {
-      get() {
+      get () {
         /*
          If we're dealing with solar panels just show the interval in hours or minutes since the
          default unit for solar panels is Energy in Interval--basically the change in
@@ -319,7 +319,7 @@ export default {
       }
     },
     dateInterval: {
-      get() {
+      get () {
         switch (parseInt(this.$route.params.range)) {
           case 1:
             return 1

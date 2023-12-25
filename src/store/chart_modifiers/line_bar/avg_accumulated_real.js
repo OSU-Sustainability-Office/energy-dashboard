@@ -7,7 +7,7 @@
  */
 
 export default class LineAvgModifier {
-  constructor() {
+  constructor () {
     this.dateStart = null
     this.dateEnd = null
   }
@@ -40,7 +40,7 @@ export default class LineAvgModifier {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData(chartData, payload, store, module) {
+  async postGetData (chartData, payload, store, module) {
     let returnData = []
     let delta = 1
     switch (payload.intervalUnit) {
@@ -133,7 +133,7 @@ export default class LineAvgModifier {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData(payload, store, module) {
+  async preGetData (payload, store, module) {
     if (payload.intervalUnit === 'day' && payload.dateInterval > 1) {
       throw new Error('Time difference interval too large to work correctly')
     }

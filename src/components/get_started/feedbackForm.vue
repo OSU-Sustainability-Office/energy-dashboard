@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       ruleForm: {
         name: '',
@@ -38,7 +38,7 @@ export default {
     }
   },
   methods: {
-    submitForm(formName) {
+    submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           alert('submit!')
@@ -48,7 +48,7 @@ export default {
         }
       })
     },
-    resetForm(formName) {
+    resetForm (formName) {
       this.$refs[formName].resetFields()
     }
   }

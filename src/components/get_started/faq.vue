@@ -36,7 +36,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       activeNames: []
     }

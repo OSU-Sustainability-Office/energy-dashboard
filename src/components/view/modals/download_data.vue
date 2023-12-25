@@ -132,7 +132,7 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
 import ChartModifier from '@/store/chart_modifiers/index'
 var JSZip = require('jszip')
 export default {
-  data() {
+  data () {
     return {
       currentIndex: 0,
       addBuildingId: 0,
@@ -155,18 +155,18 @@ export default {
   },
   computed: {
     visible: {
-      get() {
+      get () {
         return this.$store.getters['modalController/modalName'] === 'download_data'
       },
 
-      set(value) {
+      set (value) {
         if (value === false) {
           this.$store.dispatch('modalController/closeModal')
         }
       }
     },
     meterPoints: {
-      get() {
+      get () {
         let points = []
         for (let building of this.form.buildings) {
           for (let group of building.groups) {
@@ -183,7 +183,7 @@ export default {
       }
     },
     buildingsFiltered: {
-      get() {
+      get () {
         if (!this.buildings) return []
         let buildingsCopy = new Array(...this.buildings)
         let buildingIds = buildingsCopy.map(o => parseInt(o.id))
@@ -198,7 +198,7 @@ export default {
     },
 
     buildings: {
-      get() {
+      get () {
         return this.$store.getters['map/buildings']
       }
     }

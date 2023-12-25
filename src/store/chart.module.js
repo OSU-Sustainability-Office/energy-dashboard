@@ -30,7 +30,7 @@ const actions = {
   //   "dateInterval": 1,
   //   "graphType": 1
   // }
-  async getData(store, payload) {
+  async getData (store, payload) {
     if (!store.getters.meterGroupPath) return
     const reqPayload = {
       point: store.getters.point,
@@ -116,7 +116,7 @@ const actions = {
     return chartData
   },
 
-  async changeChart(store, id) {
+  async changeChart (store, id) {
     let chart = API.chart(id)
     store.commit('promise', chart)
     store.commit('id', id)
@@ -127,7 +127,7 @@ const actions = {
     store.commit('meterGroupPath', this.getters.meterGroup(chart.meterGroup).path)
   },
 
-  async update(store, payload) {
+  async update (store, payload) {
     console.log(payload)
     console.log(store.getters)
     if (
@@ -167,48 +167,48 @@ const actions = {
 }
 
 const mutations = {
-  path(state, path) {
+  path (state, path) {
     state.path = path
   },
 
-  modifierData(state, data) {
+  modifierData (state, data) {
     state.modifierData = data
   },
 
-  promise(state, promise) {
+  promise (state, promise) {
     state.promise = promise
   },
 
-  color(state, color) {
+  color (state, color) {
     state.color = color
   },
 
-  name(state, name) {
+  name (state, name) {
     state.name = name
   },
 
-  point(state, point) {
+  point (state, point) {
     state.point = point
   },
 
-  building(state, building) {
+  building (state, building) {
     // example call triggered from block.module.js's updateCharts()
     // commented out for now as this triggers many times
     // console.log(building)
     state.building = building
   },
 
-  id(state, id) {
+  id (state, id) {
     state.id = id
   },
 
-  meterGroupPath(state, meterGroupPath) {
+  meterGroupPath (state, meterGroupPath) {
     state.meterGroupPath = meterGroupPath
   },
 
   // Function to convert plain text date format from Edit Form to Unix Timestamps
   // See similar dateStart / dateEnd mutation functions in block.module.js
-  multStart(state, multStart) {
+  multStart (state, multStart) {
     for (let i in multStart) {
       if (typeof multStart[i] === 'string') {
         console.log('helloooo')
@@ -225,12 +225,12 @@ const mutations = {
 
   // Function to remove all elements from VueX state array and insert a placeholder value
   // You only need a mutation for this when you are dealing with global state (state.commit, this.store.getters, etc)
-  clearAndSetMultStart(state, payload) {
+  clearAndSetMultStart (state, payload) {
     state.multStart = []
     state.multStart.push(...payload)
   },
 
-  multEnd(state, multEnd) {
+  multEnd (state, multEnd) {
     for (let i in multEnd) {
       if (typeof multEnd[i] === 'string') {
         state.multEnd[i] = new Date(multEnd[i]).getTime()
@@ -244,58 +244,58 @@ const mutations = {
     }
   },
 
-  clearAndSetMultEnd(state, payload) {
+  clearAndSetMultEnd (state, payload) {
     state.multEnd = []
     state.multEnd.push(...payload)
   }
 }
 
 const getters = {
-  promise(state) {
+  promise (state) {
     return state.promise
   },
 
-  modifierData(state) {
+  modifierData (state) {
     return state.modifierData
   },
 
-  color(state) {
+  color (state) {
     return state.color
   },
 
-  path(state) {
+  path (state) {
     return state.path
   },
 
-  name(state) {
+  name (state) {
     return state.name
   },
 
-  point(state) {
+  point (state) {
     return state.point
   },
 
-  building(state) {
+  building (state) {
     return state.building
   },
 
-  id(state) {
+  id (state) {
     return state.id
   },
 
-  meterGroupPath(state) {
+  meterGroupPath (state) {
     return state.meterGroupPath
   },
 
-  multStart(state) {
+  multStart (state) {
     return state.multStart
   },
 
-  multEnd(state) {
+  multEnd (state) {
     return state.multEnd
   },
 
-  pointString(state) {
+  pointString (state) {
     if (state.point) {
       const map = {
         accumulated_real: 'Net Energy Usage (kWh)',
@@ -341,7 +341,7 @@ const getters = {
     }
   },
 
-  unitString(state) {
+  unitString (state) {
     const map = {
       accumulated_real: 'kWh',
       real_power: 'W',

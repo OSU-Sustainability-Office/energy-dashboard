@@ -14,13 +14,13 @@
 <script>
 export default {
   props: ['camp'],
-  data() {
+  data () {
     return {
       loaded: true,
       mediaSource: ''
     }
   },
-  mounted() {
+  mounted () {
     // Load the media content
     this.$refs.imageContainer.$el.style.backgroundImage =
       'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/' + this.camp.media + '")'

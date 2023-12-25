@@ -11,9 +11,9 @@
 export default {
   name: '404',
   props: [],
-  data() {},
+  data () {},
   watch: {},
-  mounted() {},
+  mounted () {},
   methods: {}
 }
 </script>

@@ -8,12 +8,12 @@
 <script>
 export default {
   props: ['id', 'building', 'plus'],
-  data() {
+  data () {
     return {
       api: process.env.VUE_APP_ROOT_API
     }
   },
-  mounted() {
+  mounted () {
     if (this.media) {
       this.$refs.card.style.background =
         'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' +
@@ -26,7 +26,7 @@ export default {
 
   computed: {
     buildingOrStory: {
-      get() {
+      get () {
         if (this.building) {
           return this.$store.getters['map/building'](this.id)
         } else {
@@ -35,17 +35,17 @@ export default {
       }
     },
     media: {
-      get() {
+      get () {
         return this.buildingOrStory.image
       }
     },
     name: {
-      get() {
+      get () {
         return this.buildingOrStory.name
       }
     },
     description: {
-      get() {
+      get () {
         return this.buildingOrStory.description
       }
     }

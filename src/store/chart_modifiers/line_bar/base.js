@@ -7,7 +7,7 @@
  */
 
 export default class LineBaseModifier {
-  constructor() {
+  constructor () {
     this.data = {}
   }
   /*
@@ -40,7 +40,7 @@ export default class LineBaseModifier {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData(chartData, payload, store, module) {
+  async postGetData (chartData, payload, store, module) {
     let resultDataObject = chartData.data
     let returnData = []
     let delta = 1
@@ -103,7 +103,7 @@ export default class LineBaseModifier {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData(payload, store, module) {
+  async preGetData (payload, store, module) {
     let delta = 1
     let dataDate = new Date(payload.dateStart * 1000)
     switch (payload.intervalUnit) {

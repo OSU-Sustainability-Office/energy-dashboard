@@ -62,7 +62,7 @@ const RESPONSE_MAX_SIZE = 0x600000 // 6MB limit = 6*(2^20) Bytes
 
 const actions = {
   // Copies "cache" object to indexedDB for persistent storage
-  async addCacheToIndexedDB(store) {
+  async addCacheToIndexedDB (store) {
     // double-check current store state
     const db = this.getters['dataStore/DB']
     if (db === undefined) throw new Error('indexedDB not instantiated')
@@ -100,7 +100,7 @@ const actions = {
   //      }
   //    }
 
-  async loadIndexedDB(store) {
+  async loadIndexedDB (store) {
     if (this.getters['dataStore/DB'] !== undefined) return
 
     // connect to indexedDB instance
@@ -165,7 +165,7 @@ const actions = {
   //  start: integer representing linux epoch time of the start of the required interval
   //  end: integer representing linux epoch time of the end of the required interval
   //  uom: the unit of measure/metering point to request data for
-  findMissingIntervals(store, payload) {
+  findMissingIntervals (store, payload) {
     if (
       !this.getters['dataStore/cache'][payload.meterId] ||
       !this.getters['dataStore/cache'][payload.meterId][payload.uom]
@@ -240,7 +240,7 @@ const actions = {
 
     This function assumes each request will have the same metreClass and point type.
   */
-  async getBatchData(store, payload) {
+  async getBatchData (store, payload) {
     await this.dispatch('dataStore/loadIndexedDB')
     const requestPoint = payload[0].uom
     const meterClass = payload[0].classInt
@@ -405,7 +405,7 @@ const actions = {
   //  end: integer representing linux epoch time of the end of the required interval
   //  uom: the unit of measure/metering point to request data for
   //  classInt: An integer that corresponds to the type of meter we are reading from
-  async getData(store, payload) {
+  async getData (store, payload) {
     // First, check the non-persistent cahce object:
     // Does the cache contain the data?
     let missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
@@ -568,40 +568,40 @@ const mutations = {
 }
 
 const getters = {
-  cache(state) {
+  cache (state) {
     return state.cache
   },
-  DB(state) {
+  DB (state) {
     return state.indexedDBInstance
   },
-  requestStore(state) {
+  requestStore (state) {
     return state.requestStore
   },
 
   // checks if we have already queried this date range for the given unit of measurement (uom)
   inRangeSet:
     (state, getters) =>
-    ({ uom, id, start, end }) => {
-      if (getters.requestStore[uom] === undefined) return false
-      if (getters.requestStore[uom][id] === undefined) return false
-      for (let i = 0; i < getters.requestStore[uom][id].length; i++) {
-        if (getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end) {
-          return true
+      ({ uom, id, start, end }) => {
+        if (getters.requestStore[uom] === undefined) return false
+        if (getters.requestStore[uom][id] === undefined) return false
+        for (let i = 0; i < getters.requestStore[uom][id].length; i++) {
+          if (getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end) {
+            return true
+          }
         }
-      }
-      return false
-    },
+        return false
+      },
 
   // calculates data set size, assuming there's a data-point every 15 minutes.
   // (this assumption may not hold for some meter-types), it is unlikely any
   // meter will have more frequent data reporting.
   dataSetSize:
     (state, getters) =>
-    ({ id, startDate, endDate }) => {
+      ({ id, startDate, endDate }) => {
       // date is in seconds so 900 seconds = 15 minute interval
-      const numItems = Math.ceil((endDate - startDate) / 900)
-      return DATA_ITEM_SIZE * numItems
-    },
+        const numItems = Math.ceil((endDate - startDate) / 900)
+        return DATA_ITEM_SIZE * numItems
+      },
 
   requestSize: (state, getters) => requests => {
     let totalSize = RESPONSE_HEADER_SIZE

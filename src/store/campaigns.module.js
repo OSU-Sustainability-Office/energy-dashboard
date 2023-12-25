@@ -18,7 +18,7 @@ const state = () => {
 
 const actions = {
   // Retrieves campaign information for all campaigns from the API and controls the global campaigns promise
-  async loadCampaigns(store) {
+  async loadCampaigns (store) {
     if (store.getters.promise === null) {
       store.commit(
         'promise',
@@ -57,7 +57,7 @@ const actions = {
 }
 
 const mutations = {
-  promise(state, promise) {
+  promise (state, promise) {
     state.promise = promise
   }
 }
