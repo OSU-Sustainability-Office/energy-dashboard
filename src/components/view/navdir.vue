@@ -47,6 +47,9 @@
           <span v-if="otherView"> &nbsp; </span>
         </el-col>
         <el-col :span="4" class="buttons">
+          <el-tooltip content="Click to compare multiple time periods">
+            <i class="fas fa-clock" @click="compareTimePeriods()"></i>
+          </el-tooltip>
           <el-tooltip content="Click to copy share link">
             <i class="fas fa-share-square" @click="copyUrl()"></i>
           </el-tooltip>
@@ -195,6 +198,12 @@ export default {
       this.$store.dispatch('modalController/openModal', {
         name: 'download_data',
         view: this.viewOrBuilding.path
+      })
+    },
+    compareTimePeriods: function () {
+      let buildingID = JSON.stringify(this.$route.params.id)
+      this.$router.push({
+        path: `/compare/${encodeURI('[' + buildingID + ']')}/2`
       })
     },
     populate: function () {
