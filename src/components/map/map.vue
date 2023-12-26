@@ -101,7 +101,12 @@
           ></l-geo-json>
         </l-map>
       </div>
-      <prompt v-if="askingForComparison" @cancel="stopCompare" @compare="showComparison" />
+      <prompt
+        :compareStories="compareStories"
+        v-if="askingForComparison"
+        @cancel="stopCompare"
+        @compare="showComparison"
+      />
       <prompt_error v-if="building_compare_error" @cancel="stopCompareError" @compare="showComparison" />
       <transition name="side">
         <compareSide v-if="showCompareSide" @hide="showCompareSide = false" :compareStories="compareStories" />
@@ -255,6 +260,7 @@ export default {
   },
   methods: {
     polyClick: function (id, feature, center) {
+      console.log('compareStories', this.compareStories)
       if (!this.askingForComparison) {
         window.vue.$store.dispatch('modalController/openModal', {
           name: 'map_side_view',

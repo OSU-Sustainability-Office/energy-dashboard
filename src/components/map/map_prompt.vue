@@ -12,6 +12,7 @@
       <el-row>
         <el-col class="text">
           Select buildings by clicking on map or using building menu search bar. <br /><br />
+          Select a single building to compare multiple time periods for that building. <br /><br />
           <el-row>NOTE: Only buildings with Electricity data are valid for comparison!</el-row>
         </el-col>
       </el-row>
@@ -22,6 +23,9 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="q">Quick Compare</el-dropdown-item>
               <el-dropdown-item command="d">Compare in FullScreen</el-dropdown-item>
+              <el-dropdown-item v-if="compareStories && compareStories.length < 2" command="t"
+                >Compare Multiple Time Periods</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
           <el-button class="button" type="info" @click="$emit('cancel')">Cancel</el-button>
@@ -32,6 +36,11 @@
 </template>
 <script>
 export default {
+  props: {
+    compareStories: {
+      type: Array
+    }
+  },
   methods: {
     handle: function (command) {
       this.$emit('compare', command)
@@ -42,7 +51,7 @@ export default {
 <style lang="scss" scoped>
 .stage_prompt {
   width: 400px;
-  height: 150px;
+  height: 210px;
   position: absolute;
   top: 20px;
   left: calc(50% - 200px);
