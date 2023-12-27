@@ -260,7 +260,6 @@ export default {
   },
   methods: {
     polyClick: function (id, feature, center) {
-      console.log('compareStories', this.compareStories)
       if (!this.askingForComparison) {
         window.vue.$store.dispatch('modalController/openModal', {
           name: 'map_side_view',
@@ -368,10 +367,9 @@ export default {
       try {
         if (this.building_compare_error === false) {
           let path = this.$store.getters['map/building'](this.compareStories[0]).path
+          let mgId = this.$store.getters[path + '/primaryGroup']('Electricity').id
 
           if (target === 'q') {
-            let mgId = this.$store.getters[path + '/primaryGroup']('Electricity').id
-
             let blockSpace = this.$store.getters[path + '/block'](mgId).path
             await this.$store.dispatch(blockSpace + '/removeAllModifiers')
             await this.$store.dispatch(blockSpace + '/addModifier', 'building_compare')
