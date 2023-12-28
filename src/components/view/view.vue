@@ -43,7 +43,16 @@ export default {
   },
   async created () {
     await this.$store.dispatch('map/loadMap')
-    this.navVis = this.personalView || this.$route.path.includes('building') || this.otherView
+    // Currently, this.navVis is just set to show the navdir on "building" page, and hide on other pages.
+    // If you want to configure different navdir behavior on the comparison page, e.g. show "share button"
+    // but not other buttons on navdir, then you may as well just set this.navVis to true here,
+    // and remove references to navVis in watch > $route section (20 lines or so below), then configure
+    // this.otherView (or whatever) in navdir.vue file.
+    // However, this.navVis is still needed here as it guarantees the navbar is not shown before
+    // await this.$store.dispatch('map/loadMap') completes, preventing errors in navdir file.
+    // this.navVis = true
+    this.navVis = this.$route.path.includes('building')
+    console.log(this.navVis)
     await this.$store.dispatch('user/user')
     if (!this.view.id) {
       await this.$store.dispatch('view/changeView', this.$route.params.id)
@@ -61,6 +70,8 @@ export default {
     $route: {
       immediate: true,
       handler: async function (to, from) {
+        this.navVis = this.$route.path.includes('building')
+        console.log(this.navVis)
         if (
           !this.$route.path.includes('building') &&
           !this.$route.path.includes('compare') &&
@@ -75,21 +86,24 @@ export default {
             this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
           }
         }
-        // Reset multStart and multEnd variables whenever you are on a comparison page for just 1 building
-        let buildingComparisonNumber = JSON.parse(decodeURI(this.$route.params.buildings)).length
-        if (this.$route.path.includes('compare') && buildingComparisonNumber === 1) {
-          for (let card of this.cards) {
-            if (!card.path) return
-            this.$nextTick(() => {
-              let blockpath = this.cards[0].path
-              let searchTerm = 'block_'
-              let chartIndex = blockpath.indexOf(searchTerm)
-              // console.log(blockpath.slice(chartIndex + searchTerm.length))
-              let blockID = blockpath.slice(chartIndex + searchTerm.length)
-              // console.log(blockpath + '/chart_' + blockID + '/multStart')
-              this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultStart', [this.dateStart])
-              this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultEnd', [this.dateEnd])
-            })
+        if (this.$route.path.includes('compare')) {
+          // Reset multStart and multEnd variables whenever you are on a comparison page for just 1 building
+          let buildingComparisonNumber = JSON.parse(decodeURI(this.$route.params.buildings)).length
+          console.log(buildingComparisonNumber)
+          if (buildingComparisonNumber === 1) {
+            for (let card of this.cards) {
+              if (!card.path) return
+              this.$nextTick(() => {
+                let blockpath = this.cards[0].path
+                let searchTerm = 'block_'
+                let chartIndex = blockpath.indexOf(searchTerm)
+                // console.log(blockpath.slice(chartIndex + searchTerm.length))
+                let blockID = blockpath.slice(chartIndex + searchTerm.length)
+                // console.log(blockpath + '/chart_' + blockID + '/multStart')
+                this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultStart', [this.dateStart])
+                this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultEnd', [this.dateEnd])
+              })
+            }
           }
         }
       }
@@ -159,23 +173,25 @@ export default {
               this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
             })
           }
-          // Reset multStart and multEnd variables whenever you are on a comparison page for just 1 building
-          let buildingComparisonNumber = JSON.parse(decodeURI(this.$route.params.buildings)).length
-          // console.log(buildingComparisonNumber)
-          if (this.$route.path.includes('compare') && buildingComparisonNumber === 1) {
-            for (let card of this.cards) {
-              if (!card.path) return
-              this.$nextTick(() => {
-                let blockpath = this.cards[0].path
-                let searchTerm = 'block_'
-                let chartIndex = blockpath.indexOf(searchTerm)
-                // console.log(blockpath.slice(chartIndex + searchTerm.length))
-                let blockID = blockpath.slice(chartIndex + searchTerm.length)
-                // console.log(blockpath + '/chart_' + blockID + '/multStart')
-                this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultStart', [this.dateStart])
-                this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultEnd', [this.dateEnd])
-                // console.log(this.$store.getters)
-              })
+          if (this.$route.path.includes('compare')) {
+            // Reset multStart and multEnd variables whenever you are on a comparison page for just 1 building
+            let buildingComparisonNumber = JSON.parse(decodeURI(this.$route.params.buildings)).length
+            console.log(buildingComparisonNumber)
+            if (buildingComparisonNumber === 1) {
+              for (let card of this.cards) {
+                if (!card.path) return
+                this.$nextTick(() => {
+                  let blockpath = this.cards[0].path
+                  let searchTerm = 'block_'
+                  let chartIndex = blockpath.indexOf(searchTerm)
+                  // console.log(blockpath.slice(chartIndex + searchTerm.length))
+                  let blockID = blockpath.slice(chartIndex + searchTerm.length)
+                  // console.log(blockpath + '/chart_' + blockID + '/multStart')
+                  this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultStart', [this.dateStart])
+                  this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultEnd', [this.dateEnd])
+                  // console.log(this.$store.getters)
+                })
+              }
             }
           }
         }
@@ -190,14 +206,6 @@ export default {
           this.view.user === this.$store.getters['user/onid'] &&
           this.$store.getters['user/onid'] !== ''
         ) {
-          return true
-        }
-        return false
-      }
-    },
-    otherView: {
-      get () {
-        if (this.view.path === 'view') {
           return true
         }
         return false

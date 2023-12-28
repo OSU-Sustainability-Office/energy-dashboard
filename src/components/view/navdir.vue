@@ -8,6 +8,9 @@
     <el-col class="main">
       <el-row class="bar">
         <el-col :span="20">
+          <!-- The !otherView stuff is currently overwritten by view.vue, see comments there. Maybe need a follow-up
+            meeting with Brandon and Ross to see if they want any of the navDir features on the comparison pages.
+            Download data feature might need some edits, if so. -->
           <el-menu
             v-if="!otherView"
             mode="horizontal"
@@ -97,9 +100,7 @@ export default {
         if (this.publicView) {
           return this.$store.getters['map/building'](this.$route.params.id)
         } else {
-          let view = this.$store.getters['user/view'](this.$route.params.id)
-          if (!view) view = this.$store.getters['view']
-          return view
+          return this.$store.getters['view']
         }
       }
     },
@@ -114,6 +115,8 @@ export default {
           }
           return rValue
         } else {
+          // References to anything about "user", "users", "personal", etc are an obsolete admin frontend feature.
+          // All references to these things (at least in .vue files) hould be removed in a future PR, but out of scope for now.
           return this.$store.getters['user/views']
         }
       }
@@ -157,8 +160,10 @@ export default {
     },
     otherView: {
       get () {
-        if (this.viewOrBuilding.path === 'view') {
-          return true
+        if (this.viewOrBuilding) {
+          if (this.viewOrBuilding.path === 'view') {
+            return true
+          }
         }
         return false
       }
@@ -168,6 +173,7 @@ export default {
       get () {
         try {
           let path = this.$store.getters['map/building'](this.$route.params.id).path
+          // eslint-disable-next-line
           let mgId = this.$store.getters[path + '/primaryGroup']('Electricity').id
           return true
         } catch (err) {

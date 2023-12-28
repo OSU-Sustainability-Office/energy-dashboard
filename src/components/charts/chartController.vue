@@ -363,7 +363,7 @@ export default {
         // check if current chart is the largest chart, don't map if so
         // may need a better way to differentiate charts, but this works for now
         // and accounts for have two charts that are the same length
-        if (chart.backgroundColor != largestChart.backgroundColor) {
+        if (chart.backgroundColor !== largestChart.backgroundColor) {
           // loop through all data points in current chart and map x-value to largest chart
           // also create a datapoint for the original x-value so that we can display it on tooltip hover
           for (let i in chart.data) {
