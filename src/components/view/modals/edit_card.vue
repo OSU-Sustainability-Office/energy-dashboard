@@ -396,7 +396,14 @@ export default {
           // console.log(this.$store.getters[blockPath + '/charts'])
           // update legend name
           // line below is what "resets" the chart name, maybe comment it out but needs more testing
-          this.$store.commit(chartPath + '/name', this.$store.getters[chartPath + '/pointString'])
+          /* update 12/28/23:
+              moving this line into the if-statement below seems to fix the issue of resetting the
+              chart name when comparing two buildings. It still resets when comparing multiple time periods, but
+              those are going to be changed manually in chartController.vue anyway
+          */
+          if (this.$route.path.includes('building')) {
+            this.$store.commit(chartPath + '/name', this.$store.getters[chartPath + '/pointString'])
+          }
         } else {
           this.$store.dispatch(blockPath + '/newChart', this.form.sets[index])
         }

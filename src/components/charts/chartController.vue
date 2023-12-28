@@ -237,18 +237,9 @@ export default {
           ) {
             this.chart.update()
 
-            // if multiple chart timeperiods, find chart with largest date range
+            // format charts if there are multiple time peridods
             if (data.datasets.length > 1 && data.datasets[0].multStart.length > 1) {
-              // find chart with largest dataset
-              let largestChart = data.datasets[0]
-              for (let i in data.datasets) {
-                if (data.datasets[i].data.length > largestChart.data.length) {
-                  largestChart = data.datasets[i]
-                }
-              }
-
-              // map all other datasets to the largest dataset
-              this.mapXValues(largestChart, data.datasets)
+              this.formatMultipleTimePeriods(data.datasets)
             }
 
             let timeDif =
@@ -347,6 +338,12 @@ export default {
         }
         return point
       } else {
+        // if there are multiple time period charts, don't display a label on the bottom as the time
+        // periods will be displayed individually on the top
+        if (this.chartData.datasets.length > 1 && this.chartData.datasets[0].multStart.length > 1) {
+          return ' '
+        }
+
         const date1 = new Date(this.dateStart)
         const date2 = new Date(this.dateEnd)
         if (date1 && date2) {
@@ -356,9 +353,23 @@ export default {
         }
       }
     },
-    // Map x-values of all datasets to the x-values of the largest dataset when dealing with
-    // multiple time periods so that the charts are overlapped/aligned
-    mapXValues: function (largestChart, charts) {
+    // this formats a chart with multiple time periods, changing labels, aligning all charts to the left,
+    // and mapping datasets so that hovering displays the correct date
+    formatMultipleTimePeriods: function (charts) {
+      // change the labels to match the time period for each chart
+      for (let chart of charts) {
+        chart.label = chart.data[0].x.toDateString() + ' to ' + chart.data[chart.data.length - 1].x.toDateString()
+      }
+
+      // find chart with largest dataset
+      let largestChart = charts[0]
+      for (let i in charts) {
+        if (charts[i].data.length > largestChart.data.length) {
+          largestChart = charts[i]
+        }
+      }
+
+      // map all other datasets to the largest dataset
       for (let chart of charts) {
         // check if current chart is the largest chart, don't map if so
         // may need a better way to differentiate charts, but this works for now
