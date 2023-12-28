@@ -368,17 +368,17 @@ export default {
         if (this.building_compare_error === false) {
           let path = this.$store.getters['map/building'](this.compareStories[0]).path
           let mgId = this.$store.getters[path + '/primaryGroup']('Electricity').id
+          let blockSpace = this.$store.getters[path + '/block'](mgId).path
+          await this.$store.dispatch(blockSpace + '/removeAllModifiers')
+          await this.$store.dispatch(blockSpace + '/addModifier', 'building_compare')
+          await this.$store.dispatch(blockSpace + '/updateModifier', {
+            name: 'building_compare',
+            data: {
+              buildingIds: this.compareStories
+            }
+          })
 
           if (target === 'q') {
-            let blockSpace = this.$store.getters[path + '/block'](mgId).path
-            await this.$store.dispatch(blockSpace + '/removeAllModifiers')
-            await this.$store.dispatch(blockSpace + '/addModifier', 'building_compare')
-            await this.$store.dispatch(blockSpace + '/updateModifier', {
-              name: 'building_compare',
-              data: {
-                buildingIds: this.compareStories
-              }
-            })
             window.vue.$store.dispatch('modalController/openModal', {
               name: 'map_compare_side',
               path: path
