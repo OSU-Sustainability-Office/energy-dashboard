@@ -238,7 +238,7 @@ export default {
             this.chart.update()
 
             // format charts if there are multiple time peridods
-            if (data.datasets.length > 1 && data.datasets[0].multStart.length > 1) {
+            if (this.multipleTimePeriods(data.datasets)) {
               this.formatMultipleTimePeriods(data.datasets)
             }
 
@@ -340,7 +340,7 @@ export default {
       } else {
         // if there are multiple time period charts, don't display a label on the bottom as the time
         // periods will be displayed individually on the top
-        if (this.chartData.datasets.length > 1 && this.chartData.datasets[0].multStart.length > 1) {
+        if (this.multipleTimePeriods(this.chartData.datasets)) {
           return ' '
         }
 
@@ -352,6 +352,12 @@ export default {
           return ' '
         }
       }
+    },
+    multipleTimePeriods: function (charts) {
+      if (charts.length > 1 && charts[0].multStart.length > 1) {
+        return true
+      }
+      return false
     },
     // this formats a chart with multiple time periods, changing labels, aligning all charts to the left,
     // and mapping datasets so that hovering displays the correct date
@@ -385,6 +391,30 @@ export default {
           }
         }
       }
+    },
+    // this is called when there are multiple time period charts, it returns an array of all the
+    // chart dates for that index so that they can be displayed on multiple lines
+    buildXaxisTick (index) {
+      if (this.chartData.datasets) {
+        let tick = []
+        for (let chart of this.chartData.datasets) {
+          let date = ''
+
+          if (chart.data[index]) {
+            if (chart.data[index].originalX) {
+              date = chart.data[index].originalX.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
+            } else {
+              date = chart.data[index].x.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
+            }
+          }
+
+          tick.push(date)
+        }
+
+        return tick
+      }
+
+      return ''
     }
   }
 }

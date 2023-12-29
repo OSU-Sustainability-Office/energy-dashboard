@@ -144,7 +144,17 @@ export default {
                 fontFamily: 'Open Sans',
                 autoSkip: true,
                 stepSize: 10,
-                source: 'data'
+                source: 'data',
+                // the following three settinsg change the x-ticks if there are multiple time periods,
+                // otherwise the default settings are used
+                autoSkipPadding: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 10 : 3,
+                maxRotation: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 0 : 50,
+                callback: (val, index) => {
+                  if (this.$parent.multipleTimePeriods(this.$parent.chartData.datasets)) {
+                    return this.$parent.buildXaxisTick(index)
+                  }
+                  return val
+                }
               },
               scaleLabel: {
                 display: this.$parent.buildLabel('y') !== '',
