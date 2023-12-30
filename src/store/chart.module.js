@@ -225,7 +225,7 @@ const mutations = {
 
   // Function to remove all elements from VueX state array and insert a placeholder value
   // You only need a mutation for this when you are dealing with global state (state.commit, this.store.getters, etc)
-  clearAndSetMultStart (state, payload) {
+  resetMultStart (state, payload) {
     state.multStart = []
     state.multStart.push(...payload)
   },
@@ -244,7 +244,7 @@ const mutations = {
     }
   },
 
-  clearAndSetMultEnd (state, payload) {
+  resetMultEnd (state, payload) {
     state.multEnd = []
     state.multEnd.push(...payload)
   }

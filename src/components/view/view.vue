@@ -86,25 +86,17 @@ export default {
             this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
           }
         }
-        if (this.$route.path.includes('compare')) {
-          // Reset multStart and multEnd variables whenever you are on a comparison page for just 1 building
-          let buildingComparisonNumber = JSON.parse(decodeURI(this.$route.params.buildings)).length
-          console.log(buildingComparisonNumber)
-          if (buildingComparisonNumber === 1) {
-            for (let card of this.cards) {
-              if (!card.path) return
-              this.$nextTick(() => {
-                let blockpath = this.cards[0].path
-                let searchTerm = 'block_'
-                let chartIndex = blockpath.indexOf(searchTerm)
-                // console.log(blockpath.slice(chartIndex + searchTerm.length))
-                let blockID = blockpath.slice(chartIndex + searchTerm.length)
-                // console.log(blockpath + '/chart_' + blockID + '/multStart')
-                this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultStart', [this.dateStart])
-                this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultEnd', [this.dateEnd])
-              })
-            }
-          }
+        // Reset multStart and multEnd variables whenever you change pages
+        for (let card of this.cards) {
+          if (!card.path) return
+          this.$nextTick(() => {
+            let blockpath = this.cards[0].path
+            let searchTerm = 'block_'
+            let chartIndex = blockpath.indexOf(searchTerm)
+            let blockID = blockpath.slice(chartIndex + searchTerm.length)
+            this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultStart', [this.dateStart])
+            this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultEnd', [this.dateEnd])
+          })
         }
       }
     },
@@ -173,26 +165,17 @@ export default {
               this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
             })
           }
-          if (this.$route.path.includes('compare')) {
-            // Reset multStart and multEnd variables whenever you are on a comparison page for just 1 building
-            let buildingComparisonNumber = JSON.parse(decodeURI(this.$route.params.buildings)).length
-            console.log(buildingComparisonNumber)
-            if (buildingComparisonNumber === 1) {
-              for (let card of this.cards) {
-                if (!card.path) return
-                this.$nextTick(() => {
-                  let blockpath = this.cards[0].path
-                  let searchTerm = 'block_'
-                  let chartIndex = blockpath.indexOf(searchTerm)
-                  // console.log(blockpath.slice(chartIndex + searchTerm.length))
-                  let blockID = blockpath.slice(chartIndex + searchTerm.length)
-                  // console.log(blockpath + '/chart_' + blockID + '/multStart')
-                  this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultStart', [this.dateStart])
-                  this.$store.commit(blockpath + '/chart_' + blockID + '/clearAndSetMultEnd', [this.dateEnd])
-                  // console.log(this.$store.getters)
-                })
-              }
-            }
+          // Reset multStart and multEnd variables whenever you change pages
+          for (let card of this.cards) {
+            if (!card.path) return
+            this.$nextTick(() => {
+              let blockpath = this.cards[0].path
+              let searchTerm = 'block_'
+              let chartIndex = blockpath.indexOf(searchTerm)
+              let blockID = blockpath.slice(chartIndex + searchTerm.length)
+              this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultStart', [this.dateStart])
+              this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultEnd', [this.dateEnd])
+            })
           }
         }
       }

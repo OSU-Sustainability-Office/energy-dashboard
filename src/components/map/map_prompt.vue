@@ -23,9 +23,9 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="q">Quick Compare</el-dropdown-item>
               <el-dropdown-item command="d">Compare in FullScreen</el-dropdown-item>
-              <el-dropdown-item v-if="compareStories && compareStories.length < 2" command="t"
-                >Compare Multiple Time Periods</el-dropdown-item
-              >
+              <el-dropdown-item v-if="compareStories && compareStories.length <= 2" command="t"
+                >Compare Multiple Time Periods
+              </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <el-button class="button" type="info" @click="$emit('cancel')">Cancel</el-button>

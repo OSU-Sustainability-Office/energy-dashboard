@@ -133,6 +133,12 @@ export default {
         this.index = 0
         for (let block of this.buildingBlocks) {
           await this.$store.dispatch(block.path + '/resetDefault')
+          let blockpath = block.path
+          let searchTerm = 'block_'
+          let chartIndex = blockpath.indexOf(searchTerm)
+          let blockID = blockpath.slice(chartIndex + searchTerm.length)
+          this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultStart', [this.dateStart])
+          this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultEnd', [this.dateEnd])
         }
         this.$refs.prevArrow.style.display = 'none'
         if (this.buildingBlocks.length > 1) {
