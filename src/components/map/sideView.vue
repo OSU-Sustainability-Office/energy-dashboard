@@ -137,8 +137,7 @@ export default {
           let searchTerm = 'block_'
           let chartIndex = blockpath.indexOf(searchTerm)
           let blockID = blockpath.slice(chartIndex + searchTerm.length)
-          this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultStart', [this.dateStart])
-          this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultEnd', [this.dateEnd])
+          this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultTimeStamps')
         }
         this.$refs.prevArrow.style.display = 'none'
         if (this.buildingBlocks.length > 1) {

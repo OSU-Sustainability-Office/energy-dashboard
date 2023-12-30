@@ -223,13 +223,6 @@ const mutations = {
     }
   },
 
-  // Function to remove all elements from VueX state array and insert a placeholder value
-  // You only need a mutation for this when you are dealing with global state (state.commit, this.store.getters, etc)
-  resetMultStart (state, payload) {
-    state.multStart = []
-    state.multStart.push(...payload)
-  },
-
   multEnd (state, multEnd) {
     for (let i in multEnd) {
       if (typeof multEnd[i] === 'string') {
@@ -244,10 +237,12 @@ const mutations = {
     }
   },
 
-  resetMultEnd (state, payload) {
+  // Function to remove all elements from VueX state array
+  // You only need a mutation for this when you are dealing with global state (state.commit, this.store.getters, etc)
+  resetMultTimeStamps (state) {
+    state.multStart = []
     state.multEnd = []
-    state.multEnd.push(...payload)
-  }
+  },
 }
 
 const getters = {

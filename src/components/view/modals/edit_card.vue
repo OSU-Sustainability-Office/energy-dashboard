@@ -254,15 +254,21 @@
       <el-button @click="timeSave()" type="primary" v-if="compareOneBuildingView">
         Save Time Period {{ this.form.tempMultStart.length + 1 }}</el-button
       >
-      <el-button
-        @click="
-          visible = false
-          cancelTimeSave()
-        "
-        type="info"
-      >
-        Cancel
-      </el-button>
+      <el-button @click="visible = false" type="info"> Cancel </el-button>
+      <div class="savedTimesDiv">
+        <p class="savedTimesP">Currently Saved Times:</p>
+
+        <el-button
+          @click="visible = false"
+          type="info"
+          class="savedTimesButton"
+          v-for="(item, index) in form.tempMultStart"
+          :key="index"
+          :style="savedTimeButtonFirst(index)"
+        >
+          {{ index + 1 }}: {{ convertTimeStamps(new Date(item)) }}
+        </el-button>
+      </div>
     </span>
   </el-dialog>
 </template>
@@ -294,6 +300,7 @@ export default {
       set (value) {
         if (value === false) {
           this.$store.dispatch('modalController/closeModal')
+          this.cancelTimeSave()
         }
       }
     },
@@ -424,9 +431,58 @@ export default {
       this.form.tempMultEnd.push(this.form.end)
     },
 
+    // Called whenever the edit modal is closed (cancel or x button)
+    // Checks what is in global state for multStart and multEnd (saved time periods), and removes any unsaved time periods
     cancelTimeSave: function () {
-      this.form.tempMultStart = []
-      this.form.tempMultEnd = []
+      let blockPath = this.$store.getters['modalController/data'].path
+      const charts = this.$store.getters[blockPath + '/charts']
+      const chartPath = charts[0].path
+      this.form.tempMultStart.splice(this.$store.getters[chartPath + '/multStart'].length)
+      this.form.tempMultEnd.splice(this.$store.getters[chartPath + '/multEnd'].length)
+    },
+
+    // convert Unix time to English (to nearest minute), taken from src\components\charts\linechart.js
+    convertTimeStamps: function (d) {
+      let meridiem = 'am'
+      let hours = d.getHours()
+      if (hours > 12) {
+        hours -= 12
+        meridiem = 'pm'
+      } else if (hours === 0) {
+        hours = 12
+      }
+      let minutes = d.getMinutes()
+      if (minutes < 10) {
+        minutes = '0' + minutes
+      }
+      let year = d.getYear().toString().slice(1)
+      const dayCodes = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
+      return (
+        dayCodes[d.getDay()] +
+        ' ' +
+        (d.getMonth() + 1).toString() +
+        '/' +
+        d.getDate() +
+        '/' +
+        year +
+        ' ' +
+        hours +
+        ':' +
+        minutes +
+        ' ' +
+        meridiem
+      )
+    },
+    
+    savedTimeButtonFirst: function (i) {
+      let style = {}
+
+      // insert left margin on first "Saved Time Button" to ensure all buttons get same margin behavior
+      if (i === 0) {
+        style.marginLeft = '10px'
+      }
+
+      return style
     },
 
     deleteChart: function () {
@@ -567,6 +623,15 @@ export default {
         point: ''
       })
     }
+  },
+  watch: {
+    $route: {
+      immediate: true,
+      handler: async function (to, from) {
+        this.form.tempMultStart = []
+        this.form.tempMultEnd = []
+      }
+    }
   }
 }
 </script>
@@ -625,5 +690,19 @@ export default {
 }
 .pad-bottom {
   padding: 1em;
+}
+.savedTimesP {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 10px;
+  margin-bottom: -5px;
+}
+.savedTimesDiv {
+  text-align: left;
+}
+.savedTimesButton {
+  display: inline-block;
+  margin-top: 10px;
 }
 </style>
