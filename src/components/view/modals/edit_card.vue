@@ -259,7 +259,6 @@
         <p class="savedTimesP">Currently Saved Times:</p>
 
         <el-button
-          @click="visible = false"
           type="info"
           class="savedTimesButton"
           v-for="(item, index) in form.tempMultStart"
