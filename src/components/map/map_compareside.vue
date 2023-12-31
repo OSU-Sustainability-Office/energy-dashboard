@@ -116,9 +116,9 @@ export default {
     buildingBlocks: {
       get () {
         let buildingBlockArray = []
-        for (let i in this.buildings) {
+        for (let building of this.buildings) {
           // Use spread syntax (...) to create an array of objects, instead of 2d array
-          buildingBlockArray.push(...this.$store.getters[this.buildings[i].path + '/blocks'])
+          buildingBlockArray.push(...this.$store.getters[building.path + '/blocks'])
         }
         return buildingBlockArray
       }
