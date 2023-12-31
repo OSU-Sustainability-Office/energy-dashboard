@@ -113,6 +113,16 @@ export default {
         return buildingIds.map(id => this.$store.getters['map/building'](id))
       }
     },
+    buildingBlocks: {
+      get () {
+        let buildingBlockArray = []
+        for (let i in this.buildings) {
+          // Use spread syntax (...) to create an array of objects, instead of 2d array
+          buildingBlockArray.push(...this.$store.getters[this.buildings[i].path + '/blocks'])
+        }
+        return buildingBlockArray
+      }
+    },
     mediaArray: {
       get () {
         if (!this.buildings) return
@@ -152,6 +162,22 @@ export default {
         return 'slantImage rightEnd'
       } else {
         return 'slantImage'
+      }
+    }
+  },
+  // Refer to "buildings" and "buildingBlocks" in "computed" section above
+  // Use buildings > blocks > charts as far as global vuex store getter calls
+  watch: {
+    buildings: {
+      immediate: true,
+      handler: async function (value) {
+        for (let buildingBlock of this.buildingBlocks) {
+          let blockpath = buildingBlock.path
+          let searchTerm = 'block_'
+          let chartIndex = blockpath.indexOf(searchTerm)
+          let blockID = blockpath.slice(chartIndex + searchTerm.length)
+          this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultTimeStamps')
+        }
       }
     }
   }
