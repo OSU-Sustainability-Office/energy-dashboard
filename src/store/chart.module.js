@@ -242,7 +242,7 @@ const mutations = {
   resetMultTimeStamps (state) {
     state.multStart = []
     state.multEnd = []
-  },
+  }
 }
 
 const getters = {

@@ -255,7 +255,7 @@
         Save Time Period {{ this.form.tempMultStart.length + 1 }}</el-button
       >
       <el-button @click="visible = false" type="info"> Cancel </el-button>
-      <div class="savedTimesDiv">
+      <div class="savedTimesDiv" v-if="compareOneBuildingView">
         <p class="savedTimesP">Currently Saved Times:</p>
 
         <el-button
@@ -266,7 +266,9 @@
           :key="index"
           :style="savedTimeButtonFirst(index)"
         >
-          {{ index + 1 }}: {{ convertTimeStamps(new Date(item)) }}
+          <!-- Since tempMultStart and tempMultEnd share the same array lengths it *should* be fine to call form.tempMultEnd[index]-->
+          {{ index + 1 }}: {{ convertTimeStamps(new Date(item)) }} to
+          {{ convertTimeStamps(new Date(form.tempMultEnd[index])) }}
         </el-button>
       </div>
     </span>
@@ -473,7 +475,7 @@ export default {
         meridiem
       )
     },
-    
+
     savedTimeButtonFirst: function (i) {
       let style = {}
 
