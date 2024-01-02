@@ -117,7 +117,7 @@
           ref="submeters"
           v-model="form.sets[currentIndex].meter"
           style="width: 100%"
-          @change="form[currentIndex].point = null"
+          @change="form.sets[currentIndex].point = meterPoints[0].value"
         >
           <el-option v-for="item in meters" :key="item.path" :label="item.name" :value="item.path"></el-option>
         </el-select>
@@ -214,7 +214,7 @@
               ref="submeters"
               v-model="form.sets[currentIndex].meter"
               style="width: 100%"
-              @change="form[currentIndex].point = null"
+              @change="form.sets[currentIndex].point = meterPoints[0].value"
             >
               <el-option v-for="item in meters" :key="item.path" :label="item.name" :value="item.path"></el-option>
             </el-select>

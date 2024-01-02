@@ -94,6 +94,7 @@
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
             v-for="building of this.$store.getters['map/buildings']"
+            v-if="building.geoJSON"
             :key="building.id * rKey"
             :geojson="building.geoJSON"
             :options="buildingOptions"
@@ -216,7 +217,7 @@ export default {
               color: e.target.options.color
             }
             e.target.setStyle({ fillColor: '#000', color: '#000' })
-            e.target.bindTooltip(this.$store.getters['map/building'](e.target.feature.properties.id).name).openTooltip()
+            e.target.bindTooltip(e.target.feature.properties.name).openTooltip()
           })
           layer.on('mouseout', e => {
             if (!e.target.setStyle) return
@@ -345,6 +346,13 @@ export default {
       this.search = ''
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
+      }
+    },
+    initBuildingRename () {
+      for (let layer of Object.values(this.map._layers)) {
+        if (layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon') {
+          layer.feature.properties.name = this.$store.getters['map/building'](layer.feature.properties.id).name
+        }
       }
     },
     removeAllMarkers: function () {
@@ -497,6 +505,7 @@ export default {
       this.message = inputWord
     })
     this.map.zoomControl.setPosition('topleft')
+    this.initBuildingRename()
   },
   mounted () {
     this.$nextTick(() => {
@@ -638,8 +647,6 @@ export default {
       var searchGroup = []
       for (let layer of Object.values(this.map._layers)) {
         if (layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon') {
-          layer.feature.properties.name = this.$store.getters['map/building'](layer.feature.properties.id).name
-
           if (layer.feature.properties.name !== undefined) {
             if (layer.feature.properties.name.toLowerCase().includes(v.toLowerCase())) {
               searchGroup.push(layer)
