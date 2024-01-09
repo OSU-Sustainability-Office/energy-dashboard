@@ -268,6 +268,9 @@
           <!-- Since tempMultStart and tempMultEnd share the same array lengths it *should* be fine to call form.tempMultEnd[index]-->
           {{ index + 1 }}: {{ convertTimeStamps(new Date(item)) }} to
           {{ convertTimeStamps(new Date(form.tempMultEnd[index])) }}
+
+          <i class="el-icon-close deleteTimeButton" @click="deleteTimePeriod(index)"></i>
+
         </el-button>
       </div>
     </span>
@@ -392,9 +395,12 @@ export default {
 
       const charts = this.$store.getters[blockPath + '/charts']
       console.log(charts)
+      console.log(this.form.sets)
 
       for (let index in this.form.sets) {
-        if (index < charts.length) {
+        if (index < charts.length || (this.form.sets[0].multStart && this.form.sets[0].multStart.length < charts[0].multStart.length)) {
+          console.log("Conditions met")
+
           const chartPath = charts[index].path
           // console.log(chartPath)
           this.form.sets[0].multStart = this.form.tempMultStart
@@ -402,13 +408,6 @@ export default {
           // console.log(this.form.sets[0])
           this.$store.dispatch(chartPath + '/update', this.form.sets[index])
           // console.log(this.$store.getters[blockPath + '/charts'])
-          // update legend name
-          // line below is what "resets" the chart name, maybe comment it out but needs more testing
-          /* update 12/28/23:
-              moving this line into the if-statement below seems to fix the issue of resetting the
-              chart name when comparing two buildings. It still resets when comparing multiple time periods, but
-              those are going to be changed manually in chartController.vue anyway
-          */
           if (this.$route.path.includes('building')) {
             this.$store.commit(chartPath + '/name', this.$store.getters[chartPath + '/pointString'])
           }
@@ -484,6 +483,20 @@ export default {
       }
 
       return style
+    },
+
+    deleteTimePeriod: function (index) {
+
+      console.log("Form: " , this.form);
+
+      this.form.tempMultStart.splice(index, 1)
+      this.form.tempMultEnd.splice(index, 1)
+      
+
+      this.form.sets[0].multStart = this.form.tempMultStart
+      this.form.sets[0].multEnd = this.form.tempMultEnd
+
+      console.log("Form: ", this.form);
     },
 
     deleteChart: function () {
@@ -705,5 +718,9 @@ export default {
 .savedTimesButton {
   display: inline-block;
   margin-top: 10px;
+}
+
+.deleteTimeButton:hover {
+  color: #d76740;
 }
 </style>
