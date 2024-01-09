@@ -251,27 +251,18 @@
         Delete
       </el-button>
       <el-button @click="cardSave()" type="primary"> Ok </el-button>
-      <el-button @click="timeSave()" type="primary" v-if="compareOneBuildingView">
-        Save Time Period {{ this.form.tempMultStart.length + 1 }}</el-button
-      >
+      <el-button @click="timeSave()" type="primary" v-if="compareOneBuildingView"> Add Time Period</el-button>
       <el-button @click="visible = false" type="info"> Cancel </el-button>
       <div class="savedTimesDiv" v-if="compareOneBuildingView">
-        <p class="savedTimesP">Currently Saved Times:</p>
+        <p class="savedTimesP">Time Periods to be Compared (click "Ok" to save):</p>
 
-        <el-button
-          type="info"
-          class="savedTimesButton"
-          v-for="(item, index) in form.tempMultStart"
-          :key="index"
-          :style="savedTimeButtonFirst(index)"
-        >
+        <span type="info" class="savedTimesButton" v-for="(item, index) in form.tempMultStart" :key="index">
           <!-- Since tempMultStart and tempMultEnd share the same array lengths it *should* be fine to call form.tempMultEnd[index]-->
           {{ index + 1 }}: {{ convertTimeStamps(new Date(item)) }} to
           {{ convertTimeStamps(new Date(form.tempMultEnd[index])) }}
 
           <i class="el-icon-close deleteTimeButton" @click="deleteTimePeriod(index)"></i>
-
-        </el-button>
+        </span>
       </div>
     </span>
   </el-dialog>
@@ -398,8 +389,11 @@ export default {
       console.log(this.form.sets)
 
       for (let index in this.form.sets) {
-        if (index < charts.length || (this.form.sets[0].multStart && this.form.sets[0].multStart.length < charts[0].multStart.length)) {
-          console.log("Conditions met")
+        if (
+          index < charts.length ||
+          (this.form.sets[0].multStart && this.form.sets[0].multStart.length < charts[0].multStart.length)
+        ) {
+          console.log('Conditions met')
 
           const chartPath = charts[index].path
           // console.log(chartPath)
@@ -432,13 +426,13 @@ export default {
     },
 
     // Called whenever the edit modal is closed (cancel or x button)
-    // Checks what is in global state for multStart and multEnd (saved time periods), and removes any unsaved time periods
+    // Resets tempMultStart and tempMultEnd to match what's currently in global state (store > getters > chart > multStart/End)
     cancelTimeSave: function () {
       let blockPath = this.$store.getters['modalController/data'].path
       const charts = this.$store.getters[blockPath + '/charts']
       const chartPath = charts[0].path
-      this.form.tempMultStart.splice(this.$store.getters[chartPath + '/multStart'].length)
-      this.form.tempMultEnd.splice(this.$store.getters[chartPath + '/multEnd'].length)
+      this.form.tempMultStart = JSON.parse(JSON.stringify(this.$store.getters[chartPath + '/multStart']))
+      this.form.tempMultEnd = JSON.parse(JSON.stringify(this.$store.getters[chartPath + '/multEnd']))
     },
 
     // convert Unix time to English (to nearest minute), taken from src\components\charts\linechart.js
@@ -474,29 +468,13 @@ export default {
       )
     },
 
-    savedTimeButtonFirst: function (i) {
-      let style = {}
-
-      // insert left margin on first "Saved Time Button" to ensure all buttons get same margin behavior
-      if (i === 0) {
-        style.marginLeft = '10px'
-      }
-
-      return style
-    },
-
     deleteTimePeriod: function (index) {
-
-      console.log("Form: " , this.form);
+      console.log('Form: ', this.form)
 
       this.form.tempMultStart.splice(index, 1)
       this.form.tempMultEnd.splice(index, 1)
-      
 
-      this.form.sets[0].multStart = this.form.tempMultStart
-      this.form.sets[0].multEnd = this.form.tempMultEnd
-
-      console.log("Form: ", this.form);
+      console.log('Form: ', this.form)
     },
 
     deleteChart: function () {
@@ -711,16 +689,40 @@ export default {
   font-weight: bold;
   margin-left: 10px;
   margin-bottom: -5px;
+  margin-top: 10px;
 }
 .savedTimesDiv {
   text-align: left;
 }
 .savedTimesButton {
   display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  background-color: #1a1a1a;
+  border: 1px solid #dcdfe6;
+  border-color: #dcdfe6;
+  color: #fff;
+  text-align: center;
+  box-sizing: border-box;
+  outline: none;
+  margin-left: 10px;
   margin-top: 10px;
+  transition: 0.1s;
+  font-weight: 700;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 4px;
 }
-
+.savedTimesButton:hover {
+  background-color: #46484a;
+}
+.deleteTimeButton {
+  scale: 1.5;
+  margin-right: -5px;
+  margin-left: 8px;
+}
 .deleteTimeButton:hover {
-  color: #d76740;
+  color: #d73f09;
+  cursor: pointer;
 }
 </style>
