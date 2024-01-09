@@ -209,6 +209,7 @@ const mutations = {
   // Function to convert plain text date format from Edit Form to Unix Timestamps
   // See similar dateStart / dateEnd mutation functions in block.module.js
   multStart (state, multStart) {
+    state.multStart = []
     for (let i in multStart) {
       if (typeof multStart[i] === 'string') {
         console.log('helloooo')
@@ -224,6 +225,7 @@ const mutations = {
   },
 
   multEnd (state, multEnd) {
+    state.multEnd = []
     for (let i in multEnd) {
       if (typeof multEnd[i] === 'string') {
         state.multEnd[i] = new Date(multEnd[i]).getTime()
