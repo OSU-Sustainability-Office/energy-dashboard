@@ -104,7 +104,7 @@
         </el-select>
       </el-form-item>
       <el-form-item
-        v-if="currentIndex < form.sets.length && !personalView && !compareView"
+        v-if="currentIndex < form.sets.length && !personalView && (compareOneBuildingView || !compareView)"
         prop="meter"
         label="Meter: "
         :rules="{
@@ -117,13 +117,13 @@
           ref="submeters"
           v-model="form.sets[currentIndex].meter"
           style="width: 100%"
-          @change="form.sets[currentIndex].point = meterPoints[0].value"
+          @change=meterChange(currentIndex)
         >
           <el-option v-for="item in meters" :key="item.path" :label="item.name" :value="item.path"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item
-        v-if="currentIndex < form.sets.length && !personalView && !compareView"
+        v-if="currentIndex < form.sets.length && !personalView && (compareOneBuildingView || !compareView)"
         :rules="{
           required: true,
           message: 'A measurement is required',
@@ -214,7 +214,7 @@
               ref="submeters"
               v-model="form.sets[currentIndex].meter"
               style="width: 100%"
-              @change="form.sets[currentIndex].point = meterPoints[0].value"
+              @change=meterChange(currentIndex)
             >
               <el-option v-for="item in meters" :key="item.path" :label="item.name" :value="item.path"></el-option>
             </el-select>
@@ -614,6 +614,12 @@ export default {
         meter: '',
         point: ''
       })
+    },
+    // change measurement selection and update card name based on meter type
+    meterChange: function(index) {
+      this.form.sets[index].point = this.meterPoints[0].value
+      let energyType = this.$store.getters[this.form.sets[index].meter + '/meters'][0].type
+      this.form.name = energyType
     }
   },
   watch: {
