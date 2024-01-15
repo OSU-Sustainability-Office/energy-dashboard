@@ -367,9 +367,7 @@ export default {
         chart.label =
           chart.data[0].x.toDateString() +
           ' to ' +
-          chart.data[chart.data.length - 1].x.toDateString() +
-          ', ' +
-          this.buildLabel('y')
+          chart.data[chart.data.length - 1].x.toDateString()
       }
 
       // find chart with largest dataset
