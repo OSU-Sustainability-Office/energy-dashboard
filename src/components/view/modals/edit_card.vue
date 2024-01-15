@@ -117,7 +117,7 @@
           ref="submeters"
           v-model="form.sets[currentIndex].meter"
           style="width: 100%"
-          @change=meterChange(currentIndex)
+          @change="meterChange(currentIndex)"
         >
           <el-option v-for="item in meters" :key="item.path" :label="item.name" :value="item.path"></el-option>
         </el-select>
@@ -214,7 +214,7 @@
               ref="submeters"
               v-model="form.sets[currentIndex].meter"
               style="width: 100%"
-              @change=meterChange(currentIndex)
+              @change="meterChange(currentIndex)"
             >
               <el-option v-for="item in meters" :key="item.path" :label="item.name" :value="item.path"></el-option>
             </el-select>
@@ -616,7 +616,7 @@ export default {
       })
     },
     // change measurement selection and update card name based on meter type
-    meterChange: function(index) {
+    meterChange: function (index) {
       this.form.sets[index].point = this.meterPoints[0].value
       let energyType = this.$store.getters[this.form.sets[index].meter + '/meters'][0].type
       this.form.name = energyType

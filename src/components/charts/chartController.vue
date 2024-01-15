@@ -364,10 +364,7 @@ export default {
     formatMultipleTimePeriods: function (charts) {
       // change the labels to match the time period for each chart
       for (let chart of charts) {
-        chart.label =
-          chart.data[0].x.toDateString() +
-          ' to ' +
-          chart.data[chart.data.length - 1].x.toDateString()
+        chart.label = chart.data[0].x.toDateString() + ' to ' + chart.data[chart.data.length - 1].x.toDateString()
       }
 
       // find chart with largest dataset
