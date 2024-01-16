@@ -53,7 +53,7 @@ export default {}
     top: 80px;
     width: 330px;
     left: 250px;
-    height: 200px;
+    height: 210px;
   }
 }
 </style>
