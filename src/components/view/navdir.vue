@@ -50,7 +50,7 @@
           <span v-if="otherView"> &nbsp; </span>
         </el-col>
         <el-col :span="4" class="buttons">
-          <el-tooltip v-if="electricBuilding" content="Click to compare multiple time periods">
+          <el-tooltip v-if="isBuilding" content="Click to compare multiple time periods">
             <i class="fas fa-clock" @click="compareTimePeriods()"></i>
           </el-tooltip>
           <el-tooltip content="Click to copy share link">
@@ -168,14 +168,15 @@ export default {
         return false
       }
     },
-    // this checks if the building has electricity data or not
-    electricBuilding: {
+    // this checks if page is in /building path
+    isBuilding: {
       get () {
         try {
-          let path = this.$store.getters['map/building'](this.$route.params.id).path
-          // eslint-disable-next-line
-          let mgId = this.$store.getters[path + '/primaryGroup']('Electricity').id
-          return true
+          if (this.$store.getters['map/building'](this.$route.params.id).path) {
+            return true
+          } else {
+            return false
+          }
         } catch (err) {
           return false
         }

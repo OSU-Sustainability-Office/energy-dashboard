@@ -90,7 +90,7 @@ export default {
         for (let card of this.cards) {
           if (!card.path) return
           this.$nextTick(() => {
-            let blockpath = this.cards[0].path
+            let blockpath = card.path
             let searchTerm = 'block_'
             let chartIndex = blockpath.indexOf(searchTerm)
             let blockID = blockpath.slice(chartIndex + searchTerm.length)
@@ -104,33 +104,66 @@ export default {
       handler: async function (buildings) {
         if (this.$route.path.includes('compare')) {
           // this.cards array only has one element in it
-          if (this.cards.length > 0 && this.cards[0]) {
-            // console.log(buildings.map(building => building.id))
-            // console.log(this.cards[0].path)
-            await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
-            // addModifier and updateModifier below call block.module.js, which then calls building_compare.mod.js
-            await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
+          if (buildings.length > 1) {
+            if (this.cards.length > 0 && this.cards[0]) {
+              // console.log(buildings.map(building => building.id))
+              // console.log(this.cards[0].path)
+              await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
+              // addModifier and updateModifier below call block.module.js, which then calls building_compare.mod.js
+              await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
 
-            // Full call order: view.vue's compareBuildings() > block.module.js's updateModifier >
-            // building_compare.mod.js's updateData() > building_compare.mod.js's addCharts() > block.module.js's loadCharts()
+              // Full call order: view.vue's compareBuildings() > block.module.js's updateModifier >
+              // building_compare.mod.js's updateData() > building_compare.mod.js's addCharts() > block.module.js's loadCharts()
 
-            // Alternatively (building_compare_mod.js's updateData calls two things):
-            // view.vue's compareBuildings() > block.module.js's updateModifier > building_compare.mod.js's updateData() >
-            // building_compare.mod.js's removeOldCharts() > block.module.js's unloadChart()
+              // Alternatively (building_compare_mod.js's updateData calls two things):
+              // view.vue's compareBuildings() > block.module.js's updateModifier > building_compare.mod.js's updateData() >
+              // building_compare.mod.js's removeOldCharts() > block.module.js's unloadChart()
 
-            // console.log(this.cards[0].path)
-            // Example this.cards[0].path: map/building_29/block_79
+              // console.log(this.cards[0].path)
+              // Example this.cards[0].path: map/building_29/block_79
 
-            // Example call order: map.module.js's map() getter > building.module.js's building() getter >
-            // block.module's updateModifier function (I think)
-            await this.$store.dispatch(this.cards[0].path + '/updateModifier', {
-              name: 'building_compare',
-              data: {
-                // buildingIds below defines which buildingId are sent to block.module.js and then building_compare.mod.js,
-                // which also affects chartSpace naming (duplicate chart path triggers error)
-                buildingIds: buildings.map(building => building.id)
+              // Example call order: map.module.js's map() getter > building.module.js's building() getter >
+              // block.module's updateModifier function (I think)
+              await this.$store.dispatch(this.cards[0].path + '/updateModifier', {
+                name: 'building_compare',
+                data: {
+                  // buildingIds below defines which buildingId are sent to block.module.js and then building_compare.mod.js,
+                  // which also affects chartSpace naming (duplicate chart path triggers error)
+                  buildingIds: buildings.map(building => building.id)
+                }
+              })
+            }
+          } else {
+            for (let i in this.cards) {
+              if (this.cards.length > 0 && this.cards[i]) {
+                // console.log(buildings.map(building => building.id))
+                // console.log(this.cards[0].path)
+                await this.$store.dispatch(this.cards[i].path + '/removeAllModifiers')
+                // addModifier and updateModifier below call block.module.js, which then calls building_compare.mod.js
+                await this.$store.dispatch(this.cards[i].path + '/addModifier', 'building_compare')
+
+                // Full call order: view.vue's compareBuildings() > block.module.js's updateModifier >
+                // building_compare.mod.js's updateData() > building_compare.mod.js's addCharts() > block.module.js's loadCharts()
+
+                // Alternatively (building_compare_mod.js's updateData calls two things):
+                // view.vue's compareBuildings() > block.module.js's updateModifier > building_compare.mod.js's updateData() >
+                // building_compare.mod.js's removeOldCharts() > block.module.js's unloadChart()
+
+                // console.log(this.cards[0].path)
+                // Example this.cards[0].path: map/building_29/block_79
+
+                // Example call order: map.module.js's map() getter > building.module.js's building() getter >
+                // block.module's updateModifier function (I think)
+                await this.$store.dispatch(this.cards[i].path + '/updateModifier', {
+                  name: 'building_compare',
+                  data: {
+                    // buildingIds below defines which buildingId are sent to block.module.js and then building_compare.mod.js,
+                    // which also affects chartSpace naming (duplicate chart path triggers error)
+                    buildingIds: buildings.map(building => building.id)
+                  }
+                })
               }
-            })
+            }
           }
         }
       }
@@ -168,7 +201,7 @@ export default {
           for (let card of this.cards) {
             if (!card.path) return
             this.$nextTick(() => {
-              let blockpath = this.cards[0].path
+              let blockpath = card.path
               let searchTerm = 'block_'
               let chartIndex = blockpath.indexOf(searchTerm)
               let blockID = blockpath.slice(chartIndex + searchTerm.length)
@@ -238,14 +271,24 @@ export default {
           }
           // unintuituively, this.compareBuildings[0].block_<some number> has all the comparison charts in it, and
           // every other element in this.compareBuildings is ignored
-          // console.log(this.compareBuildings)
-          let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
-          // console.log(building)
-          if (!building) return []
-          let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
-          let block = this.$store.getters[building.path + '/block'](group.id)
-          if (!block) return []
-          return [this.$store.getters[building.path + '/block'](group.id)]
+          console.log(this.compareBuildings)
+          if (this.compareBuildings.length > 1) {
+            let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
+            // console.log(building)
+            if (!building) return []
+            let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
+            let block = this.$store.getters[building.path + '/block'](group.id)
+            if (!block) return []
+            return [this.$store.getters[building.path + '/block'](group.id)]
+          } else {
+            let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
+            // console.log(building)
+            if (!building) return []
+            // let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
+            // let block = this.$store.getters[building.path + '/block'](group.id)
+            // if (!block) return []
+            return this.$store.getters[building.path + '/blocks']
+          }
         } else {
           if (!this.view || !this.view.id) return []
           return this.$store.getters[this.view.path + '/blocks']

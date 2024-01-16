@@ -11,23 +11,36 @@
     <el-col :span="24">
       <el-row>
         <el-col class="text">
-          Select buildings by clicking on map or using building menu search bar. <br /><br />
-          Select a single building to compare multiple time periods for that building. <br /><br />
-          <el-row>NOTE: Only buildings with Electricity data are valid for comparison!</el-row>
+          Select buildings by clicking on map or using building menu search bar.<br /><br />
+          Select one building (Any Energy Type) for comparison across multiple time periods <br /><br />
+          Select multiple buildings (Electricity) to be compared across a single time period<br /><br />
         </el-col>
       </el-row>
       <el-row>
         <el-col>
-          <el-dropdown split-button type="info" class="button" @click="handle('q')" @command="handle">
-            Compare
+          <el-dropdown
+            split-button
+            type="info"
+            class="button"
+            v-if="compareStories && compareStories.length !== 1"
+            @click="handle('q')"
+            @command="handle"
+          >
+            Compare ({{ Math.min(4, compareStories.length) }} Buildings)
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="q">Quick Compare</el-dropdown-item>
               <el-dropdown-item command="d">Compare in FullScreen</el-dropdown-item>
-              <el-dropdown-item v-if="compareStories && compareStories.length <= 2" command="t"
-                >Compare Multiple Time Periods
-              </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
+          <el-button
+            type="info"
+            class="button"
+            v-if="compareStories && compareStories.length === 1"
+            @click="handle('d')"
+            @command="handle"
+          >
+            Compare (1 Building)
+          </el-button>
           <el-button class="button" type="info" @click="$emit('cancel')">Cancel</el-button>
         </el-col>
       </el-row>
@@ -80,7 +93,7 @@ export default {
     top: 100px;
     width: 330px;
     left: 250px;
-    height: 360px;
+    height: 380px;
   }
 }
 </style>

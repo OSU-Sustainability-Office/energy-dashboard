@@ -255,7 +255,7 @@
         v-if="compareOneBuildingView"
         class="item"
         effect="dark"
-        content='Click to add time period (not saved until you click "Ok")'
+        content='Add at least 2 time periods to compare. Not saved until you click "Ok"'
         placement="top"
       >
         <el-button @click="timeSave()" type="primary"> Add Time Period </el-button>
@@ -492,6 +492,7 @@ export default {
     },
 
     updateForm: function () {
+      this.cancelTimeSave()
       const blockPath = this.$store.getters['modalController/data'].path
       if (blockPath) {
         this.form.new = false
