@@ -251,10 +251,19 @@
         Delete
       </el-button>
       <el-button @click="cardSave()" type="primary"> Ok </el-button>
-      <el-button @click="timeSave()" type="primary" v-if="compareOneBuildingView"> Add Time Period</el-button>
+      <el-tooltip
+        v-if="compareOneBuildingView"
+        class="item"
+        effect="dark"
+        content='Click to add time period (not saved until you click "Ok")'
+        placement="top"
+      >
+        <el-button @click="timeSave()" type="primary"> Add Time Period </el-button>
+      </el-tooltip>
+
       <el-button @click="visible = false" type="info"> Cancel </el-button>
       <div class="savedTimesDiv" v-if="compareOneBuildingView">
-        <p class="savedTimesP">Time Periods to be Compared (click "Ok" to save):</p>
+        <p class="savedTimesP" v-if="this.form.tempMultStart.length > 0">Time Periods to be Compared</p>
 
         <span type="info" class="savedTimesButton" v-for="(item, index) in form.tempMultStart" :key="index">
           <!-- Since tempMultStart and tempMultEnd share the same array lengths it *should* be fine to call form.tempMultEnd[index]-->
@@ -688,6 +697,9 @@ export default {
 }
 .pad-bottom {
   padding: 1em;
+}
+.top {
+  text-align: center;
 }
 .savedTimesP {
   display: block;
