@@ -93,7 +93,7 @@ export default {
     top: 100px;
     width: 330px;
     left: 250px;
-    height: 280px;
+    height: 290px;
   }
 }
 </style>
