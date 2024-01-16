@@ -80,7 +80,7 @@ export default {
     top: 100px;
     width: 330px;
     left: 250px;
-    height: 200px;
+    height: 360px;
   }
 }
 </style>
