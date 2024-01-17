@@ -3,14 +3,16 @@
   Info: From README:
     "This component is the small navigation bar underneath the heroPicture. It offers quick routing between stories and groups."
 -->
+<!--
+    TODO: Remove isBuilding / publicview / otherview if it is later confirmed we don't need to show any part of navdir
+    (e.g. share link and download buttons) on the comparison pages.
+    "navVis" in view.vue currently hides the navdir on all non-building pages anyways.
+-->
 <template>
   <el-row class="stage">
     <el-col class="main">
       <el-row class="bar">
         <el-col :span="20">
-          <!-- The !otherView stuff is currently overwritten by view.vue, see comments there. Maybe need a follow-up
-            meeting with Brandon and Ross to see if they want any of the navDir features on the comparison pages.
-            Download data feature might need some edits, if so. -->
           <el-menu
             v-if="!otherView"
             mode="horizontal"
