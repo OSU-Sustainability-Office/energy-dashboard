@@ -118,8 +118,8 @@ export default {
                 await this.$store.dispatch(this.cards[i].path + '/addModifier', 'building_compare')
 
                 // Example this.cards[i].path: map/building_29/block_79
-                // Example call order: view.vue's compareBuildings() > map.module.js's map() getter >
-                // building.module.js's building() getter >block.module.js's updateModifier >
+                // Example call order: view.vue's compareBuildings() > map.module.js's building() getter >
+                // building.module.js's block () getter > block.module.js's updateModifier >
                 // building_compare.mod.js's updateData() > building_compare.mod.js's addCharts() >
                 // block.module.js's loadCharts()
 
