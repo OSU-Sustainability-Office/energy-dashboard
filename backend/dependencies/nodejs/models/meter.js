@@ -73,8 +73,8 @@ class Meter {
 
     const map = {
       accumulated_real: 'Net Energy Usage (kWh)',
-      real_power: 'Real Power (W)',
-      reactive_power: 'Reactive Power (VAR)',
+      real_power: 'Real Power (kW)',
+      reactive_power: 'Reactive Power (kVAR)',
       apparent_power: 'Apparent Power (VA)',
       real_a: 'Real Power, Phase A (kW)',
       real_b: 'Real Power, Phase B (kW)',
