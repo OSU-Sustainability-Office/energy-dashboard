@@ -31,7 +31,9 @@ export default {
         tooltips: {
           callbacks: {
             title: function (item, data) {
-              let d = new Date(item[0].xLabel)
+              let originalXlabel = data.datasets[item[0].datasetIndex].data[item[0].index].originalX
+              // use originalXlabel if it exists, otherwise use the default xLabel
+              let d = new Date(originalXlabel || item[0].xLabel)
               let meridiem = 'am'
               let hours = d.getHours()
               if (hours > 12) {
@@ -142,7 +144,17 @@ export default {
                 fontFamily: 'Open Sans',
                 autoSkip: true,
                 stepSize: 10,
-                source: 'data'
+                source: 'data',
+                // the following three settings change the x-ticks if there are multiple time periods,
+                // otherwise the default settings are used
+                autoSkipPadding: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 10 : 3,
+                maxRotation: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 0 : 50,
+                callback: (val, index) => {
+                  if (this.$parent.multipleTimePeriods(this.$parent.chartData.datasets)) {
+                    return this.$parent.buildXaxisTick(index)
+                  }
+                  return val
+                }
               },
               scaleLabel: {
                 display: this.$parent.buildLabel('y') !== '',

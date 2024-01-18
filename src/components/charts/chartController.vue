@@ -236,6 +236,12 @@ export default {
             data.datasets[0].data.length >= 1
           ) {
             this.chart.update()
+
+            // format charts if there are multiple time periods
+            if (this.multipleTimePeriods(data.datasets)) {
+              this.formatMultipleTimePeriods(data.datasets)
+            }
+
             let timeDif =
               new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x).getTime() -
               new Date(data.datasets[0].data[0].x).getTime()
@@ -252,6 +258,7 @@ export default {
             this.chart.options.scales.yAxes[0].ticks.maxTicksLimit = (this.height / 200) * 8 - dif
           }
           this.chartData = data
+
           console.log(this.path)
           this.loading = false
           // console.log('done loading!', this.path, data)
@@ -330,6 +337,12 @@ export default {
         }
         return point
       } else {
+        // if there are multiple time period charts, don't display a label on the bottom as the time
+        // periods will be displayed individually on the top
+        if (this.multipleTimePeriods(this.chartData.datasets)) {
+          return ' '
+        }
+
         const date1 = new Date(this.dateStart)
         const date2 = new Date(this.dateEnd)
         if (date1 && date2) {
@@ -338,6 +351,69 @@ export default {
           return ' '
         }
       }
+    },
+    multipleTimePeriods: function (charts) {
+      if (charts.length > 1 && charts[0].multStart.length > 1) {
+        return true
+      }
+      return false
+    },
+    // this formats a chart with multiple time periods, changing labels, aligning all charts to the left,
+    // and mapping datasets so that hovering displays the correct date
+    formatMultipleTimePeriods: function (charts) {
+      // change the labels to match the time period for each chart
+      for (let chart of charts) {
+        chart.label = chart.data[0].x.toDateString() + ' to ' + chart.data[chart.data.length - 1].x.toDateString()
+      }
+
+      // find chart with largest dataset
+      let largestChart = charts[0]
+      for (let i in charts) {
+        if (charts[i].data.length > largestChart.data.length) {
+          largestChart = charts[i]
+        }
+      }
+
+      // map all other datasets to the largest dataset
+      for (let chart of charts) {
+        // check if current chart is the largest chart, don't map if so
+        // may need a better way to differentiate charts, but this works for now
+        // and accounts for have two charts that are the same length
+        if (chart.backgroundColor !== largestChart.backgroundColor) {
+          // loop through all data points in current chart and map x-value to largest chart
+          // also create a datapoint for the original x-value so that we can display it on tooltip hover
+          for (let i in chart.data) {
+            if (chart.data[i].y != null) {
+              chart.data[i].originalX = chart.data[i].x
+              chart.data[i].x = largestChart.data[i].x
+            }
+          }
+        }
+      }
+    },
+    // this is called when there are multiple time period charts, it returns an array of all the
+    // chart dates for that index so that they can be displayed on multiple lines
+    buildXaxisTick (index) {
+      if (this.chartData.datasets) {
+        let tick = []
+        for (let chart of this.chartData.datasets) {
+          let date = ''
+
+          if (chart.data[index]) {
+            if (chart.data[index].originalX) {
+              date = chart.data[index].originalX.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
+            } else {
+              date = chart.data[index].x.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
+            }
+          }
+
+          tick.push(date)
+        }
+
+        return tick
+      }
+
+      return ''
     }
   }
 }

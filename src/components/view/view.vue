@@ -43,7 +43,14 @@ export default {
   },
   async created () {
     await this.$store.dispatch('map/loadMap')
-    this.navVis = this.personalView || this.$route.path.includes('building') || this.otherView
+    // Currently, this.navVis is just set to show the navdir on "building" page, and hide on other pages.
+    // If you want to configure different navdir behavior on the comparison page, e.g. show "share button"
+    // but not other buttons on navdir, then you may as well just set this.navVis to true here,
+    // and remove references to navVis in watch > $route section (20 lines or so below), then configure
+    // this.otherView (or whatever) in navdir.vue file.
+    // However, this.navVis is still needed here as it guarantees the navbar is not shown before
+    // await this.$store.dispatch('map/loadMap') completes, preventing errors in navdir file.
+    this.navVis = this.$route.path.includes('building')
     await this.$store.dispatch('user/user')
     if (!this.view.id) {
       await this.$store.dispatch('view/changeView', this.$route.params.id)
@@ -61,6 +68,7 @@ export default {
     $route: {
       immediate: true,
       handler: async function (to, from) {
+        this.navVis = this.$route.path.includes('building')
         if (
           !this.$route.path.includes('building') &&
           !this.$route.path.includes('compare') &&
@@ -75,21 +83,54 @@ export default {
             this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
           }
         }
+        // Reset multStart and multEnd variables whenever you change pages
+        for (let card of this.cards) {
+          if (!card.path) return
+          this.$nextTick(() => {
+            let blockpath = card.path
+            let searchTerm = 'block_'
+            let chartIndex = blockpath.indexOf(searchTerm)
+            let blockID = blockpath.slice(chartIndex + searchTerm.length)
+            this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultTimeStamps')
+          })
+        }
       }
     },
     compareBuildings: {
       immediate: true,
       handler: async function (buildings) {
         if (this.$route.path.includes('compare')) {
-          if (this.cards.length > 0 && this.cards[0]) {
-            await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
-            await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
-            await this.$store.dispatch(this.cards[0].path + '/updateModifier', {
-              name: 'building_compare',
-              data: {
-                buildingIds: buildings.map(building => building.id)
+          if (buildings.length > 1) {
+            if (this.cards.length > 0 && this.cards[0]) {
+              await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
+              await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
+              await this.$store.dispatch(this.cards[0].path + '/updateModifier', {
+                name: 'building_compare',
+                data: {
+                  buildingIds: buildings.map(building => building.id)
+                }
+              })
+            }
+          } else {
+            for (let i in this.cards) {
+              if (this.cards.length > 0 && this.cards[i]) {
+                await this.$store.dispatch(this.cards[i].path + '/removeAllModifiers')
+                await this.$store.dispatch(this.cards[i].path + '/addModifier', 'building_compare')
+
+                // Example this.cards[i].path: map/building_29/block_79
+                // Example call order: view.vue's compareBuildings() > map.module.js's map() getter >
+                // building.module.js's building() getter >block.module.js's updateModifier >
+                // building_compare.mod.js's updateData() > building_compare.mod.js's addCharts() >
+                // block.module.js's loadCharts()
+
+                await this.$store.dispatch(this.cards[i].path + '/updateModifier', {
+                  name: 'building_compare',
+                  data: {
+                    buildingIds: buildings.map(building => building.id)
+                  }
+                })
               }
-            })
+            }
           }
         }
       }
@@ -122,6 +163,17 @@ export default {
               this.$store.commit(card.path + '/intervalUnit', this.intervalUnit)
             })
           }
+          // Reset multStart and multEnd variables whenever you change pages
+          for (let card of this.cards) {
+            if (!card.path) return
+            this.$nextTick(() => {
+              let blockpath = card.path
+              let searchTerm = 'block_'
+              let chartIndex = blockpath.indexOf(searchTerm)
+              let blockID = blockpath.slice(chartIndex + searchTerm.length)
+              this.$store.commit(blockpath + '/chart_' + blockID + '/resetMultTimeStamps')
+            })
+          }
         }
       }
     }
@@ -134,14 +186,6 @@ export default {
           this.view.user === this.$store.getters['user/onid'] &&
           this.$store.getters['user/onid'] !== ''
         ) {
-          return true
-        }
-        return false
-      }
-    },
-    otherView: {
-      get () {
-        if (this.view.path === 'view') {
           return true
         }
         return false
@@ -190,12 +234,20 @@ export default {
           if (!this.compareBuildings || this.compareBuildings.length === 0 || !this.compareBuildings[0]) {
             return []
           }
-          let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
-          if (!building) return []
-          let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
-          let block = this.$store.getters[building.path + '/block'](group.id)
-          if (!block) return []
-          return [this.$store.getters[building.path + '/block'](group.id)]
+          if (this.compareBuildings.length > 1) {
+            let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
+            if (!building) return []
+            let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
+            let block = this.$store.getters[building.path + '/block'](group.id)
+            if (!block) return []
+            // Load only one (electricity) card for multiple buildings, one time period comparison
+            return [this.$store.getters[building.path + '/block'](group.id)]
+          } else {
+            let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
+            if (!building) return []
+            // Load one or more cards (one for each energy type) for one building, multiple time period comparison
+            return this.$store.getters[building.path + '/blocks']
+          }
         } else {
           if (!this.view || !this.view.id) return []
           return this.$store.getters[this.view.path + '/blocks']

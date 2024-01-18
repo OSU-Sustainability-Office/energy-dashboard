@@ -5,8 +5,8 @@
         <el-col class="text">
           ERROR <br />
           <el-row
-            >You have either not selected any buildings for comparison, or you have included a non-electric
-            building.</el-row
+            >You have either not selected any buildings for comparison, or you have included a non-electric building
+            (for multiple buildings comparison).</el-row
           >
         </el-col>
       </el-row>
@@ -24,7 +24,7 @@ export default {}
 <style lang="scss" scoped>
 .stage_prompt {
   width: 400px;
-  height: 150px;
+  height: 170px;
   position: absolute;
   top: 20px;
   left: calc(50% - 200px);
@@ -53,7 +53,7 @@ export default {}
     top: 80px;
     width: 330px;
     left: 250px;
-    height: 180px;
+    height: 210px;
   }
 }
 </style>

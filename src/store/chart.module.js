@@ -12,6 +12,8 @@ const state = () => {
     building: null, // String buildingId
     id: null, // Integer DB ID
     meterGroupPath: null,
+    multStart: [],
+    multEnd: [],
     path: null,
     color: '#000000',
     promise: null,
@@ -28,6 +30,9 @@ const actions = {
   //   "dateInterval": 1,
   //   "graphType": 1
   // }
+
+  // see getData function in src\store\block.module.js for potential changes to the input payload's multStart, multEnd, color
+
   async getData (store, payload) {
     if (!store.getters.meterGroupPath) return
     const reqPayload = {
@@ -40,14 +45,23 @@ const actions = {
     await chartModifier.preGetData(reqPayload, this, store)
 
     let data = await this.dispatch(store.getters.meterGroupPath + '/getData', reqPayload)
+
+    let colorPayload = store.getters.color
+
+    if (reqPayload.color) {
+      colorPayload = reqPayload.color
+    }
+
     let chartData = {
       label: store.getters.name,
-      backgroundColor: store.getters.color,
-      borderColor: store.getters.color,
+      backgroundColor: colorPayload,
+      borderColor: colorPayload,
       fill: false,
       showLine: true,
       spanGaps: false,
-      data: data
+      data: data,
+      multStart: store.getters.multStart,
+      multEnd: store.getters.multEnd
     }
 
     await chartModifier.postGetData(chartData, reqPayload, this, store)
@@ -71,7 +85,9 @@ const actions = {
       payload.name === store.getters.name &&
       payload.point === store.getters.point &&
       payload.building === store.getters.building &&
-      payload.meter === store.getters.meterGroupPath
+      payload.meter === store.getters.meterGroupPath &&
+      payload.multStart === store.getters.multStart &&
+      payload.multEnd === store.getters.multEnd
     ) {
       return
     }
@@ -96,6 +112,8 @@ const actions = {
     store.commit('point', payload.point)
     store.commit('building', payload.building)
     store.commit('meterGroupPath', payload.meter)
+    store.commit('multStart', payload.multStart)
+    store.commit('multEnd', payload.multEnd)
   }
 }
 
@@ -134,6 +152,43 @@ const mutations = {
 
   meterGroupPath (state, meterGroupPath) {
     state.meterGroupPath = meterGroupPath
+  },
+
+  // Function to convert plain text date format from Edit Form to Unix Timestamps
+  // See similar dateStart / dateEnd mutation functions in block.module.js
+  multStart (state, multStart) {
+    state.multStart = []
+    for (let i in multStart) {
+      if (typeof multStart[i] === 'string') {
+        state.multStart[i] = new Date(multStart[i]).getTime()
+      } else if (typeof multStart[i] === 'number') {
+        state.multStart[i] = multStart[i]
+      } else if (multStart[i] instanceof Date) {
+        state.multStart[i] = multStart[i].getTime()
+      } else {
+        throw new Error('Unrecognized format sent to multStart')
+      }
+    }
+  },
+
+  multEnd (state, multEnd) {
+    state.multEnd = []
+    for (let i in multEnd) {
+      if (typeof multEnd[i] === 'string') {
+        state.multEnd[i] = new Date(multEnd[i]).getTime()
+      } else if (typeof multEnd[i] === 'number') {
+        state.multEnd[i] = multEnd[i]
+      } else if (multEnd[i] instanceof Date) {
+        state.multEnd[i] = multEnd[i].getTime()
+      } else {
+        throw new Error('Unrecognized format sent to multEnd')
+      }
+    }
+  },
+
+  resetMultTimeStamps (state) {
+    state.multStart = []
+    state.multEnd = []
   }
 }
 
@@ -172,6 +227,14 @@ const getters = {
 
   meterGroupPath (state) {
     return state.meterGroupPath
+  },
+
+  multStart (state) {
+    return state.multStart
+  },
+
+  multEnd (state) {
+    return state.multEnd
   },
 
   pointString (state) {

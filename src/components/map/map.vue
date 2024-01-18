@@ -375,6 +375,11 @@ export default {
       try {
         if (this.building_compare_error === false) {
           let path = this.$store.getters['map/building'](this.compareStories[0]).path
+          if (target !== 'q' && this.compareStories.length === 1) {
+            this.$router.push({
+              path: `/compare/${encodeURI(JSON.stringify(this.compareStories))}/2`
+            })
+          }
           let mgId = this.$store.getters[path + '/primaryGroup']('Electricity').id
           let blockSpace = this.$store.getters[path + '/block'](mgId).path
           await this.$store.dispatch(blockSpace + '/removeAllModifiers')
@@ -391,7 +396,7 @@ export default {
               name: 'map_compare_side',
               path: path
             })
-          } else {
+          } else if (target !== 'q' && this.compareStories.length > 1) {
             this.$router.push({
               path: `/compare/${encodeURI(JSON.stringify(this.compareStories))}/2`
             })
@@ -410,7 +415,9 @@ export default {
       this.showSide = false
       this.askingForComparison = true
       this.compareStories = []
-      this.compareStories.push(buildingId)
+      if (buildingId !== undefined) {
+        this.compareStories.push(buildingId)
+      }
 
       const data =
         "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/> <path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"

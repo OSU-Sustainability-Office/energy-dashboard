@@ -224,6 +224,7 @@ const actions = {
           await this.getters[payload.group.path + '/meters'][0].promise
           utilityType = this.getters[this.getters[payload.group.path + '/meters'][0].path + '/type']
         }
+        // this defines the "default chart", "Total Electricity"
         store.commit(chartSpace + '/name', 'Total ' + utilityType)
         const pointMap = {
           Electricity: 'accumulated_real',
@@ -283,7 +284,7 @@ const actions = {
       labels: [],
       datasets: []
     }
-    const reqPayload = {
+    let reqPayload = {
       dateStart: parseInt(store.getters.dateStart / 1000),
       dateEnd: parseInt(store.getters.dateEnd / 1000),
       intervalUnit: store.getters.intervalUnit,
@@ -297,7 +298,25 @@ const actions = {
     }
     for (let chart of store.getters.charts) {
       if (!chart.path) continue
-      chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
+      let multStartArray = JSON.parse(JSON.stringify(chart.multStart))
+      let multEndArray = JSON.parse(JSON.stringify(chart.multEnd))
+      if (multStartArray.length > 1 && multEndArray.length > 1) {
+        for (let i in multStartArray) {
+          reqPayload = {
+            dateStart: parseInt(multStartArray[i] / 1000),
+            dateEnd: parseInt(multEndArray[i] / 1000),
+            intervalUnit: store.getters.intervalUnit,
+            dateInterval: store.getters.dateInterval,
+            graphType: store.getters.graphType,
+            timeZoneOffset: store.getters.timeZoneOffset,
+            // See chart.module.js file for rest of color stuff
+            color: store.getters.chartColors[parseInt(i) + 1]
+          }
+          chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
+        }
+      } else {
+        chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
+      }
     }
     let chartData = await Promise.all(chartDataPromises)
     if (store.getters.graphType !== 100) {

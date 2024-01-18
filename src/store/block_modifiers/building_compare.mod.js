@@ -54,7 +54,6 @@ export default class CompareModifier {
   }
 
   async removeOldCharts (store, mod, ids) {
-    // Consider moving await out of for loop
     for (let i in ids) {
       if (parseInt(i) !== 0) {
         let id = ids[i]
@@ -66,6 +65,7 @@ export default class CompareModifier {
   async addCharts (store, mod, ids) {
     let charts = []
     for (let i in ids) {
+      // they ignore index of 0 here due to loadDefault function in block.module.js ("Total Electricity" default block),
       if (parseInt(i) !== 0) {
         let id = ids[i]
         let mgId = store.getters[store.getters['map/building'](id).path + '/primaryGroup']('Electricity').id
@@ -77,6 +77,7 @@ export default class CompareModifier {
         })
       }
     }
+    // block.module.js loadCharts function is called here
     await store.dispatch(mod.getters.path + '/loadCharts', charts)
   }
 

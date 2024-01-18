@@ -3,6 +3,11 @@
   Info: From README:
     "This component is the small navigation bar underneath the heroPicture. It offers quick routing between stories and groups."
 -->
+<!--
+    TODO: Remove isBuilding / publicview / otherview if it is later confirmed we don't need to show any part of navdir
+    (e.g. share link and download buttons) on the comparison pages.
+    "navVis" in view.vue currently hides the navdir on all non-building pages anyways.
+-->
 <template>
   <el-row class="stage">
     <el-col class="main">
@@ -47,6 +52,9 @@
           <span v-if="otherView"> &nbsp; </span>
         </el-col>
         <el-col :span="4" class="buttons">
+          <el-tooltip v-if="isBuilding" content="Click to compare multiple time periods">
+            <i class="fas fa-clock" @click="compareTimePeriods()"></i>
+          </el-tooltip>
           <el-tooltip content="Click to copy share link">
             <i class="fas fa-share-square" @click="copyUrl()"></i>
           </el-tooltip>
@@ -94,9 +102,7 @@ export default {
         if (this.publicView) {
           return this.$store.getters['map/building'](this.$route.params.id)
         } else {
-          let view = this.$store.getters['user/view'](this.$route.params.id)
-          if (!view) view = this.$store.getters['view']
-          return view
+          return this.$store.getters['view']
         }
       }
     },
@@ -111,6 +117,8 @@ export default {
           }
           return rValue
         } else {
+          // References to anything about "user", "users", "personal", etc are an obsolete admin frontend feature.
+          // All references to these things (at least in .vue files) hould be removed in a future PR, but out of scope for now.
           return this.$store.getters['user/views']
         }
       }
@@ -154,10 +162,26 @@ export default {
     },
     otherView: {
       get () {
-        if (this.viewOrBuilding.path === 'view') {
-          return true
+        if (this.viewOrBuilding) {
+          if (this.viewOrBuilding.path === 'view') {
+            return true
+          }
         }
         return false
+      }
+    },
+    // this checks if page is in /building path
+    isBuilding: {
+      get () {
+        try {
+          if (this.$store.getters['map/building'](this.$route.params.id).path) {
+            return true
+          } else {
+            return false
+          }
+        } catch (err) {
+          return false
+        }
       }
     }
   },
@@ -195,6 +219,12 @@ export default {
       this.$store.dispatch('modalController/openModal', {
         name: 'download_data',
         view: this.viewOrBuilding.path
+      })
+    },
+    compareTimePeriods: function () {
+      let buildingID = JSON.stringify(this.$route.params.id)
+      this.$router.push({
+        path: `/compare/${encodeURI('[' + buildingID + ']')}/2`
       })
     },
     populate: function () {
