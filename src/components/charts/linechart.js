@@ -145,7 +145,7 @@ export default {
                 autoSkip: true,
                 stepSize: 10,
                 source: 'data',
-                // the following three settinsg change the x-ticks if there are multiple time periods,
+                // the following three settings change the x-ticks if there are multiple time periods,
                 // otherwise the default settings are used
                 autoSkipPadding: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 10 : 3,
                 maxRotation: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 0 : 50,

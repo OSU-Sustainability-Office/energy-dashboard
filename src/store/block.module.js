@@ -89,8 +89,6 @@ const actions = {
       throw new Error('Modifier not found on block')
     } else {
       const updatingMod = store.getters.modifiers[modIndex]
-
-      // I think this calls building_compare.mod.js's updateData function
       await updatingMod.updateData(this, store, payload.data)
     }
   },
@@ -102,8 +100,6 @@ const actions = {
 
   async loadCharts (store, charts) {
     for (let chart of charts) {
-      // 12/23/2023 edit: We can bypass the chartSpace issue by using block.module.js's getData() function.
-      // Duplicate chartSpace values trigger VueX getter error, need to fix this to support multiple charts
       let chartSpace = 'chart_' + chart.id
       let moduleSpace = store.getters.path + '/' + chartSpace
       this.registerModule(moduleSpace.split('/'), Chart)
@@ -118,13 +114,6 @@ const actions = {
       )
       await this.getters['map/promise']
       await this.getters['map/allBuildingPromise']
-      // Example chartSpace: chart_29
-      // As a generalization, the first part of whatever is the input of store.commit determines where it goes. Check src/store
-      // Example: store.commit('chart_<something>`) will go to src\store\chart.module.js,
-      // store.commit('map/<something>') will go to src\store\map.module.js
-
-      // Example: store.commit(chartSpace/building) > search "buildings" in "mutations" section, in chart.module file
-      // Mutations = change store value, getters = retrieve value. https://vuex.vuejs.org/guide/mutations
       store.commit(chartSpace + '/building', this.getters['map/meterGroup'](chart.meters).building)
       store.commit(chartSpace + '/meterGroupPath', this.getters['map/meterGroup'](chart.meters).path)
       store.commit(chartSpace + '/promise', Promise.resolve())
@@ -309,10 +298,6 @@ const actions = {
     }
     for (let chart of store.getters.charts) {
       if (!chart.path) continue
-      // Section below is called whenever you press "Ok" on the Edit Menu or whenever
-      // you load / reload a page with a graph on it.
-      // This allows putting multiple graphs on the same screen without worrying about the
-      // chartSpace issue
       let multStartArray = JSON.parse(JSON.stringify(chart.multStart))
       let multEndArray = JSON.parse(JSON.stringify(chart.multEnd))
       if (multStartArray.length > 1 && multEndArray.length > 1) {
@@ -324,7 +309,7 @@ const actions = {
             dateInterval: store.getters.dateInterval,
             graphType: store.getters.graphType,
             timeZoneOffset: store.getters.timeZoneOffset,
-            // See chart.module.js file for rest of color stuff. Might be a better way to do this
+            // See chart.module.js file for rest of color stuff
             color: store.getters.chartColors[parseInt(i) + 1]
           }
           chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))

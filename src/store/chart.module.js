@@ -30,6 +30,9 @@ const actions = {
   //   "dateInterval": 1,
   //   "graphType": 1
   // }
+
+  // see getData function in src\store\block.module.js for potential changes to the input payload's multStart, multEnd, color
+
   async getData (store, payload) {
     if (!store.getters.meterGroupPath) return
     const reqPayload = {
@@ -38,52 +41,10 @@ const actions = {
       ...store.getters.modifierData
     }
 
-    // Reference: https://www.unixtimestamp.com/index.php
-    // Reference: https://playcode.io/1457582
-    let oct = 1697587199
-    let nov = 1700265599
-    // let dec = 1702857599
-
-    // UPDATE (12/23/2023)
-
-    // Need to update stuff below. Just changing the chart dates can now be done via
-    // the Edit Menu UI, but need to update function for aligning the charts / shift charts left
-
-    // Grab the default value. Building page URL = `http://localhost:8080/#/compare/["16","29"] > building 16 is default
-    // Need a better way of doing this in future
-
-    // As noted in edit_card.vue line 371 ish, the chart name will change after editing the timeframe via the edit card
-    // web UI component. So we need a better way of distinguishing charts from each other, or rework how the rename
-    // system works.
-
-    /*
-    if (store.getters.name === 'Total Electricity') {
-      reqPayload.dateStart = nov
-      reqPayload.dateEnd = dec
-    } else {
-      reqPayload.dateStart = oct
-      reqPayload.dateEnd = nov
-    }
-    */
     const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
     await chartModifier.preGetData(reqPayload, this, store)
 
-    // This is the only API call you need for the data (avoid chart going to zero after shifting left).
-    // I just forgot to set the dateEnd for both scenarios earlier
     let data = await this.dispatch(store.getters.meterGroupPath + '/getData', reqPayload)
-
-    if (store.getters.name === 'Total Electricity') {
-      let testmap = new Map()
-      for (let newkey of data.keys()) {
-        // align new key with original datestart
-        testmap.set(newkey - (nov - oct), data.get(newkey))
-      }
-
-      // comment out the 3 lines below to test experimental moving chart left
-      // data = testmap
-      // reqPayload.dateStart = oct - (nov - oct - (dec - nov)) // shift date start left to account for different month length
-      // reqPayload.dateEnd = nov
-    }
 
     let colorPayload = store.getters.color
 
@@ -182,8 +143,6 @@ const mutations = {
   },
 
   building (state, building) {
-    // example call triggered from block.module.js's updateCharts()
-    // commented out for now as this triggers many times
     state.building = building
   },
 
@@ -227,8 +186,6 @@ const mutations = {
     }
   },
 
-  // Function to remove all elements from VueX state array
-  // You only need a mutation for this when you are dealing with global state (state.commit, this.store.getters, etc)
   resetMultTimeStamps (state) {
     state.multStart = []
     state.multEnd = []

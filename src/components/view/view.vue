@@ -50,7 +50,6 @@ export default {
     // this.otherView (or whatever) in navdir.vue file.
     // However, this.navVis is still needed here as it guarantees the navbar is not shown before
     // await this.$store.dispatch('map/loadMap') completes, preventing errors in navdir file.
-    // this.navVis = true
     this.navVis = this.$route.path.includes('building')
     await this.$store.dispatch('user/user')
     if (!this.view.id) {
@@ -101,29 +100,13 @@ export default {
       immediate: true,
       handler: async function (buildings) {
         if (this.$route.path.includes('compare')) {
-          // this.cards array only has one element in it
           if (buildings.length > 1) {
             if (this.cards.length > 0 && this.cards[0]) {
               await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
-              // addModifier and updateModifier below call block.module.js, which then calls building_compare.mod.js
               await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
-
-              // Full call order: view.vue's compareBuildings() > block.module.js's updateModifier >
-              // building_compare.mod.js's updateData() > building_compare.mod.js's addCharts() > block.module.js's loadCharts()
-
-              // Alternatively (building_compare_mod.js's updateData calls two things):
-              // view.vue's compareBuildings() > block.module.js's updateModifier > building_compare.mod.js's updateData() >
-              // building_compare.mod.js's removeOldCharts() > block.module.js's unloadChart()
-
-              // Example this.cards[0].path: map/building_29/block_79
-
-              // Example call order: map.module.js's map() getter > building.module.js's building() getter >
-              // block.module's updateModifier function (I think)
               await this.$store.dispatch(this.cards[0].path + '/updateModifier', {
                 name: 'building_compare',
                 data: {
-                  // buildingIds below defines which buildingId are sent to block.module.js and then building_compare.mod.js,
-                  // which also affects chartSpace naming (duplicate chart path triggers error)
                   buildingIds: buildings.map(building => building.id)
                 }
               })
@@ -132,25 +115,17 @@ export default {
             for (let i in this.cards) {
               if (this.cards.length > 0 && this.cards[i]) {
                 await this.$store.dispatch(this.cards[i].path + '/removeAllModifiers')
-                // addModifier and updateModifier below call block.module.js, which then calls building_compare.mod.js
                 await this.$store.dispatch(this.cards[i].path + '/addModifier', 'building_compare')
 
-                // Full call order: view.vue's compareBuildings() > block.module.js's updateModifier >
-                // building_compare.mod.js's updateData() > building_compare.mod.js's addCharts() > block.module.js's loadCharts()
+                // Example this.cards[i].path: map/building_29/block_79
+                // Example call order: view.vue's compareBuildings() > map.module.js's map() getter >
+                // building.module.js's building() getter >block.module.js's updateModifier >
+                // building_compare.mod.js's updateData() > building_compare.mod.js's addCharts() >
+                // block.module.js's loadCharts()
 
-                // Alternatively (building_compare_mod.js's updateData calls two things):
-                // view.vue's compareBuildings() > block.module.js's updateModifier > building_compare.mod.js's updateData() >
-                // building_compare.mod.js's removeOldCharts() > block.module.js's unloadChart()
-
-                // Example this.cards[0].path: map/building_29/block_79
-
-                // Example call order: map.module.js's map() getter > building.module.js's building() getter >
-                // block.module's updateModifier function (I think)
                 await this.$store.dispatch(this.cards[i].path + '/updateModifier', {
                   name: 'building_compare',
                   data: {
-                    // buildingIds below defines which buildingId are sent to block.module.js and then building_compare.mod.js,
-                    // which also affects chartSpace naming (duplicate chart path triggers error)
                     buildingIds: buildings.map(building => building.id)
                   }
                 })
@@ -259,21 +234,18 @@ export default {
           if (!this.compareBuildings || this.compareBuildings.length === 0 || !this.compareBuildings[0]) {
             return []
           }
-          // unintuituively, this.compareBuildings[0].block_<some number> has all the comparison charts in it, and
-          // every other element in this.compareBuildings is ignored
           if (this.compareBuildings.length > 1) {
             let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
             if (!building) return []
             let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
             let block = this.$store.getters[building.path + '/block'](group.id)
             if (!block) return []
+            // Load only one (electricity) card for multiple buildings, one time period comparison
             return [this.$store.getters[building.path + '/block'](group.id)]
           } else {
             let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
             if (!building) return []
-            // let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
-            // let block = this.$store.getters[building.path + '/block'](group.id)
-            // if (!block) return []
+            // Load one or more cards (one for each energy type) for one building, multiple time period comparison
             return this.$store.getters[building.path + '/blocks']
           }
         } else {

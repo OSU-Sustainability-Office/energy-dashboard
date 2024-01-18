@@ -8,7 +8,6 @@
             :style="`background-image:linear-gradient(to right bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2)),url(https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${this.media}); width:calc(100%); height:100%`"
             :key="media + 1"
           ></div>
-          <!-- Add ":key="media + 1" above to prevent compiler warning -->
           <div
             v-else-if="this.mediaArray.length === 2"
             v-for="(media, index) in this.media"
