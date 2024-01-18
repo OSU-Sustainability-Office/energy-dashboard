@@ -37,7 +37,6 @@ const actions = {
       ...payload,
       ...store.getters.modifierData
     }
-    // console.log(store.getters)
 
     // Reference: https://www.unixtimestamp.com/index.php
     // Reference: https://playcode.io/1457582
@@ -65,9 +64,7 @@ const actions = {
       reqPayload.dateStart = oct
       reqPayload.dateEnd = nov
     }
-    console.log(reqPayload)
     */
-    console.log(reqPayload)
     const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
     await chartModifier.preGetData(reqPayload, this, store)
 
@@ -76,7 +73,6 @@ const actions = {
     let data = await this.dispatch(store.getters.meterGroupPath + '/getData', reqPayload)
 
     if (store.getters.name === 'Total Electricity') {
-      // console.log( data )
       let testmap = new Map()
       for (let newkey of data.keys()) {
         // align new key with original datestart
@@ -88,8 +84,6 @@ const actions = {
       // reqPayload.dateStart = oct - (nov - oct - (dec - nov)) // shift date start left to account for different month length
       // reqPayload.dateEnd = nov
     }
-
-    console.log(data)
 
     let colorPayload = store.getters.color
 
@@ -111,8 +105,6 @@ const actions = {
 
     await chartModifier.postGetData(chartData, reqPayload, this, store)
 
-    console.log(chartData)
-
     return chartData
   },
 
@@ -128,8 +120,6 @@ const actions = {
   },
 
   async update (store, payload) {
-    console.log(payload)
-    console.log(store.getters)
     if (
       payload.name === store.getters.name &&
       payload.point === store.getters.point &&
@@ -194,7 +184,6 @@ const mutations = {
   building (state, building) {
     // example call triggered from block.module.js's updateCharts()
     // commented out for now as this triggers many times
-    // console.log(building)
     state.building = building
   },
 
@@ -212,7 +201,6 @@ const mutations = {
     state.multStart = []
     for (let i in multStart) {
       if (typeof multStart[i] === 'string') {
-        console.log('helloooo')
         state.multStart[i] = new Date(multStart[i]).getTime()
       } else if (typeof multStart[i] === 'number') {
         state.multStart[i] = multStart[i]

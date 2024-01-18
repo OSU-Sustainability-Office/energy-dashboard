@@ -64,7 +64,6 @@ export default class CompareModifier {
 
     // Also, see block.module's unloadChart (this function calls unloadChart)
     // Consider moving await out of for loop
-    console.log(mod.getters)
     for (let i in ids) {
       if (parseInt(i) !== 0) {
         let id = ids[i]
@@ -76,7 +75,6 @@ export default class CompareModifier {
   async addCharts (store, mod, ids) {
     // where adding new charts for comparison is handled. Either here or maybe in view.vue we need to rework
     // to handle multiple charts of the same building via different chartname or something
-    // console.log(mod.getters)
     let charts = []
     for (let i in ids) {
       // they ignore index of 0 here due to loadDefault function in block.module.js ("Total Electricity" default block),
@@ -121,8 +119,6 @@ export default class CompareModifier {
       module is block module, data is new incoming
       data.
     */
-    console.log(this.data.buildingIds)
-    console.log(data.datasets)
     if (this.data.buildingIds[0]) {
       data.datasets[0].label = this.buildingName(store, this.data.buildingIds[0])
     }

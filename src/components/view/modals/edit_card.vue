@@ -382,7 +382,6 @@ export default {
           intervalUnit: this.interval(this.form.intUnit)
         })
       } else {
-        console.log(this.form.start)
         this.$store.dispatch(blockPath + '/update', {
           dateStart: this.form.start,
           dateEnd: this.form.end,
@@ -394,23 +393,16 @@ export default {
       }
 
       const charts = this.$store.getters[blockPath + '/charts']
-      console.log(charts)
-      console.log(this.form.sets)
 
       for (let index in this.form.sets) {
         if (
           index < charts.length ||
           (this.form.sets[0].multStart && this.form.sets[0].multStart.length < charts[0].multStart.length)
         ) {
-          console.log('Conditions met')
-
           const chartPath = charts[index].path
-          // console.log(chartPath)
           this.form.sets[0].multStart = this.form.tempMultStart
           this.form.sets[0].multEnd = this.form.tempMultEnd
-          // console.log(this.form.sets[0])
           this.$store.dispatch(chartPath + '/update', this.form.sets[index])
-          // console.log(this.$store.getters[blockPath + '/charts'])
           if (this.$route.path.includes('building')) {
             this.$store.commit(chartPath + '/name', this.$store.getters[chartPath + '/pointString'])
           }
@@ -478,12 +470,8 @@ export default {
     },
 
     deleteTimePeriod: function (index) {
-      console.log('Form: ', this.form)
-
       this.form.tempMultStart.splice(index, 1)
       this.form.tempMultEnd.splice(index, 1)
-
-      console.log('Form: ', this.form)
     },
 
     deleteChart: function () {
@@ -508,7 +496,6 @@ export default {
 
         this.form.sets = []
         for (let chart of this.$store.getters[blockPath + '/charts']) {
-          console.log(chart)
           let chartSet = {
             name: chart.name,
             building: this.$store.getters[chart.meterGroupPath + '/building'],
@@ -517,12 +504,9 @@ export default {
           }
           if (this.compareOneBuildingView) {
             let blockpath = this.$store.getters['modalController/data'].path
-            // console.log(blockpath)
             let searchTerm = 'block_'
             let chartIndex = blockpath.indexOf(searchTerm)
-            // console.log(blockpath.slice(chartIndex + searchTerm.length))
             let blockID = blockpath.slice(chartIndex + searchTerm.length)
-            // console.log(this.$store.getters[blockpath + '/chart_' + blockID + '/multStart'])
             chartSet = {
               name: chart.name,
               building: this.$store.getters[chart.meterGroupPath + '/building'],

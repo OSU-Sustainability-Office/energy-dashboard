@@ -52,7 +52,6 @@ export default {
     // await this.$store.dispatch('map/loadMap') completes, preventing errors in navdir file.
     // this.navVis = true
     this.navVis = this.$route.path.includes('building')
-    console.log(this.navVis)
     await this.$store.dispatch('user/user')
     if (!this.view.id) {
       await this.$store.dispatch('view/changeView', this.$route.params.id)
@@ -71,7 +70,6 @@ export default {
       immediate: true,
       handler: async function (to, from) {
         this.navVis = this.$route.path.includes('building')
-        console.log(this.navVis)
         if (
           !this.$route.path.includes('building') &&
           !this.$route.path.includes('compare') &&
@@ -106,8 +104,6 @@ export default {
           // this.cards array only has one element in it
           if (buildings.length > 1) {
             if (this.cards.length > 0 && this.cards[0]) {
-              // console.log(buildings.map(building => building.id))
-              // console.log(this.cards[0].path)
               await this.$store.dispatch(this.cards[0].path + '/removeAllModifiers')
               // addModifier and updateModifier below call block.module.js, which then calls building_compare.mod.js
               await this.$store.dispatch(this.cards[0].path + '/addModifier', 'building_compare')
@@ -119,7 +115,6 @@ export default {
               // view.vue's compareBuildings() > block.module.js's updateModifier > building_compare.mod.js's updateData() >
               // building_compare.mod.js's removeOldCharts() > block.module.js's unloadChart()
 
-              // console.log(this.cards[0].path)
               // Example this.cards[0].path: map/building_29/block_79
 
               // Example call order: map.module.js's map() getter > building.module.js's building() getter >
@@ -136,8 +131,6 @@ export default {
           } else {
             for (let i in this.cards) {
               if (this.cards.length > 0 && this.cards[i]) {
-                // console.log(buildings.map(building => building.id))
-                // console.log(this.cards[0].path)
                 await this.$store.dispatch(this.cards[i].path + '/removeAllModifiers')
                 // addModifier and updateModifier below call block.module.js, which then calls building_compare.mod.js
                 await this.$store.dispatch(this.cards[i].path + '/addModifier', 'building_compare')
@@ -149,7 +142,6 @@ export default {
                 // view.vue's compareBuildings() > block.module.js's updateModifier > building_compare.mod.js's updateData() >
                 // building_compare.mod.js's removeOldCharts() > block.module.js's unloadChart()
 
-                // console.log(this.cards[0].path)
                 // Example this.cards[0].path: map/building_29/block_79
 
                 // Example call order: map.module.js's map() getter > building.module.js's building() getter >
@@ -171,7 +163,6 @@ export default {
     view: {
       immediate: true,
       handler: async function (value) {
-        console.log(this.cards)
         if (this.$route.path.includes('building')) {
           for (let card of this.cards) {
             if (!card.path) return
@@ -259,7 +250,6 @@ export default {
     compareBuildings: {
       get () {
         if (!this.$route.path.includes('compare')) return null
-        // console.log(this.$route.params.buildings)
         return JSON.parse(decodeURI(this.$route.params.buildings)).map(id => this.$store.getters['map/building'](id))
       }
     },
@@ -271,10 +261,8 @@ export default {
           }
           // unintuituively, this.compareBuildings[0].block_<some number> has all the comparison charts in it, and
           // every other element in this.compareBuildings is ignored
-          console.log(this.compareBuildings)
           if (this.compareBuildings.length > 1) {
             let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
-            // console.log(building)
             if (!building) return []
             let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
             let block = this.$store.getters[building.path + '/block'](group.id)
@@ -282,7 +270,6 @@ export default {
             return [this.$store.getters[building.path + '/block'](group.id)]
           } else {
             let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
-            // console.log(building)
             if (!building) return []
             // let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
             // let block = this.$store.getters[building.path + '/block'](group.id)

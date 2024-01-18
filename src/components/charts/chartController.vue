@@ -260,7 +260,6 @@ export default {
           this.chartData = data
 
           console.log(this.path)
-          console.log(this.chartData)
           this.loading = false
           // console.log('done loading!', this.path, data)
           // this.$store.getters[this.path]

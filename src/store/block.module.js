@@ -118,7 +118,6 @@ const actions = {
       )
       await this.getters['map/promise']
       await this.getters['map/allBuildingPromise']
-      console.log(chartSpace)
       // Example chartSpace: chart_29
       // As a generalization, the first part of whatever is the input of store.commit determines where it goes. Check src/store
       // Example: store.commit('chart_<something>`) will go to src\store\chart.module.js,
@@ -133,8 +132,6 @@ const actions = {
   },
 
   async update (store, payload) {
-    console.log(payload)
-    console.log(store.getters)
     if (
       payload.name === store.getters.name &&
       payload.dateInterval === store.getters.dateInterval &&
@@ -156,8 +153,6 @@ const actions = {
     store.commit('graphType', payload.graphType)
     store.commit('dateStart', payload.dateStart)
     store.commit('dateEnd', payload.dateEnd)
-    console.log(payload)
-    console.log(store.getters)
     if (user && user === this.getters['user/onid']) {
       payload.id = store.getters.id
       payload.dateStart = new Date(store.getters.dateStart).toISOString()
@@ -312,7 +307,6 @@ const actions = {
     for (let mod of store.getters.modifiers) {
       await mod.preData(this, store, reqPayload)
     }
-    console.log(store.getters)
     for (let chart of store.getters.charts) {
       if (!chart.path) continue
       // Section below is called whenever you press "Ok" on the Edit Menu or whenever
@@ -339,7 +333,6 @@ const actions = {
         chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
       }
     }
-    console.log(chartDataPromises)
     let chartData = await Promise.all(chartDataPromises)
     if (store.getters.graphType !== 100) {
       if (store.getters.graphType === 3 || store.getters.graphType === 4) {
@@ -355,7 +348,7 @@ const actions = {
     for (let mod of store.getters.modifiers) {
       await mod.postData(this, store, data)
     }
-    console.log(data, 'is chart data!')
+    // console.log(data, 'is chart data!')
     return data
   }
 }
