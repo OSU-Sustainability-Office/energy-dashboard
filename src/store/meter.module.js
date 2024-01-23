@@ -13,7 +13,6 @@ const state = () => {
     name: null, // String
     address: null, // String
     classInt: null, // Int
-    negate: null, // Bool
     path: null,
     promise: null,
     type: '',
@@ -43,7 +42,6 @@ const actions = {
     store.commit('name', meter.name)
     store.commit('address', meter.address)
     store.commit('classInt', meter.classInt)
-    store.commit('negate', meter.negate)
     store.commit('points', meter.points)
     store.commit('type', meter.type)
     wait = false
@@ -79,10 +77,6 @@ const mutations = {
 
   classInt (state, classInt) {
     state.classInt = classInt
-  },
-
-  negate (state, negate) {
-    state.negate = negate
   },
 
   id (state, id) {
@@ -121,10 +115,6 @@ const getters = {
 
   classInt (state) {
     return state.classInt
-  },
-
-  negate (state) {
-    return state.negate
   },
 
   id (state) {

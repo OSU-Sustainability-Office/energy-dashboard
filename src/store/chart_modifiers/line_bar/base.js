@@ -75,14 +75,8 @@ export default class LineBaseModifier {
         accumulator = resultDataObject.get(i + delta)
         returnData.push({
           x: new Date((i + delta + offset) * 1000),
-          y: accumulator
+          y: Math.abs(accumulator)
         })
-        // console.log(accumulator)
-        // console.log(Math.abs(accumulator))
-        // console.log(payload.point)
-        // Maybe use Math.abs(accumulator) to flip sign
-        // Maybe use payload.point to determine if we need to flip sign
-        // See PR for other comments
       } catch (error) {
         console.log(error)
       }

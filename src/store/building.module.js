@@ -71,11 +71,6 @@ const actions = {
           id: this.getters[group.path + '/id'],
           meters: {}
         }
-        for (let meter of this.getters[group.path + '/meters']) {
-          payloadGroup.meters[meter.id] = {
-            operation: parseInt(!meter.negate)
-          }
-        }
         reqPayload.reqPayload.meters.push(payloadGroup)
       }
     }

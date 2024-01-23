@@ -60,7 +60,6 @@ const actions = {
     store.commit(meterSpace + '/name', meter.name)
     store.commit(meterSpace + '/address', meter.address)
     store.commit(meterSpace + '/classInt', meter.classInt)
-    store.commit(meterSpace + '/negate', meter.negate)
     store.commit(meterSpace + '/type', meter.type)
     store.commit(meterSpace + '/points', meter.points)
   },
@@ -148,10 +147,7 @@ const actions = {
         promiseObject[meter.id] = promise
       }
     }
-    /*
-      The following section is possibly the most important computation the dashboard does
-      since the meters sometimes need to be negated to get the correct meter reading.
-    */
+
     for (let meter of store.getters.meters) {
       let data = await promiseObject[meter.id]
       // For some reason if the array is empty it sometimes forgets it is an array
@@ -160,13 +156,9 @@ const actions = {
       }
       for (let dataPoint of data) {
         if (resultDataObject.get(dataPoint['time'])) {
-          if (meter.negate) {
-            resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) - dataPoint[payload.point])
-          } else {
-            resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) + dataPoint[payload.point])
-          }
+          resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) + dataPoint[payload.point])
         } else {
-          resultDataObject.set(dataPoint['time'], dataPoint[payload.point] * (meter.negate ? -1 : 1))
+          resultDataObject.set(dataPoint['time'], dataPoint[payload.point])
         }
       }
     }

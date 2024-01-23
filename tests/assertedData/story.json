@@ -38,8 +38,7 @@
               "group_id": 8,
               "id": 121,
               "meter_id": 1,
-              "negate": null,
-              "operation": 1,
+
               "type": "e"
             }
           ],

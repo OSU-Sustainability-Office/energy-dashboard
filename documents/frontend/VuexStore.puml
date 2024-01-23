@@ -221,14 +221,12 @@ class Meter {
   + promise: Promise
   + classInt: integer
   + address: string
-  + negate: boolean
   --Getters--
   + id()
   + path()
   + promise()
   + classInt()
   + address()
-  + negate()
   ....
   + type()
   --Mutations--
@@ -237,7 +235,6 @@ class Meter {
   + promise(Promise)
   + classInt(integer)
   + address(string)
-  + negate(boolean)
   --Actions--
   + changeMeter(integr)
   + getData(Object)

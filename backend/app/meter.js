@@ -194,7 +194,7 @@ exports.put = async (event, context) => {
   let response = new Response(event)
   let user = new User(event, response)
   try {
-    await Meter(event.body.id).update(event.body.name, event.body.classInt, event.body.negate, user)
+    await Meter(event.body.id).update(event.body.name, event.body.classInt, user)
   } catch (error) {
     response.body = error.message
     response.status = 400

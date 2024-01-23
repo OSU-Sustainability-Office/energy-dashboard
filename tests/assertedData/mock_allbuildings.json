@@ -12,7 +12,7 @@
             "name": "Tebeau Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -85,7 +85,7 @@
             "name": "Wave Tank # 1",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -141,7 +141,7 @@
             "name": "Wave Tank # 2",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -197,7 +197,7 @@
             "name": "Wave Tank # 3",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -253,7 +253,7 @@
             "name": "Wave Tank # 4",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -309,7 +309,7 @@
             "name": "Wave Tank HVAC",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -365,7 +365,7 @@
             "name": "Building Main",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -421,7 +421,7 @@
             "name": "West Side Wave Tank",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -477,7 +477,7 @@
             "name": "Main Pump Disconnect",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -533,7 +533,7 @@
             "name": "Wave Machine",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -596,7 +596,7 @@
             "name": "Wave Tank # 1",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -659,7 +659,7 @@
             "name": "Wave Tank # 2",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -722,7 +722,7 @@
             "name": "Wave Tank # 3",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -785,7 +785,7 @@
             "name": "Wave Tank # 4",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -848,7 +848,7 @@
             "name": "Wave Tank HVAC",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -911,7 +911,7 @@
             "name": "Building Main",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -974,7 +974,7 @@
             "name": "West Side Wave Tank",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1037,7 +1037,7 @@
             "name": "Main Pump Disconnect",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1100,7 +1100,7 @@
             "name": "Wave Machine",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1173,7 +1173,7 @@
             "name": "Memorial Union West Electricity (2000A)",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1229,7 +1229,7 @@
             "name": "Memorial Union East Electricity (1000A)",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1292,7 +1292,7 @@
             "name": "Memorial Union West Electricity (2000A)",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1355,7 +1355,7 @@
             "name": "Memorial Union East Electricity (1000A)",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1428,7 +1428,7 @@
             "name": "Milne South Electrical",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
@@ -1484,7 +1484,7 @@
             "name": "Milne North Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1547,7 +1547,7 @@
             "name": "Milne South Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1610,7 +1610,7 @@
             "name": "Milne North Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1683,7 +1683,7 @@
             "name": "Dryden Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1756,7 +1756,7 @@
             "name": "4000A service",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1812,7 +1812,7 @@
             "name": "2000A Service",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1875,7 +1875,7 @@
             "name": "Kelley Steam",
             "address": "",
             "classInt": 4444,
-            "negate": false,
+
             "type": "Steam",
             "points": [
               { "label": "Steam Input", "value": "input" },
@@ -1896,7 +1896,7 @@
             "name": "4000A service",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -1959,7 +1959,7 @@
             "name": "2000A Service",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2032,7 +2032,7 @@
             "name": "Sackett Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2105,7 +2105,7 @@
             "name": "Cauthorn Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2178,7 +2178,7 @@
             "name": "Valley Library Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2234,7 +2234,7 @@
             "name": "Valley Library Electric",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2297,7 +2297,7 @@
             "name": "Red Lion",
             "address": "",
             "classInt": 4444,
-            "negate": false,
+
             "type": "Steam",
             "points": [
               { "label": "Steam Input", "value": "input" },
@@ -2328,7 +2328,7 @@
             "name": "Dixon Electricity",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
@@ -2391,7 +2391,7 @@
             "name": "Dixon Steam",
             "address": "",
             "classInt": 4444,
-            "negate": false,
+
             "type": "Steam",
             "points": [
               { "label": "Steam Input", "value": "input" },
@@ -2422,7 +2422,7 @@
             "name": "West Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2495,7 +2495,7 @@
             "name": "West Dining",
             "address": "",
             "classInt": 2,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2544,7 +2544,7 @@
             "name": "Arnold Dining Electrical Main",
             "address": "",
             "classInt": 5,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2593,7 +2593,7 @@
             "name": "Bloss Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2666,7 +2666,7 @@
             "name": "Buxton Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2722,7 +2722,7 @@
             "name": "Buxton Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2785,7 +2785,7 @@
             "name": "Buxton Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2848,7 +2848,7 @@
             "name": "Buxton Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2921,7 +2921,7 @@
             "name": "CH2MHill Alumni Center Electricity New",
             "address": "",
             "classInt": 2,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -2960,7 +2960,7 @@
             "name": "CH2MHill Alumni Center Modhopper",
             "address": "",
             "classInt": 17,
-            "negate": false,
+
             "type": "Gas",
             "points": [
               { "label": "Total Natural Gas (CF)", "value": "cubic_feet" },
@@ -2992,7 +2992,7 @@
             "name": "Callahan Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -3065,7 +3065,7 @@
             "name": "Filnley Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -3138,7 +3138,7 @@
             "name": "Gill",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -3211,7 +3211,7 @@
             "name": "Halsell Hall Electricity",
             "address": "",
             "classInt": 4045,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               { "label": "Current, Phase A (A)", "value": "cphase_a" },
@@ -3249,7 +3249,7 @@
             "name": "Hawley Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -3322,7 +3322,7 @@
             "name": "ILLC Electricity",
             "address": "",
             "classInt": 82,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -3395,7 +3395,7 @@
             "name": "Main Johnson Hall",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -3468,7 +3468,7 @@
             "name": "McNary Complex Master Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -3524,7 +3524,7 @@
             "name": "McNary Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
@@ -3587,7 +3587,7 @@
             "name": "McNary Complex Master Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -3660,7 +3660,7 @@
             "name": "McNary Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -3733,7 +3733,7 @@
             "name": "Milam Electricity",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
@@ -3806,7 +3806,7 @@
             "name": "Nash 1500 Amp Electrical",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
@@ -3862,7 +3862,7 @@
             "name": "Nash 3000 Amp Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -3925,7 +3925,7 @@
             "name": "Nash Steam",
             "address": "",
             "classInt": 4444,
-            "negate": false,
+
             "type": "Steam",
             "points": [
               { "label": "Steam Input", "value": "input" },
@@ -3946,7 +3946,7 @@
             "name": "Nash 1500 Amp Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -4009,7 +4009,7 @@
             "name": "Nash 3000 Amp Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -4082,7 +4082,7 @@
             "name": "Poling Electricity",
             "address": "",
             "classInt": 4045,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               { "label": "Current, Phase A (A)", "value": "cphase_a" },
@@ -4120,7 +4120,7 @@
             "name": "Student Experience Center Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -4183,7 +4183,7 @@
             "name": "Student Experience Center Steam",
             "address": "",
             "classInt": 4444,
-            "negate": false,
+
             "type": "Steam",
             "points": [
               { "label": "Steam Input", "value": "input" },
@@ -4214,7 +4214,7 @@
             "name": "Weniger South Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -4287,7 +4287,7 @@
             "name": "Wilson Electricity",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
@@ -4360,7 +4360,7 @@
             "name": "Orchard Court",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {

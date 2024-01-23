@@ -78,7 +78,6 @@ DB.beginTransaction(err => {
         \`id\` INTEGER NOT NULL AUTO_INCREMENT,
         \`meter_id\` INTEGER,
         \`group_id\` INTEGER,
-        \`operation\` INTEGER,
         PRIMARY KEY (\`id\`)
     );`
 
@@ -87,7 +86,6 @@ DB.beginTransaction(err => {
         \`name\` TEXT,
         \`address\` char(16) DEFAULT NULL,
         \`type\` TEXT,
-        \`negate\` INTEGER,
         \`class\` INTEGER,
         PRIMARY KEY (\`id\`)
     );`
