@@ -160,5 +160,9 @@ module.exports = {
     1: 'voltage',
     2: 'energy_change',
     3: 'total_energy'
+  },
+  9990002: {
+    // Pacific Power Meters
+    4: 'accumulated_real'
   }
 }
