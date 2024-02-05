@@ -46,6 +46,8 @@ const actions = {
 
     let data = await this.dispatch(store.getters.meterGroupPath + '/getData', reqPayload)
 
+    console.log("Data is: ", data)
+
     let colorPayload = store.getters.color
 
     if (reqPayload.color) {
@@ -65,6 +67,8 @@ const actions = {
     }
 
     await chartModifier.postGetData(chartData, reqPayload, this, store)
+
+    console.log("Chart Data is: ", chartData)
 
     return chartData
   },

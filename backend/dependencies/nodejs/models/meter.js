@@ -138,6 +138,12 @@ class Meter {
   }
 
   async download(point, startTime, endTime, meterClass) {
+    console.log("\n\n***\nDownloading: \n")
+    console.log("\n\npoint: ", point)
+    console.log("\n\nstartTime: ", startTime)
+    console.log("\n\nendTime: ", endTime)
+    console.log("\n\nmeterClass: ", meterClass)
+
     await DB.connect()
     if (Object.values(meterClasses[meterClass]).includes(point)) {
       // Generalized Meter Types
@@ -157,8 +163,7 @@ class Meter {
           )
         }
 
-        // may have to modify the below to be else-if, if we are going to have multiple custom webscraper tables (Solar_Meters, etc)
-        else {
+        else if (meter_table_name === 'Solar_Meters') {
           return DB.query(
             'SELECT ' +
               point +
@@ -169,6 +174,25 @@ class Meter {
               ' WHERE time_seconds >= ? AND time_seconds <= ? AND MeterID = ?',
             [startTime, endTime, this.id]
           )
+        }
+
+        // pacific power meters, may need to change to else-if if there are going to be more custom classes starting with 999
+        else {
+          console.log("\n\nPacific power meter: " + this.id + "\n\n")
+            
+          try {
+            let [{ pacific_power_id: pp_id }] = await DB.query('SELECT pacific_power_id FROM meters WHERE id = ?', [this.id])
+            return DB.query(
+              'SELECT ' +
+                point +
+                ", time_seconds AS time FROM pacific_power_data WHERE time_seconds >= ? AND time_seconds <= ? AND pacific_power_meter_id = ?",
+              [startTime, endTime, pp_id]
+            )
+
+          } catch (error) {
+            console.error("Error executing Pacific power meter query:", error);
+            throw error; // Rethrow the error to handle it at the higher level or log it appropriately.
+          }
         }
       }
       // Aquisuites
