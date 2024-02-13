@@ -58,11 +58,7 @@ class MeterGroup {
     this.meters = []
     for (let meter of meters) {
       // this.meters.push((new Meter(meter)).get())
-      DB.query('INSERT INTO meter_group_relation (meter_id, group_id, operation) VALUES (?, ?, ?)', [
-        meter.id,
-        this.id,
-        meter.operation
-      ])
+      DB.query('INSERT INTO meter_group_relation (meter_id, group_id) VALUES (?, ?)', [meter.id, this.id])
     }
     // this.meters = await Promise.all(this.meters)
     return this
@@ -125,10 +121,9 @@ class MeterGroup {
     let meterPromises = []
     for (let meter of meters) {
       meterPromises.push(
-        DB.query('INSERT INTO meter_group_relation (meter_id, group_id, operation) VALUES (?, ?, ?)', [
+        DB.query('INSERT INTO meter_group_relation (meter_id, group_id) VALUES (?, ?)', [
           meter.id,
-          insertRow['insertId'],
-          meter.operation
+          insertRow['insertId']
         ])
       )
     }

@@ -91,7 +91,6 @@ entity "Meter Group Relation" as meter_group_relation {
   id: integer
   meter_id: integer
   group_id: integer
-  operation: integer
 }
 
 entity "Meter Groups" as meter_groups {

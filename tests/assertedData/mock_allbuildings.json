@@ -12,15 +12,15 @@
             "name": "Tebeau Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -85,15 +85,15 @@
             "name": "Wave Tank # 1",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -141,15 +141,15 @@
             "name": "Wave Tank # 2",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -197,15 +197,15 @@
             "name": "Wave Tank # 3",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -253,15 +253,15 @@
             "name": "Wave Tank # 4",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -309,15 +309,15 @@
             "name": "Wave Tank HVAC",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -365,15 +365,15 @@
             "name": "Building Main",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -421,15 +421,15 @@
             "name": "West Side Wave Tank",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -477,15 +477,15 @@
             "name": "Main Pump Disconnect",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -533,15 +533,15 @@
             "name": "Wave Machine",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -596,15 +596,15 @@
             "name": "Wave Tank # 1",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -659,15 +659,15 @@
             "name": "Wave Tank # 2",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -722,15 +722,15 @@
             "name": "Wave Tank # 3",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -785,15 +785,15 @@
             "name": "Wave Tank # 4",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -848,15 +848,15 @@
             "name": "Wave Tank HVAC",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -911,15 +911,15 @@
             "name": "Building Main",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -974,15 +974,15 @@
             "name": "West Side Wave Tank",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1037,15 +1037,15 @@
             "name": "Main Pump Disconnect",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1100,15 +1100,15 @@
             "name": "Wave Machine",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1173,15 +1173,15 @@
             "name": "Memorial Union West Electricity (2000A)",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1229,15 +1229,15 @@
             "name": "Memorial Union East Electricity (1000A)",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1292,15 +1292,15 @@
             "name": "Memorial Union West Electricity (2000A)",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1355,15 +1355,15 @@
             "name": "Memorial Union East Electricity (1000A)",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1428,15 +1428,15 @@
             "name": "Milne South Electrical",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1484,15 +1484,15 @@
             "name": "Milne North Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1547,15 +1547,15 @@
             "name": "Milne South Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1610,15 +1610,15 @@
             "name": "Milne North Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1683,15 +1683,15 @@
             "name": "Dryden Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1756,15 +1756,15 @@
             "name": "4000A service",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1812,15 +1812,15 @@
             "name": "2000A Service",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1875,7 +1875,7 @@
             "name": "Kelley Steam",
             "address": "",
             "classInt": 4444,
-            "negate": false,
+
             "type": "Steam",
             "points": [
               { "label": "Steam Input", "value": "input" },
@@ -1896,15 +1896,15 @@
             "name": "4000A service",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -1959,15 +1959,15 @@
             "name": "2000A Service",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2032,15 +2032,15 @@
             "name": "Sackett Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2105,15 +2105,15 @@
             "name": "Cauthorn Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2178,15 +2178,15 @@
             "name": "Valley Library Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2234,15 +2234,15 @@
             "name": "Valley Library Electric",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2297,7 +2297,7 @@
             "name": "Red Lion",
             "address": "",
             "classInt": 4444,
-            "negate": false,
+
             "type": "Steam",
             "points": [
               { "label": "Steam Input", "value": "input" },
@@ -2328,15 +2328,15 @@
             "name": "Dixon Electricity",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2391,7 +2391,7 @@
             "name": "Dixon Steam",
             "address": "",
             "classInt": 4444,
-            "negate": false,
+
             "type": "Steam",
             "points": [
               { "label": "Steam Input", "value": "input" },
@@ -2422,15 +2422,15 @@
             "name": "West Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2495,15 +2495,15 @@
             "name": "West Dining",
             "address": "",
             "classInt": 2,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2544,15 +2544,15 @@
             "name": "Arnold Dining Electrical Main",
             "address": "",
             "classInt": 5,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2593,15 +2593,15 @@
             "name": "Bloss Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2666,15 +2666,15 @@
             "name": "Buxton Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2722,15 +2722,15 @@
             "name": "Buxton Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2785,15 +2785,15 @@
             "name": "Buxton Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2848,15 +2848,15 @@
             "name": "Buxton Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2921,15 +2921,15 @@
             "name": "CH2MHill Alumni Center Electricity New",
             "address": "",
             "classInt": 2,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -2960,7 +2960,7 @@
             "name": "CH2MHill Alumni Center Modhopper",
             "address": "",
             "classInt": 17,
-            "negate": false,
+
             "type": "Gas",
             "points": [
               { "label": "Total Natural Gas (CF)", "value": "cubic_feet" },
@@ -2992,15 +2992,15 @@
             "name": "Callahan Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3065,15 +3065,15 @@
             "name": "Filnley Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3138,15 +3138,15 @@
             "name": "Gill",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3211,7 +3211,7 @@
             "name": "Halsell Hall Electricity",
             "address": "",
             "classInt": 4045,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               { "label": "Current, Phase A (A)", "value": "cphase_a" },
@@ -3223,7 +3223,7 @@
               { "label": "Voltage, Phase B-N (V)", "value": "vphase_bn" },
               { "label": "Voltage, Phase A-C (V)", "value": "vphase_ac" },
               { "label": "Voltage, Phase C-N (V)", "value": "vphase_cn" },
-              { "label": "Real Power (W)", "value": "real_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
               { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" }
             ]
           }
@@ -3249,15 +3249,15 @@
             "name": "Hawley Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3322,7 +3322,7 @@
             "name": "ILLC Electricity",
             "address": "",
             "classInt": 82,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
@@ -3369,8 +3369,8 @@
               { "label": "Power Factor, Phase B", "value": "pf_b" },
               { "label": "Power Factor, Phase C", "value": "pf_c" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" }
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" }
             ]
           }
         ]
@@ -3395,15 +3395,15 @@
             "name": "Main Johnson Hall",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3468,15 +3468,15 @@
             "name": "McNary Complex Master Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3524,15 +3524,15 @@
             "name": "McNary Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3587,15 +3587,15 @@
             "name": "McNary Complex Master Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3660,15 +3660,15 @@
             "name": "McNary Hall Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3733,15 +3733,15 @@
             "name": "Milam Electricity",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3806,15 +3806,15 @@
             "name": "Nash 1500 Amp Electrical",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3862,15 +3862,15 @@
             "name": "Nash 3000 Amp Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -3925,7 +3925,7 @@
             "name": "Nash Steam",
             "address": "",
             "classInt": 4444,
-            "negate": false,
+
             "type": "Steam",
             "points": [
               { "label": "Steam Input", "value": "input" },
@@ -3946,15 +3946,15 @@
             "name": "Nash 1500 Amp Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -4009,15 +4009,15 @@
             "name": "Nash 3000 Amp Electrical",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -4082,7 +4082,7 @@
             "name": "Poling Electricity",
             "address": "",
             "classInt": 4045,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               { "label": "Current, Phase A (A)", "value": "cphase_a" },
@@ -4094,7 +4094,7 @@
               { "label": "Voltage, Phase B-N (V)", "value": "vphase_bn" },
               { "label": "Voltage, Phase A-C (V)", "value": "vphase_ac" },
               { "label": "Voltage, Phase C-N (V)", "value": "vphase_cn" },
-              { "label": "Real Power (W)", "value": "real_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
               { "label": "Net Energy Usage (kWh)", "value": "accumulated_real" }
             ]
           }
@@ -4120,15 +4120,15 @@
             "name": "Student Experience Center Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -4183,7 +4183,7 @@
             "name": "Student Experience Center Steam",
             "address": "",
             "classInt": 4444,
-            "negate": false,
+
             "type": "Steam",
             "points": [
               { "label": "Steam Input", "value": "input" },
@@ -4214,15 +4214,15 @@
             "name": "Weniger South Electricity",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -4287,15 +4287,15 @@
             "name": "Wilson Electricity",
             "address": "",
             "classInt": 48,
-            "negate": true,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },
@@ -4360,15 +4360,15 @@
             "name": "Orchard Court",
             "address": "",
             "classInt": 48,
-            "negate": false,
+
             "type": "Electricity",
             "points": [
               {
                 "label": "Net Energy Usage (kWh)",
                 "value": "accumulated_real"
               },
-              { "label": "Real Power (W)", "value": "real_power" },
-              { "label": "Reactive Power (VAR)", "value": "reactive_power" },
+              { "label": "Real Power (kW)", "value": "real_power" },
+              { "label": "Reactive Power (kVAR)", "value": "reactive_power" },
               { "label": "Apparent Power (VA)", "value": "apparent_power" },
               { "label": "Real Power, Phase A (kW)", "value": "real_a" },
               { "label": "Real Power, Phase B (kW)", "value": "real_b" },

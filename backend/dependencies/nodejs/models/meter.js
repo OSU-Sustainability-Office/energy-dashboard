@@ -18,7 +18,6 @@ class Meter {
     this.name = ''
     this.address = address
     this.classInt = 0
-    this.negate = 0
     this.type = ''
     this.points = []
   }
@@ -42,16 +41,13 @@ class Meter {
     this.name = row[0]['name']
     this.address = row[0]['address']
     this.classInt = row[0]['class']
-    this.negate = row[0]['negate'] === 1
-
     this.calcProps()
     return this
   }
 
-  set(name, classInt, negate) {
+  set(name, classInt) {
     this.name = name
     this.classInt = classInt
-    this.negate = negate
     this.calcProps()
   }
 
@@ -73,8 +69,8 @@ class Meter {
 
     const map = {
       accumulated_real: 'Net Energy Usage (kWh)',
-      real_power: 'Real Power (W)',
-      reactive_power: 'Reactive Power (VAR)',
+      real_power: 'Real Power (kW)',
+      reactive_power: 'Reactive Power (kVAR)',
       apparent_power: 'Apparent Power (VA)',
       real_a: 'Real Power, Phase A (kW)',
       real_b: 'Real Power, Phase B (kW)',
@@ -131,7 +127,6 @@ class Meter {
       name: this.name,
       address: this.address,
       classInt: this.classInt,
-      negate: this.negate,
       type: this.type,
       points: this.points
     }
@@ -391,30 +386,27 @@ class Meter {
     }
   }
 
-  async update(name, classInt, negate, user) {
+  async update(name, classInt, user) {
     if (user.data.privilege <= 3) {
       throw new Error('Need escalated privileges')
     }
     await DB.connect()
-    await DB.query('UPDATE meters SET name = ?, class = ?, negate = ? WHERE id = ?', [name, classInt, negate, this.id])
+    await DB.query('UPDATE meters SET name = ?, class = ? WHERE id = ?', [name, classInt, this.id])
     this.name = name
     this.classInt = classInt
-    this.negate = negate
   }
 
-  static async create(name, address, classInt, negate = 0) {
+  static async create(name, address, classInt) {
     await DB.connect()
-    let returnRow = await DB.query('INSERT INTO meters (name, address, class, negate) values (?, ?, ?, ?)', [
+    let returnRow = await DB.query('INSERT INTO meters (name, address, class) values (?, ?, ?)', [
       name,
       address,
-      classInt,
-      negate
+      classInt
     ])
     let meter = new Meter(returnRow.insertId)
     meter.name = name
     meter.address = address
     meter.class = classInt
-    meter.negate = negate
     return meter
   }
 
@@ -429,7 +421,6 @@ class Meter {
         meter.name = meterQ['name']
         meter.address = meterQ['address']
         meter.classInt = meterQ['class']
-        meter.negate = meterQ['negate'] === 1
         meter.calcProps()
         r.push(meter.data)
       }

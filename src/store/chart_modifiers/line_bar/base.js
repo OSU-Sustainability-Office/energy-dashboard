@@ -75,7 +75,7 @@ export default class LineBaseModifier {
         accumulator = resultDataObject.get(i + delta)
         returnData.push({
           x: new Date((i + delta + offset) * 1000),
-          y: accumulator
+          y: Math.abs(accumulator)
         })
       } catch (error) {
         console.log(error)

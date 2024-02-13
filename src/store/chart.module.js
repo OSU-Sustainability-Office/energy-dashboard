@@ -241,8 +241,8 @@ const getters = {
     if (state.point) {
       const map = {
         accumulated_real: 'Net Energy Usage (kWh)',
-        real_power: 'Real Power (W)',
-        reactive_power: 'Reactive Power (VAR)',
+        real_power: 'Real Power (kW)',
+        reactive_power: 'Reactive Power (kVAR)',
         apparent_power: 'Apparent Power (VA)',
         real_a: 'Real Power, Phase A (kW)',
         real_b: 'Real Power, Phase B (kW)',
@@ -286,8 +286,8 @@ const getters = {
   unitString (state) {
     const map = {
       accumulated_real: 'kWh',
-      real_power: 'W',
-      reactive_power: 'VAR',
+      real_power: 'kW',
+      reactive_power: 'kVAR',
       apparent_power: 'VA',
       real_a: 'kW',
       real_b: 'kW',
