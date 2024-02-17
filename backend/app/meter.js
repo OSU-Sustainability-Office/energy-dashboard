@@ -110,15 +110,8 @@ exports.upload = async (event, context) => {
 
   if (meter_type === 'solar') {
     query_string = `INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`energy_change\`, \`MeterID\`, \`MeterName\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.totalYieldYesterday}', '${meter_data.meterID}', '${meter_data.meterName}');`
-  } 
-
-  else if (meter_type === 'pacific_power') {
-    if (meter_data.db_meter_id === null) {
-      query_string = `INSERT INTO pacific_power_data (\`time\`, \`time_seconds\`, \`accumulated_real\`, \`pacific_power_meter_id\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.usage_kwh}', '${meter_data.pp_meter_id}');`
-    }
-    else {
-      query_string = `INSERT INTO pacific_power_data (\`time\`, \`time_seconds\`, \`accumulated_real\`, \`meter_id\`, \`pacific_power_meter_id\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.usage_kwh}', '${meter_data.db_meter_id}', '${meter_data.pp_meter_id}');`
-    }
+  } else if (meter_type === 'pacific_power') {
+    query_string = `INSERT INTO pacific_power_data (\`time\`, \`time_seconds\`, \`accumulated_real\`, \`pacific_power_meter_id\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.usage_kwh}', '${meter_data.pp_meter_id}');`
   }
 
   try {

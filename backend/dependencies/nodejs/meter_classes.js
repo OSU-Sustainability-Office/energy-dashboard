@@ -164,5 +164,5 @@ module.exports = {
   9990002: {
     // Pacific Power Meters
     4: 'accumulated_real'
-  },
+  }
 }
