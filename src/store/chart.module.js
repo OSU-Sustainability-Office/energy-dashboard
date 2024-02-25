@@ -41,7 +41,16 @@ const actions = {
       ...store.getters.modifierData
     }
 
-    const chartModifier = ChartModifiers(payload.graphType, reqPayload.point)
+    let point = reqPayload.point
+
+    const isPacificPowerMeter = this.getters[store.getters.meterGroupPath + '/meters'][0].classInt === 9990002
+
+    // PacificPower meters only collect data daily and need to use the same chart modifier as solar arrays
+    if (isPacificPowerMeter) {
+      point = 'energy_change'
+    }
+
+    const chartModifier = ChartModifiers(payload.graphType, point)
     await chartModifier.preGetData(reqPayload, this, store)
 
     let data = await this.dispatch(store.getters.meterGroupPath + '/getData', reqPayload)
@@ -65,6 +74,11 @@ const actions = {
     }
 
     await chartModifier.postGetData(chartData, reqPayload, this, store)
+
+    // fix PacificPower meters chart being filled by the energy_change chart modifier
+    if (isPacificPowerMeter) {
+      chartData.fill = false
+    }
 
     return chartData
   },

@@ -150,10 +150,7 @@ class Meter {
               ' WHERE time_seconds >= ? AND time_seconds <= ?',
             [startTime, endTime]
           )
-        }
-
-        // may have to modify the below to be else-if, if we are going to have multiple custom webscraper tables (Solar_Meters, etc)
-        else {
+        } else if (meter_table_name === 'Solar_Meters') {
           return DB.query(
             'SELECT ' +
               point +
@@ -163,6 +160,19 @@ class Meter {
               meter_table_name +
               ' WHERE time_seconds >= ? AND time_seconds <= ? AND MeterID = ?',
             [startTime, endTime, this.id]
+          )
+        }
+
+        // pacific power meters, may need to change to else-if if there are going to be more custom classes starting with 999
+        else {
+          let [{ pacific_power_id: pp_id }] = await DB.query('SELECT pacific_power_id FROM meters WHERE id = ?', [
+            this.id
+          ])
+          return DB.query(
+            'SELECT ' +
+              point +
+              ', time_seconds AS time FROM pacific_power_data WHERE time_seconds >= ? AND time_seconds <= ? AND pacific_power_meter_id = ?',
+            [startTime, endTime, pp_id]
           )
         }
       }
