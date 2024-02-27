@@ -149,9 +149,6 @@ exports.post = async (event, context) => {
     let meter
     try {
       meter = await new Meter(null, body.SERIALNUMBER + '_' + body.MODBUSDEVICE).get()
-      console.log(body.SERIALNUMBER + '_' + body.MODBUSDEVICE)
-      console.log('Body of all devices is: ')
-      console.log(JSON.stringify(body))
     } catch (err) {
       if (err.name === 'MeterNotFound') {
         meter = await Meter.create(
