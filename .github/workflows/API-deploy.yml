@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+      - get-meter-161-name
+
 jobs:
   deploy-sam:
     name: Deploy Serveless API
