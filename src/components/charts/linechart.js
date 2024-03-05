@@ -164,12 +164,12 @@ export default {
                 fontFamily: 'Open Sans'
               },
               time: {
-                unit: 'day',
+                unit: this.$parent.$store.getters[this.$parent.path + '/intervalUnit'],
                 unitStepSize: 15,
                 displayFormats: {
                   day: 'M/DD',
                   hour: 'dd h:mm a',
-                  minute: 'h:mm a'
+                  minute: 'dd h:mm a'
                 }
               }
             }
