@@ -394,6 +394,8 @@ export default {
     // this is called when there are multiple time period charts, it returns an array of all the
     // chart dates for that index so that they can be displayed on multiple lines
     buildXaxisTick (index) {
+      const interval = this.$store.getters[this.path + '/intervalUnit']
+
       if (this.chartData.datasets) {
         let tick = []
         for (let chart of this.chartData.datasets) {
@@ -401,9 +403,25 @@ export default {
 
           if (chart.data[index]) {
             if (chart.data[index].originalX) {
-              date = chart.data[index].originalX.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
+              date = chart.data[index].originalX
             } else {
-              date = chart.data[index].x.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
+              date = chart.data[index].x
+            }
+
+            switch (interval) {
+              case 'day':
+                date = date.toLocaleDateString('en-US', { month: 'numeric', day: '2-digit' })
+                break
+              case 'hour':
+              case 'minute':
+                date =
+                  date.toLocaleDateString('en-US', { month: 'numeric', day: '2-digit' }) +
+                  ' ' +
+                  date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+                break
+              case 'month':
+                date = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+                break
             }
           }
 
