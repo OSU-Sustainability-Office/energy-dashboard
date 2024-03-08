@@ -415,7 +415,7 @@ export default {
               case 'hour':
               case 'minute':
                 date =
-                  date.toLocaleDateString('en-US', { month: 'numeric', day: '2-digit' }) +
+                  date.toLocaleDateString('en-US', { weekday: 'short' }).substring(0, 2) +
                   ' ' +
                   date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
                 break

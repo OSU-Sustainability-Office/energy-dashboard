@@ -37,7 +37,7 @@
                   'margin-right': '10px',
                   'margin-left': '10px'
                 }"
-                :height="200"
+                :height="250"
                 :invertColors="true"
               />
             </el-col>
