@@ -37,7 +37,7 @@
                   'margin-right': '10px',
                   'margin-left': '10px'
                 }"
-                :height="200"
+                :height="250"
                 :invertColors="true"
               />
             </el-col>
@@ -180,8 +180,8 @@ export default {
   z-index: 401;
   display: block;
   position: absolute;
+  bottom: 14%;
   left: 29.5%;
-  bottom: 13%;
   width: 420px !important;
   height: 85% !important;
 }
@@ -208,14 +208,14 @@ export default {
   cursor: pointer;
 }
 .media {
-  height: 200px;
+  height: 150px;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   border-bottom: solid 1px #fff;
 }
 .graphcontrol {
-  padding: 1.5em;
+  padding: 1em;
 }
 .rangeButtonParent {
   padding: 0.2em;
