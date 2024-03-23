@@ -115,7 +115,7 @@ class Meter {
       this.type = 'Gas'
     } else if (points.indexOf('accumulated_real') >= 0) {
       this.type = 'Electricity'
-    } else if (points.indexOf('total_energy') >= 0) {
+    } else if (points.indexOf('energy_change') >= 0) {
       this.type = 'Solar Panel'
     }
     return this
