@@ -94,7 +94,6 @@ const actions = {
       payload.point !== 'accumulated_real' &&
       payload.point !== 'total' &&
       payload.point !== 'cubic_feet' &&
-
       // PacificPower meters are accumulated_real by the time they get here,
       // but may as well handle solar meters in the future anyways
       payload.point !== 'energy_change' &&

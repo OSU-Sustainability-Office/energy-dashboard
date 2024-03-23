@@ -101,7 +101,7 @@ class Meter {
       apparent_c: 'Apparent Power, Phase C (VA)',
       baseline_percentage: 'Percentage (%)',
       total_energy: 'Lifetime Cumulative Energy (kWh)',
-      energy_change: 'Energy In Interval (kWh)',
+      energy_change: 'Energy Produced (kWh)',
       voltage: 'Voltage (V)',
       current: 'Current (A)'
     }
@@ -115,7 +115,7 @@ class Meter {
       this.type = 'Gas'
     } else if (points.indexOf('accumulated_real') >= 0) {
       this.type = 'Electricity'
-    } else if (points.indexOf('total_energy') >= 0) {
+    } else if (points.indexOf('energy_change') >= 0) {
       this.type = 'Solar Panel'
     }
     return this

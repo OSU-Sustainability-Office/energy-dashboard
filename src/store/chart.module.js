@@ -287,7 +287,7 @@ const getters = {
         apparent_c: 'Apparent Power, Phase C (VA)',
         baseline_percentage: 'Percentage (%)',
         total_energy: 'Lifetime Cumulative Energy (kWh)',
-        energy_change: 'Energy In Interval (kWh)',
+        energy_change: 'Energy Produced (kWh)',
         voltage: 'Voltage (V)',
         current: 'Current (A)'
       }
