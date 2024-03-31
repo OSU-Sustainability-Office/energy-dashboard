@@ -100,10 +100,7 @@ class Meter {
       apparent_b: 'Apparent Power, Phase B (VA)',
       apparent_c: 'Apparent Power, Phase C (VA)',
       baseline_percentage: 'Percentage (%)',
-      total_energy: 'Lifetime Cumulative Energy (kWh)',
-      energy_change: 'Energy In Interval (kWh)',
-      voltage: 'Voltage (V)',
-      current: 'Current (A)'
+      energy_change: 'Energy Produced (kWh)'
     }
     const points = Object.values(meterClasses[this.classInt])
     for (let point of points) {
@@ -115,7 +112,7 @@ class Meter {
       this.type = 'Gas'
     } else if (points.indexOf('accumulated_real') >= 0) {
       this.type = 'Electricity'
-    } else if (points.indexOf('total_energy') >= 0) {
+    } else if (points.indexOf('energy_change') >= 0) {
       this.type = 'Solar Panel'
     }
     return this
