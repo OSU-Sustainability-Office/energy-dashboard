@@ -155,7 +155,7 @@ module.exports = {
     6: 'cphase_c'
   },
   9990001: {
-    // Tesla Solar City Solar Panels
+    // Solar Panels (SEC, OSU Operations, deprecated Tesla panels)
     2: 'energy_change'
   },
   9990002: {

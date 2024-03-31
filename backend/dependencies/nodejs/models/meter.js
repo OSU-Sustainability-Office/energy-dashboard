@@ -100,10 +100,7 @@ class Meter {
       apparent_b: 'Apparent Power, Phase B (VA)',
       apparent_c: 'Apparent Power, Phase C (VA)',
       baseline_percentage: 'Percentage (%)',
-      total_energy: 'Lifetime Cumulative Energy (kWh)',
-      energy_change: 'Energy Produced (kWh)',
-      voltage: 'Voltage (V)',
-      current: 'Current (A)'
+      energy_change: 'Energy Produced (kWh)'
     }
     const points = Object.values(meterClasses[this.classInt])
     for (let point of points) {
