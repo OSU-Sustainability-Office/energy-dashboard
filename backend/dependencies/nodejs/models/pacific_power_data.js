@@ -2,11 +2,11 @@ const DB = require('/opt/nodejs/sql-access.js')
 
 class PacificPowerData {
   async recent() {
-    // Get Unix TimeStamp for 11:59:59 PM GMT of 3 days ago
+    // Get Unix TimeStamp for 11:59:59 PM GMT of 7 days ago
     await DB.connect()
     const currentDate = new Date()
     const date = new Date(currentDate)
-    date.setDate(date.getDate() - 3)
+    date.setDate(date.getDate() - 7)
     date.setUTCHours(23)
     date.setUTCMinutes(59)
     date.setUTCSeconds(59)
