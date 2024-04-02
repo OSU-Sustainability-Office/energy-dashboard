@@ -155,11 +155,8 @@ module.exports = {
     6: 'cphase_c'
   },
   9990001: {
-    // Tesla Solar City Solar Panels
-    0: 'current',
-    1: 'voltage',
-    2: 'energy_change',
-    3: 'total_energy'
+    // Solar Panels (SEC, OSU Operations, deprecated Tesla panels)
+    2: 'energy_change'
   },
   9990002: {
     // Pacific Power Meters

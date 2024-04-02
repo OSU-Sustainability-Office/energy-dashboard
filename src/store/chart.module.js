@@ -286,10 +286,7 @@ const getters = {
         apparent_b: 'Apparent Power, Phase B (VA)',
         apparent_c: 'Apparent Power, Phase C (VA)',
         baseline_percentage: 'Percentage (%)',
-        total_energy: 'Lifetime Cumulative Energy (kWh)',
-        energy_change: 'Energy In Interval (kWh)',
-        voltage: 'Voltage (V)',
-        current: 'Current (A)'
+        energy_change: 'Energy Produced (kWh)'
       }
       return map[state.point]
     } else {
@@ -331,10 +328,7 @@ const getters = {
       apparent_b: 'VA',
       apparent_c: 'VA',
       baseline_percentage: '%',
-      total_energy: 'kWh',
-      energy_change: 'kWh',
-      voltage: 'V',
-      current: 'A'
+      energy_change: 'kWh'
     }
     return map[state.point]
   }
