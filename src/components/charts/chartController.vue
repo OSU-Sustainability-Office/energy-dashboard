@@ -353,7 +353,7 @@ export default {
       }
     },
     multipleTimePeriods: function (charts) {
-      if (charts.length > 1 && charts[0].multStart.length > 1) {
+      if (charts.length > 1 && charts[0].multStart && charts[0].multStart.length > 1) {
         return true
       }
       return false
