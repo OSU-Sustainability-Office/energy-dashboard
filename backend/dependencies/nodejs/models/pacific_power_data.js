@@ -14,11 +14,15 @@ class PacificPowerData {
     const timestamp = Math.floor(date.getTime() / 1000) // Convert milliseconds to seconds
 
     return DB.query(
-      `SELECT time_seconds, pacific_power_meter_id FROM pacific_power_data
-        WHERE time_seconds > ? AND (time_seconds, pacific_power_meter_id) 
-        IN (SELECT MAX(time_seconds), pacific_power_meter_id FROM pacific_power_data 
-        WHERE time_seconds > ? GROUP BY pacific_power_meter_id) 
-        ORDER BY time_seconds ASC`,
+      `SELECT time_seconds, pacific_power_meter_id 
+      FROM (
+          SELECT time_seconds, pacific_power_meter_id,
+                 ROW_NUMBER() OVER (PARTITION BY pacific_power_meter_id ORDER BY time_seconds DESC) AS rn
+          FROM pacific_power_data
+          WHERE time_seconds > ?
+      ) AS ranked_data
+      WHERE rn = 1
+      ORDER BY time_seconds ASC;`,
       [timestamp, timestamp]
     )
   }
