@@ -1,7 +1,7 @@
 const DB = require('/opt/nodejs/sql-access.js')
 
-class PacificPowerData {
-  async recent() {
+class PacificPowerRecent {
+  async get() {
     // Get Unix TimeStamp for 11:59:59 PM GMT of 7 days ago
     await DB.connect()
     const currentDate = new Date()
@@ -28,4 +28,4 @@ class PacificPowerData {
   }
 }
 
-module.exports = PacificPowerData
+module.exports = PacificPowerRecent

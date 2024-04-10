@@ -723,7 +723,7 @@ Resources:
     Properties:
       MemorySize: 128
       CodeUri: app/
-      Handler: pacific_power_data.recent
+      Handler: pacific_power_recent.get
       Layers:
         - !Ref LambdaCommonLayer
         - !Ref EnergyModelLayer
