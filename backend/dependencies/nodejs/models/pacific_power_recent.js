@@ -14,9 +14,9 @@ class PacificPowerRecent {
     const timestamp = Math.floor(date.getTime() / 1000) // Convert milliseconds to seconds
 
     return DB.query(
-      `SELECT time_seconds, pacific_power_meter_id 
+      `SELECT time, time_seconds, pacific_power_meter_id 
       FROM (
-          SELECT time_seconds, pacific_power_meter_id,
+          SELECT time, time_seconds, pacific_power_meter_id,
                  ROW_NUMBER() OVER (PARTITION BY pacific_power_meter_id ORDER BY time_seconds DESC) AS rn
           FROM pacific_power_data
           WHERE time_seconds > ?
