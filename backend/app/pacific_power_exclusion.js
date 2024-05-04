@@ -23,7 +23,7 @@ exports.post = async (event, context) => {
     response.body = JSON.stringify(await new PacificPowerExclusion().add(meterID))
   } catch (error) {
     response.body = error.message
-    response.status = 400
+    response.statusCode = 400
   }
   return response
 }
