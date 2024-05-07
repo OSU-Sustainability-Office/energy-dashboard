@@ -13,11 +13,11 @@ Globals:
     # enable CORS; to make more specific, change the origin wildcard
     # to a particular domain name, e.g. "'www.example.com'"
     Cors:
-        AllowMethods: "'POST, GET'"
-        AllowHeaders: "'X-Forwarded-For'"
-        AllowOrigin: "'oregonstate.edu'"
-        MaxAge: "'600'"
-        AllowCredentials: True
+      AllowMethods: "'POST, GET'"
+      AllowHeaders: "'X-Forwarded-For'"
+      AllowOrigin: "'oregonstate.edu'"
+      MaxAge: "'600'"
+      AllowCredentials: True
     BinaryMediaTypes:
       - image~1gif
       - image~1png
@@ -26,20 +26,20 @@ Globals:
       - multipart/form-data
   HttpApi:
     CorsConfiguration:
-        AllowMethods:
-          - GET
-          - POST
-        AllowHeaders: 
-          - "'X-Forwarded-For'"
-        AllowOrigins:
-          - "https://dashboard.sustainability.oregonstate.edu"
-        MaxAge: 600
-        AllowCredentials: True
+      AllowMethods:
+        - GET
+        - POST
+      AllowHeaders:
+        - "'X-Forwarded-For'"
+      AllowOrigins:
+        - 'https://dashboard.sustainability.oregonstate.edu'
+      MaxAge: 600
+      AllowCredentials: True
 Parameters:
   LambdaCommonLayer:
     Type: String
     Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:97
-    
+
 Resources:
   test:
     Type: AWS::Serverless::Function
@@ -238,7 +238,7 @@ Resources:
     Properties:
       Timeout: 30
       MemorySize: 256
-      CodeUri:  app/
+      CodeUri: app/
       Handler: meter.batchData
       Layers:
         - !Ref LambdaCommonLayer
@@ -718,18 +718,48 @@ Resources:
           Properties:
             Path: /admin/devices
             Method: get
+  ppExclude:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: pacific_power_exclusion.get
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /ppexclude
+            Method: get
+  ppUpload:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: pacific_power_exclusion.post
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /ppupload
+            Method: post
   EnergyModelLayer:
-        Type: AWS::Serverless::LayerVersion
-        Properties:
-            LayerName: EnergyModelLayer
-            Description: DB Model Defs
-            ContentUri: dependencies/
-            CompatibleRuntimes:
-              - nodejs6.10
-              - nodejs8.10
-              - nodejs10.x
-              - nodejs12.x
-              - nodejs16.x
-              - nodejs18.x
-            LicenseInfo: 'MIT'
-            RetentionPolicy: Retain
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: EnergyModelLayer
+      Description: DB Model Defs
+      ContentUri: dependencies/
+      CompatibleRuntimes:
+        - nodejs6.10
+        - nodejs8.10
+        - nodejs10.x
+        - nodejs12.x
+        - nodejs16.x
+        - nodejs18.x
+      LicenseInfo: 'MIT'
+      RetentionPolicy: Retain
