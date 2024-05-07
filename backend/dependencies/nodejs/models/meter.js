@@ -136,7 +136,8 @@ class Meter {
       if (String(meterClass).startsWith('999')) {
         // get table name from meter table
         let [{ name: meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id])
-        if (meter_table_name.startsWith('M')) {
+        const teslaMeterIds = ['83', '84', '85', '86', '118']
+        if (String(meterClass) === '9990001' && teslaMeterIds.includes(String(this.id))) {
           return DB.query(
             'SELECT ' +
               point +
