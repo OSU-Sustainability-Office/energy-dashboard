@@ -111,7 +111,18 @@ exports.upload = async (event, context) => {
   if (meter_type === 'solar') {
     query_string = `INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`energy_change\`, \`MeterID\`, \`MeterName\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.totalYieldYesterday}', '${meter_data.meterID}', '${meter_data.meterName}');`
   } else if (meter_type === 'pacific_power') {
-    query_string = `INSERT INTO pacific_power_data (\`time\`, \`time_seconds\`, \`accumulated_real\`, \`pacific_power_meter_id\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.usage_kwh}', '${meter_data.pp_meter_id}');`
+    let final_redundant_check = await DB.query(
+      'SELECT * FROM pacific_power_data WHERE pacific_power_meter_id = ? AND time_seconds = ?',
+      [meter_data.pp_meter_id, meter_data.time_seconds]
+    )
+    console.log(final_redundant_check.length)
+    if (final_redundant_check.length === 0) {
+      query_string = `INSERT INTO pacific_power_data (\`time\`, \`time_seconds\`, \`accumulated_real\`, \`pacific_power_meter_id\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.usage_kwh}', '${meter_data.pp_meter_id}');`
+    } else {
+      response.statusCode = 400
+      response.body = 'redundant upload detected, skipping'
+      return response
+    }
   }
 
   try {
