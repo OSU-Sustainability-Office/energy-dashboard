@@ -115,7 +115,6 @@ exports.upload = async (event, context) => {
       'SELECT * FROM pacific_power_data WHERE pacific_power_meter_id = ? AND time_seconds = ?',
       [meter_data.pp_meter_id, meter_data.time_seconds]
     )
-    console.log(final_redundant_check.length)
     if (final_redundant_check.length === 0) {
       query_string = `INSERT INTO pacific_power_data (\`time\`, \`time_seconds\`, \`accumulated_real\`, \`pacific_power_meter_id\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.usage_kwh}', '${meter_data.pp_meter_id}');`
     } else {
