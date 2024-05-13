@@ -7,7 +7,7 @@
     </el-row>
     <el-divider class="divider" content-position="left"> How To Use The "Map" Tab </el-divider>
     <mapTab />
-    <el-divider class="divider" content-position="left"> How To Use The "Building List" Tab </el-divider>
+    <el-divider class="divider" content-position="left"> How To Use The "Buildings" Tab </el-divider>
     <buildingListTab />
   </div>
 </template>

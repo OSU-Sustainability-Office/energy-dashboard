@@ -6,7 +6,7 @@
         <ul class="nav-items">
           <li class="navLi"><router-link to="/map" class="navLink">Map</router-link></li>
           <li class="navLi">
-            <router-link to="/buildings" class="navLink">Building List</router-link>
+            <router-link to="/buildings" class="navLink">Buildings</router-link>
           </li>
           <li class="navLi">
             <router-link to="/campaigns" class="navLink">Campaigns</router-link>
@@ -87,8 +87,6 @@ i {
   padding-top: 28px;
   padding-right: 10px;
   padding-left: 10px;
-  margin-left: -10px;
-  margin-right: -10px;
 }
 .logo {
   padding-top: 10px;
