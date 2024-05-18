@@ -156,7 +156,7 @@ class Meter {
               this.id +
               "' as id FROM " +
               meter_table_name +
-              ' WHERE time_seconds >= ? AND time_seconds <= ? AND MeterID = ?',
+              ' WHERE time_seconds >= ? AND time_seconds <= ? AND MeterID = ? order by time_seconds DESC',
             [startTime, endTime, this.id]
           )
         }
@@ -169,7 +169,7 @@ class Meter {
           return DB.query(
             'SELECT ' +
               point +
-              ', time_seconds AS time FROM pacific_power_data WHERE time_seconds >= ? AND time_seconds <= ? AND pacific_power_meter_id = ?',
+              ', time_seconds AS time FROM pacific_power_data WHERE time_seconds >= ? AND time_seconds <= ? AND pacific_power_meter_id = ? order by time_seconds DESC;',
             [startTime, endTime, pp_id]
           )
         }
