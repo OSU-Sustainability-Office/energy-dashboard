@@ -244,6 +244,7 @@ export default {
         cphase_b: 'Current, Phase B (A)',
         cphase_c: 'Current, Phase C (A)',
         cubic_feet: 'Total Natural Gas (CF)',
+        instant: 'Instant',
         maximum: 'Maximum',
         minimum: 'Minimum',
         rate: 'Natural Gas Rate (CFm)',

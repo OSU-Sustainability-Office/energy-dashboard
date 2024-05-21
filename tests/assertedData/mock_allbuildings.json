@@ -2965,7 +2965,7 @@
             "points": [
               { "label": "Total Natural Gas (CF)", "value": "cubic_feet" },
               { "label": "Natural Gas Rate (CFm)", "value": "rate" },
-              { "value": "instant" },
+              { "label": "Instant", "value": "instant" },
               { "label": "Minimum", "value": "minimum" },
               { "label": "Maximum", "value": "maximum" }
             ]
