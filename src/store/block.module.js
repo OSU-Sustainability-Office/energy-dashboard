@@ -220,11 +220,9 @@ const actions = {
         let moduleSpace = store.getters.path + '/' + chartSpace
         this.registerModule(moduleSpace.split('/'), Chart)
         let utilityType = ''
-        let blockClassInt = ''
         if (this.getters[payload.group.path + '/meters'].length > 0) {
           await this.getters[payload.group.path + '/meters'][0].promise
           utilityType = this.getters[this.getters[payload.group.path + '/meters'][0].path + '/type']
-          blockClassInt = this.getters[this.getters[payload.group.path + '/meters'][0].path + '/classInt']
         }
         // this defines the "default chart", "Total Electricity"
         store.commit(chartSpace + '/name', 'Total ' + utilityType)
@@ -255,19 +253,7 @@ const actions = {
         // default chart settings
         store.commit('dateInterval', 1)
         store.commit('graphType', 1)
-
-        // change default interval for solar panels
-        // Note: this parameter is often modified elsewhere in the dashboard
-        // E.g. Building list component changes it via a Vue router parameter
-        if (utilityType === 'Solar Panel' || blockClassInt === 9990002) {
-          // Solar panel webscraper uploads time_seconds in UTC
-          // so we're gonna need to add the offset for the correct time
-          // in pacific standard time.
-          store.commit('timeZoneOffset', 420 * 60)
-          store.commit('intervalUnit', 'hour')
-        } else {
-          store.commit('intervalUnit', 'day')
-        }
+        store.commit('intervalUnit', 'day')
 
         let currentEpoch = new Date().getTime()
         currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))

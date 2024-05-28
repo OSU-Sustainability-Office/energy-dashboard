@@ -62,7 +62,7 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
           <el-option :value="1" label="15 Minutes"></el-option>
           <el-option :value="2" label="1 Hour"></el-option>
           <el-option :value="3" label="1 Day"></el-option>
-          <el-option :value="4" label="1 week"></el-option>
+          <el-option :value="4" label="1 Week"></el-option>
           <el-option :value="5" label="1 Month"></el-option>
         </el-select>
       </el-form-item>
