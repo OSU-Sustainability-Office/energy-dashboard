@@ -20,6 +20,7 @@ class Meter {
     this.classInt = 0
     this.type = ''
     this.points = []
+    this.pacificPowerID = null
   }
 
   async get() {
@@ -41,13 +42,15 @@ class Meter {
     this.name = row[0]['name']
     this.address = row[0]['address']
     this.classInt = row[0]['class']
+    this.pacificPowerID = row[0]['pacific_power_id']
     this.calcProps()
     return this
   }
 
-  set(name, classInt) {
+  set(name, classInt, pacificPowerID) {
     this.name = name
     this.classInt = classInt
+    this.pacificPowerID = pacificPowerID
     this.calcProps()
   }
 
@@ -126,7 +129,8 @@ class Meter {
       address: this.address,
       classInt: this.classInt,
       type: this.type,
-      points: this.points
+      points: this.points,
+      pacificPowerID: this.pacificPowerID
     }
   }
 
@@ -430,6 +434,7 @@ class Meter {
         meter.name = meterQ['name']
         meter.address = meterQ['address']
         meter.classInt = meterQ['class']
+        meter.pacificPowerID = meterQ['pacific_power_id']
         meter.calcProps()
         r.push(meter.data)
       }

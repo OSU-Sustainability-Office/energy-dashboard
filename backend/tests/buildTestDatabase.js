@@ -87,6 +87,7 @@ DB.beginTransaction(err => {
         \`address\` char(16) DEFAULT NULL,
         \`type\` TEXT,
         \`class\` INTEGER,
+        \`pacific_power_id\` INTEGER,
         PRIMARY KEY (\`id\`)
     );`
 
