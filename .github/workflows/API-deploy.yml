@@ -1,9 +1,8 @@
 name: SAM Deployment
 on:
-  pull_request:
+  push:
     branches:
       - master
-  
 jobs:
   deploy-sam:
     name: Deploy Serveless API
