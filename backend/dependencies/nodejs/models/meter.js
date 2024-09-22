@@ -230,7 +230,7 @@ class Meter {
   async upload(data) {
     await DB.connect()
     //console.log(meterClasses)
-    console.log("Data: ", data)
+    console.log(`Data for meter ID ${this.id}: `, data)
     
 
     let points = meterClasses[this.classInt]
