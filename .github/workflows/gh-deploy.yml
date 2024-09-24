@@ -14,9 +14,9 @@ jobs:
       - name: unit tests
         working-directory: backend
         run: |
-          docker-compose build
-          docker-compose run --rm test
-          docker-compose down
+          docker compose build
+          docker compose run --rm test
+          docker compose down
 
   build-deploy-gh-pages:
     name: Build / Deploy to gh-pages
