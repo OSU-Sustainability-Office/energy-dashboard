@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - linc-mds-multiplier
 jobs:
   deploy-sam:
     name: Deploy Serveless API
