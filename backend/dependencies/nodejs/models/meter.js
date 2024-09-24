@@ -272,11 +272,6 @@ class Meter {
       pointMap[points[key]] = data[parseInt(key)]
     }
 
-    // Special case for a Learning Innovation Center meter, the scale is off by a factor of 10
-    if (this.id === 105) {
-      pointMap.accumulated_real *= 10;
-    }
-
     let time = data[0].toString().substring(1, 17) + ':00'
     const timeseconds = new Date(time).getTime() / 1000 - new Date().getTimezoneOffset() * 60
     try {
