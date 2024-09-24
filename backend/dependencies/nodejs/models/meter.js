@@ -229,10 +229,8 @@ class Meter {
 
   async upload(data) {
     await DB.connect()
-    //console.log(meterClasses)
-    console.log(`Data for meter ID ${this.id}: `, data)
+    console.log(meterClasses)
     
-
     let points = meterClasses[this.classInt]
 
     const pointMap = {
@@ -274,8 +272,9 @@ class Meter {
       pointMap[points[key]] = data[parseInt(key)]
     }
 
+    // Special case for a Learning Innovation Center meter, the scale is off by a factor of 10
     if (this.id === 105) {
-      console.log(`Found meter 105. Accumulated Real: ${pointMap.accumulated_real}. Multiplied by 10: ${pointMap.accumulated_real * 10}`)
+      pointMap.accumulated_real *= 10;
     }
 
     let time = data[0].toString().substring(1, 17) + ':00'
