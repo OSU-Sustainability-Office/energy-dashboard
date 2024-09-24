@@ -75,6 +75,15 @@ const actions = {
 
     await chartModifier.postGetData(chartData, reqPayload, this, store)
 
+    // fix LINC meter being off by factor of 10
+    // TODO: look into fixing data as it goes into the database instead of here
+    // See this issue for more info: https://github.com/OSU-Sustainability-Office/energy-dashboard/issues/341
+    if (store.getters.meterGroupPath.split('_')[2] === '199' && store.getters.point === 'accumulated_real') {
+      chartData.data.map(d => {
+        d.y = d.y * 10
+      })
+    }
+
     // fix PacificPower meters chart being filled by the energy_change chart modifier
     if (isPacificPowerMeter) {
       chartData.fill = false
