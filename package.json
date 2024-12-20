@@ -13,7 +13,7 @@
     "frontend-badge": "make-coverage-badge",
     "backend-badge": "make-coverage-badge --report-path './backend/coverage/coverage-summary.json' --output-path './backend/coverage/badge.svg'",
     "make-badges": "npm run frontend-badge && npm run backend-badge",
-    "prettier": "prettier --write **/*.{js,ts,tsx,json,html,md,css,scss,vue}",
+    "prettier": "prettier --write **/*.{js,json,html,md,css,scss,vue}",
     "format": "npm-run-all --continue-on-error prettier \"lint -- --fix\""
   },
   "dependencies": {
