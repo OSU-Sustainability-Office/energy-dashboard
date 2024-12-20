@@ -77,7 +77,7 @@ export default {
   props: [],
   data () {
     return {
-      api: process.env.VUE_APP_ROOT_API
+      api: import.meta.env.VITE_ROOT_API
     }
   },
   computed: {

@@ -50,12 +50,12 @@ export default {
       } else if (
         this.checkDate(camp.dateEnd) &&
         camp.name.toLowerCase().startsWith('test') &&
-        process.env.VUE_APP_HOST_ADDRESS === 'http://localhost:8080'
+        import.meta.env.VITE_HOST_ADDRESS === 'http://localhost:8080'
       ) {
         this.currentCampaigns.push(camp)
       } else if (
         camp.name.toLowerCase().startsWith('test') &&
-        process.env.VUE_APP_HOST_ADDRESS === 'http://localhost:8080'
+        import.meta.env.VITE_HOST_ADDRESS === 'http://localhost:8080'
       ) {
         this.pastCampaigns.push(camp)
       }
