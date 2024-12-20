@@ -129,7 +129,7 @@ export default {
         if (!this.campaignPath) return []
         // We need to copy this or adding the default block will change the return value of
         // the store
-        let blocks = new Array(...this.$store.getters[this.campaignPath + '/blocks'])
+        let blocks = [...this.$store.getters[this.campaignPath + '/blocks']]
         blocks.push(this.$store.getters[this.campaignPath + '/defaultBlock'])
         return blocks
       }

@@ -225,7 +225,7 @@ export default {
 .pics {
   border-bottom: solid 1px $--color-white;
 }
-$slope: 160px / 4;
+$slope: calc(160px / 4);
 $border-width: 3px;
 .nowrap {
   white-space: nowrap;
