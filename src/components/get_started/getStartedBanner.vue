@@ -7,7 +7,7 @@
   </div>
 </template>
 <script>
-import commitment from '@/components/get_started/commitment'
+import commitment from '@/components/get_started/commitment.vue'
 
 export default {
   name: 'getStartedBanner',

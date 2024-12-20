@@ -25,7 +25,7 @@
   </el-row>
 </template>
 <script>
-import campaignBlock from '@/components/campaigns/campaign_list_block'
+import campaignBlock from '@/components/campaigns/campaign_list_block.vue'
 export default {
   components: {
     campaignBlock

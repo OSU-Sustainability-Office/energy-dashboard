@@ -66,8 +66,8 @@
   </el-row>
 </template>
 <script>
-import chartController from '@/components/charts/chartController'
-import switchButtons from '@/components/map/time_switch_buttons_big'
+import chartController from '@/components/charts/chartController.vue'
+import switchButtons from '@/components/map/time_switch_buttons_big.vue'
 
 export default {
   components: {
