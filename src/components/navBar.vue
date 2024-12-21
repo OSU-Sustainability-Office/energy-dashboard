@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import svgLogo from '../../public/images/logo.svg'
+import svgLogo from '/src/assets/icons/logo.svg'
 
 export default {
   components: {
