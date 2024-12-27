@@ -28,7 +28,7 @@
         <el-col class="gridCard" v-for="(tip, index) in tips" :key="index" :span="8">
           <div @mouseenter="hoverShow = index" @mouseleave="hoverShow = null" style="height: 100%">
             <el-col :span="24" class="gridCardOverlay">
-              <img class="gridCardIcon" :src="'images/' + tip.icon + '.svg'" />
+              <img class="gridCardIcon" :src="getImageSrc(tip.icon)" alt="Icon" />
               <el-row class="gridCardTitle">
                 {{ tip.title }}
               </el-row>
@@ -93,6 +93,11 @@ export default {
           icon: 'electricity'
         }
       ]
+    }
+  },
+  methods: {
+    getImageSrc (iconName) {
+      return new URL(`../../assets/icons/${iconName}.svg`, import.meta.url).href
     }
   },
   created () {}
