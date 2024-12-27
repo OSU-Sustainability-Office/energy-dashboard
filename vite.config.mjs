@@ -24,5 +24,8 @@ export default defineConfig({
   },
   postcss: {
     plugins: [autoprefixer()]
+  },
+  server: {
+    port: 3000
   }
 })
