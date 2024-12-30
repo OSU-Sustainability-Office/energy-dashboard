@@ -110,14 +110,16 @@
       />
       <prompt_error v-if="building_compare_error" @cancel="stopCompareError" @compare="showComparison" />
       <transition name="side">
-        <compareSide v-if="showCompareSide" @hide="showCompareSide = false" :compareStories="compareStories" />
-        <sideView ref="sideview" v-if="showSide" @hide="showSide = false" @startCompare="startCompare"></sideView>
+        <div>
+          <compareSide v-if="showCompareSide" @hide="showCompareSide = false" :compareStories="compareStories" />
+          <sideView ref="sideview" v-if="showSide" @hide="showSide = false" @startCompare="startCompare"></sideView>
+        </div>
       </transition>
     </el-col>
   </el-row>
 </template>
 <script>
-import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
+import { LMap, LTileLayer, LGeoJson } from '@vue-leaflet/vue-leaflet'
 import sideView from '@/components/map/sideView.vue'
 import compareButton from '@/components/map/compareButton.vue'
 import prompt from '@/components/map/map_prompt.vue'
@@ -723,7 +725,7 @@ $sideMenu-width: 250px;
   top: 170px;
 }
 
-::v-deep .el-menu-item-group__title {
+:deep(.el-menu-item-group__title) {
   margin-top: -50px;
 }
 
@@ -896,10 +898,10 @@ $sideMenu-width: 250px;
   justify-content: center;
   z-index: 500;
 }
-::v-deep .el-input__icon {
+:deep(.el-input__icon) {
   color: #d73f09;
 }
-::v-deep .el-input__suffix {
+:deep(.el-input__suffix) {
   font-size: 28px;
 }
 .searchMapResult {
