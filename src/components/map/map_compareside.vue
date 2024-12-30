@@ -66,8 +66,8 @@
   </el-row>
 </template>
 <script>
-import chartController from '@/components/charts/chartController'
-import switchButtons from '@/components/map/time_switch_buttons_big'
+import chartController from '@/components/charts/chartController.vue'
+import switchButtons from '@/components/map/time_switch_buttons_big.vue'
 
 export default {
   components: {
@@ -77,7 +77,7 @@ export default {
   props: [],
   data () {
     return {
-      api: process.env.VUE_APP_ROOT_API
+      api: import.meta.env.VITE_ROOT_API
     }
   },
   computed: {
@@ -225,7 +225,7 @@ export default {
 .pics {
   border-bottom: solid 1px $--color-white;
 }
-$slope: 160px / 4;
+$slope: calc(160px / 4);
 $border-width: 3px;
 .nowrap {
   white-space: nowrap;

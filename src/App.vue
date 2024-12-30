@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import navigbar from '@/components/navBar'
+import navigbar from '@/components/navBar.vue'
 
 export default {
   name: 'App',
@@ -136,7 +136,7 @@ body {
 }
 </style>
 <style lang="scss">
-@import '~element-ui/packages/theme-chalk/src/index';
+@import 'element-ui/packages/theme-chalk/src/index';
 </style>
 
 <style scoped lang="scss">

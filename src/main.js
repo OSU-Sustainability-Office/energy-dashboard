@@ -7,7 +7,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import Vuex from 'vuex'
-import App from './App'
+import App from './App.vue'
 import router from './router'
 import StoreConfig from './store'
 import elm from 'element-ui'
@@ -15,7 +15,6 @@ import Vuei18n from 'vue-i18n'
 import locale from 'element-ui/lib/locale/lang/en'
 import AsyncComputed from 'vue-async-computed'
 import 'element-ui/lib/theme-chalk/reset.css'
-import '@/assets/style-variables.scss'
 
 // Link Vue Instance w/ Vuex Interface
 Vue.use(Vuex)

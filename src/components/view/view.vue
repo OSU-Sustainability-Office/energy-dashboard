@@ -24,10 +24,10 @@
 </template>
 
 <script>
-import card from '@/components/view/card'
-import heropicture from '@/components/extras/heropicture'
-import editCard from '@/components/view/modals/edit_card'
-import navdir from '@/components/view/navdir'
+import card from '@/components/view/card.vue'
+import heropicture from '@/components/extras/heropicture.vue'
+import editCard from '@/components/view/modals/edit_card.vue'
+import navdir from '@/components/view/navdir.vue'
 
 export default {
   components: {

@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import chartController from '@/components/charts/chartController'
+import chartController from '@/components/charts/chartController.vue'
 
 export default {
   name: 'card',

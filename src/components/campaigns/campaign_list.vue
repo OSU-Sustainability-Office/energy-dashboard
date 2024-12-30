@@ -25,7 +25,7 @@
   </el-row>
 </template>
 <script>
-import campaignBlock from '@/components/campaigns/campaign_list_block'
+import campaignBlock from '@/components/campaigns/campaign_list_block.vue'
 export default {
   components: {
     campaignBlock
@@ -50,12 +50,12 @@ export default {
       } else if (
         this.checkDate(camp.dateEnd) &&
         camp.name.toLowerCase().startsWith('test') &&
-        process.env.VUE_APP_HOST_ADDRESS === 'http://localhost:8080'
+        import.meta.env.VITE_HOST_ADDRESS === 'http://localhost:8080'
       ) {
         this.currentCampaigns.push(camp)
       } else if (
         camp.name.toLowerCase().startsWith('test') &&
-        process.env.VUE_APP_HOST_ADDRESS === 'http://localhost:8080'
+        import.meta.env.VITE_HOST_ADDRESS === 'http://localhost:8080'
       ) {
         this.pastCampaigns.push(camp)
       }

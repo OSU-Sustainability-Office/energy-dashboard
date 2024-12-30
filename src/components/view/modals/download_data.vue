@@ -130,7 +130,8 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
 
 <script>
 import ChartModifier from '@/store/chart_modifiers/index'
-var JSZip = require('jszip')
+import JSZip from 'jszip'
+
 export default {
   data () {
     return {

@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import mapTab from '@/components/get_started/mapTab'
-import buildingListTab from '@/components/get_started/buildingListTab'
+import mapTab from '@/components/get_started/mapTab.vue'
+import buildingListTab from '@/components/get_started/buildingListTab.vue'
 
 export default {
   components: {
