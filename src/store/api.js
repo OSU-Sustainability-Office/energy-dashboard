@@ -5,7 +5,7 @@ function callAPI (
   route,
   data = null,
   method = 'get',
-  base = process.env.VUE_APP_ROOT_API,
+  base = import.meta.env.VITE_ROOT_API,
   headers = null,
   timeoutMS = 72000,
   allowCredentials = true
@@ -21,7 +21,7 @@ function callAPI (
      NOTE: In production we do want to set withCredentials to true so we can use HTTPS & cookies
      for the user login session.
   */
-  if (process.env.VUE_APP_ROOT_API === 'http://localhost:3000') {
+  if (import.meta.env.VITE_ROOT_API === 'http://localhost:3000') {
     allowCredentials = false
     // increase timeout since it's slow locally testing.
     timeoutMS = timeoutMS * 4
@@ -131,7 +131,7 @@ export default {
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
     // We're also increasing the timeeout to 2 minutes to account for really slow requests (e.g. LINC 1 year data)
     return (
-      await callAPI('batchData', JSON.stringify(requestArray), 'post', process.env.VUE_APP_ROOT_API, null, 120000)
+      await callAPI('batchData', JSON.stringify(requestArray), 'post', import.meta.env.VITE_ROOT_API, null, 120000)
     ).data
   },
   user: async () => {

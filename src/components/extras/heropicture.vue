@@ -49,7 +49,7 @@ export default {
   data () {
     return {
       arrayType: false,
-      api: process.env.VUE_APP_ROOT_API
+      api: import.meta.env.VITE_ROOT_API
     }
   },
   computed: {
@@ -126,7 +126,7 @@ export default {
   padding-top: 2.5em;
   -webkit-text-stroke: 0.6px black;
 }
-$slope: 160px / 4;
+$slope: calc(160px / 4);
 $border-width: 3px;
 .slantImage {
   height: 100%;

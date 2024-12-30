@@ -118,15 +118,15 @@
 </template>
 <script>
 import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
-import sideView from '@/components/map/sideView'
-import compareButton from '@/components/map/compareButton'
-import prompt from '@/components/map/map_prompt'
-import prompt_error from '@/components/map/prompt_error'
-import compareSide from '@/components/map/map_compareside'
+import sideView from '@/components/map/sideView.vue'
+import compareButton from '@/components/map/compareButton.vue'
+import prompt from '@/components/map/map_prompt.vue'
+import prompt_error from '@/components/map/prompt_error.vue'
+import compareSide from '@/components/map/map_compareside.vue'
 import L from 'leaflet'
-import switchButtons from '@/components/map/switch_buttons'
+import switchButtons from '@/components/map/switch_buttons.vue'
 import { EventBus } from '../../event-bus'
-import leftBuildingMenu from '@/components/leftBuildingMenu'
+import leftBuildingMenu from '@/components/leftBuildingMenu.vue'
 
 const DEFAULT_LAT = 44.56335
 const DEFAULT_LON = -123.2858

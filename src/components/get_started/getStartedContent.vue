@@ -18,9 +18,9 @@
 </template>
 
 <script>
-import getStartedBanner from '@/components/get_started/getStartedBanner'
-import faq from '@/components/get_started/faq'
-import mainDescription from '@/components/get_started/mainDescription'
+import getStartedBanner from '@/components/get_started/getStartedBanner.vue'
+import faq from '@/components/get_started/faq.vue'
+import mainDescription from '@/components/get_started/mainDescription.vue'
 
 export default {
   name: 'getStartedContent',

@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import downloader from '@/components/view/modals/download_data'
+import downloader from '@/components/view/modals/download_data.vue'
 
 export default {
   name: 'navdir',

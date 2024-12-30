@@ -72,10 +72,10 @@
 
 <script>
 import heropicture from '@/components/extras/heropicture.vue'
-import chartController from '@/components/charts/chartController'
-import buildingList from '@/components/campaigns/campaign_building_list'
-import reductionTips from '@/components/campaigns/campaign_reduction_tips'
-import switchButtons from '@/components/map/time_switch_buttons_big'
+import chartController from '@/components/charts/chartController.vue'
+import buildingList from '@/components/campaigns/campaign_building_list.vue'
+import reductionTips from '@/components/campaigns/campaign_reduction_tips.vue'
+import switchButtons from '@/components/map/time_switch_buttons_big.vue'
 
 export default {
   components: {
@@ -129,7 +129,7 @@ export default {
         if (!this.campaignPath) return []
         // We need to copy this or adding the default block will change the return value of
         // the store
-        let blocks = new Array(...this.$store.getters[this.campaignPath + '/blocks'])
+        let blocks = [...this.$store.getters[this.campaignPath + '/blocks']]
         blocks.push(this.$store.getters[this.campaignPath + '/defaultBlock'])
         return blocks
       }

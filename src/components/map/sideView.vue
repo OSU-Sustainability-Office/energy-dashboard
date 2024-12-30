@@ -65,8 +65,8 @@
 </template>
 
 <script>
-import chartController from '@/components/charts/chartController'
-import switchButtons from '@/components/map/time_switch_buttons_big'
+import chartController from '@/components/charts/chartController.vue'
+import switchButtons from '@/components/map/time_switch_buttons_big.vue'
 
 export default {
   name: 'sideView',
@@ -77,7 +77,7 @@ export default {
   },
   data () {
     return {
-      api: process.env.VUE_APP_ROOT_API,
+      api: import.meta.env.VITE_ROOT_API,
       title: '',
       unit: 'day',
       int: 1,

@@ -10,7 +10,7 @@ export default {
   props: ['id', 'building', 'plus'],
   data () {
     return {
-      api: process.env.VUE_APP_ROOT_API
+      api: import.meta.env.VITE_ROOT_API
     }
   },
   mounted () {
