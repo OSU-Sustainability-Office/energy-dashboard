@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
-import { createVuePlugin as vue } from 'vite-plugin-vue2'
-import { createSvgPlugin as svgLoader } from 'vite-plugin-vue2-svg'
+import vue from '@vitejs/plugin-vue'
+import svgLoader from 'vite-svg-loader'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import autoprefixer from 'autoprefixer'
