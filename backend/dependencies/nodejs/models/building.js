@@ -9,9 +9,6 @@
 const DB = require('/opt/nodejs/sql-access.js')
 const MeterGroup = require('/opt/nodejs/models/meter_group.js')
 const Meter = require('/opt/nodejs/models/meter.js')
-// const axios = require('axios')
-// const Geo = require('osmtogeojson')
-// const XMLDom = require('xmldom')
 
 class Building {
   constructor(id) {
