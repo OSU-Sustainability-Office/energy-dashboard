@@ -136,7 +136,7 @@ body {
 }
 </style>
 <style lang="scss">
-@import 'element-ui/packages/theme-chalk/src/index';
+@import 'element-plus/theme-chalk/src/index.scss';
 </style>
 
 <style scoped lang="scss">
