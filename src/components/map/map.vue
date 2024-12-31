@@ -85,7 +85,7 @@
       </el-menu>
 
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
-        <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
+        <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map" @ready="updateMapRef">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
           <compareButton @startCompare="startCompare"></compareButton>
           <div @click="resetSearchInput()">
@@ -94,7 +94,7 @@
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
             v-for="building of this.$store.getters['map/buildings']"
-            v-if="building.geoJSON"
+            v-if="building && building.geoJSON"
             :key="building.id * rKey"
             :geojson="building.geoJSON"
             :options="buildingOptions"
@@ -504,6 +504,10 @@ export default {
         result.push(Math.round(typicalColor[2] - greenInt[2] * compare))
       }
       return 'rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')'
+    },
+    updateMapRef () {
+      this.map = this.$refs.map.leafletObject
+      this.map.zoomControl.setPosition('topleft')
     }
   },
   async created () {
@@ -512,16 +516,16 @@ export default {
     this.message = window.innerWidth > 844
 
     // Event listener for input data
-    this.handleInputData = (inputWord) => {
+    this.handleInputData = inputWord => {
       this.message = inputWord
     }
     emitter.on('inputData', this.handleInputData)
-    this.map.zoomControl.setPosition('topleft')
+
     this.initBuildingRename()
   },
   mounted () {
     this.$nextTick(() => {
-      this.map = this.$refs.map.mapObject
+      this.map = this.$refs.map.leafletObject
     })
   },
   beforeUnmount () {
@@ -531,7 +535,7 @@ export default {
     selectedOption (energyFilter) {
       this.rKey++
       this.$nextTick(() => {
-        this.map = this.$refs.map.mapObject
+        this.map = this.$refs.map.leafletObject
         for (var layerKey of Object.keys(this.map._layers)) {
           let layer = this.map._layers[layerKey]
           if (layer.feature && energyFilter !== 'All') {
@@ -555,7 +559,7 @@ export default {
         this.rKey++
         this.mapLoaded = false
         this.$nextTick(async () => {
-          this.map = this.$refs.map.mapObject
+          this.map = this.$refs.map.leafletObject
           let promises = []
           for (var layerKey of Object.keys(this.map._layers)) {
             let layer = this.map._layers[layerKey]
@@ -674,7 +678,7 @@ export default {
     selected: function (val) {
       this.rKey++
       this.$nextTick(() => {
-        this.map = this.$refs.map.mapObject
+        this.map = this.$refs.map.leafletObject
         for (var layerKey of Object.keys(this.map._layers)) {
           let layer = this.map._layers[layerKey]
           if (layer.feature) {
