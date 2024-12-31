@@ -127,7 +127,7 @@ import prompt_error from '@/components/map/prompt_error.vue'
 import compareSide from '@/components/map/map_compareside.vue'
 import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons.vue'
-import { EventBus } from '../../event-bus'
+import emitter from '../../event-bus'
 import leftBuildingMenu from '@/components/leftBuildingMenu.vue'
 
 const DEFAULT_LAT = 44.56335
@@ -510,9 +510,12 @@ export default {
     await this.$store.dispatch('map/loadGeometry')
     this.mapLoaded = true
     this.message = window.innerWidth > 844
-    EventBus.$on('inputData', inputWord => {
+
+    // Event listener for input data
+    this.handleInputData = (inputWord) => {
       this.message = inputWord
-    })
+    }
+    emitter.on('inputData', this.handleInputData)
     this.map.zoomControl.setPosition('topleft')
     this.initBuildingRename()
   },
@@ -520,6 +523,9 @@ export default {
     this.$nextTick(() => {
       this.map = this.$refs.map.mapObject
     })
+  },
+  beforeUnmount () {
+    emitter.off('inputData', this.handleInputData)
   },
   watch: {
     selectedOption (energyFilter) {
