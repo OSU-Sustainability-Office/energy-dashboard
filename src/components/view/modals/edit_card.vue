@@ -175,10 +175,12 @@
               filterable
               placeholder="Building"
               style="width: 100%"
-              @change="() => {
-                form.sets[currentIndex].meter = null
-                form.sets[currentIndex].point = null
-              }"
+              @change="
+                () => {
+                  form.sets[currentIndex].meter = null
+                  form.sets[currentIndex].point = null
+                }
+              "
             >
               <el-option
                 v-for="(item, index) in buildings"

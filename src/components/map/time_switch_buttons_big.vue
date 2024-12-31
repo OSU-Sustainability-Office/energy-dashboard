@@ -166,7 +166,7 @@ $clipInset: 10px;
   margin: 0 !important;
 }
 .rangeButtonParent:not(.active) {
-  top: calc((($activePadding + $activeheight) - ($buttonHeight + $parentPadding))/2);
+  top: calc((($activePadding + $activeheight) - ($buttonHeight + $parentPadding)) / 2);
 }
 .rangeButtonParent:nth-child(1) {
   border-radius: 5px 0px 0px 5px;

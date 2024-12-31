@@ -6,7 +6,7 @@
 const fs = require('fs')
 const axios = require('axios')
 
-function GetMockData (url, filename) {
+function GetMockData(url, filename) {
   axios
     .get(url)
     .then(response => {

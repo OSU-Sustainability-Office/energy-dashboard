@@ -93,8 +93,7 @@
           </div>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
-            v-for="building of this.$store.getters['map/buildings']"
-            v-if="building && building.geoJSON"
+            v-for="building of filteredBuildings"
             :key="building.id * rKey"
             :geojson="building.geoJSON"
             :options="buildingOptions"
@@ -154,6 +153,9 @@ export default {
     compareButton
   },
   computed: {
+    filteredBuildings () {
+      return this.mapLoaded ? this.$store.getters['map/buildings'].filter(building => building.geoJSON) : []
+    },
     showSide: {
       get () {
         return this.$store.getters['modalController/modalName'] === 'map_side_view'
@@ -264,7 +266,7 @@ export default {
   methods: {
     polyClick: function (id, feature, center) {
       if (!this.askingForComparison) {
-        window.vue.$store.dispatch('modalController/openModal', {
+        this.$store.dispatch('modalController/openModal', {
           name: 'map_side_view',
           id: id
         })
