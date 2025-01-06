@@ -1,18 +1,25 @@
-/**
-  Filename: linechart.js
+<!--
+  Filename: linechart.vue
   Info: chartJS line chart preset for energy dashboard.
-*/
+-->
 
-import { Line, mixins } from 'vue-chartjs'
+<template>
+  <Line :data="chartData" :options="options" />
+</template>
+
+<script>
+import { Line } from 'vue-chartjs'
+import 'chart.js/auto'
+import 'chartjs-adapter-luxon'
 
 export default {
   name: 'linechart',
-  extends: Line,
-  mixins: [mixins.reactiveProp],
+  components: { Line },
   props: {
     invertColors: Boolean,
     yLabel: String,
-    xLabel: String
+    xLabel: String,
+    chartData: Object
   },
   computed: {
     primaryColor: function () {
@@ -106,87 +113,76 @@ export default {
         responsive: true, // my new default options
         maintainAspectRatio: false, // my new default options
         scales: {
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: false,
-                fontSize: 12,
-                fontColor: this.primaryColor,
-                fontFamily: 'Open Sans',
-                source: 'data',
-                autoSkip: true,
-                maxTicksLimit: 10
+          yAxes: {
+            ticks: {
+              beginAtZero: false,
+              fontSize: 12,
+              fontColor: this.primaryColor,
+              fontFamily: 'Open Sans',
+              source: 'data',
+              autoSkip: true,
+              maxTicksLimit: 10
+            },
+            gridLines: {
+              display: true, // my new default options
+              color: this.secondaryColor
+            },
+            scaleLabel: {
+              display: this.$parent.buildLabel('y') !== '',
+              labelString: this.$parent.buildLabel('y'),
+              fontSize: 12,
+              fontColor: this.primaryColor,
+              fontFamily: 'Open Sans'
+            }
+          },
+          xAxes: {
+            type: 'time',
+            bounds: 'data',
+            gridLines: {
+              display: false, // my new default options
+              color: this.secondaryColor
+            },
+            ticks: {
+              fontSize: 14,
+              fontColor: this.primaryColor,
+              fontFamily: 'Open Sans',
+              autoSkip: true,
+              stepSize: 10,
+              source: 'data',
+              // the following three settings change the x-ticks if there are multiple time periods,
+              // otherwise the default settings are used
+              autoSkipPadding: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 15 : 3,
+              maxRotation: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 0 : 50,
+              beforeBuildTicks: (val, index) => {
+                if (this.$parent.multipleTimePeriods(this.$parent.chartData.datasets)) {
+                  return this.$parent.buildXaxisTick(index)
+                }
+                return val
+              }
+            },
+            scaleLabel: {
+              display: this.$parent.buildLabel('y') !== '',
+              labelString: this.$parent.buildLabel('x'),
+              fontSize: 12,
+              fontColor: this.primaryColor,
+              fontFamily: 'Open Sans'
+            },
+            time: {
+              callback: (val, index) => {
+                console.log('val', val)
               },
-              gridLines: {
-                display: true, // my new default options
-                color: this.secondaryColor
-              },
-              scaleLabel: {
-                display: this.$parent.buildLabel('y') !== '',
-                labelString: this.$parent.buildLabel('y'),
-                fontSize: 12,
-                fontColor: this.primaryColor,
-                fontFamily: 'Open Sans'
+              unit: this.$parent.$store.getters[this.$parent.path + '/intervalUnit'],
+              unitStepSize: 15,
+              displayFormats: {
+                day: 'MM/dd',
+                hour: 'ccc h:mm a',
+                minute: 'ccc h:mm a'
               }
             }
-          ],
-          xAxes: [
-            {
-              type: 'time',
-              bounds: 'data',
-              gridLines: {
-                display: false, // my new default options
-                color: this.secondaryColor
-              },
-              ticks: {
-                fontSize: 14,
-                fontColor: this.primaryColor,
-                fontFamily: 'Open Sans',
-                autoSkip: true,
-                stepSize: 10,
-                source: 'data',
-                // the following three settings change the x-ticks if there are multiple time periods,
-                // otherwise the default settings are used
-                autoSkipPadding: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 15 : 3,
-                maxRotation: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 0 : 50,
-                callback: (val, index) => {
-                  if (this.$parent.multipleTimePeriods(this.$parent.chartData.datasets)) {
-                    return this.$parent.buildXaxisTick(index)
-                  }
-                  return val
-                }
-              },
-              scaleLabel: {
-                display: this.$parent.buildLabel('y') !== '',
-                labelString: this.$parent.buildLabel('x'),
-                fontSize: 12,
-                fontColor: this.primaryColor,
-                fontFamily: 'Open Sans'
-              },
-              time: {
-                unit: this.$parent.$store.getters[this.$parent.path + '/intervalUnit'],
-                unitStepSize: 15,
-                displayFormats: {
-                  day: 'M/DD',
-                  hour: 'dd h:mm a',
-                  minute: 'dd h:mm a'
-                }
-              }
-            }
-          ]
+          }
         }
       }
     }
-  },
-  mounted () {
-    this.renderChart(this.chartData, this.options)
-  },
-  watch: {},
-  methods: {
-    update: function () {
-      // Re-render the *entire* graph, so that the labels are also updated.
-      // Potential optimization to be made here in the future but chartJS is scary.
-      this.renderChart(this.chartData, this.options)
-    }
   }
 }
+</script>

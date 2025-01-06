@@ -1,9 +1,8 @@
-import { Pie, mixins } from 'vue-chartjs'
+import { Pie } from 'vue-chartjs'
 
 export default {
   name: 'piechart',
   extends: Pie,
-  mixins: [mixins.reactiveProp],
   props: {
     invertColors: Boolean
   },
@@ -73,7 +72,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     this.renderChart(this.chartData, this.options)
   },
   watch: {

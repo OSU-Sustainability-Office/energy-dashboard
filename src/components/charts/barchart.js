@@ -6,11 +6,10 @@
  * @Last modified time: 2019-02-11T10:04:11-08:00
  */
 
-import { Bar, mixins } from 'vue-chartjs'
+import { Bar } from 'vue-chartjs'
 export default {
   name: 'barchart',
   extends: Bar,
-  mixins: [mixins.reactiveProp],
   props: {
     invertColors: Boolean
   },
@@ -163,7 +162,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     this.renderChart(this.chartData, this.options)
   },
   watch: {

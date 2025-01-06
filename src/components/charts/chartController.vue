@@ -11,7 +11,7 @@
     <linechart
       v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'"
       ref="linechart"
-      v-bind:chartData="chartData"
+      :chartData="chartData"
       :style="styleC"
       :height="height"
       :invertColors="invertColors"
@@ -78,7 +78,7 @@
   </div>
 </template>
 <script>
-import linechart from '@/components/charts/linechart.js'
+import linechart from '@/components/charts/linechart.vue'
 import barchart from '@/components/charts/barchart.js'
 import doughnutchart from '@/components/charts/doughnutchart.js'
 import piechart from '@/components/charts/piechart.js'
@@ -98,7 +98,7 @@ export default {
     doughnutchart,
     piechart
   },
-  mounted () {
+  mounted() {
     console.log(this.$route.path)
   },
   watch: {
@@ -106,7 +106,7 @@ export default {
       this.updateChart()
     }
   },
-  data () {
+  data() {
     return {
       unsubscribe: null,
       loading: true,
@@ -115,7 +115,7 @@ export default {
       colors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4']
     }
   },
-  created () {
+  created() {
     if (parseInt(this.randomColors) === 1) {
       // DurstenFeld Shuffle
       for (var i = this.colors.length - 1; i > 0; i--) {
@@ -163,7 +163,7 @@ export default {
     })
   },
   computed: {
-    iframeClass () {
+    iframeClass() {
       if (this.$route.path.startsWith('/map')) {
         return 'scaled-iframe'
       } else {
@@ -171,22 +171,22 @@ export default {
       }
     },
     promise: {
-      get () {
+      get() {
         return this.$store.getters[this.path + '/promise']
       }
     },
     dateStart: {
-      get () {
+      get() {
         return this.$store.getters[this.path + '/dateStart']
       }
     },
     dateEnd: {
-      get () {
+      get() {
         return this.$store.getters[this.path + '/dateEnd']
       }
     },
     graphType: {
-      get () {
+      get() {
         if (this.chartData) {
           let noData = true
           for (let set of this.chartData.datasets) {
@@ -203,7 +203,7 @@ export default {
       }
     },
     chart: {
-      get () {
+      get() {
         switch (this.graphType) {
           case 1:
             return this.$refs.linechart
@@ -219,7 +219,7 @@ export default {
       }
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.unsubscribe()
   },
   methods: {
@@ -235,7 +235,7 @@ export default {
             data.datasets.length >= 1 &&
             data.datasets[0].data.length >= 1
           ) {
-            this.chart.update()
+            //this.chart.update()
 
             // format charts if there are multiple time periods
             if (this.multipleTimePeriods(data.datasets)) {
@@ -393,7 +393,7 @@ export default {
     },
     // this is called when there are multiple time period charts, it returns an array of all the
     // chart dates for that index so that they can be displayed on multiple lines
-    buildXaxisTick (index) {
+    buildXaxisTick(index) {
       const interval = this.$store.getters[this.path + '/intervalUnit']
 
       if (this.chartData.datasets) {

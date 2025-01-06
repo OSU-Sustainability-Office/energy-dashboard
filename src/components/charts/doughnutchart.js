@@ -1,9 +1,8 @@
-import { Doughnut, mixins } from 'vue-chartjs'
+import { Doughnut } from 'vue-chartjs'
 
 export default {
   name: 'doughnutchart',
   extends: Doughnut,
-  mixins: [mixins.reactiveProp],
   props: {
     invertColors: Boolean
   },
@@ -54,7 +53,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     this.renderChart(this.chartData, this.options)
   },
   methods: {
