@@ -701,7 +701,7 @@ export default {
 <style scoped lang="scss">
 $sideMenu-width: 250px;
 .colorByTitle {
-  color: $--color-white;
+  color: $color-white;
   font-size: 26px;
   text-align: center;
   font-family: 'stratumno2';
@@ -729,7 +729,7 @@ $sideMenu-width: 250px;
 }
 
 .sideMenu {
-  background-color: $--color-black;
+  background-color: $color-black;
   position: absolute;
   z-index: 2000;
   width: $sideMenu-width - 10px;

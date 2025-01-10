@@ -113,7 +113,7 @@ export default {
 }
 .title {
   padding-left: 2em;
-  color: $--color-black;
+  color: $color-black;
   font-family: 'StratumNO2';
   font-size: 34px;
 }
@@ -134,7 +134,7 @@ export default {
 }
 
 .gridCardTitle {
-  color: $--color-white;
+  color: $color-white;
   text-align: center;
   line-height: 28px;
   font-size: 28px;
@@ -142,7 +142,7 @@ export default {
   font-family: 'StratumNO2';
 }
 .gridCard:hover .gridCardTitle {
-  color: $--color-white;
+  color: $color-white;
 }
 .gridCardDescription {
   position: absolute;
@@ -152,7 +152,7 @@ export default {
   font-size: 18px;
   padding-left: 4em;
   padding-right: 4em;
-  color: $--color-white;
+  color: $color-white;
 }
 .reductionTimeLine {
   width: 100%;
@@ -194,7 +194,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  // border-right: solid 2px $--color-white;
+  // border-right: solid 2px $color-white;
   // clip-path: polygon(100% 0, 100% 80%, 80% 100%, 0 100%, 0 0);
   overflow: hidden;
   transition: background-color 0.45s;

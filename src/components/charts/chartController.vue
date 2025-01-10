@@ -439,7 +439,7 @@ export default {
 <style lang="scss" scoped>
 .NoData {
   text-align: center;
-  color: $--color-black;
+  color: $color-black;
   font-weight: 800;
   font-size: 22px;
 }

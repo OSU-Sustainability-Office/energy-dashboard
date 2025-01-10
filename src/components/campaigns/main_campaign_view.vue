@@ -178,13 +178,13 @@ export default {
 
 /* Handle */
 .buildingContainer ::-webkit-scrollbar-thumb {
-  background: $--color-primary;
+  background: $color-primary;
   border-radius: 10px;
 }
 
 /* Handle on hover */
 .buildingContainer ::-webkit-scrollbar-thumb:hover {
-  background: darken($--color-primary, 10%);
+  background: color.adjust($color-primary, $lightness: -10%);
 }
 </style>
 <style scoped lang="scss">
@@ -192,7 +192,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  height: calc(100vh - #{$--nav-height});
+  height: calc(100vh - #{$nav-height});
   width: 100%;
   margin: 0;
   padding: 0;
@@ -202,7 +202,7 @@ export default {
 }
 .title {
   font-size: 34px;
-  color: $--color-white;
+  color: $color-white;
   font-family: 'StratumNo2';
   text-align: left;
   padding-left: 1em;
@@ -210,13 +210,13 @@ export default {
 }
 .timeframe-labels {
   font-size: 34px;
-  color: $--color-white;
+  color: $color-white;
   font-family: 'StratumNo2';
   text-align: left;
   padding-bottom: 1em;
 }
 .controlRow {
-  background-color: $--color-black;
+  background-color: $color-black;
   box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.5);
 }
 .herorow {
@@ -229,14 +229,14 @@ export default {
 }
 .chartArea {
   padding: 2em;
-  background-color: $--color-black;
+  background-color: $color-black;
   border-radius: 5px;
 }
 .buildingContainer {
   padding: 2em;
   padding-right: 1em;
   padding-bottom: 1em;
-  // min-height: calc(100vh - #{$--nav-height} - 200px);
+  // min-height: calc(100vh - #{$nav-height} - 200px);
   height: calc(450px + 5em);
 }
 .timeSwitchButtons {

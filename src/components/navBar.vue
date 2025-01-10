@@ -52,7 +52,7 @@ export default {
   align-items: left;
   padding-top: 0px;
   left: 10px;
-  background-color: $--color-primary !important;
+  background-color: $color-primary !important;
 }
 .nav-items {
   display: flex;

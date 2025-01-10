@@ -259,12 +259,12 @@ export default {
   border: none !important;
 }
 .el-submenu__title:hover {
-  color: $--color-white !important;
-  background-color: $--color-black !important;
+  color: $color-white !important;
+  background-color: $color-black !important;
 }
 .el-submenu.is-opened > .el-submenu__title {
-  color: $--color-white !important;
-  background-color: $--color-black !important;
+  color: $color-white !important;
+  background-color: $color-black !important;
 }
 </style>
 <style scoped lang="scss">
@@ -284,7 +284,7 @@ export default {
   height: 100%;
   width: 100%;
   padding: 0;
-  background-color: $--color-white;
+  background-color: $color-white;
   box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.5);
 }
 .menu {
@@ -292,12 +292,12 @@ export default {
 }
 
 .fas {
-  color: $--color-primary !important;
+  color: $color-primary !important;
   padding: 0.5em;
 }
 .el-menu-item:hover {
-  color: $--color-white !important;
-  background-color: $--color-black !important;
+  color: $color-white !important;
+  background-color: $color-black !important;
 }
 .buttons {
   text-align: right;
@@ -311,6 +311,6 @@ export default {
   cursor: pointer;
 }
 .buttons .fas:hover {
-  color: $--color-black !important;
+  color: $color-black !important;
 }
 </style>

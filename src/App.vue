@@ -136,12 +136,10 @@ body {
 }
 </style>
 <style lang="scss">
-@import 'element-plus/theme-chalk/src/index.scss';
+@use 'element-plus/theme-chalk/src/index.scss';
 </style>
 
 <style scoped lang="scss">
-@import '@/assets/style-variables.scss';
-
 /* Media query for mobile devices */
 @media only screen and (max-width: 600px) {
   body {
@@ -161,7 +159,7 @@ body {
 .header {
   margin: 0;
   padding: 0;
-  height: $--nav-height;
+  height: $nav-height;
   width: 100%;
   position: absolute;
   top: 0;
@@ -169,9 +167,9 @@ body {
 }
 .main {
   position: absolute;
-  top: $--nav-height;
+  top: $nav-height;
   left: 0;
-  min-height: calc(100% - #{$--nav-height});
+  min-height: calc(100% - #{$nav-height});
   margin: 0;
   padding: 0;
   width: 100%;

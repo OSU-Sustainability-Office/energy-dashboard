@@ -166,13 +166,13 @@ export default {
 <style scoped lang="scss">
 .title {
   font-size: 34px;
-  color: $--color-white;
+  color: $color-white;
   font-family: 'StratumNo2';
   text-align: left;
   padding-bottom: 1em;
 }
 .buildingContainer {
-  background-color: $--color-black;
+  background-color: $color-black;
   border-radius: 5px;
   padding: 1em;
 }
@@ -187,24 +187,24 @@ export default {
 }
 .buildingCol {
   font-size: 24px;
-  color: $--color-white;
+  color: $color-white;
   font-family: 'StratumNo2';
   cursor: pointer;
 }
 .buildingCol.selected {
-  color: $--color-primary;
+  color: $color-primary;
 }
 .buildingCol:hover .innerClip:not(.selected) {
-  background-color: $--color-black !important;
+  background-color: $color-black !important;
 }
 $clippath: polygon(2.5% 0%, 0% 100%, 97.5% 100%, 100% 0%);
 .outerClip {
   padding: 0.05em;
-  background-color: $--color-white;
+  background-color: $color-white;
   clip-path: $clippath;
 }
 .outerClip.selected {
-  background-color: $--color-white;
+  background-color: $color-white;
 }
 .innerClip {
   padding: 0.5em;
@@ -218,7 +218,7 @@ $clippath: polygon(2.5% 0%, 0% 100%, 97.5% 100%, 100% 0%);
   cursor: auto;
 }
 .innerClip.selected {
-  background-color: $--color-white !important;
+  background-color: $color-white !important;
 }
 .fa-trophy {
   position: relative;
@@ -231,11 +231,11 @@ $clippath: polygon(2.5% 0%, 0% 100%, 97.5% 100%, 100% 0%);
   width: 100%;
   text-align: center;
   font-size: 16px;
-  color: $--color-primary;
+  color: $color-primary;
   font-family: 'StratumNo2';
 }
 .innerTrophy.selected {
-  color: $--color-white;
+  color: $color-white;
 }
 
 @media only screen and (max-width: 600px) {

@@ -221,25 +221,25 @@ export default {
   padding: 0.2em;
 }
 .rangeButton {
-  background-color: $--color-black;
-  color: darken($--color-white, 30%);
-  border-color: darken($--color-white, 30%);
+  background-color: $color-black;
+  color: color.adjust($color-white, $lightness: -30%);
+  border-color: color.adjust($color-white, $lightness: -30%);
   width: 100%;
 }
 .rangeButton:not(.active):hover {
-  background-color: #000; //darken($--color-primary, 10%);
-  color: $--color-white;
-  border-color: $--color-white;
+  background-color: #000; //color.adjust($color-primary, $lightness: -10%);
+  color: $color-white;
+  border-color: $color-white;
 }
 .rangeButton.active {
-  background-color: $--color-primary;
-  color: $--color-white;
-  border-color: $--color-white;
+  background-color: $color-primary;
+  color: $color-white;
+  border-color: $color-white;
 }
 .rangeButton.active:hover {
-  background-color: $--color-primary;
-  color: $--color-white;
-  border-color: $--color-white;
+  background-color: $color-primary;
+  color: $color-white;
+  border-color: $color-white;
 }
 
 .graph {
@@ -256,7 +256,7 @@ export default {
 
 .graphslide {
   position: absolute;
-  color: rgba($--color-white, 0.4);
+  color: rgba($color-white, 0.4);
   bottom: 220px;
   font-size: 3em;
   width: 100%;
@@ -267,7 +267,7 @@ export default {
   cursor: pointer;
 }
 .graphslide > *:hover {
-  color: $--color-white;
+  color: $color-white;
 }
 .graphslide .right {
   position: absolute;
@@ -281,20 +281,20 @@ export default {
   text-align: center;
 }
 .bigButton {
-  background-color: $--color-black;
-  color: darken($--color-white, 30%);
-  border-color: darken($--color-white, 30%);
+  background-color: $color-black;
+  color: color.adjust($color-white, $lightness: -30%);
+  border-color: color.adjust($color-white, $lightness: -30%);
   width: 98%;
 }
 .bigButton:hover {
   background-color: #000;
-  color: $--color-white;
-  border-color: $--color-white;
+  color: $color-white;
+  border-color: $color-white;
 }
 .bigButton:active {
-  background-color: $--color-black;
-  color: $--color-white;
-  border-color: $--color-white;
+  background-color: $color-black;
+  color: $color-white;
+  border-color: $color-white;
 }
 .buttonContainer {
   height: 60px; // reduce padding above top buttons (week / 60 days /year)

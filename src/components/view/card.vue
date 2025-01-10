@@ -221,27 +221,27 @@ export default {
 $chart-height: 430px;
 
 .card {
-  background-color: $--color-white;
+  background-color: $color-white;
   padding: 2em;
   padding-bottom: 5em;
   height: calc(400px + 8em);
-  color: $--color-primary;
+  color: $color-primary;
   margin-top: 1em;
   margin-bottom: 1em;
   border-radius: 5px;
-  box-shadow: 0px 0px 3px $--color-black;
+  box-shadow: 0px 0px 3px $color-black;
 }
 
 .card-iframe {
-  background-color: $--color-white;
+  background-color: $color-white;
   padding: 2em;
   padding-bottom: 5em;
   height: calc(520px + 8em);
-  color: $--color-primary;
+  color: $color-primary;
   margin-top: 1em;
   margin-bottom: 1em;
   border-radius: 5px;
-  box-shadow: 0px 0px 3px $--color-black;
+  box-shadow: 0px 0px 3px $color-black;
 }
 .title {
   font-family: 'StratumNO2';
@@ -253,7 +253,7 @@ $chart-height: 430px;
   cursor: pointer;
 }
 .title .fas:hover {
-  color: $--color-black;
+  color: $color-black;
 }
 .right {
   text-align: right;

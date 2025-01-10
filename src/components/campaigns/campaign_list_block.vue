@@ -55,7 +55,7 @@ export default {
   margin: 1em;
   position: relative;
   height: 220px;
-  background-color: $--color-black;
+  background-color: $color-black;
   border-radius: 5px;
   overflow: hidden;
   text-align: left;
@@ -64,10 +64,10 @@ export default {
   cursor: pointer;
 }
 .block:hover .popped {
-  background-color: $--color-primary;
+  background-color: $color-primary;
 }
 .block:hover .dates {
-  color: $--color-white !important;
+  color: $color-white !important;
 }
 
 .block .el-row:not(.popped) {
@@ -75,28 +75,28 @@ export default {
 }
 .campaignName {
   font-size: 34px;
-  color: $--color-white;
+  color: $color-white;
   font-family: 'StratumNO2';
 }
 .popped {
-  background-color: $--color-black;
+  background-color: $color-black;
   position: absolute;
   height: 50px;
   bottom: 0px;
   width: 100%;
-  border-top: 1px solid $--color-white;
+  border-top: 1px solid $color-white;
   // box-shadow: inset 0 6px 5px -6px #000000;
 }
 .popped .el-col {
   padding: 1em;
-  color: $--color-primary;
+  color: $color-primary;
 }
 .dates {
   font-family: 'StratumNO2';
   text-align: right;
   font-size: 22px;
   line-height: 5px;
-  color: $--color-primary !important;
+  color: $color-primary !important;
 }
 .standings {
   font-size: 16px;

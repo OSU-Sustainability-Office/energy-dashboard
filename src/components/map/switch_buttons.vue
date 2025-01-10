@@ -47,7 +47,7 @@ $clipInset: 10px;
   position: relative;
   width: 100%;
   padding: $parentPadding;
-  background-color: darken($--color-white, 30%);
+  background-color: color.adjust($color-white, $lightness: -30%);
   clip-path: polygon(
     #{calc($clipInset / $buttonHeight) * ($buttonHeight + 2 * $parentPadding)} 0%,
     0% 100%,
@@ -82,8 +82,8 @@ $clipInset: 10px;
 .rangeButton {
   border-radius: 0px;
   clip-path: polygon(#{$clipInset} 0%, 0% 100%, calc(100% - #{$clipInset}) 100%, 100% 0%);
-  background-color: $--color-black;
-  color: darken($--color-white, 30%);
+  background-color: $color-black;
+  color: color.adjust($color-white, $lightness: -30%);
   border: 0px !important;
   width: 100%;
   height: $buttonHeight;
@@ -101,14 +101,14 @@ $clipInset: 10px;
 }
 .rangeButtonParent:not(.active):hover .rangeButton {
   z-index: 3;
-  background-color: $--color-black; //darken($--color-primary, 10%);
-  color: $--color-white;
+  background-color: $color-black; //color.adjust($color-primary, $lightness: -10%);
+  color: $color-white;
   border: 0px;
 }
 
 .rangeButtonParent:not(.active):hover {
   z-index: 2;
-  background-color: $--color-white; //darken($--color-primary, 10%);
+  background-color: $color-white; //color.adjust($color-primary, $lightness: -10%);
 }
 
 .rangeButtonParent.active {
@@ -119,7 +119,7 @@ $clipInset: 10px;
     100% 0%
   );
   padding: $activePadding;
-  background-color: $--color-white;
+  background-color: $color-white;
   z-index: 2;
 }
 
@@ -154,13 +154,13 @@ $clipInset: 10px;
   clip-path: polygon(#{calc($clipInset / $buttonHeight) * $activeheight} 0%, 0% 100%, 100% 100%, 100% 0%);
 }
 .rangeButtonParent.active .rangeButton {
-  background-color: $--color-primary;
-  color: $--color-white;
+  background-color: $color-primary;
+  color: $color-white;
   height: $activeheight;
 }
 .rangeButtonParent.active .rangeButton:hover {
-  background-color: $--color-primary;
-  color: $--color-white;
+  background-color: $color-primary;
+  color: $color-white;
   border: 0px;
 }
 </style>

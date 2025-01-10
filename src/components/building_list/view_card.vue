@@ -106,7 +106,7 @@ export default {
   z-index: 1;
 }
 .card {
-  color: $--color-white;
+  color: $color-white;
   position: relative;
   border: 2.5px solid rgb(0, 0, 0);
   padding: 1em;
@@ -120,12 +120,12 @@ export default {
 }
 
 .card:hover {
-  box-shadow: 0 0 12px $--color-primary;
+  box-shadow: 0 0 12px $color-primary;
   outline-offset: -5px;
 }
 
 .card:hover .plus .fas {
-  color: $--color-black !important;
+  color: $color-black !important;
 }
 .image {
   position: absolute;
