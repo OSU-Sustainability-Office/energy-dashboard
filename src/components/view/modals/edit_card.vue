@@ -5,7 +5,7 @@
 <template>
   <el-dialog
     size="lg"
-    :visible.sync="visible"
+    v-model="visible"
     :title="form.new ? 'New Block' : 'Edit Block'"
     width="80%"
     @open="updateForm()"
