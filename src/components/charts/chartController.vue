@@ -248,14 +248,14 @@ export default {
             let dif = 0
             if (timeDif <= 24 * 60 * 60 * 1000) {
               dif = 2
-              this.chart.options.scales.xAxes[0].time.unit = 'minute'
+              this.chart.options.scales.x.time.unit = 'minute'
             } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
               dif = 1
-              this.chart.options.scales.xAxes[0].time.unit = 'hour'
+              this.chart.options.scales.x.time.unit = 'hour'
             } else {
-              this.chart.options.scales.xAxes[0].time.unit = 'day'
+              this.chart.options.scales.x.time.unit = 'day'
             }
-            this.chart.options.scales.yAxes[0].ticks.maxTicksLimit = (this.height / 200) * 8 - dif
+            this.chart.options.scales.y.ticks.maxTicksLimit = (this.height / 200) * 8 - dif
           }
           this.chartData = data
 

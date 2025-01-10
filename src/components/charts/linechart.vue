@@ -30,6 +30,33 @@ export default {
     },
     options: function () {
       return {
+        devicePixelRatio: 2,
+        datasets: {
+          line: {
+            tension: 0.4
+          }
+        },
+        plugins: {
+          title: {
+            color: this.primaryColor,
+            font: {
+              size: 12,
+              family: 'Open Sans'
+            }
+          },
+          legend: {
+            labels: {
+              color: this.primaryColor,
+              font: {
+                size: 12,
+                family: 'Open Sans'
+              }
+            },
+            onHover: e => {
+              e.native.target.style.cursor = 'pointer'
+            }
+          }
+        },
         elements: {
           point: {
             radius: 3
@@ -90,68 +117,61 @@ export default {
             top: 0
           }
         },
-        legend: {
-          labels: {
-            fontSize: 12,
-            fontColor: this.primaryColor,
-            fontFamily: 'Open Sans'
-          },
-          onHover: function (e) {
-            e.target.style.cursor = 'pointer'
-          }
-        },
         hover: {
           onHover: function (e) {
             e.target.style.cursor = 'default'
           }
         },
-        title: {
-          fontSize: 12,
-          fontColor: this.primaryColor,
-          fontFamily: 'Open Sans'
-        },
-        responsive: true, // my new default options
-        maintainAspectRatio: false, // my new default options
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
-          yAxes: {
+          y: {
             ticks: {
+              font: {
+                size: 12,
+                family: 'Open Sans'
+              },
               beginAtZero: false,
-              fontSize: 12,
-              fontColor: this.primaryColor,
-              fontFamily: 'Open Sans',
-              source: 'data',
+              color: this.primaryColor,
               autoSkip: true,
-              maxTicksLimit: 10
+              maxTicksLimit: 10,
+              callback: (val, index) => {
+                return val.toString()
+              }
             },
-            gridLines: {
-              display: true, // my new default options
-              color: this.secondaryColor
+            grid: {
+              display: true,
+              color: this.primaryColor
             },
-            scaleLabel: {
+            border: {
+              color: this.primaryColor
+            },
+            title: {
               display: this.$parent.buildLabel('y') !== '',
-              labelString: this.$parent.buildLabel('y'),
-              fontSize: 12,
-              fontColor: this.primaryColor,
-              fontFamily: 'Open Sans'
+              text: this.$parent.buildLabel('y'),
+              color: this.primaryColor,
+              font: {
+                size: 12,
+                family: 'Open Sans'
+              }
             }
           },
-          xAxes: {
+          x: {
             type: 'time',
             bounds: 'data',
-            gridLines: {
-              display: false, // my new default options
-              color: this.secondaryColor
+            grid: {
+              display: false
             },
             ticks: {
-              fontSize: 14,
-              fontColor: this.primaryColor,
-              fontFamily: 'Open Sans',
-              autoSkip: true,
-              stepSize: 10,
-              source: 'data',
+              font: {
+                size: 14,
+                family: 'Open Sans'
+              },
+              color: this.primaryColor,
+              autoSkip: false,
               // the following three settings change the x-ticks if there are multiple time periods,
               // otherwise the default settings are used
-              autoSkipPadding: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 15 : 3,
+              autoSkipPadding: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 15 : 4,
               maxRotation: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 0 : 50,
               beforeBuildTicks: (val, index) => {
                 if (this.$parent.multipleTimePeriods(this.$parent.chartData.datasets)) {
@@ -160,17 +180,16 @@ export default {
                 return val
               }
             },
-            scaleLabel: {
+            title: {
               display: this.$parent.buildLabel('y') !== '',
-              labelString: this.$parent.buildLabel('x'),
-              fontSize: 12,
-              fontColor: this.primaryColor,
-              fontFamily: 'Open Sans'
+              text: this.$parent.buildLabel('x'),
+              color: this.primaryColor,
+              font: {
+                size: 12,
+                family: 'Open Sans'
+              }
             },
             time: {
-              callback: (val, index) => {
-                console.log('val', val)
-              },
               unit: this.$parent.$store.getters[this.$parent.path + '/intervalUnit'],
               unitStepSize: 15,
               displayFormats: {
