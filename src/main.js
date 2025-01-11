@@ -10,7 +10,6 @@ import App from './App.vue'
 import store from './store'
 import router from './router'
 import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
 import { createI18n } from 'vue-i18n'
 
 const i18n = createI18n({
