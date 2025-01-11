@@ -23,14 +23,13 @@
           </p>
         </div>
         <el-input v-model="search" class="searchMapInput" placeholder="Search for buildings">
-          <i class="el-icon-search el-input__icon" slot="prefix"></i>
-          <i
-            class="el-icon-close el-input__icon"
-            slot="suffix"
-            @click="resetSearchInput()"
-            v-if="this.search != ''"
-          ></i>
-        </el-input>
+            <template v-slot:prefix>
+              <el-icon><Search /></el-icon>
+            </template>
+            <template v-slot:suffix>
+              <el-icon><Close v-if="search !== ''" /></el-icon>
+            </template>
+          </el-input>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
           <el-tooltip content="Click to toggle visibility" placement="right">
@@ -128,6 +127,7 @@ import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons.vue'
 import emitter from '../../event-bus'
 import leftBuildingMenu from '@/components/leftBuildingMenu.vue'
+import { Search, Close } from '@element-plus/icons-vue'
 
 const DEFAULT_LAT = 44.56335
 const DEFAULT_LON = -123.2858
@@ -150,7 +150,9 @@ export default {
     compareSide,
     switchButtons,
     leftBuildingMenu,
-    compareButton
+    compareButton,
+    Search,
+    Close
   },
   computed: {
     filteredBuildings () {
@@ -910,10 +912,10 @@ $sideMenu-width: 250px;
   justify-content: center;
   z-index: 500;
 }
-:deep(.el-input__icon) {
+:deep(.el-icon) {
   color: #d73f09;
 }
-:deep(.el-input__suffix) {
+:deep(.el-input__suffix .el-icon) {
   font-size: 28px;
 }
 .searchMapResult {

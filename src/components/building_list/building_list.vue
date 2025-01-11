@@ -8,13 +8,12 @@
       <el-row class="search_row">
         <el-col :span="24" class="search_col">
           <el-input v-model="search" class="searchInput" placeholder="Search for buildings">
-            <i class="el-icon-search el-input__icon" slot="prefix"></i
-            ><i
-              class="el-icon-close el-input__icon"
-              slot="suffix"
-              @click="resetSearchInput()"
-              v-if="this.search != ''"
-            ></i>
+            <template v-slot:prefix>
+              <el-icon><Search /></el-icon>
+            </template>
+            <template v-slot:suffix>
+              <el-icon><Close v-if="search !== ''" /></el-icon>
+            </template>
           </el-input>
         </el-col>
       </el-row>
@@ -22,7 +21,9 @@
         <el-col :span="24" class="cards_col">
           <el-tabs v-model="openName" class="tab_row" v-if="buildingList" v-loading="this.loading">
             <el-tab-pane v-for="(item, key) in groups" :key="key" :name="key">
-              <span slot="label" class="tab_label">{{ key }}</span>
+              <template #label>
+                <span class="tab_label">{{ key }}</span>
+              </template>
               <el-radio v-model="search" label="">All</el-radio>
               <el-radio v-model="search" label="Electricity">Electricity</el-radio>
               <el-radio v-model="search" label="Steam">Steam</el-radio>
@@ -52,10 +53,13 @@
 
 <script>
 import viewCard from '@/components/building_list/view_card.vue'
+import { Search, Close } from '@element-plus/icons-vue'
 
 export default {
   components: {
-    viewCard
+    viewCard,
+    Search,
+    Close
   },
   data () {
     return {
@@ -236,10 +240,10 @@ export default {
 .el-icon-close {
   cursor: pointer;
 }
-:deep(.el-input__icon) {
+:deep(.el-icon) {
   color: #d73f09;
 }
-:deep(.el-input__suffix) {
+:deep(.el-input__suffix .el-icon) {
   font-size: 28px;
 }
 </style>

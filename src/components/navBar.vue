@@ -80,6 +80,7 @@ i {
   color: white;
   margin-top: 10px;
   font-size: 16px;
+  text-decoration: none;
 }
 .router-link-active {
   background-color: rgba(0, 0, 0, 0.3);
