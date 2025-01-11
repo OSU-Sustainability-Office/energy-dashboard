@@ -5,17 +5,19 @@
 -->
 <template>
   <el-row class="stage">
-    <el-row class="main">
-      <el-row class="title">
-        <el-col :span="23">{{ building.name }}</el-col>
-        <el-col :span="1" class="close-box"><i class="fas fa-times" @click="hide()"></i></el-col>
-      </el-row>
+    <el-container class="main">
+      <el-header class="title">
+        <el-row>
+          <el-col :span="23">{{ building.name }}</el-col>
+          <el-col :span="1" class="close-box"><i class="fas fa-times" @click="hide()"></i></el-col>
+        </el-row>
+      </el-header>
       <el-row>
         <el-col :span="24" v-loading="building ? false : true">
           <div class="media" ref="media"></div>
         </el-col>
       </el-row>
-      <el-row class="graphcontrol">
+      <el-main class="graphcontrol">
         <el-col :span="24">
           <el-col :span="24" class="buttonContainer">
             <switchButtons :blocks="buildingBlocks" :forceUpdate="false" ref="switchbutton" />
@@ -24,24 +26,25 @@
             <i class="left fas fa-angle-left" @click="prev()" ref="prevArrow"></i>
             <i class="right fas fa-angle-right" @click="next()" ref="nextArrow"></i>
           </el-row>
-          <el-row type="flex" class="graph" ref="scrollBox">
-            <el-col class="inline" v-for="block in buildingBlocks" :key="block.id" :span="24" ref="slidingBox">
+          <el-carousel
+            class="graph"
+            trigger="click"
+            arrow="never"
+            indicatorPosition="none"
+            :autoplay="false"
+            ref="carousel"
+          >
+            <el-carousel-item v-for="block in buildingBlocks" :key="block.id + 2" ref="slidingBox">
               <chartController
                 :path="block.path"
                 ref="chartController"
                 class="chart"
-                :styleC="{
-                  display: 'inline-block',
-                  width: 'calc(100% - 20px)',
-                  height: '100%',
-                  'margin-right': '10px',
-                  'margin-left': '10px'
-                }"
+                :styleC="chartStyleObj"
                 :height="250"
                 :invertColors="true"
               />
-            </el-col>
-          </el-row>
+            </el-carousel-item>
+          </el-carousel>
           <el-row class="buttons">
             <el-col :span="12">
               <el-button class="bigButton" @click="$emit('startCompare', building.id)">Compare</el-button>
@@ -59,8 +62,8 @@
             </el-col>
           </el-row>
         </el-col>
-      </el-row>
-    </el-row>
+      </el-main>
+    </el-container>
   </el-row>
 </template>
 
@@ -81,7 +84,14 @@ export default {
       title: '',
       unit: 'day',
       int: 1,
-      index: 0
+      index: 0,
+      chartStyleObj: {
+        display: 'inline-block',
+        width: 'calc(100% - 20px)',
+        height: '100%',
+        'margin-right': '10px',
+        'margin-left': '10px'
+      }
     }
   },
   computed: {
@@ -118,12 +128,14 @@ export default {
         return
       }
       this.index++
+      this.$refs.carousel.next()
     },
     prev: function () {
       if (this.index - 1 < 0) {
         return
       }
       this.index--
+      this.$refs.carousel.prev()
     }
   },
   watch: {
@@ -152,10 +164,6 @@ export default {
       }
     },
     index: function (to, from) {
-      this.$refs.scrollBox.$children.forEach(child => {
-        child.$el.style.transform =
-          'translateX(' + (-1 * this.index * (this.$refs.scrollBox.$el.clientWidth + 20)).toString() + 'px)'
-      })
       if (to < from) {
         if (this.index <= 0) {
           this.$refs.prevArrow.style.display = 'none'
@@ -216,6 +224,7 @@ export default {
 }
 .graphcontrol {
   padding: 1em;
+  overflow-x: hidden;
 }
 .rangeButtonParent {
   padding: 0.2em;
@@ -246,6 +255,7 @@ export default {
   width: 100%;
   overflow: hidden;
   padding-bottom: 1em;
+  height: 250px;
 }
 .inline {
   margin-right: 20px;
@@ -257,7 +267,7 @@ export default {
 .graphslide {
   position: absolute;
   color: rgba($color-white, 0.4);
-  bottom: 220px;
+  bottom: 380px;
   font-size: 3em;
   width: 100%;
   left: 0;
@@ -285,6 +295,9 @@ export default {
   color: color.adjust($color-white, $lightness: -30%);
   border-color: color.adjust($color-white, $lightness: -30%);
   width: 98%;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 20px 12px;
 }
 .bigButton:hover {
   background-color: #000;

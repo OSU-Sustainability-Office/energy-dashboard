@@ -4,14 +4,14 @@
 -->
 <template>
   <el-row class="buttons">
-    <el-col class="rangeButtonParent" v-bind:class="{ active: currentRange == 0 }">
+    <el-col :span="8" class="rangeButtonParent" v-bind:class="{ active: currentRange == 0 }">
       <el-button class="rangeButton" @click="currentRange = 0">{{ campaign ? 'Past 6 Hours' : 'Week' }}</el-button>
     </el-col>
-    <el-col class="rangeButtonParent" v-bind:class="{ active: currentRange == 1 || currentRange == 3 }">
+    <el-col :span="8" class="rangeButtonParent" v-bind:class="{ active: currentRange == 1 || currentRange == 3 }">
       <!--Change default interval for Solar Panels-->
       <el-button class="rangeButton" @click="currentRange = 1">{{ campaign ? 'Past Day' : '60 Days' }}</el-button>
     </el-col>
-    <el-col class="rangeButtonParent" v-bind:class="{ active: currentRange == 2 }">
+    <el-col :span="8" class="rangeButtonParent" v-bind:class="{ active: currentRange == 2 }">
       <el-button class="rangeButton" @click="currentRange = 2">{{
         campaign ? 'Past ' + days + ' Days' : 'Year'
       }}</el-button>
@@ -154,7 +154,6 @@ $clipInset: 10px;
 
 .rangeButtonParent {
   position: relative;
-  width: 33.33%;
   padding: $parentPadding;
   background-color: color.adjust($color-white, $lightness: -30%);
   clip-path: polygon(
@@ -167,6 +166,7 @@ $clipInset: 10px;
 }
 .rangeButtonParent:not(.active) {
   top: calc((($activePadding + $activeheight) - ($buttonHeight + $parentPadding)) / 2);
+  height: $buttonHeight + 4px;
 }
 .rangeButtonParent:nth-child(1) {
   border-radius: 5px 0px 0px 5px;
@@ -232,6 +232,7 @@ $clipInset: 10px;
   padding: $activePadding;
   background-color: $color-white;
   z-index: 2;
+  height: $activeheight + 4px;
 }
 
 .rangeButtonParent:nth-child(1).active {
