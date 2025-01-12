@@ -10,19 +10,19 @@ $color-primary: #d73f09;
     'white': $color-white,
     'black': $color-black,
     'primary': (
-      'base': $color-primary,
+      'base': $color-primary
     ),
     'info': (
-      'base': #1a1a1a,
+      'base': #1a1a1a
     ),
     'danger': (
-      'base': #d62326,
-    ),
+      'base': #d62326
+    )
   ),
   $font-size: (
     'base': 16px,
     'small': 14px,
-    'large': 22px,
+    'large': 22px
   )
 );
 
