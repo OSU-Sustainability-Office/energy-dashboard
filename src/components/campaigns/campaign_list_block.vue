@@ -7,7 +7,7 @@
     </el-row>
     <el-row class="popped">
       <el-col :span="4" class="standings"> </el-col>
-      <el-col :span="20" class="dates"> {{ camp.dateStart | trunc }} - {{ camp.dateEnd | trunc }} </el-col>
+      <el-col :span="20" class="dates"> {{ truncDate(camp.dateStart) }} - {{ truncDate(camp.dateEnd) }} </el-col>
     </el-row>
   </div>
 </template>
@@ -25,8 +25,8 @@ export default {
     this.$refs.imageContainer.$el.style.backgroundImage =
       'url("https://osu-energy-images.s3-us-west-2.amazonaws.com/' + this.camp.media + '")'
   },
-  filters: {
-    trunc: function (val) {
+  methods: {
+    truncDate (val) {
       const d = new Date(val)
       return d.getMonth() + 1 + '/' + d.getDate() + '/' + d.getFullYear()
     }

@@ -1,16 +1,16 @@
 <template>
   <el-container>
     <el-main>
-      <el-row>
+      <el-row class="banner-row">
         <getStartedBanner />
       </el-row>
       <el-row>
         <mainDescription />
       </el-row>
-      <el-row>
-        <h1 class="faq">Frequently Asked Questions (FAQ's):</h1>
+      <el-row class="faq-header-row">
+        <h1 class="faq-header">Frequently Asked Questions (FAQ's):</h1>
       </el-row>
-      <el-row>
+      <el-row class="faq-content-row">
         <faq />
       </el-row>
     </el-main>
@@ -36,7 +36,12 @@ export default {
 .el-row {
   margin-bottom: 0px;
 }
-.faq {
+.banner-row,
+.faq-header-row,
+.faq-content-row {
+  display: block;
+}
+.faq-header {
   text-align: center;
   font-weight: bold;
   color: #d73f09;
