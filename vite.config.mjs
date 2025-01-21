@@ -26,6 +26,6 @@ export default defineConfig({
     plugins: [autoprefixer()]
   },
   server: {
-    port: 3000
+    port: 8080
   }
 })
