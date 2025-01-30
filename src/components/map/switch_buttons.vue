@@ -9,10 +9,10 @@
       :key="title"
       :style="`width: ${100.0 / titles.length}%; left: ${-13.33 * index}px`"
       class="rangeButtonParent"
-      v-bind:class="{ active: value === title }"
+      :class="{ active: modelValue === title }"
       ref="buttonParents"
     >
-      <el-button class="rangeButton" @click="$emit('input', title)">{{ title }}</el-button>
+      <el-button class="rangeButton" @click="$emit('update:modelValue', title)">{{ title }}</el-button>
     </el-col>
   </el-row>
 </template>
@@ -23,11 +23,7 @@ export default {
     return {
       currentRange: -1
     }
-  },
-  mounted () {},
-  computed: {},
-  watch: {},
-  methods: {}
+  }
 }
 </script>
 <style scoped lang="scss">
