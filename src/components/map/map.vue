@@ -698,13 +698,14 @@ $sideMenu-width: 250px;
 }
 .energyRadioButtons {
   margin-left: 20px;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 .energyRadioGroup {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .el-radio {
   color: white;
+  height: 0px;
 }
 .stage {
   padding: 0;
@@ -728,12 +729,12 @@ $sideMenu-width: 250px;
 }
 
 :deep(.el-menu-item-group__title) {
-  margin-top: -50px;
+  margin-top: -35px;
 }
 
 .el-menu-item-group {
   margin-top: 45px;
-  margin-bottom: 27px;
+  margin-bottom: 15px;
 }
 
 .sideMenuGroupTitle {
