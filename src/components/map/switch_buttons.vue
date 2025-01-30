@@ -6,6 +6,7 @@
   <el-row class="buttons">
     <el-col
       v-for="(title, index) in titles"
+      :span = "12"
       :key="title"
       :style="`width: ${100.0 / titles.length}%; left: ${-13.33 * index}px`"
       class="rangeButtonParent"
@@ -54,6 +55,7 @@ $clipInset: 10px;
 }
 .rangeButtonParent:not(.active) {
   top: 50px;
+  height: $buttonHeight + 4px;
 }
 .rangeButtonParent:first-child {
   border-radius: 5px 0px 0px 5px;
@@ -117,6 +119,7 @@ $clipInset: 10px;
   padding: $activePadding;
   background-color: $color-white;
   z-index: 2;
+  height: $activeheight + 4px;
 }
 
 .rangeButtonParent:first-child.active {
