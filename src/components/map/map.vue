@@ -469,17 +469,13 @@ export default {
       this.removeAllMarkers()
     },
     isDisplayed: function (v) {
-      if (this.selected.indexOf(v) >= 0) {
-        return true
-      } else {
-        return false
-      }
+      return this.selected.includes(v)
     },
     handleSelect: function (string) {
-      if (this.selected.indexOf(string) >= 0) {
-        this.selected.splice(this.selected.indexOf(string), 1)
+      if (this.selected.includes(string)) {
+        this.selected = this.selected.filter(item => item !== string)
       } else {
-        this.selected.push(string)
+        this.selected = [...this.selected, string]
       }
     },
     computedColor: function (percentage) {

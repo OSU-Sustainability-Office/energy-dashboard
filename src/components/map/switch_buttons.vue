@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-  props: ['titles', 'value'],
+  props: ['titles', 'modelValue'],
   data () {
     return {
       currentRange: -1
