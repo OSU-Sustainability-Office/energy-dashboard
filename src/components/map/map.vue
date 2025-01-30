@@ -229,8 +229,6 @@ export default {
             if (!e.target.setStyle) return
             e.target.setStyle({ ...e.target.oldStyle })
           })
-        },
-        style: feature => {
           var color = '#000'
           switch (feature.properties.group) {
             case 'Residence':
@@ -254,13 +252,7 @@ export default {
             default:
               break
           }
-          return {
-            weight: 2,
-            color: color,
-            opacity: 1,
-            fillColor: color,
-            fillOpacity: 0.7
-          }
+          layer.setStyle({ fillColor: color, color: color, opacity: 1, fillOpacity: 0.7, weight: 2 })
         }
       }
     }
