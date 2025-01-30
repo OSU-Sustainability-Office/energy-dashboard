@@ -47,7 +47,7 @@ export default {
 }
 .nav-content {
   display: flex;
-  justify-content: left;
+  justify-content: start;
   padding: 0px 20px;
   align-items: left;
   padding-top: 0px;

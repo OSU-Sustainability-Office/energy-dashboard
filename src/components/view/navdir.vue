@@ -22,8 +22,8 @@
             :router="true"
             @select="handleSelect"
           >
-            <el-submenu index="1" :router="true">
-              <template slot="title" class="menu-title"><i class="fas fa-th-large"></i>{{ group1Name }}</template>
+            <el-sub-menu index="1" :router="true">
+              <template #title><i class="fas fa-th-large"></i>{{ group1Name }}</template>
               <el-menu-item
                 class="group-item"
                 v-for="(groupS, index) in group1"
@@ -35,9 +35,9 @@
               >
                 <i class="fas fa-th-large"></i>{{ groupS.name }}
               </el-menu-item>
-            </el-submenu>
-            <el-submenu index="2" :router="false" v-if="publicView">
-              <template class="menu-title" slot="title"><i class="fas fa-building"></i>{{ group2Name }}</template>
+            </el-sub-menu>
+            <el-sub-menu index="2" :router="false" v-if="publicView">
+              <template #title><i class="fas fa-building"></i>{{ group2Name }}</template>
               <el-menu-item
                 class="story-item"
                 v-for="(storyS, index) in group2"
@@ -47,7 +47,7 @@
               >
                 <i class="fas fa-building"></i>{{ storyS.name }}
               </el-menu-item>
-            </el-submenu>
+            </el-sub-menu>
           </el-menu>
           <span v-if="otherView"> &nbsp; </span>
         </el-col>
@@ -255,14 +255,14 @@ export default {
 }
 </script>
 <style lang="scss">
-.el-menu--horizontal > .el-submenu.is-active .el-submenu__title {
+.el-menu--horizontal > .el-sub-menu.is-active .el-sub-menu__title {
   border: none !important;
 }
-.el-submenu__title:hover {
+.el-sub-menu__title:hover {
   color: $color-white !important;
   background-color: $color-black !important;
 }
-.el-submenu.is-opened > .el-submenu__title {
+.el-sub-menu.is-opened > .el-sub-menu__title {
   color: $color-white !important;
   background-color: $color-black !important;
 }
