@@ -110,7 +110,6 @@ const actions = {
   },
 
   async changeView (store, id) {
-    console.log('Changing stuff')
     if (id !== store.getters.id) {
       store.commit(
         'promise',
