@@ -53,6 +53,14 @@ const actions = {
           const ways = new Map()
           for (let feature of JSON.features) {
             if (feature.id.includes('way')) {
+              // Convert LineString to Polygon if it is a closed shape
+              if (feature.geometry.type === 'LineString') {
+                const coords = feature.geometry.coordinates
+                if (coords[0][0] === coords[coords.length - 1][0] && coords[0][1] === coords[coords.length - 1][1]) {
+                  feature.geometry.type = 'Polygon'
+                  feature.geometry.coordinates = [coords]
+                }
+              }
               ways.set(feature.id, feature)
             }
           }
