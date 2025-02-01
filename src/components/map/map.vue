@@ -347,11 +347,13 @@ export default {
       }
     },
     initBuildingRename () {
-      for (let layer of Object.values(this.map._layers)) {
-        if (layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon') {
-          layer.feature.properties.name = this.$store.getters['map/building'](layer.feature.properties.id).name
+      this.map.on('layeradd', () => {
+        for (let layer of Object.values(this.map._layers)) {
+          if (layer.feature?.geometry?.type === 'Polygon') {
+            layer.feature.properties.name = this.$store.getters['map/building'](layer.feature.properties.id).name;
+          }
         }
-      }
+      });
     },
     removeAllMarkers: function () {
       for (let marker of this.compareMarkers) {
