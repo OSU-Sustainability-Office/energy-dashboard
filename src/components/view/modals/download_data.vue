@@ -2,7 +2,7 @@
 Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
 
 <template>
-  <el-dialog size="lg" :visible.sync="visible" title="Download Data" width="80%" @open="updateForm()">
+  <el-dialog size="lg" v-model="visible" title="Download Data" width="80%" @open="updateForm()">
     <el-form label-width="150px" label-position="left" :model="form" ref="form">
       <el-form-item
         label="From Date: "
@@ -21,7 +21,7 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
         <el-date-picker
           v-model="form.start"
           type="datetime"
-          format="MM/dd/yyyy hh:mm a"
+          format="MM/DD/YYYY hh:mm a"
           :picker-options="{ format: 'hh:mm a' }"
           style="width: 100%"
         >
@@ -42,7 +42,7 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
         <el-date-picker
           v-model="form.end"
           type="datetime"
-          format="MM/dd/yyyy hh:mm a"
+          format="MM/DD/YYYY hh:mm a"
           :picker-options="{ format: 'hh:mm a' }"
           style="width: 100%"
         >
@@ -88,7 +88,7 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
           <label class='el-form-item__label'> Buildings:</label>
         </el-col> -->
       <el-form-item label="Buildings: ">
-        <el-row type="flex" justify="left" class="building_flex">
+        <el-row type="flex" justify="start" class="building_flex">
           <el-col v-for="building in form.buildings" :label="building.name" :key="building.id" class="groupChecker">
             <span class="buildingTitle">{{ building.name }}</span>
             <el-checkbox-group v-model="building.groups">
@@ -115,7 +115,7 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
                 :value="building.id"
                 :label="building.name"
                 :key="building.id"
-              ></el-option>
+              />
             </el-select>
           </el-col>
         </el-row>
@@ -186,7 +186,7 @@ export default {
     buildingsFiltered: {
       get () {
         if (!this.buildings) return []
-        let buildingsCopy = new Array(...this.buildings)
+        let buildingsCopy = [...this.buildings]
         let buildingIds = buildingsCopy.map(o => parseInt(o.id))
         for (let building of this.form.buildings) {
           let id = building.id
