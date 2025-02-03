@@ -90,7 +90,7 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
             <span class="buildingTitle">{{ building.name }}</span>
             <el-checkbox-group v-model="building.groups">
               <div v-for="group in groups(building.id)" :key="group.id" class="checkGroup">
-                <el-checkbox :label="group.id" :key="group.id"
+                <el-checkbox :value="group.id" :key="group.id"
                   ><span class="groupTitle">{{ group.name }}</span></el-checkbox
                 ><br />
               </div>
