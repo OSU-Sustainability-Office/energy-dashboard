@@ -2,7 +2,7 @@
 Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
 
 <template>
-  <el-dialog size="lg" v-model="visible" title="Download Data" width="80%" @open="updateForm()">
+  <el-dialog v-model="visible" title="Download Data" width="80%" @open="updateForm()">
     <el-form label-width="150px" label-position="left" :model="form" ref="form">
       <el-form-item
         label="From Date: "
@@ -84,11 +84,8 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
           ></el-option>
         </el-select>
       </el-form-item>
-      <!-- <el-col :span='4' >
-          <label class='el-form-item__label'> Buildings:</label>
-        </el-col> -->
       <el-form-item label="Buildings: ">
-        <el-row type="flex" justify="start" class="building_flex">
+        <el-row justify="start" class="building_flex">
           <el-col v-for="building in form.buildings" :label="building.name" :key="building.id" class="groupChecker">
             <span class="buildingTitle">{{ building.name }}</span>
             <el-checkbox-group v-model="building.groups">
@@ -104,12 +101,12 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
         <el-row v-if="form.buildings.length === 0">
           <el-col class="noBuildingText"> No Buildings selected to download data from </el-col>
         </el-row>
-        <el-row v-if="buildingsFiltered.length > 0">
+        <el-row v-if="buildingsFiltered.length > 0" style="width: 100%">
           <el-col :span="4">
             <el-button @click="addBuilding()" type="primary" class="buildingAddButton"> Add Building</el-button>
           </el-col>
           <el-col :span="20">
-            <el-select v-model="addBuildingId" style="width: 100%" class="buildingAddSelect" filterable>
+            <el-select v-model="addBuildingId" class="buildingAddSelect" filterable>
               <el-option
                 v-for="building in buildingsFiltered"
                 :value="building.id"
@@ -121,7 +118,7 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
         </el-row>
       </el-form-item>
     </el-form>
-    <span slot="footer">
+    <span slot="footer" class="footer-buttons">
       <el-button @click="visible = false" type="info"> Cancel </el-button>
       <el-button @click="download()" type="primary"> Download </el-button>
     </span>
@@ -462,5 +459,9 @@ export default {
 }
 .groupChecker {
   padding-bottom: 20px;
+}
+.footer-buttons {
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

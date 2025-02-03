@@ -29,7 +29,7 @@
               <el-radio v-model="search" label="Steam">Steam</el-radio>
               <el-radio v-model="search" label="Solar Panel">Solar</el-radio>
               <el-radio v-model="search" label="Gas">Gas</el-radio>
-              <el-row type="flex" justify="start" class="card_flex">
+              <el-row justify="start" class="card_flex">
                 <el-col v-for="building in item" :key="building.name" :span="6" class="card_container">
                   <viewCard
                     :plus="false"

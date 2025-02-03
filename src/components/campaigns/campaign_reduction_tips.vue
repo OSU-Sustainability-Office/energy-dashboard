@@ -24,7 +24,7 @@
         <div class='ball'>
         </div>
       </el-row> -->
-      <el-row class="reductionGrid" type="flex">
+      <el-row class="reductionGrid">
         <el-col class="gridCard" v-for="(tip, index) in tips" :key="index" :span="8">
           <div @mouseenter="hoverShow = index" @mouseleave="hoverShow = null" style="height: 100%">
             <el-col :span="24" class="gridCardOverlay">

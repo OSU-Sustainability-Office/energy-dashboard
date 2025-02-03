@@ -11,7 +11,7 @@ Saturday January 11th 2020 * @Copyright: (c) Oregon State University 2020 */
 <template>
   <el-row class="container" ref="mainstage">
     <el-col :span="24" ref="imageNodes">
-      <el-row type="flex" justify="left" class="row">
+      <el-row justify="left" class="row">
         <el-col :span="6">
           <div
             class="col"
