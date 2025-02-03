@@ -24,7 +24,7 @@ export default {}
 <style lang="scss" scoped>
 .stage_prompt {
   width: 400px;
-  height: 170px;
+  height: 220px;
   position: absolute;
   top: 20px;
   left: calc(50% - 200px);

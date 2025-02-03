@@ -390,7 +390,7 @@ export default {
           })
 
           if (target === 'q') {
-            window.vue.$store.dispatch('modalController/openModal', {
+            this.$store.dispatch('modalController/openModal', {
               name: 'map_compare_side',
               path: path
             })
@@ -500,6 +500,7 @@ export default {
     updateMapRef () {
       this.map = this.$refs.map.leafletObject
       this.map.zoomControl.setPosition('topleft')
+      this.initBuildingRename()
     }
   },
   async created () {
@@ -512,8 +513,6 @@ export default {
       this.message = inputWord
     }
     emitter.on('inputData', this.handleInputData)
-
-    this.initBuildingRename()
   },
   mounted () {
     this.$nextTick(() => {
