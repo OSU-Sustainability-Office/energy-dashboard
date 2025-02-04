@@ -237,11 +237,9 @@ export default {
   width: 100%;
   text-align: center;
 }
-.el-icon-close {
-  cursor: pointer;
-}
 :deep(.el-icon) {
   color: #d73f09;
+  cursor: pointer;
 }
 :deep(.el-input__suffix .el-icon) {
   font-size: 28px;

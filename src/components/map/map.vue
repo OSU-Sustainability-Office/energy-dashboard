@@ -902,6 +902,7 @@ $sideMenu-width: 250px;
 }
 :deep(.el-icon) {
   color: #d73f09;
+  cursor: pointer;
 }
 :deep(.el-input__suffix .el-icon) {
   font-size: 28px;
@@ -940,9 +941,6 @@ $sideMenu-width: 250px;
 }
 .longBuildingName:hover {
   transform: translateX(calc(200px - 100%));
-}
-.el-icon-close {
-  cursor: pointer;
 }
 .searchResultDiv {
   margin-top: 10px;
