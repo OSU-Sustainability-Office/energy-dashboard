@@ -9,36 +9,24 @@
 <template>
   <el-col :span="24" class="reductionBody">
     <el-col :span="24" class="reductionBackground">
-      <el-row class="title">
+      <el-row class="reductionTitle">
         <el-col :span="24"> Reducing your Usage </el-col>
       </el-row>
-      <!-- <el-row class='reductionTimeLine'>
-        <el-progress :percentage="50" :stroke-width="22" :show-text='false' class='bar'>
-        </el-progress>
-        <div class='ball'>
-        </div>
-        <div class='ball'>
-        </div>
-        <div class='ball'>
-        </div>
-        <div class='ball'>
-        </div>
-      </el-row> -->
       <el-row class="reductionGrid">
-        <el-col class="gridCard" v-for="(tip, index) in tips" :key="index" :span="8">
+        <el-col class="gridCard" v-for="(tip, index) in tips" :key="index" :span="12">
           <div @mouseenter="hoverShow = index" @mouseleave="hoverShow = null" style="height: 100%">
             <el-col :span="24" class="gridCardOverlay">
               <img class="gridCardIcon" :src="getImageSrc(tip.icon)" alt="Icon" />
               <el-row class="gridCardTitle">
                 {{ tip.title }}
               </el-row>
-              <transition name="fade">
+              <el-transition name="fade">
                 <el-row class="gridCardDescription" v-if="hoverShow === index">
                   <ul>
                     <li v-for="l in tip.description" :key="l">{{ l }}</li>
                   </ul>
                 </el-row>
-              </transition>
+              </el-transition>
             </el-col>
           </div>
         </el-col>
@@ -111,7 +99,7 @@ export default {
   border-radius: 5px;
   overflow: hidden;
 }
-.title {
+.reductionTitle {
   padding-left: 2em;
   color: $color-black;
   font-family: 'StratumNO2';
@@ -135,7 +123,7 @@ export default {
 
 .gridCardTitle {
   color: $color-white;
-  text-align: center;
+  justify-content: center;
   line-height: 28px;
   font-size: 28px;
   top: 18px;
@@ -166,36 +154,12 @@ export default {
   width: 100%;
   z-index: 0;
 }
-.ball {
-  height: 30px;
-  width: 30px;
-  border-radius: 15px;
-  background-color: #1a1a1a;
-  position: relative;
-  z-index: 100;
-  display: inline-block;
-  top: -26px;
-}
-.ball :nth-of-type(1) {
-  left: 0;
-}
-.ball :nth-of-type(2) {
-  left: 33%;
-}
-.ball :nth-of-type(3) {
-  left: 66%;
-}
-.ball :nth-of-type(4) {
-  left: 99%;
-}
 .gridCardOverlay {
   position: relative;
   background-color: rgba(255, 255, 255, 0);
   left: 0;
   width: 100%;
   height: 100%;
-  // border-right: solid 2px $color-white;
-  // clip-path: polygon(100% 0, 100% 80%, 80% 100%, 0 100%, 0 0);
   overflow: hidden;
   transition: background-color 0.45s;
 }
@@ -213,7 +177,6 @@ export default {
 .gridCard:hover .gridCardIcon {
   opacity: 0;
 }
-
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.4s;
