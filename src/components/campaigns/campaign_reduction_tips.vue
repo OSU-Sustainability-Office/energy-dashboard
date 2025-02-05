@@ -20,13 +20,13 @@
               <el-row class="gridCardTitle">
                 {{ tip.title }}
               </el-row>
-              <el-transition name="fade">
+              <transition name="fade">
                 <el-row class="gridCardDescription" v-if="hoverShow === index">
                   <ul>
                     <li v-for="l in tip.description" :key="l">{{ l }}</li>
                   </ul>
                 </el-row>
-              </el-transition>
+              </transition>
             </el-col>
           </div>
         </el-col>
