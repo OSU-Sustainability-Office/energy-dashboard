@@ -229,29 +229,7 @@ export default {
             if (!e.target.setStyle) return
             e.target.setStyle({ ...e.target.oldStyle })
           })
-          var color = '#000'
-          switch (feature.properties.group) {
-            case 'Residence':
-              color = '#D3832B'
-              break
-            case 'Academics':
-              color = '#0D5257'
-              break
-            case 'Events & Admin':
-              color = '#7A6855'
-              break
-            case 'Athletics & Rec':
-              color = '#FFB500'
-              break
-            case 'Operations':
-              color = '#4169E1'
-              break
-            case 'Dining':
-              color = '#4A773C'
-              break
-            default:
-              break
-          }
+          const color = this.getCategoryColor(feature.properties.group)
           layer.setStyle({ fillColor: color, color: color, opacity: 1, fillOpacity: 0.7, weight: 2 })
         }
       }
@@ -497,6 +475,69 @@ export default {
       }
       return 'rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')'
     },
+    getCategoryColor: function (group) {
+      switch (group) {
+        case 'Academics':
+          return '#0D5257'
+        case 'Events & Admin':
+          return '#7A6855'
+        case 'Athletics & Rec':
+          return '#FFB500'
+        case 'Dining':
+          return '#4A773C'
+        case 'Operations':
+          return '#4169E1'
+        case 'Residence':
+          return '#D3832B'
+        default:
+          return '#000'
+      }
+    },
+    async getEnergySlopeColor (feature) {
+      try {
+        // Retrieves building object from store using leaflet property id
+        await this.$store.getters['map/promise']
+        const building = this.$store.getters['map/building'](feature.properties.id)
+        await this.$store.getters[building.path + '/promise']
+
+        // Retrieves primary energy group from store
+        const mg = this.$store.getters[building.path + '/primaryGroup']('Electricity')
+        const defaultBlock = this.$store.getters[building.path + '/block'](mg.id)
+        await this.$store.getters[defaultBlock.path + '/promise']
+        const defaultChart = this.$store.getters[defaultBlock.path + '/charts'][0]
+
+        // Gets current date and date 60 days ago
+        const currentDate = new Date()
+        const minus60 = new Date(currentDate.getTime() - 60 * 24 * 60 * 60 * 1000)
+        const reqPayload = {
+          dateEnd: Math.floor(currentDate.getTime() / 1000),
+          dateStart: Math.floor(minus60.getTime() / 1000),
+          intervalUnit: 'day',
+          dateInterval: 1,
+          graphType: 1
+        }
+        const data = await this.$store.dispatch(defaultChart.path + '/getData', reqPayload)
+
+        // Compute slope (least squares algorithm)
+        const series = data.data
+        let meanY = series.reduce((acc, cur) => acc + cur.y, 0) / series.length
+        let meanX = series.length / 2 // No need to use date can just use index
+        let accmxx = 0
+        let accmxxyy = 0
+        series.forEach((point, idx) => {
+          accmxx += (idx - meanX) * (idx - meanX)
+          accmxxyy += (point.y - meanY) * (idx - meanX)
+        })
+        const slope = accmxxyy / accmxx
+        const normalizedSlope = slope / meanY
+
+        // Convert slope to color
+        return this.computedColor(normalizedSlope)
+      } catch (err) {
+        console.error(err)
+        return '#000'
+      }
+    },
     updateMapRef () {
       this.map = this.$refs.map.leafletObject
       this.map.zoomControl.setPosition('topleft')
@@ -545,108 +586,23 @@ export default {
       })
     },
     grouping: {
-      handler: function (value) {
-        this.search = ''
-        this.rKey++
-        this.mapLoaded = false
-        this.$nextTick(async () => {
-          this.map = this.$refs.map.leafletObject
-          let promises = []
-          for (var layerKey of Object.keys(this.map._layers)) {
-            let layer = this.map._layers[layerKey]
-            if (layer.feature) {
-              if (this.grouping === 'Category') {
-                var color = '#000'
-                switch (layer.feature.properties.group) {
-                  case 'Academics':
-                    color = '#0D5257'
-                    break
-                  case 'Events & Admin':
-                    color = '#7A6855'
-                    break
-                  case 'Athletics & Rec':
-                    color = '#FFB500'
-                    break
-                  case 'Dining':
-                    color = '#4A773C'
-                    break
-                  case 'Operations':
-                    color = '#4169E1'
-                    break
-                  case 'Residence':
-                    color = '#D3832B'
-                    break
-                  default:
-                    break
-                }
-                layer.setStyle({ fillColor: color, color: color })
-              } else if (this.grouping === 'Energy Trend') {
-                promises.push(
-                  new Promise(async (resolve, reject) => {
-                    /*
-                    Ok, it *looks like* each Vuex logical object (building, chart, block, etc.)
-                    contains a promise to resolve the data required from the api.  Unsure if
-                    it's actually being used in practice.
-                  */
-                    await this.$store.getters['map/promise']
-                    // Retrieves building object from store using leaflet property id
-                    let building = this.$store.getters['map/building'](layer.feature.properties.id)
-                    await this.$store.getters[building.path + '/promise']
-                    let mg = this.$store.getters[building.path + '/primaryGroup']('Electricity')
-                    if (mg == null) {
-                      console.error(building.name, building.path, building)
-                      resolve()
-                    }
-                    let defaultBlock = this.$store.getters[building.path + '/block'](mg.id)
-                    await this.$store.getters[defaultBlock.path + '/promise']
-                    let defaultChart = this.$store.getters[defaultBlock.path + '/charts'][0]
-                    let currentDate = new Date()
-                    let minus60 = new Date(currentDate.getTime() - 60 * 24 * 60 * 60 * 1000)
-                    const reqPayload = {
-                      dateEnd: parseInt((currentDate.getTime() - (currentDate.getTime() % 900) * 1000) / 1000),
-                      dateStart: parseInt((minus60.getTime() - (minus60.getTime() % 900) * 1000) / 1000),
-                      intervalUnit: 'day',
-                      dateInterval: 1,
-                      graphType: 1
-                    }
-                    let data = await this.$store.dispatch(defaultChart.path + '/getData', reqPayload)
-                    // Below is an algorithm to compute least squares linear regression
-                    let meanY = 0
-                    for (let index = 0; index < data.data.length; index++) {
-                      meanY += data.data[index].y
-                    }
-                    meanY /= data.data.length
-                    let meanX = data.data.length / 2 // No need to use date can just use index
-                    let accmxx = 0
-                    let accmxxyy = 0
-                    for (let index = 0; index < data.data.length; index++) {
-                      accmxx += Math.pow(index - meanX, 2) // index - meanX
-                      accmxxyy += (data.data[index].y - meanY) * (index - meanX)
-                    }
-                    // accmxx =
-                    let slope = accmxxyy / accmxx
-                    let normalizedSlope = slope / meanY
-                    // slope /= 30
-                    layer.setStyle({
-                      fillColor: this.computedColor(normalizedSlope),
-                      color: this.computedColor(normalizedSlope)
-                    })
-                    // if (normalizedSlope > 0.001) {
-                    //   layer.setStyle({ fillColor: '#d62326', color: '#d62326' })
-                    // } else if (normalizedSlope < -0.001) {
-                    //   layer.setStyle({ fillColor: '#4A773C', color: '#4A773C' })
-                    // } else {
-                    //   layer.setStyle({ fillColor: '#FFB500', color: '#FFB500' })
-                    // }
-                    resolve()
-                  })
-                )
-              }
+      async handler (val) {
+        // this.mapLoaded = false
+        await this.$nextTick()
+        this.$refs.geoLayer.forEach((geoJsonComponent) => {
+          const geoJsonLayer = geoJsonComponent.leafletObject
+          let color = '#000'
+
+          geoJsonLayer.eachLayer(async (layer) => {
+            if (val === 'Category') {
+              color = this.getCategoryColor(layer.feature?.properties?.group)
+            } else if (val === 'Energy Trend') {
+              color = await this.getEnergySlopeColor(layer.feature)
             }
-          }
-          await Promise.all(promises)
-          this.mapLoaded = true
+            layer.setStyle({ fillColor: color, color: color })
+          })
         })
+        // this.mapLoaded = true
       }
     },
     search: function (v) {
