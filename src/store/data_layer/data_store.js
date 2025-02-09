@@ -405,7 +405,7 @@ const actions = {
   //  end: integer representing linux epoch time of the end of the required interval
   //  uom: the unit of measure/metering point to request data for
   //  classInt: An integer that corresponds to the type of meter we are reading from
-  async getData (store, payload) {
+  async getDataSingleRange (store, payload) {
     // First, check the non-persistent cahce object:
     // Does the cache contain the data?
     let missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
@@ -438,6 +438,7 @@ const actions = {
       // Save all of the new data to the cache
       const responses = await Promise.all(promises).catch(err => {
         console.log(err)
+        return []
       })
 
       // The data looks like an array of these objects:
@@ -488,6 +489,35 @@ const actions = {
       dataArray.push(dataObj)
     })
     return dataArray
+  },
+
+  async getData (store, payload) {
+    const SIXMONTHS = 31536000 / 2
+    const total_range = payload.end - payload.start
+
+    if (total_range > SIXMONTHS) {
+      let results = []
+      let chunkStart = payload.start
+
+      let firstChunk = true
+      while (chunkStart < payload.end) {
+        let chunkEnd = Math.min(chunkStart + SIXMONTHS, payload.end)
+        chunkStart += firstChunk ? 0 : 1; firstChunk = false
+        let subPayload = {
+          ...payload,
+          start: chunkStart,
+          end: chunkEnd
+        }
+        console.log(`Fetching chunk: [${chunkStart}, ${chunkEnd}]`)
+        let chunkData = await this.dispatch('dataStore/getDataSingleRange', subPayload)
+        results = results.concat(chunkData)
+        chunkStart = chunkEnd
+      }
+      return results
+    } else {
+      let result = await this.dispatch('dataStore/getDataSingleRange', payload)
+      return result
+    }
   }
 }
 

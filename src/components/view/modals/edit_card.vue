@@ -640,6 +640,13 @@ export default {
   top: 0 !important;
   height: auto;
 }
+.el-form {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.el-form-item {
+  padding: 5px;
+}
 .addFeatured {
   background-color: $color-black;
   height: calc(400px + 0.8em);
