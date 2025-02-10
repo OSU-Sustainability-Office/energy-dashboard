@@ -55,58 +55,63 @@ export default {
             onHover: e => {
               e.native.target.style.cursor = 'pointer'
             }
+          },
+          tooltip: {
+            titleColor: '#FFFFFF',
+            bodyColor: '#FEFEFE',
+            titleFont: { size: 12, family: 'Open Sans' },
+            bodyFont: { size: 12, family: 'Open Sans' },
+            callbacks: {
+              title: function (tooltipItems) {
+                // use originalXlabel if it exists, otherwise use the default xLabel
+                const originalXlabel = tooltipItems[0].parsed.x
+                const d = new Date(originalXlabel || tooltipItems[0].label)
+                let meridiem = 'am'
+                let hours = d.getHours()
+                if (hours > 12) {
+                  hours -= 12
+                  meridiem = 'pm'
+                } else if (hours === 0) {
+                  hours = 12
+                }
+                let minutes = d.getMinutes()
+                if (minutes < 10) {
+                  minutes = '0' + minutes
+                }
+                const year = String(d.getFullYear()).slice(-2)
+                const dayCodes = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
+                return (
+                  dayCodes[d.getDay()] +
+                  ' ' +
+                  (d.getMonth() + 1).toString() +
+                  '/' +
+                  d.getDate() +
+                  '/' +
+                  year +
+                  ' ' +
+                  hours +
+                  ':' +
+                  minutes +
+                  ' ' +
+                  meridiem
+                )
+              },
+              label: function (tooltipItem) {
+                const yLabel = tooltipItem.parsed.y
+                return (
+                  tooltipItem.dataset.label +
+                  ': ' +
+                  parseFloat(yLabel).toFixed(2) +
+                  ' ' +
+                  tooltipItem.dataset.unit
+                )
+              }
+            }
           }
         },
         elements: {
           point: {
             radius: 3
-          }
-        },
-        tooltips: {
-          callbacks: {
-            title: function (item, data) {
-              let originalXlabel = data.datasets[item[0].datasetIndex].data[item[0].index].originalX
-              // use originalXlabel if it exists, otherwise use the default xLabel
-              let d = new Date(originalXlabel || item[0].xLabel)
-              let meridiem = 'am'
-              let hours = d.getHours()
-              if (hours > 12) {
-                hours -= 12
-                meridiem = 'pm'
-              } else if (hours === 0) {
-                hours = 12
-              }
-              let minutes = d.getMinutes()
-              if (minutes < 10) {
-                minutes = '0' + minutes
-              }
-              let year = d.getYear().toString().slice(1)
-              const dayCodes = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
-              return (
-                dayCodes[d.getDay()] +
-                ' ' +
-                (d.getMonth() + 1).toString() +
-                '/' +
-                d.getDate() +
-                '/' +
-                year +
-                ' ' +
-                hours +
-                ':' +
-                minutes +
-                ' ' +
-                meridiem
-              )
-            },
-            label: (item, data) => {
-              return (
-                this.$parent.chartData.datasets[item.datasetIndex].label +
-                ': ' +
-                parseFloat(item.yLabel).toFixed(2) +
-                ' ' +
-                this.$parent.unit(item.datasetIndex)
-              )
-            }
           }
         },
         layout: {
@@ -181,7 +186,7 @@ export default {
               }
             },
             title: {
-              display: this.$parent.buildLabel('y') !== '',
+              display: this.$parent.buildLabel('x') !== '',
               text: this.$parent.buildLabel('x'),
               color: this.primaryColor,
               font: {
@@ -191,7 +196,7 @@ export default {
             },
             time: {
               unit: this.$parent.$store.getters[this.$parent.path + '/intervalUnit'],
-              unitStepSize: 15,
+              stepSize: 15,
               displayFormats: {
                 day: 'MM/dd',
                 hour: 'ccc h:mm a',
