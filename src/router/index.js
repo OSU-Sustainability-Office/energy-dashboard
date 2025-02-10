@@ -3,7 +3,7 @@
   Info: This is the Vue router component which defines the web-app page routes.
 */
 
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import view from '@/components/view/view.vue'
 import map from '@/components/map/map.vue'
 import campaigns from '@/components/campaigns/campaign_list.vue'
@@ -70,7 +70,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes
 })
 
