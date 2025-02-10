@@ -4,7 +4,7 @@
 -->
 
 <template>
-  <Line :data="chartData" :options="options" />
+  <Line :key="chartKey" :data="chartData" :options="options" />
 </template>
 
 <script>
@@ -20,6 +20,18 @@ export default {
     yLabel: String,
     xLabel: String,
     chartData: Object
+  },
+  data () {
+    return {
+      chartKey: 0
+    }
+  },
+  watch: {
+    chartData: {
+      handler: function () {
+        this.chartKey++
+      }
+    }
   },
   computed: {
     primaryColor: function () {
