@@ -248,7 +248,7 @@
         </el-row>
       </el-row>
     </div>
-    <span slot="footer">
+    <div class="modalActions">
       <el-button @click="cardDelete()" type="danger" v-if="personalView && $store.getters['modalController/data'].path">
         Delete
       </el-button>
@@ -264,6 +264,8 @@
       </el-tooltip>
 
       <el-button @click="visible = false" type="info"> Cancel </el-button>
+    </div>
+    <span slot="savedTimePeriods">
       <div class="savedTimesDiv" v-if="compareOneBuildingView">
         <p class="savedTimesP" v-if="form.tempMultStart.length > 0">Time Periods to be Compared</p>
 
@@ -740,5 +742,10 @@ export default {
 .deleteTimeButton:hover {
   color: #d73f09;
   cursor: pointer;
+}
+.modalActions {
+  display: flex;
+  justify-content: end;
+  align-items: center;
 }
 </style>
