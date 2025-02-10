@@ -142,7 +142,7 @@ export default {
           intersect: true
         },
         hover: {
-          onHover (event, chartElement, chart) {
+          onHover (event, chartElement) {
             if (chartElement.length) {
               event.native.target.style.cursor = 'pointer'
             } else {
