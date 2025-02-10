@@ -30,7 +30,7 @@
               <el-radio v-model="search" label="Solar Panel">Solar</el-radio>
               <el-radio v-model="search" label="Gas">Gas</el-radio>
               <el-row justify="start" class="card_flex">
-                <el-col v-for="building in item" :key="building.name" :span="6" class="card_container">
+                <el-col v-for="building in item" :key="building.name" class="card_container">
                   <viewCard
                     :plus="false"
                     :building="buildingList"
@@ -41,7 +41,7 @@
                   />
                 </el-col>
                 <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
-                <el-col v-for="n in 10" :key="key + n" :span="4" class="blankSlate"> &nbsp; </el-col>
+                <el-col v-for="n in 2" :key="key + n" class="blankSlate"> &nbsp; </el-col>
               </el-row>
             </el-tab-pane>
           </el-tabs>
