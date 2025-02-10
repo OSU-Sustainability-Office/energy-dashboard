@@ -54,6 +54,9 @@ export default {
             },
             onHover: e => {
               e.native.target.style.cursor = 'pointer'
+            },
+            onLeave: e => {
+              e.native.target.style.cursor = 'default'
             }
           },
           tooltip: {
@@ -122,9 +125,17 @@ export default {
             top: 0
           }
         },
+        interaction: {
+          mode: 'index',
+          intersect: true
+        },
         hover: {
-          onHover: function (e) {
-            e.target.style.cursor = 'default'
+          onHover (event, chartElement, chart) {
+            if (chartElement.length) {
+              event.native.target.style.cursor = 'pointer'
+            } else {
+              event.native.target.style.cursor = 'default'
+            }
           }
         },
         responsive: true,
