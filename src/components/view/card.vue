@@ -3,52 +3,111 @@
   Info: Displays a single chart for a dataset from the "buildings" directory.
 -->
 <template>
-  <div class="card-iframe" ref='card' v-if = "this.path === ('map/building_35/block_175') || this.path === ('map/building_36/block_176') || this.path === ('map/building_37/block_177') || this.path === ('map/building_38/block_178')">
-      <el-row :span='24' class='title' ref='title'>
-        <el-col :span='20'>{{ name }}</el-col>
-      </el-row>
+  <div
+    class="card-iframe"
+    ref="card"
+    v-if="
+      this.path === 'map/building_35/block_175' ||
+      this.path === 'map/building_36/block_176' ||
+      this.path === 'map/building_37/block_177' ||
+      this.path === 'map/building_38/block_178'
+    "
+  >
+    <el-row :span="24" class="title" ref="title">
+      <el-col :span="20">{{ name }}</el-col>
+    </el-row>
 
-      <!--Chart Below-->
-      <el-row style="overflow: hidden" :span='24'>
-        <el-col :span='24'>
-          <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
-          <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='550'/>
-        </el-col>
-      </el-row>
-      <p v-if = "this.path === 'map/building_35/block_175'"><a href = https://mysolarcity.com/Share/007c9349-72ba-450c-aa1f-4e5a77b68f79#/monitoring/historical/month target=_blank>Data Provided by Tesla</a></p>
-      <p v-if = "this.path === 'map/building_36/block_176'"><a href = https://mysolarcity.com/share/9D5EB0D2-E376-44A1-9B8C-8DFCDD7507A5#/monitoring/historical/month target=_blank>Data Provided by Tesla</a></p>
-      <p v-if = "this.path === 'map/building_37/block_177'"><a href = https://mysolarcity.com/Share/38954c21-8669-47b6-8376-835cc24f908c#/monitoring/historical/month target=_blank>Data Provided by Tesla</a></p>
-      <p v-if = "this.path === 'map/building_38/block_178'"><a href = https://mysolarcity.com/Share/47cf089a-5b93-4200-8566-e030cb4f8574#/monitoring/historical/month target=_blank>Data Provided by Tesla</a></p>
-      <p><a href = https://fa.oregonstate.edu/sustainability/ground-mounted-photovoltaic-arrays target=_blank>More Info About OSU's Partnership with Tesla</a></p>
+    <!--Chart Below-->
+    <el-row style="overflow: hidden" :span="24">
+      <el-col :span="24">
+        <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
+        <chartController
+          :randomColors="1"
+          :path="path"
+          ref="chartController"
+          class="chart"
+          :styleC="style"
+          :height="550"
+        />
+      </el-col>
+    </el-row>
+    <p v-if="this.path === 'map/building_35/block_175'">
+      <a
+        href="https://mysolarcity.com/Share/007c9349-72ba-450c-aa1f-4e5a77b68f79#/monitoring/historical/month"
+        target="_blank"
+        >Data Provided by Tesla</a
+      >
+    </p>
+    <p v-if="this.path === 'map/building_36/block_176'">
+      <a
+        href="https://mysolarcity.com/share/9D5EB0D2-E376-44A1-9B8C-8DFCDD7507A5#/monitoring/historical/month"
+        target="_blank"
+        >Data Provided by Tesla</a
+      >
+    </p>
+    <p v-if="this.path === 'map/building_37/block_177'">
+      <a
+        href="https://mysolarcity.com/Share/38954c21-8669-47b6-8376-835cc24f908c#/monitoring/historical/month"
+        target="_blank"
+        >Data Provided by Tesla</a
+      >
+    </p>
+    <p v-if="this.path === 'map/building_38/block_178'">
+      <a
+        href="https://mysolarcity.com/Share/47cf089a-5b93-4200-8566-e030cb4f8574#/monitoring/historical/month"
+        target="_blank"
+        >Data Provided by Tesla</a
+      >
+    </p>
+    <p>
+      <a href="https://fa.oregonstate.edu/sustainability/ground-mounted-photovoltaic-arrays" target="_blank"
+        >More Info About OSU's Partnership with Tesla</a
+      >
+    </p>
   </div>
-  <div class="card" ref='card' v-else>
-      <el-row :span='24' class='title' ref='title'>
-        <el-col :span='20'>{{ name }}</el-col>
-        <el-col :span='4' v-if='personalView || publicView' class='right'>&nbsp;<i class="fas fa-sliders-h" @click='openModal()'></i></el-col>
-      </el-row>
+  <div class="card" ref="card" v-else>
+    <el-row :span="24" class="title" ref="title">
+      <el-col :span="20">{{ name }}</el-col>
+      <el-col :span="4" v-if="personalView || publicView" class="right"
+        >&nbsp;<i class="fas fa-sliders-h" @click="openModal()"></i
+      ></el-col>
+    </el-row>
 
-      <!--Next/Previous Buttons-->
-      <el-row :span='24'>
-        <el-col :span='12' class='buttonDisplay'>
-            <el-button size='small' type='primary' class='moveButtons' @click='previousInterval' icon='el-icon-d-arrow-left'>
-              Previous
-            </el-button>
-        </el-col>
-        <el-col :span='12'>
-          <el-row type='flex' justify='end'>
-            <el-button size='small' type='primary' class='moveButtons' @click='nextInterval' :disabled='!nextExists'>
-              Next <i class='el-icon-d-arrow-right'></i>
-            </el-button>
-          </el-row>
-        </el-col>
-      </el-row>
-      <!--Chart Below-->
-      <el-row style="overflow: hidden" :span='24'>
-        <el-col :span='24'>
-          <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
-          <chartController :randomColors='1' :path='path' ref="chartController"  class="chart" :styleC='style' :height='430' />
-        </el-col>
-      </el-row>
+    <!--Next/Previous Buttons-->
+    <el-row :span="24">
+      <el-col :span="12" class="buttonDisplay">
+        <el-button
+          size="small"
+          type="primary"
+          class="moveButtons"
+          @click="previousInterval"
+          icon="el-icon-d-arrow-left"
+        >
+          Previous
+        </el-button>
+      </el-col>
+      <el-col :span="12">
+        <el-row type="flex" justify="end">
+          <el-button size="small" type="primary" class="moveButtons" @click="nextInterval" :disabled="!nextExists">
+            Next <i class="el-icon-d-arrow-right"></i>
+          </el-button>
+        </el-row>
+      </el-col>
+    </el-row>
+    <!--Chart Below-->
+    <el-row style="overflow: hidden" :span="24">
+      <el-col :span="24">
+        <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
+        <chartController
+          :randomColors="1"
+          :path="path"
+          ref="chartController"
+          class="chart"
+          :styleC="style"
+          :height="430"
+        />
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -71,9 +130,9 @@ export default {
       date_end: '',
       graphtype: 1,
       style: {
-        'display': 'inline-block',
-        'width': 'calc(100% - 3em)',
-        'height': '400px',
+        display: 'inline-block',
+        width: 'calc(100% - 3em)',
+        height: '400px',
         'margin-right': '0.5em',
         'margin-left': '0.5em',
         'padding-right': '1em',
@@ -216,8 +275,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang='scss'>
-
+<style scoped lang="scss">
 $chart-height: 430px;
 
 .card {
@@ -262,5 +320,4 @@ $chart-height: 430px;
   height: 3em;
   width: 10em;
 }
-
 </style>

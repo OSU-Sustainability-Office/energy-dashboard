@@ -235,7 +235,7 @@ export default {
             data.datasets.length >= 1 &&
             data.datasets[0].data.length >= 1
           ) {
-            // this.chart.update()
+            this.chart.update()
 
             // format charts if there are multiple time periods
             if (this.multipleTimePeriods(data.datasets)) {

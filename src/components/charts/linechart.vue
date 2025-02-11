@@ -113,13 +113,7 @@ export default {
               },
               label: function (tooltipItem) {
                 const yLabel = tooltipItem.parsed.y
-                return (
-                  tooltipItem.dataset.label +
-                  ': ' +
-                  parseFloat(yLabel).toFixed(2) +
-                  ' ' +
-                  tooltipItem.dataset.unit
-                )
+                return tooltipItem.dataset.label + ': ' + parseFloat(yLabel).toFixed(2) + ' ' + tooltipItem.dataset.unit
               }
             }
           }
@@ -201,13 +195,14 @@ export default {
               // otherwise the default settings are used
               autoSkipPadding: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 15 : 4,
               maxRotation: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 0 : 50,
-              beforeBuildTicks: (val, index) => {
+              callback: (val, index) => {
                 if (this.$parent.multipleTimePeriods(this.$parent.chartData.datasets)) {
                   return this.$parent.buildXaxisTick(index)
                 }
-                return val
+                return this.formatXaxisTick(val)
               }
             },
+
             title: {
               display: this.$parent.buildLabel('x') !== '',
               text: this.$parent.buildLabel('x'),
@@ -229,6 +224,13 @@ export default {
           }
         }
       }
+    }
+  },
+  methods: {
+    formatXaxisTick: function (val) {
+      // turn epoch time into mm/dd string
+      const d = new Date(val)
+      return d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' })
     }
   }
 }
