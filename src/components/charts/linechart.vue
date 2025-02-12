@@ -35,8 +35,7 @@ export default {
     chartData: {
       handler: function () {
         this.chartKey++
-      },
-      deep: true
+      }
     }
   },
   computed: {
