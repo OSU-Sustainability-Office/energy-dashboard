@@ -229,6 +229,10 @@ export default {
       this.$store
         .dispatch(this.path + '/getData')
         .then(data => {
+          // Set the unit (metric type) for each dataset
+          data.datasets.forEach((dataset, index) => {
+            dataset.unit = this.unit(index)
+          })
           if (
             this.chart &&
             (this.graphType === 1 || this.graphType === 2) &&

@@ -113,7 +113,9 @@ export default {
               },
               label: function (tooltipItem) {
                 const yLabel = tooltipItem.parsed.y
-                return tooltipItem.dataset.label + ': ' + parseFloat(yLabel).toFixed(2) + ' ' + tooltipItem.dataset.unit
+                const label = tooltipItem.dataset.label
+                const unit = tooltipItem.dataset.unit
+                return label + ': ' + parseFloat(yLabel).toFixed(2) + ' ' + unit
               }
             }
           }
