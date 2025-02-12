@@ -19,7 +19,12 @@ export default {
     invertColors: Boolean,
     yLabel: String,
     xLabel: String,
-    chartData: Object
+    chartData: Object,
+    isMultipleTimePeriods: Boolean,
+    buildXaxisTick: Function,
+    buildLabel: Function,
+    intervalUnit: String
+
   },
   data () {
     return {
@@ -30,7 +35,8 @@ export default {
     chartData: {
       handler: function () {
         this.chartKey++
-      }
+      },
+      deep: true
     }
   },
   computed: {
@@ -171,8 +177,8 @@ export default {
               color: this.primaryColor
             },
             title: {
-              display: this.$parent.buildLabel('y') !== '',
-              text: this.$parent.buildLabel('y'),
+              display: this.buildLabel('y') !== '',
+              text: this.buildLabel('y'),
               color: this.primaryColor,
               font: {
                 size: 12,
@@ -195,19 +201,19 @@ export default {
               autoSkip: false,
               // the following three settings change the x-ticks if there are multiple time periods,
               // otherwise the default settings are used
-              autoSkipPadding: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 15 : 4,
-              maxRotation: this.$parent.multipleTimePeriods(this.$parent.chartData.datasets) ? 0 : 50,
+              autoSkipPadding: this.isMultipleTimePeriods ? 15 : 4,
+              maxRotation: this.isMultipleTimePeriods ? 0 : 50,
               callback: (val, index) => {
-                if (this.$parent.multipleTimePeriods(this.$parent.chartData.datasets)) {
-                  return this.$parent.buildXaxisTick(index)
+                if (this.isMultipleTimePeriods) {
+                  return this.buildXaxisTick(index)
                 }
                 return this.formatXaxisTick(val)
               }
             },
 
             title: {
-              display: this.$parent.buildLabel('x') !== '',
-              text: this.$parent.buildLabel('x'),
+              display: this.buildLabel('x') !== '',
+              text: this.buildLabel('x'),
               color: this.primaryColor,
               font: {
                 size: 12,
@@ -215,7 +221,7 @@ export default {
               }
             },
             time: {
-              unit: this.$parent.$store.getters[this.$parent.path + '/intervalUnit'],
+              unit: this.intervalUnit,
               stepSize: 15,
               displayFormats: {
                 day: 'MM/dd',
