@@ -156,7 +156,7 @@ export default {
   },
   computed: {
     filteredBuildings () {
-      return this.mapLoaded ? this.$store.getters['map/buildings'].filter(building => building.geoJSON) : []
+      return this.$store.getters['map/buildings'].filter(building => building.geoJSON)
     },
     showSide: {
       get () {
@@ -493,11 +493,15 @@ export default {
           return '#000'
       }
     },
-    async getEnergySlopeColor (feature) {
+    updateLayerCategoryStyle (layer) {
+      const color = this.getCategoryColor(layer.feature.properties.group)
+      layer.setStyle({ fillColor: color, color: color })
+    },
+    async updateEnergySlopeColor (layer) {
       try {
         // Retrieves building object from store using leaflet property id
         await this.$store.getters['map/promise']
-        const building = this.$store.getters['map/building'](feature.properties.id)
+        const building = this.$store.getters['map/building'](layer.feature.properties.id)
         await this.$store.getters[building.path + '/promise']
 
         // Retrieves primary energy group from store
@@ -532,10 +536,11 @@ export default {
         const normalizedSlope = slope / meanY
 
         // Convert slope to color
-        return this.computedColor(normalizedSlope)
+        const color = this.computedColor(normalizedSlope)
+        layer.setStyle({ fillColor: color, color: color })
       } catch (err) {
         console.error(err)
-        return '#000'
+        layer.setStyle({ fillColor: '#000', color: '#000' })
       }
     },
     updateMapRef () {
@@ -586,23 +591,24 @@ export default {
       })
     },
     grouping: {
-      async handler (val) {
-        // this.mapLoaded = false
+      async handler () {
+        this.search = ''
+        this.rKey++
+        this.mapLoaded = false
         await this.$nextTick()
+        let promises = []
         this.$refs.geoLayer.forEach((geoJsonComponent) => {
           const geoJsonLayer = geoJsonComponent.leafletObject
-          let color = '#000'
-
           geoJsonLayer.eachLayer(async (layer) => {
-            if (val === 'Category') {
-              color = this.getCategoryColor(layer.feature?.properties?.group)
-            } else if (val === 'Energy Trend') {
-              color = await this.getEnergySlopeColor(layer.feature)
+            if (this.grouping === 'Category') {
+              this.updateLayerCategoryStyle(layer)
+            } else if (this.grouping === 'Energy Trend') {
+              promises.push(this.updateEnergySlopeColor(layer))
             }
-            layer.setStyle({ fillColor: color, color: color })
           })
         })
-        // this.mapLoaded = true
+        await Promise.all(promises)
+        this.mapLoaded = true
       }
     },
     search: function (v) {
