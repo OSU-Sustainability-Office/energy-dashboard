@@ -24,7 +24,7 @@
     <barchart
       v-if="graphType === 2 && chartData"
       ref="barchart"
-      v-bind:chartData="chartData"
+      :chartData="chartData"
       :style="styleC"
       :height="height"
       :invertColors="invertColors"
@@ -84,7 +84,7 @@
 </template>
 <script>
 import linechart from '@/components/charts/linechart.vue'
-import barchart from '@/components/charts/barchart.js'
+import barchart from '@/components/charts/barchart.vue'
 import doughnutchart from '@/components/charts/doughnutchart.js'
 import piechart from '@/components/charts/piechart.js'
 

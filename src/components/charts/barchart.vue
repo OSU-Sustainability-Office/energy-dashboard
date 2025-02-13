@@ -1,30 +1,23 @@
 <!--
-  Filename: linechart.vue
-  Info: chartJS line chart preset for energy dashboard.
+  Filename: barchart.vue
+  Info: chartJS bar chart preset for energy dashboard.
 -->
 
 <template>
-  <Line :key="chartKey" :data="chartData" :options="options" />
+    <Bar :key="chartKey" :data="chartData" :options="options" />
 </template>
 
 <script>
-import { Line } from 'vue-chartjs'
+import { Bar } from 'vue-chartjs'
 import 'chart.js/auto'
 import 'chartjs-adapter-luxon'
 
 export default {
-  name: 'linechart',
-  components: { Line },
+  name: 'barchart',
+  components: { Bar },
   props: {
     invertColors: Boolean,
-    yLabel: String,
-    xLabel: String,
-    chartData: Object,
-    isMultipleTimePeriods: Boolean,
-    buildXaxisTick: Function,
-    buildLabel: Function,
-    intervalUnit: String
-
+    chartData: Object
   },
   data () {
     return {
@@ -47,12 +40,6 @@ export default {
     },
     options: function () {
       return {
-        devicePixelRatio: 2,
-        datasets: {
-          line: {
-            tension: 0.4
-          }
-        },
         plugins: {
           title: {
             color: this.primaryColor,
@@ -63,11 +50,9 @@ export default {
           },
           legend: {
             labels: {
+              fontSize: 12,
               color: this.primaryColor,
-              font: {
-                size: 12,
-                family: 'Open Sans'
-              }
+              fontFamily: 'Open Sans'
             },
             onHover: e => {
               e.native.target.style.cursor = 'pointer'
@@ -83,7 +68,6 @@ export default {
             bodyFont: { size: 12, family: 'Open Sans' },
             callbacks: {
               title: function (tooltipItems) {
-                // use originalXlabel if it exists, otherwise use the default xLabel
                 const originalXlabel = tooltipItems[0].parsed.x
                 const d = new Date(originalXlabel || tooltipItems[0].label)
                 let meridiem = 'am'
@@ -143,12 +127,8 @@ export default {
           intersect: true
         },
         hover: {
-          onHover (event, chartElement) {
-            if (chartElement.length) {
-              event.native.target.style.cursor = 'pointer'
-            } else {
-              event.native.target.style.cursor = 'default'
-            }
+          onHover: function (e) {
+            e.target.style.cursor = 'default'
           }
         },
         responsive: true,
@@ -157,27 +137,19 @@ export default {
           y: {
             beginAtZero: false,
             ticks: {
+              color: this.primaryColor,
               font: {
                 size: 12,
                 family: 'Open Sans'
-              },
-              color: this.primaryColor,
-              autoSkip: true,
-              maxTicksLimit: 10,
-              callback: (val, index) => {
-                return val.toString()
               }
             },
             grid: {
               display: true,
-              color: this.primaryColor
-            },
-            border: {
-              color: this.primaryColor
+              color: this.secondaryColor
             },
             title: {
-              display: this.buildLabel('y') !== '',
-              text: this.buildLabel('y'),
+              display: this.$parent.buildLabel('y') !== '',
+              text: this.$parent.buildLabel('y'),
               color: this.primaryColor,
               font: {
                 size: 12,
@@ -189,30 +161,20 @@ export default {
             type: 'time',
             bounds: 'data',
             grid: {
-              display: false
+              display: true,
+              color: this.secondaryColor
             },
             ticks: {
+              color: this.primaryColor,
               font: {
                 size: 14,
                 family: 'Open Sans'
               },
-              color: this.primaryColor,
-              autoSkip: false,
-              // the following three settings change the x-ticks if there are multiple time periods,
-              // otherwise the default settings are used
-              autoSkipPadding: this.isMultipleTimePeriods ? 15 : 4,
-              maxRotation: this.isMultipleTimePeriods ? 0 : 50,
-              callback: (val, index) => {
-                if (this.isMultipleTimePeriods) {
-                  return this.buildXaxisTick(index)
-                }
-                return this.formatXaxisTick(val)
-              }
+              autoSkip: true
             },
-
             title: {
-              display: this.buildLabel('x') !== '',
-              text: this.buildLabel('x'),
+              display: this.$parent.buildLabel('x') !== '',
+              text: this.$parent.buildLabel('x'),
               color: this.primaryColor,
               font: {
                 size: 12,
@@ -220,7 +182,7 @@ export default {
               }
             },
             time: {
-              unit: this.intervalUnit,
+              unit: 'day',
               stepSize: 15,
               displayFormats: {
                 day: 'MM/dd',
@@ -231,13 +193,6 @@ export default {
           }
         }
       }
-    }
-  },
-  methods: {
-    formatXaxisTick: function (val) {
-      // turn epoch time into mm/dd string
-      const d = new Date(val)
-      return d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' })
     }
   }
 }
