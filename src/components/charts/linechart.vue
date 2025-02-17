@@ -11,6 +11,7 @@
 import { Line } from 'vue-chartjs'
 import 'chart.js/auto'
 import 'chartjs-adapter-luxon'
+import { DateTime } from 'luxon'
 
 export default {
   name: 'linechart',
@@ -86,35 +87,8 @@ export default {
                 // use originalXlabel if it exists, otherwise use the default xLabel
                 const originalXlabel = tooltipItems[0].parsed.x
                 const d = new Date(originalXlabel || tooltipItems[0].label)
-                let meridiem = 'am'
-                let hours = d.getHours()
-                if (hours > 12) {
-                  hours -= 12
-                  meridiem = 'pm'
-                } else if (hours === 0) {
-                  hours = 12
-                }
-                let minutes = d.getMinutes()
-                if (minutes < 10) {
-                  minutes = '0' + minutes
-                }
-                const year = String(d.getFullYear()).slice(-2)
-                const dayCodes = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
-                return (
-                  dayCodes[d.getDay()] +
-                  ' ' +
-                  (d.getMonth() + 1).toString() +
-                  '/' +
-                  d.getDate() +
-                  '/' +
-                  year +
-                  ' ' +
-                  hours +
-                  ':' +
-                  minutes +
-                  ' ' +
-                  meridiem
-                )
+                const dt = DateTime.fromJSDate(d)
+                return dt.toFormat('ccc MM/dd/yy h:mm a')
               },
               label: function (tooltipItem) {
                 const yLabel = tooltipItem.parsed.y
