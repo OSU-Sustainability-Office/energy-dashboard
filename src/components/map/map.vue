@@ -23,11 +23,11 @@
           </p>
         </div>
         <el-input v-model="search" class="searchMapInput" placeholder="Search for buildings">
-            <template v-slot:prefix>
+            <template #prefix>
               <el-icon><Search /></el-icon>
             </template>
-            <template v-slot:suffix>
-              <el-icon><Close v-if="search !== ''" /></el-icon>
+            <template #suffix>
+              <el-icon v-if="search !== ''" @click="search = ''"><Close /></el-icon>
             </template>
           </el-input>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />

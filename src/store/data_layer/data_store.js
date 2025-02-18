@@ -478,9 +478,6 @@ const actions = {
     }
 
     // Reformat the data so that it matches the API's format
-    // TODO: JRW 8.13.2020 Someone (probably me) needs to standardize how data is passed around the dashboard.
-    //       This reformatting issue should work itself out if we make every component consume a standardized datum class instance.
-    // TODO: MAD 5.25.2022 ^ That is a good idea, I should do that.
     let dataArray = []
     cacheKeys.forEach(key => {
       let dataObj = {}
@@ -492,32 +489,40 @@ const actions = {
   },
 
   async getData (store, payload) {
-    const SIXMONTHS = 31536000 / 2
+    const SIXMONTHS = 15768000 / 2
     const total_range = payload.end - payload.start
 
-    if (total_range > SIXMONTHS) {
-      let results = []
-      let chunkStart = payload.start
-
-      let firstChunk = true
-      while (chunkStart < payload.end) {
-        let chunkEnd = Math.min(chunkStart + SIXMONTHS, payload.end)
-        chunkStart += firstChunk ? 0 : 1; firstChunk = false
-        let subPayload = {
-          ...payload,
-          start: chunkStart,
-          end: chunkEnd
-        }
-        console.log(`Fetching chunk: [${chunkStart}, ${chunkEnd}]`)
-        let chunkData = await this.dispatch('dataStore/getDataSingleRange', subPayload)
-        results = results.concat(chunkData)
-        chunkStart = chunkEnd
-      }
-      return results
-    } else {
-      let result = await this.dispatch('dataStore/getDataSingleRange', payload)
-      return result
+    if (total_range <= SIXMONTHS) {
+      return this.dispatch('dataStore/getDataSingleRange', payload)
     }
+
+    let chunkStart = payload.start
+    let promises = []
+    let firstChunk = true
+    while (chunkStart < payload.end) {
+      // chunkEnd is the end of the current chunk
+      let chunkEnd = Math.min(chunkStart + SIXMONTHS, payload.end)
+
+      // Increment chunkStart to avoid requesting the same data twice
+      if (!firstChunk) {
+        chunkStart += 1
+      }
+      firstChunk = false
+
+      // Create a new payload for the current chunk
+      let subPayload = {
+        ...payload,
+        start: chunkStart,
+        end: chunkEnd
+      }
+      console.log(`Fetching chunk: [${chunkStart}, ${chunkEnd}]`)
+
+      // Request the data for the current chunk
+      promises.push(this.dispatch('dataStore/getDataSingleRange', subPayload))
+      chunkStart = chunkEnd
+    }
+    let results = await Promise.all(promises)
+    return results.flat()
   }
 }
 
