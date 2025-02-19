@@ -11,8 +11,8 @@
             <template v-slot:prefix>
               <el-icon><Search /></el-icon>
             </template>
-            <template v-slot:suffix>
-              <el-icon><Close v-if="search !== ''" /></el-icon>
+            <template #suffix>
+              <el-icon v-if="search !== ''" @click="search = ''"><Close /></el-icon>
             </template>
           </el-input>
         </el-col>
