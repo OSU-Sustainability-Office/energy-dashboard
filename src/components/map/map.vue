@@ -24,10 +24,10 @@
         </div>
         <el-input v-model="search" class="searchMapInput" placeholder="Search for buildings">
             <template #prefix>
-              <el-icon><Search /></el-icon>
+              <el-icon class="searchIcon"><Search /></el-icon>
             </template>
             <template #suffix>
-              <el-icon v-if="search !== ''" @click="search = ''"><Close /></el-icon>
+              <el-icon v-if="search !== ''" @click="search = ''" class="closeIcon"><Close /></el-icon>
             </template>
           </el-input>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
@@ -866,11 +866,12 @@ $sideMenu-width: 250px;
   padding: 5px;
   border-bottom: 2px solid #dcdfe6;
 }
-:deep(.el-icon) {
-  color: #d73f09;
+.searchIcon,
+.closeIcon {
   cursor: pointer;
+  color: #d73f09;
 }
-:deep(.el-input__suffix .el-icon) {
+.closeIcon {
   font-size: 28px;
 }
 .searchMapResult {
