@@ -34,7 +34,7 @@ export default {
 <style>
 .demo-visual {
   width: 85%;
-  height: 85%;
+  height: auto;
   margin-bottom: 30px;
 }
 .demo-title {
