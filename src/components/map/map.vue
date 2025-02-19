@@ -698,7 +698,7 @@ $sideMenu-width: 250px;
   top: 170px;
 }
 
-:deep(.el-menu-item-group__title) {
+::v-deep(.el-menu-item-group__title) {
   margin-top: -35px;
 }
 
@@ -871,7 +871,7 @@ $sideMenu-width: 250px;
   justify-content: center;
   z-index: 500;
 }
-:deep(.el-input__wrapper) {
+::v-deep(.el-input__wrapper) {
   padding: 5px;
   border-bottom: 2px solid #dcdfe6;
 }
