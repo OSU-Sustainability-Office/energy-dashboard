@@ -192,6 +192,9 @@ export default {
                 size: 12,
                 family: 'Open Sans'
               }
+            },
+            time: {
+              unit: this.intervalUnit
             }
           }
         }
