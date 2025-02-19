@@ -138,8 +138,8 @@ export default {
   top: 50px;
   bottom: 50px;
   font-size: 18px;
-  padding-left: 4em;
-  padding-right: 4em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
   color: $color-white;
 }
 .reductionTimeLine {

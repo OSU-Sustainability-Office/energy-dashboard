@@ -102,10 +102,10 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
           <el-col class="noBuildingText"> No Buildings selected to download data from </el-col>
         </el-row>
         <el-row v-if="buildingsFiltered.length > 0" style="width: 100%">
-          <el-col :span="4">
+          <el-col :sm="8" :md="6" :lg="4">
             <el-button @click="addBuilding()" type="primary" class="buildingAddButton"> Add Building</el-button>
           </el-col>
-          <el-col :span="20">
+          <el-col :sm="16" :md="18" :lg="20">
             <el-select v-model="addBuildingId" class="buildingAddSelect" filterable>
               <el-option
                 v-for="building in buildingsFiltered"
@@ -471,5 +471,4 @@ export default {
 :deep(.buildingAddSelect .el-select__input) {
   cursor: pointer;
 }
-
 </style>
