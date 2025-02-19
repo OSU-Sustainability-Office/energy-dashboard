@@ -873,7 +873,6 @@ $sideMenu-width: 250px;
 }
 :deep(.el-input__wrapper) {
   padding: 5px;
-  border-bottom: 2px solid #dcdfe6;
 }
 .searchIcon,
 .closeIcon {
