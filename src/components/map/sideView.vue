@@ -267,7 +267,7 @@ export default {
 .graphslide {
   position: absolute;
   color: rgba($color-white, 0.4);
-  bottom: 380px;
+  top: 380px;
   font-size: 3em;
   width: 100%;
   left: 0;
