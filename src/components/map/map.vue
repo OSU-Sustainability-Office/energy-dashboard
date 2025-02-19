@@ -107,12 +107,21 @@
         @compare="showComparison"
       />
       <prompt_error v-if="building_compare_error" @cancel="stopCompareError" @compare="showComparison" />
-      <transition name="side">
-        <div>
-          <compareSide v-if="showCompareSide" @hide="showCompareSide = false" :compareStories="compareStories" />
-          <sideView ref="sideview" v-if="showSide" @hide="showSide = false" @startCompare="startCompare"></sideView>
-        </div>
-      </transition>
+      <transition-group name="side" tag="div">
+        <compareSide
+          v-if="showCompareSide"
+          key="compareSide"
+          @hide="showCompareSide = false"
+          :compareStories="compareStories"
+        />
+        <sideView
+          ref="sideview"
+          v-if="showSide"
+          key="sideView"
+          @hide="showSide = false"
+          @startCompare="startCompare"
+        />
+      </transition-group>
     </el-col>
   </el-row>
 </template>
@@ -722,7 +731,7 @@ $sideMenu-width: 250px;
 .side-leave-active {
   transition: all 1s;
 }
-.side-enter {
+.side-enter-from {
   opacity: 0;
   transform: translateX(300px);
 }
@@ -730,11 +739,11 @@ $sideMenu-width: 250px;
   opacity: 1;
   transform: translateX(0px);
 }
-.side-leave {
+.side-leave-from {
   opacity: 1;
   transform: translateY(0px);
 }
-.side-leave-to /* .fade-leave-active below version 2.1.8 */ {
+.side-leave-to {
   opacity: 0;
   transform: translateY(500px);
 }
