@@ -852,7 +852,7 @@ $sideMenu-width: 250px;
   position: absolute;
   top: 45px;
   left: 10px;
-  width: 220px;
+  width: 225px;
   height: 40px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
@@ -861,6 +861,10 @@ $sideMenu-width: 250px;
   opacity: 1;
   justify-content: center;
   z-index: 500;
+}
+:deep(.el-input__wrapper) {
+  padding: 5px;
+  border-bottom: 2px solid #dcdfe6;
 }
 :deep(.el-icon) {
   color: #d73f09;
@@ -891,6 +895,10 @@ $sideMenu-width: 250px;
   cursor: pointer;
   font-size: 16px;
   margin-bottom: -18px;
+  line-height: 1.8;
+}
+.searchMapResult:first-child {
+  margin-top: 10px;
 }
 .searchMapResult:hover {
   background-color: #fafa33;
