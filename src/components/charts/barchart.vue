@@ -4,7 +4,7 @@
 -->
 
 <template>
-    <Bar :key="chartKey" :data="chartData" :options="options" />
+  <Bar :key="chartKey" :data="chartData" :options="options" />
 </template>
 
 <script>

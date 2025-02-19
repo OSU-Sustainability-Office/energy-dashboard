@@ -23,13 +23,13 @@
           </p>
         </div>
         <el-input v-model="search" class="searchMapInput" placeholder="Search for buildings">
-            <template #prefix>
-              <el-icon class="searchIcon"><Search /></el-icon>
-            </template>
-            <template #suffix>
-              <el-icon v-if="search !== ''" @click="search = ''" class="closeIcon"><Close /></el-icon>
-            </template>
-          </el-input>
+          <template #prefix>
+            <el-icon class="searchIcon"><Search /></el-icon>
+          </template>
+          <template #suffix>
+            <el-icon v-if="search !== ''" @click="search = ''" class="closeIcon"><Close /></el-icon>
+          </template>
+        </el-input>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
           <el-tooltip content="Click to toggle visibility" placement="right">
@@ -114,13 +114,7 @@
           @hide="showCompareSide = false"
           :compareStories="compareStories"
         />
-        <sideView
-          ref="sideview"
-          v-if="showSide"
-          key="sideView"
-          @hide="showSide = false"
-          @startCompare="startCompare"
-        />
+        <sideView ref="sideview" v-if="showSide" key="sideView" @hide="showSide = false" @startCompare="startCompare" />
       </transition-group>
     </el-col>
   </el-row>
@@ -334,9 +328,11 @@ export default {
       }
     },
     initBuildingRename () {
-      this.map.on('layeradd', (event) => {
+      this.map.on('layeradd', event => {
         if (event.layer.feature?.geometry?.type === 'Polygon') {
-          event.layer.feature.properties.name = this.$store.getters['map/building'](event.layer.feature.properties.id).name
+          event.layer.feature.properties.name = this.$store.getters['map/building'](
+            event.layer.feature.properties.id
+          ).name
         }
       })
     },
@@ -606,9 +602,9 @@ export default {
         this.mapLoaded = false
         await this.$nextTick()
         let promises = []
-        this.$refs.geoLayer.forEach((geoJsonComponent) => {
+        this.$refs.geoLayer.forEach(geoJsonComponent => {
           const geoJsonLayer = geoJsonComponent.leafletObject
-          geoJsonLayer.eachLayer(async (layer) => {
+          geoJsonLayer.eachLayer(async layer => {
             if (this.grouping === 'Category') {
               this.updateLayerCategoryStyle(layer)
             } else if (this.grouping === 'Energy Trend') {

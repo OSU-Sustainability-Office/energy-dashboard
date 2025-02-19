@@ -25,7 +25,6 @@ export default {
     buildXaxisTick: Function,
     buildLabel: Function,
     intervalUnit: String
-
   },
   data () {
     return {
@@ -166,12 +165,13 @@ export default {
               display: false
             },
             ticks: {
+              source: 'data',
               font: {
                 size: 14,
                 family: 'Open Sans'
               },
               color: this.primaryColor,
-              autoSkip: false,
+              autoSkip: true,
               // the following three settings change the x-ticks if there are multiple time periods,
               // otherwise the default settings are used
               autoSkipPadding: this.isMultipleTimePeriods ? 15 : 4,
@@ -192,15 +192,6 @@ export default {
                 size: 12,
                 family: 'Open Sans'
               }
-            },
-            time: {
-              unit: this.intervalUnit,
-              stepSize: 15,
-              displayFormats: {
-                day: 'MM/dd',
-                hour: 'ccc h:mm a',
-                minute: 'ccc h:mm a'
-              }
             }
           }
         }
@@ -209,9 +200,19 @@ export default {
   },
   methods: {
     formatXaxisTick: function (val) {
-      // turn epoch time into mm/dd string
-      const d = new Date(val)
-      return d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' })
+      const dt = DateTime.fromMillis(val)
+      switch (this.intervalUnit) {
+        case 'month':
+          return dt.toFormat('LLL yyyy')
+        case 'day':
+          return dt.toFormat('MM/dd')
+        case 'hour':
+          return dt.toFormat('ccc h:mm a')
+        case 'minute':
+          return dt.toFormat('ccc h:mm a')
+        default:
+          return val
+      }
     }
   }
 }

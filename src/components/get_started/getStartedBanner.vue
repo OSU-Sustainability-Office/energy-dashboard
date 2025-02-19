@@ -45,5 +45,4 @@ export default {
   background-size: cover;
   background-repeat: no-repeat;
 }
-
 </style>

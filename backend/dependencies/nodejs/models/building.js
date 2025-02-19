@@ -14,7 +14,7 @@ const Meter = require('/opt/nodejs/models/meter.js')
 // const XMLDom = require('xmldom')
 
 class Building {
-  constructor (id) {
+  constructor(id) {
     this.id = id
     this.mapId = ''
     this.image = ''
@@ -25,7 +25,7 @@ class Building {
     this.hidden = false
   }
 
-  async get (expand = true) {
+  async get(expand = true) {
     await DB.connect()
     let buildingRow = await DB.query('SELECT * FROM buildings WHERE id = ?', [this.id])
     if (buildingRow.length <= 0) return this
@@ -46,7 +46,7 @@ class Building {
     return this
   }
 
-  get data () {
+  get data() {
     let meterGroups = this.meterGroups
     if (meterGroups.length > 0 && meterGroups[0] instanceof MeterGroup) {
       meterGroups = meterGroups.map(o => o.data)
@@ -62,7 +62,7 @@ class Building {
     }
   }
 
-  async update (name, mapId, image, group, meters, user) {
+  async update(name, mapId, image, group, meters, user) {
     await DB.connect()
     let keepList = []
     if (user.data.privilege > 3) {
@@ -98,7 +98,7 @@ class Building {
     return this
   }
 
-  async delete (user) {
+  async delete(user) {
     await DB.connect()
     if (user.data.privilege > 3) {
       await DB.query('DELETE FROM buildings WHERE id = ?', [this.id])
@@ -107,7 +107,7 @@ class Building {
     }
   }
 
-  static async create (name, mapId, image, group, meters, user) {
+  static async create(name, mapId, image, group, meters, user) {
     if (user.data.privilege <= 3) {
       throw new Error('Need escalated permissions')
     }
@@ -134,7 +134,7 @@ class Building {
     return building
   }
 
-  set (name, group, mapId, image, meterGroups, hidden) {
+  set(name, group, mapId, image, meterGroups, hidden) {
     this.name = name
     this.mapId = mapId
     this.image = image
@@ -143,7 +143,7 @@ class Building {
     this.hidden = hidden
   }
 
-  static async all () {
+  static async all() {
     await DB.connect()
     let queryJson = {}
     let query = await DB.query(

@@ -6,7 +6,7 @@
   <el-row class="buttons">
     <el-col
       v-for="(title, index) in titles"
-      :span = "12"
+      :span="12"
       :key="title"
       :style="`width: ${100.0 / titles.length}%; left: ${-13.33 * index}px`"
       class="rangeButtonParent"

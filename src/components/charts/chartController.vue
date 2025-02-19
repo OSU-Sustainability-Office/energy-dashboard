@@ -243,8 +243,12 @@ export default {
           this.chartData = data
           // Set the chart options
           this.$nextTick(() => {
-            if (this.chart && (this.graphType === 1 || this.graphType === 2) &&
-              data.datasets.length >= 1 && data.datasets[0].data.length >= 1) {
+            if (
+              this.chart &&
+              (this.graphType === 1 || this.graphType === 2) &&
+              data.datasets.length >= 1 &&
+              data.datasets[0].data.length >= 1
+            ) {
               // format charts if there are multiple time periods
               if (this.multipleTimePeriods(data.datasets)) {
                 this.formatMultipleTimePeriods(data.datasets)
