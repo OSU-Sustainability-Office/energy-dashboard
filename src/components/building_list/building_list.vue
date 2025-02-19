@@ -205,7 +205,7 @@ export default {
     font-size: 14px;
   }
   /*-- for reducing el-tabs padding: https://www.jianshu.com/p/9db8679de026 --*/
-  ::v-deep(.el-tabs__item) {
+  :deep(.el-tabs__item) {
     padding: 0 10px;
   }
 }
@@ -237,11 +237,11 @@ export default {
   width: 100%;
   text-align: center;
 }
-::v-deep(.el-icon) {
+:deep(.el-icon) {
   color: #d73f09;
   cursor: pointer;
 }
-::v-deep(.el-input__suffix .el-icon) {
+:deep(.el-input__suffix .el-icon) {
   font-size: 28px;
 }
 </style>
