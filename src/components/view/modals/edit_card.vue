@@ -636,6 +636,18 @@ export default {
 }
 </script>
 
+<style lang="scss">
+.el-picker-panel__footer .el-picker-panel__link-btn:first-child {
+  background-color: white !important;
+  color: $color-primary;
+}
+.el-picker-panel__footer .el-picker-panel__link-btn:first-child:hover {
+  opacity: 0.7;
+}
+.el-picker-panel__footer .el-picker-panel__link-btn:nth-child(2) {
+  margin: 0px;
+}
+</style>
 <style lang="scss" scoped>
 .stage {
   position: relative !important;
