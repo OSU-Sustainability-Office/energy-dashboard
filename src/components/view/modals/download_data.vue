@@ -464,4 +464,12 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
+.buildingContainer {
+  width: 100%;
+}
+:deep(.buildingAddSelect .el-select__wrapper.is-filterable),
+:deep(.buildingAddSelect .el-select__input) {
+  cursor: pointer;
+}
+
 </style>
