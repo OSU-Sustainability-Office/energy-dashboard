@@ -18,7 +18,8 @@ export default {
   components: { Bar },
   props: {
     invertColors: Boolean,
-    chartData: Object
+    chartData: Object,
+    buildLabel: Function
   },
   data () {
     return {
@@ -122,8 +123,8 @@ export default {
               color: this.secondaryColor
             },
             title: {
-              display: this.$parent.buildLabel('y') !== '',
-              text: this.$parent.buildLabel('y'),
+              display: this.buildLabel('y') !== '',
+              text: this.buildLabel('y'),
               color: this.primaryColor,
               font: {
                 size: 12,
@@ -147,8 +148,8 @@ export default {
               autoSkip: true
             },
             title: {
-              display: this.$parent.buildLabel('x') !== '',
-              text: this.$parent.buildLabel('x'),
+              display: this.buildLabel('x') !== '',
+              text: this.buildLabel('x'),
               color: this.primaryColor,
               font: {
                 size: 12,

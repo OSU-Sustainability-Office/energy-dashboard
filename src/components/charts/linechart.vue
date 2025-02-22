@@ -208,7 +208,7 @@ export default {
         case 'month':
           return dt.toFormat('LLL yyyy')
         case 'day':
-          return dt.toFormat('MM/dd')
+          return dt.toFormat('M/dd')
         case 'hour':
           return dt.toFormat('ccc h:mm a')
         case 'minute':

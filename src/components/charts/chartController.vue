@@ -28,6 +28,7 @@
       :style="styleC"
       :height="height"
       :invertColors="invertColors"
+      :buildLabel="buildLabel"
     />
     <doughnutchart
       v-if="graphType === 3 && chartData"
