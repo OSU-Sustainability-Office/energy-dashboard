@@ -41,8 +41,8 @@
         <el-date-picker
           v-model="form.start"
           type="datetime"
-          format="MM/DD/YYYY hh:mm a"
-          :picker-options="{ format: 'hh:mm a' }"
+          format="MM/DD/YYYY hh:mm A"
+          :picker-options="{ format: 'hh:mm A' }"
           style="width: 100%"
         >
         </el-date-picker>
@@ -62,8 +62,8 @@
         <el-date-picker
           v-model="form.end"
           type="datetime"
-          format="MM/DD/YYYY hh:mm a"
-          :picker-options="{ format: 'hh:mm a' }"
+          format="MM/DD/YYYY hh:mm A"
+          :picker-options="{ format: 'hh:mm A' }"
           style="width: 100%"
         >
         </el-date-picker>
