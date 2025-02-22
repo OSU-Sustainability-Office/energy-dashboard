@@ -31,7 +31,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="scss">
 .demo-visual {
   width: 85%;
   height: auto;
