@@ -30,22 +30,6 @@
       :invertColors="invertColors"
       :buildLabel="buildLabel"
     />
-    <doughnutchart
-      v-if="graphType === 3 && chartData"
-      ref="doughnutchart"
-      v-bind:chartData="chartData"
-      :style="styleC"
-      :height="height"
-      :invertColors="invertColors"
-    />
-    <piechart
-      v-if="graphType === 4 && chartData"
-      ref="piechart"
-      v-bind:chartData="chartData"
-      :style="styleC"
-      :height="height"
-      :invertColors="invertColors"
-    />
     <iframe
       v-if="this.path === 'map/building_35/block_175'"
       :class="iframeClass"
@@ -86,8 +70,6 @@
 <script>
 import linechart from '@/components/charts/linechart.vue'
 import barchart from '@/components/charts/barchart.vue'
-import doughnutchart from '@/components/charts/doughnutchart.js'
-import piechart from '@/components/charts/piechart.js'
 
 export default {
   name: 'card',
@@ -100,9 +82,7 @@ export default {
   },
   components: {
     linechart,
-    barchart,
-    doughnutchart,
-    piechart
+    barchart
   },
   mounted () {
     console.log(this.$route.path)
@@ -216,12 +196,8 @@ export default {
             return this.$refs.linechart
           case 2:
             return this.$refs.barchart
-          case 3:
-            return this.$refs.doughnutchart
-          case 5:
-            return this.$refs.barlinechart
           default:
-            return this.$refs.piechart
+            return null
         }
       }
     }

@@ -100,7 +100,6 @@
         <el-select v-model="form.graphType" style="width: 100%">
           <el-option :value="1" label="Line Chart"></el-option>
           <el-option :value="2" label="Bar Chart"></el-option>
-          <el-option :value="3" label="Doughnut Chart"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item

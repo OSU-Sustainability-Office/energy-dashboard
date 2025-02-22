@@ -64,9 +64,7 @@ By default each meter group loads its own "block" which in turn lets us load a t
 - [2.3 Charts](#23-charts)
   - [2.3.1 barchart.vue](#231-barchartvue)
   - [2.3.2 chartController.vue](#232-chartcontrollervue)
-  - [2.3.3 doughnutchart.vue](#233-doughnutchartvue)
   - [2.3.4 linechart.vue](#234-linechartvue)
-  - [2.3.5 piechart.vue](#235-piechartvue)
 - [2.4 Dashboard](#24-dashboard)
   - [2.4.1 dashboard_alerts.vue](#241-dashboard_alertsvue)
   - [2.4.2 dashboard_main.vue](#242-dashboard_mainvue)
@@ -147,17 +145,9 @@ This component is used to set default settings for bar charts.
 
 This component is the main work horse of the charting. All charts use this component to parse the data into the correct format and display the correct chart type.
 
-###### 2.3.3 doughnutchart.vue
-
-This component is used to set default settings for doughnut charts.
-
 ###### 2.3.4 linechart.vue
 
 This component is used to set default settings for line charts.
-
-###### 2.3.1 piechart.vue
-
-This component is used to set default settings for pie charts.
 
 #### 2.4 Dashboard
 
