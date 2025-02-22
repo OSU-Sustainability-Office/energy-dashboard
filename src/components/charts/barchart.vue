@@ -157,8 +157,6 @@ export default {
               }
             },
             time: {
-              unit: 'day',
-              stepSize: 15,
               displayFormats: {
                 day: 'MM/dd',
                 hour: 'ccc h:mm a',
