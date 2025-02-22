@@ -4,7 +4,7 @@
       <el-row class="banner-row">
         <getStartedBanner />
       </el-row>
-      <el-row>
+      <el-row class="main-description-row">
         <mainDescription />
       </el-row>
       <el-row class="faq-header-row">
@@ -37,6 +37,7 @@ export default {
   margin-bottom: 0px;
 }
 .banner-row,
+.main-description-row,
 .faq-header-row,
 .faq-content-row {
   display: block;
