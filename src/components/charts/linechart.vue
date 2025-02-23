@@ -165,7 +165,7 @@ export default {
               display: false
             },
             ticks: {
-              source: 'data',
+              source: 'tick',
               font: {
                 size: 14,
                 family: 'Open Sans'
@@ -194,7 +194,7 @@ export default {
               }
             },
             time: {
-              unit: this.intervalUnit
+              round: this.intervalUnit === 'day' ? 'day' : false
             }
           }
         }
