@@ -709,7 +709,6 @@ $sideMenu-width: 250px;
   font-weight: bolder;
 }
 .mapContainer {
-  background-color: blue;
   position: absolute;
   top: 0;
   left: 0px;
