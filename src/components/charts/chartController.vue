@@ -29,6 +29,7 @@
       :height="height"
       :invertColors="invertColors"
       :buildLabel="buildLabel"
+      :intervalUnit="$store.getters[path + '/intervalUnit']"
     />
     <iframe
       v-if="this.path === 'map/building_35/block_175'"

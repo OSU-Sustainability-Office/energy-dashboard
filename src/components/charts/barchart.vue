@@ -19,7 +19,8 @@ export default {
   props: {
     invertColors: Boolean,
     chartData: Object,
-    buildLabel: Function
+    buildLabel: Function,
+    intervalUnit: String
   },
   data () {
     return {
@@ -140,12 +141,14 @@ export default {
               color: this.secondaryColor
             },
             ticks: {
+              source: 'data',
               color: this.primaryColor,
               font: {
                 size: 14,
                 family: 'Open Sans'
               },
-              autoSkip: true
+              autoSkip: true,
+              autoSkipPadding: 4
             },
             title: {
               display: this.buildLabel('x') !== '',
