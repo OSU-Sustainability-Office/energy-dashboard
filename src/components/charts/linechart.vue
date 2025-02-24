@@ -165,7 +165,7 @@ export default {
               display: false
             },
             ticks: {
-              source: 'tick',
+              source: 'data',
               font: {
                 size: 14,
                 family: 'Open Sans'
@@ -174,7 +174,7 @@ export default {
               autoSkip: true,
               // the following three settings change the x-ticks if there are multiple time periods,
               // otherwise the default settings are used
-              autoSkipPadding: this.isMultipleTimePeriods ? 15 : 4,
+              autoSkipPadding: this.isMultipleTimePeriods ? 15 : 8,
               maxRotation: this.isMultipleTimePeriods ? 0 : 50,
               callback: (val, index) => {
                 if (this.isMultipleTimePeriods) {
@@ -194,7 +194,7 @@ export default {
               }
             },
             time: {
-              round: this.intervalUnit === 'day' ? 'day' : false
+              unit: this.getIntervalUnit()
             }
           }
         }
@@ -216,6 +216,34 @@ export default {
         default:
           return val
       }
+    },
+    getIntervalUnit: function () {
+      // if the interval unit is minute and time frame is too large it breaks the chart, so use day instead
+      if (this.intervalUnit === 'minute' && this.getChartTimeFrame() > 7) return 'day'
+      else return this.intervalUnit
+    },
+    // returns how many days are in the chart's time frame, e.g. 7 days, 30 days, etc.
+    getChartTimeFrame: function () {
+      // for multiple time periods, compare the earliest and latest start/end times
+      if (this.isMultipleTimePeriods) {
+        const earliestStart = Math.min(...this.chartData.datasets[0].multStart)
+        const latestEnd = Math.max(...this.chartData.datasets[0].multEnd)
+
+        const startDate = DateTime.fromMillis(earliestStart)
+        const endDate = DateTime.fromMillis(latestEnd)
+
+        return Math.floor(endDate.diff(startDate, 'days').days)
+      }
+
+      // for one chart, compare the first and last x date values
+      const start = this.chartData.datasets[0].data[0].x
+      const end = this.chartData.datasets[0].data[this.chartData.datasets[0].data.length - 1].x
+      const dtStart = DateTime.fromJSDate(new Date(start))
+      const dtEnd = DateTime.fromJSDate(new Date(end))
+
+      const days = dtEnd.diff(dtStart, 'days').days
+
+      return days
     }
   }
 }
