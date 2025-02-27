@@ -14,7 +14,7 @@
   const FileSystem = require('fs-extra')
   const Yaml = require('yaml')
   const HTTPS = require('https')
-  const Unzip = require('unzip')
+  const Unzipper = require('unzipper')
   const Cors = require('cors')
 
   Module.prototype.require = function () {
@@ -147,7 +147,7 @@
                 HTTPS.get(layerUrl, data => {
                   data.pipe(zipFile)
                   zipFile.on('finish', () => {
-                    const extractor = Unzip.Extract({
+                    const extractor = Unzipper.Extract({
                       path: 'express_build/opt'
                     })
                     FileSystem.createReadStream(layer + '.zip').pipe(extractor)
