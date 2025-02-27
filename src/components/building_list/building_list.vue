@@ -41,7 +41,7 @@
                   />
                 </el-col>
                 <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
-                <el-col v-for="n in 2" :key="key + n" class="blankSlate"> &nbsp; </el-col>
+                <el-col v-for="n in 10" :key="key + n" class="blankSlate"> &nbsp; </el-col>
               </el-row>
             </el-tab-pane>
           </el-tabs>
