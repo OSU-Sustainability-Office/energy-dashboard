@@ -8,28 +8,33 @@ import autoprefixer from 'autoprefixer'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-export default defineConfig({
-  plugins: [vue(), svgLoader()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src')
-    }
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `
-          @use "@/assets/style-variables.scss" as *;
-          @use "sass:color";
-          
-          `
+export default defineConfig(({ mode }) => {
+  return {
+    plugins: [vue(), svgLoader()],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src')
       }
+    },
+    define: {
+      'process.env.NODE_ENV': JSON.stringify(mode)
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `
+            @use "@/assets/style-variables.scss" as *;
+            @use "sass:color";
+            
+            `
+        }
+      }
+    },
+    postcss: {
+      plugins: [autoprefixer()]
+    },
+    server: {
+      port: 8080
     }
-  },
-  postcss: {
-    plugins: [autoprefixer()]
-  },
-  server: {
-    port: 8080
   }
 })
