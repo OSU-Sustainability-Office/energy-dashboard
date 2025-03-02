@@ -2,7 +2,7 @@
 Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
 
 <template>
-  <el-dialog size="lg" :visible.sync="visible" title="Download Data" width="80%" @open="updateForm()">
+  <el-dialog v-model="visible" title="Download Data" width="80%" @open="updateForm()">
     <el-form label-width="150px" label-position="left" :model="form" ref="form">
       <el-form-item
         label="From Date: "
@@ -21,7 +21,7 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
         <el-date-picker
           v-model="form.start"
           type="datetime"
-          format="MM/dd/yyyy hh:mm a"
+          format="MM/DD/YYYY hh:mm a"
           :picker-options="{ format: 'hh:mm a' }"
           style="width: 100%"
         >
@@ -42,7 +42,7 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
         <el-date-picker
           v-model="form.end"
           type="datetime"
-          format="MM/dd/yyyy hh:mm a"
+          format="MM/DD/YYYY hh:mm a"
           :picker-options="{ format: 'hh:mm a' }"
           style="width: 100%"
         >
@@ -84,16 +84,13 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
           ></el-option>
         </el-select>
       </el-form-item>
-      <!-- <el-col :span='4' >
-          <label class='el-form-item__label'> Buildings:</label>
-        </el-col> -->
       <el-form-item label="Buildings: ">
-        <el-row type="flex" justify="left" class="building_flex">
+        <el-row justify="start" class="building_flex">
           <el-col v-for="building in form.buildings" :label="building.name" :key="building.id" class="groupChecker">
             <span class="buildingTitle">{{ building.name }}</span>
             <el-checkbox-group v-model="building.groups">
               <div v-for="group in groups(building.id)" :key="group.id" class="checkGroup">
-                <el-checkbox :label="group.id" :key="group.id"
+                <el-checkbox :value="group.id" :key="group.id"
                   ><span class="groupTitle">{{ group.name }}</span></el-checkbox
                 ><br />
               </div>
@@ -104,24 +101,24 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
         <el-row v-if="form.buildings.length === 0">
           <el-col class="noBuildingText"> No Buildings selected to download data from </el-col>
         </el-row>
-        <el-row v-if="buildingsFiltered.length > 0">
-          <el-col :span="4">
+        <el-row v-if="buildingsFiltered.length > 0" style="width: 100%">
+          <el-col :sm="8" :md="6" :lg="4">
             <el-button @click="addBuilding()" type="primary" class="buildingAddButton"> Add Building</el-button>
           </el-col>
-          <el-col :span="20">
-            <el-select v-model="addBuildingId" style="width: 100%" class="buildingAddSelect" filterable>
+          <el-col :sm="16" :md="18" :lg="20">
+            <el-select v-model="addBuildingId" class="buildingAddSelect" filterable>
               <el-option
                 v-for="building in buildingsFiltered"
                 :value="building.id"
                 :label="building.name"
                 :key="building.id"
-              ></el-option>
+              />
             </el-select>
           </el-col>
         </el-row>
       </el-form-item>
     </el-form>
-    <span slot="footer">
+    <span slot="footer" class="footer-buttons">
       <el-button @click="visible = false" type="info"> Cancel </el-button>
       <el-button @click="download()" type="primary"> Download </el-button>
     </span>
@@ -186,7 +183,7 @@ export default {
     buildingsFiltered: {
       get () {
         if (!this.buildings) return []
-        let buildingsCopy = new Array(...this.buildings)
+        let buildingsCopy = [...this.buildings]
         let buildingIds = buildingsCopy.map(o => parseInt(o.id))
         for (let building of this.form.buildings) {
           let id = building.id
@@ -462,5 +459,16 @@ export default {
 }
 .groupChecker {
   padding-bottom: 20px;
+}
+.footer-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+.buildingContainer {
+  width: 100%;
+}
+:deep(.buildingAddSelect .el-select__wrapper.is-filterable),
+:deep(.buildingAddSelect .el-select__input) {
+  cursor: pointer;
 }
 </style>

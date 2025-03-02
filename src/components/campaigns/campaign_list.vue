@@ -77,6 +77,7 @@ export default {
 <style scoped lang="scss">
 .campaignlistview {
   padding: 1em;
+  display: block;
 }
 .list {
   padding: 1em;

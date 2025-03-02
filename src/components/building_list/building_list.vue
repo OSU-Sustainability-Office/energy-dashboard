@@ -8,13 +8,12 @@
       <el-row class="search_row">
         <el-col :span="24" class="search_col">
           <el-input v-model="search" class="searchInput" placeholder="Search for buildings">
-            <i class="el-icon-search el-input__icon" slot="prefix"></i
-            ><i
-              class="el-icon-close el-input__icon"
-              slot="suffix"
-              @click="resetSearchInput()"
-              v-if="this.search != ''"
-            ></i>
+            <template v-slot:prefix>
+              <el-icon><Search /></el-icon>
+            </template>
+            <template #suffix>
+              <el-icon v-if="search !== ''" @click="search = ''"><Close /></el-icon>
+            </template>
           </el-input>
         </el-col>
       </el-row>
@@ -22,14 +21,16 @@
         <el-col :span="24" class="cards_col">
           <el-tabs v-model="openName" class="tab_row" v-if="buildingList" v-loading="this.loading">
             <el-tab-pane v-for="(item, key) in groups" :key="key" :name="key">
-              <span slot="label" class="tab_label">{{ key }}</span>
+              <template #label>
+                <span class="tab_label">{{ key }}</span>
+              </template>
               <el-radio v-model="search" label="">All</el-radio>
               <el-radio v-model="search" label="Electricity">Electricity</el-radio>
               <el-radio v-model="search" label="Steam">Steam</el-radio>
               <el-radio v-model="search" label="Solar Panel">Solar</el-radio>
               <el-radio v-model="search" label="Gas">Gas</el-radio>
-              <el-row type="flex" justify="left" class="card_flex">
-                <el-col v-for="building in item" :key="building.name" :span="4" class="card_container">
+              <el-row justify="start" class="card_flex">
+                <el-col v-for="building in item" :key="building.name" class="card_container">
                   <viewCard
                     :plus="false"
                     :building="buildingList"
@@ -40,7 +41,7 @@
                   />
                 </el-col>
                 <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
-                <el-col v-for="n in 10" :key="key + n" :span="4" class="blankSlate"> &nbsp; </el-col>
+                <el-col v-for="n in 10" :key="key + n" class="blankSlate"> &nbsp; </el-col>
               </el-row>
             </el-tab-pane>
           </el-tabs>
@@ -52,10 +53,13 @@
 
 <script>
 import viewCard from '@/components/building_list/view_card.vue'
+import { Search, Close } from '@element-plus/icons-vue'
 
 export default {
   components: {
-    viewCard
+    viewCard,
+    Search,
+    Close
   },
   data () {
     return {
@@ -201,7 +205,7 @@ export default {
     font-size: 14px;
   }
   /*-- for reducing el-tabs padding: https://www.jianshu.com/p/9db8679de026 --*/
-  ::v-deep .el-tabs__item {
+  :deep(.el-tabs__item) {
     padding: 0 10px;
   }
 }
@@ -233,13 +237,11 @@ export default {
   width: 100%;
   text-align: center;
 }
-.el-icon-close {
+:deep(.el-icon) {
+  color: #d73f09;
   cursor: pointer;
 }
-::v-deep .el-input__icon {
-  color: #d73f09;
-}
-::v-deep .el-input__suffix {
+:deep(.el-input__suffix .el-icon) {
   font-size: 28px;
 }
 </style>

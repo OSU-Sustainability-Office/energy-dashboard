@@ -5,7 +5,7 @@
 <template>
   <el-dialog
     size="lg"
-    :visible.sync="visible"
+    v-model="visible"
     :title="form.new ? 'New Block' : 'Edit Block'"
     width="80%"
     @open="updateForm()"
@@ -41,8 +41,8 @@
         <el-date-picker
           v-model="form.start"
           type="datetime"
-          format="MM/dd/yyyy hh:mm a"
-          :picker-options="{ format: 'hh:mm a' }"
+          format="MM/DD/YYYY hh:mm A"
+          :picker-options="{ format: 'hh:mm A' }"
           style="width: 100%"
         >
         </el-date-picker>
@@ -62,8 +62,8 @@
         <el-date-picker
           v-model="form.end"
           type="datetime"
-          format="MM/dd/yyyy hh:mm a"
-          :picker-options="{ format: 'hh:mm a' }"
+          format="MM/DD/YYYY hh:mm A"
+          :picker-options="{ format: 'hh:mm A' }"
           style="width: 100%"
         >
         </el-date-picker>
@@ -100,7 +100,6 @@
         <el-select v-model="form.graphType" style="width: 100%">
           <el-option :value="1" label="Line Chart"></el-option>
           <el-option :value="2" label="Bar Chart"></el-option>
-          <el-option :value="3" label="Doughnut Chart"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item
@@ -176,8 +175,10 @@
               placeholder="Building"
               style="width: 100%"
               @change="
-                form.sets[currentIndex].meter = null
-                form.sets[currentIndex].point = null
+                () => {
+                  form.sets[currentIndex].meter = null
+                  form.sets[currentIndex].point = null
+                }
               "
             >
               <el-option
@@ -246,7 +247,7 @@
         </el-row>
       </el-row>
     </div>
-    <span slot="footer">
+    <div class="modalActions">
       <el-button @click="cardDelete()" type="danger" v-if="personalView && $store.getters['modalController/data'].path">
         Delete
       </el-button>
@@ -262,15 +263,16 @@
       </el-tooltip>
 
       <el-button @click="visible = false" type="info"> Cancel </el-button>
+    </div>
+    <span slot="savedTimePeriods">
       <div class="savedTimesDiv" v-if="compareOneBuildingView">
-        <p class="savedTimesP" v-if="this.form.tempMultStart.length > 0">Time Periods to be Compared</p>
+        <p class="savedTimesP" v-if="form.tempMultStart.length > 0">Time Periods to be Compared</p>
 
         <span type="info" class="savedTimesButton" v-for="(item, index) in form.tempMultStart" :key="index">
           <!-- Since tempMultStart and tempMultEnd share the same array lengths it *should* be fine to call form.tempMultEnd[index]-->
           {{ index + 1 }}: {{ convertTimeStamps(new Date(item)) }} to
           {{ convertTimeStamps(new Date(form.tempMultEnd[index])) }}
-
-          <i class="el-icon-close deleteTimeButton" @click="deleteTimePeriod(index)"></i>
+          <el-icon class="deleteTimeButton" @click="deleteTimePeriod(index)"> <Close /></el-icon>
         </span>
       </div>
     </span>
@@ -278,7 +280,12 @@
 </template>
 
 <script>
+import { Close } from '@element-plus/icons-vue'
+
 export default {
+  components: {
+    Close
+  },
   data () {
     return {
       currentIndex: 0,
@@ -628,16 +635,35 @@ export default {
 }
 </script>
 
+<style lang="scss">
+.el-picker-panel__footer .el-picker-panel__link-btn:first-child {
+  background-color: white !important;
+  color: $color-primary;
+}
+.el-picker-panel__footer .el-picker-panel__link-btn:first-child:hover {
+  opacity: 0.7;
+}
+.el-picker-panel__footer .el-picker-panel__link-btn:nth-child(2) {
+  margin: 0px;
+}
+</style>
 <style lang="scss" scoped>
 .stage {
   position: relative !important;
   top: 0 !important;
   height: auto;
 }
+.el-form {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.el-form-item {
+  padding: 5px;
+}
 .addFeatured {
-  background-color: $--color-black;
+  background-color: $color-black;
   height: calc(400px + 0.8em);
-  color: $--color-primary;
+  color: $color-primary;
   margin-top: 0.1em;
   margin-bottom: 0.1em;
   border-radius: 5px;
@@ -649,12 +675,12 @@ export default {
   margin-top: 1em;
 }
 .addFeatured:hover {
-  border: solid 1px $--color-primary;
-  outline: solid 3px $--color-primary;
+  border: solid 1px $color-primary;
+  outline: solid 3px $color-primary;
   outline-offset: -4px;
 }
 .addFeatured:hover .fas {
-  color: $--color-white;
+  color: $color-white;
 }
 .hiddenAddChart {
   display: none;
@@ -727,5 +753,10 @@ export default {
 .deleteTimeButton:hover {
   color: #d73f09;
   cursor: pointer;
+}
+.modalActions {
+  display: flex;
+  justify-content: end;
+  align-items: center;
 }
 </style>

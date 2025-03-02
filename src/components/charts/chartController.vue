@@ -11,34 +11,25 @@
     <linechart
       v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'"
       ref="linechart"
-      v-bind:chartData="chartData"
+      :key="childKey"
+      :chartData="chartData"
       :style="styleC"
       :height="height"
       :invertColors="invertColors"
+      :isMultipleTimePeriods="multipleTimePeriods(chartData.datasets)"
+      :buildXaxisTick="buildXaxisTick"
+      :buildLabel="buildLabel"
+      :intervalUnit="$store.getters[path + '/intervalUnit']"
     />
     <barchart
       v-if="graphType === 2 && chartData"
       ref="barchart"
-      v-bind:chartData="chartData"
+      :chartData="chartData"
       :style="styleC"
       :height="height"
       :invertColors="invertColors"
-    />
-    <doughnutchart
-      v-if="graphType === 3 && chartData"
-      ref="doughnutchart"
-      v-bind:chartData="chartData"
-      :style="styleC"
-      :height="height"
-      :invertColors="invertColors"
-    />
-    <piechart
-      v-if="graphType === 4 && chartData"
-      ref="piechart"
-      v-bind:chartData="chartData"
-      :style="styleC"
-      :height="height"
-      :invertColors="invertColors"
+      :buildLabel="buildLabel"
+      :intervalUnit="$store.getters[path + '/intervalUnit']"
     />
     <iframe
       v-if="this.path === 'map/building_35/block_175'"
@@ -78,10 +69,8 @@
   </div>
 </template>
 <script>
-import linechart from '@/components/charts/linechart.js'
-import barchart from '@/components/charts/barchart.js'
-import doughnutchart from '@/components/charts/doughnutchart.js'
-import piechart from '@/components/charts/piechart.js'
+import linechart from '@/components/charts/linechart.vue'
+import barchart from '@/components/charts/barchart.vue'
 
 export default {
   name: 'card',
@@ -94,9 +83,7 @@ export default {
   },
   components: {
     linechart,
-    barchart,
-    doughnutchart,
-    piechart
+    barchart
   },
   mounted () {
     console.log(this.$route.path)
@@ -108,6 +95,7 @@ export default {
   },
   data () {
     return {
+      childKey: 0,
       unsubscribe: null,
       loading: true,
       chartData: null,
@@ -209,12 +197,8 @@ export default {
             return this.$refs.linechart
           case 2:
             return this.$refs.barchart
-          case 3:
-            return this.$refs.doughnutchart
-          case 5:
-            return this.$refs.barlinechart
           default:
-            return this.$refs.piechart
+            return null
         }
       }
     }
@@ -229,40 +213,44 @@ export default {
       this.$store
         .dispatch(this.path + '/getData')
         .then(data => {
-          if (
-            this.chart &&
-            (this.graphType === 1 || this.graphType === 2) &&
-            data.datasets.length >= 1 &&
-            data.datasets[0].data.length >= 1
-          ) {
-            this.chart.update()
-
-            // format charts if there are multiple time periods
-            if (this.multipleTimePeriods(data.datasets)) {
-              this.formatMultipleTimePeriods(data.datasets)
-            }
-
-            let timeDif =
-              new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x).getTime() -
-              new Date(data.datasets[0].data[0].x).getTime()
-            let dif = 0
-            if (timeDif <= 24 * 60 * 60 * 1000) {
-              dif = 2
-              this.chart.options.scales.xAxes[0].time.unit = 'minute'
-            } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
-              dif = 1
-              this.chart.options.scales.xAxes[0].time.unit = 'hour'
-            } else {
-              this.chart.options.scales.xAxes[0].time.unit = 'day'
-            }
-            this.chart.options.scales.yAxes[0].ticks.maxTicksLimit = (this.height / 200) * 8 - dif
-          }
+          // Set the unit (metric type) for each dataset
+          data.datasets.forEach((dataset, index) => {
+            dataset.unit = this.unit(index)
+          })
+          // Set the chart data
           this.chartData = data
+          // Set the chart options
+          this.$nextTick(() => {
+            if (
+              this.chart &&
+              (this.graphType === 1 || this.graphType === 2) &&
+              data.datasets.length >= 1 &&
+              data.datasets[0].data.length >= 1
+            ) {
+              // format charts if there are multiple time periods
+              if (this.multipleTimePeriods(data.datasets)) {
+                this.formatMultipleTimePeriods(data.datasets)
+              }
 
-          console.log(this.path)
-          this.loading = false
-          // console.log('done loading!', this.path, data)
-          // this.$store.getters[this.path]
+              let timeDif =
+                new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x).getTime() -
+                new Date(data.datasets[0].data[0].x).getTime()
+              let dif = 0
+              if (timeDif <= 24 * 60 * 60 * 1000) {
+                dif = 2
+                this.chart.options.scales.x.time.unit = 'minute'
+              } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
+                dif = 1
+                this.chart.options.scales.x.time.unit = 'hour'
+              } else {
+                this.chart.options.scales.x.time.unit = 'day'
+              }
+              this.chart.options.scales.y.ticks.maxTicksLimit = (this.height / 200) * 8 - dif
+            }
+            console.log(this.path)
+            this.childKey++
+            this.loading = false
+          })
         })
         .catch(err => {
           console.log('could not load data', err)
@@ -439,7 +427,7 @@ export default {
 <style lang="scss" scoped>
 .NoData {
   text-align: center;
-  color: $--color-black;
+  color: $color-black;
   font-weight: 800;
   font-size: 22px;
 }

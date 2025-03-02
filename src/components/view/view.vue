@@ -318,7 +318,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  height: calc(100vh - #{$--nav-height});
+  height: calc(100vh - #{$nav-height});
   width: 100%;
   margin: 0;
   padding: 0;
@@ -330,9 +330,9 @@ export default {
   padding: 2em;
 }
 .addFeatured {
-  background-color: $--color-black;
+  background-color: $color-black;
   height: calc(400px + 0.8em);
-  color: $--color-primary;
+  color: $color-primary;
   margin-top: 0.1em;
   margin-bottom: 0.1em;
   border-radius: 5px;
@@ -344,12 +344,12 @@ export default {
   margin-top: 1em;
 }
 .addFeatured:hover {
-  border: solid 1px $--color-primary;
-  outline: solid 3px $--color-primary;
+  border: solid 1px $color-primary;
+  outline: solid 3px $color-primary;
   outline-offset: -4px;
 }
 .addFeatured:hover .fas {
-  color: $--color-white;
+  color: $color-white;
 }
 .hiddenAddChart {
   display: none;

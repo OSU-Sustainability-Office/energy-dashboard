@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <span class="message" :key="keyValue">{{ commitments[i] | capatilize }}</span>
+    <span class="message" :key="keyValue">{{ capatilize(commitments[i]) }}</span>
   </transition>
 </template>
 
@@ -38,9 +38,9 @@ export default {
       i++
     }
   },
-  filters: {
-    capatilize: function (value) {
-      return value.toUpperCase()
+  methods: {
+    capatilize (val) {
+      return val.toUpperCase()
     }
   }
 }

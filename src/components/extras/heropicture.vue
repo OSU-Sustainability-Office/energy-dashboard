@@ -104,7 +104,7 @@ export default {
 }
 .title {
   font-family: 'StratumNo2';
-  color: $--color-white;
+  color: $color-white;
   font-size: 3.2em;
   z-index: 5;
   position: absolute;

@@ -36,6 +36,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+a {
+  color: #007bff;
+  text-decoration: none;
+}
 .cont {
   text-align: center;
 }

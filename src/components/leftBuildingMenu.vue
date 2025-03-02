@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { EventBus } from '../event-bus'
+import emitter from '../event-bus'
 
 export default {
   name: 'leftBuildingMenu',
@@ -33,10 +33,10 @@ export default {
     toggleFlag: function () {
       if (this.isSmallScreen) {
         this.flag2 = !this.flag2
-        EventBus.$emit('inputData', this.flag2)
+        emitter.emit('inputData', this.flag2)
       } else {
         this.flag = !this.flag
-        EventBus.$emit('inputData', this.flag)
+        emitter.emit('inputData', this.flag)
       }
     }
   }

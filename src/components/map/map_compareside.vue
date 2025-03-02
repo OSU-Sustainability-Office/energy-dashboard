@@ -194,17 +194,17 @@ export default {
 }
 .innerContent {
   position: relative;
-  background-color: $--color-black;
+  background-color: $color-black;
   height: 100%;
   width: 100%;
   border-radius: 5px;
   overflow: hidden;
 }
 .title {
-  background-color: $--color-primary;
+  background-color: $color-primary;
   height: 60px;
-  color: $--color-white;
-  border-bottom: solid 1px $--color-white;
+  color: $color-white;
+  border-bottom: solid 1px $color-white;
   font-size: 26px;
   font-family: 'StratumNo2';
   padding-top: 17px;
@@ -223,7 +223,7 @@ export default {
   cursor: pointer;
 }
 .pics {
-  border-bottom: solid 1px $--color-white;
+  border-bottom: solid 1px $color-white;
 }
 $slope: calc(160px / 4);
 $border-width: 3px;
@@ -231,7 +231,7 @@ $border-width: 3px;
   white-space: nowrap;
   overflow: hidden;
   height: 160px !important;
-  background-color: $--color-white;
+  background-color: $color-white;
 }
 .slantImage {
   height: 100%;
@@ -272,42 +272,42 @@ $border-width: 3px;
   padding: 0.2em;
 }
 .rangeButton {
-  background-color: $--color-black;
-  color: darken($--color-white, 30%);
-  border-color: darken($--color-white, 30%);
+  background-color: $color-black;
+  color: color.adjust($color-white, $lightness: -30%);
+  border-color: color.adjust($color-white, $lightness: -30%);
   width: 100%;
 }
 .rangeButton:not(.active):hover {
-  background-color: #000; //darken($--color-primary, 10%);
-  color: $--color-white;
-  border-color: $--color-white;
+  background-color: #000; //color.adjust($color-primary, $lightness: -10%);
+  color: $color-white;
+  border-color: $color-white;
 }
 .rangeButton.active {
-  background-color: $--color-primary;
-  color: $--color-white;
-  border-color: $--color-white;
+  background-color: $color-primary;
+  color: $color-white;
+  border-color: $color-white;
 }
 .rangeButton.active:hover {
-  background-color: $--color-primary;
-  color: $--color-white;
-  border-color: $--color-white;
+  background-color: $color-primary;
+  color: $color-white;
+  border-color: $color-white;
 }
 .bigButton {
-  background-color: $--color-black;
-  color: darken($--color-white, 30%);
-  border-color: darken($--color-white, 30%);
+  background-color: $color-black;
+  color: color.adjust($color-white, $lightness: -30%);
+  border-color: color.adjust($color-white, $lightness: -30%);
   width: 98%;
   margin-bottom: 1em;
 }
 .bigButton:hover {
   background-color: #000;
-  color: $--color-white;
-  border-color: $--color-white;
+  color: $color-white;
+  border-color: $color-white;
 }
 .bigButton:active {
-  background-color: $--color-black;
-  color: $--color-white;
-  border-color: $--color-white;
+  background-color: $color-black;
+  color: $color-white;
+  border-color: $color-white;
 }
 .buttonParent {
   padding: 1em;

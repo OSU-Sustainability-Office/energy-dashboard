@@ -477,9 +477,6 @@ const actions = {
     }
 
     // Reformat the data so that it matches the API's format
-    // TODO: JRW 8.13.2020 Someone (probably me) needs to standardize how data is passed around the dashboard.
-    //       This reformatting issue should work itself out if we make every component consume a standardized datum class instance.
-    // TODO: MAD 5.25.2022 ^ That is a good idea, I should do that.
     let dataArray = []
     cacheKeys.forEach(key => {
       let dataObj = {}

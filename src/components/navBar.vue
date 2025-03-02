@@ -47,12 +47,12 @@ export default {
 }
 .nav-content {
   display: flex;
-  justify-content: left;
+  justify-content: start;
   padding: 0px 20px;
   align-items: left;
   padding-top: 0px;
   left: 10px;
-  background-color: $--color-primary !important;
+  background-color: $color-primary !important;
 }
 .nav-items {
   display: flex;
@@ -80,6 +80,7 @@ i {
   color: white;
   margin-top: 10px;
   font-size: 16px;
+  text-decoration: none;
 }
 .router-link-active {
   background-color: rgba(0, 0, 0, 0.3);

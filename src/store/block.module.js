@@ -15,7 +15,7 @@ const state = () => {
     name: null, // String
     dateInterval: null, // Int
     intervalUnit: null, // String (minute, hour, day)
-    graphType: null, // Int (1: Line, 2: Bar, 3: Doughnut, 4: Piechart, 5: LineBar)
+    graphType: null, // Int (1: Line, 2: Bar)
     dateStart: null, // Epoch time
     dateEnd: null, // Epoch time
     id: null, // Integer DB ID

@@ -27,10 +27,12 @@
             @command="handle"
           >
             Compare ({{ Math.min(4, compareStories.length) }} Buildings)
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="q">Quick Compare</el-dropdown-item>
-              <el-dropdown-item command="d">Compare in FullScreen</el-dropdown-item>
-            </el-dropdown-menu>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="q">Quick Compare</el-dropdown-item>
+                <el-dropdown-item command="d">Compare in FullScreen</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
           </el-dropdown>
           <el-button
             type="info"
@@ -64,12 +66,12 @@ export default {
 <style lang="scss" scoped>
 .stage_prompt {
   width: 400px;
-  height: 210px;
+  height: 250px;
   position: absolute;
   top: 20px;
   left: calc(50% - 200px);
   background-color: rgba(0, 0, 0, 0.8);
-  color: $--color-white;
+  color: $color-white;
   z-index: 402;
   text-align: center;
 }
@@ -78,15 +80,15 @@ export default {
   font-size: 18px;
 }
 .button {
-  border: solid 1px $--color-white;
+  border: solid 1px $color-white;
   border-radius: 5px;
   margin: 10px;
 }
 .button:hover {
-  border: solid 1px $--color-white;
+  border: solid 1px $color-white;
 }
 .button:active {
-  border: solid 1px $--color-white;
+  border: solid 1px $color-white;
 }
 @media only screen and (max-width: 600px) {
   .stage_prompt {

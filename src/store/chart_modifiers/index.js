@@ -8,17 +8,10 @@ import LineAccumulatedReal from './line_bar/accumulated_real.js'
 import LineBaselinePerc from './line_bar/baseline_perc.js'
 import LineBaselineAvg from './line_bar/avg_accumulated_real.js'
 import LineBase from './line_bar/base.js'
-import PieBase from './pie_doughnut/base.js'
 import LineEnergyChange from './line_bar/energy_change.js'
 
 export default function (graphType, point) {
-  if (graphType === 3 || graphType === 4) {
-    // Pie or Doughnut
-    switch (point) {
-      default:
-        return new PieBase()
-    }
-  } else if (graphType === 1 || graphType === 2) {
+  if (graphType === 1 || graphType === 2) {
     // Line or Bar
     switch (point) {
       case 'accumulated_real':

@@ -23,13 +23,12 @@
           </p>
         </div>
         <el-input v-model="search" class="searchMapInput" placeholder="Search for buildings">
-          <i class="el-icon-search el-input__icon" slot="prefix"></i>
-          <i
-            class="el-icon-close el-input__icon"
-            slot="suffix"
-            @click="resetSearchInput()"
-            v-if="this.search != ''"
-          ></i>
+          <template #prefix>
+            <el-icon class="searchIcon"><Search /></el-icon>
+          </template>
+          <template #suffix>
+            <el-icon v-if="search !== ''" @click="search = ''" class="closeIcon"><Close /></el-icon>
+          </template>
         </el-input>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
@@ -85,7 +84,7 @@
       </el-menu>
 
       <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
-        <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map">
+        <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map" @ready="updateMapRef">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
           <compareButton @startCompare="startCompare"></compareButton>
           <div @click="resetSearchInput()">
@@ -93,8 +92,7 @@
           </div>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
-            v-for="building of this.$store.getters['map/buildings']"
-            v-if="building.geoJSON"
+            v-for="building of filteredBuildings"
             :key="building.id * rKey"
             :geojson="building.geoJSON"
             :options="buildingOptions"
@@ -109,15 +107,20 @@
         @compare="showComparison"
       />
       <prompt_error v-if="building_compare_error" @cancel="stopCompareError" @compare="showComparison" />
-      <transition name="side">
-        <compareSide v-if="showCompareSide" @hide="showCompareSide = false" :compareStories="compareStories" />
-        <sideView ref="sideview" v-if="showSide" @hide="showSide = false" @startCompare="startCompare"></sideView>
-      </transition>
+      <transition-group name="side" tag="div">
+        <compareSide
+          v-if="showCompareSide"
+          key="compareSide"
+          @hide="showCompareSide = false"
+          :compareStories="compareStories"
+        />
+        <sideView ref="sideview" v-if="showSide" key="sideView" @hide="showSide = false" @startCompare="startCompare" />
+      </transition-group>
     </el-col>
   </el-row>
 </template>
 <script>
-import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
+import { LMap, LTileLayer, LGeoJson } from '@vue-leaflet/vue-leaflet'
 import sideView from '@/components/map/sideView.vue'
 import compareButton from '@/components/map/compareButton.vue'
 import prompt from '@/components/map/map_prompt.vue'
@@ -125,8 +128,9 @@ import prompt_error from '@/components/map/prompt_error.vue'
 import compareSide from '@/components/map/map_compareside.vue'
 import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons.vue'
-import { EventBus } from '../../event-bus'
+import emitter from '../../event-bus'
 import leftBuildingMenu from '@/components/leftBuildingMenu.vue'
+import { Search, Close } from '@element-plus/icons-vue'
 
 const DEFAULT_LAT = 44.56335
 const DEFAULT_LON = -123.2858
@@ -149,9 +153,14 @@ export default {
     compareSide,
     switchButtons,
     leftBuildingMenu,
-    compareButton
+    compareButton,
+    Search,
+    Close
   },
   computed: {
+    filteredBuildings () {
+      return this.$store.getters['map/buildings'].filter(building => building.geoJSON)
+    },
     showSide: {
       get () {
         return this.$store.getters['modalController/modalName'] === 'map_side_view'
@@ -223,38 +232,8 @@ export default {
             if (!e.target.setStyle) return
             e.target.setStyle({ ...e.target.oldStyle })
           })
-        },
-        style: feature => {
-          var color = '#000'
-          switch (feature.properties.group) {
-            case 'Residence':
-              color = '#D3832B'
-              break
-            case 'Academics':
-              color = '#0D5257'
-              break
-            case 'Events & Admin':
-              color = '#7A6855'
-              break
-            case 'Athletics & Rec':
-              color = '#FFB500'
-              break
-            case 'Operations':
-              color = '#4169E1'
-              break
-            case 'Dining':
-              color = '#4A773C'
-              break
-            default:
-              break
-          }
-          return {
-            weight: 2,
-            color: color,
-            opacity: 1,
-            fillColor: color,
-            fillOpacity: 0.7
-          }
+          const color = this.getCategoryColor(feature.properties.group)
+          layer.setStyle({ fillColor: color, color: color, opacity: 1, fillOpacity: 0.7, weight: 2 })
         }
       }
     }
@@ -262,7 +241,7 @@ export default {
   methods: {
     polyClick: function (id, feature, center) {
       if (!this.askingForComparison) {
-        window.vue.$store.dispatch('modalController/openModal', {
+        this.$store.dispatch('modalController/openModal', {
           name: 'map_side_view',
           id: id
         })
@@ -349,11 +328,13 @@ export default {
       }
     },
     initBuildingRename () {
-      for (let layer of Object.values(this.map._layers)) {
-        if (layer.feature && layer.feature.geometry && layer.feature.geometry.type === 'Polygon') {
-          layer.feature.properties.name = this.$store.getters['map/building'](layer.feature.properties.id).name
+      this.map.on('layeradd', event => {
+        if (event.layer.feature?.geometry?.type === 'Polygon') {
+          event.layer.feature.properties.name = this.$store.getters['map/building'](
+            event.layer.feature.properties.id
+          ).name
         }
-      }
+      })
     },
     removeAllMarkers: function () {
       for (let marker of this.compareMarkers) {
@@ -392,7 +373,7 @@ export default {
           })
 
           if (target === 'q') {
-            window.vue.$store.dispatch('modalController/openModal', {
+            this.$store.dispatch('modalController/openModal', {
               name: 'map_compare_side',
               path: path
             })
@@ -463,17 +444,13 @@ export default {
       this.removeAllMarkers()
     },
     isDisplayed: function (v) {
-      if (this.selected.indexOf(v) >= 0) {
-        return true
-      } else {
-        return false
-      }
+      return this.selected.includes(v)
     },
     handleSelect: function (string) {
-      if (this.selected.indexOf(string) >= 0) {
-        this.selected.splice(this.selected.indexOf(string), 1)
+      if (this.selected.includes(string)) {
+        this.selected = this.selected.filter(item => item !== string)
       } else {
-        this.selected.push(string)
+        this.selected = [...this.selected, string]
       }
     },
     computedColor: function (percentage) {
@@ -502,28 +479,105 @@ export default {
         result.push(Math.round(typicalColor[2] - greenInt[2] * compare))
       }
       return 'rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')'
+    },
+    getCategoryColor: function (group) {
+      switch (group) {
+        case 'Academics':
+          return '#0D5257'
+        case 'Events & Admin':
+          return '#7A6855'
+        case 'Athletics & Rec':
+          return '#FFB500'
+        case 'Dining':
+          return '#4A773C'
+        case 'Operations':
+          return '#4169E1'
+        case 'Residence':
+          return '#D3832B'
+        default:
+          return '#000'
+      }
+    },
+    updateLayerCategoryStyle (layer) {
+      const color = this.getCategoryColor(layer.feature.properties.group)
+      layer.setStyle({ fillColor: color, color: color })
+    },
+    async updateEnergySlopeColor (layer) {
+      try {
+        // Retrieves building object from store using leaflet property id
+        await this.$store.getters['map/promise']
+        const building = this.$store.getters['map/building'](layer.feature.properties.id)
+        await this.$store.getters[building.path + '/promise']
+
+        // Retrieves primary energy group from store
+        const mg = this.$store.getters[building.path + '/primaryGroup']('Electricity')
+        const defaultBlock = this.$store.getters[building.path + '/block'](mg.id)
+        await this.$store.getters[defaultBlock.path + '/promise']
+        const defaultChart = this.$store.getters[defaultBlock.path + '/charts'][0]
+
+        // Gets current date and date 60 days ago
+        const currentDate = new Date()
+        const minus60 = new Date(currentDate.getTime() - 60 * 24 * 60 * 60 * 1000)
+        const reqPayload = {
+          dateEnd: Math.floor(currentDate.getTime() / 1000),
+          dateStart: Math.floor(minus60.getTime() / 1000),
+          intervalUnit: 'day',
+          dateInterval: 1,
+          graphType: 1
+        }
+        const data = await this.$store.dispatch(defaultChart.path + '/getData', reqPayload)
+
+        // Compute slope (least squares algorithm)
+        const series = data.data
+        let meanY = series.reduce((acc, cur) => acc + cur.y, 0) / series.length
+        let meanX = series.length / 2 // No need to use date can just use index
+        let accmxx = 0
+        let accmxxyy = 0
+        series.forEach((point, idx) => {
+          accmxx += (idx - meanX) * (idx - meanX)
+          accmxxyy += (point.y - meanY) * (idx - meanX)
+        })
+        const slope = accmxxyy / accmxx
+        const normalizedSlope = slope / meanY
+
+        // Convert slope to color
+        const color = this.computedColor(normalizedSlope)
+        layer.setStyle({ fillColor: color, color: color })
+      } catch (err) {
+        console.error(err)
+        layer.setStyle({ fillColor: '#000', color: '#000' })
+      }
+    },
+    updateMapRef () {
+      this.map = this.$refs.map.leafletObject
+      this.map.zoomControl.setPosition('topleft')
+      this.initBuildingRename()
     }
   },
   async created () {
     await this.$store.dispatch('map/loadGeometry')
     this.mapLoaded = true
     this.message = window.innerWidth > 844
-    EventBus.$on('inputData', inputWord => {
+
+    // Event listener for input data
+    this.handleInputData = inputWord => {
       this.message = inputWord
-    })
-    this.map.zoomControl.setPosition('topleft')
-    this.initBuildingRename()
+    }
+    emitter.on('inputData', this.handleInputData)
   },
   mounted () {
     this.$nextTick(() => {
-      this.map = this.$refs.map.mapObject
+      this.map = this.$refs.map.leafletObject
     })
+  },
+  beforeUnmount () {
+    emitter.off('inputData', this.handleInputData)
   },
   watch: {
     selectedOption (energyFilter) {
       this.rKey++
       this.$nextTick(() => {
-        this.map = this.$refs.map.mapObject
+        this.map = this.$refs.map.leafletObject
         for (var layerKey of Object.keys(this.map._layers)) {
           let layer = this.map._layers[layerKey]
           if (layer.feature && energyFilter !== 'All') {
@@ -542,108 +596,24 @@ export default {
       })
     },
     grouping: {
-      handler: function (value) {
+      async handler () {
         this.search = ''
         this.rKey++
         this.mapLoaded = false
-        this.$nextTick(async () => {
-          this.map = this.$refs.map.mapObject
-          let promises = []
-          for (var layerKey of Object.keys(this.map._layers)) {
-            let layer = this.map._layers[layerKey]
-            if (layer.feature) {
-              if (this.grouping === 'Category') {
-                var color = '#000'
-                switch (layer.feature.properties.group) {
-                  case 'Academics':
-                    color = '#0D5257'
-                    break
-                  case 'Events & Admin':
-                    color = '#7A6855'
-                    break
-                  case 'Athletics & Rec':
-                    color = '#FFB500'
-                    break
-                  case 'Dining':
-                    color = '#4A773C'
-                    break
-                  case 'Operations':
-                    color = '#4169E1'
-                    break
-                  case 'Residence':
-                    color = '#D3832B'
-                    break
-                  default:
-                    break
-                }
-                layer.setStyle({ fillColor: color, color: color })
-              } else if (this.grouping === 'Energy Trend') {
-                promises.push(
-                  new Promise(async (resolve, reject) => {
-                    /*
-                    Ok, it *looks like* each Vuex logical object (building, chart, block, etc.)
-                    contains a promise to resolve the data required from the api.  Unsure if
-                    it's actually being used in practice.
-                  */
-                    await this.$store.getters['map/promise']
-                    // Retrieves building object from store using leaflet property id
-                    let building = this.$store.getters['map/building'](layer.feature.properties.id)
-                    await this.$store.getters[building.path + '/promise']
-                    let mg = this.$store.getters[building.path + '/primaryGroup']('Electricity')
-                    if (mg == null) {
-                      console.error(building.name, building.path, building)
-                      resolve()
-                    }
-                    let defaultBlock = this.$store.getters[building.path + '/block'](mg.id)
-                    await this.$store.getters[defaultBlock.path + '/promise']
-                    let defaultChart = this.$store.getters[defaultBlock.path + '/charts'][0]
-                    let currentDate = new Date()
-                    let minus60 = new Date(currentDate.getTime() - 60 * 24 * 60 * 60 * 1000)
-                    const reqPayload = {
-                      dateEnd: parseInt((currentDate.getTime() - (currentDate.getTime() % 900) * 1000) / 1000),
-                      dateStart: parseInt((minus60.getTime() - (minus60.getTime() % 900) * 1000) / 1000),
-                      intervalUnit: 'day',
-                      dateInterval: 1,
-                      graphType: 1
-                    }
-                    let data = await this.$store.dispatch(defaultChart.path + '/getData', reqPayload)
-                    // Below is an algorithm to compute least squares linear regression
-                    let meanY = 0
-                    for (let index = 0; index < data.data.length; index++) {
-                      meanY += data.data[index].y
-                    }
-                    meanY /= data.data.length
-                    let meanX = data.data.length / 2 // No need to use date can just use index
-                    let accmxx = 0
-                    let accmxxyy = 0
-                    for (let index = 0; index < data.data.length; index++) {
-                      accmxx += Math.pow(index - meanX, 2) // index - meanX
-                      accmxxyy += (data.data[index].y - meanY) * (index - meanX)
-                    }
-                    // accmxx =
-                    let slope = accmxxyy / accmxx
-                    let normalizedSlope = slope / meanY
-                    // slope /= 30
-                    layer.setStyle({
-                      fillColor: this.computedColor(normalizedSlope),
-                      color: this.computedColor(normalizedSlope)
-                    })
-                    // if (normalizedSlope > 0.001) {
-                    //   layer.setStyle({ fillColor: '#d62326', color: '#d62326' })
-                    // } else if (normalizedSlope < -0.001) {
-                    //   layer.setStyle({ fillColor: '#4A773C', color: '#4A773C' })
-                    // } else {
-                    //   layer.setStyle({ fillColor: '#FFB500', color: '#FFB500' })
-                    // }
-                    resolve()
-                  })
-                )
-              }
+        await this.$nextTick()
+        let promises = []
+        this.$refs.geoLayer.forEach(geoJsonComponent => {
+          const geoJsonLayer = geoJsonComponent.leafletObject
+          geoJsonLayer.eachLayer(async layer => {
+            if (this.grouping === 'Category') {
+              this.updateLayerCategoryStyle(layer)
+            } else if (this.grouping === 'Energy Trend') {
+              promises.push(this.updateEnergySlopeColor(layer))
             }
-          }
-          await Promise.all(promises)
-          this.mapLoaded = true
+          })
         })
+        await Promise.all(promises)
+        this.mapLoaded = true
       }
     },
     search: function (v) {
@@ -666,7 +636,7 @@ export default {
     selected: function (val) {
       this.rKey++
       this.$nextTick(() => {
-        this.map = this.$refs.map.mapObject
+        this.map = this.$refs.map.leafletObject
         for (var layerKey of Object.keys(this.map._layers)) {
           let layer = this.map._layers[layerKey]
           if (layer.feature) {
@@ -687,20 +657,21 @@ export default {
 <style scoped lang="scss">
 $sideMenu-width: 250px;
 .colorByTitle {
-  color: $--color-white;
+  color: $color-white;
   font-size: 26px;
   text-align: center;
   font-family: 'stratumno2';
 }
 .energyRadioButtons {
   margin-left: 20px;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 .energyRadioGroup {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .el-radio {
   color: white;
+  height: 0px;
 }
 .stage {
   padding: 0;
@@ -715,7 +686,7 @@ $sideMenu-width: 250px;
 }
 
 .sideMenu {
-  background-color: $--color-black;
+  background-color: $color-black;
   position: absolute;
   z-index: 2000;
   width: $sideMenu-width - 10px;
@@ -723,13 +694,13 @@ $sideMenu-width: 250px;
   top: 170px;
 }
 
-::v-deep .el-menu-item-group__title {
-  margin-top: -50px;
+:deep(.el-menu-item-group__title) {
+  margin-top: -35px;
 }
 
 .el-menu-item-group {
   margin-top: 45px;
-  margin-bottom: 27px;
+  margin-bottom: 15px;
 }
 
 .sideMenuGroupTitle {
@@ -738,7 +709,6 @@ $sideMenu-width: 250px;
   font-weight: bolder;
 }
 .mapContainer {
-  background-color: blue;
   position: absolute;
   top: 0;
   left: 0px;
@@ -756,7 +726,7 @@ $sideMenu-width: 250px;
 .side-leave-active {
   transition: all 1s;
 }
-.side-enter {
+.side-enter-from {
   opacity: 0;
   transform: translateX(300px);
 }
@@ -764,11 +734,11 @@ $sideMenu-width: 250px;
   opacity: 1;
   transform: translateX(0px);
 }
-.side-leave {
+.side-leave-from {
   opacity: 1;
   transform: translateY(0px);
 }
-.side-leave-to /* .fade-leave-active below version 2.1.8 */ {
+.side-leave-to {
   opacity: 0;
   transform: translateY(500px);
 }
@@ -886,7 +856,7 @@ $sideMenu-width: 250px;
   position: absolute;
   top: 45px;
   left: 10px;
-  width: 220px;
+  width: 225px;
   height: 40px;
   background-color: white;
   border: 2px solid rgba(0, 0, 0, 0.2);
@@ -896,10 +866,15 @@ $sideMenu-width: 250px;
   justify-content: center;
   z-index: 500;
 }
-::v-deep .el-input__icon {
+:deep(.el-input__wrapper) {
+  padding: 5px;
+}
+.searchIcon,
+.closeIcon {
+  cursor: pointer;
   color: #d73f09;
 }
-::v-deep .el-input__suffix {
+.closeIcon {
   font-size: 28px;
 }
 .searchMapResult {
@@ -924,6 +899,10 @@ $sideMenu-width: 250px;
   cursor: pointer;
   font-size: 16px;
   margin-bottom: -18px;
+  line-height: 1.8;
+}
+.searchMapResult:first-child {
+  margin-top: 10px;
 }
 .searchMapResult:hover {
   background-color: #fafa33;
@@ -936,9 +915,6 @@ $sideMenu-width: 250px;
 }
 .longBuildingName:hover {
   transform: translateX(calc(200px - 100%));
-}
-.el-icon-close {
-  cursor: pointer;
 }
 .searchResultDiv {
   margin-top: 10px;

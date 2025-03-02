@@ -4,14 +4,14 @@
 -->
 <template>
   <el-row class="buttons">
-    <el-col class="rangeButtonParent" v-bind:class="{ active: currentRange == 0 }">
+    <el-col :span="8" class="rangeButtonParent" v-bind:class="{ active: currentRange == 0 }">
       <el-button class="rangeButton" @click="currentRange = 0">{{ campaign ? 'Past 6 Hours' : 'Week' }}</el-button>
     </el-col>
-    <el-col class="rangeButtonParent" v-bind:class="{ active: currentRange == 1 || currentRange == 3 }">
+    <el-col :span="8" class="rangeButtonParent" v-bind:class="{ active: currentRange == 1 || currentRange == 3 }">
       <!--Change default interval for Solar Panels-->
       <el-button class="rangeButton" @click="currentRange = 1">{{ campaign ? 'Past Day' : '60 Days' }}</el-button>
     </el-col>
-    <el-col class="rangeButtonParent" v-bind:class="{ active: currentRange == 2 }">
+    <el-col :span="8" class="rangeButtonParent" v-bind:class="{ active: currentRange == 2 }">
       <el-button class="rangeButton" @click="currentRange = 2">{{
         campaign ? 'Past ' + days + ' Days' : 'Year'
       }}</el-button>
@@ -154,9 +154,8 @@ $clipInset: 10px;
 
 .rangeButtonParent {
   position: relative;
-  width: 33.33%;
   padding: $parentPadding;
-  background-color: darken($--color-white, 30%);
+  background-color: color.adjust($color-white, $lightness: -30%);
   clip-path: polygon(
     #{calc($clipInset / $buttonHeight) * ($buttonHeight + 2 * $parentPadding)} 0%,
     0% 100%,
@@ -166,7 +165,8 @@ $clipInset: 10px;
   margin: 0 !important;
 }
 .rangeButtonParent:not(.active) {
-  top: calc((($activePadding + $activeheight) - ($buttonHeight + $parentPadding))/2);
+  top: calc((($activePadding + $activeheight) - ($buttonHeight + $parentPadding)) / 2);
+  height: $buttonHeight + 4px;
 }
 .rangeButtonParent:nth-child(1) {
   border-radius: 5px 0px 0px 5px;
@@ -193,8 +193,8 @@ $clipInset: 10px;
 .rangeButton {
   border-radius: 0px;
   clip-path: polygon(#{$clipInset} 0%, 0% 100%, calc(100% - #{$clipInset}) 100%, 100% 0%);
-  background-color: $--color-black;
-  color: darken($--color-white, 30%);
+  background-color: $color-black;
+  color: color.adjust($color-white, $lightness: -30%);
   border: 0px !important;
   width: 100%;
   height: $buttonHeight;
@@ -212,14 +212,14 @@ $clipInset: 10px;
 }
 .rangeButtonParent:not(.active):hover .rangeButton {
   z-index: 3;
-  background-color: $--color-black; //darken($--color-primary, 10%);
-  color: $--color-white;
+  background-color: $color-black; //color.adjust($color-primary, $lightness: -10%);
+  color: $color-white;
   border: 0px;
 }
 
 .rangeButtonParent:not(.active):hover {
   z-index: 2;
-  background-color: $--color-white; //darken($--color-primary, 10%);
+  background-color: $color-white; //color.adjust($color-primary, $lightness: -10%);
 }
 
 .rangeButtonParent.active {
@@ -230,8 +230,9 @@ $clipInset: 10px;
     100% 0%
   );
   padding: $activePadding;
-  background-color: $--color-white;
+  background-color: $color-white;
   z-index: 2;
+  height: $activeheight + 4px;
 }
 
 .rangeButtonParent:nth-child(1).active {
@@ -265,13 +266,13 @@ $clipInset: 10px;
   clip-path: polygon(#{calc($clipInset / $buttonHeight) * $activeheight} 0%, 0% 100%, 100% 100%, 100% 0%);
 }
 .rangeButtonParent.active .rangeButton {
-  background-color: $--color-primary;
-  color: $--color-white;
+  background-color: $color-primary;
+  color: $color-white;
   height: $activeheight;
 }
 .rangeButtonParent.active .rangeButton:hover {
-  background-color: $--color-primary;
-  color: $--color-white;
+  background-color: $color-primary;
+  color: $color-white;
   border: 0px;
 }
 </style>

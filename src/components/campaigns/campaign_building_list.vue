@@ -13,16 +13,16 @@
     <el-row class="buildingScroll" v-loading="!loaded" element-loading-background="rgba(0, 0, 0, 0.8)">
       <el-row class="buildingRow" v-if="!loaded"> &nbsp; </el-row>
       <el-row class="buildingRow" v-for="block in blocks" :key="block.path" ref="buildingRows">
-        <el-col v-if="loaded" :class="[value === block.path ? 'buildingCol selected' : 'buildingCol']" :span="24">
-          <div :class="[value === block.path ? 'outerClip selected' : 'outerClip']">
+        <el-col v-if="loaded" :class="[modelValue === block.path ? 'buildingCol selected' : 'buildingCol']" :span="24">
+          <div :class="[modelValue === block.path ? 'outerClip selected' : 'outerClip']">
             <div
               v-if="!isNaN(accumulatedPercentage(block.path))"
-              :class="[value === block.path ? 'innerClip selected' : 'innerClip']"
+              :class="[modelValue === block.path ? 'innerClip selected' : 'innerClip']"
               :style="`background-color:${computedColor(block.path)};`"
               @click="buildingClick(block.path)"
             >
               <i class="fas fa-trophy" v-if="place(block.path) <= 3 && place(block.path) >= 1"
-                ><span :class="[value === block.path ? 'innerTrophy selected' : 'innerTrophy']">{{
+                ><span :class="[modelValue === block.path ? 'innerTrophy selected' : 'innerTrophy']">{{
                   place(block.path)
                 }}</span></i
               >
@@ -37,11 +37,11 @@
             <!-- Display "No Data" on block, remove button functionality of block if NaN percentage detected-->
             <div
               v-else
-              :class="[value === block.path ? 'innerClip selected' : 'innerClipNoData']"
+              :class="[modelValue === block.path ? 'innerClip selected' : 'innerClipNoData']"
               :style="`background-color:${computedColor(block.path)};`"
             >
               <i class="fas fa-trophy" v-if="place(block.path) <= 3 && place(block.path) >= 1"
-                ><span :class="[value === block.path ? 'innerTrophy selected' : 'innerTrophy']">{{
+                ><span :class="[modelValue === block.path ? 'innerTrophy selected' : 'innerTrophy']">{{
                   place(block.path)
                 }}</span></i
               >
@@ -55,7 +55,7 @@
 </template>
 <script>
 export default {
-  props: ['path', 'loaded', 'value'],
+  props: ['path', 'loaded', 'modelValue'],
   data () {
     return {
       activePath: null
@@ -109,10 +109,10 @@ export default {
   },
   methods: {
     buildingClick: function (building) {
-      if (this.value === building) {
-        this.$emit('input', this.path + '/block_default')
+      if (this.modelValue === building) {
+        this.$emit('update:modelValue', this.path + '/block_default')
       } else {
-        this.$emit('input', building)
+        this.$emit('update:modelValue', building)
       }
     },
     accumulatedPercentage: function (path) {
@@ -166,13 +166,13 @@ export default {
 <style scoped lang="scss">
 .title {
   font-size: 34px;
-  color: $--color-white;
+  color: $color-white;
   font-family: 'StratumNo2';
   text-align: left;
   padding-bottom: 1em;
 }
 .buildingContainer {
-  background-color: $--color-black;
+  background-color: $color-black;
   border-radius: 5px;
   padding: 1em;
 }
@@ -187,24 +187,24 @@ export default {
 }
 .buildingCol {
   font-size: 24px;
-  color: $--color-white;
+  color: $color-white;
   font-family: 'StratumNo2';
   cursor: pointer;
 }
 .buildingCol.selected {
-  color: $--color-primary;
+  color: $color-primary;
 }
 .buildingCol:hover .innerClip:not(.selected) {
-  background-color: $--color-black !important;
+  background-color: $color-black !important;
 }
 $clippath: polygon(2.5% 0%, 0% 100%, 97.5% 100%, 100% 0%);
 .outerClip {
   padding: 0.05em;
-  background-color: $--color-white;
+  background-color: $color-white;
   clip-path: $clippath;
 }
 .outerClip.selected {
-  background-color: $--color-white;
+  background-color: $color-white;
 }
 .innerClip {
   padding: 0.5em;
@@ -218,7 +218,7 @@ $clippath: polygon(2.5% 0%, 0% 100%, 97.5% 100%, 100% 0%);
   cursor: auto;
 }
 .innerClip.selected {
-  background-color: $--color-white !important;
+  background-color: $color-white !important;
 }
 .fa-trophy {
   position: relative;
@@ -231,11 +231,11 @@ $clippath: polygon(2.5% 0%, 0% 100%, 97.5% 100%, 100% 0%);
   width: 100%;
   text-align: center;
   font-size: 16px;
-  color: $--color-primary;
+  color: $color-primary;
   font-family: 'StratumNo2';
 }
 .innerTrophy.selected {
-  color: $--color-white;
+  color: $color-white;
 }
 
 @media only screen and (max-width: 600px) {

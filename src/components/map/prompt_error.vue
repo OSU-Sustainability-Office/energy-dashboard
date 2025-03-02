@@ -24,12 +24,12 @@ export default {}
 <style lang="scss" scoped>
 .stage_prompt {
   width: 400px;
-  height: 170px;
+  height: 220px;
   position: absolute;
   top: 20px;
   left: calc(50% - 200px);
   background-color: rgba(0, 0, 0, 0.8);
-  color: $--color-white;
+  color: $color-white;
   z-index: 402;
   text-align: center;
 }
@@ -38,15 +38,15 @@ export default {}
   font-size: 20px;
 }
 .button {
-  border: solid 1px $--color-white;
+  border: solid 1px $color-white;
   border-radius: 5px;
   margin: 10px;
 }
 .button:hover {
-  border: solid 1px $--color-white;
+  border: solid 1px $color-white;
 }
 .button:active {
-  border: solid 1px $--color-white;
+  border: solid 1px $color-white;
 }
 @media only screen and (max-width: 600px) {
   .stage_prompt {
