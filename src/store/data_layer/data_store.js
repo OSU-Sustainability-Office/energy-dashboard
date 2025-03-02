@@ -1,64 +1,33 @@
 /*
  * Filename: data_store.js
- * Info:
- *  This file provides a (semi-)persistent cache for time series energy data. The
- *  goal is to accumulate data in this datastore as the user navigates around the
- *  energy dashboard. As an optimization, data will be read from this datastore
- *  before any additional data is requested from the API.
+ * Description:
+ *  Provides a semi-persistent cache for time-series energy data, reducing redundant API requests.
+ *  Data is stored as users navigate the dashboard and checked before fetching new data.
  *
- *  For example, let's say a user starts a new session and visits the map. Since this user just
- *  started their session, no data will be in the datastore. If the user clicks on the MU, viewing
- *  a week's worth of data from 7/19/2020 thru 7/25/2020, then the MU electricity data will be
- *  written to the datastore.
+ * Example:
+ *  - User views electricity data for 7/19/2020 - 7/25/2020 → Stored in cache.
+ *  - Later, they request 6/26/2020 - 7/25/2020 → Only missing data (6/26 - 7/19) is fetched.
  *
- *  Now, let's say that same user (in the same session) visits a few more dashbaords
- *  before eventually returning to the MU's dashboard. The user modifies the date
- *  range to view a month of data (from 6/26/2020 to 7/25/2020). Since we already
- *  have data from 7/19-7/25 stored in the local datastore, only the data from
- *  6/26-7/19 will be requested from the API.
- *
- * UPDATE: 5/25/22
- * So, there's a slight problem with our persistent cache: there's no efficient browser API
- * for storing large quantitites of meter-data.  Using localStorage is insufficient as its
- * capacity is easily overloaded, and indexedDB, while capable of storing large quantities
- * of data, is incredibly slow (https://rxdb.info/slow-indexeddb.html).  There are ways to
- * optimize its performance via batch-ing requests, but at the current moment it seems logical
- * to offload performance costs to the API side of things to maintain the usability of the dashboard.
- *
- * The persistent storage API is still enbabled for batchData requests (e.g. for the LINc building)
- * but for non-batched meter requests (the majority of the dashboard requests) we're just going to
- * not persistently store the meter data on the user-end.
+ * Storage:
+ *  The cache is stored in Vuex and indexedDB for persistence across sessions.
+ *  IndexedDB is used for batch data but not single meter requests due to performance concerns.
+ *  LocalStorage is avoided due to capacity limits.
  */
 
 import API from '../api.js'
 
 const state = () => {
   return {
-    cache: {
-      // Initially empty
-      // Generally has this structure:
-      // {
-      //   meterId: {
-      //     uom: {
-      //       Contains instances of the datum class
-      //       Each data class instance is keyed with its epoch timestamp
-      //     }
-      //   }
-      // }
-    },
-    // Prevent extraneous requests when possible
-    // Maps [uom][meter_id] -> range set of queried data
-    requestStore: {},
-    indexedDBInstance: undefined
+    cache: {},  // Stores time-series data by meterId and unit of measure (uom)
+    requestStore: {}, // Tracks queried data ranges to prevent redundant requests
+    indexedDBInstance: undefined // IndexedDB instance for persistent storage
   }
 }
 
-/*
- To prevent exceeding the AWS lambda response body size limit we'll take into account the maximum response size we can send.
-*/
-const RESPONSE_HEADER_SIZE = 1000 // this is an over-calculation, the actual header is normally 222 bytes.
+// AWS Lambda has a 6MB response body limit; ensure requests stay within this limit.
+const RESPONSE_HEADER_SIZE = 1000 // Overestimated; actual header is ~222 bytes.
 const DATA_ITEM_SIZE = 51 // (32 + 2 + 2 + 4 + 11)=51, an over-estimate for each item.
-const RESPONSE_MAX_SIZE = 0x600000 // 6MB limit = 6*(2^20) Bytes
+const RESPONSE_MAX_SIZE = 0x300000 // 6MB limit.
 
 const actions = {
   // Copies "cache" object to indexedDB for persistent storage
@@ -84,22 +53,32 @@ const actions = {
     }
   },
 
-  // Loads indexedDB into the Vuex store
-  // The indexedDB database holds "Object Stores" which hold persistent data within the user's browser.
-  // There are currently one defined object store:
-  //    MeterReadings -> stores queried meter measurements from the api (persistent cache object)
-  //
-  // The MeterReadings's structure is pretty similar to the cache:
-  //    {
-  //      meterId: <id of meter>
-  //      meterData: {
-  //        uom: {
-  //          datetime: accumulated_real (value),
-  //          ...
-  //        }
-  //      }
-  //    }
+  // Copies chunked "cache" object to indexedDB for persistent storage
+  async addChunkToIndexedDB (store) {
+    // double-check current store state
+    const db = this.getters['dataStore/DB']
+    if (db === undefined) throw new Error('indexedDB not instantiated')
+    const cache = this.getters['dataStore/cache']
+    if (Object.keys(cache).length === 0) throw new Error('cache object is empty')
 
+    // Wrapping each callback into promise so async works on indexedDB api calls
+    for (let meterId of Object.keys(cache)) {
+      await new Promise((resolve, reject) => {
+        const sanitizedData = JSON.parse(JSON.stringify(cache[meterId]))
+        let request = db
+          .transaction('MeterReadings', 'readwrite')
+          .objectStore('MeterReadings')
+          .put({ meterId: meterId, meterData: { sanitizedData } })
+        request.onerror = event => reject(event)
+        request.onsuccess = event => resolve(event)
+      }).catch(err => {
+        throw err
+      })
+    }
+  },
+
+  // Loads IndexedDB data into Vuex store for persistent caching.
+  // Stores meter readings as { meterId: { uom: { timestamp: value } } }.
   async loadIndexedDB (store) {
     if (this.getters['dataStore/DB'] !== undefined) return
 
@@ -138,12 +117,12 @@ const actions = {
     // Then, load indexedDB into the dataStore's cache object
     let newCacheObject = {}
     await new Promise((resolve, reject) => {
-      let dataReqest = this.getters['dataStore/DB']
+      let dataRequest = this.getters['dataStore/DB']
         .transaction('MeterReadings', 'readonly')
         .objectStore('MeterReadings')
         .getAll()
-      dataReqest.onsuccess = event => resolve(event)
-      dataReqest.onerror = event => resolve(event)
+      dataRequest.onsuccess = event => resolve(event)
+      dataRequest.onerror = event => resolve(event)
     })
       .then(event => {
         // transform from indexedDB representation to cache-friendly variant
@@ -159,44 +138,35 @@ const actions = {
       })
   },
 
-  // Returns an array containing intervals of missing data between the start and end
-  // Parameters:
-  //  meterId: integer that uniquely identifies the meter
-  //  start: integer representing linux epoch time of the start of the required interval
-  //  end: integer representing linux epoch time of the end of the required interval
-  //  uom: the unit of measure/metering point to request data for
+  // Identifies missing time intervals between start and end for a given meter
+  // Returns an array of missing intervals [[start, end]]
   findMissingIntervals (store, payload) {
-    if (
-      !this.getters['dataStore/cache'][payload.meterId] ||
-      !this.getters['dataStore/cache'][payload.meterId][payload.uom]
-    ) {
-      // The meter or the uom does not exist in the cache at all
-      // This circumvents the rest of the function (as an optimization)
-      return [[payload.start, payload.end]]
-    }
+    const { meterId, uom, start, end } = payload
+    const meterData = this.getters['dataStore/cache'][meterId]?.[uom]
 
-    // Check if this interval is encapsulated in our request store. vue.$store.getters['dataStore/inRangeSet']({id:3, start:3, end:34})
+    // If no data exists for this meter/unit, return the entire interval
+    if (!meterData) return [[start, end]]
+
+    // If the entire interval is in the cache, return an empty array
     if (
       this.getters['dataStore/inRangeSet']({
-        uom: payload.uom,
-        id: payload.meterId,
-        start: payload.start,
-        end: payload.end
+        uom: uom,
+        id: meterId,
+        start: start,
+        end: end
       })
     ) {
       return []
     }
-    // We know that at least the meter and uom exist in the cache from here down
 
-    // Remove all timestamps except for:
+    // Filter timestamps to keep:
     //  - the first timestamp
-    //  - timestamps abutting a gap in the data larger than 15 minutes
+    //  - timestamps with gaps > 15 minutes
     //  - the last timestamp
-    let timestamps = Object.keys(this.getters['dataStore/cache'][payload.meterId][payload.uom])
-      .filter(key => parseInt(key) >= payload.start && parseInt(key) <= payload.end) // Filter out irrelevant times
-      .sort((a, b) => parseInt(a) - parseInt(b)) // Chronologically sort times
+    let timestamps = Object.keys(meterData)
+      .filter(key => parseInt(key) >= start && parseInt(key) <= end)
+      .sort((a, b) => parseInt(a) - parseInt(b))
       .filter((key, index, array) => {
-        // Keep the first, the last, and any indices defining the start and/or end of a gap
         return (
           index === 0 ||
           index === array.length - 1 ||
@@ -204,41 +174,32 @@ const actions = {
           Math.abs(key - array[index + 1]) > 900
         )
       })
-      .map(ts => parseInt(ts, 10)) // Parse them to integers
+      .map(ts => parseInt(ts, 10))
 
-    // If no matching records are found, return the original interval
-    if (timestamps.length === 0) return [[payload.start, payload.end]]
-    else {
-      // At least one timestamp was found
-      // At this point, we have an array of all intervals where we have data stored
-      // We have the start and end times for each interval (inclusive)
-      // Now, we need to determine if there are any gaps.
-      let returnArr = [] // An array of interval pairs, ie: [[start, end]]
-      if (timestamps[0] > payload.start) {
-        // The first gap is between the start and the first timestamp
-        returnArr.push([payload.start, timestamps[0]])
+    // If no data points exist in range, return the entire interval
+    if (timestamps.length === 0) return [[start, end]]
+
+    // Find gaps between timestamps and return missing intervals
+    let missingIntervals = [] // Array of interval pairs: [[start, end]]
+
+    // Add missing interval at the beginning
+    if (timestamps[0] > start) missingIntervals.push([start, timestamps[0]])
+
+    for (let index = 1; index < timestamps.length; index += 2) {
+      if (timestamps[index + 1]) {
+        missingIntervals.push([timestamps[index], timestamps[index + 1]])
+      } else if (timestamps[index] < end) {
+        missingIntervals.push([timestamps[index], end])
       }
-      // Iterate over the remaining timestamps and search for gaps
-      for (let index = 1; index < timestamps.length; index += 2) {
-        if (timestamps[index + 1]) {
-          returnArr.push([timestamps[index], timestamps[index + 1]])
-        } else if (timestamps[index] < payload.end) {
-          returnArr.push([timestamps[index], payload.end])
-        }
-      }
-      // Return an array of interval pairs
-      return returnArr
     }
+
+    return missingIntervals
   },
 
   /*
-    getBatchData function specifically for requesting large sets of data.
-    The dashboard was originally designed to send out requests per-meter,
-    which unfortunately becomes really slow when handling buildings with
-    >5 meters in a meterGroup, especially since we need all the meter data
-    to show accurate readings.
-
-    This function assumes each request will have the same metreClass and point type.
+    getBatchData function for requesting large data sets.
+    Designed to handle buildings with multiple meters efficiently.
+    Assumes each request has the same meterClass and point type.
   */
   async getBatchData (store, payload) {
     await this.dispatch('dataStore/loadIndexedDB')
@@ -394,97 +355,166 @@ const actions = {
     return dataArrayObject
   },
 
-  // Retrieves data from the cache if it exists
-  // If the data does not exist, it:
-  //   1. Requests for the data from the API
-  //   2. Caches the datums
-  //   3. Retrieves the data from the cache
-  // Parameters:
-  //  meterId: integer that uniquely identifies the meter
-  //  start: integer representing linux epoch time of the start of the required interval
-  //  end: integer representing linux epoch time of the end of the required interval
-  //  uom: the unit of measure/metering point to request data for
-  //  classInt: An integer that corresponds to the type of meter we are reading from
-  async getData (store, payload) {
-    // First, check the non-persistent cahce object:
-    // Does the cache contain the data?
-    let missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
-      meterId: payload.meterId,
-      start: payload.start,
-      end: payload.end,
-      uom: payload.uom
-    })
+  // Requests data in chunks to avoid exceeding the AWS lambda response body size limit
+  async getChunkData (store, payload) {
+    const { meterId, start, end, uom, classInt } = payload
+    await this.dispatch('dataStore/loadIndexedDB')
 
-    if (missingIntervals.length > 0) {
-      // The cache does not contain all of the data
-      // Add it to the cache
-      let promises = []
-      missingIntervals.forEach(async interval => {
-        // For each interval, request for the data
-        if (interval.length === 0) {
-          interval.push(Math.round(new Date().getTime() / 1000))
-        }
-        promises.push(API.data(payload.meterId, interval[0], interval[1], payload.uom, payload.classInt))
+    const requests = []
+
+    // Break up the request into batches
+    const totalRequestSize = this.getters['dataStore/requestSize']([{ id: meterId, startDate: start, endDate: end }])
+    const numberOfBatches = Math.ceil(totalRequestSize / RESPONSE_MAX_SIZE)
+    const batchSize = Math.ceil((end - start) / numberOfBatches)
+    for (let i = 0; i < numberOfBatches; i++) {
+      const startDate = start + (i * batchSize)
+      const endDate = Math.min(start + ((i + 1) * batchSize), end)
+      requests.push([meterId, startDate, endDate, uom, classInt])
+    }
+
+    // Request data in batches
+    const meterDataArray = []
+    for (const request of requests) {
+      console.log('Requesting batch data for:', ...request)
+      const meterData = await API.data(...request).catch(err => {
+        console.log(`Error for batch [${request}]:`, err)
       })
+      if (meterData && Array.isArray(meterData) && meterData.length > 0) {
+        meterDataArray.push(meterData)
+      }
+    }
 
-      // add to request store so we don't re-request this data in this session
-      this.commit('dataStore/addToRequestStore', {
-        meterId: payload.meterId,
-        start: payload.start,
-        end: payload.end,
-        uom: payload.uom
-      })
-
-      // Save all of the new data to the cache
-      const responses = await Promise.all(promises).catch(err => {
-        console.log(err)
-      })
-
-      // The data looks like an array of these objects:
-      // {
-      //   accumulated_real: -13385083 // This key can change based on the uom
-      //   id: 4596804
-      //   time: 1597284900
-      // }
-      await responses.forEach(async datumArray => {
-        // push data to our cache for future retrieval
-        datumArray.forEach(datum => {
-          this.commit('dataStore/addToCache', {
-            datetime: datum.time,
-            meterId: payload.meterId,
-            uom: payload.uom,
-            value: datum[payload.uom]
+    if (meterDataArray.length > 0) {
+      for (const dataset of meterDataArray) {
+        if (dataset.length > 0) {
+          // Write to request store
+          this.commit('dataStore/addToRequestStore', {
+            meterId: meterId,
+            start: dataset[dataset.length - 1].time,
+            end: dataset[0].time,
+            uom: uom
           })
-        })
-      })
+
+          // Write to cache
+          dataset.forEach(datum => {
+            this.commit('dataStore/addToCache', {
+              datetime: datum.time,
+              meterId: meterId,
+              uom: uom,
+              value: datum[uom]
+            })
+          })
+
+          // Write to persistent cache
+          try {
+            // Add all cached instances to the indexedDB
+            await this.dispatch('dataStore/addChunkToIndexedDB')
+          } catch (e) {
+            console.log(e)
+            console.log('Failed to write new datums to the persistent cache.')
+          }
+        }
+      }
+    } else {
+      console.log('Catastrophic error occured with API')
     }
 
     // Retrieve the data from the cache
-    let cache
-    let cacheKeys
     try {
-      cache = this.getters['dataStore/cache'][payload.meterId][payload.uom]
-      cacheKeys = Object.keys(cache).filter(key => key >= payload.start && key <= payload.end) // Filter out data that is not in our time range
-    } catch (e) {
-      // Somehow, the data we expect to be in the cache is not there!
-      // This occurs when we request for data that does not exist in our database.
-      // For example, a building can be brought offline for maintenance, causing
-      // a chunk of data to be missing.
-      console.log('Data not found for meter: ' + payload.meterId)
-      console.log('Is the meter connected to the internet and uploading data?')
+      const cache = this.getters['dataStore/cache'][meterId]?.[uom] || {}
+      const cacheKeys = Object.keys(cache)
+        .map(Number)
+        .filter(key => key >= start && key <= end)
 
-      return [] // Return an empty array
+      // Convert data to the API's format
+      return cacheKeys.map(time => ({ time, [uom]: cache[time] }))
+    } catch (error) {
+      // Data not found in cache. This can happen if the data does not exist in the database.
+      // For example, a building might be offline for maintenance, causing missing data.
+      console.warn(`Data not found for meter: ${meterId}. Is the meter connected to the internet and uploading data?`)
+      return []
+    }
+  },
+
+  /* Retrieves data from the cache if it exists
+  * If not, requests data from the API, caches it, and retrieves it from the cache
+  * Parameters:
+  * meterId: integer that uniquely identifies the meter
+  * start: integer representing linux epoch time of the start of the required interval
+  * end: integer representing linux epoch time of the end of the required interval
+  * uom: the unit of measure/metering point to request data for
+  * classInt: An integer that corresponds to the type of meter we are reading from
+  */
+  async getData (store, payload) {
+    const { meterId, start, end, uom, classInt } = payload
+    // Find missing data intervals
+    let missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
+      meterId: meterId,
+      start: start,
+      end: end,
+      uom: uom
+    })
+
+    if (missingIntervals.length > 0) {
+      const estimatedSize = await this.getters['dataStore/dataSetSize']({
+        id: meterId, startDate: start, endDate: end
+      })
+      if (estimatedSize >= RESPONSE_MAX_SIZE) {
+        // If the request size is too large, batch the request.
+        const result = await this.dispatch('dataStore/getChunkData', payload)
+        return Object.values(result).flat() // Flatten data into a single array
+      }
+
+      // Define an array of promises to fetch missing data
+      const promises = missingIntervals.map(interval => {
+        // If the interval is empty, request the most recent data
+        if (interval.length === 0) {
+          interval.push(Math.round(new Date().getTime() / 1000))
+        }
+        return API.data(meterId, interval[0], interval[1], uom, classInt)
+      })
+
+      // Prevent redundant requests during this session
+      this.commit('dataStore/addToRequestStore', {
+        meterId: meterId,
+        start: start,
+        end: end,
+        uom: uom
+      })
+
+      // Fetch missing data from API and add it to the cache
+      try {
+        const responses = await Promise.all(promises)
+        responses.forEach(datumArray => {
+          datumArray.forEach(datum => {
+            this.commit('dataStore/addToCache', {
+              datetime: datum.time,
+              meterId: meterId,
+              uom: uom,
+              value: datum[uom]
+            })
+          })
+        })
+      } catch (error) {
+        console.error('Error fetching data from API:', error)
+      }
     }
 
-    // Reformat the data so that it matches the API's format
-    let dataArray = []
-    cacheKeys.forEach(key => {
-      let dataObj = {}
-      dataObj[payload.uom] = cache[key]
-      dataObj['time'] = parseInt(key)
-      dataArray.push(dataObj)
-    })
-    return dataArray
+    // Retrieve the data from the cache
+    try {
+      const cache = this.getters['dataStore/cache'][meterId]?.[uom] || {}
+      const cacheKeys = Object.keys(cache)
+        .map(Number)
+        .filter(key => key >= start && key <= end)
+
+      // Convert data to the API's format
+      return cacheKeys.map(time => ({ time, [uom]: cache[time] }))
+    } catch (error) {
+      // Data not found in cache. This can happen if the data does not exist in the database.
+      // For example, a building might be offline for maintenance, causing missing data.
+      console.warn(`Data not found for meter: ${meterId}. Is the meter connected to the internet and uploading data?`)
+      return []
+    }
   }
 }
 
@@ -557,8 +587,7 @@ const mutations = {
     state.indexedDBInstance = instance
   },
 
-  // Completely overwrites cache with new data.
-  // Needed for indexedDB load action to change cache state.
+  // Overwrites cache with new data from indexedDB.
   overwriteCache: (state, { newCache }) => {
     state.cache = newCache
   }
