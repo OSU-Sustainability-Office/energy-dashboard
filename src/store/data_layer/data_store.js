@@ -27,7 +27,7 @@ const state = () => {
 // AWS Lambda has a 6MB response body limit; ensure requests stay within this limit.
 const RESPONSE_HEADER_SIZE = 1000 // Overestimated; actual header is ~222 bytes.
 const DATA_ITEM_SIZE = 51 // (32 + 2 + 2 + 4 + 11)=51, an over-estimate for each item.
-const RESPONSE_MAX_SIZE = 0x300000 // 6MB limit.
+const RESPONSE_MAX_SIZE = 0x350000 // Use smaller value for reduced risk of exceeding the limit.
 
 const actions = {
   // Copies "cache" object to indexedDB for persistent storage
@@ -64,11 +64,11 @@ const actions = {
     // Wrapping each callback into promise so async works on indexedDB api calls
     for (let meterId of Object.keys(cache)) {
       await new Promise((resolve, reject) => {
-        const sanitizedData = JSON.parse(JSON.stringify(cache[meterId]))
+        const sanitizedData = JSON.parse(JSON.stringify(cache[meterId])) // ensure data is serializable
         let request = db
           .transaction('MeterReadings', 'readwrite')
           .objectStore('MeterReadings')
-          .put({ meterId: meterId, meterData: { sanitizedData } })
+          .put({ meterId: meterId, meterData: sanitizedData })
         request.onerror = event => reject(event)
         request.onsuccess = event => resolve(event)
       }).catch(err => {
@@ -197,7 +197,6 @@ const actions = {
   },
 
   /*
-    getBatchData function for requesting large data sets.
     Designed to handle buildings with multiple meters efficiently.
     Assumes each request has the same meterClass and point type.
   */
