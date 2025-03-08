@@ -203,8 +203,10 @@ export default {
       }
     }
   },
-  beforeDestroy () {
-    this.unsubscribe()
+  beforeUnmount () {
+    if (this.unsubscribe) {
+      this.unsubscribe()
+    }
   },
   methods: {
     updateChart: function () {

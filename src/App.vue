@@ -35,7 +35,6 @@ export default {
       transitionName: 'pageTo'
     }
   },
-  beforeDestroy () {},
   methods: {
     disableScroll: function () {
       this.$refs.main.$el.style.overflow = 'hidden'
