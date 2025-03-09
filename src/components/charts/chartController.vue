@@ -11,7 +11,7 @@
     <linechart
       v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'"
       ref="linechart"
-      :key="childKey"
+      :key="chartRenderKey"
       :chartData="chartData"
       :style="styleC"
       :height="height"
@@ -95,7 +95,7 @@ export default {
   },
   data () {
     return {
-      childKey: 0,
+      chartRenderKey: 0,
       unsubscribe: null,
       loading: true,
       chartData: null,
@@ -129,7 +129,7 @@ export default {
       a vue component (at least from what I can tell).
 
       Basically this is attaching an event listener to
-      the Vuex store (which we later remove in the beforeDestroy hook)
+      the Vuex store (which we later remove in the beforeUnmount hook)
       which will update the chart after the Vuex store calls
       a mutation path which references our path (url/window.location.hash)
       indicating we have new data to show.
@@ -203,8 +203,10 @@ export default {
       }
     }
   },
-  beforeDestroy () {
-    this.unsubscribe()
+  beforeUnmount () {
+    if (this.unsubscribe) {
+      this.unsubscribe()
+    }
   },
   methods: {
     updateChart: function () {
@@ -248,7 +250,7 @@ export default {
               this.chart.options.scales.y.ticks.maxTicksLimit = (this.height / 200) * 8 - dif
             }
             console.log(this.path)
-            this.childKey++
+            this.chartRenderKey++
             this.loading = false
           })
         })
