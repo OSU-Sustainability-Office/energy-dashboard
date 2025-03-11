@@ -28,14 +28,14 @@ exports.all = async (event, context) => {
 }
 
 // Check integral parameters.
-function parseParameters({ id, startDate, endDate }) {
+function parseParameters ({ id, startDate, endDate }) {
   return {
     id: parseInt(id, 10),
     startDate: parseInt(startDate, 10),
     endDate: parseInt(endDate, 10)
   }
 }
-function verifyParameters({ id, startDate, endDate }) {
+function verifyParameters ({ id, startDate, endDate }) {
   return ![id, startDate, endDate].some(isNaN)
 }
 // Get data for multiple meters => {id -> [{}...], ...}
@@ -98,9 +98,8 @@ exports.upload = async (event, context) => {
   }
 
   await DB.connect()
-  let row = []
   try {
-    row = await DB.query(`SHOW TABLES LIKE ?;`, [meter_id])
+    await DB.query(`SHOW TABLES LIKE ?;`, [meter_id]) // Check if table exists
   } catch {
     response.statusCode = 400
     return response
@@ -109,7 +108,17 @@ exports.upload = async (event, context) => {
   let query_string = ''
 
   if (meter_type === 'solar') {
-    query_string = `INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`energy_change\`, \`MeterID\`, \`MeterName\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.totalYieldYesterday}', '${meter_data.meterID}', '${meter_data.meterName}');`
+    let final_redundant_check = await DB.query('SELECT * FROM Solar_Meters WHERE MeterID = ? AND time_seconds = ?;', [
+      meter_data.meterID,
+      meter_data.time_seconds
+    ])
+    if (final_redundant_check.length === 0) {
+      query_string = `INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`energy_change\`, \`MeterID\`, \`MeterName\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.totalYield}', '${meter_data.meterID}', '${meter_data.meterName}');`
+    } else {
+      response.statusCode = 400
+      response.body = 'redundant upload detected, skipping'
+      return response
+    }
   } else if (meter_type === 'pacific_power') {
     let final_redundant_check = await DB.query(
       'SELECT * FROM pacific_power_data WHERE pacific_power_meter_id = ? AND time_seconds = ?',
