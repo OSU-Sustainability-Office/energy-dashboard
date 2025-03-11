@@ -200,7 +200,7 @@ const actions = {
     Designed to handle buildings with multiple meters efficiently.
     Assumes each request has the same meterClass and point type.
   */
-  async getBatchData (store, payload) {
+  async getMultiMeterData (store, payload) {
     await this.dispatch('dataStore/loadIndexedDB')
     const requestPoint = payload[0].uom
     const meterClass = payload[0].classInt
