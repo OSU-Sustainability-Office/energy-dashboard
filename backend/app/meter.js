@@ -28,14 +28,14 @@ exports.all = async (event, context) => {
 }
 
 // Check integral parameters.
-function parseParameters({ id, startDate, endDate }) {
+function parseParameters ({ id, startDate, endDate }) {
   return {
     id: parseInt(id, 10),
     startDate: parseInt(startDate, 10),
     endDate: parseInt(endDate, 10)
   }
 }
-function verifyParameters({ id, startDate, endDate }) {
+function verifyParameters ({ id, startDate, endDate }) {
   return ![id, startDate, endDate].some(isNaN)
 }
 // Get data for multiple meters => {id -> [{}...], ...}
@@ -98,9 +98,8 @@ exports.upload = async (event, context) => {
   }
 
   await DB.connect()
-  let row = []
   try {
-    row = await DB.query(`SHOW TABLES LIKE ?;`, [meter_id])
+    await DB.query(`SHOW TABLES LIKE ?;`, [meter_id]) // Check if table exists
   } catch {
     response.statusCode = 400
     return response
