@@ -241,7 +241,7 @@ const actions = {
       const apiRequests = []
 
       /*
-        To avoid exceeding the lambda response body size constraint (~6MB)
+        To avoid exceeding the lambda response body size constraint
         we're going to delegate the datasets evenly across multiple
         requests.  This assumes that our datasets are roughly equivalent in
         size.
@@ -266,8 +266,8 @@ const actions = {
       }
 
       // hit API
-      const meterDataArray = await Promise.all(apiRequests.map(reqObj => API.batchData(reqObj))).catch(err => {
-        console.log('Error accessing batchData api route:', err)
+      const meterDataArray = await Promise.all(apiRequests.map(reqObj => API.multiMeterData(reqObj))).catch(err => {
+        console.log('Error accessing multiMeterData api route:', err)
       })
 
       if (meterDataArray !== undefined) {

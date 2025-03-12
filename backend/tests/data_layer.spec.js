@@ -62,7 +62,7 @@ describe('Testing data_layer related API endpoints...', () => {
     }
   })
 
-  it('/batchData should return data for multiple metres...', async () => {
+  it('/multiMeterData should return data for multiple metres...', async () => {
     /*
       Ok, assume a batch request involves the same point & meter class
       {
@@ -75,7 +75,7 @@ describe('Testing data_layer related API endpoints...', () => {
         }]
       }
     */
-    const batchRequest = {
+    const multiMeterRequests = {
       headers: {
         ...MOCK_REQUEST_EVENT.headers
       },
@@ -88,7 +88,7 @@ describe('Testing data_layer related API endpoints...', () => {
         ]
       })
     }
-    response = await MeterData.batchData(batchRequest)
+    response = await MeterData.multiMeterData(multiMeterRequests)
     const jsonData = JSON.parse(response.body)
     // Response should be of type:
     /*
@@ -148,7 +148,7 @@ describe('Testing data_layer related API endpoints...', () => {
     expect(meter_data.length).toBe(solarData.length)
     expect(meter_data[0]['total_energy']).toBe(3665740)
     // Make sure batch route works too
-    const batchRequest = {
+    const multiMeterRequests = {
       headers: {
         ...MOCK_REQUEST_EVENT.headers
       },
@@ -161,7 +161,7 @@ describe('Testing data_layer related API endpoints...', () => {
       })
     }
 
-    response = await MeterData.batchData(batchRequest)
+    response = await MeterData.multiMeterData(multiMeterRequests)
     const jsonData = JSON.parse(response.body)
     console.log(jsonData)
     expect(jsonData['data'][0]['readings'].length).toBe(solarData.length)

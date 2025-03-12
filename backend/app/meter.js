@@ -40,7 +40,7 @@ function verifyParameters({ id, startDate, endDate }) {
 }
 // Get data for multiple meters => {id -> [{}...], ...}
 /*
-  Ok, assume a batch request involves the same point & meter class
+  Ok, assume a multiMeter request involves the same point & meter class
   {
     point,
     meterClass,
@@ -51,7 +51,7 @@ function verifyParameters({ id, startDate, endDate }) {
     }]
   }
 */
-exports.batchData = async (event, context) => {
+exports.multiMeterData = async (event, context) => {
   const request = JSON.parse(event.body)
   const meterList = request.datasets.map(parseParameters).filter(verifyParameters)
   const { point, meterClass } = request
