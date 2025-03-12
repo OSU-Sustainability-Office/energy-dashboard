@@ -683,6 +683,7 @@ $sideMenu-width: 250px;
 .el-menu-item {
   height: 30px;
   line-height: 30px;
+  position: static;
 }
 
 .sideMenu {
