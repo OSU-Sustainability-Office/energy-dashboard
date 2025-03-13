@@ -114,7 +114,7 @@ const actions = {
     // console.log("Meters requested: ", store.getters.meters)
 
     // if we're requesting data for multiple meters, make a multiMeter request.
-    let multiMeterRequests = store.getters.meters.length > 5
+    let multiMeterRequests = store.getters.meters.length > 1
 
     if (multiMeterRequests) {
       const dataLayerPayload = []
@@ -129,7 +129,7 @@ const actions = {
       }
 
       // Hit the data-layer with a multiMeter request
-      const multiMeterData = await this.dispatch('dataStore/getmultiMeter', dataLayerPayload).catch(err => {
+      const multiMeterData = await this.dispatch('dataStore/getMultiMeter', dataLayerPayload).catch(err => {
         console.log('The DataLayer threw an exception for our payload array, error message: ', err)
         console.log('Falling back to 1:1 requests...')
         multiMeterRequests = false
