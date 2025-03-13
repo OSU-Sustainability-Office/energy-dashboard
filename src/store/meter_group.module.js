@@ -114,7 +114,7 @@ const actions = {
     // console.log("Meters requested: ", store.getters.meters)
 
     // if we're requesting data for multiple meters, make a multiMeter request.
-    let multiMeterRequests = store.getters.meters.length > 1
+    let multiMeterRequests = store.getters.meters.length > 5
 
     if (multiMeterRequests) {
       const dataLayerPayload = []
