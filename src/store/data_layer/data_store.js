@@ -18,7 +18,7 @@ import API from '../api.js'
 
 const state = () => {
   return {
-    cache: {},  // Stores time-series data by meterId and unit of measure (uom)
+    cache: {}, // Stores time-series data by meterId and unit of measure (uom)
     requestStore: {}, // Tracks queried data ranges to prevent redundant requests
     indexedDBInstance: undefined // IndexedDB instance for persistent storage
   }
@@ -366,8 +366,8 @@ const actions = {
     const numberOfBatches = Math.ceil(totalRequestSize / RESPONSE_MAX_SIZE)
     const batchSize = Math.ceil((end - start) / numberOfBatches)
     for (let i = 0; i < numberOfBatches; i++) {
-      const startDate = start + (i * batchSize)
-      const endDate = Math.min(start + ((i + 1) * batchSize), end)
+      const startDate = start + i * batchSize
+      const endDate = Math.min(start + (i + 1) * batchSize, end)
       requests.push([meterId, startDate, endDate, uom, classInt])
     }
 
@@ -436,14 +436,14 @@ const actions = {
   },
 
   /* Retrieves data from the cache if it exists
-  * If not, requests data from the API, caches it, and retrieves it from the cache
-  * Parameters:
-  * meterId: integer that uniquely identifies the meter
-  * start: integer representing linux epoch time of the start of the required interval
-  * end: integer representing linux epoch time of the end of the required interval
-  * uom: the unit of measure/metering point to request data for
-  * classInt: An integer that corresponds to the type of meter we are reading from
-  */
+   * If not, requests data from the API, caches it, and retrieves it from the cache
+   * Parameters:
+   * meterId: integer that uniquely identifies the meter
+   * start: integer representing linux epoch time of the start of the required interval
+   * end: integer representing linux epoch time of the end of the required interval
+   * uom: the unit of measure/metering point to request data for
+   * classInt: An integer that corresponds to the type of meter we are reading from
+   */
   async getData (store, payload) {
     const { meterId, start, end, uom, classInt } = payload
     // Find missing data intervals
@@ -456,7 +456,9 @@ const actions = {
 
     if (missingIntervals.length > 0) {
       const estimatedSize = await this.getters['dataStore/dataSetSize']({
-        id: meterId, startDate: start, endDate: end
+        id: meterId,
+        startDate: start,
+        endDate: end
       })
       if (estimatedSize >= RESPONSE_MAX_SIZE) {
         // If the request size is too large, batch the request.

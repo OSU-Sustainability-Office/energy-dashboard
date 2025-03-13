@@ -829,8 +829,8 @@ $sideMenu-width: 250px;
   bottom: 20px;
 }
 .resetMapButton {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
-    sans-serif;
+  font-family:
+    'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
   display: flex;
   align-items: center;
   position: absolute;
@@ -849,8 +849,8 @@ $sideMenu-width: 250px;
   font-size: 15px;
 }
 .searchMapInput {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
-    sans-serif;
+  font-family:
+    'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
   display: flex;
   align-items: center;
   position: absolute;
@@ -878,8 +878,8 @@ $sideMenu-width: 250px;
   font-size: 28px;
 }
 .searchMapResult {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
-    sans-serif;
+  font-family:
+    'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
   align-items: center;
   padding-left: 10px;
   position: relative;
