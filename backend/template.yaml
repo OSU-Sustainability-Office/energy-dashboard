@@ -233,13 +233,13 @@ Resources:
           Properties:
             Path: /data
             Method: get
-  MeterBatchData:
+  MeterMultiMeterData:
     Type: AWS::Serverless::Function
     Properties:
       Timeout: 30
       MemorySize: 256
       CodeUri: app/
-      Handler: meter.batchData
+      Handler: meter.multiMeterData
       Layers:
         - !Ref LambdaCommonLayer
         - !Ref EnergyModelLayer
@@ -247,7 +247,7 @@ Resources:
         Building:
           Type: Api
           Properties:
-            Path: /batchData
+            Path: /multiMeterData
             Method: post
   MeterPut:
     Type: AWS::Serverless::Function

@@ -126,12 +126,12 @@ export default {
       )
     ).data
   },
-  batchData: async requestArray => {
+  multiMeterData: async requestArray => {
     // Why a POST request? Most browsers disallow GET requests to have payloads (i.e., a body field).
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
     // We're also increasing the timeeout to 2 minutes to account for really slow requests (e.g. LINC 1 year data)
     return (
-      await callAPI('batchData', JSON.stringify(requestArray), 'post', import.meta.env.VITE_ROOT_API, null, 120000)
+      await callAPI('multiMeterData', JSON.stringify(requestArray), 'post', import.meta.env.VITE_ROOT_API, null, 120000)
     ).data
   },
   user: async () => {
