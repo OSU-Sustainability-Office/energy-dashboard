@@ -191,6 +191,15 @@ class Meter {
     }
   }
 
+  async oldest () {
+    await DB.connect()
+    let [{ time_seconds: time }] = await DB.query(
+      'SELECT time_seconds FROM data WHERE meter_id = ? ORDER BY time_seconds ASC LIMIT 1',
+      [this.id]
+    )
+    return time
+  }
+
   // download without explicit point name
   async sparseDownload(point, startTime, endTime, meterClass) {
     await DB.connect()

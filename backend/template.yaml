@@ -15,7 +15,7 @@ Globals:
     Cors:
       AllowMethods: "'POST, GET'"
       AllowHeaders: "'X-Forwarded-For'"
-      AllowOrigin: "'oregonstate.edu'"
+      AllowOrigin: "'*'"
       MaxAge: "'600'"
       AllowCredentials: True
     BinaryMediaTypes:
@@ -217,6 +217,21 @@ Resources:
           Type: Api
           Properties:
             Path: /meter
+            Method: get
+  oldestDate:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: meter.oldestDate
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /oldestDate
             Method: get
   MeterData:
     Type: AWS::Serverless::Function

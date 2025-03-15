@@ -82,6 +82,13 @@ exports.data = async (event, context) => {
   return response //Compress(event, response)
 }
 
+// GET earliest recorded date for a single meter
+exports.oldestDate = async (event, context) => {
+  let response = new Response(event)
+  response.body = JSON.stringify(await new Meter(event.queryStringParameters['id']).oldest())
+  return response
+}
+
 // Meter Data Upload Route (currently only for solar panels)
 exports.upload = async (event, context) => {
   let response = new Response(event)
