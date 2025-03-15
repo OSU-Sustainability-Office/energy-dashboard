@@ -191,12 +191,27 @@ class Meter {
     }
   }
 
-  async oldest () {
+  async oldest (meterClass) {
     await DB.connect()
-    let [{ time_seconds: time }] = await DB.query(
-      'SELECT time_seconds FROM data WHERE meter_id = ? ORDER BY time_seconds ASC LIMIT 1',
-      [this.id]
-    )
+    // Get table name from meter table
+    const [{ name: meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id])
+    const teslaMeterIds = ['83', '84', '85', '86', '118']
+    let query = 'SELECT time_seconds FROM data WHERE meter_id = ? ORDER BY time_seconds ASC LIMIT 1' // default to aquisuite
+    let params = [this.id]
+
+    if (String(meterClass).startsWith('999')) {
+      if (String(meterClass) === '9990001' && teslaMeterIds.includes(String(this.id))) {
+        // TODO: Handle Tesla meters
+      } else if (meter_table_name === 'Solar_Meters') {
+        query = 'SELECT time_seconds FROM Solar_Meters WHERE MeterID = ? ORDER BY time_seconds ASC LIMIT 1'
+      } else {
+        // pacific power meters, may need to change to else-if if there are going to be more custom classes starting with 999
+        let [{ pacific_power_id: pp_id }] = await DB.query('SELECT pacific_power_id FROM meters WHERE id = ?', [this.id])
+        params = [pp_id]
+        query = 'SELECT time_seconds FROM pacific_power_data WHERE pacific_power_meter_id = ? ORDER BY time_seconds ASC LIMIT 1'
+      }
+    }
+    const [{ time_seconds: time }] = await DB.query(query, params)
     return time
   }
 

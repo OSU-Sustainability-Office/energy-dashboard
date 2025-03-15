@@ -85,7 +85,9 @@ exports.data = async (event, context) => {
 // GET earliest recorded date for a single meter
 exports.oldestDate = async (event, context) => {
   let response = new Response(event)
-  response.body = JSON.stringify(await new Meter(event.queryStringParameters['id']).oldest())
+  response.body = JSON.stringify(await new Meter(event.queryStringParameters['id']).oldest(
+    event.queryStringParameters['meterClass']
+  ))
   return response
 }
 
