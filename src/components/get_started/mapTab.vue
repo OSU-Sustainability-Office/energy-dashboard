@@ -72,7 +72,7 @@ export default {
       mapCategoryStep1:
         'This displays what category each building falls into. Hover over each building to see the name of it.',
       mapCategoryStep2:
-        'To hide or unhide a category\'s energy usage, click on the name of the group ("Academics", "Athletics & Rec", "Dining", "Events & Admin", and/or "Residence").',
+        'To hide or unhide a category\'s energy usage, click on the name of the group ("Academics", "Events & Engagement", "Admin & Operations" and/or "Residential Life").',
       mapTrendDemo: 'https://energy-dashboard.s3-us-west-2.amazonaws.com/images/mapTrendDemo.png',
       mapEnergyTrendStep1: 'This displays the last 60 day trend in energy consumption.',
       mapEnergyTrendStep2:
