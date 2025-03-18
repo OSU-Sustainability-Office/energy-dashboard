@@ -669,8 +669,8 @@ $sideMenu-width: 250px;
 }
 
 .el-menu-item {
-  height: 30px;
-  line-height: 30px;
+  height: 40px;
+  line-height: 40px;
   position: static;
 }
 
@@ -680,7 +680,7 @@ $sideMenu-width: 250px;
   z-index: 2000;
   width: $sideMenu-width - 10px;
   padding-top: 0.5em;
-  top: 170px;
+  top: 175px;
 }
 
 :deep(.el-menu-item-group__title) {
