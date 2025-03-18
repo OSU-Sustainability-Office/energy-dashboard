@@ -60,7 +60,7 @@
       >
     </p>
     <p>
-      <a href="https://fa.oregonstate.edu/sustainability/ground-mounted-photovoltaic-arrays" target="_blank"
+      <a href="https://sustainability.oregonstate.edu/ground-mounted-photovoltaic-arrays" target="_blank"
         >More Info About OSU's Partnership with Tesla</a
       >
     </p>
