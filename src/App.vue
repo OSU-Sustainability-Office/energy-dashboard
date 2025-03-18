@@ -18,6 +18,7 @@
 
 <script>
 import navigbar from '@/components/navBar.vue'
+import { h } from 'vue'
 import { ElMessageBox } from 'element-plus'
 
 export default {
@@ -46,23 +47,32 @@ export default {
   },
   mounted () {
     // This is the first-timer pop-up window
-    if (!document.cookie.split(';').some(cookieString => cookieString.includes('firstTimer'))) {
-      ElMessageBox({
-        title: 'First Timer?',
-        message: 'Take a look at the "FAQ" tab for some info on how to get started!',
-        showCancelButton: true,
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Never Show This Message Again',
-        distinguishCancelAndClose: true,
-        callback: function (action) {
-          if (action === 'cancel') {
-            const cookieDate = new Date()
-            cookieDate.setFullYear(new Date().getFullYear() + 10)
-            document.cookie = 'firstTimer=true; expires=' + cookieDate.toUTCString() + ';'
-          }
+    // if (!document.cookie.split(';').some(cookieString => cookieString.includes('firstTimer'))) {
+    ElMessageBox({
+      title: 'First Timer?',
+      message: () =>
+        h('div', [
+          h('p', 'Take a look at the "FAQ" tab for some info on how to get started!'),
+          h('div', { style: 'height: 8px' }),
+          h(
+            'i',
+            { style: 'font-size: 0.8em; font-style: italic;' },
+            'Loading the map for the first time may take a moment, but future load times will be faster.'
+          )
+        ]),
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Never Show This Message Again',
+      distinguishCancelAndClose: true,
+      callback: function (action) {
+        if (action === 'cancel') {
+          const cookieDate = new Date()
+          cookieDate.setFullYear(new Date().getFullYear() + 10)
+          document.cookie = 'firstTimer=true; expires=' + cookieDate.toUTCString() + ';'
         }
-      })
-    }
+      }
+    })
+    // }
   },
   watch: {
     $route: function (to, from) {
