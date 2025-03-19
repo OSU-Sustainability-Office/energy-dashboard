@@ -34,23 +34,17 @@
         <el-menu-item-group v-if="grouping === 'Category'">
           <el-tooltip content="Click to toggle visibility" placement="right">
             <el-menu-item index="Academics" :class="[isDisplayed('Academics') ? 'active' : 'notactive']"
-              ><span class="edu swatch"></span>Academics</el-menu-item
+              ><span class="academics swatch"></span>Academics</el-menu-item
             >
           </el-tooltip>
-          <el-menu-item index="Athletics & Rec" :class="[isDisplayed('Athletics & Rec') ? 'active' : 'notactive']"
-            ><span class="ath swatch"></span>Athletics & Rec</el-menu-item
-          >
-          <el-menu-item index="Dining" :class="[isDisplayed('Dining') ? 'active' : 'notactive']"
-            ><span class="din swatch"></span>Dining</el-menu-item
-          >
-          <el-menu-item index="Events & Admin" :class="[isDisplayed('Events & Admin') ? 'active' : 'notactive']"
-            ><span class="com swatch"></span>Events & Admin</el-menu-item
-          >
-          <el-menu-item index="Residence" :class="[isDisplayed('Residence') ? 'active' : 'notactive']"
-            ><span class="res swatch"></span>Residence</el-menu-item
-          >
-          <el-menu-item index="Operations" :class="[isDisplayed('Operations') ? 'active' : 'notactive']"
-            ><span class="operations swatch"></span>Operations</el-menu-item
+          <el-menu-item index="Events & Engagement" :class="[isDisplayed('Events & Engagement') ? 'active' : 'notactive']"
+            ><span class="events_engagement swatch"></span>Events & Engagement</el-menu-item
+            >
+            <el-menu-item index="Admin & Operations" :class="[isDisplayed('Admin & Operations') ? 'active' : 'notactive']"
+              ><span class="admin_operations swatch"></span>Admin & Operations</el-menu-item
+            >
+            <el-menu-item index="Residential Life" :class="[isDisplayed('Residential Life') ? 'active' : 'notactive']"
+            ><span class="residential swatch"></span>Residential Life</el-menu-item
           >
           <div class="energyRadioGroup">
             <div class="colorByTitle">Energy Type:</div>
@@ -201,12 +195,10 @@ export default {
       askingForComparison: false,
       building_compare_error: false,
       selected: [
-        'Athletics & Rec',
-        'Dining',
         'Academics',
-        'Events & Admin',
-        'Operations',
-        'Residence',
+        'Events & Engagement',
+        'Admin & Operations',
+        'Residential Life',
         'Stable Trend',
         'Up Trend',
         'Down Trend'
@@ -484,15 +476,11 @@ export default {
       switch (group) {
         case 'Academics':
           return '#0D5257'
-        case 'Events & Admin':
+        case 'Events & Engagement':
           return '#7A6855'
-        case 'Athletics & Rec':
-          return '#FFB500'
-        case 'Dining':
-          return '#4A773C'
-        case 'Operations':
+        case 'Admin & Operations':
           return '#4169E1'
-        case 'Residence':
+        case 'Residential Life':
           return '#D3832B'
         default:
           return '#000'
@@ -681,8 +669,8 @@ $sideMenu-width: 250px;
 }
 
 .el-menu-item {
-  height: 30px;
-  line-height: 30px;
+  height: 40px;
+  line-height: 40px;
   position: static;
 }
 
@@ -692,7 +680,7 @@ $sideMenu-width: 250px;
   z-index: 2000;
   width: $sideMenu-width - 10px;
   padding-top: 0.5em;
-  top: 170px;
+  top: 175px;
 }
 
 :deep(.el-menu-item-group__title) {
@@ -761,31 +749,19 @@ $sideMenu-width: 250px;
   background-color: #ffffff22;
   border-color: #ffffff44;
 }
-.active .res.swatch {
+.active .residential.swatch {
   background-color: #d3832bb3;
   border-color: #d3832b;
 }
-.active .ath.swatch {
-  background-color: #ffb500b3;
-  border-color: #ffb500;
-}
-.active .din.swatch {
-  background-color: #4a773cb3;
-  border-color: #4a773c;
-}
-.active .rch.swatch {
-  background-color: #aa9d2eb3;
-  border-color: #aa9d2e;
-}
-.active .edu.swatch {
+.active .academics.swatch {
   background-color: #0d5257b3;
   border-color: #0d5257;
 }
-.active .com.swatch {
+.active .events_engagement.swatch {
   background-color: #7a6855b3;
   border-color: #7a6855;
 }
-.active .operations.swatch {
+.active .admin_operations.swatch {
   background-color: #4169e1;
   border-color: #00008b;
 }
