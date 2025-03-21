@@ -1,0 +1,1 @@
+var d=Object.defineProperty;var r=(o,a,e)=>a in o?d(o,a,{enumerable:!0,configurable:!0,writable:!0,value:e}):o[a]=e;var t=(o,a,e)=>r(o,typeof a!="symbol"?a+"":a,e);class c{constructor(a,e){this.data={}}async onAdd(a,e){}async onRemove(a,e){}async updateData(a,e,s){}async preData(a,e){}async postData(a,e,s){}}t(c,"name","base");export{c as default};
