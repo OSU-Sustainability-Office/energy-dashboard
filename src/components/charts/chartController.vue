@@ -63,6 +63,14 @@
       width="1000"
       title="NWREC Data Solar Array"
     ></iframe>
+    <iframe
+      v-if="this.path === 'map/building_85/block_264'"
+      :class="iframeClass"
+      src="https://mysolarcity.com/share/BB1ABBE8-1FB9-4C17-BB0A-A1DE9339DB1C#/monitoring/historical/month"
+      height="600"
+      width="1000"
+      title="Aquatic Animal Health Lab Solar Array"
+    ></iframe>
     <el-col :span="24" class="NoData" :style="`height:${height}px;line-height:${height}px;`" v-if="graphType == 100"
       >Data Unavailable</el-col
     >
