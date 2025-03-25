@@ -20,6 +20,19 @@ const state = () => {
   }
 }
 
+/*
+  Function to get the meter point based on the meter class
+  For Pacific Power meters, the point is energy_change
+  For all other meters, the point is avg_accumulated_real
+*/
+function getMeterPoint (store, groupModule) {
+  let point = 'baseline_percentage'
+  if (groupModule.name === 'The Gem') {
+    point = 'accumulated_real'
+  }
+  return point
+}
+
 const actions = {
   async buildBlocks (store) {
     if (store.getters.promise === null) {
@@ -40,7 +53,7 @@ const actions = {
             if (groupModule) {
               charts.push({
                 id: group,
-                point: 'baseline_percentage',
+                point: getMeterPoint(store, groupModule),
                 name: this.getters[groupModule.building + '/name'],
                 meters: group
               })

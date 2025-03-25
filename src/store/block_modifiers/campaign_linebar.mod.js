@@ -57,6 +57,22 @@ export default class CampaignLineBarModifier {
     }
   }
 
+  /*
+    Function to get the meter point based on the meter class
+    For Pacific Power meters, the point is energy_change
+    For all other meters, the point is avg_accumulated_real
+  */
+  getMeterPoint (store, moduleVuex) {
+    let point = 'avg_accumulated_real'
+    const chart = moduleVuex.getters.charts[0]
+    const meterGroupPath = chart.meterGroupPath
+    const meterClass = (store.getters[meterGroupPath + '/meters'][0].classInt)
+    if (meterClass === 9990002) {
+      point = 'baseline_total'
+    }
+    return point
+  }
+
   async preData (store, moduleVuex) {
     /*
       Function is called when a block
@@ -69,7 +85,7 @@ export default class CampaignLineBarModifier {
     }
     this.data.dlData = {}
     const payload = {
-      point: 'avg_accumulated_real',
+      point: this.getMeterPoint(store, moduleVuex),
       dateStart: moduleVuex.getters.dateStart / 1000,
       dateEnd: moduleVuex.getters.dateEnd / 1000,
       intervalUnit: moduleVuex.getters.intervalUnit,
