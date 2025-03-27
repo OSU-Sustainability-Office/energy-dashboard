@@ -17,7 +17,7 @@ export default function (graphType, point) {
     // Line or Bar
     switch (point) {
       case 'accumulated_real':
-        return new LineTotalCurrent()
+        return new LineAccumulatedReal()
       case 'total':
         return new LineAccumulatedReal()
       case 'cubic_feet':
@@ -30,7 +30,7 @@ export default function (graphType, point) {
       case 'energy_change':
         return new LineEnergyChange()
       case 'daily_total':
-        return new LineEnergyChange()
+        return new LineTotalCurrent()
       case 'current_total':
         return new LineTotalCurrent()
       case 'baseline_total':

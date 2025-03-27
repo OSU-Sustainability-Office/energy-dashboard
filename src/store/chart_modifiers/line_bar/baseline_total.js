@@ -77,7 +77,7 @@ export default class LineTotalBaseline {
   */
   async preGetData (payload, store, module) {
     const meterGroupPath = module.getters.meterGroupPath
-    payload.point = 'accumulated_real'
+    payload.point = 'daily_total'
     const baselinePayload = {
       ...payload,
       dateStart: payload.compareStart,

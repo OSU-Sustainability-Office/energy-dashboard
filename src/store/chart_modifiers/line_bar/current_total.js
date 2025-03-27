@@ -68,6 +68,6 @@ export default class LineTotalCurrent {
     this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
-    payload.point = 'accumulated_real'
+    payload.point = 'daily_total'
   }
 }
