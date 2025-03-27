@@ -14,6 +14,7 @@ import LineTotalBaseline from './line_bar/baseline_total.js'
 
 export default function (graphType, point) {
   if (graphType === 1 || graphType === 2) {
+    console.log(point)
     // Line or Bar
     switch (point) {
       case 'accumulated_real':
@@ -29,8 +30,6 @@ export default function (graphType, point) {
       // TODO: add energy_change specific line chart
       case 'energy_change':
         return new LineEnergyChange()
-      case 'daily_total':
-        return new LineTotalCurrent()
       case 'current_total':
         return new LineTotalCurrent()
       case 'baseline_total':
