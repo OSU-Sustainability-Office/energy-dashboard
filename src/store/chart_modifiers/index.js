@@ -13,7 +13,6 @@ import LineTotalBaseline from './line_bar/baseline_total.js'
 
 export default function (graphType, point) {
   if (graphType === 1 || graphType === 2) {
-    console.log(point)
     // Line or Bar
     switch (point) {
       case 'accumulated_real':
