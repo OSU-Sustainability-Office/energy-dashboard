@@ -27,9 +27,16 @@ const state = () => {
 */
 function getMeterPoint (store, groupModule) {
   let point = 'baseline_percentage'
-  if (groupModule.name === 'The Gem') {
-    point = 'accumulated_real'
+
+  // find Pacific Power meters
+  for (const key in groupModule) {
+    if (groupModule[key] && typeof groupModule[key] === 'object' && 'classInt' in groupModule[key]) {
+      if (groupModule[key].classInt === 9990002) {
+        point = 'daily_total' // Will need to change this point to compute the baseline percentage for PP meters (daily total)
+      }
+    }
   }
+
   return point
 }
 

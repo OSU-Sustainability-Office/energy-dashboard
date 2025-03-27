@@ -30,7 +30,7 @@ export default function (graphType, point) {
       // TODO: add energy_change specific line chart
       case 'energy_change':
         return new LineEnergyChange()
-      case 'current_total':
+      case 'daily_total':
         return new LineTotalCurrent()
       case 'baseline_total':
         return new LineTotalBaseline()
