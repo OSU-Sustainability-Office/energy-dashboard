@@ -97,6 +97,7 @@ const actions = {
       // PacificPower meters are accumulated_real by the time they get here,
       // but may as well handle solar meters in the future anyways
       payload.point !== 'energy_change' &&
+      payload.point !== 'daily_total' &&
       store.getters.meters.length > 1
     ) {
       // && store.getters.meters.length > 1) {
