@@ -59,7 +59,7 @@ export default class CampaignLineBarModifier {
 
   /*
     Function to get the meter point based on the meter class
-    For Pacific Power meters, the point is energy_change
+    For Pacific Power meters, the point is baseline_total
     For all other meters, the point is avg_accumulated_real
   */
   getMeterPoint (store, moduleVuex) {

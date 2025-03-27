@@ -104,7 +104,6 @@ class Meter {
       apparent_b: 'Apparent Power, Phase B (VA)',
       apparent_c: 'Apparent Power, Phase C (VA)',
       baseline_percentage: 'Percentage (%)',
-      energy_change: 'Energy Produced (kWh)',
       daily_total: 'Daily Energy Usage (kWh)'
     }
     const points = Object.values(meterClasses[this.classInt])
@@ -117,8 +116,6 @@ class Meter {
       this.type = 'Gas'
     } else if (points.indexOf('accumulated_real') >= 0) {
       this.type = 'Electricity'
-    } else if (points.indexOf('energy_change') >= 0) {
-      this.type = 'Solar Panel'
     } else if (points.indexOf('daily_total') >= 0) {
       this.type = 'Daily Electricity'
     }

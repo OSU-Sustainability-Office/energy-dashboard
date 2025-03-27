@@ -156,7 +156,7 @@ module.exports = {
   },
   9990001: {
     // Solar Panels (SEC, OSU Operations, deprecated Tesla panels)
-    2: 'energy_change'
+    2: 'daily_total'
   },
   9990002: {
     // Pacific Power Meters

@@ -22,7 +22,7 @@ const state = () => {
 
 /*
   Function to get the meter point based on the meter class
-  For Pacific Power meters, the point is energy_change
+  For Pacific Power meters, the point is daily_total
   For all other meters, the point is avg_accumulated_real
 */
 function getMeterPoint (store, groupModule) {
