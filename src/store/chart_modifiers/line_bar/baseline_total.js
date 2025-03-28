@@ -1,3 +1,9 @@
+/**
+  Filename: baseline_total.js
+  Description: Chart modifier for computing and displaying
+  the baseline total values from the chart module.
+*/
+
 export default class LineTotalBaseline {
   constructor () {
     this.dateStart = null
@@ -5,8 +11,10 @@ export default class LineTotalBaseline {
   }
 
   /*
-    Description: Called after getData function of chart module. Create
-    a new class following this template if a new modifier type is needed
+    Description: Called after getData function of chart module.
+    Since the data is already a time series, this function does not
+    need to do any additional calculations other than shifting the
+    timestamp by the comparison period to align with the baseline range.
 
     Arguments:
       - chartData (object)
@@ -23,7 +31,7 @@ export default class LineTotalBaseline {
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')
@@ -43,7 +51,8 @@ export default class LineTotalBaseline {
     const result = []
 
     for (const timestamp of rawData.keys()) {
-      const baselineTimestamp = timestamp - (compareEnd - compareStart + 86400) // Adjust timestamp to compare range
+      // Shift timestamp backward by the comparison period to align with the baseline range
+      const baselineTimestamp = timestamp - (compareEnd - compareStart + 86400)
       if (isNaN(baselineData.get(baselineTimestamp))) {
         continue
       }
@@ -56,14 +65,15 @@ export default class LineTotalBaseline {
   }
 
   /*
-    Description: Called before getData function of chart module. Create
-    a new class following this template if a new modifier type is needed
+    Description: Called before getData function of chart module.
+    This function gets the raw data from the store using the
+    compareStart and compareEnd as a date range.
 
     Arguments:
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')

@@ -1,10 +1,9 @@
-/*
- * @Author: you@you.you
- * @Date:   Wednesday March 25th 2020
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Wednesday March 25th 2020
- * @Copyright:  (c) Oregon State University 2020
- */
+/**
+  Filename: avg_accumulated_real.js
+  Description: Chart modifier for computing and displaying
+  the baseline accumulated values (e.g. accumulated_real)
+  from the chart module.
+*/
 
 export default class LineAvgModifier {
   constructor () {
@@ -12,8 +11,7 @@ export default class LineAvgModifier {
     this.dateEnd = null
   }
   /*
-    Description: Called after getData function of chart module. Create
-    a new class following this template if a new modifier type is needed
+    Description: Called after getData function of chart module.
 
     Arguments:
       - chartData (object)
@@ -29,7 +27,7 @@ export default class LineAvgModifier {
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')
@@ -115,14 +113,13 @@ export default class LineAvgModifier {
   }
 
   /*
-    Description: Called before getData function of chart module. Create
-    a new class following this template if a new modifier type is needed
+    Description: Called before getData function of chart module.
 
     Arguments:
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')

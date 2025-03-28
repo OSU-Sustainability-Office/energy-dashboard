@@ -1,14 +1,15 @@
 /**
   Filename: accumulated_real.js
-  Info: Chart math & setup for accumulated real meter point.
+  Description: Chart modifier for computng and displaying
+  accumulated values (e.g. accumulated_real) from the chart module.
 */
+
 export default class LineAccumulatedModifier {
   constructor () {
     this.data = {}
   }
   /*
-    Description: Called after getData function of chart module. Create
-    a new class following this template if a new modifier type is needed
+    Description: Called after getData function of chart module.
     Arguments:
       - chartData (object)
         {
@@ -23,7 +24,7 @@ export default class LineAccumulatedModifier {
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')
@@ -125,13 +126,12 @@ export default class LineAccumulatedModifier {
   }
 
   /*
-    Description: Called before getData function of chart module. Create
-    a new class following this template if a new modifier type is needed
+    Description: Called before getData function of chart module.
     Arguments:
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')

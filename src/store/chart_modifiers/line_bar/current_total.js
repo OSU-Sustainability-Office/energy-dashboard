@@ -1,3 +1,9 @@
+/**
+  Filename: current_total.js
+  Description: Chart modifier for computing and displaying the
+  total values from the chart module.
+*/
+
 export default class LineTotalCurrent {
   constructor () {
     this.dateStart = null
@@ -5,8 +11,9 @@ export default class LineTotalCurrent {
   }
 
   /*
-    Description: Called after getData function of chart module. Create
-    a new class following this template if a new modifier type is needed
+    Description: Called after getData function of chart module.
+    Since the data is already a time series, this function does not
+    need to do any additional calculations.
 
     Arguments:
       - chartData (object)
@@ -23,7 +30,7 @@ export default class LineTotalCurrent {
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')
@@ -48,14 +55,13 @@ export default class LineTotalCurrent {
   }
 
   /*
-    Description: Called before getData function of chart module. Create
-    a new class following this template if a new modifier type is needed
+    Description: Called before getData function of chart module.
 
     Arguments:
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')

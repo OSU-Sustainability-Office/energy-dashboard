@@ -1,15 +1,12 @@
-/*
- * @Author: you@you.you
- * @Date:   Wednesday March 25th 2020
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Wednesday March 25th 2020
- * @Copyright:  (c) Oregon State University 2020
- */
+/**
+  Filename: baseline_perc.js
+  Description: Chart modifier for displaying the baseline percentage
+  values from the chart module for accumulated data (e.g. accumulated_real).
+*/
 
 export default class LinePercModifier {
   /*
-    Description: Called after getData function of chart module. Create
-    a new class following this template if a new modifier type is needed
+    Description: Called after getData function of chart module.
 
     Arguments:
       - chartData (object)
@@ -25,7 +22,7 @@ export default class LinePercModifier {
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')
@@ -127,14 +124,13 @@ export default class LinePercModifier {
   }
 
   /*
-    Description: Called before getData function of chart module. Create
-    a new class following this template if a new modifier type is needed
+    Description: Called before getData function of chart module.
 
     Arguments:
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')

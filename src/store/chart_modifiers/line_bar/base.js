@@ -1,10 +1,7 @@
-/*
- * @Author: you@you.you
- * @Date:   Wednesday March 25th 2020
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Wednesday March 25th 2020
- * @Copyright:  (c) Oregon State University 2020
- */
+/**
+  Filename: base.js
+  Description: Base class for line/bar chart modifiers.
+*/
 
 export default class LineBaseModifier {
   constructor () {
@@ -28,7 +25,7 @@ export default class LineBaseModifier {
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')
@@ -92,7 +89,7 @@ export default class LineBaseModifier {
       - payload (object)
         {
           point: metering point (string)
-          graphType: graph type (integer 1-4)
+          graphType: graph type (integer 1-2)
           dateStart: epoch time in seconds of graph start (integer)
           dateEnd: epoch time in seconds of graph end (integer)
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')

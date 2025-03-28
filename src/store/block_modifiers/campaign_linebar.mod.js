@@ -1,10 +1,10 @@
-/*
- * @Author: you@you.you
- * @Date:   Wednesday March 25th 2020
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Wednesday March 25th 2020
- * @Copyright:  (c) Oregon State University 2020
- */
+/**
+  Filename: campaign_linebar.mod.js
+  Description: Block modifier for displaying the current
+  and baseline values from the chart module. This modifier
+  is used for the campaign line/bar charts.
+*/
+
 export default class CampaignLineBarModifier {
   static name = 'campaign_linebar'
 
@@ -12,7 +12,7 @@ export default class CampaignLineBarModifier {
     /*
       Initialize the modifier here,
       this is only an example modifier that
-      doed nothing. I expect the instance
+      does nothing. Expect the instance
       variables to be more descriptive for
       specific modifiers
     */
@@ -25,29 +25,25 @@ export default class CampaignLineBarModifier {
     }
   }
 
+  /*
+   * Function is called when a modifier is added to a block.
+   * Store is Vuex store, module is block module.
+   */
   async onAdd (store, module) {
-    /*
-      Function is called when a modifier
-      is added to a block. Store is Vuex store
-      module is block module.
-    */
   }
 
+  /*
+    Function is called when a modifier is removed from a block.
+    Store is Vuex store, module is block module.
+  */
   async onRemove (store, moduleVuex) {
-    /*
-      Function is called when a modifier
-      is removed from a block. Store is Vuex store
-      module is block module.
-    */
   }
 
+  /*
+   * Function is called when a block updates modifier data.
+   * Store is Vuex store, module is block module, data is new incoming data.
+   */
   async updateData (store, moduleVuex, data) {
-    /*
-      Function is called when a block
-      updates modifier data. Store is Vuex store
-      module is block module, data is new incoming
-      data.
-    */
     if (data.compareEnd && data.compareStart) {
       this.data.compareEnd = data.compareEnd
       this.data.compareStart = data.compareStart
@@ -73,13 +69,11 @@ export default class CampaignLineBarModifier {
     return point
   }
 
+  /*
+   * Function is called when a block updates modifier data.
+   * Store is Vuex store, module is block module, data is new incoming data.
+   */
   async preData (store, moduleVuex) {
-    /*
-      Function is called when a block
-      updates modifier data. Store is Vuex store
-      module is block module, data is new incoming
-      data.
-    */
     if (moduleVuex.getters.charts.length > 1) {
       throw new Error('This block modifier expects only one chart')
     }
@@ -96,13 +90,12 @@ export default class CampaignLineBarModifier {
     }
     this.promise = store.dispatch(moduleVuex.getters.charts[0].path + '/getData', payload)
   }
+
+  /*
+   * Function is called when a block updates modifier data.
+   * Store is Vuex store, module is block module, data is new incoming data.
+   */
   async postData (store, moduleVuex, data) {
-    /*
-      Function is called when a block
-      updates modifier data. Store is Vuex store
-      module is block module, data is new incoming
-      data.
-    */
     if (!data) return
     let dlData = (await this.promise).data
     data.datasets.splice(0, 0, {
