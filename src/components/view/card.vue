@@ -10,7 +10,8 @@
       this.path === 'map/building_35/block_175' ||
       this.path === 'map/building_36/block_176' ||
       this.path === 'map/building_37/block_177' ||
-      this.path === 'map/building_38/block_178'
+      this.path === 'map/building_38/block_178' ||
+      this.path === 'map/building_85/block_264'
     "
   >
     <el-row :span="24" class="title" ref="title">
@@ -59,8 +60,15 @@
         >Data Provided by Tesla</a
       >
     </p>
+    <p v-if="this.path === 'map/building_85/block_264'">
+      <a
+        href="https://mysolarcity.com/share/BB1ABBE8-1FB9-4C17-BB0A-A1DE9339DB1C#/monitoring/historical/month"
+        target="_blank"
+        >Data Provided by Tesla</a
+      >
+    </p>
     <p>
-      <a href="https://fa.oregonstate.edu/sustainability/ground-mounted-photovoltaic-arrays" target="_blank"
+      <a href="https://sustainability.oregonstate.edu/ground-mounted-photovoltaic-arrays" target="_blank"
         >More Info About OSU's Partnership with Tesla</a
       >
     </p>
