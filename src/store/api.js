@@ -119,6 +119,9 @@ export default {
   meter: async id => {
     return (await callAPI('meter?id=' + id)).data
   },
+  oldestDate: async (id, classInt) => {
+    return (await callAPI('oldestDate?id=' + id + '&meterClass=' + classInt)).data
+  },
   data: async (id, start, end, point, classInt) => {
     return (
       await callAPI(
