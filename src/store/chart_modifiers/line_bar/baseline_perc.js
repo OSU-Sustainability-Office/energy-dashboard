@@ -50,7 +50,7 @@ export default class LinePercModifier {
     const differenceBaseline = new Map() // keys are epoch time in seconds, values are difference between baseline data points
     let delta = 1
 
-    // determine delta based on interval unit
+    // Determine delta based on interval unit
     switch (intervalUnit) {
       case 'minute':
         delta = 60 // seconds in a minute
@@ -64,7 +64,7 @@ export default class LinePercModifier {
     }
     delta *= dateInterval
 
-    // calculate the difference between baseline data points
+    // Calculate the difference between baseline data points
     for (let i = compareStart; i <= compareEnd; i += delta) {
       try {
         const baselineTimestamp = i + delta
@@ -78,17 +78,17 @@ export default class LinePercModifier {
     }
 
     // also don't know if we need findClosest() function calls for the two for loops below, for "past 6 hours" or "past day". Need better training data maybe (adjust end date on test campaign)
+    // Compute average baseline changes for each day-of-week
+    const compareStartDay = new Date(compareStart * 1000).getDay()
+    const binsPerDay = SECONDS_PER_DAY / delta
     for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-      // align start date with the day of the week
-      let startDate = compareStart
-      while (new Date(startDate * 1000).getDay() !== dayOfWeek) {
-        startDate += SECONDS_PER_DAY // add one day
-      }
+      // Calculate the first date that matches the day of the week
+      const dayDifference = (dayOfWeek - compareStartDay + 7) % 7 // difference in days
+      const firstMatchingDate = compareStart + dayDifference * SECONDS_PER_DAY
 
-      // calculate the average for each bin
-      const binsPerDay = SECONDS_PER_DAY / delta
+      // Calculate the average for each bin
       for (let timeBinIndex = 0; timeBinIndex < binsPerDay; timeBinIndex++) {
-        let binStartDate = startDate + timeBinIndex * delta
+        let binStartDate = firstMatchingDate + (timeBinIndex * delta)
         let count = 0 // count of data points in this bin
         let sum = 0 // sum of data points in this bin
 
@@ -104,20 +104,20 @@ export default class LinePercModifier {
           binStartDate += SECONDS_PER_DAY * 7 // add one week
         }
 
-        // divide the sum by the count to get the average
+        // Divide the sum by the count to get the average
         const avg = count > 0 ? sum / count : -1 // -1 indicates no data points in this bin
         avgBins[dayOfWeek].push(avg)
       }
     }
 
-    // loop through all available data points and calculate the percentage difference
+    // Compute percent deviation from baseline
     for (let i = dateStart; i <= dateEnd; i += delta) {
       try {
         if (isNaN(currentData.get(delta + i)) || isNaN(currentData.get(i))) {
           continue
         }
         const timestamp = new Date((delta + i) * 1000)
-        const timeBinIndex = Math.floor(((delta + i) % (SECONDS_PER_DAY)) / delta)
+        const timeBinIndex = Math.floor(((delta + i) % (SECONDS_PER_DAY)) / delta) // gets time slot within the day
         const baselineChange = avgBins[timestamp.getDay()][timeBinIndex]
         if (baselineChange !== -1 && baselineChange !== 0) {
           const currentChange = currentData.get(delta + i) - currentData.get(i)
