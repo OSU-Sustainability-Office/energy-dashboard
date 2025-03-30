@@ -61,7 +61,14 @@ export default class LineTotalPercModifier {
         result.push(formattedData)
       }
     }
-    chartData.data = result
+
+    // Prevent scenarios where there is only one valid data point
+    if (result.filter(o => !isNaN(o.y) && o.y > -1).length > 1) {
+      chartData.data = result
+    } else {
+      // Shows "No Data" on the campaign buildings sidebar
+      chartData.data = []
+    }
   }
 
   /*
