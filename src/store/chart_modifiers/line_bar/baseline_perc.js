@@ -34,86 +34,99 @@ export default class LinePercModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
-    let resultDataObject = chartData.data
-    let returnData = []
+    const {
+      dateStart,
+      dateEnd,
+      compareStart,
+      compareEnd,
+      intervalUnit,
+      dateInterval,
+      baselineData
+    } = payload
+    const SECONDS_PER_DAY = 86400
+    const currentData = chartData.data
+    const returnData = []
+    const avgBins = Array.from({ length: 7 }, () => []) // one array per day of the week
+    const differenceBaseline = new Map() // keys are epoch time in seconds, values are difference between baseline data points
     let delta = 1
 
-    switch (payload.intervalUnit) {
+    // determine delta based on interval unit
+    switch (intervalUnit) {
       case 'minute':
-        delta = 60
+        delta = 60 // seconds in a minute
         break
       case 'hour':
-        delta = 3600
+        delta = 3600 // seconds in an hour
         break
       case 'day':
-        delta = 86400
+        delta = SECONDS_PER_DAY
         break
     }
+    delta *= dateInterval
 
-    delta *= payload.dateInterval
-
-    // I ended up not using the below 3 lines, but maybe it's needed for "past 6 hours" or "past day". Might also be a moot point due to not enough data points per day on the manually uploaded data for Weatherford.
-    let baselineData = payload.baselineData
-    // let keysarray2 = Array.from(baselineData.keys())
-    let differenceBaseline = new Map()
-
-    for (let i = payload.compareStart; i <= payload.compareEnd; i += delta) {
+    // calculate the difference between baseline data points
+    for (let i = compareStart; i <= compareEnd; i += delta) {
       try {
-        if (isNaN(baselineData.get(i + delta)) || isNaN(baselineData.get(i))) {
+        const baselineTimestamp = i + delta
+        if (isNaN(baselineData.get(baselineTimestamp)) || isNaN(baselineData.get(i))) {
           continue
         }
-        differenceBaseline.set(i + delta, baselineData.get(i + delta) - baselineData.get(i))
-        // returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
+        differenceBaseline.set(baselineTimestamp, baselineData.get(baselineTimestamp) - baselineData.get(i))
       } catch (error) {
         console.log(error)
       }
     }
-    let avgbins = []
 
     // also don't know if we need findClosest() function calls for the two for loops below, for "past 6 hours" or "past day". Need better training data maybe (adjust end date on test campaign)
-    for (let dow = 0; dow < 7; dow++) {
-      let startDate = payload.compareStart
-      while (new Date(startDate * 1000).getDay() !== dow) {
-        startDate += 60 * 60 * 24
+    for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+      // align start date with the day of the week
+      let startDate = compareStart
+      while (new Date(startDate * 1000).getDay() !== dayOfWeek) {
+        startDate += SECONDS_PER_DAY // add one day
       }
-      avgbins.push([])
-      let begin = startDate
-      for (let tod = 0; tod < (60 * 60 * 24) / delta; tod++) {
-        startDate = begin + tod * delta
-        let count = 0
-        let value = -1
-        while (startDate <= payload.compareEnd) {
+
+      // calculate the average for each bin
+      const binsPerDay = SECONDS_PER_DAY / delta
+      for (let timeBinIndex = 0; timeBinIndex < binsPerDay; timeBinIndex++) {
+        let binStartDate = startDate + timeBinIndex * delta
+        let count = 0 // count of data points in this bin
+        let sum = 0 // sum of data points in this bin
+
+        while (binStartDate <= compareEnd) {
           try {
-            if (!isNaN(differenceBaseline.get(startDate))) {
+            if (!isNaN(differenceBaseline.get(binStartDate))) {
               count++
-              value += differenceBaseline.get(startDate)
+              sum += differenceBaseline.get(binStartDate)
             }
           } catch (error) {
             console.log(error)
           }
-          startDate += 60 * 60 * 24 * 7
+          binStartDate += SECONDS_PER_DAY * 7 // add one week
         }
-        if (count > 0) value /= count
-        avgbins[dow].push(value)
+
+        // divide the sum by the count to get the average
+        const avg = count > 0 ? sum / count : -1 // -1 indicates no data points in this bin
+        avgBins[dayOfWeek].push(avg)
       }
     }
 
-    for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
-      let accumulator = 0
-
+    // loop through all available data points and calculate the percentage difference
+    for (let i = dateStart; i <= dateEnd; i += delta) {
       try {
-        if (isNaN(resultDataObject.get(delta + i)) || isNaN(resultDataObject.get(i))) {
+        if (isNaN(currentData.get(delta + i)) || isNaN(currentData.get(i))) {
           continue
         }
-        let baselinePoint =
-          avgbins[new Date((delta + i) * 1000).getDay()][Math.floor(((delta + i) % (60 * 60 * 24)) / delta)]
-        if (baselinePoint !== -1) {
-          accumulator = ((resultDataObject.get(delta + i) - resultDataObject.get(i)) / baselinePoint) * 100 - 100
+        const timestamp = new Date((delta + i) * 1000)
+        const timeBinIndex = Math.floor(((delta + i) % (SECONDS_PER_DAY)) / delta)
+        const baselineChange = avgBins[timestamp.getDay()][timeBinIndex]
+        if (baselineChange !== -1 && baselineChange !== 0) {
+          const currentChange = currentData.get(delta + i) - currentData.get(i)
+          const changeRatio = currentChange / baselineChange // ratio of current change to baseline change
+          const percentDifference = (changeRatio * 100) - 100 // percentage difference from baseline
 
           // do not add data point to graph if datapoint is -100% (issue with Weatherford for campaign 8, near the end)
-          if (accumulator !== -100) {
-            // line below has something to do with the graph with all buildings on it
-            returnData.push({ x: new Date((delta + i) * 1000), y: accumulator })
+          if (percentDifference !== -100) {
+            returnData.push({ x: timestamp, y: percentDifference })
           }
         }
       } catch (error) {
@@ -152,7 +165,7 @@ export default class LinePercModifier {
       dateStart: payload.compareStart,
       dateEnd: payload.compareEnd
     }
-    let baselineData = await store.dispatch(meterGroupPath + '/getData', baselinePayload)
+    const baselineData = await store.dispatch(meterGroupPath + '/getData', baselinePayload)
     payload['baselineData'] = baselineData
   }
 }
