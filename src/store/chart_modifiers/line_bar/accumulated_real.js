@@ -4,6 +4,17 @@
   accumulated values (e.g. accumulated_real) from the chart module.
 */
 
+/**
+ * Finds the nearest valid key for a given building (mostly intended for correcting
+ * manual meter uploads, e.g., Weatherford).
+ * Other buildings with automatic meter upload should have the same keys after this function is run.
+ */
+function findClosest (array, num) {
+  return array.reduce((prev, curr) =>
+    Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev
+  )
+}
+
 export default class LineAccumulatedModifier {
   constructor () {
     this.data = {}
@@ -35,24 +46,29 @@ export default class LineAccumulatedModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
-    let resultDataObject = chartData.data
-
-    // array that stores keys for the resultDataObject (used for finding nearest valid keys for Weatherford)
-    let keysarray = Array.from(resultDataObject.keys())
-    let returnData = []
+    const {
+      dateStart,
+      dateEnd,
+      intervalUnit,
+      dateInterval,
+      point
+    } = payload
+    const SECONDS_PER_DAY = 86400
+    const resultDataObject = chartData.data
+    const returnData = []
+    const startDate = new Date(dateStart * 1000)
     let delta = 1
-    let startDate = new Date(payload.dateStart * 1000)
     let monthDays = 1
 
-    // Finds the nearest valid keys for a given building (mostly intended for correcting manual meter uploads, e.g. Weatherford.)
-    // Other buildings with automatic meter upload should have the same keys after this function is run.
-    function findClosest (array, num) {
-      return array.reduce(function (prev, curr) {
-        return Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev
-      })
-    }
+    // Round down to the nearest 900 seconds (15 minutes)
+    const alignedDateStart = dateStart - (dateStart % 900)
+    const alignedDateEnd = dateEnd - (dateEnd % 900)
 
-    switch (payload.intervalUnit) {
+    // array that stores keys for the resultDataObject (used for finding nearest valid keys for Weatherford)
+    const keysarray = Array.from(resultDataObject.keys())
+
+    // Determine delta based on interval unit
+    switch (intervalUnit) {
       case 'minute':
         delta = 60
         break
@@ -60,64 +76,71 @@ export default class LineAccumulatedModifier {
         delta = 3600
         break
       case 'day':
-        delta = 86400
+        delta = SECONDS_PER_DAY
         break
       case 'month':
+        // Use number of days in the current month to calculate delta
         monthDays = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate()
-        delta = 60 * 60 * 24 * monthDays
+        delta = SECONDS_PER_DAY * monthDays
         break
     }
-    delta *= payload.dateInterval
-    payload.dateStart = payload.dateStart - (payload.dateStart % 900)
-    payload.dateEnd = payload.dateEnd - (payload.dateEnd % 900)
+    delta *= dateInterval
 
-    for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
-      let oldDate = new Date(i * 1000)
-      if (payload.intervalUnit === 'month') {
+    for (let i = alignedDateStart; i <= alignedDateEnd; i += delta) {
+      const oldDate = new Date(i * 1000)
+
+      // Adjust delta if intervalUnit is 'month' (to account for variable month lengths)
+      if (intervalUnit === 'month') {
         let monthDaysCurrent = new Date(oldDate.getFullYear(), oldDate.getMonth() + 1, 0).getDate()
-        delta += (monthDaysCurrent - monthDays) * 24 * 60 * 60
+        delta += (monthDaysCurrent - monthDays) * SECONDS_PER_DAY
         monthDays = monthDaysCurrent
       }
-      let dataDate = new Date((i + delta) * 1000)
-      let result
-      let result_i
+      const dataDate = new Date((i + delta) * 1000) // x-axis date value for chart
+
+      let startKey, endKey
 
       // If array is empty, don't use the nearest valid index algorithm (needed for past 6 hours / past day on Weatherford)
-      if (keysarray === undefined || keysarray.length === 0) {
-        result = delta + i
-        result_i = i
+      if (keysarray.length === 0) {
+        startKey = delta + i
+        endKey = i
       } else {
         // If delta + i is out of range, don't use the nearest valid index algorithm (e.g. make sure May 2 data isn't included if campaign ends May 1)
-        if (delta + i < payload.dateEnd) {
-          result = findClosest(keysarray, delta + i)
+        if (delta + i < alignedDateEnd) {
+          startKey = findClosest(keysarray, delta + i)
         } else {
-          result = delta + i
+          startKey = delta + i
         }
-        result_i = findClosest(keysarray, i)
+        endKey = findClosest(keysarray, i)
       }
 
       try {
-        let accumulator = 0
-        if (isNaN(resultDataObject.get(result)) || isNaN(resultDataObject.get(result_i))) {
-          continue
-        }
-        if (Math.abs(resultDataObject.get(result)) < Math.abs(resultDataObject.get(result_i))) {
-          continue
-        }
-        // If either reading is zero that indicates a missing reading -- do not report.
-        if (resultDataObject.get(result) === 0 || resultDataObject.get(result_i) === 0) {
-          continue
-        }
-        accumulator = resultDataObject.get(result) - resultDataObject.get(result_i)
+        // Get the values for the start and end keys
+        const startValue = resultDataObject.get(startKey)
+        const endValue = resultDataObject.get(endKey)
 
-        if (payload.point === 'total') {
+        // Skip if values are NaN
+        if (isNaN(startValue) || isNaN(endValue)) {
+          continue
+        }
+        // Skip if ending value is unexpectedly lower than starting value
+        if (Math.abs(startValue) < Math.abs(endValue)) {
+          continue
+        }
+        // Skip if either value is zero
+        if (startValue === 0 || endValue === 0) {
+          continue
+        }
+        // Compute the difference between the two values
+        let difference = startValue - endValue
+
+        if (point === 'total') {
           // Steam meters report in 100s of lbs
-          accumulator *= 100
+          difference *= 100
         }
         // While some readings are negative for offset purposes, we should
         // still display them as positive readings since negative electricity
         // isn't really what our meters should detect.
-        returnData.push({ x: dataDate, y: Math.abs(accumulator) })
+        returnData.push({ x: dataDate, y: Math.abs(difference) })
       } catch (error) {
         console.log(error)
       }
@@ -142,9 +165,13 @@ export default class LineAccumulatedModifier {
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
+    let {
+      intervalUnit,
+      dateInterval
+    } = payload
     let delta = 1
-    let dataDate = new Date(payload.dateStart * 1000)
-    switch (payload.intervalUnit) {
+    const startDateObj = new Date(payload.dateStart * 1000)
+    switch (intervalUnit) {
       case 'minute':
         delta = 60
         break
@@ -155,12 +182,13 @@ export default class LineAccumulatedModifier {
         delta = 86400
         break
       case 'month':
-        let monthDays = new Date(dataDate.getFullYear(), dataDate.getMonth(), 0).getDate()
-        if (dataDate.getDate() > monthDays) monthDays = dataDate.getDate()
-        delta = 60 * 60 * 24 * monthDays
+        // Use number of days in the current month to calculate delta
+        let monthDays = new Date(startDateObj.getFullYear(), startDateObj.getMonth(), 0).getDate()
+        if (startDateObj.getDate() > monthDays) monthDays = startDateObj.getDate()
+        delta = 86400 * monthDays
         break
     }
-    delta *= payload.dateInterval
+    delta *= dateInterval
     payload.dateStart = payload.dateStart - delta - (payload.dateStart % 900)
   }
 }
