@@ -1,8 +1,8 @@
 /**
   Filename: avg_accumulated_real.js
   Description: Chart modifier for computing and displaying
-  the baseline accumulated values (e.g. accumulated_real)
-  from the chart module.
+  the baseline accumulated values (e.g. accumulated_real).
+  Displayed on the individual building campaign pages.
 */
 
 export default class LineAvgModifier {
@@ -39,9 +39,21 @@ export default class LineAvgModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
-    let returnData = []
+    const {
+      dateStart,
+      dateEnd,
+      intervalUnit,
+      dateInterval
+    } = payload
+    const SECONDS_PER_DAY = 86400
+    const baselineData = chartData.data
+    const returnData = []
+    const avgBins = Array.from({ length: 7 }, () => []) // one array per day of the week
+    const differenceBaseline = new Map()
     let delta = 1
-    switch (payload.intervalUnit) {
+
+    // Determine delta based on interval unit
+    switch (intervalUnit) {
       case 'minute':
         delta = 60
         break
@@ -52,64 +64,69 @@ export default class LineAvgModifier {
         delta = 86400
         break
     }
-    delta *= payload.dateInterval
-    let baselineData = chartData.data
-    let differenceBaseline = new Map()
-    for (let i = payload.dateStart; i <= payload.dateEnd; i += delta) {
+    delta *= dateInterval
+
+    // Calculate the difference between baseline data points
+    for (let i = dateStart; i <= dateEnd; i += delta) {
       try {
         if (isNaN(baselineData.get(i + delta)) || isNaN(baselineData.get(i))) {
           continue
         }
         differenceBaseline.set(i + delta, baselineData.get(i + delta) - baselineData.get(i))
-        // returnData.push({ x: (new Date((i + delta) * 1000)), y: accumulator })
       } catch (error) {
         console.log(error)
       }
     }
-    let avgbins = []
-    for (let dow = 0; dow < 7; dow++) {
-      let startDate = payload.dateStart
-      while (new Date(startDate * 1000).getDay() !== dow) {
-        startDate += 60 * 60 * 24
-      }
-      avgbins.push([])
-      let begin = startDate
-      for (let tod = 0; tod < (60 * 60 * 24) / delta; tod++) {
-        startDate = begin + tod * delta
-        let count = 0
-        let value = -1
-        while (startDate <= payload.dateEnd) {
+
+    // Compute average baseline changes for each day-of-week
+    const dateStartDay = new Date(dateStart * 1000).getDay()
+    const binsPerDay = SECONDS_PER_DAY / delta
+    for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+      // Calculate the first date that matches the day of the week
+      const dayDifference = (dayOfWeek - dateStartDay + 7) % 7 // difference in days
+      const firstMatchingDate = dateStart + dayDifference * SECONDS_PER_DAY
+
+      // Calculate the average for each bin
+      for (let timeBinIndex = 0; timeBinIndex < binsPerDay; timeBinIndex++) {
+        let binStartDate = firstMatchingDate + (timeBinIndex * delta)
+        let count = 0 // count of data points in this bin
+        let sum = 0 // sum of data points in this bin
+        while (binStartDate <= dateEnd) {
           try {
-            if (!isNaN(differenceBaseline.get(startDate))) {
+            if (!isNaN(differenceBaseline.get(binStartDate))) {
               count++
-              value += differenceBaseline.get(startDate)
+              sum += differenceBaseline.get(binStartDate)
             }
           } catch (error) {
             console.log(error)
           }
-          startDate += 60 * 60 * 24 * 7
+          binStartDate += SECONDS_PER_DAY * 7 // add one week
         }
-        if (count > 0) value /= count
-        avgbins[dow].push(value)
+
+        // Divide the sum by the count to get the average
+        const avg = count > 0 ? sum / count : -1 // -1 indicates no data points in this bin
+        avgBins[dayOfWeek].push(avg)
       }
     }
+
+    // Compute the average for each bin
     for (let i = this.dateStart; i < this.dateEnd; i += delta) {
       try {
-        let baselinePoint =
-          avgbins[new Date((i + delta) * 1000).getDay()][Math.floor(((i + delta) % (60 * 60 * 24)) / delta)]
-        returnData.push({ x: new Date((i + delta) * 1000), y: baselinePoint })
+        const timestamp = new Date((delta + i) * 1000)
+        const timeBinIndex = Math.floor(((i + delta) % (SECONDS_PER_DAY)) / delta)
+        let baselinePoint = avgBins[timestamp.getDay()][timeBinIndex]
+        returnData.push({ x: timestamp, y: baselinePoint })
       } catch (error) {
         console.log(error)
       }
     }
-    // console.log(returnData)
+
     // Prevent corrupted data from getting returned
     if (returnData.filter(o => !isNaN(o.y) && o.y > -1).length > 0) {
       chartData.data = returnData
     } else {
       chartData.data = []
     }
-    // console.log(chartData.data)
   }
 
   /*
