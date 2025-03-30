@@ -1,7 +1,7 @@
 /**
   Filename: accumulated_real.js
-  Description: Chart modifier for computng and displaying
-  accumulated values (e.g. accumulated_real) from the chart module.
+  Description: Chart modifier for processing and formatting accumulated data
+  (e.g., accumulated_real) for all relevant charts on the energy dashboard.
 */
 
 /**

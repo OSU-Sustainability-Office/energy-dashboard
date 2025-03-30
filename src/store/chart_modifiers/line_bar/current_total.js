@@ -1,7 +1,7 @@
 /**
   Filename: current_total.js
-  Description: Chart modifier for computing and displaying the
-  total values from the chart module.
+  Description: Chart modifier for processing and formatting total
+  data (e.g. daily_total) for all relevant charts on the energy dashboard.
 */
 
 export default class LineTotalCurrent {

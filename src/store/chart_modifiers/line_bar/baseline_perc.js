@@ -1,7 +1,8 @@
 /**
   Filename: baseline_perc.js
-  Description: Chart modifier for displaying the baseline percentage
-  values from the chart module for accumulated data (e.g. accumulated_real).
+  Description: Chart modifier for processing and formatting the baseline for
+  accumulated data (e.g. accumulated_real) as a percentage. This is displayed
+  on the main campaign page with all of the buildings as a line chart.
 */
 
 export default class LinePercModifier {

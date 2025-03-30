@@ -1,8 +1,8 @@
 /**
   Filename: avg_accumulated_real.js
-  Description: Chart modifier for computing and displaying
-  the baseline accumulated values (e.g. accumulated_real).
-  Displayed on the individual building campaign pages.
+  Description: Chart modifier for processing and formatting the baseline for
+  accumulated data (e.g. accumulated_real) as kWh. This is displayed on each
+  of the individual building campaign pages as a line chart.
 */
 
 export default class LineAvgModifier {
