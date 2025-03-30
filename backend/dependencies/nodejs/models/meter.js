@@ -105,7 +105,8 @@ class Meter {
       apparent_c: 'Apparent Power, Phase C (VA)',
       baseline_percentage: 'Percentage (%)',
       baseline_perc_total: 'Percentage (%)',
-      daily_total: 'Daily Energy Usage (kWh)'
+      daily_total: 'Daily Energy Usage (kWh)',
+      energy_change: 'Energy Produced (kWh)'
     }
     const points = Object.values(meterClasses[this.classInt])
     for (let point of points) {
@@ -119,6 +120,8 @@ class Meter {
       this.type = 'Electricity'
     } else if (points.indexOf('daily_total') >= 0) {
       this.type = 'Daily Electricity'
+    } else if (points.indexOf('energy_change') >= 0) {
+      this.type = 'Solar Panel'
     }
     return this
   }

@@ -95,6 +95,7 @@ const actions = {
       payload.point !== 'total' &&
       payload.point !== 'cubic_feet' &&
       payload.point !== 'daily_total' &&
+      payload.point !== 'energy_change' &&
       store.getters.meters.length > 1
     ) {
       // && store.getters.meters.length > 1) {

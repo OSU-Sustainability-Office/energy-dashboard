@@ -28,6 +28,8 @@ export default function (graphType, point) {
         return new LineBaselineAvg()
       case 'daily_total':
         return new LineTotalCurrent()
+      case 'energy_change':
+        return new LineTotalCurrent()
       case 'baseline_total':
         return new LineTotalBaseline()
       case 'baseline_perc_total':

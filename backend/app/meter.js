@@ -113,7 +113,7 @@ exports.upload = async (event, context) => {
       meter_data.time_seconds
     ])
     if (final_redundant_check.length === 0) {
-      query_string = `INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`MeterID\`, \`MeterName\`, \`daily_total\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.meterID}', '${meter_data.meterName}', '${meter_data.totalYield}');`
+      query_string = `INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`MeterID\`, \`MeterName\`, \`energy_change\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.meterID}', '${meter_data.meterName}', '${meter_data.totalYield}');`
     } else {
       response.statusCode = 400
       response.body = 'redundant upload detected, skipping'

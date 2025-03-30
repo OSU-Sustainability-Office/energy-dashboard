@@ -57,6 +57,12 @@ export default class LineTotalCurrent {
         result.push(formattedData)
       }
     }
+
+    // Fill chart for Solar Panel data
+    if (payload.point === 'energy_change') {
+      chartData.fill = true
+    }
+
     chartData.data = result
   }
 
@@ -80,6 +86,5 @@ export default class LineTotalCurrent {
     this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
-    payload.point = 'daily_total'
   }
 }
