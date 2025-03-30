@@ -54,9 +54,9 @@ export default class CampaignLineBarModifier {
   }
 
   /*
-    Function to get the meter point based on the meter class
-    For Pacific Power meters, the point is baseline_total
-    For all other meters, the point is avg_accumulated_real
+    Function to get the meter point based on the meter class.
+    For Pacific Power meters, the point is baseline_total.
+    For all other meters, the point is avg_accumulated_real.
   */
   getMeterPoint (store, moduleVuex) {
     let point = 'avg_accumulated_real'
@@ -67,6 +67,68 @@ export default class CampaignLineBarModifier {
       point = 'baseline_total'
     }
     return point
+  }
+
+  /*
+    * Function to get the colors for the current data based on the baseline data.
+    * The colors are computed based on the percentage difference from the baseline and
+    * returns an array of RGB strings. The function also updates the average accumulated
+    * percentage for the current data.
+  */
+  getColors (current, baseline, data) {
+    const colors = []
+    this.data.accumulatedPercentage = 0
+
+    // RGB values for the color extremes
+    const redRGB = [214, 35, 38] // Red for large positive deviations (> 7.5%)
+    const greenRGB = [25, 162, 58] // Green for large negative deviations (< -7.5%)
+    // Neutral color for small deviations
+    const neutralRGB = [
+      redRGB[0] - greenRGB[0],
+      greenRGB[1] - redRGB[1],
+      greenRGB[2] - redRGB[2]
+    ]
+    // Threshold for maximum deviation
+    const threshold = 7.5
+
+    for (let i in current) {
+      // Calculate percentage difference from baseline
+      const percentage = (current[i].y / baseline[i].y) * 100 - 100
+      this.data.accumulatedPercentage += percentage // update accumulated percentage
+
+      // Compute blend factor (0 to 1)
+      const blendFactor = Math.min(Math.abs(percentage) / threshold, 1)
+      let blendedRGB = [0, 0, 0]
+
+      if (percentage < -threshold) {
+        // Large negative deviation
+        blendedRGB = greenRGB
+      } else if (percentage > threshold) {
+        // Large positive deviation
+        blendedRGB = redRGB
+      } else if (percentage < 0) {
+        // Blend between green and neutral
+        blendedRGB = [
+          Math.round(neutralRGB[0] - redRGB[0] * blendFactor),
+          Math.round(neutralRGB[1] + redRGB[1] * blendFactor),
+          Math.round(neutralRGB[2] + redRGB[2] * blendFactor)
+        ]
+      } else {
+        // Blend between red and neutral
+        blendedRGB = [
+          Math.round(neutralRGB[0] + greenRGB[0] * blendFactor),
+          Math.round(neutralRGB[1] - greenRGB[1] * blendFactor),
+          Math.round(neutralRGB[2] - greenRGB[2] * blendFactor)
+        ]
+      }
+      // Add RGB string to colors array
+      colors.push(`rgb(${blendedRGB[0]}, ${blendedRGB[1]}, ${blendedRGB[2]})`)
+    }
+
+    // Set the average accumulated percentage in-place
+    this.data.accumulatedPercentage /= current.length
+
+    return colors
   }
 
   /*
@@ -97,7 +159,7 @@ export default class CampaignLineBarModifier {
    */
   async postData (store, moduleVuex, data) {
     if (!data) return
-    let dlData = (await this.promise).data
+    const dlData = (await this.promise).data
     data.datasets.splice(0, 0, {
       label: 'Baseline',
       backgroundColor: '#FFF',
@@ -120,37 +182,9 @@ export default class CampaignLineBarModifier {
       baseline = []
     }
 
-    let colors = []
-    this.data.accumulatedPercentage = 0
-    for (let i in current) {
-      const percentage = (current[i].y / baseline[i].y) * 100 - 100
-      this.data.accumulatedPercentage += percentage
-      const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]
-      const greenInt = [parseInt('0x19', 16), parseInt('0xa2', 16), parseInt('0x3a', 16)]
-      const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
-      const compare = Math.abs(percentage) / 7.5
-      const result = []
-      if (percentage < -7.5) {
-        result.push(greenInt[0])
-        result.push(greenInt[1])
-        result.push(greenInt[2])
-      } else if (percentage > 7.5) {
-        result.push(redInt[0])
-        result.push(redInt[1])
-        result.push(redInt[2])
-      } else if (percentage < 0) {
-        result.push(Math.round(typicalColor[0] - redInt[0] * compare))
-        result.push(Math.round(typicalColor[1] + redInt[1] * compare))
-        result.push(Math.round(typicalColor[2] + redInt[2] * compare))
-      } else {
-        result.push(Math.round(typicalColor[0] + greenInt[0] * compare))
-        result.push(Math.round(typicalColor[1] - greenInt[1] * compare))
-        result.push(Math.round(typicalColor[2] - greenInt[2] * compare))
-      }
-      colors.push('rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')')
-    }
+    // Compute the colors for the current data (used for the bar chart)
+    const colors = this.getColors(current, baseline)
     data.datasets[1].borderColor = colors[0]
     data.datasets[1].backgroundColor = colors
-    this.data.accumulatedPercentage /= current.length
   }
 }
