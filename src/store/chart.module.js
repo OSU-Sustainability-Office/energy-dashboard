@@ -284,6 +284,7 @@ const getters = {
         apparent_b: 'Apparent Power, Phase B (VA)',
         apparent_c: 'Apparent Power, Phase C (VA)',
         baseline_percentage: 'Percentage (%)',
+        baseline_perc_total: 'Percentage (%)',
         daily_total: 'Daily Total (kWh)'
       }
       return map[state.point]
@@ -327,6 +328,7 @@ const getters = {
       apparent_b: 'VA',
       apparent_c: 'VA',
       baseline_percentage: '%',
+      baseline_perc_total: '%',
       daily_total: 'kWh'
     }
     return map[state.point]

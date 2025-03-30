@@ -104,6 +104,7 @@ class Meter {
       apparent_b: 'Apparent Power, Phase B (VA)',
       apparent_c: 'Apparent Power, Phase C (VA)',
       baseline_percentage: 'Percentage (%)',
+      baseline_perc_total: 'Percentage (%)',
       daily_total: 'Daily Energy Usage (kWh)'
     }
     const points = Object.values(meterClasses[this.classInt])

@@ -1,19 +1,13 @@
 /**
-  Filename: current_total.js
-  Description: Chart modifier for processing and formatting total
-  data (e.g. daily_total) for all relevant charts on the energy dashboard.
+  Filename: baseline_perc_total.js
+  Description: Chart modifier for processing and formatting the baseline for
+  total data (e.g. daily_total) as a percentage. This is displayed
+  on the main campaign page with all of the buildings as a line chart.
 */
 
-export default class LineTotalCurrent {
-  constructor () {
-    this.dateStart = null
-    this.dateEnd = null
-  }
-
+export default class LineTotalPercModifier {
   /*
     Description: Called after getData function of chart module.
-    Since the data is already a time series, this function does not
-    need to do any additional calculations.
 
     Arguments:
       - chartData (object)
@@ -24,8 +18,7 @@ export default class LineTotalCurrent {
           fill: specifies to fill the chart, colors underneath the line (bool)
           showLine: specifies interpolation or discrete graphing (bool)
           spanGaps: specifies if null/nan data points should show a line break or not (bool)
-          data: contains chart data (Map: time -> value (float))
-                **Note: must be processed to an array of {x: Date, y: number}
+          data: contains chart data (Map: time: value (float)) **Note: this must be processed to type array of object: {x: time (date), y: value (float)}
         }
       - payload (object)
         {
@@ -39,20 +32,31 @@ export default class LineTotalCurrent {
       - store (vuex store)
       - module: (vuex module) module dispatching this function call
 
-    Returns: Nothing (Note: chartData is passed by reference so editing
-    this argument will change the chart in the update sequence)
+    Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
     const rawData = chartData.data
+    const {
+      baselineData,
+      compareStart,
+      compareEnd
+    } = payload
     const result = []
 
-    // Add the data to result array as-is since it is already a time series
-    for (const [currentTimestamp, value] of rawData.entries()) {
-      if (!isNaN(value)) {
+    for (const currentTimestamp of rawData.keys()) {
+      // Shift timestamp backward by the comparison period to align with the baseline range
+      const baselineTimestamp = currentTimestamp - (compareEnd - compareStart + 86400)
+      const baselineValue = baselineData.get(baselineTimestamp)
+
+      if (!isNaN(baselineValue)) {
+        // Calculate the percentage difference
+        const currentValue = rawData.get(currentTimestamp)
+        const percentageDifference = (currentValue - baselineValue) / baselineValue * 100
+
         // Format the data for the chart
         const formattedData = {
           x: new Date(currentTimestamp * 1000),
-          y: value
+          y: percentageDifference
         }
         result.push(formattedData)
       }
@@ -76,10 +80,17 @@ export default class LineTotalCurrent {
       - store (vuex store)
       - module: (vuex module) module dispatching this function call
 
-    Returns: Nothing (Note: payload is passed by reference so editing
-    this argument will change it in the chart update sequence)
+    Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
+    const meterGroupPath = module.getters.meterGroupPath
     payload.point = 'daily_total'
+    const baselinePayload = {
+      ...payload,
+      dateStart: payload.compareStart,
+      dateEnd: payload.compareEnd
+    }
+    const baselineData = await store.dispatch(meterGroupPath + '/getData', baselinePayload)
+    payload['baselineData'] = baselineData
   }
 }

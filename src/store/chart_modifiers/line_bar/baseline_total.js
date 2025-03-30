@@ -94,7 +94,7 @@ export default class LineTotalBaseline {
       dateStart: payload.compareStart,
       dateEnd: payload.compareEnd
     }
-    let baselineData = await store.dispatch(meterGroupPath + '/getData', baselinePayload)
+    const baselineData = await store.dispatch(meterGroupPath + '/getData', baselinePayload)
     payload['baselineData'] = baselineData
   }
 }
