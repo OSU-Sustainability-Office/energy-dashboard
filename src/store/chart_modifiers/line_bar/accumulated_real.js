@@ -54,7 +54,7 @@ export default class LineAccumulatedModifier {
       point
     } = payload
     const SECONDS_PER_DAY = 86400
-    const resultDataObject = chartData.data
+    const currentData = chartData.data
     const returnData = []
     const startDate = new Date(dateStart * 1000)
     let delta = 1
@@ -64,8 +64,8 @@ export default class LineAccumulatedModifier {
     const alignedDateStart = dateStart - (dateStart % 900)
     const alignedDateEnd = dateEnd - (dateEnd % 900)
 
-    // array that stores keys for the resultDataObject (used for finding nearest valid keys for Weatherford)
-    const keysarray = Array.from(resultDataObject.keys())
+    // Array that stores keys for the currentData (used for finding nearest valid keys for Weatherford)
+    const keysarray = Array.from(currentData.keys())
 
     // Determine delta based on interval unit
     switch (intervalUnit) {
@@ -115,8 +115,8 @@ export default class LineAccumulatedModifier {
 
       try {
         // Get the values for the start and end keys
-        const startValue = resultDataObject.get(startKey)
-        const endValue = resultDataObject.get(endKey)
+        const startValue = currentData.get(startKey)
+        const endValue = currentData.get(endKey)
 
         // Skip if values are NaN
         if (isNaN(startValue) || isNaN(endValue)) {
