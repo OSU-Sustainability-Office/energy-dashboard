@@ -60,10 +60,6 @@ export default class LineAccumulatedModifier {
     let delta = 1
     let monthDays = 1
 
-    // Round down to the nearest 900 seconds (15 minutes)
-    const alignedDateStart = dateStart - (dateStart % 900)
-    const alignedDateEnd = dateEnd - (dateEnd % 900)
-
     // Array that stores keys for the currentData (used for finding nearest valid keys for Weatherford)
     const keysarray = Array.from(currentData.keys())
 
@@ -86,7 +82,7 @@ export default class LineAccumulatedModifier {
     }
     delta *= dateInterval
 
-    for (let i = alignedDateStart; i <= alignedDateEnd; i += delta) {
+    for (let i = dateStart; i <= dateEnd; i += delta) {
       const oldDate = new Date(i * 1000)
 
       // Adjust delta if intervalUnit is 'month' (to account for variable month lengths)
@@ -105,7 +101,7 @@ export default class LineAccumulatedModifier {
         endKey = i
       } else {
         // If delta + i is out of range, don't use the nearest valid index algorithm (e.g. make sure May 2 data isn't included if campaign ends May 1)
-        if (delta + i < alignedDateEnd) {
+        if (delta + i < dateEnd) {
           startKey = findClosest(keysarray, delta + i)
         } else {
           startKey = delta + i
