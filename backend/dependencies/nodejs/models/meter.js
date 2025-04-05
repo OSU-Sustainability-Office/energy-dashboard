@@ -116,10 +116,8 @@ class Meter {
       this.type = 'Steam'
     } else if (points.indexOf('cubic_feet') >= 0) {
       this.type = 'Gas'
-    } else if (points.indexOf('accumulated_real') >= 0) {
+    } else if (points.indexOf('accumulated_real') >= 0 || points.indexOf('periodic_real_in') >= 0) {
       this.type = 'Electricity'
-    } else if (points.indexOf('periodic_real_in') >= 0) {
-      this.type = 'Daily Electricity'
     } else if (points.indexOf('periodic_real_out') >= 0) {
       this.type = 'Solar Panel'
     }
