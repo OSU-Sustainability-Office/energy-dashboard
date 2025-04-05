@@ -1,7 +1,7 @@
 /**
   Filename: current_total.js
   Description: Chart modifier for processing and formatting total
-  data (e.g. daily_total) for all relevant charts on the energy dashboard.
+  data (e.g. periodic_real_in) for all relevant charts on the energy dashboard.
 */
 
 export default class LineTotalCurrent {
@@ -59,7 +59,7 @@ export default class LineTotalCurrent {
     }
 
     // Fill chart for Solar Panel data
-    if (payload.point === 'energy_change') {
+    if (payload.point === 'periodic_real_out') {
       chartData.fill = true
     }
 

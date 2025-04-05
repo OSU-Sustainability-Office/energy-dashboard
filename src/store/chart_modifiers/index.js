@@ -26,9 +26,9 @@ export default function (graphType, point) {
         return new LineBaselinePerc()
       case 'avg_accumulated_real':
         return new LineBaselineAvg()
-      case 'daily_total':
+      case 'periodic_real_in':
         return new LineTotalCurrent()
-      case 'energy_change':
+      case 'periodic_real_out':
         return new LineTotalCurrent()
       case 'baseline_total':
         return new LineTotalBaseline()

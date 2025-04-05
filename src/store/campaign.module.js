@@ -22,7 +22,7 @@ const state = () => {
 
 /*
   Function to get the meter point based on the meter class.
-  For Pacific Power meters, the point is daily_total.
+  For Pacific Power meters, the point is periodic_real_in.
   For all other meters, the point is avg_accumulated_real.
   This function is used to determine the point to be used for
   the baseline percentage calculation.

@@ -1,7 +1,7 @@
 /**
   Filename: baseline_total.js
   Description: Chart modifier for processing and formatting the baseline for
-  total data (e.g. daily_total) as kWh. This is displayed on each
+  total data (e.g. periodic_real_in) as kWh. This is displayed on each
   of the individual building campaign pages as a line chart.
 */
 
@@ -95,7 +95,7 @@ export default class LineTotalBaseline {
   */
   async preGetData (payload, store, module) {
     const meterGroupPath = module.getters.meterGroupPath
-    payload.point = 'daily_total'
+    payload.point = 'periodic_real_in'
     const baselinePayload = {
       ...payload,
       dateStart: payload.compareStart,

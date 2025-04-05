@@ -230,8 +230,8 @@ const actions = {
           Electricity: 'accumulated_real',
           Gas: 'cubic_feet',
           Steam: 'total',
-          'Daily Electricity': 'daily_total',
-          'Solar Panel': 'energy_change'
+          'Daily Electricity': 'periodic_real_in',
+          'Solar Panel': 'periodic_real_out'
         }
         store.commit(chartSpace + '/path', moduleSpace)
         if (utilityType !== '') {

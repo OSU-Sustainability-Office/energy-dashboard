@@ -1,7 +1,7 @@
 /**
   Filename: baseline_perc_total.js
   Description: Chart modifier for processing and formatting the baseline for
-  total data (e.g. daily_total) as a percentage. This is displayed
+  total data (e.g. periodic_real_in) as a percentage. This is displayed
   on the main campaign page with all of the buildings as a line chart.
 */
 
@@ -91,7 +91,7 @@ export default class LineTotalPercModifier {
   */
   async preGetData (payload, store, module) {
     const meterGroupPath = module.getters.meterGroupPath
-    payload.point = 'daily_total'
+    payload.point = 'periodic_real_in'
     const baselinePayload = {
       ...payload,
       dateStart: payload.compareStart,
