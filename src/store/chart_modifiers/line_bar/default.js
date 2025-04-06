@@ -4,6 +4,15 @@
   a time series (e.g. periodic_real_in). This modifier ensures that the number of
   data points is equal to the number of intervals.
 */
+import { DateTime } from 'luxon'
+
+function getTimezoneOffset (epochSeconds) {
+  // Create a DateTime object in the Pacific Time Zone
+  const dt = DateTime.fromSeconds(epochSeconds, 'America/Los_Angeles')
+
+  // Multiply by 60 to convert to seconds
+  return dt.offset * 60
+}
 
 export default class LineDefaultModifier {
   constructor () {
@@ -46,9 +55,10 @@ export default class LineDefaultModifier {
       dateEnd,
       intervalUnit,
       dateInterval,
-      timeZoneOffset
+      timeZoneOffset,
+      point
     } = payload
-    const resultDataObject = chartData.data
+    const currentData = chartData.data
     const result = []
     const startDate = new Date(dateStart * 1000)
     const SECONDS_PER_DAY = 86400
@@ -79,12 +89,21 @@ export default class LineDefaultModifier {
     // Add the data to result array as-is since it is already a time series
     for (let i = dateStart; i <= dateEnd; i += delta) {
       try {
-        const value = resultDataObject.get(i + delta)
-        if (isNaN(value) || isNaN(resultDataObject.get(i))) {
+        const value = currentData.get(i + delta)
+        if (isNaN(value) || isNaN(currentData.get(i))) {
+          console.log(i)
           continue
         }
+
+        // Adjust the timestamp to account for the timezone offset (based on the point type)
+        let adjustedTimestamp = i + delta
+        if (point === 'periodic_real_in' || point === 'periodic_real_out') {
+          adjustedTimestamp -= getTimezoneOffset(i + delta)
+        } else {
+          adjustedTimestamp += offset
+        }
+
         // Format the data for the chart
-        const adjustedTimestamp = i + delta + offset
         const formattedData = {
           x: new Date(adjustedTimestamp * 1000),
           y: Math.abs(value)
@@ -96,7 +115,7 @@ export default class LineDefaultModifier {
     }
 
     // Fill chart for Solar Panel data
-    if (payload.point === 'periodic_real_out') {
+    if (point === 'periodic_real_out') {
       chartData.fill = true
     }
 
