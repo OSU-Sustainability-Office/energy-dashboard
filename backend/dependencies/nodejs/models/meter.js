@@ -141,19 +141,7 @@ class Meter {
       if (String(meterClass).startsWith('999')) {
         // get table name from meter table
         let [{ name: meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id])
-        const teslaMeterIds = ['83', '84', '85', '86', '118']
-        if (String(meterClass) === '9990001' && teslaMeterIds.includes(String(this.id))) {
-          return DB.query(
-            'SELECT ' +
-              point +
-              ", time_seconds AS time, '" +
-              this.id +
-              "' as id FROM " +
-              meter_table_name +
-              ' WHERE time_seconds >= ? AND time_seconds <= ?',
-            [startTime, endTime]
-          )
-        } else if (meter_table_name === 'Solar_Meters') {
+        if (String(meterClass) === '9990001' && meter_table_name === 'Solar_Meters') {
           return DB.query(
             'SELECT ' +
               point +
@@ -164,10 +152,8 @@ class Meter {
               ' WHERE time_seconds >= ? AND time_seconds <= ? AND MeterID = ? order by time_seconds DESC',
             [startTime, endTime, this.id]
           )
-        }
-
+        } else {
         // pacific power meters, may need to change to else-if if there are going to be more custom classes starting with 999
-        else {
           let [{ pacific_power_id: pp_id }] = await DB.query('SELECT pacific_power_id FROM meters WHERE id = ?', [
             this.id
           ])
