@@ -302,6 +302,8 @@ const actions = {
           }
           chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
         }
+      } else if (store.getters.isTeslaMeter(this.getters[chart.meterGroupPath + '/meters'][0])) {
+        // Skip Tesla meters since there is no data to get
       } else {
         chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
       }
@@ -476,6 +478,14 @@ const getters = {
 
   chart: state => id => {
     return state[`chart_${id}`]
+  },
+
+  isTeslaMeter: state => meter => {
+    const teslaMeterIds = ['83', '84', '85', '86', '118', '184']
+    if (teslaMeterIds.includes(meter.id)) {
+      return true
+    }
+    return false
   }
 }
 /*
