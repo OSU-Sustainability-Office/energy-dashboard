@@ -8,7 +8,7 @@
           <p class="body">
             <el-row :gutter="20">
               <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
-                <a href="https://fa.oregonstate.edu/contact">Contact us here</a>
+                <a href="https://sustainability.oregonstate.edu/contact">Contact us here</a>
                 with your comments and questions. Be sure to select "Sustainability Office" from the Category drop-down
                 menu. You can also check out our
                 <a href="/#/getstarted">FAQ</a>
