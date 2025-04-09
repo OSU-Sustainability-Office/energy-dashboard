@@ -7,8 +7,9 @@
 import LineAccumulatedReal from './line_bar/accumulated_real.js'
 import LineBaselinePerc from './line_bar/baseline_perc.js'
 import LineBaselineAvg from './line_bar/avg_accumulated_real.js'
-import LineBase from './line_bar/base.js'
-import LineEnergyChange from './line_bar/energy_change.js'
+import LineDefault from './line_bar/default.js'
+import LineTotalBaseline from './line_bar/baseline_total.js'
+import LineTotalPercModifier from './line_bar/baseline_perc_total.js'
 
 export default function (graphType, point) {
   if (graphType === 1 || graphType === 2) {
@@ -24,11 +25,12 @@ export default function (graphType, point) {
         return new LineBaselinePerc()
       case 'avg_accumulated_real':
         return new LineBaselineAvg()
-      // TODO: add energy_change specific line chart
-      case 'energy_change':
-        return new LineEnergyChange()
+      case 'baseline_total':
+        return new LineTotalBaseline()
+      case 'baseline_perc_total':
+        return new LineTotalPercModifier()
       default:
-        return new LineBase()
+        return new LineDefault()
     }
   } else {
     throw new Error('Unknown chart type')

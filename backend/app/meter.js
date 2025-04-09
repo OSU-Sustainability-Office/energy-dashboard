@@ -113,7 +113,7 @@ exports.upload = async (event, context) => {
       meter_data.time_seconds
     ])
     if (final_redundant_check.length === 0) {
-      query_string = `INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`energy_change\`, \`MeterID\`, \`MeterName\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.totalYield}', '${meter_data.meterID}', '${meter_data.meterName}');`
+      query_string = `INSERT INTO Solar_Meters (\`time\`, \`time_seconds\`, \`MeterID\`, \`MeterName\`, \`periodic_real_out\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.meterID}', '${meter_data.meterName}', '${meter_data.totalYield}');`
     } else {
       response.statusCode = 400
       response.body = 'redundant upload detected, skipping'
@@ -125,7 +125,7 @@ exports.upload = async (event, context) => {
       [meter_data.pp_meter_id, meter_data.time_seconds]
     )
     if (final_redundant_check.length === 0) {
-      query_string = `INSERT INTO pacific_power_data (\`time\`, \`time_seconds\`, \`accumulated_real\`, \`pacific_power_meter_id\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.usage_kwh}', '${meter_data.pp_meter_id}');`
+      query_string = `INSERT INTO pacific_power_data (\`time\`, \`time_seconds\`, \`pacific_power_meter_id\`, \`periodic_real_in\`) VALUES ('${meter_data.time}', '${meter_data.time_seconds}', '${meter_data.pp_meter_id}', '${meter_data.usage_kwh}');`
     } else {
       response.statusCode = 400
       response.body = 'redundant upload detected, skipping'

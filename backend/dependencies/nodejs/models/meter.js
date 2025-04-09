@@ -104,7 +104,9 @@ class Meter {
       apparent_b: 'Apparent Power, Phase B (VA)',
       apparent_c: 'Apparent Power, Phase C (VA)',
       baseline_percentage: 'Percentage (%)',
-      energy_change: 'Energy Produced (kWh)'
+      baseline_perc_total: 'Percentage (%)',
+      periodic_real_in: 'Net Energy Usage (kWh)',
+      periodic_real_out: 'Energy Produced (kWh)'
     }
     const points = Object.values(meterClasses[this.classInt])
     for (let point of points) {
@@ -114,9 +116,9 @@ class Meter {
       this.type = 'Steam'
     } else if (points.indexOf('cubic_feet') >= 0) {
       this.type = 'Gas'
-    } else if (points.indexOf('accumulated_real') >= 0) {
+    } else if (points.indexOf('accumulated_real') >= 0 || points.indexOf('periodic_real_in') >= 0) {
       this.type = 'Electricity'
-    } else if (points.indexOf('energy_change') >= 0) {
+    } else if (points.indexOf('periodic_real_out') >= 0) {
       this.type = 'Solar Panel'
     }
     return this

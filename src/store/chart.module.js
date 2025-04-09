@@ -43,13 +43,6 @@ const actions = {
 
     let point = reqPayload.point
 
-    const isPacificPowerMeter = this.getters[store.getters.meterGroupPath + '/meters'][0].classInt === 9990002
-
-    // PacificPower meters only collect data daily and need to use the same chart modifier as solar arrays
-    if (isPacificPowerMeter) {
-      point = 'energy_change'
-    }
-
     const chartModifier = ChartModifiers(payload.graphType, point)
     await chartModifier.preGetData(reqPayload, this, store)
 
@@ -82,11 +75,6 @@ const actions = {
       chartData.data.map(d => {
         d.y = d.y * 10
       })
-    }
-
-    // fix PacificPower meters chart being filled by the energy_change chart modifier
-    if (isPacificPowerMeter) {
-      chartData.fill = false
     }
 
     return chartData
@@ -296,7 +284,9 @@ const getters = {
         apparent_b: 'Apparent Power, Phase B (VA)',
         apparent_c: 'Apparent Power, Phase C (VA)',
         baseline_percentage: 'Percentage (%)',
-        energy_change: 'Energy Produced (kWh)'
+        baseline_perc_total: 'Percentage (%)',
+        periodic_real_in: 'Net Energy Usage (kWh)',
+        periodic_real_out: 'Energy Produced (kWh)'
       }
       return map[state.point]
     } else {
@@ -339,7 +329,9 @@ const getters = {
       apparent_b: 'VA',
       apparent_c: 'VA',
       baseline_percentage: '%',
-      energy_change: 'kWh'
+      baseline_perc_total: '%',
+      periodic_real_in: 'kWh',
+      periodic_real_out: 'kWh'
     }
     return map[state.point]
   }

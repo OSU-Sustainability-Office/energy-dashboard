@@ -210,7 +210,29 @@ const actions = {
     store.commit('dateInterval', store.getters.dateInterval)
   },
 
-  // Default block for Aqcuisuites & Tesla Solar Panels
+  /*
+    Function to get the meter point based on the meter class.
+    For Pacific Power meters, the point is periodic_real_in.
+    For all other meters, the point is avg_accumulated_real.
+    This function is used to determine the point to be used for
+    the baseline percentage calculation.
+  */
+  async getMeterPoint (store, meters) {
+    let point = 'accumulated_real' // default to Aqcuisuite meters
+    // find Pacific Power meters
+    for (const key in meters) {
+      if (meters[key] && typeof meters[key] === 'object' && 'classInt' in meters[key]) {
+        const classInt = meters[key].classInt
+        if (classInt === 9990002) {
+          point = 'periodic_real_in'
+          break
+        }
+      }
+    }
+    return point
+  },
+
+  // Default block for buildings
   async loadDefault (store, payload) {
     store.commit(
       'promise',
@@ -219,22 +241,35 @@ const actions = {
         let chartSpace = 'chart_' + payload.id.toString()
         let moduleSpace = store.getters.path + '/' + chartSpace
         this.registerModule(moduleSpace.split('/'), Chart)
+
+        // Get the building utility type
         let utilityType = ''
-        if (this.getters[payload.group.path + '/meters'].length > 0) {
-          await this.getters[payload.group.path + '/meters'][0].promise
-          utilityType = this.getters[this.getters[payload.group.path + '/meters'][0].path + '/type']
+        const meters = this.getters[payload.group.path + '/meters']
+        if (meters.length > 0) {
+          await meters[0].promise
+          utilityType = this.getters[meters[0].path + '/type']
         }
-        // this defines the "default chart", "Total Electricity"
+
+        // This defines the "default chart" (e.g. "Total Electricity")
+        // The default chart are the charts shown when user clicks on a building
         store.commit(chartSpace + '/name', 'Total ' + utilityType)
         const pointMap = {
           Electricity: 'accumulated_real',
           Gas: 'cubic_feet',
           Steam: 'total',
-          'Solar Panel': 'energy_change'
+          'Daily Electricity': 'periodic_real_in',
+          'Solar Panel': 'periodic_real_out'
         }
+        let point = pointMap[utilityType]
+
+        // Determine if electricity meter is Acquisuite or Pacific Power
+        if (utilityType === 'Electricity') {
+          point = await store.dispatch('getMeterPoint', meters)
+        }
+
         store.commit(chartSpace + '/path', moduleSpace)
         if (utilityType !== '') {
-          store.commit(chartSpace + '/point', pointMap[utilityType])
+          store.commit(chartSpace + '/point', point)
         } else {
           store.commit(chartSpace + '/point', '')
         }

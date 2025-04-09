@@ -1,10 +1,10 @@
-/*
- * @Author: you@you.you
- * @Date:   Wednesday March 25th 2020
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Wednesday March 25th 2020
- * @Copyright:  (c) Oregon State University 2020
- */
+/**
+  Filename: campaign_linebar.mod.js
+  Description: Block modifier for displaying the current
+  and baseline values from the chart module. This modifier
+  is used for the campaign line/bar charts.
+*/
+
 export default class CampaignLineBarModifier {
   static name = 'campaign_linebar'
 
@@ -12,7 +12,7 @@ export default class CampaignLineBarModifier {
     /*
       Initialize the modifier here,
       this is only an example modifier that
-      doed nothing. I expect the instance
+      does nothing. Expect the instance
       variables to be more descriptive for
       specific modifiers
     */
@@ -25,29 +25,25 @@ export default class CampaignLineBarModifier {
     }
   }
 
+  /*
+   * Function is called when a modifier is added to a block.
+   * Store is Vuex store, module is block module.
+   */
   async onAdd (store, module) {
-    /*
-      Function is called when a modifier
-      is added to a block. Store is Vuex store
-      module is block module.
-    */
   }
 
+  /*
+    Function is called when a modifier is removed from a block.
+    Store is Vuex store, module is block module.
+  */
   async onRemove (store, moduleVuex) {
-    /*
-      Function is called when a modifier
-      is removed from a block. Store is Vuex store
-      module is block module.
-    */
   }
 
+  /*
+   * Function is called when a block updates modifier data.
+   * Store is Vuex store, module is block module, data is new incoming data.
+   */
   async updateData (store, moduleVuex, data) {
-    /*
-      Function is called when a block
-      updates modifier data. Store is Vuex store
-      module is block module, data is new incoming
-      data.
-    */
     if (data.compareEnd && data.compareStart) {
       this.data.compareEnd = data.compareEnd
       this.data.compareStart = data.compareStart
@@ -57,19 +53,95 @@ export default class CampaignLineBarModifier {
     }
   }
 
+  /*
+    Function to get the meter point based on the meter class.
+    For Pacific Power meters, the point is baseline_total.
+    For all other meters, the point is avg_accumulated_real.
+  */
+  getMeterPoint (store, moduleVuex) {
+    let point = 'avg_accumulated_real'
+    const chart = moduleVuex.getters.charts[0]
+    const meterGroupPath = chart.meterGroupPath
+    const meterClass = (store.getters[meterGroupPath + '/meters'][0].classInt)
+    if (meterClass === 9990002) {
+      point = 'baseline_total'
+    }
+    return point
+  }
+
+  /*
+    * Function to get the colors for the current data based on the baseline data.
+    * The colors are computed based on the percentage difference from the baseline and
+    * returns an array of RGB strings. The function also updates the average accumulated
+    * percentage for the current data.
+  */
+  getColors (current, baseline, data) {
+    const colors = []
+    this.data.accumulatedPercentage = 0
+
+    // RGB values for the color extremes
+    const redRGB = [214, 35, 38] // Red for large positive deviations (> 7.5%)
+    const greenRGB = [25, 162, 58] // Green for large negative deviations (< -7.5%)
+    // Neutral color for small deviations
+    const neutralRGB = [
+      redRGB[0] - greenRGB[0],
+      greenRGB[1] - redRGB[1],
+      greenRGB[2] - redRGB[2]
+    ]
+    // Threshold for maximum deviation
+    const threshold = 7.5
+
+    for (let i in current) {
+      // Calculate percentage difference from baseline
+      const percentage = (current[i].y / baseline[i].y) * 100 - 100
+      this.data.accumulatedPercentage += percentage // update accumulated percentage
+
+      // Compute blend factor (0 to 1)
+      const blendFactor = Math.min(Math.abs(percentage) / threshold, 1)
+      let blendedRGB = [0, 0, 0]
+
+      if (percentage < -threshold) {
+        // Large negative deviation
+        blendedRGB = greenRGB
+      } else if (percentage > threshold) {
+        // Large positive deviation
+        blendedRGB = redRGB
+      } else if (percentage < 0) {
+        // Blend between green and neutral
+        blendedRGB = [
+          Math.round(neutralRGB[0] - redRGB[0] * blendFactor),
+          Math.round(neutralRGB[1] + redRGB[1] * blendFactor),
+          Math.round(neutralRGB[2] + redRGB[2] * blendFactor)
+        ]
+      } else {
+        // Blend between red and neutral
+        blendedRGB = [
+          Math.round(neutralRGB[0] + greenRGB[0] * blendFactor),
+          Math.round(neutralRGB[1] - greenRGB[1] * blendFactor),
+          Math.round(neutralRGB[2] - greenRGB[2] * blendFactor)
+        ]
+      }
+      // Add RGB string to colors array
+      colors.push(`rgb(${blendedRGB[0]}, ${blendedRGB[1]}, ${blendedRGB[2]})`)
+    }
+
+    // Set the average accumulated percentage in-place
+    this.data.accumulatedPercentage /= current.length
+
+    return colors
+  }
+
+  /*
+   * Function is called when a block updates modifier data.
+   * Store is Vuex store, module is block module, data is new incoming data.
+   */
   async preData (store, moduleVuex) {
-    /*
-      Function is called when a block
-      updates modifier data. Store is Vuex store
-      module is block module, data is new incoming
-      data.
-    */
     if (moduleVuex.getters.charts.length > 1) {
       throw new Error('This block modifier expects only one chart')
     }
     this.data.dlData = {}
     const payload = {
-      point: 'avg_accumulated_real',
+      point: this.getMeterPoint(store, moduleVuex),
       dateStart: moduleVuex.getters.dateStart / 1000,
       dateEnd: moduleVuex.getters.dateEnd / 1000,
       intervalUnit: moduleVuex.getters.intervalUnit,
@@ -80,15 +152,14 @@ export default class CampaignLineBarModifier {
     }
     this.promise = store.dispatch(moduleVuex.getters.charts[0].path + '/getData', payload)
   }
+
+  /*
+   * Function is called when a block updates modifier data.
+   * Store is Vuex store, module is block module, data is new incoming data.
+   */
   async postData (store, moduleVuex, data) {
-    /*
-      Function is called when a block
-      updates modifier data. Store is Vuex store
-      module is block module, data is new incoming
-      data.
-    */
     if (!data) return
-    let dlData = (await this.promise).data
+    const dlData = (await this.promise).data
     data.datasets.splice(0, 0, {
       label: 'Baseline',
       backgroundColor: '#FFF',
@@ -111,37 +182,9 @@ export default class CampaignLineBarModifier {
       baseline = []
     }
 
-    let colors = []
-    this.data.accumulatedPercentage = 0
-    for (let i in current) {
-      const percentage = (current[i].y / baseline[i].y) * 100 - 100
-      this.data.accumulatedPercentage += percentage
-      const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]
-      const greenInt = [parseInt('0x19', 16), parseInt('0xa2', 16), parseInt('0x3a', 16)]
-      const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
-      const compare = Math.abs(percentage) / 7.5
-      const result = []
-      if (percentage < -7.5) {
-        result.push(greenInt[0])
-        result.push(greenInt[1])
-        result.push(greenInt[2])
-      } else if (percentage > 7.5) {
-        result.push(redInt[0])
-        result.push(redInt[1])
-        result.push(redInt[2])
-      } else if (percentage < 0) {
-        result.push(Math.round(typicalColor[0] - redInt[0] * compare))
-        result.push(Math.round(typicalColor[1] + redInt[1] * compare))
-        result.push(Math.round(typicalColor[2] + redInt[2] * compare))
-      } else {
-        result.push(Math.round(typicalColor[0] + greenInt[0] * compare))
-        result.push(Math.round(typicalColor[1] - greenInt[1] * compare))
-        result.push(Math.round(typicalColor[2] - greenInt[2] * compare))
-      }
-      colors.push('rgb(' + result[0].toString() + ',' + result[1].toString() + ',' + result[2].toString() + ')')
-    }
+    // Compute the colors for the current data (used for the bar chart)
+    const colors = this.getColors(current, baseline)
     data.datasets[1].borderColor = colors[0]
     data.datasets[1].backgroundColor = colors
-    this.data.accumulatedPercentage /= current.length
   }
 }

@@ -20,6 +20,28 @@ const state = () => {
   }
 }
 
+/*
+  Function to get the meter point based on the meter class.
+  For Pacific Power meters, the point is baseline_perc_total.
+  For all other meters, the point is baseline_percentage.
+  This function is used to determine the point to be used for
+  the baseline percentage calculation.
+*/
+function getMeterPoint (store, groupModule) {
+  let point = 'baseline_percentage'
+
+  // find Pacific Power meters
+  for (const key in groupModule) {
+    if (groupModule[key] && typeof groupModule[key] === 'object' && 'classInt' in groupModule[key]) {
+      if (groupModule[key].classInt === 9990002) {
+        point = 'baseline_perc_total'
+      }
+    }
+  }
+
+  return point
+}
+
 const actions = {
   async buildBlocks (store) {
     if (store.getters.promise === null) {
@@ -40,7 +62,7 @@ const actions = {
             if (groupModule) {
               charts.push({
                 id: group,
-                point: 'baseline_percentage',
+                point: getMeterPoint(store, groupModule),
                 name: this.getters[groupModule.building + '/name'],
                 meters: group
               })

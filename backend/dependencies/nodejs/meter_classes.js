@@ -156,10 +156,10 @@ module.exports = {
   },
   9990001: {
     // Solar Panels (SEC, OSU Operations, deprecated Tesla panels)
-    2: 'energy_change'
+    2: 'periodic_real_out'
   },
   9990002: {
     // Pacific Power Meters
-    4: 'accumulated_real'
+    4: 'periodic_real_in'
   }
 }
