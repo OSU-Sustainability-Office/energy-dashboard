@@ -55,7 +55,7 @@ export default class LineDefaultModifier {
       dateEnd,
       intervalUnit,
       dateInterval,
-      timeZoneOffset,
+      timezoneOffset,
       point
     } = payload
     const currentData = chartData.data
@@ -83,30 +83,28 @@ export default class LineDefaultModifier {
     }
     delta *= dateInterval
 
-    // set the offset if there is one we need to account for
-    const offset = timeZoneOffset || 0
-
     // Add the data to result array as-is since it is already a time series
     for (let i = dateStart; i <= dateEnd; i += delta) {
       try {
-        const value = currentData.get(i + delta)
-        if (isNaN(value) || isNaN(currentData.get(i))) {
-          console.log(i)
+        let timestamp = i + delta
+
+        // Align the timestamp with the data points in the database
+        if (point === 'periodic_real_in' || point === 'periodic_real_out') {
+          timestamp -= getTimezoneOffset(timestamp)
+        }
+
+        const curValue = currentData.get(timestamp)
+        if (isNaN(curValue)) {
           continue
         }
 
-        // Adjust the timestamp to account for the timezone offset (based on the point type)
-        let adjustedTimestamp = i + delta
-        if (point === 'periodic_real_in' || point === 'periodic_real_out') {
-          adjustedTimestamp -= getTimezoneOffset(i + delta)
-        } else {
-          adjustedTimestamp += offset
-        }
+        // Adjust the timestamp to account for the timezone offset if needed
+        timestamp += timezoneOffset || 0
 
         // Format the data for the chart
         const formattedData = {
-          x: new Date(adjustedTimestamp * 1000),
-          y: Math.abs(value)
+          x: new Date(timestamp * 1000),
+          y: Math.abs(curValue)
         }
         result.push(formattedData)
       } catch (error) {
