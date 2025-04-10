@@ -10,7 +10,7 @@
     <el-row class="title">
       <el-col :span="24"> Leaderboard </el-col>
     </el-row>
-    <el-row class="buildingScroll" v-loading="!loaded" element-loading-background="rgba(0, 0, 0, 0.8)">
+    <el-col class="buildingScroll" v-loading="!loaded" element-loading-background="rgba(0, 0, 0, 0.8)">
       <el-row class="buildingRow" v-if="!loaded"> &nbsp; </el-row>
       <el-row class="buildingRow" v-for="block in blocks" :key="block.path" ref="buildingRows">
         <el-col v-if="loaded" :class="[modelValue === block.path ? 'buildingCol selected' : 'buildingCol']" :span="24">
@@ -50,7 +50,7 @@
           </div>
         </el-col>
       </el-row>
-    </el-row>
+    </el-col>
   </el-col>
 </template>
 <script>
@@ -180,10 +180,12 @@ export default {
   overflow-y: scroll;
   height: calc(100% - 5em);
   border-radius: 5px;
+  flex-direction: column;
 }
 .buildingRow {
   padding: 0.5em;
   padding-right: 1em;
+  width: fit-content;
 }
 .buildingCol {
   font-size: 24px;
@@ -199,7 +201,7 @@ export default {
 }
 $clippath: polygon(2.5% 0%, 0% 100%, 97.5% 100%, 100% 0%);
 .outerClip {
-  padding: 0.05em;
+  padding: 0.06em;
   background-color: $color-white;
   clip-path: $clippath;
 }
