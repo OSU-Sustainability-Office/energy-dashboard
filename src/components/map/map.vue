@@ -24,10 +24,10 @@
         </div>
         <el-input v-model="search" class="searchMapInput" placeholder="Search for buildings">
           <template #prefix>
-            <el-icon class="searchIcon"><Search /></el-icon>
+            <el-icon class="searchIcon"><SearchIcon /></el-icon>
           </template>
           <template #suffix>
-            <el-icon v-if="search !== ''" @click="search = ''" class="closeIcon"><Close /></el-icon>
+            <el-icon v-if="search !== ''" @click="search = ''" class="closeIcon"><CloseIcon /></el-icon>
           </template>
         </el-input>
         <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
@@ -124,7 +124,7 @@ import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons.vue'
 import emitter from '../../event-bus'
 import leftBuildingMenu from '@/components/leftBuildingMenu.vue'
-import { Search, Close } from '@element-plus/icons-vue'
+import { Search as SearchIcon, Close as CloseIcon} from '@element-plus/icons-vue'
 
 const DEFAULT_LAT = 44.56335
 const DEFAULT_LON = -123.2858
@@ -148,8 +148,8 @@ export default {
     switchButtons,
     leftBuildingMenu,
     compareButton,
-    Search,
-    Close
+    SearchIcon,
+    CloseIcon
   },
   computed: {
     filteredBuildings () {

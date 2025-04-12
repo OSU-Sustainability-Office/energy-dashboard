@@ -264,7 +264,8 @@
 
       <el-button @click="visible = false" type="info"> Cancel </el-button>
     </div>
-    <span slot="savedTimePeriods">
+    <template v-slot:savedTimePeriods>
+<span >
       <div class="savedTimesDiv" v-if="compareOneBuildingView">
         <p class="savedTimesP" v-if="form.tempMultStart.length > 0">Time Periods to be Compared</p>
 
@@ -276,6 +277,7 @@
         </span>
       </div>
     </span>
+</template>
   </el-dialog>
 </template>
 

@@ -9,10 +9,10 @@
         <el-col :span="24" class="search_col">
           <el-input v-model="search" class="searchInput" placeholder="Search for buildings">
             <template v-slot:prefix>
-              <el-icon><Search /></el-icon>
+              <el-icon><SearchIcon /></el-icon>
             </template>
             <template #suffix>
-              <el-icon v-if="search !== ''" @click="search = ''"><Close /></el-icon>
+              <el-icon v-if="search !== ''" @click="search = ''"><CloseIcon /></el-icon>
             </template>
           </el-input>
         </el-col>
@@ -53,13 +53,13 @@
 
 <script>
 import viewCard from '@/components/building_list/view_card.vue'
-import { Search, Close } from '@element-plus/icons-vue'
+import { Search as SearchIcon, Close as CloseIcon } from '@element-plus/icons-vue'
 
 export default {
   components: {
     viewCard,
-    Search,
-    Close
+    SearchIcon,
+    CloseIcon
   },
   data () {
     return {
