@@ -124,7 +124,7 @@ import L from 'leaflet'
 import switchButtons from '@/components/map/switch_buttons.vue'
 import emitter from '../../event-bus'
 import leftBuildingMenu from '@/components/leftBuildingMenu.vue'
-import { Search as SearchIcon, Close as CloseIcon} from '@element-plus/icons-vue'
+import { Search as SearchIcon, Close as CloseIcon } from '@element-plus/icons-vue'
 
 const DEFAULT_LAT = 44.56335
 const DEFAULT_LON = -123.2858
