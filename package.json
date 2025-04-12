@@ -51,7 +51,7 @@
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-strict-vue": "^1.0.0",
-    "eslint-plugin-vue": "^8.7.1",
+    "eslint-plugin-vue": "^10.0.0",
     "fake-indexeddb": "^3.1.2",
     "jest": "^24.9.0",
     "lodash": "^4.17.21",
