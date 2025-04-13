@@ -6,13 +6,19 @@ updates:
     schedule:
       interval: "weekly"
 
-  #  Enable version updates for npm
+  #  Enable version updates for npm (frontend)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
 
-  #  Enable version updates for Docker
+  #  Enable version updates for npm (backend)
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+
+  #  Enable version updates for Docker (backend)
   - package-ecosystem: "docker"
     directory: "/backend"
     schedule:
