@@ -11,7 +11,7 @@
 
   const Express = require('express')
   const AWS = require('aws-sdk')
-  const FileSystem = require('fs-extra')
+  const FileSystem = require('fs')
   const Yaml = require('yaml')
   const HTTPS = require('https')
   const Unzipper = require('unzipper')
