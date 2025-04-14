@@ -4,7 +4,8 @@
   "description": "",
   "main": "sam_express.js",
   "scripts": {
-    "test": "node ./tests/buildTestDatabase.js && jest --ci --detectOpenHandles --runInBand --forceExit"
+    "test": "node ./tests/buildTestDatabase.js && jest --ci --detectOpenHandles --runInBand --forceExit",
+    "test-local": "docker compose build && docker compose run --rm test && docker compose down"
   },
   "author": "",
   "license": "ISC",
@@ -20,7 +21,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "sqlite3": "^5.0.2",
+    "sqlite3": "^5.1.7",
     "sustainability-office-lambda-common-layer": "https://github.com/OSU-Sustainability-Office/lambda-common-layer.git"
   }
 }
