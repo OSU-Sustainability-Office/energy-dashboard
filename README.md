@@ -19,6 +19,13 @@ Running `npm run serve` will run the front-end locally.
 
 To run the serverless backend API locally you'll want to run `sam local start-api` (docker will need to be running first).
 
+To backend Jest tests locally:
+
+- Make sure that Docker is running
+- In `/backend` directory, run command `npm run test-local`
+- Troubleshooting:
+  - On Windows you might encounter the error `/usr/bin/env: 'bash\r': No such file or directory`, you will need to change the file `wait-for-it.sh` to have LF line endings instead of CRLF to fix this
+
 ### Formatting
 
 Run both in order

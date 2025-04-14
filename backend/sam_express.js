@@ -11,7 +11,7 @@
 
   const Express = require('express')
   const AWS = require('aws-sdk')
-  const FileSystem = require('fs-extra')
+  const FileSystem = require('fs')
   const Yaml = require('yaml')
   const HTTPS = require('https')
   const Unzipper = require('unzipper')
@@ -62,9 +62,7 @@
     }
   }
 
-  Yaml.defaultOptions.customTags = [ref]
-
-  const template = Yaml.parse(FileSystem.readFileSync('template.yaml', 'utf8'))
+  const template = Yaml.parse(FileSystem.readFileSync('template.yaml', 'utf8'), { customTags: [ref] })
 
   const neededLayers = []
   const grabbedLayers = []
