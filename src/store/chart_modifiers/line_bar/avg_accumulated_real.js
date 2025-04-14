@@ -39,12 +39,7 @@ export default class LineAvgModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
-    const {
-      dateStart,
-      dateEnd,
-      intervalUnit,
-      dateInterval
-    } = payload
+    const { dateStart, dateEnd, intervalUnit, dateInterval } = payload
     const SECONDS_PER_DAY = 86400
     const baselineData = chartData.data
     const returnData = []
@@ -88,7 +83,7 @@ export default class LineAvgModifier {
 
       // Calculate the average for each bin
       for (let timeBinIndex = 0; timeBinIndex < binsPerDay; timeBinIndex++) {
-        let binStartDate = firstMatchingDate + (timeBinIndex * delta)
+        let binStartDate = firstMatchingDate + timeBinIndex * delta
         let count = 0 // count of data points in this bin
         let sum = 0 // sum of data points in this bin
         while (binStartDate <= dateEnd) {
@@ -113,7 +108,7 @@ export default class LineAvgModifier {
     for (let i = this.dateStart; i < this.dateEnd; i += delta) {
       try {
         const timestamp = new Date((delta + i) * 1000)
-        const timeBinIndex = Math.floor(((i + delta) % (SECONDS_PER_DAY)) / delta)
+        const timeBinIndex = Math.floor(((i + delta) % SECONDS_PER_DAY) / delta)
         let baselinePoint = avgBins[timestamp.getDay()][timeBinIndex]
         returnData.push({ x: timestamp, y: baselinePoint })
       } catch (error) {

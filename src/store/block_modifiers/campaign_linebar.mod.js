@@ -29,15 +29,13 @@ export default class CampaignLineBarModifier {
    * Function is called when a modifier is added to a block.
    * Store is Vuex store, module is block module.
    */
-  async onAdd (store, module) {
-  }
+  async onAdd (store, module) {}
 
   /*
     Function is called when a modifier is removed from a block.
     Store is Vuex store, module is block module.
   */
-  async onRemove (store, moduleVuex) {
-  }
+  async onRemove (store, moduleVuex) {}
 
   /*
    * Function is called when a block updates modifier data.
@@ -62,7 +60,7 @@ export default class CampaignLineBarModifier {
     let point = 'avg_accumulated_real'
     const chart = moduleVuex.getters.charts[0]
     const meterGroupPath = chart.meterGroupPath
-    const meterClass = (store.getters[meterGroupPath + '/meters'][0].classInt)
+    const meterClass = store.getters[meterGroupPath + '/meters'][0].classInt
     if (meterClass === 9990002) {
       point = 'baseline_total'
     }
@@ -70,11 +68,11 @@ export default class CampaignLineBarModifier {
   }
 
   /*
-    * Function to get the colors for the current data based on the baseline data.
-    * The colors are computed based on the percentage difference from the baseline and
-    * returns an array of RGB strings. The function also updates the average accumulated
-    * percentage for the current data.
-  */
+   * Function to get the colors for the current data based on the baseline data.
+   * The colors are computed based on the percentage difference from the baseline and
+   * returns an array of RGB strings. The function also updates the average accumulated
+   * percentage for the current data.
+   */
   getColors (current, baseline, data) {
     const colors = []
     this.data.accumulatedPercentage = 0
@@ -83,11 +81,7 @@ export default class CampaignLineBarModifier {
     const redRGB = [214, 35, 38] // Red for large positive deviations (> 7.5%)
     const greenRGB = [25, 162, 58] // Green for large negative deviations (< -7.5%)
     // Neutral color for small deviations
-    const neutralRGB = [
-      redRGB[0] - greenRGB[0],
-      greenRGB[1] - redRGB[1],
-      greenRGB[2] - redRGB[2]
-    ]
+    const neutralRGB = [redRGB[0] - greenRGB[0], greenRGB[1] - redRGB[1], greenRGB[2] - redRGB[2]]
     // Threshold for maximum deviation
     const threshold = 7.5
 

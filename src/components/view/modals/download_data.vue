@@ -119,11 +119,11 @@ Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-<span  class="footer-buttons">
-      <el-button @click="visible = false" type="info"> Cancel </el-button>
-      <el-button @click="download()" type="primary"> Download </el-button>
-    </span>
-</template>
+      <span class="footer-buttons">
+        <el-button @click="visible = false" type="info"> Cancel </el-button>
+        <el-button @click="download()" type="primary"> Download </el-button>
+      </span>
+    </template>
   </el-dialog>
 </template>
 

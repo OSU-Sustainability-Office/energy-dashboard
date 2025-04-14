@@ -10,9 +10,7 @@
  * Other buildings with automatic meter upload should have the same keys after this function is run.
  */
 function findClosest (array, num) {
-  return array.reduce((prev, curr) =>
-    Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev
-  )
+  return array.reduce((prev, curr) => (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev))
 }
 
 export default class LineAccumulatedModifier {
@@ -46,13 +44,7 @@ export default class LineAccumulatedModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
-    const {
-      dateStart,
-      dateEnd,
-      intervalUnit,
-      dateInterval,
-      point
-    } = payload
+    const { dateStart, dateEnd, intervalUnit, dateInterval, point } = payload
     const SECONDS_PER_DAY = 86400
     const currentData = chartData.data
     const returnData = []
@@ -161,10 +153,7 @@ export default class LineAccumulatedModifier {
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
-    let {
-      intervalUnit,
-      dateInterval
-    } = payload
+    let { intervalUnit, dateInterval } = payload
     let delta = 1
     const startDateObj = new Date(payload.dateStart * 1000)
     switch (intervalUnit) {

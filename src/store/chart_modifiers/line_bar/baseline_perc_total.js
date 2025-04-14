@@ -36,11 +36,7 @@ export default class LineTotalPercModifier {
   */
   async postGetData (chartData, payload, store, module) {
     const rawData = chartData.data
-    const {
-      baselineData,
-      compareStart,
-      compareEnd
-    } = payload
+    const { baselineData, compareStart, compareEnd } = payload
     const result = []
 
     for (const currentTimestamp of rawData.keys()) {
@@ -51,7 +47,7 @@ export default class LineTotalPercModifier {
       if (!isNaN(baselineValue)) {
         // Calculate the percentage difference
         const currentValue = rawData.get(currentTimestamp)
-        const percentageDifference = (currentValue - baselineValue) / baselineValue * 100
+        const percentageDifference = ((currentValue - baselineValue) / baselineValue) * 100
 
         // Format the data for the chart
         const formattedData = {

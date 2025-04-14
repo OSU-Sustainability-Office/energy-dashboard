@@ -37,13 +37,15 @@
               ><span class="academics swatch"></span>Academics</el-menu-item
             >
           </el-tooltip>
-          <el-menu-item index="Events & Engagement" :class="[isDisplayed('Events & Engagement') ? 'active' : 'notactive']"
+          <el-menu-item
+            index="Events & Engagement"
+            :class="[isDisplayed('Events & Engagement') ? 'active' : 'notactive']"
             ><span class="events_engagement swatch"></span>Events & Engagement</el-menu-item
-            >
-            <el-menu-item index="Admin & Operations" :class="[isDisplayed('Admin & Operations') ? 'active' : 'notactive']"
-              ><span class="admin_operations swatch"></span>Admin & Operations</el-menu-item
-            >
-            <el-menu-item index="Residential Life" :class="[isDisplayed('Residential Life') ? 'active' : 'notactive']"
+          >
+          <el-menu-item index="Admin & Operations" :class="[isDisplayed('Admin & Operations') ? 'active' : 'notactive']"
+            ><span class="admin_operations swatch"></span>Admin & Operations</el-menu-item
+          >
+          <el-menu-item index="Residential Life" :class="[isDisplayed('Residential Life') ? 'active' : 'notactive']"
             ><span class="residential swatch"></span>Residential Life</el-menu-item
           >
           <div class="energyRadioGroup">

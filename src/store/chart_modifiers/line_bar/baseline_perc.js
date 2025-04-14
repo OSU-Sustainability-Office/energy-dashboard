@@ -35,15 +35,7 @@ export default class LinePercModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
-    const {
-      dateStart,
-      dateEnd,
-      compareStart,
-      compareEnd,
-      intervalUnit,
-      dateInterval,
-      baselineData
-    } = payload
+    const { dateStart, dateEnd, compareStart, compareEnd, intervalUnit, dateInterval, baselineData } = payload
     const SECONDS_PER_DAY = 86400
     const currentData = chartData.data
     const returnData = []
@@ -89,7 +81,7 @@ export default class LinePercModifier {
 
       // Calculate the average for each bin
       for (let timeBinIndex = 0; timeBinIndex < binsPerDay; timeBinIndex++) {
-        let binStartDate = firstMatchingDate + (timeBinIndex * delta)
+        let binStartDate = firstMatchingDate + timeBinIndex * delta
         let count = 0 // count of data points in this bin
         let sum = 0 // sum of data points in this bin
 
@@ -118,12 +110,12 @@ export default class LinePercModifier {
           continue
         }
         const timestamp = new Date((delta + i) * 1000)
-        const timeBinIndex = Math.floor(((delta + i) % (SECONDS_PER_DAY)) / delta) // gets time slot within the day
+        const timeBinIndex = Math.floor(((delta + i) % SECONDS_PER_DAY) / delta) // gets time slot within the day
         const baselineChange = avgBins[timestamp.getDay()][timeBinIndex]
         if (baselineChange !== -1 && baselineChange !== 0) {
           const currentChange = currentData.get(delta + i) - currentData.get(i)
           const changeRatio = currentChange / baselineChange // ratio of current change to baseline change
-          const percentDifference = (changeRatio * 100) - 100 // percentage difference from baseline
+          const percentDifference = changeRatio * 100 - 100 // percentage difference from baseline
 
           // do not add data point to graph if datapoint is -100% (issue with Weatherford for campaign 8, near the end)
           if (percentDifference !== -100) {
