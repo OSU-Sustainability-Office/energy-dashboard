@@ -62,9 +62,7 @@
     }
   }
 
-  Yaml.defaultOptions.customTags = [ref]
-
-  const template = Yaml.parse(FileSystem.readFileSync('template.yaml', 'utf8'))
+  const template = Yaml.parse(FileSystem.readFileSync('template.yaml', 'utf8'), { customTags: [ref] })
 
   const neededLayers = []
   const grabbedLayers = []
