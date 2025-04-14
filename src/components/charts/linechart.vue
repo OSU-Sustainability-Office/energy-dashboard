@@ -4,18 +4,18 @@
 -->
 
 <template>
-  <Line :key="chartKey" :data="chartData" :options="options" />
+  <LineChart :key="chartKey" :data="chartData" :options="options" />
 </template>
 
 <script>
-import { Line } from 'vue-chartjs'
+import { Line as LineChart } from 'vue-chartjs'
 import 'chart.js/auto'
 import 'chartjs-adapter-luxon'
 import { DateTime } from 'luxon'
 
 export default {
   name: 'linechart',
-  components: { Line },
+  components: { LineChart },
   props: {
     invertColors: Boolean,
     yLabel: String,

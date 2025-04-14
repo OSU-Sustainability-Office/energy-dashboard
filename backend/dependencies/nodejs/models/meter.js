@@ -155,7 +155,7 @@ class Meter {
             [startTime, endTime, this.id]
           )
         } else {
-        // pacific power meters, may need to change to else-if if there are going to be more custom classes starting with 999
+          // pacific power meters, may need to change to else-if if there are going to be more custom classes starting with 999
           let [{ pacific_power_id: pp_id }] = await DB.query('SELECT pacific_power_id FROM meters WHERE id = ?', [
             this.id
           ])

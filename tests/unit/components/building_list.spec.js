@@ -22,7 +22,6 @@ import mockAllBuildings from '../../assertedData/mock_allbuildings.json'
 
 // Import Elements UI (since this component uses Elements-UI)
 import elm from 'element-ui'
-import Vuei18n from 'vue-i18n'
 import locale from 'element-ui/lib/locale/lang/en'
 
 // The Component Itself
@@ -42,7 +41,6 @@ const $route = {
 // Create local vue instance w/ elements ui plugin.
 const localVue = createLocalVue()
 localVue.use(Vuex)
-localVue.use(Vuei18n)
 localVue.use(elm, { locale: locale })
 localVue.config.lang = 'en'
 

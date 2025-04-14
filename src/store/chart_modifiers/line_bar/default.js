@@ -50,14 +50,7 @@ export default class LineDefaultModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
-    const {
-      dateStart,
-      dateEnd,
-      intervalUnit,
-      dateInterval,
-      timezoneOffset,
-      point
-    } = payload
+    const { dateStart, dateEnd, intervalUnit, dateInterval, timezoneOffset, point } = payload
     const currentData = chartData.data
     const result = []
     const startDate = new Date(dateStart * 1000)
@@ -149,11 +142,7 @@ export default class LineDefaultModifier {
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
-    const {
-      intervalUnit,
-      dateInterval,
-      point
-    } = payload
+    const { intervalUnit, dateInterval, point } = payload
     const SECONDS_PER_DAY = 86400
     const dataDate = new Date(payload.dateStart * 1000)
     let delta = 1
