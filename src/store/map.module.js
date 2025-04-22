@@ -9,8 +9,7 @@ import Geo from 'osmtogeojson'
 const state = () => {
   return {
     path: 'map',
-    promise: null,
-    jsonPromise: null
+    promise: null
   }
 }
 
@@ -40,54 +39,6 @@ const actions = {
     }
     await Promise.all(mgPromises)
     await store.dispatch(buildingSpace + '/buildDefaultBlocks')
-  },
-
-  async loadGeometry (store) {
-    if (store.getters.jsonPromise === null) {
-      store.commit(
-        'jsonPromise',
-        new Promise(async (resolve, reject) => {
-          await store.getters.promise
-
-          // Fetch Building Geometry from Overpass if it exists
-          const buildings = store.getters.buildings.filter(b => b.mapId)
-          const IDs = buildings.map(b => b.mapId).join(',')
-          const geometryOSM = await API.buildingFeature(IDs)
-          const buildingParser = new DOMParser()
-          const buildingData = buildingParser.parseFromString(geometryOSM, 'text/xml')
-          const JSON = Geo(buildingData)
-
-          // Setup dictionary
-          const ways = new Map()
-          for (let feature of JSON.features) {
-            if (feature.id.includes('way')) {
-              // Convert LineString to Polygon if it is a closed shape
-              if (feature.geometry.type === 'LineString') {
-                const coords = feature.geometry.coordinates
-                if (coords[0][0] === coords[coords.length - 1][0] && coords[0][1] === coords[coords.length - 1][1]) {
-                  feature.geometry.type = 'Polygon'
-                  feature.geometry.coordinates = [coords]
-                }
-              }
-              ways.set(feature.id, feature)
-            }
-          }
-
-          // Commit GeoJSON to each building module
-          for (let building of buildings) {
-            let way = ways.get(`way/${building.mapId}`)
-            if (way) {
-              way.properties.id = building.id
-              way.properties.group = building.group
-              this.commit(building.path + '/geoJSON', way)
-            }
-          }
-
-          resolve()
-        })
-      )
-    }
-    return store.getters.jsonPromise
   },
 
   async deleteBuilding (store, payload) {
@@ -149,20 +100,12 @@ const actions = {
 const mutations = {
   promise (state, promise) {
     state.promise = promise
-  },
-
-  jsonPromise: (state, promise) => {
-    state.jsonPromise = promise
   }
 }
 
 const getters = {
   path (state) {
     return state.path
-  },
-
-  jsonPromise (state) {
-    return state.jsonPromise
   },
 
   promise (state) {
