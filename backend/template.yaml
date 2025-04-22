@@ -13,9 +13,9 @@ Globals:
     # enable CORS; to make more specific, change the origin wildcard
     # to a particular domain name, e.g. "'www.example.com'"
     Cors:
-      AllowMethods: "'POST, GET'"
+      AllowMethods: "'POST, GET, PUT'"
       AllowHeaders: "'X-Forwarded-For'"
-      AllowOrigin: "'oregonstate.edu'"
+      AllowOrigin: "'*'"
       MaxAge: "'600'"
       AllowCredentials: True
     BinaryMediaTypes:
@@ -29,6 +29,7 @@ Globals:
       AllowMethods:
         - GET
         - POST
+        - PUT
       AllowHeaders:
         - "'X-Forwarded-For'"
       AllowOrigins:
@@ -112,6 +113,21 @@ Resources:
           Type: Api
           Properties:
             Path: /building
+            Method: put
+  BuildingPutGeoJSON:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: building.putGeoJSON
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /buildinggeojson
             Method: put
   BuildingPost:
     Type: AWS::Serverless::Function
