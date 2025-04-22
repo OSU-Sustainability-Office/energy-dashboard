@@ -26,6 +26,14 @@ const actions = {
     store.commit(buildingSpace + '/image', payload.image)
     store.commit(buildingSpace + '/id', payload.id)
     store.commit(buildingSpace + '/hidden', payload.hidden)
+    const geo = JSON.parse(payload.geoJSON)
+    if (geo && geo.properties) {
+      // Set properties for the geoJSON
+      geo.properties.id = payload.id
+      geo.properties.group = payload.group
+      geo.properties.name = payload.name
+      store.commit(buildingSpace + '/geoJSON', geo)
+    }
     let mgPromises = []
     for (let meterGroup of payload.meterGroups) {
       mgPromises.push(store.dispatch(buildingSpace + '/loadMeterGroup', meterGroup))
