@@ -206,9 +206,11 @@ export default {
         'Down Trend'
       ],
       show: false,
+      processedLayers: 0,
       mapLoaded: false,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
+          this.processedLayers++
           layer.on('click', e => {
             this.building_compare_error = false
             this.polyClick(e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter())
@@ -228,6 +230,12 @@ export default {
           })
           const color = this.getCategoryColor(feature.properties.group)
           layer.setStyle({ fillColor: color, color: color, opacity: 1, fillOpacity: 0.7, weight: 2 })
+
+          // If all building options are processed, remove loading spinner
+          if (this.processedLayers === this.filteredBuildings.length) {
+            this.mapLoaded = true
+            this.processedLayers = 0
+          }
         }
       }
     }
@@ -320,15 +328,6 @@ export default {
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
       }
-    },
-    initBuildingRename () {
-      this.map.on('layeradd', event => {
-        if (event.layer.feature?.geometry?.type === 'Polygon') {
-          event.layer.feature.properties.name = this.$store.getters['map/building'](
-            event.layer.feature.properties.id
-          ).name
-        }
-      })
     },
     removeAllMarkers: function () {
       for (let marker of this.compareMarkers) {
@@ -541,12 +540,9 @@ export default {
     updateMapRef () {
       this.map = this.$refs.map.leafletObject
       this.map.zoomControl.setPosition('topleft')
-      this.initBuildingRename()
     }
   },
   async created () {
-    await this.$store.dispatch('map/loadGeometry')
-    this.mapLoaded = true
     this.message = window.innerWidth > 844
 
     // Event listener for input data
