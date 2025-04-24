@@ -4,7 +4,6 @@
 */
 import API from './api.js'
 import Building from './building.module.js'
-import Geo from 'osmtogeojson'
 
 const state = () => {
   return {
@@ -25,14 +24,7 @@ const actions = {
     store.commit(buildingSpace + '/image', payload.image)
     store.commit(buildingSpace + '/id', payload.id)
     store.commit(buildingSpace + '/hidden', payload.hidden)
-    const geo = JSON.parse(payload.geoJSON)
-    if (geo && geo.properties) {
-      // Set properties for the geoJSON
-      geo.properties.id = payload.id
-      geo.properties.group = payload.group
-      geo.properties.name = payload.name
-      store.commit(buildingSpace + '/geoJSON', geo)
-    }
+    store.commit(buildingSpace + '/geoJSON', JSON.parse(payload.geoJSON))
     let mgPromises = []
     for (let meterGroup of payload.meterGroups) {
       mgPromises.push(store.dispatch(buildingSpace + '/loadMeterGroup', meterGroup))
@@ -59,19 +51,6 @@ const actions = {
 
   async allDevices (store, payload) {
     return API.devices()
-  },
-
-  async boundedWays (store, payload) {
-    let features = await API.boundedFeatures(payload)
-    let parser = new DOMParser()
-    let xmlData = parser.parseFromString(features, 'text/xml')
-    let geojson = Geo(xmlData)
-    let ways = geojson.features.filter(feature => feature.id.search(/way\/[0-9]+/) >= 0 && feature.properties.building)
-    let promises = []
-    for (let way of ways) {
-      promises.push(store.dispatch('buildingJSON', way.id.replace('way/', '')))
-    }
-    return Promise.all(promises)
   },
 
   async imageList (store) {

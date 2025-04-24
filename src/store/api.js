@@ -48,34 +48,6 @@ export default {
     return (await callAPI('admin/devices')).data
   },
 
-  boundedFeatures: async payload => {
-    return (
-      await callAPI(
-        `map?bbox=${payload.left},${payload.bottom},${payload.right},${payload.top}`,
-        null,
-        'get',
-        'https://api.openstreetmap.org/api/0.6',
-        {
-          Accept: 'text/xml'
-        }
-      )
-    ).data
-  },
-  buildingFeature: async payload => {
-    return (
-      await callAPI(
-        `interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`,
-        null,
-        'get',
-        'https://maps.mail.ru/osm/tools/overpass/api',
-        {
-          Accept: 'text/xml'
-        },
-        72000,
-        false
-      )
-    ).data
-  },
   users: async () => {
     return (await callAPI('admin/users')).data
   },
