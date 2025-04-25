@@ -29,8 +29,6 @@ export default {
   async created () {
     // On load, grab building/meter/map information from the API.
     await this.$store.dispatch('map/loadMap')
-    // Also check if user is logged in.
-    this.$store.dispatch('user/user')
   },
   data () {
     return {
