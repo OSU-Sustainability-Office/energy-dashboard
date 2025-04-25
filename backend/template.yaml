@@ -463,81 +463,6 @@ Resources:
           Properties:
             Path: /campaign
             Method: delete
-  StoryUser:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: story.user
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /userviews
-            Method: get
-  StoryGet:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: story.get
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /view
-            Method: get
-  StoryPut:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: story.put
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /view
-            Method: put
-  StoryPost:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: story.post
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /view
-            Method: post
-  StoryDelete:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: story.delete
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /view
-            Method: delete
   BlockGet:
     Type: AWS::Serverless::Function
     Properties:
@@ -658,21 +583,6 @@ Resources:
           Properties:
             Path: /chart
             Method: delete
-  User:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: user.user
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /user
-            Method: get
   ImageAll:
     Type: AWS::Serverless::Function
     Properties:
@@ -687,36 +597,6 @@ Resources:
           Type: Api
           Properties:
             Path: /images
-            Method: get
-  adminUsers:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: admin.users
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /admin/users
-            Method: get
-  adminDevices:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: meter.all
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /admin/devices
             Method: get
   ppExclude:
     Type: AWS::Serverless::Function
