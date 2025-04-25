@@ -15,7 +15,7 @@ Globals:
     Cors:
       AllowMethods: "'POST, GET, PUT'"
       AllowHeaders: "'X-Forwarded-For'"
-      AllowOrigin: "'*'"
+      AllowOrigin: "'oregonstate.edu'"
       MaxAge: "'600'"
       AllowCredentials: True
     BinaryMediaTypes:
