@@ -58,6 +58,7 @@ DB.beginTransaction(err => {
         \`group\` text,
         \`name\` text,
         hidden int,
+        geojson json,
         PRIMARY KEY (\`id\`)
     );`
 
