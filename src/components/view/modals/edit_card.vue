@@ -264,20 +264,18 @@
 
       <el-button @click="visible = false" type="info"> Cancel </el-button>
     </div>
-    <template v-slot:savedTimePeriods>
-      <span>
-        <div class="savedTimesDiv" v-if="compareOneBuildingView">
-          <p class="savedTimesP" v-if="form.tempMultStart.length > 0">Time Periods to be Compared</p>
+    <span>
+      <div class="savedTimesDiv" v-if="compareOneBuildingView">
+        <p class="savedTimesP" v-if="form.tempMultStart.length > 0">Time Periods to be Compared</p>
 
-          <span type="info" class="savedTimesButton" v-for="(item, index) in form.tempMultStart" :key="index">
-            <!-- Since tempMultStart and tempMultEnd share the same array lengths it *should* be fine to call form.tempMultEnd[index]-->
-            {{ index + 1 }}: {{ convertTimeStamps(new Date(item)) }} to
-            {{ convertTimeStamps(new Date(form.tempMultEnd[index])) }}
-            <el-icon class="deleteTimeButton" @click="deleteTimePeriod(index)"> <Close /></el-icon>
-          </span>
-        </div>
-      </span>
-    </template>
+        <span type="info" class="savedTimesButton" v-for="(item, index) in form.tempMultStart" :key="index">
+          <!-- Since tempMultStart and tempMultEnd share the same array lengths it *should* be fine to call form.tempMultEnd[index]-->
+          {{ index + 1 }}: {{ convertTimeStamps(new Date(item)) }} to
+          {{ convertTimeStamps(new Date(form.tempMultEnd[index])) }}
+          <el-icon class="deleteTimeButton" @click="deleteTimePeriod(index)"> <Close /></el-icon>
+        </span>
+      </div>
+    </span>
   </el-dialog>
 </template>
 
