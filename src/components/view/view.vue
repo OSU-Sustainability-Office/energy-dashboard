@@ -11,10 +11,6 @@
       <el-row>
         <el-col :span="24" class="card_area">
           <card v-for="(card, index) in cards" :key="index + '-' + view.id" :path="card.path" />
-          <div class="addFeatured" v-if="personalView" key="add" @click="addFeature()">
-            <i class="fas fa-plus"></i>
-            <div class="hiddenAddChart">Click To Add Block</div>
-          </div>
         </el-col>
       </el-row>
     </el-col>
@@ -51,7 +47,6 @@ export default {
     // However, this.navVis is still needed here as it guarantees the navbar is not shown before
     // await this.$store.dispatch('map/loadMap') completes, preventing errors in navdir file.
     this.navVis = this.$route.path.includes('building')
-    await this.$store.dispatch('user/user')
     if (!this.view.id) {
       await this.$store.dispatch('view/changeView', this.$route.params.id)
     }
@@ -179,47 +174,33 @@ export default {
     }
   },
   computed: {
-    personalView: {
-      get () {
-        if (
-          this.view &&
-          this.view.user === this.$store.getters['user/onid'] &&
-          this.$store.getters['user/onid'] !== ''
-        ) {
-          return true
-        }
-        return false
-      }
-    },
     view: {
       get () {
+        // If the view is a building, get the building data
         if (this.$route.path.includes('building')) {
           return this.$store.getters['map/building'](this.$route.params.id)
-        } else if (this.$route.path.includes('compare')) {
-          if (!this.cards || this.cards.length === 0) return
-          const view = {
-            name: '',
-            image: [],
-            description: 'Electricity',
-            id: -1
-          }
-          for (let index in this.compareBuildings) {
-            if (this.compareBuildings[index]) {
-              if (index > 0) {
-                view.name += ' vs '
-              }
-              view.name += this.compareBuildings[index].name
-              if (index < 4) {
-                view.image.push(this.compareBuildings[index].image)
-              }
+        }
+
+        // Otherwise, get the compare view data
+        if (!this.cards || this.cards.length === 0) return
+        const view = {
+          name: '',
+          image: [],
+          description: 'Electricity',
+          id: -1
+        }
+        for (let index in this.compareBuildings) {
+          if (this.compareBuildings[index]) {
+            if (index > 0) {
+              view.name += ' vs '
+            }
+            view.name += this.compareBuildings[index].name
+            if (index < 4) {
+              view.image.push(this.compareBuildings[index].image)
             }
           }
-          return view
-        } else {
-          let userView = this.$store.getters['user/view'](this.$route.params.id)
-          if (userView) return userView
-          else return this.$store.getters['view']
         }
+        return view
       }
     },
     compareBuildings: {

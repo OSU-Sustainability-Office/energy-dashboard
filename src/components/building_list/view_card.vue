@@ -1,3 +1,7 @@
+/**
+  Filename: view_card.vue
+  Info: This component shows the card for each building in the list of buildings.
+*/
 <template>
   <div class="card" ref="card" @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
     <span class="name" v-if="!plus">{{ name }}</span>
@@ -25,28 +29,24 @@ export default {
   },
 
   computed: {
-    buildingOrStory: {
+    buildingData: {
       get () {
-        if (this.building) {
-          return this.$store.getters['map/building'](this.id)
-        } else {
-          return this.$store.getters['user/view'](this.id)
-        }
+        return this.$store.getters['map/building'](this.id)
       }
     },
     media: {
       get () {
-        return this.buildingOrStory.image
+        return this.buildingData.image
       }
     },
     name: {
       get () {
-        return this.buildingOrStory.name
+        return this.buildingData.name
       }
     },
     description: {
       get () {
-        return this.buildingOrStory.description
+        return this.buildingData.description
       }
     }
   },

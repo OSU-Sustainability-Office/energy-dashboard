@@ -70,18 +70,13 @@ export default {
     }
   },
   async mounted () {
-    if (this.buildingList) {
-      await this.$store.getters['map/promise']
-      if (this.$route.params.group && this.groups[this.$route.params.group]) {
-        this.openName = this.$route.params.group
-      } else {
-        this.openName = Object.keys(this.groups)[0]
-      }
-      this.loading = false
+    await this.$store.getters['map/promise']
+    if (this.$route.params.group && this.groups[this.$route.params.group]) {
+      this.openName = this.$route.params.group
     } else {
-      await this.$store.getters['user/promise']
-      this.loading = false
+      this.openName = Object.keys(this.groups)[0]
     }
+    this.loading = false
   },
   computed: {
     buildingList: {
@@ -92,35 +87,30 @@ export default {
 
     groups: {
       get () {
-        if (this.buildingList) {
-          let r = {}
-          // await this.$store.getters['map/promise']
-          let buildings = this.$store.getters['map/buildings']
-          for (let building of buildings) {
-            if (r['All']) {
-              r['All'].push(building)
-              r['All'].sort((a, b) => (a.name > b.name ? 1 : -1))
-            } else {
-              r['All'] = [building]
-            }
-            if (r[building.group]) {
-              r[building.group].push(building)
-              r[building.group].sort((a, b) => (a.name > b.name ? 1 : -1))
-            } else {
-              r[building.group] = [building]
-            }
+        const groupedBuildings = { All: [] }
+        const buildings = this.$store.getters['map/buildings']
+
+        for (const building of buildings) {
+          groupedBuildings.All.push(building)
+          if (!groupedBuildings[building.group]) {
+            groupedBuildings[building.group] = []
           }
-          let r2 = {
-            All: r['All']
-          }
-          let keys = Object.keys(r).sort()
-          for (let key of keys) {
-            if (key !== 'All') r2[key] = r[key]
-          }
-          return r2
-        } else {
-          return this.$store.getters['user/views']
+          groupedBuildings[building.group].push(building)
         }
+
+        // Sort each group's buildings by name
+        for (const group in groupedBuildings) {
+          groupedBuildings[group].sort((a, b) => a.name.localeCompare(b.name))
+        }
+
+        // Create a new object with 'All' first, then the rest alphabetically
+        const sortedGroups = { All: groupedBuildings.All }
+        const groupKeys = Object.keys(groupedBuildings).filter(k => k !== 'All').sort()
+        for (const key of groupKeys) {
+          sortedGroups[key] = groupedBuildings[key]
+        }
+
+        return sortedGroups
       }
     }
   },

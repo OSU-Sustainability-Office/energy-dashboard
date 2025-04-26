@@ -121,16 +121,6 @@ export default {
         this.colors[j] = temp
       }
     }
-    if (
-      this.path &&
-      (this.path.split('/').splice(0, 1)[0] === 'view' || this.path.split('/').splice(0, 1)[0] === 'user')
-    ) {
-      /*
-        Building views set the date once the page is loaded.
-        User views need to grab data immediately.
-      */
-      this.updateChart()
-    }
     /*
       This looks weird (or at least it did to me) but it's
       actually the proper way of fetching async API data from
