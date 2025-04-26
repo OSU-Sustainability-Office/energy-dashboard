@@ -76,7 +76,7 @@
   <div class="card" ref="card" v-else>
     <el-row :span="24" class="title" ref="title">
       <el-col :span="20">{{ name }}</el-col>
-      <el-col :span="4" v-if="personalView || publicView" class="right"
+      <el-col :span="4" class="right"
         >&nbsp;<i class="fas fa-sliders-h" @click="openModal()"></i
       ></el-col>
     </el-row>
@@ -153,7 +153,6 @@ export default {
     name: {
       get () {
         let name = this.$store.getters[this.path + '/name']
-        // console.log(this.path)
         if (name && name !== '') {
           return name
         } else {
@@ -161,35 +160,20 @@ export default {
         }
       }
     },
-    personalView: {
-      get () {
-        return this.path.includes('user')
-      }
-    },
-    publicView: {
-      get () {
-        return this.path.includes('building')
-      }
-    },
     intunit: {
-      // 1 15 Minutes
-      // 2 1 hour
-      // 3 1 Day
-      // 4 1 week
-      // 5 1 month
       get: function () {
         if (this.interval === 15 && this.interval_unit === 'minute') {
-          return 1
+          return 1 // 15 minutes
         } else if (this.interval === 1 && this.interval_unit === 'hour') {
-          return 2
+          return 2 // 1 hour
         } else if (this.interval === 1 && this.interval_unit === 'day') {
-          return 3
+          return 3 // 1 day
         } else if (this.interval === 7 && this.interval_unit === 'day') {
-          return 4
+          return 4 // 1 week
         } else if (this.interval === 1 && this.interval_unit === 'month') {
-          return 5
+          return 5 // 1 month
         } else {
-          return 1
+          return 1 // default to 15 minutes
         }
       },
       set: function (v) {
@@ -225,14 +209,6 @@ export default {
     nextExists: function () {
       return this.nextEndpoint < Date.now()
     },
-    // returns boolean for if prev interval exists in program
-    prevExists: function () {
-      // Check if user is asking for data in the past,
-      // since the earliest record in energy_data right now is from 2018
-      // this is the hard-coded in time-stamp and may be subject to change
-      // depending on how far back our records go.
-      return this.nextStartpoint > 1527836400000
-    },
     // holds next possible interval start
     nextStartpoint: function () {
       return this.$store.getters[this.path + '/dateStart'] - this.currentTimeInterval
@@ -248,23 +224,6 @@ export default {
         name: 'edit_card',
         path: this.path
       })
-    },
-    cardSave: async function () {
-      // this.editcard = false
-      // let charts = await this.$refs.featureController.saveCharts()
-      // let block = {
-      //   name: this.tempName,
-      //   index: this.index,
-      //   date_interval: this.interval,
-      //   interval_unit: this.interval_unit,
-      //   date_start: this.date_start,
-      //   date_end: this.date_end,
-      //   graph_type: this.graphtype,
-      //   charts: charts
-      // }
-      // this.$store.dispatch('block', block).then(() => {
-      //   this.$refs.chartController.parse()
-      // })
     },
     // Moves chart data to its previously occuring interval
     previousInterval: function () {
