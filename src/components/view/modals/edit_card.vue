@@ -11,19 +11,7 @@
     @open="updateForm()"
   >
     <el-form label-width="150px" label-position="left" :model="form" ref="form">
-      <el-form-item
-        label="Name: "
-        :rules="{
-          required: true,
-          message: 'A name is required',
-          trigger: 'blur'
-        }"
-        prop="name"
-        v-if="personalView"
-      >
-        <!-- <label class='col-4'>Name:</label> -->
-        <el-input type="text" v-model="form.name" style="width: 100%"></el-input>
-      </el-form-item>
+      <!-- Start date -->
       <el-form-item
         label="From Date: "
         :rules="[
@@ -37,7 +25,6 @@
         ]"
         prop="start"
       >
-        <!-- <label class='col-4 text-left'>From Date: </label> -->
         <el-date-picker
           v-model="form.start"
           type="datetime"
@@ -47,6 +34,7 @@
         >
         </el-date-picker>
       </el-form-item>
+      <!-- End date -->
       <el-form-item
         label="To Date: "
         :rules="{
@@ -58,7 +46,6 @@
         }"
         prop="end"
       >
-        <!-- <label class='col-4 text-left'>To Date: </label> -->
         <el-date-picker
           v-model="form.end"
           type="datetime"
@@ -68,6 +55,7 @@
         >
         </el-date-picker>
       </el-form-item>
+      <!-- Time Interval -->
       <el-form-item
         label="Interval: "
         :rules="{
@@ -77,7 +65,6 @@
         }"
         prop="intUnit"
       >
-        <!-- <label class='col-4'>Interval: </label> -->
         <el-select v-model="form.intUnit" style="width: 100%">
           <el-option :value="1" label="15 Minutes"></el-option>
           <el-option :value="2" label="1 Hour"></el-option>
@@ -86,24 +73,9 @@
           <el-option :value="5" label="1 Month"></el-option>
         </el-select>
       </el-form-item>
+      <!-- Meter -->
       <el-form-item
-        label="Graph Type: "
-        :rules="{
-          required: true,
-          message: 'A graph type is required',
-          trigger: 'blur'
-        }"
-        prop="graphType"
-        v-if="personalView"
-      >
-        <!-- <label class='col-4'>Graph Type: </label> -->
-        <el-select v-model="form.graphType" style="width: 100%">
-          <el-option :value="1" label="Line Chart"></el-option>
-          <el-option :value="2" label="Bar Chart"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        v-if="currentIndex < form.sets.length && !personalView && (compareOneBuildingView || !compareView)"
+        v-if="currentIndex < form.sets.length && (compareOneBuildingView || !compareView)"
         prop="meter"
         label="Meter: "
         :rules="{
@@ -121,8 +93,9 @@
           <el-option v-for="item in meters" :key="item.path" :label="item.name" :value="item.path"></el-option>
         </el-select>
       </el-form-item>
+      <!-- Measurement -->
       <el-form-item
-        v-if="currentIndex < form.sets.length && !personalView && (compareOneBuildingView || !compareView)"
+        v-if="currentIndex < form.sets.length && (compareOneBuildingView || !compareView)"
         :rules="{
           required: true,
           message: 'A measurement is required',
@@ -141,116 +114,7 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <div v-if="personalView">
-      <label class="setlabel">Datasets: </label>
-      <el-row ref="controlArea">
-        <el-row class="pad-bottom" ref="indexChooser">
-          <el-col :span="24">
-            <el-button
-              class="indexButton"
-              v-for="(point, index) in this.form.sets"
-              :type="buttonVariant(index)"
-              @click="changeIndex(index)"
-              :key="index"
-              >{{ index + 1 }}</el-button
-            >
-            <el-button class="indexButton" @click="addGroup()">+</el-button>
-          </el-col>
-        </el-row>
-        <el-form ref="form" :model="form.sets[currentIndex]" label-width="150px" size="large" label-position="left">
-          <el-form-item
-            v-if="currentIndex < form.sets.length"
-            prop="building"
-            label="Building: "
-            :rules="{
-              required: true,
-              message: 'A building is required',
-              trigger: 'blur'
-            }"
-          >
-            <el-select
-              ref="groups"
-              v-model="form.sets[currentIndex].building"
-              filterable
-              placeholder="Building"
-              style="width: 100%"
-              @change="
-                () => {
-                  form.sets[currentIndex].meter = null
-                  form.sets[currentIndex].point = null
-                }
-              "
-            >
-              <el-option
-                v-for="(item, index) in buildings"
-                :key="index"
-                :label="item.name"
-                :value="item.path"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            v-if="currentIndex < form.sets.length"
-            prop="name"
-            label="Set Name: "
-            :rules="{
-              required: true,
-              message: 'A set name is required',
-              trigger: 'blur'
-            }"
-          >
-            <el-input type="text" v-model="form.sets[currentIndex].name" style="width: 100%"></el-input>
-          </el-form-item>
-          <el-form-item
-            v-if="currentIndex < form.sets.length"
-            prop="meter"
-            label="Meter: "
-            :rules="{
-              required: true,
-              message: 'A meter is required',
-              trigger: 'blur'
-            }"
-          >
-            <el-select
-              ref="submeters"
-              v-model="form.sets[currentIndex].meter"
-              style="width: 100%"
-              @change="meterChange(currentIndex)"
-            >
-              <el-option v-for="item in meters" :key="item.path" :label="item.name" :value="item.path"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            v-if="currentIndex < form.sets.length"
-            :rules="{
-              required: true,
-              message: 'A measurement is required',
-              trigger: 'blur'
-            }"
-            prop="point"
-            label="Measurement: "
-          >
-            <el-select v-model="form.sets[currentIndex].point" style="width: 100%">
-              <el-option
-                v-for="(point, index) in meterPoints"
-                :value="point.value"
-                :label="point.label"
-                :key="index"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <el-row class="deletebutton" v-if="form.sets.length > 1">
-          <el-col :span="10">
-            <el-button @click="deleteChart()" type="danger">Delete Dataset</el-button>
-          </el-col>
-        </el-row>
-      </el-row>
-    </div>
     <div class="modalActions">
-      <el-button @click="cardDelete()" type="danger" v-if="personalView && $store.getters['modalController/data'].path">
-        Delete
-      </el-button>
       <el-button @click="cardSave()" type="primary"> Ok </el-button>
       <el-tooltip
         v-if="compareOneBuildingView"
@@ -328,37 +192,13 @@ export default {
         return this.$route.path.includes('compare') && JSON.parse(JSON.stringify(this.form.sets)).length === 1
       }
     },
-    personalView: {
-      get () {
-        let viewPath = this.$store.getters['modalController/data'].path
-        if (!viewPath) {
-          viewPath = this.$store.getters['modalController/data'].view
-        } else {
-          viewPath = viewPath.split('/')
-          viewPath.pop()
-          viewPath = viewPath.join('/')
-        }
-        if (viewPath) {
-          if (this.$store.getters[viewPath + '/user'] === this.$store.getters['user/onid']) {
-            return true
-          }
-        }
-        return false
-      }
-    },
-
-    buildings: {
-      get () {
-        return this.$store.getters['map/buildings']
-      }
-    },
-
+    // Get the meter groups for the selected building (used for meter dropdown)
     meters: {
       get () {
         return this.$store.getters[this.form.sets[this.currentIndex].building + '/meterGroups']
       }
     },
-
+    // Get the meter points for the selected meter (used for measurement dropdown)
     meterPoints: {
       get () {
         return this.$store.getters[this.form.sets[this.currentIndex].meter + '/points']
@@ -367,17 +207,6 @@ export default {
   },
 
   methods: {
-    cardDelete: async function () {
-      let blockPath = this.$store.getters['modalController/data'].path
-      let blockId = this.$store.getters[blockPath + '/id']
-      let viewPath = blockPath.split('/')
-      viewPath.pop()
-      viewPath = viewPath.join('/')
-
-      this.$store.dispatch(viewPath + '/deleteBlock', blockId)
-      this.visible = false
-    },
-
     cardSave: async function () {
       let blockPath = this.$store.getters['modalController/data'].path
       if (!blockPath) {
@@ -481,11 +310,6 @@ export default {
     deleteTimePeriod: function (index) {
       this.form.tempMultStart.splice(index, 1)
       this.form.tempMultEnd.splice(index, 1)
-    },
-
-    deleteChart: function () {
-      this.form.sets.splice(this.currentIndex, 1)
-      this.currentIndex = 0
     },
 
     updateForm: function () {
@@ -650,11 +474,6 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-.stage {
-  position: relative !important;
-  top: 0 !important;
-  height: auto;
-}
 .el-form {
   padding-top: 30px;
   padding-bottom: 30px;
