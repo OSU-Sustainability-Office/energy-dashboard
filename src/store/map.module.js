@@ -98,10 +98,6 @@ const actions = {
     store.dispatch('loadBuilding', { id: building.data.id })
   },
 
-  async allDevices (store, payload) {
-    return API.devices()
-  },
-
   async boundedWays (store, payload) {
     let features = await API.boundedFeatures(payload)
     let parser = new DOMParser()
