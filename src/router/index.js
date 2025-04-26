@@ -28,10 +28,6 @@ const routes = [
     component: view
   },
   {
-    path: '/view/:id',
-    component: view
-  },
-  {
     path: '/compare/:buildings/:range',
     component: view
   },
