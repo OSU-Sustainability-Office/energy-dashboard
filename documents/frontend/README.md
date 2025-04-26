@@ -56,7 +56,6 @@ By default each meter group loads its own "block" which in turn lets us load a t
   - [2.1.3 featureController.vue](#213-featurecontrollervue)
   - [2.1.4 featured.vue](#214-featuredvue)
   - [2.1.5 heropicture.vue](#215-heropicturevue)
-  - [2.1.6 mediapicker.vue](#216-mediapickervue)
   - [2.1.7 navdir.vue](#217-navdirvue)
   - [2.1.8 storyCard.vue](#218-storycardvue)
 - [2.2 Admin](#22-admin)
@@ -112,10 +111,6 @@ This is the modal that is displayed when editing a chart. It gives adjustable pa
 ###### 2.1.5 heropicture.vue
 
 This component displays the large banner picture at the top of the account view.
-
-###### 2.1.6 mediapicker.vue
-
-This is a selection type component used to pick pictures. It is used inside of the editStory modal.
 
 ###### 2.1.7 navdir.vue
 
