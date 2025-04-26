@@ -1,3 +1,8 @@
+<!--
+  Filename: heropicture.vue
+  Info: Used to display the hero image for campaign and building pages.
+-->
+
 <template>
   <el-row class="stage">
     <el-col :span="24" class="main">
