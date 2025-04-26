@@ -82,22 +82,6 @@ const actions = {
     return store.getters.jsonPromise
   },
 
-  async deleteBuilding (store, payload) {
-    let buildingPath = ['map', 'building_' + payload.id]
-    this.unregisterModule(buildingPath)
-    API.building('delete', payload)
-  },
-
-  async newBuilding (store, payload) {
-    let building = await API.building('post', {
-      image: payload.image,
-      group: payload.group,
-      mapId: payload.mapId,
-      meters: payload.meters
-    })
-    store.dispatch('loadBuilding', { id: building.data.id })
-  },
-
   async boundedWays (store, payload) {
     let features = await API.boundedFeatures(payload)
     let parser = new DOMParser()
@@ -109,10 +93,6 @@ const actions = {
       promises.push(store.dispatch('buildingJSON', way.id.replace('way/', '')))
     }
     return Promise.all(promises)
-  },
-
-  async imageList (store) {
-    return API.images()
   },
 
   async loadMap (store) {

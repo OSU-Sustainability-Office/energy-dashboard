@@ -79,15 +79,8 @@ export default {
       return (await callAPI('view', payload, method)).data
     }
   },
-  images: async () => {
-    return (await callAPI('images')).data
-  },
   buildings: async () => {
     return (await callAPI('allbuildings')).data
-  },
-  building: async (method, data) => {
-    let call = await callAPI('building', data, method)
-    return { status: call.status, data: call.data }
   },
   getBuildingByID: async id => {
     let call = await callAPI('building?id=' + id, null, 'GET')
