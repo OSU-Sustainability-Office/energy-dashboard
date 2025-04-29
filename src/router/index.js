@@ -19,10 +19,6 @@ const routes = [
     redirect: '/map'
   },
   {
-    path: '/dashboard/',
-    component: buildingList
-  },
-  {
     path: '/building/:id/:range',
     name: 'building',
     component: view

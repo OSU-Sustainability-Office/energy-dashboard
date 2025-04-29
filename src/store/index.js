@@ -5,7 +5,6 @@
         respective modules.
 */
 import { createStore } from 'vuex'
-import View from './view.module.js'
 import Campaigns from './campaigns.module.js'
 import EDMap from './map.module.js'
 import ModalController from './modal_controller.module.js'
@@ -19,7 +18,6 @@ const store = createStore({
   },
 
   modules: {
-    view: View,
     campaigns: Campaigns,
     map: EDMap,
     modalController: ModalController,
