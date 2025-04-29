@@ -158,10 +158,15 @@ export default {
       return this.$store.getters['map/buildings'].filter(building => building.geoJSON)
     },
     mapLoaded () {
+      console.log(
+        this.filteredBuildings.length > 0 && // buildings are loaded
+        this.processedLayers === this.filteredBuildings.length && // all layers are processed
+        !this.$store.getters['map/buildingMap'].size
+      )
       return (
         this.filteredBuildings.length > 0 && // buildings are loaded
         this.processedLayers === this.filteredBuildings.length && // all layers are processed
-        this.$store.getters['map/isGeoJSONLoaded'] // all geojson layers are loaded
+        !this.$store.getters['map/buildingMap'].size // all geojson layers are loaded
       )
     },
     showSide: {

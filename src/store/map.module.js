@@ -10,8 +10,7 @@ const state = () => {
   return {
     path: 'map',
     promise: null,
-    buildingMap: new Map(), // buildings with missing geoJSON (key: mapId, value: building)
-    isGeoJSONLoaded: false // flag to indicate if missing geoJSON data is loaded
+    buildingMap: new Map() // buildings with missing geoJSON (key: mapId, value: building)
   }
 }
 
@@ -68,7 +67,7 @@ const actions = {
     const osmXML = await API.getGeoJSON(missingIds)
     const xmlDoc = new DOMParser().parseFromString(osmXML, 'text/xml')
     const geoJSON = Geo(xmlDoc)
-    const buildingMap = store.state.buildingMap
+    const buildingMap = store.getters.buildingMap
 
     if (geoJSON.features) {
       for (const feature of geoJSON.features) {
@@ -114,12 +113,11 @@ const actions = {
           await Promise.all(buildingPromises)
 
           // fetch missing geoJSON data (if any)
-          const buildingMap = store.state.buildingMap
+          const buildingMap = store.getters.buildingMap
           const missingIds = Array.from(buildingMap.keys()).join(',')
           if (missingIds.length > 0) {
-            store.commit('setIsGeoJSONLoaded', false)
             await store.dispatch('loadGeoJSONData', missingIds)
-            store.commit('setIsGeoJSONLoaded', true)
+            buildingMap.clear() // clear the map to indicate that all missing geoJSON has been loaded
           }
 
           resolve()
@@ -136,9 +134,6 @@ const mutations = {
   },
   setBuildingInMap (state, { mapId, building }) {
     state.buildingMap.set(mapId, building)
-  },
-  setIsGeoJSONLoaded (state, isLoaded) {
-    state.isGeoJSONLoaded = isLoaded
   }
 }
 
@@ -205,8 +200,8 @@ const getters = {
     return meterGroups[id]
   },
 
-  isGeoJSONLoaded (state) {
-    return state.isGeoJSONLoaded
+  buildingMap (state) {
+    return state.buildingMap
   }
 }
 /*
