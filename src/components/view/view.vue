@@ -1,3 +1,10 @@
+<!--
+  Filename: view.vue
+  Info: Manages the view of the app, including loading of data, the display of edit
+  modals (cards), and the navigation between different views such as individual buildings
+  and comparison views.
+-->
+
 <template>
   <el-row class="stage">
     <el-col class="main">
@@ -15,7 +22,6 @@
       </el-row>
     </el-col>
     <editCard />
-    <!-- <featured ref='featureBox' :compareMode="$route.path.search('compare') > 0" :blocks='(building && building.path) ? this.$store.getters[building.path + "/blocks"] : ""' /> -->
   </el-row>
 </template>
 
@@ -39,17 +45,7 @@ export default {
   },
   async created () {
     await this.$store.dispatch('map/loadMap')
-    // Currently, this.navVis is just set to show the navdir on "building" page, and hide on other pages.
-    // If you want to configure different navdir behavior on the comparison page, e.g. show "share button"
-    // but not other buttons on navdir, then you may as well just set this.navVis to true here,
-    // and remove references to navVis in watch > $route section (20 lines or so below), then configure
-    // this.otherView (or whatever) in navdir.vue file.
-    // However, this.navVis is still needed here as it guarantees the navbar is not shown before
-    // await this.$store.dispatch('map/loadMap') completes, preventing errors in navdir file.
-    this.navVis = this.$route.path.includes('building')
-    if (!this.view.id) {
-      await this.$store.dispatch('view/changeView', this.$route.params.id)
-    }
+    this.navVis = this.$route.path.includes('building') // show navdir on individual building pages only
   },
   methods: {
     addFeature: function () {
@@ -63,14 +59,8 @@ export default {
     $route: {
       immediate: true,
       handler: async function (to, from) {
-        this.navVis = this.$route.path.includes('building')
-        if (
-          !this.$route.path.includes('building') &&
-          !this.$route.path.includes('compare') &&
-          (!this.view || this.view.id !== parseInt(this.$route.params.id))
-        ) {
-          this.$store.dispatch('view/changeView', this.$route.params.id)
-        } else if (this.$route.path.includes('building') || this.$route.path.includes('compare')) {
+        this.navVis = this.$route.path.includes('building') // show navdir on individual building pages only
+        if (this.$route.path.includes('building') || this.$route.path.includes('compare')) {
           for (let card of this.cards) {
             this.$store.commit(card.path + '/dateStart', this.dateStart)
             this.$store.commit(card.path + '/dateEnd', this.dateEnd)
