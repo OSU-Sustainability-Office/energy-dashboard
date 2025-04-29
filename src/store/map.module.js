@@ -4,11 +4,14 @@
 */
 import API from './api.js'
 import Building from './building.module.js'
+import Geo from 'osmtogeojson'
 
 const state = () => {
   return {
     path: 'map',
-    promise: null
+    promise: null,
+    buildingMap: new Map(), // buildings with missing geoJSON (key: mapId, value: building)
+    isGeoJSONLoaded: false // flag to indicate if missing geoJSON data is loaded
   }
 }
 
@@ -25,6 +28,9 @@ const actions = {
     store.commit(buildingSpace + '/id', payload.id)
     store.commit(buildingSpace + '/hidden', payload.hidden)
     store.commit(buildingSpace + '/geoJSON', JSON.parse(payload.geoJSON))
+    if (!payload.geoJSON && payload.mapId) { // if geoJSON is not provided, we need to fetch it
+      store.commit('setBuildingInMap', { mapId: payload.mapId, building: store.state[buildingSpace] })
+    }
     let mgPromises = []
     for (let meterGroup of payload.meterGroups) {
       mgPromises.push(store.dispatch(buildingSpace + '/loadMeterGroup', meterGroup))
@@ -57,6 +63,44 @@ const actions = {
     return API.images()
   },
 
+  async loadGeoJSONData (store, missingIds) {
+    // fetch and parse the GeoJSON data
+    const osmXML = await API.getGeoJSON(missingIds)
+    const xmlDoc = new DOMParser().parseFromString(osmXML, 'text/xml')
+    const geoJSON = Geo(xmlDoc)
+    const buildingMap = store.state.buildingMap
+
+    if (geoJSON.features) {
+      for (const feature of geoJSON.features) {
+        const wayId = String(feature.id.split('/')[1])
+        const building = buildingMap.get(wayId)
+
+        if (building) {
+          // some buildings are Polygons by definition, but are returned as LineStrings
+          // by OSM. This corrects the geometry type if necessary.
+          if (feature.geometry.type === 'LineString') {
+            const coords = feature.geometry.coordinates
+            if (coords[0][0] === coords[coords.length - 1][0] && coords[0][1] === coords[coords.length - 1][1]) {
+              feature.geometry.type = 'Polygon'
+              feature.geometry.coordinates = [coords]
+            }
+          }
+
+          // set the properties of the feature
+          feature.properties = {
+            id: building.id,
+            group: building.group,
+            name: building.name
+          }
+
+          // set the geoJSON data in the building module
+          const buildingSpace = 'building_' + building.id.toString()
+          store.commit(buildingSpace + '/geoJSON', geoJSON)
+        }
+      }
+    }
+  },
+
   async loadMap (store) {
     if (store.getters.promise === null) {
       store.commit(
@@ -68,6 +112,16 @@ const actions = {
             buildingPromises.push(store.dispatch('loadBuilding', building))
           }
           await Promise.all(buildingPromises)
+
+          // fetch missing geoJSON data (if any)
+          const buildingMap = store.state.buildingMap
+          const missingIds = Array.from(buildingMap.keys()).join(',')
+          if (missingIds.length > 0) {
+            store.commit('setIsGeoJSONLoaded', false)
+            await store.dispatch('loadGeoJSONData', missingIds)
+            store.commit('setIsGeoJSONLoaded', true)
+          }
+
           resolve()
         })
       )
@@ -79,6 +133,12 @@ const actions = {
 const mutations = {
   promise (state, promise) {
     state.promise = promise
+  },
+  setBuildingInMap (state, { mapId, building }) {
+    state.buildingMap.set(mapId, building)
+  },
+  setIsGeoJSONLoaded (state, isLoaded) {
+    state.isGeoJSONLoaded = isLoaded
   }
 }
 
@@ -143,6 +203,10 @@ const getters = {
       }
     }
     return meterGroups[id]
+  },
+
+  isGeoJSONLoaded (state) {
+    return state.isGeoJSONLoaded
   }
 }
 /*

@@ -157,6 +157,13 @@ export default {
     filteredBuildings () {
       return this.$store.getters['map/buildings'].filter(building => building.geoJSON)
     },
+    mapLoaded () {
+      return (
+        this.filteredBuildings.length > 0 && // buildings are loaded
+        this.processedLayers === this.filteredBuildings.length && // all layers are processed
+        this.$store.getters['map/isGeoJSONLoaded'] // all geojson layers are loaded
+      )
+    },
     showSide: {
       get () {
         return this.$store.getters['modalController/modalName'] === 'map_side_view'
@@ -207,7 +214,6 @@ export default {
       ],
       show: false,
       processedLayers: 0,
-      mapLoaded: false,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
           this.processedLayers++
@@ -230,12 +236,6 @@ export default {
           })
           const color = this.getCategoryColor(feature.properties.group)
           layer.setStyle({ fillColor: color, color: color, opacity: 1, fillOpacity: 0.7, weight: 2 })
-
-          // If all building options are processed, remove loading spinner
-          if (this.processedLayers === this.filteredBuildings.length) {
-            this.mapLoaded = true
-            this.processedLayers = 0
-          }
         }
       }
     }
