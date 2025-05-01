@@ -207,17 +207,7 @@ export default {
   methods: {
     cardSave: async function () {
       let blockPath = this.$store.getters['modalController/data'].path
-      if (!blockPath) {
-        let view = this.$store.getters['modalController/data'].view
-        blockPath = await this.$store.dispatch(view + '/newBlock', {
-          dateStart: this.form.start,
-          dateEnd: this.form.end,
-          graphType: this.form.graphType,
-          name: this.form.name,
-          dateInterval: this.date(this.form.intUnit),
-          intervalUnit: this.interval(this.form.intUnit)
-        })
-      } else {
+      if (blockPath) {
         this.$store.dispatch(blockPath + '/update', {
           dateStart: this.form.start,
           dateEnd: this.form.end,
@@ -229,6 +219,7 @@ export default {
       }
 
       const charts = this.$store.getters[blockPath + '/charts']
+      console.log(this.form.sets)
 
       for (let index in this.form.sets) {
         if (
@@ -243,11 +234,13 @@ export default {
             this.$store.commit(chartPath + '/name', this.$store.getters[chartPath + '/pointString'])
           }
         } else {
-          this.$store.dispatch(blockPath + '/newChart', this.form.sets[index])
+          console.log('new chart called')
+          this.$store.dispatch(blockPath + '/newChart', this.form.sets[index]) // revisit this (might delete)
         }
       }
-      if (this.form.sets.length < charts.length) {
+      if (this.form.sets.length < charts.length) { // revisit this (might delete)
         for (let index = this.form.sets.length; index < charts.length; index++) {
+          console.log('remove chart called')
           this.$store.dispatch(blockPath + '/removeChart', charts[index].path.split('/').pop())
         }
       }
