@@ -72,19 +72,8 @@ export default {
       )
     ).data
   },
-  view: async (id, payload = null, method = 'get') => {
-    if (method === 'get') {
-      return (await callAPI('view?id=' + id)).data
-    } else {
-      return (await callAPI('view', payload, method)).data
-    }
-  },
   buildings: async () => {
     return (await callAPI('allbuildings')).data
-  },
-  getBuildingByID: async id => {
-    let call = await callAPI('building?id=' + id, null, 'GET')
-    return { status: call.status, data: call.data }
   },
   meterGroup: async id => {
     return (await callAPI('metergroup?id=' + id)).data
@@ -107,13 +96,7 @@ export default {
       await callAPI('multiMeterData', JSON.stringify(requestArray), 'post', import.meta.env.VITE_ROOT_API, null, 120000)
     ).data
   },
-  user: async () => {
-    return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
-  },
-  block: async (data, method) => {
-    return (await callAPI('block', data, method)).data
-  },
-  chart: async (data, method) => {
+  chart: async (data, method) => { // revisit this (might delete)
     return (await callAPI('chart', data, method)).data
   },
   campaigns: async () => {
