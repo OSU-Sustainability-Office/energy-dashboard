@@ -69,41 +69,18 @@ export default {
   computed: {
     blocks: {
       get () {
-        let blocks = this.$store.getters[this.path + '/blocks']
-        if (!blocks) {
-          return []
-        }
-        blocks.sort((a, b) => {
-          try {
-            const aPercentage = this.accumulatedPercentage(a.path)
-            const bPercentage = this.accumulatedPercentage(b.path)
-            if (aPercentage > bPercentage) {
-              return 1
-            } else {
-              return -1
-            }
-          } catch (error) {
-            return 1
-          }
-        })
+        // Create a copy of the blocks array to trigger reactivity
+        const blockCopy = this.$store.getters[this.path + '/blocks'] || []
 
-        // Sort blocks with NaN percentages (no data) to the bottom
-        blocks.sort((a, b) => {
-          try {
-            const aPercentage = this.accumulatedPercentage(a.path)
-            const bPercentage = this.accumulatedPercentage(b.path)
-            if (isNaN(aPercentage) && !isNaN(bPercentage)) {
-              return 1
-            } else if (isNaN(aPercentage) || isNaN(bPercentage)) {
-              return -1
-            } else {
-              return 1
-            }
-          } catch (error) {
-            return 1
-          }
-        })
-        return blocks
+        // Sort the blocks based on accumulated percentage
+        return [...blockCopy]
+          .sort((a, b) => {
+            const pA = this.accumulatedPercentage(a.path)
+            const pB = this.accumulatedPercentage(b.path)
+            if (isNaN(pA) && !isNaN(pB)) return 1
+            if (!isNaN(pA) && isNaN(pB)) return -1
+            return pA - pB
+          })
       }
     }
   },
