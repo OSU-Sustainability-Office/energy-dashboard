@@ -37,11 +37,11 @@ const actions = {
             store.commit(campaign + '/id', c.id)
             store.commit(
               campaign + '/dateStart',
-              new Date(c.dateStart).getTime() - new Date().getTimezoneOffset() * 60 * 1000
+              new Date(c.dateStart).getTime()
             )
             store.commit(
               campaign + '/dateEnd',
-              new Date(c.dateEnd).getTime() - new Date().getTimezoneOffset() * 60 * 1000
+              new Date(c.dateEnd).getTime()
             )
             store.commit(campaign + '/compareStart', new Date(c.compareStart).getTime())
             store.commit(campaign + '/compareEnd', new Date(c.compareEnd).getTime())

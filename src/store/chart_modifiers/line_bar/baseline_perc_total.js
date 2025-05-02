@@ -41,7 +41,7 @@ export default class LineTotalPercModifier {
 
     for (const currentTimestamp of rawData.keys()) {
       // Shift timestamp backward by the comparison period to align with the baseline range
-      const baselineTimestamp = currentTimestamp - (compareEnd - compareStart + 86400)
+      const baselineTimestamp = currentTimestamp - (compareEnd - compareStart)
       const baselineValue = baselineData.get(baselineTimestamp)
 
       if (!isNaN(baselineValue)) {
