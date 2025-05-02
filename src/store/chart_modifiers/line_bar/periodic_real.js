@@ -1,11 +1,19 @@
 /**
-  Filename: default.js
-  Description: Default class for line/bar chart modifiers. Assumes data is already
-  a time series (e.g. periodic_real_in). This modifier ensures that the number of
-  data points is equal to the number of intervals.
+  Filename: periodic_real.js
+  Description: Chart modifier for processing and formatting periodic_real data
+  (e.g., periodic_real_in) for all relevant charts on the energy dashboard.
 */
+import { DateTime } from 'luxon'
 
-export default class LineDefaultModifier {
+function getTimezoneOffset (epochSeconds) {
+  // Create a DateTime object in the Pacific Time Zone
+  const dt = DateTime.fromSeconds(epochSeconds, 'America/Los_Angeles')
+
+  // Multiply by 60 to convert to seconds
+  return dt.offset * 60
+}
+
+export default class LinePeriodicRealModifier {
   constructor () {
     this.data = {}
   }
@@ -41,7 +49,7 @@ export default class LineDefaultModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
-    const { dateStart, dateEnd, intervalUnit, dateInterval, timezoneOffset } = payload
+    const { dateStart, dateEnd, intervalUnit, dateInterval, timezoneOffset, point } = payload
     const currentData = chartData.data
     const result = []
     const startDate = new Date(dateStart * 1000)
@@ -70,7 +78,8 @@ export default class LineDefaultModifier {
     // Add the data to result array as-is since it is already a time series
     for (let i = dateStart; i <= dateEnd; i += delta) {
       try {
-        let timestamp = i + delta
+        // Align the timestamp with the data points in the database
+        let timestamp = i - getTimezoneOffset(i)
 
         const curValue = currentData.get(timestamp)
         if (isNaN(curValue)) {
@@ -89,6 +98,11 @@ export default class LineDefaultModifier {
       } catch (error) {
         console.log(error)
       }
+    }
+
+    // Fill chart for Solar Panel data
+    if (point === 'periodic_real_out') {
+      chartData.fill = true
     }
 
     // Prevent scenarios where there is only one valid data point
@@ -147,7 +161,10 @@ export default class LineDefaultModifier {
     delta *= dateInterval
 
     // Adjust dateStart to align with data points in the database
-    // Round down to 15 minute intervals
-    payload.dateStart = payload.dateStart - delta - (payload.dateStart % 900)
+    // Round down to 23:59:59
+    const adjustedTime = payload.dateStart - delta
+    const dayRemainder = adjustedTime % 86400
+    // Subtract the remainder to get the start of the day, then add 86399 to round up to 23:59:59
+    payload.dateStart = adjustedTime - dayRemainder + 86399
   }
 }
