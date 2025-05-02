@@ -53,7 +53,7 @@ export default class LineTotalBaseline {
 
     for (const timestamp of rawData.keys()) {
       // Shift timestamp backward by the comparison period to align with the baseline range
-      const baselineTimestamp = timestamp - (compareEnd - compareStart + 86400)
+      const baselineTimestamp = timestamp - (compareEnd - compareStart)
       if (isNaN(baselineData.get(baselineTimestamp))) {
         continue
       }
