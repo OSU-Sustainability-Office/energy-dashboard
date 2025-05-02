@@ -105,9 +105,9 @@ export default class LineAvgModifier {
     }
 
     // Compute the average for each bin
-    for (let i = this.dateStart; i < this.dateEnd; i += delta) {
+    for (let i = this.dateStart; i + delta <= this.dateEnd; i += delta) {
       try {
-        const timestamp = new Date((delta + i) * 1000)
+        const timestamp = new Date((i + delta) * 1000)
         const timeBinIndex = Math.floor(((i + delta) % SECONDS_PER_DAY) / delta)
         let baselinePoint = avgBins[timestamp.getDay()][timeBinIndex]
         returnData.push({ x: timestamp, y: baselinePoint })
