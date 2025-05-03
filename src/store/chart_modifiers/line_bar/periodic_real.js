@@ -8,7 +8,7 @@ import { DateTime } from 'luxon'
 // periodic_real meters currently don't have data for the minute or hour,
 // so we can just default to the day interval
 function getSmallIntervalKey (currentDate) {
-  const bucketStart = currentDate.startOf('day')
+  const bucketStart = currentDate.startOf('day').plus({ days: 1 })
   return Math.floor(bucketStart.toSeconds())
 }
 
@@ -21,7 +21,7 @@ function getDayBucketKey (currentDate, startDate, dateInterval) {
 
   // Determine the index of the bucket based on the day difference and the date interval
   const bucketIndex = Math.floor(dayDifference / dateInterval)
-  const bucketStart = startDate.plus({ days: bucketIndex * dateInterval })
+  const bucketStart = startDate.plus({ days: bucketIndex * dateInterval }).plus({ days: 1 })
 
   return Math.floor(bucketStart.toSeconds())
 }

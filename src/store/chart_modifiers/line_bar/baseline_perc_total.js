@@ -65,7 +65,7 @@ export default class LineTotalPercModifier {
       // Calculate the percentage difference
       const percentageDifference = ((currentValue - avg) / avg) * 100
 
-      const startOfDay = currentDate.startOf('day')
+      const startOfDay = currentDate.startOf('day').plus({ days: 1 })
       result.push({
         x: startOfDay.toJSDate(),
         y: percentageDifference
