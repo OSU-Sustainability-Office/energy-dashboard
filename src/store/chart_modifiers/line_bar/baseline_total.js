@@ -3,14 +3,11 @@
   Description: Chart modifier for processing and formatting the baseline for
   total data (e.g. periodic_real_in) as kWh. This is displayed on each
   of the individual building campaign pages as a line chart.
+  Note: Logic is nearly identical to baseline_total_perc.js, but this gets
+  a kWh difference from the baseline instead of a percentage difference.
 */
-
+import { DateTime } from 'luxon'
 export default class LineTotalBaseline {
-  constructor () {
-    this.dateStart = null
-    this.dateEnd = null
-  }
-
   /*
     Description: Called after getData function of chart module.
     Since the data is already a time series, this function does not
@@ -45,22 +42,36 @@ export default class LineTotalBaseline {
     this argument will change the chart in the update sequence)
   */
   async postGetData (chartData, payload, store, module) {
+    const { baselineData } = payload
     const rawData = chartData.data
-    const baselineData = payload.baselineData
-    const compareStart = payload.compareStart
-    const compareEnd = payload.compareEnd
     const result = []
+    const weekdaySums = Array(7).fill(0)
+    const weekdayCounts = Array(7).fill(0)
 
-    for (const timestamp of rawData.keys()) {
-      // Shift timestamp backward by the comparison period to align with the baseline range
-      const baselineTimestamp = timestamp - (compareEnd - compareStart)
-      if (isNaN(baselineData.get(baselineTimestamp))) {
-        continue
+    // Calculate sum and count for each weekday
+    for (const [currentTimestamp, currentValue] of baselineData.entries()) {
+      const dt = DateTime.fromSeconds(currentTimestamp, { zone: 'America/Los_Angeles' })
+      const weekday = dt.weekday % 7  // 0 = Sunday, 6 = Saturday
+      if (!isNaN(currentValue)) {
+        weekdaySums[weekday] += currentValue
+        weekdayCounts[weekday] += 1
       }
-      const baselineValue = baselineData.get(baselineTimestamp)
-      if (!isNaN(baselineValue)) {
-        result.push({ x: new Date(timestamp * 1000), y: baselineValue })
-      }
+    }
+
+    // Calculate the average for each day of the week
+    for (const [currentTimestamp] of rawData.entries()) {
+      const currentDate = DateTime.fromSeconds(currentTimestamp, { zone: 'America/Los_Angeles' })
+
+      // Get the average value for the current date's weekday
+      const weekday = currentDate.weekday % 7
+      const count = weekdayCounts[weekday]
+      const avg = count > 0 ? weekdaySums[weekday] / count : -1
+
+      const startOfDay = currentDate.startOf('day')
+      result.push({
+        x: startOfDay.toJSDate(),
+        y: avg
+      })
     }
 
     // Prevent scenarios where there is only one valid data point
