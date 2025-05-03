@@ -3,6 +3,8 @@
   Description: Chart modifier for processing and formatting the baseline for
   accumulated data (e.g. accumulated_real) as kWh. This is displayed on each
   of the individual building campaign pages as a line chart.
+  Note: Logic is nearly identical to baseline_perc.js, but this gets
+  a kWh difference from the baseline instead of a percentage difference.
 */
 
 export default class LineAvgModifier {
@@ -104,7 +106,7 @@ export default class LineAvgModifier {
       }
     }
 
-    // Compute the average for each bin
+    // Fill the returnData array with the average values
     for (let i = this.dateStart; i + delta <= this.dateEnd; i += delta) {
       try {
         const timestamp = new Date((i + delta) * 1000)

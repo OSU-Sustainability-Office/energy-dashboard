@@ -3,6 +3,8 @@
   Description: Chart modifier for processing and formatting the baseline for
   accumulated data (e.g. accumulated_real) as a percentage. This is displayed
   on the main campaign page with all of the buildings as a line chart.
+  Note: Logic is nearly identical to avg_accumulated_real.js, but this gets
+  a percentage difference from the baseline instead of a kWh difference.
 */
 
 export default class LinePercModifier {
@@ -151,6 +153,29 @@ export default class LinePercModifier {
     if (payload.intervalUnit === 'day' && payload.dateInterval > 1) {
       throw new Error('Time difference interval to large to work correctly')
     }
+    // Set the dateStart to the start of the interval
+    let delta
+    let dataDate = new Date(payload.dateStart * 1000)
+    switch (payload.intervalUnit) {
+      case 'minute':
+        delta = 60
+        break
+      case 'hour':
+        delta = 3600
+        break
+      case 'day':
+        delta = 86400
+        break
+      case 'month':
+        let monthDays = new Date(dataDate.getFullYear(), dataDate.getMonth(), 0).getDate()
+        if (dataDate.getDate() > monthDays) monthDays = dataDate.getDate()
+        delta = 60 * 60 * 24 * monthDays
+        break
+    }
+    delta *= payload.dateInterval
+    payload.dateStart = payload.dateStart - delta - (payload.dateStart % 900)
+
+    // Fetch baseline data
     payload.point = 'accumulated_real'
     const meterGroupPath = module.getters.meterGroupPath
     const baselinePayload = {
