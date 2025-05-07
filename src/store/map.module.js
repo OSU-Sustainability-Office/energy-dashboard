@@ -10,7 +10,7 @@ const state = () => {
   return {
     path: 'map',
     promise: null,
-    jsonPromise: null
+    buildingMap: new Map() // buildings with missing geoJSON (key: mapId, value: building)
   }
 }
 
@@ -26,60 +26,16 @@ const actions = {
     store.commit(buildingSpace + '/image', payload.image)
     store.commit(buildingSpace + '/id', payload.id)
     store.commit(buildingSpace + '/hidden', payload.hidden)
+    store.commit(buildingSpace + '/geoJSON', JSON.parse(payload.geoJSON))
+    if (!payload.geoJSON && payload.mapId) { // if geoJSON is not provided, we need to fetch it
+      store.commit('setBuildingInMap', { mapId: payload.mapId, building: store.state[buildingSpace] })
+    }
     let mgPromises = []
     for (let meterGroup of payload.meterGroups) {
       mgPromises.push(store.dispatch(buildingSpace + '/loadMeterGroup', meterGroup))
     }
     await Promise.all(mgPromises)
     await store.dispatch(buildingSpace + '/buildDefaultBlocks')
-  },
-
-  async loadGeometry (store) {
-    if (store.getters.jsonPromise === null) {
-      store.commit(
-        'jsonPromise',
-        new Promise(async (resolve, reject) => {
-          await store.getters.promise
-
-          // Fetch Building Geometry from Overpass if it exists
-          const buildings = store.getters.buildings.filter(b => b.mapId)
-          const IDs = buildings.map(b => b.mapId).join(',')
-          const geometryOSM = await API.buildingFeature(IDs)
-          const buildingParser = new DOMParser()
-          const buildingData = buildingParser.parseFromString(geometryOSM, 'text/xml')
-          const JSON = Geo(buildingData)
-
-          // Setup dictionary
-          const ways = new Map()
-          for (let feature of JSON.features) {
-            if (feature.id.includes('way')) {
-              // Convert LineString to Polygon if it is a closed shape
-              if (feature.geometry.type === 'LineString') {
-                const coords = feature.geometry.coordinates
-                if (coords[0][0] === coords[coords.length - 1][0] && coords[0][1] === coords[coords.length - 1][1]) {
-                  feature.geometry.type = 'Polygon'
-                  feature.geometry.coordinates = [coords]
-                }
-              }
-              ways.set(feature.id, feature)
-            }
-          }
-
-          // Commit GeoJSON to each building module
-          for (let building of buildings) {
-            let way = ways.get(`way/${building.mapId}`)
-            if (way) {
-              way.properties.id = building.id
-              way.properties.group = building.group
-              this.commit(building.path + '/geoJSON', way)
-            }
-          }
-
-          resolve()
-        })
-      )
-    }
-    return store.getters.jsonPromise
   },
 
   async deleteBuilding (store, payload) {
@@ -102,21 +58,46 @@ const actions = {
     return API.devices()
   },
 
-  async boundedWays (store, payload) {
-    let features = await API.boundedFeatures(payload)
-    let parser = new DOMParser()
-    let xmlData = parser.parseFromString(features, 'text/xml')
-    let geojson = Geo(xmlData)
-    let ways = geojson.features.filter(feature => feature.id.search(/way\/[0-9]+/) >= 0 && feature.properties.building)
-    let promises = []
-    for (let way of ways) {
-      promises.push(store.dispatch('buildingJSON', way.id.replace('way/', '')))
-    }
-    return Promise.all(promises)
-  },
-
   async imageList (store) {
     return API.images()
+  },
+
+  async loadGeoJSONData (store, missingIds) {
+    // fetch and parse the GeoJSON data
+    const osmXML = await API.getGeoJSON(missingIds)
+    const xmlDoc = new DOMParser().parseFromString(osmXML, 'text/xml')
+    const geoJSON = Geo(xmlDoc)
+    const buildingMap = store.getters.buildingMap
+
+    if (geoJSON.features) {
+      for (const feature of geoJSON.features) {
+        const wayId = String(feature.id.split('/')[1])
+        const building = buildingMap.get(wayId)
+
+        if (building) {
+          // some buildings are Polygons by definition, but are returned as LineStrings
+          // by OSM. This corrects the geometry type if necessary.
+          if (feature.geometry.type === 'LineString') {
+            const coords = feature.geometry.coordinates
+            if (coords[0][0] === coords[coords.length - 1][0] && coords[0][1] === coords[coords.length - 1][1]) {
+              feature.geometry.type = 'Polygon'
+              feature.geometry.coordinates = [coords]
+            }
+          }
+
+          // set the properties of the feature
+          feature.properties = {
+            id: building.id,
+            group: building.group,
+            name: building.name
+          }
+
+          // set the geoJSON data in the building module
+          const buildingSpace = 'building_' + building.id.toString()
+          store.commit(buildingSpace + '/geoJSON', geoJSON)
+        }
+      }
+    }
   },
 
   async loadMap (store) {
@@ -130,6 +111,15 @@ const actions = {
             buildingPromises.push(store.dispatch('loadBuilding', building))
           }
           await Promise.all(buildingPromises)
+
+          // fetch missing geoJSON data (if any)
+          const buildingMap = store.getters.buildingMap
+          const missingIds = Array.from(buildingMap.keys()).join(',')
+          if (missingIds.length > 0) {
+            await store.dispatch('loadGeoJSONData', missingIds)
+            buildingMap.clear() // clear the map to indicate that all missing geoJSON has been loaded
+          }
+
           resolve()
         })
       )
@@ -142,19 +132,14 @@ const mutations = {
   promise (state, promise) {
     state.promise = promise
   },
-
-  jsonPromise: (state, promise) => {
-    state.jsonPromise = promise
+  setBuildingInMap (state, { mapId, building }) {
+    state.buildingMap.set(mapId, building)
   }
 }
 
 const getters = {
   path (state) {
     return state.path
-  },
-
-  jsonPromise (state) {
-    return state.jsonPromise
   },
 
   promise (state) {
@@ -213,6 +198,10 @@ const getters = {
       }
     }
     return meterGroups[id]
+  },
+
+  buildingMap (state) {
+    return state.buildingMap
   }
 }
 /*

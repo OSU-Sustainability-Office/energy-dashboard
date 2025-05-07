@@ -48,34 +48,6 @@ export default {
     return (await callAPI('admin/devices')).data
   },
 
-  boundedFeatures: async payload => {
-    return (
-      await callAPI(
-        `map?bbox=${payload.left},${payload.bottom},${payload.right},${payload.top}`,
-        null,
-        'get',
-        'https://api.openstreetmap.org/api/0.6',
-        {
-          Accept: 'text/xml'
-        }
-      )
-    ).data
-  },
-  buildingFeature: async payload => {
-    return (
-      await callAPI(
-        `interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`,
-        null,
-        'get',
-        'https://maps.mail.ru/osm/tools/overpass/api',
-        {
-          Accept: 'text/xml'
-        },
-        72000,
-        false
-      )
-    ).data
-  },
   users: async () => {
     return (await callAPI('admin/users')).data
   },
@@ -132,6 +104,21 @@ export default {
     // We're also increasing the timeeout to 2 minutes to account for really slow requests (e.g. LINC 1 year data)
     return (
       await callAPI('multiMeterData', JSON.stringify(requestArray), 'post', import.meta.env.VITE_ROOT_API, null, 120000)
+    ).data
+  },
+  getGeoJSON: async payload => {
+    return (
+      await callAPI(
+        `interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`,
+        null,
+        'get',
+        'https://maps.mail.ru/osm/tools/overpass/api',
+        {
+          Accept: 'text/xml'
+        },
+        72000,
+        false
+      )
     ).data
   },
   user: async () => {
