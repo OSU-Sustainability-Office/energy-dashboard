@@ -115,7 +115,7 @@ const actions = {
       for (let meter of store.getters.meters) {
         dataLayerPayload.push({
           meterId: this.getters[meter.path + '/id'],
-          start: payload.dateStart - 900,
+          start: payload.dateStart,
           end: payload.dateEnd,
           uom: payload.point,
           classInt: this.getters[meter.path + '/classInt']

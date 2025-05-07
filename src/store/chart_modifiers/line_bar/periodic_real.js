@@ -5,12 +5,53 @@
 */
 import { DateTime } from 'luxon'
 
-function getTimezoneOffset (epochSeconds) {
-  // Create a DateTime object in the Pacific Time Zone
-  const dt = DateTime.fromSeconds(epochSeconds, 'America/Los_Angeles')
+// periodic_real meters currently don't have data for the minute or hour,
+// so we can just default to the day interval
+function getSmallIntervalKey (currentDate) {
+  const bucketStart = currentDate.startOf('day').plus({ days: 1 })
+  return Math.floor(bucketStart.toSeconds())
+}
 
-  // Multiply by 60 to convert to seconds
-  return dt.offset * 60
+// This function is used for calculating bucket keys for day and week intervals.
+// It works by rounding down the current date to the nearest interval boundary
+// relative to the provided start date.
+function getDayBucketKey (currentDate, startDate, dateInterval) {
+  // Compute the different in days between the start date and the current date in the loop
+  const dayDifference = Math.floor(currentDate.diff(startDate, 'days').days)
+
+  // Determine the index of the bucket based on the day difference and the date interval
+  const bucketIndex = Math.floor(dayDifference / dateInterval)
+  const bucketStart = startDate.plus({ days: bucketIndex * dateInterval }).plus({ days: 1 })
+
+  return Math.floor(bucketStart.toSeconds())
+}
+
+// Monthly increments are calculated by starting from the first day of the month
+// that corresponds to the start date. Data is then accumulated until the same
+// day in the following month.
+function getMonthBucketKey (currentDate, startDate) {
+  // If current date is earlier in the month than day of the
+  // start date, then it belongs to the previous month’s bucket
+  let bucketMonth = currentDate.month
+  let bucketYear  = currentDate.year
+  if (currentDate.day < startDate.day) {
+    bucketMonth -= 1
+    if (bucketMonth === 0) {
+      bucketMonth = 12
+      bucketYear -= 1
+    }
+  }
+
+  const bucketStart = DateTime.fromObject({
+    year: bucketYear,
+    month: bucketMonth,
+    day: startDate.day,
+    hour: 0,
+    minute: 0,
+    second: 0
+  })
+
+  return Math.floor(bucketStart.toSeconds())
 }
 
 export default class LinePeriodicRealModifier {
@@ -49,55 +90,51 @@ export default class LinePeriodicRealModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
-    const { dateStart, dateEnd, intervalUnit, dateInterval, timezoneOffset, point } = payload
+    const { dateStart, dateEnd, dateInterval, intervalUnit, point } = payload
+    const TIMEZONE = 'America/Los_Angeles'
     const currentData = chartData.data
     const result = []
-    const startDate = new Date(dateStart * 1000)
-    const SECONDS_PER_DAY = 86400
-    let delta = 1
-    let monthDays = 1
+    const startDate = DateTime.fromSeconds(dateStart, { zone: TIMEZONE }).startOf('day')
+    const buckets = new Map()
 
-    // Determine delta based on interval unit
-    switch (intervalUnit) {
-      case 'minute':
-        delta = 60
-        break
-      case 'hour':
-        delta = 3600
-        break
-      case 'day':
-        delta = SECONDS_PER_DAY
-        break
-      case 'month':
-        monthDays = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate()
-        delta = SECONDS_PER_DAY * monthDays
-        break
-    }
-    delta *= dateInterval
+    // Aggregate data into buckets based on the specified interval
+    for (const [epoch, val] of currentData.entries()) {
+      const currentDate = DateTime.fromSeconds(epoch, { zone: TIMEZONE })
 
-    // Add the data to result array as-is since it is already a time series
-    for (let i = dateStart; i <= dateEnd; i += delta) {
-      try {
-        // Align the timestamp with the data points in the database
-        let timestamp = i - getTimezoneOffset(i)
-
-        const curValue = currentData.get(timestamp)
-        if (isNaN(curValue)) {
-          continue
-        }
-
-        // Adjust the timestamp to account for the timezone offset if needed
-        timestamp += timezoneOffset || 0
-
-        // Format the data for the chart
-        const formattedData = {
-          x: new Date(timestamp * 1000),
-          y: Math.abs(curValue)
-        }
-        result.push(formattedData)
-      } catch (error) {
-        console.log(error)
+      // Get the bucket key based on the interval unit
+      let bucketKey
+      switch (intervalUnit) {
+        case 'minute':
+          bucketKey = getSmallIntervalKey(currentDate)
+          break
+        case 'hour':
+          bucketKey = getSmallIntervalKey(currentDate)
+          break
+        case 'day':
+          bucketKey = getDayBucketKey(currentDate, startDate, dateInterval)
+          break
+        case 'month':
+          bucketKey = getMonthBucketKey(currentDate, startDate)
+          break
+        default:
+          console.error('Invalid interval unit:', intervalUnit)
+          return
       }
+
+      // Store the aggregated data in the buckets map
+      if (bucketKey > dateEnd) continue // ignore current interval (data still being collected)
+      if (!buckets.has(bucketKey)) {
+        buckets.set(bucketKey, 0)
+      }
+      buckets.set(bucketKey, buckets.get(bucketKey) + val)
+    }
+
+    // Fill the result array with the aggregated data
+    for (const [bucketEpoch, total] of buckets.entries()) {
+      result.push({
+        x: DateTime.fromSeconds(bucketEpoch, { zone: TIMEZONE }).toJSDate(),
+        y: Math.abs(total)
+      })
     }
 
     // Fill chart for Solar Panel data
@@ -137,34 +174,6 @@ export default class LinePeriodicRealModifier {
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
-    const { intervalUnit, dateInterval } = payload
-    const SECONDS_PER_DAY = 86400
-    const dataDate = new Date(payload.dateStart * 1000)
-    let delta = 1
-
-    switch (intervalUnit) {
-      case 'minute':
-        delta = 60
-        break
-      case 'hour':
-        delta = 3600
-        break
-      case 'day':
-        delta = SECONDS_PER_DAY
-        break
-      case 'month':
-        let monthDays = new Date(dataDate.getFullYear(), dataDate.getMonth(), 0).getDate()
-        if (dataDate.getDate() > monthDays) monthDays = dataDate.getDate()
-        delta = SECONDS_PER_DAY * monthDays
-        break
-    }
-    delta *= dateInterval
-
-    // Adjust dateStart to align with data points in the database
-    // Round down to 23:59:59
-    const adjustedTime = payload.dateStart - delta
-    const dayRemainder = adjustedTime % 86400
-    // Subtract the remainder to get the start of the day, then add 86399 to round up to 23:59:59
-    payload.dateStart = adjustedTime - dayRemainder + 86399
+    // No preprocessing needed for periodic_real data
   }
 }

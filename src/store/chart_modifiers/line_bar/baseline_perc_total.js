@@ -3,8 +3,10 @@
   Description: Chart modifier for processing and formatting the baseline for
   total data (e.g. periodic_real_in) as a percentage. This is displayed
   on the main campaign page with all of the buildings as a line chart.
+  Note: Logic is nearly identical to baseline_total.js, but this gets
+  a percentage difference from the baseline instead of a kWh difference.
 */
-
+import { DateTime } from 'luxon'
 export default class LineTotalPercModifier {
   /*
     Description: Called after getData function of chart module.
@@ -35,27 +37,39 @@ export default class LineTotalPercModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
+    const { baselineData } = payload
     const rawData = chartData.data
-    const { baselineData, compareStart, compareEnd } = payload
     const result = []
+    const weekdaySums = Array(7).fill(0)
+    const weekdayCounts = Array(7).fill(0)
 
-    for (const currentTimestamp of rawData.keys()) {
-      // Shift timestamp backward by the comparison period to align with the baseline range
-      const baselineTimestamp = currentTimestamp - (compareEnd - compareStart)
-      const baselineValue = baselineData.get(baselineTimestamp)
-
-      if (!isNaN(baselineValue)) {
-        // Calculate the percentage difference
-        const currentValue = rawData.get(currentTimestamp)
-        const percentageDifference = ((currentValue - baselineValue) / baselineValue) * 100
-
-        // Format the data for the chart
-        const formattedData = {
-          x: new Date(currentTimestamp * 1000),
-          y: percentageDifference
-        }
-        result.push(formattedData)
+    // Calculate sum and count for each weekday
+    for (const [timestamp, value] of baselineData.entries()) {
+      const dt = DateTime.fromSeconds(timestamp, { zone: 'America/Los_Angeles' })
+      const weekday = dt.weekday % 7  // 0 = Sunday, 6 = Saturday
+      if (!isNaN(value)) {
+        weekdaySums[weekday] += value
+        weekdayCounts[weekday] += 1
       }
+    }
+
+    // Calculate the average for each day of the week
+    for (const [currentTimestamp, currentValue] of rawData.entries()) {
+      const currentDate = DateTime.fromSeconds(currentTimestamp, { zone: 'America/Los_Angeles' })
+
+      // Get the average value for the current date's weekday
+      const weekday = currentDate.weekday % 7
+      const count = weekdayCounts[weekday]
+      const avg = count > 0 ? weekdaySums[weekday] / count : -1
+
+      // Calculate the percentage difference
+      const percentageDifference = ((currentValue - avg) / avg) * 100
+
+      const startOfDay = currentDate.startOf('day').plus({ days: 1 })
+      result.push({
+        x: startOfDay.toJSDate(),
+        y: percentageDifference
+      })
     }
 
     // Prevent scenarios where there is only one valid data point
