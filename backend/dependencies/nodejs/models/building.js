@@ -96,12 +96,9 @@ class Building {
     return this
   }
 
-  static async updateGeoJSON (id, geoJSON) {
+  static async updateGeoJSON(id, geoJSON) {
     await DB.connect()
-    await DB.query('UPDATE buildings SET geojson = ? WHERE id = ?', [
-      JSON.stringify(geoJSON),
-      id
-    ])
+    await DB.query('UPDATE buildings SET geojson = ? WHERE id = ?', [JSON.stringify(geoJSON), id])
   }
 
   async delete(user) {
