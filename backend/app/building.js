@@ -46,19 +46,27 @@ exports.put = async (event, context) => {
 
 // This function is used by an external service (automated job)
 // to occasionally update the GeoJSON data for multiple buildings
-exports.putGeoJSON = async (event) => {
+exports.putGeoJSON = async event => {
   const response = new Response(event)
   try {
     const payload = JSON.parse(event.body)
+    const pwd = payload['pwd']
+    if (pwd !== process.env.ACQUISUITE_PASS) {
+      response.statusCode = 400
+      return response
+    }
+
     const buildings = payload.buildings
     // Check if buildings is an array
     if (!Array.isArray(buildings)) {
       throw new Error('Invalid input: body must be an array of { buildingId, buildingGeoJSON } objects')
     }
     // Update each building's GeoJSON
-    await Promise.all(buildings.map(({ buildingId, buildingGeoJSON }) => {
-      return Building.updateGeoJSON(buildingId, buildingGeoJSON)
-    }))
+    await Promise.all(
+      buildings.map(({ buildingId, buildingGeoJSON }) => {
+        return Building.updateGeoJSON(buildingId, buildingGeoJSON)
+      })
+    )
     response.body = JSON.stringify({ message: 'GeoJSON updated successfully' })
     response.statusCode = 200
   } catch (error) {
