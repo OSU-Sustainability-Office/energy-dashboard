@@ -1,3 +1,7 @@
+<!--
+  Filename: leftBuildingMenu.vue
+  Info: Building menu button to show/hide the building menu on the left side of the screen.
+-->
 <template>
   <div>
     <button @click="toggleFlag" class="toggleButton">{{ buttonText }}</button>

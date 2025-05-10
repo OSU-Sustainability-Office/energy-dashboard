@@ -316,10 +316,6 @@ export default {
         if (!point) {
           return ' '
         }
-
-        if (this.$parent.$options._componentTag === 'sideView') {
-          return ' '
-        }
         if (point.length > 50) {
           point = point.substring(0, 50) + '...'
         }

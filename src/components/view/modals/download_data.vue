@@ -1,5 +1,8 @@
-/* * @Author: you@you.you * @Date: Saturday December 21st 2019 * @Last Modified By: Brogan Miner * @Last Modified Time:
-Saturday December 21st 2019 * @Copyright: (c) Oregon State University 2019 */
+<!--
+  Filename: download_data.vue
+  Info: This is the modal that allows the user to download data from the server.
+  It allows the user to select a date range, interval, and points to download.
+-->
 
 <template>
   <el-dialog v-model="visible" title="Download Data" width="80%" @open="updateForm()">

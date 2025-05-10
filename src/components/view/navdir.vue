@@ -33,7 +33,6 @@
             <el-sub-menu index="2" :router="false">
               <template #title><i class="fas fa-building"></i>{{ buildingName }}</template>
               <el-menu-item
-                class="story-item"
                 v-for="(building, idx) in buildingsForGroup"
                 :key="building.id"
                 :index="'2-' + idx"

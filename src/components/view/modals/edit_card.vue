@@ -219,7 +219,6 @@ export default {
       }
 
       const charts = this.$store.getters[blockPath + '/charts']
-      console.log(this.form.sets)
 
       for (let index in this.form.sets) {
         if (

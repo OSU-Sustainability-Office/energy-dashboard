@@ -1,3 +1,7 @@
+<!--
+  Filename: navBar.vue
+  Info: Primary navigation bar shown on top of all pages.
+-->
 <template>
   <div>
     <div class="nav-menu">

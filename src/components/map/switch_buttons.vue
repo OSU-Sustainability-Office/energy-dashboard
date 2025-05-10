@@ -68,7 +68,6 @@ $clipInset: 10px;
 }
 
 .rangeButtonParent:last-child {
-  // left: -26px;
   border-radius: 0px 5px 5px 0px;
   clip-path: polygon(
     #{calc($clipInset / $buttonHeight) * ($buttonHeight + 2 * $parentPadding)} 0%,
@@ -99,14 +98,14 @@ $clipInset: 10px;
 }
 .rangeButtonParent:not(.active):hover .rangeButton {
   z-index: 3;
-  background-color: $color-black; //color.adjust($color-primary, $lightness: -10%);
+  background-color: $color-black;
   color: $color-white;
   border: 0px;
 }
 
 .rangeButtonParent:not(.active):hover {
   z-index: 2;
-  background-color: $color-white; //color.adjust($color-primary, $lightness: -10%);
+  background-color: $color-white;
 }
 
 .rangeButtonParent.active {

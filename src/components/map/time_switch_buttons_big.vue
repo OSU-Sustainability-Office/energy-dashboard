@@ -1,6 +1,7 @@
 <!--
   Filename: time_switch_buttons_big.vue
-  Description: vue component for map-building-pop-up showing the graph options
+  Description: UI component that allows users to switch between time ranges (e.g., past day, week, or year)
+  for the data displayed in a chart.
 -->
 <template>
   <el-row class="buttons">
@@ -101,24 +102,6 @@ export default {
           this.$store.commit(block.path + '/dateEnd', dateEnd)
         }
       }
-    }
-  },
-  methods: {
-    dateOffset: function () {
-      let dateS = new Date(this.story.date_end)
-      let dateN = new Date()
-      let d = dateN
-      if (this.campaign && dateN > dateS) {
-        d = dateS
-      }
-      if (this.currentRange === 0) {
-        this.campaign ? d.setHours(d.getHours() - 6) : d.setDate(d.getDate() - 7)
-      } else if (this.currentRange === 1) {
-        this.campaign ? d.setDate(d.getDate() - 1) : d.setDate(d.getDate() - 60)
-      } else if (this.currentRange === 2) {
-        this.campaign ? (d = new Date(this.story.date_start)) : d.setFullYear(d.getFullYear() - 1)
-      }
-      return d.toISOString()
     }
   }
 }
