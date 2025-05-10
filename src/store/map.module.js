@@ -71,6 +71,11 @@ const actions = {
 
     if (geoJSON.features) {
       for (const feature of geoJSON.features) {
+        const wayOrNode = String(feature.id.split('/')[0])
+        if (wayOrNode !== 'way') {
+          continue // Ignore node features
+        }
+
         const wayId = String(feature.id.split('/')[1])
         const building = buildingMap.get(wayId)
 
@@ -94,7 +99,7 @@ const actions = {
 
           // set the geoJSON data in the building module
           const buildingSpace = 'building_' + building.id.toString()
-          store.commit(buildingSpace + '/geoJSON', geoJSON)
+          store.commit(buildingSpace + '/geoJSON', feature)
         }
       }
     }
