@@ -1,8 +1,12 @@
+<!--
+  Filename: CampaignList.vue
+  Description: Display a list of current and past campaigns.
+-->
 <template>
   <el-row class="campaignlistview">
     <el-tabs v-model="activePane">
       <el-tab-pane label="Current Campaigns" name="new" ref="currentTab" class="list">
-        <campaignBlock
+        <CampaignListItem
           v-for="campaign in currentCampaigns"
           :camp="campaign"
           :key="campaign.id"
@@ -12,7 +16,7 @@
         <span class="noText" v-if="!loaded"> Loading... </span>
       </el-tab-pane>
       <el-tab-pane label="Past Campaigns" name="old" ref="pastTab" class="list">
-        <campaignBlock
+        <CampaignListItem
           v-for="campaign in pastCampaigns"
           :camp="campaign"
           :key="campaign.id"
@@ -25,10 +29,10 @@
   </el-row>
 </template>
 <script>
-import campaignBlock from '@/components/campaigns/campaign_list_block.vue'
+import CampaignListItem from '@/components/campaigns/CampaignListItem.vue'
 export default {
   components: {
-    campaignBlock
+    CampaignListItem
   },
   data () {
     return {

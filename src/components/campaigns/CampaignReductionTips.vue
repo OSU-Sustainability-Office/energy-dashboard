@@ -1,11 +1,8 @@
 <!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-01-11T11:37:25-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-04-16T11:17:53-07:00
+  Filename: CampaignReductionTips.vue
+  Description: A list of tips for reducing energy usage in a campaign. Shown
+  in the individual campaign view.
 -->
-
 <template>
   <el-col :span="24" class="reductionBody">
     <el-col :span="24" class="reductionBackground">

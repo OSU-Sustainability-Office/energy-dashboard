@@ -1,3 +1,7 @@
+<!--
+  Filename: CampaignListItem.vue
+  Description: A single campaign item in the campaign list.
+-->
 <template>
   <div class="block" ref="block" @click="$emit('click')">
     <el-row style="padding: 0">

@@ -1,9 +1,7 @@
 <!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-01-09T13:21:44-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-02-11T09:19:09-08:00
+  Filename: CampaignLeaderboard.vue
+  Description: Manages the display of the leaderboard in the individual campaign view.
+  It displays the list of buildings and their respective energy percentages.
 -->
 <template>
   <el-col :span="24" class="buildingContainer">

@@ -6,12 +6,12 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import view from '@/components/view/view.vue'
 import Map from '@/components/map/Map.vue'
-import campaigns from '@/components/campaigns/campaign_list.vue'
+import CampaignList from '@/components/campaigns/CampaignList.vue'
 import GetStarted from '@/components/get_started/GetStarted.vue'
 import NotFound from '@/components/ui/NotFound.vue'
 import Contact from '@/components/ui/Contact.vue'
-import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
-import buildingList from '@/components/building_list/building_list.vue'
+import Campaign from '@/components/campaigns/Campaign.vue'
+import BuildingList from '@/components/building_list/BuildingList.vue'
 
 const routes = [
   {
@@ -33,19 +33,19 @@ const routes = [
   },
   {
     path: '/campaign/:id',
-    component: mainCampaignView
+    component: Campaign
   },
   {
     path: '/campaigns',
-    component: campaigns
+    component: CampaignList
   },
   {
     path: '/buildings',
-    component: buildingList
+    component: BuildingList
   },
   {
     path: '/buildings/:group',
-    component: buildingList
+    component: BuildingList
   },
   {
     path: '/getstarted',

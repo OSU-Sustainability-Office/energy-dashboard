@@ -1,7 +1,7 @@
-/**
-  Filename: view_card.vue
-  Info: This component shows the card for each building in the list of buildings.
-*/
+<!--
+  Filename:  BuildingListItem.vue
+  Info: The individual building cards that are displayed in the building list.
+-->
 <template>
   <div class="card" ref="card" @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
     <span class="name" v-if="!plus">{{ name }}</span>

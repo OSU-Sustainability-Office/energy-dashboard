@@ -1,6 +1,7 @@
 <!--
-  Filename: main_campaign_view.vue
-  Info: The main graphic page for a campaign.
+  Filename: Campagin.vue
+  Description: The layout for an individual campaign view. This includes the
+  leaderboard, line/bar chart, and hero image at the top of the page.
 -->
 <template>
   <el-row class="stage">
@@ -15,7 +16,7 @@
       <!-- Charts and the building selection list -->
       <el-row class="controlRow" v-if="loaded">
         <el-col :span="8" class="buildingContainer">
-          <buildingList v-model="blockPath" :loaded="loaded" :path="campaignPath" />
+          <CampaignLeaderboard v-model="blockPath" :loaded="loaded" :path="campaignPath" />
         </el-col>
         <el-col :span="16" class="otherSide">
           <div class="chartArea">
@@ -63,7 +64,7 @@
       </el-row>
       <!-- Reduction tips at the bottom of the page -->
       <el-row>
-        <reductionTips />
+        <CampaignReductionTips />
       </el-row>
     </el-col>
   </el-row>
@@ -72,16 +73,16 @@
 <script>
 import HeroPicture from '@/components/ui/HeroPicture.vue'
 import ChartController from '@/components/charts/ChartController.vue'
-import buildingList from '@/components/campaigns/campaign_building_list.vue'
-import reductionTips from '@/components/campaigns/campaign_reduction_tips.vue'
+import CampaignLeaderboard from '@/components/campaigns/CampaignLeaderboard.vue'
+import CampaignReductionTips from '@/components/campaigns/CampaignReductionTips.vue'
 import TimeRangeSwitcher from '@/components/ui/TimeRangeSwitcher.vue'
 
 export default {
   components: {
     HeroPicture,
     ChartController,
-    buildingList,
-    reductionTips,
+    CampaignLeaderboard,
+    CampaignReductionTips,
     TimeRangeSwitcher
   },
   data () {

@@ -1,5 +1,5 @@
 <!--
-  Filename: building_list.vue
+  Filename: BuildingList.vue
   Info: This component shows the list of buildings for which we automatically collect data under the "buildings" tab.
 -->
 <template>
@@ -31,7 +31,7 @@
               <el-radio v-model="search" label="Gas">Gas</el-radio>
               <el-row justify="start" class="card_flex">
                 <el-col v-for="building in item" :key="building.name" class="card_container">
-                  <viewCard
+                  <BuildingListItem
                     :plus="false"
                     :building="buildingList"
                     :id="building.id"
@@ -52,12 +52,12 @@
 </template>
 
 <script>
-import viewCard from '@/components/building_list/view_card.vue'
+import BuildingListItem from '@/components/building_list/BuildingListItem.vue'
 import { Search as SearchIcon, Close as CloseIcon } from '@element-plus/icons-vue'
 
 export default {
   components: {
-    viewCard,
+    BuildingListItem,
     SearchIcon,
     CloseIcon
   },
