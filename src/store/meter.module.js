@@ -1,10 +1,8 @@
-/*
- * @Author: Brogan
- * @Date:   Saturday August 3rd 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday August 3rd 2019
- * @Copyright:  Oregon State University 2019
- */
+/**
+  Filename: meter.module.js
+  Info: Vuex module for managing meter state, actions, mutations, and getters.
+  Handles fetching/updating meter details and retrieving meter-specific data.
+*/
 import API from './api.js'
 
 const state = () => {

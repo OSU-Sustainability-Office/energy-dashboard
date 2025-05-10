@@ -1,3 +1,7 @@
+/*
+  Filename: api.js
+  Info: API module for handling all API calls to the backend and external APIs.
+*/
 import axios from 'axios'
 axios.defaults.withCredentials = true
 

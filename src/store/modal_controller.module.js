@@ -1,10 +1,8 @@
-/*
- * @Author: you@you.you
- * @Date:   Tuesday December 17th 2019
- * @Last Modified By:  Brogan Miner
- * @Last Modified Time:  Tuesday December 17th 2019
- * @Copyright:  (c) Oregon State University 2019
- */
+/**
+  Filename: modal_controller.module.js
+  Info: Vuex module for controlling modal dialogs (e.g. popup that appears when a user clicks
+  on a building on the map).
+*/
 
 const state = () => {
   return {
