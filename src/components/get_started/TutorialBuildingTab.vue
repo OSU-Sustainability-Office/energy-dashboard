@@ -1,3 +1,7 @@
+<!--
+  Filename: TutorialBuildingTab.vue
+  Description: Displayed in the "How to use the Building Tab" section of the "Get Started" page.
+-->
 <template>
   <div>
     <h2 class="demo-title">3 Options:</h2>

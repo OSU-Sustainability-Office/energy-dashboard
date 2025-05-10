@@ -7,7 +7,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import view from '@/components/view/view.vue'
 import Map from '@/components/map/Map.vue'
 import campaigns from '@/components/campaigns/campaign_list.vue'
-import getStarted from '@/components/get_started/getStartedContent.vue'
+import GetStarted from '@/components/get_started/GetStarted.vue'
 import notfound from '@/components/extras/404.vue'
 import contact from '@/components/extras/contact.vue'
 import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
@@ -49,7 +49,7 @@ const routes = [
   },
   {
     path: '/getstarted',
-    component: getStarted
+    component: GetStarted
   },
   {
     path: '/contact',

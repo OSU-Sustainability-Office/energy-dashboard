@@ -1,5 +1,9 @@
+<!--
+  Filename: TutorialMapTab.vue
+  Description: Displayed in the "How to use the Map Tab" section of the "Get Started" page.
+-->
 <template>
-  <el-tabs type="card" v-model="mapTab">
+  <el-tabs type="card" v-model="mapTutorialTab">
     <el-tab-pane label="Group By Category" name="first">
       <el-row :gutter="20">
         <el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12">
@@ -67,7 +71,7 @@
 export default {
   data () {
     return {
-      mapTab: 'first',
+      mapTutorialTab: 'first',
       mapCategoryDemo: 'https://energy-dashboard.s3-us-west-2.amazonaws.com/images/mapCategoryDemo.mp4',
       mapCategoryStep1:
         'This displays what category each building falls into. Hover over each building to see the name of it.',

@@ -1,3 +1,8 @@
+<!--
+  Filename: FAQ.vue
+  Description: Displayed in the "FAQ" section of the "Get Started" page. It contains a series of
+  short questions and answers.
+-->
 <template>
   <el-collapse v-model="activeNames">
     <el-collapse-item title="Who supports the dashboard?" name="1">

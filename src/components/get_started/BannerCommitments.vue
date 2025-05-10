@@ -1,3 +1,8 @@
+<!--
+  Filename: BannerCommitments.vue
+  Description: Used in conjunction with the GetStartedBanner.vue component to display
+  a list of commitments sequentially.
+-->
 <template>
   <transition name="fade">
     <span class="message" :key="keyValue">{{ capatilize(commitments[i]) }}</span>
@@ -6,7 +11,7 @@
 
 <script>
 export default {
-  name: 'commitment',
+  name: 'BannerCommitments',
   data () {
     return {
       i: 0,

@@ -1,18 +1,22 @@
+<!--
+  Filename: GetStartedBanner.vue
+  Description: Banner component for the "Get Started" page.
+-->
 <template>
   <div>
     <div id="center">
       <h2 class="highlight">COMMITTED TO:</h2>
-      <commitment />
+      <BannerCommitments />
     </div>
   </div>
 </template>
 <script>
-import commitment from '@/components/get_started/commitment.vue'
+import BannerCommitments from '@/components/get_started/BannerCommitments.vue'
 
 export default {
-  name: 'getStartedBanner',
+  name: 'GetStartedBanner',
   components: {
-    commitment
+    BannerCommitments
   },
   data () {
     return {

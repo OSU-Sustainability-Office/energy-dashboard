@@ -1,3 +1,7 @@
+<!--
+  Filename: Map.vue
+  Description: Renders the map view of the application.
+-->
 <template>
   <el-row class="stage">
     <el-col :span="24">

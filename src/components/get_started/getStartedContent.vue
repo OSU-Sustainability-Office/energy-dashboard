@@ -1,50 +1,47 @@
+<!--
+  Filename: GetStartedContent.vue
+  Description: The main content of the "Get Started" page. Serves as a layout for the
+  Map and Building tabs, and includes a description of the Energy Dashboard.
+-->
 <template>
-  <el-container>
-    <el-main>
-      <el-row class="banner-row">
-        <getStartedBanner />
-      </el-row>
-      <el-row class="main-description-row">
-        <mainDescription />
-      </el-row>
-      <el-row class="faq-header-row">
-        <h1 class="faq-header">Frequently Asked Questions (FAQ's):</h1>
-      </el-row>
-      <el-row class="faq-content-row">
-        <faq />
-      </el-row>
-    </el-main>
-  </el-container>
+  <div>
+    <el-divider class="divider" content-position="left"> Why We Created The Energy Dashboard </el-divider>
+    <el-row>
+      The Energy Dashboard has been developed by the Oregon State University Sustainability Office to enable members of
+      the OSU community to access, view, and analyze energy consumption trends.
+    </el-row>
+    <el-divider class="divider" content-position="left"> How To Use The "Map" Tab </el-divider>
+    <TutorialMapTab />
+    <el-divider class="divider" content-position="left"> How To Use The "Buildings" Tab </el-divider>
+    <TutorialBuildingTab />
+  </div>
 </template>
 
 <script>
-import getStartedBanner from '@/components/get_started/getStartedBanner.vue'
-import faq from '@/components/get_started/faq.vue'
-import mainDescription from '@/components/get_started/mainDescription.vue'
+import TutorialMapTab from '@/components/get_started/TutorialMapTab.vue'
+import TutorialBuildingTab from '@/components/get_started/TutorialBuildingTab.vue'
 
 export default {
-  name: 'getStartedContent',
   components: {
-    getStartedBanner,
-    faq,
-    mainDescription
+    TutorialMapTab,
+    TutorialBuildingTab
+  },
+  data () {
+    return {
+      pic1: '/images/solar.jpg'
+    }
   }
 }
 </script>
 
 <style>
-.el-row {
-  margin-bottom: 0px;
+.divider {
+  background-color: #d73f09;
+  margin-top: 40px;
+  margin-bottom: 40px;
 }
-.banner-row,
-.main-description-row,
-.faq-header-row,
-.faq-content-row {
-  display: block;
-}
-.faq-header {
-  text-align: center;
-  font-weight: bold;
-  color: #d73f09;
+.create-image {
+  width: 450px;
+  height: 300px;
 }
 </style>
