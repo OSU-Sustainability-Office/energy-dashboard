@@ -28,7 +28,7 @@
       <TimeRangeSwitcher :blocks="[block]" ref="timeRangeSwitcher" />
       <el-row class="grid">
         <el-col :span="24">
-          <chartController
+          <ChartController
             v-if="block"
             :path="block.path"
             ref="lineChartController"
@@ -64,12 +64,12 @@
   </el-row>
 </template>
 <script>
-import chartController from '@/components/charts/chartController.vue'
+import ChartController from '@/components/charts/ChartController.vue'
 import TimeRangeSwitcher from '@/components/ui/TimeRangeSwitcher.vue'
 
 export default {
   components: {
-    chartController,
+    ChartController,
     TimeRangeSwitcher
   },
   props: [],

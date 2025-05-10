@@ -61,9 +61,9 @@ By default each meter group loads its own "block" which in turn lets us load a t
 - [2.2 Admin](#22-admin)
   - [2.2.1 admin.vue](#221-adminvue)
 - [2.3 Charts](#23-charts)
-  - [2.3.1 barchart.vue](#231-barchartvue)
-  - [2.3.2 chartController.vue](#232-chartcontrollervue)
-  - [2.3.4 linechart.vue](#234-linechartvue)
+  - [2.3.1 Barchart.vue](#231-Barchartvue)
+  - [2.3.2 ChartController.vue](#232-chartcontrollervue)
+  - [2.3.4 Linechart.vue](#234-Linechartvue)
 - [2.4 Dashboard](#24-dashboard)
   - [2.4.1 dashboard_alerts.vue](#241-dashboard_alertsvue)
   - [2.4.2 dashboard_main.vue](#242-dashboard_mainvue)
@@ -132,15 +132,15 @@ This component is not packaged into the application currently. It will soon be r
 
 These components coordinate parsing data into usable forms for Chart.js.
 
-###### 2.3.1 barchart.vue
+###### 2.3.1 Barchart.vue
 
 This component is used to set default settings for bar charts.
 
-###### 2.3.2 chartController.vue
+###### 2.3.2 ChartController.vue
 
 This component is the main work horse of the charting. All charts use this component to parse the data into the correct format and display the correct chart type.
 
-###### 2.3.4 linechart.vue
+###### 2.3.4 Linechart.vue
 
 This component is used to set default settings for line charts.
 

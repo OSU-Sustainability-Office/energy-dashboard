@@ -22,10 +22,10 @@
     <el-row style="overflow: hidden" :span="24">
       <el-col :span="24">
         <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
-        <chartController
+        <ChartController
           :randomColors="1"
           :path="path"
-          ref="chartController"
+          ref="ChartController"
           class="chart"
           :styleC="style"
           :height="550"
@@ -106,10 +106,10 @@
     <el-row style="overflow: hidden" :span="24">
       <el-col :span="24">
         <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
-        <chartController
+        <ChartController
           :randomColors="1"
           :path="path"
-          ref="chartController"
+          ref="ChartController"
           class="chart"
           :styleC="style"
           :height="430"
@@ -120,13 +120,13 @@
 </template>
 
 <script>
-import chartController from '@/components/charts/chartController.vue'
+import ChartController from '@/components/charts/ChartController.vue'
 
 export default {
   name: 'card',
   props: ['path'],
   components: {
-    chartController
+    ChartController
   },
   data () {
     return {

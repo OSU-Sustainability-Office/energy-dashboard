@@ -35,7 +35,7 @@
                 />
               </el-col>
             </el-row>
-            <chartController
+            <ChartController
               :path="blockPath"
               :randomColors="1"
               class="chart"
@@ -71,7 +71,7 @@
 
 <script>
 import HeroPicture from '@/components/ui/HeroPicture.vue'
-import chartController from '@/components/charts/chartController.vue'
+import ChartController from '@/components/charts/ChartController.vue'
 import buildingList from '@/components/campaigns/campaign_building_list.vue'
 import reductionTips from '@/components/campaigns/campaign_reduction_tips.vue'
 import TimeRangeSwitcher from '@/components/ui/TimeRangeSwitcher.vue'
@@ -79,7 +79,7 @@ import TimeRangeSwitcher from '@/components/ui/TimeRangeSwitcher.vue'
 export default {
   components: {
     HeroPicture,
-    chartController,
+    ChartController,
     buildingList,
     reductionTips,
     TimeRangeSwitcher

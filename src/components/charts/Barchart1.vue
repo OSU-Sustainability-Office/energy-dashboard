@@ -1,28 +1,24 @@
 <!--
-  Filename: linechart.vue
-  Info: chartJS line chart preset for energy dashboard.
+  Filename: Barchart.vue
+  Info: chartJS bar chart preset for energy dashboard.
 -->
 
 <template>
-  <LineChart :key="chartKey" :data="chartData" :options="options" />
+  <Bar :key="chartKey" :data="chartData" :options="options" />
 </template>
 
 <script>
-import { Line as LineChart } from 'vue-chartjs'
+import { Bar } from 'vue-chartjs'
 import 'chart.js/auto'
 import 'chartjs-adapter-luxon'
 import { DateTime } from 'luxon'
 
 export default {
-  name: 'linechart',
-  components: { LineChart },
+  name: 'Barchart',
+  components: { Bar },
   props: {
     invertColors: Boolean,
-    yLabel: String,
-    xLabel: String,
     chartData: Object,
-    isMultipleTimePeriods: Boolean,
-    buildXaxisTick: Function,
     buildLabel: Function,
     intervalUnit: String
   },
@@ -47,8 +43,6 @@ export default {
     },
     options: function () {
       return {
-        devicePixelRatio: 2,
-        datasets: this.getDatasetOptions(),
         plugins: this.getPluginOptions(),
         elements: this.getElementOptions(),
         layout: this.getLayoutOptions(),
@@ -61,56 +55,6 @@ export default {
     }
   },
   methods: {
-    formatXaxisTick: function (val) {
-      const dt = DateTime.fromMillis(val)
-      switch (this.intervalUnit) {
-        case 'month':
-          return dt.toFormat('LLL yyyy')
-        case 'day':
-          return dt.toFormat('M/dd')
-        case 'hour':
-          return dt.toFormat('ccc h:mm a')
-        case 'minute':
-          return dt.toFormat('ccc h:mm a')
-        default:
-          return val
-      }
-    },
-    getIntervalUnit: function () {
-      // if the interval unit is minute and time frame is too large it breaks the chart, so use day instead
-      if (this.intervalUnit === 'minute' && this.getChartTimeFrame() > 7) return 'day'
-      else return this.intervalUnit
-    },
-    // returns how many days are in the chart's time frame, e.g. 7 days, 30 days, etc.
-    getChartTimeFrame: function () {
-      // for multiple time periods, compare the earliest and latest start/end times
-      if (this.isMultipleTimePeriods) {
-        const earliestStart = Math.min(...this.chartData.datasets[0].multStart)
-        const latestEnd = Math.max(...this.chartData.datasets[0].multEnd)
-
-        const startDate = DateTime.fromMillis(earliestStart)
-        const endDate = DateTime.fromMillis(latestEnd)
-
-        return Math.floor(endDate.diff(startDate, 'days').days)
-      }
-
-      // for one chart, compare the first and last x date values
-      const start = this.chartData.datasets[0].data[0].x
-      const end = this.chartData.datasets[0].data[this.chartData.datasets[0].data.length - 1].x
-      const dtStart = DateTime.fromJSDate(new Date(start))
-      const dtEnd = DateTime.fromJSDate(new Date(end))
-
-      const days = dtEnd.diff(dtStart, 'days').days
-
-      return days
-    },
-    getDatasetOptions: function () {
-      return {
-        line: {
-          tension: 0.4
-        }
-      }
-    },
     getPluginOptions: function () {
       return {
         title: {
@@ -122,11 +66,9 @@ export default {
         },
         legend: {
           labels: {
+            fontSize: 12,
             color: this.primaryColor,
-            font: {
-              size: 12,
-              family: 'Open Sans'
-            }
+            fontFamily: 'Open Sans'
           },
           onHover: e => {
             e.native.target.style.cursor = 'pointer'
@@ -142,7 +84,6 @@ export default {
           bodyFont: { size: 12, family: 'Open Sans' },
           callbacks: {
             title: function (tooltipItems) {
-              // use originalXlabel if it exists, otherwise use the default xLabel
               const originalXlabel = tooltipItems[0].parsed.x
               const d = new Date(originalXlabel || tooltipItems[0].label)
               const dt = DateTime.fromJSDate(d)
@@ -183,12 +124,8 @@ export default {
     },
     getHoverOptions: function () {
       return {
-        onHover (event, chartElement) {
-          if (chartElement.length) {
-            event.native.target.style.cursor = 'pointer'
-          } else {
-            event.native.target.style.cursor = 'default'
-          }
+        onHover: function (e) {
+          e.target.style.cursor = 'default'
         }
       }
     },
@@ -197,23 +134,15 @@ export default {
         y: {
           beginAtZero: false,
           ticks: {
+            color: this.primaryColor,
             font: {
               size: 12,
               family: 'Open Sans'
-            },
-            color: this.primaryColor,
-            autoSkip: true,
-            maxTicksLimit: 10,
-            callback: (val, index) => {
-              return val.toString()
             }
           },
           grid: {
             display: true,
-            color: this.primaryColor
-          },
-          border: {
-            color: this.primaryColor
+            color: this.secondaryColor
           },
           title: {
             display: this.buildLabel('y') !== '',
@@ -229,28 +158,19 @@ export default {
           type: 'time',
           bounds: 'data',
           grid: {
-            display: false
+            display: true,
+            color: this.secondaryColor
           },
           ticks: {
             source: 'data',
+            color: this.primaryColor,
             font: {
               size: 14,
               family: 'Open Sans'
             },
-            color: this.primaryColor,
             autoSkip: true,
-            // the following three settings change the x-ticks if there are multiple time periods,
-            // otherwise the default settings are used
-            autoSkipPadding: this.isMultipleTimePeriods ? 15 : 8,
-            maxRotation: this.isMultipleTimePeriods ? 0 : 50,
-            callback: (val, index) => {
-              if (this.isMultipleTimePeriods) {
-                return this.buildXaxisTick(index)
-              }
-              return this.formatXaxisTick(val)
-            }
+            autoSkipPadding: 4
           },
-
           title: {
             display: this.buildLabel('x') !== '',
             text: this.buildLabel('x'),
@@ -261,7 +181,11 @@ export default {
             }
           },
           time: {
-            unit: this.getIntervalUnit()
+            displayFormats: {
+              day: 'MM/dd',
+              hour: 'ccc h:mm a',
+              minute: 'ccc h:mm a'
+            }
           }
         }
       }

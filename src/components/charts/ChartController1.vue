@@ -1,5 +1,5 @@
 <!--
-  Filename: chartController.vue
+  Filename: ChartController.vue
   Description: Handles the display logic for the meter-data charts on the dashboard (both for the map-interface and building-list).
 -->
 <template>
@@ -8,9 +8,9 @@
     element-loading-background="rgba(0, 0, 0, 0.8)"
     :style="`height: ${height}px; border-radius: 5px; overflow: hidden;`"
   >
-    <linechart
+    <Linechart
       v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'"
-      ref="linechart"
+      ref="Linechart"
       :key="chartRenderKey"
       :chartData="chartData"
       :style="styleC"
@@ -21,9 +21,9 @@
       :buildLabel="buildLabel"
       :intervalUnit="$store.getters[path + '/intervalUnit']"
     />
-    <barchart
+    <Barchart
       v-if="graphType === 2 && chartData"
-      ref="barchart"
+      ref="Barchart"
       :chartData="chartData"
       :style="styleC"
       :height="height"
@@ -77,8 +77,8 @@
   </div>
 </template>
 <script>
-import linechart from '@/components/charts/linechart.vue'
-import barchart from '@/components/charts/barchart.vue'
+import Linechart from '@/components/charts/Linechart.vue'
+import Barchart from '@/components/charts/Barchart.vue'
 
 export default {
   name: 'card',
@@ -90,8 +90,8 @@ export default {
     invertColors: Boolean
   },
   components: {
-    linechart,
-    barchart
+    Linechart,
+    Barchart
   },
   mounted () {
     console.log(this.$route.path)
@@ -192,9 +192,9 @@ export default {
       get () {
         switch (this.graphType) {
           case 1:
-            return this.$refs.linechart
+            return this.$refs.Linechart
           case 2:
-            return this.$refs.barchart
+            return this.$refs.Barchart
           default:
             return null
         }

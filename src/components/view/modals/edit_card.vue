@@ -264,7 +264,7 @@ export default {
       this.form.tempMultEnd = JSON.parse(JSON.stringify(this.$store.getters[chartPath + '/multEnd']))
     },
 
-    // convert Unix time to English (to nearest minute), taken from src\components\charts\linechart.js
+    // convert Unix time to English (to nearest minute), taken from src\components\charts\Linechart.js
     convertTimeStamps: function (d) {
       let meridiem = 'am'
       let hours = d.getHours()

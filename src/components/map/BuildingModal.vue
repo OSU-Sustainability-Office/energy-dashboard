@@ -35,9 +35,9 @@
             ref="carousel"
           >
             <el-carousel-item v-for="block in buildingBlocks" :key="block.id + 2" ref="slidingBox">
-              <chartController
+              <ChartController
                 :path="block.path"
-                ref="chartController"
+                ref="ChartController"
                 class="chart"
                 :styleC="chartStyleObj"
                 :height="250"
@@ -68,14 +68,14 @@
 </template>
 
 <script>
-import chartController from '@/components/charts/chartController.vue'
+import ChartController from '@/components/charts/ChartController.vue'
 import TimeRangeSwitcher from '@/components/ui/TimeRangeSwitcher.vue'
 
 export default {
   name: 'BuildingModal',
   props: {},
   components: {
-    chartController,
+    ChartController,
     TimeRangeSwitcher
   },
   data () {
