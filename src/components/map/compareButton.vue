@@ -1,5 +1,5 @@
 <!--
-  Filename: compareButton.vue
+  Filename: CompareButton.vue
   Description: The "Compare Buildings" button component that is located on the upper left corner of
   the map. It is used to trigger the building comparison process.
 -->
@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: 'compareButton',
+  name: 'CompareButton',
   props: {},
   components: {}
 }

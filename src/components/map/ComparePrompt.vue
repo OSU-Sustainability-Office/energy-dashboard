@@ -1,11 +1,8 @@
 <!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-01-03T12:39:57-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-01-27T15:39:07-08:00
+  Filename: ComparePrompt.vue
+  Description: Prompt component that appears when the "Compare Buildings" button is clicked on the map. It shows
+  instructions for selecting buildings and buttons for comparing buildings or canceling the action.
 -->
-
 <template>
   <el-row class="stage_prompt">
     <el-col :span="24">

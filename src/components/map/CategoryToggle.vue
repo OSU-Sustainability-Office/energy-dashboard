@@ -1,5 +1,5 @@
 <!--
-  Filename: switch_buttons.vue
+  Filename: CategoryToggle.vue
   Description: Component for button input on the side-view bar (the category/energy trend)
 -->
 <template>

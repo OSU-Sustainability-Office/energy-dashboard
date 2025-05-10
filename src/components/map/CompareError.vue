@@ -1,3 +1,8 @@
+<!--
+  Filename: CompareError.vue
+  Description: This component is a prompt that appears when there is an error in the building comparison process.
+  It informs the user that they have either not selected any buildings for comparison or have included a non-electric building.
+-->
 <template>
   <el-row class="stage_prompt">
     <el-col :span="24">

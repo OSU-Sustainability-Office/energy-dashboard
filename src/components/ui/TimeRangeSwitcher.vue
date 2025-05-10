@@ -1,5 +1,5 @@
 <!--
-  Filename: time_switch_buttons_big.vue
+  Filename: TimeRangeSwitcher.vue
   Description: UI component that allows users to switch between time ranges (e.g., past day, week, or year)
   for the data displayed in a chart.
 -->

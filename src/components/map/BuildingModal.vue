@@ -1,7 +1,7 @@
 <!--
-  Filename: sideView.vue
-  Description: Despite the name this references the pop-up building modal window on the map
-               NOT the actually right-hand side view (that's handled directly in the map.vue component)
+  Filename: BuildingModal.vue
+  Description: Modal component that appears when a building is clicked on the map. It shows
+  the building's image, chart, and buttons for comparing buildings or viewing full graphs.
 -->
 <template>
   <el-row class="stage">
@@ -20,7 +20,7 @@
       <el-main class="graphcontrol">
         <el-col :span="24">
           <el-col :span="24" class="buttonContainer">
-            <switchButtons :blocks="buildingBlocks" ref="switchbutton" />
+            <TimeRangeSwitcher :blocks="buildingBlocks" ref="timeRangeSwitcher" />
           </el-col>
           <el-row class="graphslide">
             <i class="left fas fa-angle-left" @click="prev()" ref="prevArrow"></i>
@@ -69,14 +69,14 @@
 
 <script>
 import chartController from '@/components/charts/chartController.vue'
-import switchButtons from '@/components/map/time_switch_buttons_big.vue'
+import TimeRangeSwitcher from '@/components/ui/TimeRangeSwitcher.vue'
 
 export default {
-  name: 'sideView',
+  name: 'BuildingModal',
   props: {},
   components: {
     chartController,
-    switchButtons
+    TimeRangeSwitcher
   },
   data () {
     return {
@@ -97,7 +97,7 @@ export default {
   computed: {
     currentRange: {
       get () {
-        return this.$refs.switchbutton.currentRange
+        return this.$refs.timeRangeSwitcher.currentRange
       }
     },
 

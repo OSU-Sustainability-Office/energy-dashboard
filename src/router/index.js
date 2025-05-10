@@ -5,7 +5,7 @@
 
 import { createRouter, createWebHashHistory } from 'vue-router'
 import view from '@/components/view/view.vue'
-import map from '@/components/map/map.vue'
+import Map from '@/components/map/Map.vue'
 import campaigns from '@/components/campaigns/campaign_list.vue'
 import getStarted from '@/components/get_started/getStartedContent.vue'
 import notfound from '@/components/extras/404.vue'
@@ -29,7 +29,7 @@ const routes = [
   },
   {
     path: '/map',
-    component: map
+    component: Map
   },
   {
     path: '/campaign/:id',

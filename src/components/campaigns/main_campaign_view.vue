@@ -26,7 +26,7 @@
             </el-row>
             <el-row class="timeframe-labels">
               <el-col :span="30" class="timeSwitchButtons">
-                <switchButtons
+                <TimeRangeSwitcher
                   :blocks="blocks"
                   :campaign="true"
                   :days="days"
@@ -74,7 +74,7 @@ import heropicture from '@/components/extras/heropicture.vue'
 import chartController from '@/components/charts/chartController.vue'
 import buildingList from '@/components/campaigns/campaign_building_list.vue'
 import reductionTips from '@/components/campaigns/campaign_reduction_tips.vue'
-import switchButtons from '@/components/map/time_switch_buttons_big.vue'
+import TimeRangeSwitcher from '@/components/ui/TimeRangeSwitcher.vue'
 
 export default {
   components: {
@@ -82,7 +82,7 @@ export default {
     chartController,
     buildingList,
     reductionTips,
-    switchButtons
+    TimeRangeSwitcher
   },
   data () {
     return {

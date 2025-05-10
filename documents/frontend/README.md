@@ -67,7 +67,7 @@ By default each meter group loads its own "block" which in turn lets us load a t
 - [2.4 Dashboard](#24-dashboard)
   - [2.4.1 dashboard_alerts.vue](#241-dashboard_alertsvue)
   - [2.4.2 dashboard_main.vue](#242-dashboard_mainvue)
-  - [2.4.3 dashboard_sideview.vue](#243-dashboard_sideviewvue)
+  - [2.4.3 dashboard_BuildingModal.vue](#243-dashboard_BuildingModalvue)
 - [2.5 Directory](#25-directory)
   - [2.5.1 directoyMain.vue](#251-directorymainvue)
   - [2.5.2 directoryPrivate.vue](#252-directoryprivatevue)
@@ -80,10 +80,10 @@ By default each meter group loads its own "block" which in turn lets us load a t
   - [2.6.3 homeSide.vue](#263-homesidevue)
   - [2.6.4 index.vue](#264-indexvue)
 - [2.7 Map](#27-map)
-  - [2.7.1 map_compareside.vue](#271-map_comarseidevue)
-  - [2.7.2 map_prompt.vue](#272-map_promptvue)
+  - [2.7.1 BuildingCompare.vue](#271-BuildingComparevue)
+  - [2.7.2 ComparePrompt.vue](#272-ComparePromptvue)
   - [2.7.3 map.vue](#273-mapvue)
-  - [2.7.4 sideView.vue](#274-sideviewvue)
+  - [2.7.4 BuildingModal.vue](#274-BuildingModalvue)
 - [2.8 Other](#28-other)
   - [2.8.1 navBar.vue](#281-navbarvue)
   - [2.8.2 App.vue](#282-appvue)
@@ -156,7 +156,7 @@ This component is used to display and handle the logic for user alerts.
 
 This component is used to unify all personal dashboard components.
 
-###### 2.4.3 dashboard_sideview.vue
+###### 2.4.3 dashboard_BuildingModal.vue
 
 This component is used to handle logic and UI for switching between user panes (currently only alerts and views)
 
@@ -208,11 +208,11 @@ This is the main component of the landing page. It encompasses all other compone
 
 These components are used for the main map page and contain all logic for the small side popups.
 
-###### 2.7.1 map_compareside.vue
+###### 2.7.1 BuildingCompare.vue
 
 This component is used for the small quick pop up that offers infomation when comparing buildings in the map view
 
-###### 2.7.2 map_prompt.vue
+###### 2.7.2 ComparePrompt.vue
 
 This component handles UI with the prompt telling you to select building to compare.
 
@@ -220,7 +220,7 @@ This component handles UI with the prompt telling you to select building to comp
 
 This component is used to display the map and polygons of buildings on the map.
 
-###### 2.7.5 sideView.vue
+###### 2.7.5 BuildingModal.vue
 
 This component is the key of the map.
 

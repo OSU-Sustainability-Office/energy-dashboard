@@ -30,7 +30,7 @@
             <el-icon v-if="search !== ''" @click="search = ''" class="closeIcon"><CloseIcon /></el-icon>
           </template>
         </el-input>
-        <switchButtons :titles="['Category', 'Energy Trend']" v-model="grouping" />
+        <CategoryToggle :titles="['Category', 'Energy Trend']" v-model="grouping" />
         <el-menu-item-group v-if="grouping === 'Category'">
           <el-tooltip content="Click to toggle visibility" placement="right">
             <el-menu-item index="Academics" :class="[isDisplayed('Academics') ? 'active' : 'notactive']"
@@ -84,7 +84,7 @@
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
           <compareButton @startCompare="startCompare"></compareButton>
           <div @click="resetSearchInput()">
-            <leftBuildingMenu class="hideMenuButton" />
+            <BuildingMenuButton class="hideMenuButton" />
           </div>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
@@ -96,36 +96,36 @@
           ></l-geo-json>
         </l-map>
       </div>
-      <prompt
+      <ComparePrompt
         :compareStories="compareStories"
         v-if="askingForComparison"
         @cancel="stopCompare"
         @compare="showComparison"
       />
-      <prompt_error v-if="building_compare_error" @cancel="stopCompareError" @compare="showComparison" />
+      <CompareError v-if="building_compare_error" @cancel="stopCompareError" @compare="showComparison" />
       <transition-group name="side" tag="div">
-        <compareSide
-          v-if="showCompareSide"
-          key="compareSide"
-          @hide="showCompareSide = false"
+        <BuildingCompare
+          v-if="showbuildingCompare"
+          key="buildingCompare"
+          @hide="showbuildingCompare = false"
           :compareStories="compareStories"
         />
-        <sideView ref="sideview" v-if="showSide" key="sideView" @hide="showSide = false" @startCompare="startCompare" />
+        <BuildingModal ref="buildingModal" v-if="showSide" key="buildingModal" @hide="showSide = false" @startCompare="startCompare" />
       </transition-group>
     </el-col>
   </el-row>
 </template>
 <script>
+import BuildingModal from '@/components/map/BuildingModal.vue'
+import CompareButton from '@/components/map/CompareButton.vue'
+import ComparePrompt from '@/components/map/ComparePrompt.vue'
+import CompareError from '@/components/map/CompareError.vue'
+import BuildingCompare from '@/components/map/BuildingCompare.vue'
+import CategoryToggle from '@/components/map/CategoryToggle.vue'
+import BuildingMenuButton from '@/components/map/BuildingMenuButton.vue'
 import { LMap, LTileLayer, LGeoJson } from '@vue-leaflet/vue-leaflet'
-import sideView from '@/components/map/sideView.vue'
-import compareButton from '@/components/map/compareButton.vue'
-import prompt from '@/components/map/map_prompt.vue'
-import prompt_error from '@/components/map/prompt_error.vue'
-import compareSide from '@/components/map/map_compareside.vue'
 import L from 'leaflet'
-import switchButtons from '@/components/map/switch_buttons.vue'
 import emitter from '../../event-bus'
-import leftBuildingMenu from '@/components/leftBuildingMenu.vue'
 import { Search as SearchIcon, Close as CloseIcon } from '@element-plus/icons-vue'
 
 const DEFAULT_LAT = 44.56335
@@ -142,14 +142,14 @@ export default {
   components: {
     LMap,
     LTileLayer,
-    sideView,
+    BuildingModal,
     LGeoJson,
-    prompt,
-    prompt_error,
-    compareSide,
-    switchButtons,
-    leftBuildingMenu,
-    compareButton,
+    ComparePrompt,
+    CompareError,
+    BuildingCompare,
+    CategoryToggle,
+    BuildingMenuButton,
+    CompareButton,
     SearchIcon,
     CloseIcon
   },
@@ -166,9 +166,9 @@ export default {
         this.$store.dispatch('modalController/closeModal')
       }
     },
-    showCompareSide: {
+    showbuildingCompare: {
       get () {
-        return this.$store.getters['modalController/modalName'] === 'map_compare_side'
+        return this.$store.getters['modalController/modalName'] === 'BuildingCompare'
       },
 
       set (value) {
@@ -368,7 +368,7 @@ export default {
 
           if (target === 'q') {
             this.$store.dispatch('modalController/openModal', {
-              name: 'map_compare_side',
+              name: 'BuildingCompare',
               path: path
             })
           } else if (target !== 'q' && this.compareStories.length > 1) {

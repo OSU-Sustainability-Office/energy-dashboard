@@ -1,13 +1,11 @@
 <!--
-@Author: Brogan Miner <Brogan>
-@Date:   2019-01-03T12:39:57-08:00
-@Email:  brogan.miner@oregonstate.edu
-@Last modified by:   Brogan
-@Last modified time: 2019-01-31T13:32:37-08:00
+  Filename: BuildingCompare.vue
+  Description: Modal component that appears when two or more buildings are compared. It shows
+  the buildings' images, charts, and buttons for viewing full graphs or closing the modal. The
+  header of the modal shows the names of the buildings being compared.
 -->
-
 <template>
-  <el-row class="stage_compareside">
+  <el-row class="stage">
     <el-col :span="24" class="innerContent">
       <el-row class="title">
         <el-col :span="22">
@@ -27,7 +25,7 @@
           ></div>
         </el-col>
       </el-row>
-      <switchButtons :blocks="[block]" ref="switcher" />
+      <TimeRangeSwitcher :blocks="[block]" ref="timeRangeSwitcher" />
       <el-row class="grid">
         <el-col :span="24">
           <chartController
@@ -54,7 +52,7 @@
             @click="
               $router.push({
                 path: `/compare/${encodeURI(JSON.stringify(buildings.map(o => o.id)))}/${
-                  $refs.switcher.currentRange + 1
+                  $refs.timeRangeSwitcher.currentRange + 1
                 }`
               })
             "
@@ -67,12 +65,12 @@
 </template>
 <script>
 import chartController from '@/components/charts/chartController.vue'
-import switchButtons from '@/components/map/time_switch_buttons_big.vue'
+import TimeRangeSwitcher from '@/components/ui/TimeRangeSwitcher.vue'
 
 export default {
   components: {
     chartController,
-    switchButtons
+    TimeRangeSwitcher
   },
   props: [],
   data () {
@@ -132,12 +130,6 @@ export default {
       }
     }
   },
-  created () {
-    // if (this.block) {
-    //   console.log('creates')
-    //   console.log(this.block)
-    // }
-  },
   methods: {
     dateOffset: function () {
       var d = new Date()
@@ -184,7 +176,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.stage_compareside {
+.stage {
   position: absolute;
   top: 0;
   left: 29.5%;

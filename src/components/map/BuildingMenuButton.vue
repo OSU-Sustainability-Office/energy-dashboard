@@ -1,5 +1,5 @@
 <!--
-  Filename: leftBuildingMenu.vue
+  Filename: BuildingMenuButton.vue
   Info: Building menu button to show/hide the building menu on the left side of the screen.
 -->
 <template>
@@ -9,10 +9,10 @@
 </template>
 
 <script>
-import emitter from '../event-bus'
+import emitter from '../../event-bus'
 
 export default {
-  name: 'leftBuildingMenu',
+  name: 'BuildingMenuButton',
   data () {
     return {
       flag: true,
