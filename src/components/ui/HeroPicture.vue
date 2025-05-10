@@ -1,8 +1,7 @@
 <!--
-  Filename: heropicture.vue
-  Info: Used to display the hero image for campaign and building pages.
+  Filename: HeroPicture.vue
+  Description: Used to display the hero image for campaign and building pages.
 -->
-
 <template>
   <el-row class="stage">
     <el-col :span="24" class="main">
@@ -49,7 +48,7 @@
 </template>
 <script>
 export default {
-  name: 'heropicture',
+  name: 'HeroPicture',
   props: ['media', 'name', 'description'],
   data () {
     return {

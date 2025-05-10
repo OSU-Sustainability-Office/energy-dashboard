@@ -8,7 +8,7 @@
       <!-- Large logo at the top of the page -->
       <el-row class="herorow">
         <el-col :span="24">
-          <heropicture :media="media" :description="description" :name="name" />
+          <HeroPicture :media="media" :description="description" :name="name" />
         </el-col>
       </el-row>
 
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import heropicture from '@/components/extras/heropicture.vue'
+import HeroPicture from '@/components/ui/HeroPicture.vue'
 import chartController from '@/components/charts/chartController.vue'
 import buildingList from '@/components/campaigns/campaign_building_list.vue'
 import reductionTips from '@/components/campaigns/campaign_reduction_tips.vue'
@@ -78,7 +78,7 @@ import TimeRangeSwitcher from '@/components/ui/TimeRangeSwitcher.vue'
 
 export default {
   components: {
-    heropicture,
+    HeroPicture,
     chartController,
     buildingList,
     reductionTips,

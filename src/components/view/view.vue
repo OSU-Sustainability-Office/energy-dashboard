@@ -8,7 +8,7 @@
 <template>
   <el-row class="stage">
     <el-col class="main">
-      <heropicture
+      <HeroPicture
         v-loading="!view"
         :media="view && view.image ? view.image : ''"
         :description="view && view.description ? view.description : ''"
@@ -27,14 +27,14 @@
 
 <script>
 import card from '@/components/view/card.vue'
-import heropicture from '@/components/extras/heropicture.vue'
+import HeroPicture from '@/components/ui/HeroPicture.vue'
 import editCard from '@/components/view/modals/edit_card.vue'
 import navdir from '@/components/view/navdir.vue'
 
 export default {
   components: {
     card,
-    heropicture,
+    HeroPicture,
     navdir,
     editCard
   },

@@ -1,3 +1,7 @@
+<!--
+  Filename: 404.vue
+  Description: The 404 page that is displayed when a user tries to access a page that does not exist.
+-->
 <template>
   <el-row>
     <el-col :span="24" class="cont">
@@ -9,12 +13,7 @@
 </template>
 <script>
 export default {
-  name: '404',
-  props: [],
-  data () {},
-  watch: {},
-  mounted () {},
-  methods: {}
+  name: 'NotFound'
 }
 </script>
 <style lang="scss" scoped>

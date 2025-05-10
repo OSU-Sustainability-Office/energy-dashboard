@@ -8,8 +8,8 @@ import view from '@/components/view/view.vue'
 import Map from '@/components/map/Map.vue'
 import campaigns from '@/components/campaigns/campaign_list.vue'
 import GetStarted from '@/components/get_started/GetStarted.vue'
-import notfound from '@/components/extras/404.vue'
-import contact from '@/components/extras/contact.vue'
+import NotFound from '@/components/ui/NotFound.vue'
+import Contact from '@/components/ui/Contact.vue'
 import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
 import buildingList from '@/components/building_list/building_list.vue'
 
@@ -53,11 +53,11 @@ const routes = [
   },
   {
     path: '/contact',
-    component: contact
+    component: Contact
   },
   {
     path: '/:pathMatch(.*)*',
-    component: notfound
+    component: NotFound
   }
 ]
 

@@ -1,3 +1,7 @@
+<!--
+  Filename: Contact.vue
+  Description: The contact page for the sustainability office.
+-->
 <template>
   <el-row>
     <el-col :span="24" class="cont">

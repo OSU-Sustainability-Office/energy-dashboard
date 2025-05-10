@@ -55,7 +55,7 @@ By default each meter group loads its own "block" which in turn lets us load a t
   - [2.1.2 card.vue](#212-cardvue)
   - [2.1.3 featureController.vue](#213-featurecontrollervue)
   - [2.1.4 featured.vue](#214-featuredvue)
-  - [2.1.5 heropicture.vue](#215-heropicturevue)
+  - [2.1.5 HeroPicture.vue](#215-HeroPicturevue)
   - [2.1.7 navdir.vue](#217-navdirvue)
   - [2.1.8 storyCard.vue](#218-storycardvue)
 - [2.2 Admin](#22-admin)
@@ -108,7 +108,7 @@ This component is part of the modal that popups when editing a graph. It contain
 
 This is the modal that is displayed when editing a chart. It gives adjustable parameters like setting data and interval. It also contains the featureController.
 
-###### 2.1.5 heropicture.vue
+###### 2.1.5 HeroPicture.vue
 
 This component displays the large banner picture at the top of the account view.
 
