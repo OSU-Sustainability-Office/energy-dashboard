@@ -80,7 +80,7 @@ By default each meter group loads its own "block" which in turn lets us load a t
   - [2.6.3 homeSide.vue](#263-homesidevue)
   - [2.6.4 index.vue](#264-indexvue)
 - [2.7 Map](#27-map)
-  - [2.7.1 BuildingCompare.vue](#271-BuildingComparevue)
+  - [2.7.1 BuildingCompareModal.vue](#271-BuildingComparevue)
   - [2.7.2 ComparePrompt.vue](#272-ComparePromptvue)
   - [2.7.3 map.vue](#273-mapvue)
   - [2.7.4 BuildingModal.vue](#274-BuildingModalvue)
@@ -208,7 +208,7 @@ This is the main component of the landing page. It encompasses all other compone
 
 These components are used for the main map page and contain all logic for the small side popups.
 
-###### 2.7.1 BuildingCompare.vue
+###### 2.7.1 BuildingCompareModal.vue
 
 This component is used for the small quick pop up that offers infomation when comparing buildings in the map view
 

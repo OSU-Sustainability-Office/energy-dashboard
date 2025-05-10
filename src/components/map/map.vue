@@ -108,7 +108,7 @@
       />
       <CompareError v-if="building_compare_error" @cancel="stopCompareError" @compare="showComparison" />
       <transition-group name="side" tag="div">
-        <BuildingCompare
+        <BuildingCompareModal
           v-if="showbuildingCompare"
           key="buildingCompare"
           @hide="showbuildingCompare = false"
@@ -124,7 +124,7 @@ import BuildingModal from '@/components/map/BuildingModal.vue'
 import CompareButton from '@/components/map/CompareButton.vue'
 import ComparePrompt from '@/components/map/ComparePrompt.vue'
 import CompareError from '@/components/map/CompareError.vue'
-import BuildingCompare from '@/components/map/BuildingCompare.vue'
+import BuildingCompareModal from '@/components/map/BuildingCompareModal.vue'
 import CategoryToggle from '@/components/map/CategoryToggle.vue'
 import BuildingMenuButton from '@/components/map/BuildingMenuButton.vue'
 import { LMap, LTileLayer, LGeoJson } from '@vue-leaflet/vue-leaflet'
@@ -150,7 +150,7 @@ export default {
     LGeoJson,
     ComparePrompt,
     CompareError,
-    BuildingCompare,
+    BuildingCompareModal,
     CategoryToggle,
     BuildingMenuButton,
     CompareButton,
@@ -172,7 +172,7 @@ export default {
     },
     showbuildingCompare: {
       get () {
-        return this.$store.getters['modalController/modalName'] === 'BuildingCompare'
+        return this.$store.getters['modalController/modalName'] === 'BuildingCompareModal'
       },
 
       set (value) {
@@ -372,7 +372,7 @@ export default {
 
           if (target === 'q') {
             this.$store.dispatch('modalController/openModal', {
-              name: 'BuildingCompare',
+              name: 'BuildingCompareModal',
               path: path
             })
           } else if (target !== 'q' && this.compareStories.length > 1) {

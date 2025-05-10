@@ -1,11 +1,11 @@
 <!--
-  Filename: BuildingCompare.vue
+  Filename: BuildingCompareModal.vue
   Description: Modal component that appears when two or more buildings are compared. It shows
   the buildings' images, charts, and buttons for viewing full graphs or closing the modal. The
   header of the modal shows the names of the buildings being compared.
 -->
 <template>
-  <el-row class="stage">
+  <el-row class="stageBuildingCompareModal">
     <el-col :span="24" class="innerContent">
       <el-row class="title">
         <el-col :span="22">
@@ -176,7 +176,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.stage {
+.stageBuildingCompareModal {
   position: absolute;
   top: 0;
   left: 29.5%;
