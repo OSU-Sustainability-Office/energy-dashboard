@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import NavigationBar from '@/components/NavigationBar.vue'
+import NavigationBar from '@/components/ui/NavigationBar.vue'
 import { h } from 'vue'
 import { ElMessageBox } from 'element-plus'
 
