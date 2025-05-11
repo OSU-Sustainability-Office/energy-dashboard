@@ -39,6 +39,12 @@ class MeterGroup {
     return this
   }
 
+  set(meters, name, default2) {
+    this.meters = meters
+    this.name = name
+    this.default = default2
+  }
+
   get data() {
     let meters = this.meters
     if (meters.length > 0 && meters[0] instanceof Promise) {
