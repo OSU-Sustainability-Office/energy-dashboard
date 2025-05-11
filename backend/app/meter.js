@@ -6,7 +6,6 @@
 const DB = require('/opt/nodejs/sql-access.js')
 const Meter = require('/opt/nodejs/models/meter.js')
 const Response = require('/opt/nodejs/response.js')
-const User = require('/opt/nodejs/user.js')
 const MultipartParse = require('/opt/nodejs/node_modules/aws-lambda-multipart-parser')
 const ZLib = require('zlib')
 const Compress = require('/opt/nodejs/models/compress.js')
@@ -14,16 +13,6 @@ const Compress = require('/opt/nodejs/models/compress.js')
 exports.get = async (event, context) => {
   let response = new Response(event)
   response.body = JSON.stringify((await new Meter(event.queryStringParameters['id']).get()).data)
-  return response
-}
-
-exports.all = async (event, context) => {
-  let response = new Response(event)
-  let user = new User(event, response)
-  await user.resolved
-
-  response.body = JSON.stringify(await Meter.all(user))
-
   return response
 }
 
@@ -212,30 +201,6 @@ exports.post = async (event, context) => {
     }
   } else {
     response.body = '<pre>\nFAILURE\n</pre>'
-  }
-  return response
-}
-
-exports.put = async (event, context) => {
-  let response = new Response(event)
-  let user = new User(event, response)
-  try {
-    await Meter(event.body.id).update(event.body.name, event.body.classInt, user)
-  } catch (error) {
-    response.body = error.message
-    response.status = 400
-  }
-  return response
-}
-
-exports.delete = async (event, context) => {
-  let response = new Response(event)
-  let user = new User(event, response)
-  try {
-    await Meter(event.body.id).delete(user)
-  } catch (error) {
-    response.body = error.message
-    response.status = 400
   }
   return response
 }

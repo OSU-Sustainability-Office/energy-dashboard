@@ -206,15 +206,6 @@ class Meter {
     }
   }
 
-  async delete(user) {
-    if (user.data.privilege > 3) {
-      await DB.connect()
-      await DB.query('DELETE meters WHERE id = ?', [this.id])
-    } else {
-      throw new Error('Need escalated privileges')
-    }
-  }
-
   async upload(data) {
     await DB.connect()
     console.log(meterClasses)
@@ -387,16 +378,6 @@ class Meter {
     }
   }
 
-  async update(name, classInt, user) {
-    if (user.data.privilege <= 3) {
-      throw new Error('Need escalated privileges')
-    }
-    await DB.connect()
-    await DB.query('UPDATE meters SET name = ?, class = ? WHERE id = ?', [name, classInt, this.id])
-    this.name = name
-    this.classInt = classInt
-  }
-
   static async create(name, address, classInt) {
     await DB.connect()
     let returnRow = await DB.query('INSERT INTO meters (name, address, class) values (?, ?, ?)', [
@@ -409,25 +390,6 @@ class Meter {
     meter.address = address
     meter.class = classInt
     return meter
-  }
-
-  static async all(user) {
-    if (user.privilege > 3) {
-      await DB.connect()
-      let meters = await DB.query('SELECT * FROM meters')
-      let r = []
-      for (let meterQ of meters) {
-        let meter = new Meter(meterQ.id)
-        meter.id = meterQ['id']
-        meter.name = meterQ['name']
-        meter.address = meterQ['address']
-        meter.classInt = meterQ['class']
-        meter.pacificPowerID = meterQ['pacific_power_id']
-        meter.calcProps()
-        r.push(meter.data)
-      }
-      return r
-    }
   }
 }
 
