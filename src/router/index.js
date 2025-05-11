@@ -4,7 +4,7 @@
 */
 
 import { createRouter, createWebHashHistory } from 'vue-router'
-import view from '@/components/view/view.vue'
+import BuildingView from '@/components/view/BuildingView.vue'
 import Map from '@/components/map/Map.vue'
 import CampaignList from '@/components/campaigns/CampaignList.vue'
 import GetStarted from '@/components/get_started/GetStarted.vue'
@@ -21,11 +21,11 @@ const routes = [
   {
     path: '/building/:id/:range',
     name: 'building',
-    component: view
+    component: BuildingView
   },
   {
     path: '/compare/:buildings/:range',
-    component: view
+    component: BuildingView
   },
   {
     path: '/map',

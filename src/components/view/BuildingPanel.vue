@@ -1,11 +1,11 @@
 <!--
-  Filename: card.vue
+  Filename: BuildingPanel.vue
   Info: Displays a single chart for a dataset from the "buildings" directory.
 -->
 <template>
   <div
-    class="card-iframe"
-    ref="card"
+    class="buildingPanel-tesla-iframe"
+    ref="buildingPanel"
     v-if="
       this.path === 'map/building_35/block_175' ||
       this.path === 'map/building_36/block_176' ||
@@ -73,7 +73,7 @@
       >
     </p>
   </div>
-  <div class="card" ref="card" v-else>
+  <div class="buildingPanel" ref="buildingPanel" v-else>
     <el-row :span="24" class="title" ref="title">
       <el-col :span="20">{{ name }}</el-col>
       <el-col :span="4" class="right"
@@ -123,7 +123,7 @@
 import ChartController from '@/components/charts/ChartController.vue'
 
 export default {
-  name: 'card',
+  name: 'BuildingPanel',
   props: ['path'],
   components: {
     ChartController
@@ -245,7 +245,7 @@ export default {
 <style scoped lang="scss">
 $chart-height: 430px;
 
-.card {
+.buildingPanel {
   background-color: $color-white;
   padding: 2em;
   padding-bottom: 5em;
@@ -257,7 +257,7 @@ $chart-height: 430px;
   box-shadow: 0px 0px 3px $color-black;
 }
 
-.card-iframe {
+.buildingPanel-tesla-iframe {
   background-color: $color-white;
   padding: 2em;
   padding-bottom: 5em;

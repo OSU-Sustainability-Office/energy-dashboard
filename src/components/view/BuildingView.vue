@@ -1,42 +1,39 @@
 <!--
-  Filename: view.vue
-  Info: Manages the view of the app, including loading of data, the display of edit
-  modals (cards), and the navigation between different views such as individual buildings
-  and comparison views.
+  Filename: BuildingView.vue
+  Description: Manages the display of the building and compare views.
 -->
-
 <template>
   <el-row class="stage">
     <el-col class="main">
       <HeroPicture
-        v-loading="!view"
-        :media="view && view.image ? view.image : ''"
-        :description="view && view.description ? view.description : ''"
-        :name="view && view.name ? view.name : ''"
+        v-loading="!buildingOrCompare"
+        :media="buildingOrCompare && buildingOrCompare.image ? buildingOrCompare.image : ''"
+        :description="buildingOrCompare && buildingOrCompare.description ? buildingOrCompare.description : ''"
+        :name="buildingOrCompare && buildingOrCompare.name ? buildingOrCompare.name : ''"
       />
       <navdir ref="navdir" v-if="navVis"></navdir>
       <el-row>
         <el-col :span="24" class="card_area">
-          <card v-for="(card, index) in cards" :key="index + '-' + view.id" :path="card.path" />
+          <BuildingPanel v-for="(card, index) in cards" :key="index + '-' + buildingOrCompare.id" :path="card.path" />
         </el-col>
       </el-row>
     </el-col>
-    <editCard />
+    <BuildingCardEditModal />
   </el-row>
 </template>
 
 <script>
-import card from '@/components/view/card.vue'
+import BuildingPanel from '@/components/view/BuildingPanel.vue'
 import HeroPicture from '@/components/ui/HeroPicture.vue'
-import editCard from '@/components/view/modals/edit_card.vue'
+import BuildingCardEditModal from '@/components/view/modals/edit_card.vue'
 import navdir from '@/components/view/navdir.vue'
 
 export default {
   components: {
-    card,
+    BuildingPanel,
     HeroPicture,
     navdir,
-    editCard
+    BuildingCardEditModal
   },
   data () {
     return {
@@ -51,7 +48,7 @@ export default {
     addFeature: function () {
       this.$store.dispatch('modalController/openModal', {
         name: 'edit_card',
-        view: this.view.path
+        view: this.buildingOrCompare.path
       })
     }
   },
@@ -101,13 +98,6 @@ export default {
               if (this.cards.length > 0 && this.cards[i]) {
                 await this.$store.dispatch(this.cards[i].path + '/removeAllModifiers')
                 await this.$store.dispatch(this.cards[i].path + '/addModifier', 'building_compare')
-
-                // Example this.cards[i].path: map/building_29/block_79
-                // Example call order: view.vue's compareBuildings() > map.module.js's building() getter >
-                // building.module.js's block () getter > block.module.js's updateModifier >
-                // building_compare.mod.js's updateData() > building_compare.mod.js's addCharts() >
-                // block.module.js's loadCharts()
-
                 await this.$store.dispatch(this.cards[i].path + '/updateModifier', {
                   name: 'building_compare',
                   data: {
@@ -120,10 +110,10 @@ export default {
         }
       }
     },
-    view: {
+    buildingOrCompare: {
       immediate: true,
       handler: async function (value) {
-        if (this.$route.path.includes('building')) {
+        if (this.$route.path.includes('building')) { // building view
           for (let card of this.cards) {
             if (!card.path) return
             if (card.promise) await card.promise
@@ -138,7 +128,7 @@ export default {
           for (let card of this.cards) {
             await this.$store.dispatch(card.path + '/removeAllModifiers')
           }
-        } else {
+        } else { // compare view
           for (let card of this.cards) {
             if (!card.path) return
             this.$nextTick(() => {
@@ -164,16 +154,25 @@ export default {
     }
   },
   computed: {
-    view: {
+    // Get the building data for comparison
+    compareBuildings: {
       get () {
-        // If the view is a building, get the building data
+        if (!this.$route.path.includes('compare')) return null
+        return JSON.parse(decodeURI(this.$route.params.buildings)).map(id => this.$store.getters['map/building'](id))
+      }
+    },
+
+    // Determine which view (Building or Compare) to show based on the route
+    buildingOrCompare: {
+      get () {
+        // If the route is for a building, get the building data
         if (this.$route.path.includes('building')) {
           return this.$store.getters['map/building'](this.$route.params.id)
         }
 
-        // Otherwise, get the compare view data
+        // Otherwise, get the compare data
         if (!this.cards || this.cards.length === 0) return
-        const view = {
+        const compareView = {
           name: '',
           image: [],
           description: 'Electricity',
@@ -182,23 +181,18 @@ export default {
         for (let index in this.compareBuildings) {
           if (this.compareBuildings[index]) {
             if (index > 0) {
-              view.name += ' vs '
+              compareView.name += ' vs '
             }
-            view.name += this.compareBuildings[index].name
+            compareView.name += this.compareBuildings[index].name
             if (index < 4) {
-              view.image.push(this.compareBuildings[index].image)
+              compareView.image.push(this.compareBuildings[index].image)
             }
           }
         }
-        return view
+        return compareView
       }
     },
-    compareBuildings: {
-      get () {
-        if (!this.$route.path.includes('compare')) return null
-        return JSON.parse(decodeURI(this.$route.params.buildings)).map(id => this.$store.getters['map/building'](id))
-      }
-    },
+
     cards: {
       get () {
         if (this.$route.path.includes('compare')) {
@@ -220,8 +214,8 @@ export default {
             return this.$store.getters[building.path + '/blocks']
           }
         } else {
-          if (!this.view || !this.view.id) return []
-          return this.$store.getters[this.view.path + '/blocks']
+          if (!this.buildingOrCompare || !this.buildingOrCompare.id) return []
+          return this.$store.getters[this.buildingOrCompare.path + '/blocks']
         }
       }
     },
