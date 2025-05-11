@@ -1,5 +1,5 @@
 <!--
-  Filename: navBar.vue
+  Filename: NavBar.vue
   Info: Primary navigation bar shown on top of all pages.
 -->
 <template>
