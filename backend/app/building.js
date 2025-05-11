@@ -8,7 +8,6 @@
 
 const Building = require('/opt/nodejs/models/building.js')
 const Response = require('/opt/nodejs/response.js')
-const User = require('/opt/nodejs/user.js')
 
 exports.all = async (event, context) => {
   let response = new Response(event)
@@ -20,27 +19,6 @@ exports.all = async (event, context) => {
 exports.get = async (event, context) => {
   let response = new Response(event)
   response.body = JSON.stringify((await new Building(event.queryStringParameters['id']).get()).data)
-  return response
-}
-
-exports.put = async (event, context) => {
-  let response = new Response(event)
-  let user = new User(event, response)
-  await user.resolved
-  try {
-    let building = await new Building(event.body.id).update(
-      event.body.name,
-      event.body.mapId,
-      event.body.image,
-      event.body.group,
-      event.body.meters,
-      user
-    )
-    response.body = building.data
-  } catch (error) {
-    response.body = error.message
-    response.status = 400
-  }
   return response
 }
 
@@ -72,42 +50,6 @@ exports.putGeoJSON = async event => {
   } catch (error) {
     response.body = error.message
     response.statusCode = 400
-  }
-  return response
-}
-
-exports.post = async (event, context) => {
-  let response = new Response(event)
-  let user = new User(event, response)
-  await user.resolved
-  try {
-    response.body = JSON.stringify(
-      (
-        await Building.create(
-          event.body.name,
-          event.body.mapId,
-          event.body.image,
-          event.body.group,
-          event.body.meters,
-          user
-        )
-      ).data
-    )
-  } catch (error) {
-    response.body = error.message
-    response.status = 400
-  }
-  return response
-}
-
-exports.delete = async (event, context) => {
-  let response = new Response(event)
-  let user = new User(event, response)
-  try {
-    await new Building(event.body.id).delete(user)
-  } catch (error) {
-    response.body = error.message
-    response.status = 400
   }
   return response
 }

@@ -1,10 +1,7 @@
 /*
- * @Author: Brogan
- * @Date:   Saturday August 3rd 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday August 3rd 2019
- * @Copyright:  Oregon State University 2019
- */
+  Filename: building.module.js
+  Info: Vuex module for handling and storing buildings.
+*/
 import MeterGroup from './meter_group.module.js'
 import Block from './block.module.js'
 import API from './api.js'

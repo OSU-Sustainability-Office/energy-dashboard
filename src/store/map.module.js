@@ -38,30 +38,6 @@ const actions = {
     await store.dispatch(buildingSpace + '/buildDefaultBlocks')
   },
 
-  async deleteBuilding (store, payload) {
-    let buildingPath = ['map', 'building_' + payload.id]
-    this.unregisterModule(buildingPath)
-    API.building('delete', payload)
-  },
-
-  async newBuilding (store, payload) {
-    let building = await API.building('post', {
-      image: payload.image,
-      group: payload.group,
-      mapId: payload.mapId,
-      meters: payload.meters
-    })
-    store.dispatch('loadBuilding', { id: building.data.id })
-  },
-
-  async allDevices (store, payload) {
-    return API.devices()
-  },
-
-  async imageList (store) {
-    return API.images()
-  },
-
   async loadGeoJSONData (store, missingIds) {
     // fetch and parse the GeoJSON data
     const osmXML = await API.getGeoJSON(missingIds)

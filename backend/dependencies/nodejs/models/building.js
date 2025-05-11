@@ -60,81 +60,9 @@ class Building {
     }
   }
 
-  async update(name, mapId, image, group, meters, user) {
-    await DB.connect()
-    let keepList = []
-    if (user.data.privilege > 3) {
-      await DB.query('UPDATE buildings SET map_id = ?, image = ?, `group` = ?, name = ? WHERE id = ?', [
-        mapId,
-        image,
-        group,
-        name,
-        this.id
-      ])
-      let first = true
-      for (let meter of meters) {
-        let mg
-        try {
-          mg = await new MeterGroup(meter.id).get()
-          mg.update(meter.name, meter.meters, first, user)
-        } catch (e) {
-          mg = await MeterGroup.create(meter.name, meter.meters, first, this.id, user)
-        }
-        first = false
-        keepList.push(mg.id)
-      }
-
-      await MeterGroup.deleteBuildingGroups(this.id, keepList, user)
-    } else {
-      throw new Error('Need escalated permissions')
-    }
-    this.name = name
-    this.mapId = mapId
-    this.image = image
-    this.group = group
-    this.meterGroups = keepList
-    return this
-  }
-
   static async updateGeoJSON(id, geoJSON) {
     await DB.connect()
     await DB.query('UPDATE buildings SET geojson = ? WHERE id = ?', [JSON.stringify(geoJSON), id])
-  }
-
-  async delete(user) {
-    await DB.connect()
-    if (user.data.privilege > 3) {
-      await DB.query('DELETE FROM buildings WHERE id = ?', [this.id])
-    } else {
-      throw new Error('Need escalated permissions')
-    }
-  }
-
-  static async create(name, mapId, image, group, meters, user) {
-    if (user.data.privilege <= 3) {
-      throw new Error('Need escalated permissions')
-    }
-    await DB.connect()
-    let buildingRow = await DB.query('INSERT INTO buildings (map_id, image, `group`, name) VALUES (?, ?, ?, ?)', [
-      mapId,
-      image,
-      group,
-      name
-    ])
-    let meterList = []
-    let first = true
-    for (let meter of meters) {
-      let id = (await MeterGroup.create(meter.name, meter.meters, first, buildingRow['insertId'], user)).id
-      first = false
-      meterList.push(id)
-    }
-    let building = new Building(buildingRow['insertId'])
-    building.name = name
-    building.mapId = mapId
-    building.image = image
-    building.group = group
-    building.meterGroups = meterList
-    return building
   }
 
   set(name, group, mapId, image, meterGroups, hidden, geoJSON) {

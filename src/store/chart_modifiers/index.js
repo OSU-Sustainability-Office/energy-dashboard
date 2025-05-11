@@ -1,5 +1,5 @@
 /*
-  Filename: index.js
+  Filename: chart_modifiers/index.js
   Description: Contains function which returns objects containing settings
                for different ChartJS types.
 */

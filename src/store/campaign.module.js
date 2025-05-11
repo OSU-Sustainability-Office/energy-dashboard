@@ -1,8 +1,7 @@
 /*
   Filename: campaign.module.js
-  Info: Logical vuex-store instance of a campaign
+  Info: Vuex module for handling and storing each individual campaign.
 */
-
 import Block from './block.module.js' // For building the blocks for this campaign
 
 const state = () => {

@@ -1,3 +1,6 @@
+// Filename: block_modifiers/index.js
+// Description: Dynamically imports and registers all block modifier modules in the current directory.
+
 const modules = {}
 const modifiers = import.meta.glob('./*.mod.js')
 

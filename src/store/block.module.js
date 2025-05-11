@@ -121,6 +121,7 @@ const actions = {
   },
 
   async update (store, payload) {
+    // skip if the payload is the same as the current state
     if (
       payload.name === store.getters.name &&
       payload.dateInterval === store.getters.dateInterval &&
@@ -131,44 +132,12 @@ const actions = {
     ) {
       return
     }
-    let viewPath = store.getters.path.split('/')
-    viewPath.pop()
-    viewPath = viewPath.join('/')
-    let user = this.getters[viewPath + '/user']
-
     store.commit('name', payload.name)
     store.commit('dateInterval', payload.dateInterval)
     store.commit('intervalUnit', payload.intervalUnit)
     store.commit('graphType', payload.graphType)
     store.commit('dateStart', payload.dateStart)
     store.commit('dateEnd', payload.dateEnd)
-    if (user && user === this.getters['user/onid']) {
-      payload.id = store.getters.id
-      payload.dateStart = new Date(store.getters.dateStart).toISOString()
-      payload.dateEnd = new Date(store.getters.dateEnd).toISOString()
-      await API.block(payload, 'put')
-    }
-  },
-
-  async changeBlock (store, id) {
-    store.commit('shuffleChartColors')
-    for (let chart of store.getters.charts) {
-      this.unregisterModule(chart.path.split('/'))
-    }
-    store.commit('id', id)
-    let block = API.block(id)
-    store.commit('promise', block)
-    block = await block
-    store.commit('name', block.name)
-    store.commit('dateInterval', block.dateInterval)
-    store.commit('intervalUnit', block.intervalUnit)
-    store.commit('graphType', block.graphType)
-    store.commit('dateStart', block.dateStart)
-    store.commit('dateEnd', block.dateEnd)
-
-    for (let chart of block.charts) {
-      store.dispatch('loadChart', chart)
-    }
   },
 
   async newChart (store, payload) {

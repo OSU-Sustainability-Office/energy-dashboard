@@ -1,3 +1,7 @@
+/*
+  Filename: api.js
+  Info: API module for handling all API calls to the backend and external APIs.
+*/
 import axios from 'axios'
 axios.defaults.withCredentials = true
 
@@ -44,46 +48,36 @@ function callAPI (
 }
 
 export default {
-  devices: async () => {
-    return (await callAPI('admin/devices')).data
-  },
-
-  users: async () => {
-    return (await callAPI('admin/users')).data
-  },
-  view: async (id, payload = null, method = 'get') => {
-    if (method === 'get') {
-      return (await callAPI('view?id=' + id)).data
-    } else {
-      return (await callAPI('view', payload, method)).data
-    }
-  },
-  images: async () => {
-    return (await callAPI('images')).data
-  },
-  login: async () => {
+  boundedFeatures: async payload => {
     return (
       await callAPI(
-        'login?returnURI=' + encodeURI('http://localhost:8080'),
+        `map?bbox=${payload.left},${payload.bottom},${payload.right},${payload.top}`,
         null,
         'get',
-        'https://api.sustainability.oregonstate.edu/v2/auth'
+        'https://api.openstreetmap.org/api/0.6',
+        {
+          Accept: 'text/xml'
+        }
       )
     ).data
   },
-  logout: async () => {
-    return (await callAPI('logout', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
+  buildingFeature: async payload => {
+    return (
+      await callAPI(
+        `interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`,
+        null,
+        'get',
+        'https://maps.mail.ru/osm/tools/overpass/api',
+        {
+          Accept: 'text/xml'
+        },
+        72000,
+        false
+      )
+    ).data
   },
   buildings: async () => {
     return (await callAPI('allbuildings')).data
-  },
-  building: async (method, data) => {
-    let call = await callAPI('building', data, method)
-    return { status: call.status, data: call.data }
-  },
-  getBuildingByID: async id => {
-    let call = await callAPI('building?id=' + id, null, 'GET')
-    return { status: call.status, data: call.data }
   },
   meterGroup: async id => {
     return (await callAPI('metergroup?id=' + id)).data

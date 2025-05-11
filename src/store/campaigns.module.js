@@ -1,10 +1,7 @@
-/*
- * @Author: Brogan
- * @Date:   Saturday August 3rd 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday August 3rd 2019
- * @Copyright:  Oregon State University 2019
- */
+/**
+  Filename: campaigns.module.js
+  Info: Vuex module for handling and storing all campaigns.
+*/
 
 import API from './api.js'
 import Campaign from './campaign.module.js'
@@ -30,8 +27,6 @@ const actions = {
             const campaignPath = store.getters.path + '/' + campaign
 
             this.registerModule(campaignPath.split('/'), Campaign)
-            // console.log(c, 'REGISTERED')
-            // store.dispatch(campaign + '/buildBlocks', c.meterGroupIDs) // Create the graph blocks for this campaign
             store.commit(campaign + '/meterGroupIds', c.meterGroupIDs)
             store.commit(campaign + '/path', campaignPath)
             store.commit(campaign + '/id', c.id)

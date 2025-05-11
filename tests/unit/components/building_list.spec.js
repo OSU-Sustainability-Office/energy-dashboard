@@ -3,7 +3,7 @@
  * @Email: Milan.Donhowe@oregosntate.edu
  * @Date Created:       4/20/2021
  * @Date Last Modified: 4/23/2021
- * @Description: Vue Component Unit Test for building_list.vue
+ * @Description: Vue Component Unit Test for BuildingList.vue
  */
 
 // For mocking API
@@ -25,7 +25,7 @@ import elm from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
 
 // The Component Itself
-import buildingList from '@/components/building_list/building_list.vue'
+import buildingList from '@/components/BuildingList/BuildingList.vue'
 
 const axios = require('axios')
 

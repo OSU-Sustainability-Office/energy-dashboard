@@ -55,20 +55,19 @@ By default each meter group loads its own "block" which in turn lets us load a t
   - [2.1.2 card.vue](#212-cardvue)
   - [2.1.3 featureController.vue](#213-featurecontrollervue)
   - [2.1.4 featured.vue](#214-featuredvue)
-  - [2.1.5 heropicture.vue](#215-heropicturevue)
-  - [2.1.6 mediapicker.vue](#216-mediapickervue)
-  - [2.1.7 navdir.vue](#217-navdirvue)
+  - [2.1.5 HeroPicture.vue](#215-HeroPicturevue)
+  - [2.1.7 BuildingPanelNavigation.vue](#217-BuildingPanelNavigationvue)
   - [2.1.8 storyCard.vue](#218-storycardvue)
 - [2.2 Admin](#22-admin)
   - [2.2.1 admin.vue](#221-adminvue)
 - [2.3 Charts](#23-charts)
-  - [2.3.1 barchart.vue](#231-barchartvue)
-  - [2.3.2 chartController.vue](#232-chartcontrollervue)
-  - [2.3.4 linechart.vue](#234-linechartvue)
+  - [2.3.1 Barchart.vue](#231-Barchartvue)
+  - [2.3.2 ChartController.vue](#232-chartcontrollervue)
+  - [2.3.4 Linechart.vue](#234-Linechartvue)
 - [2.4 Dashboard](#24-dashboard)
   - [2.4.1 dashboard_alerts.vue](#241-dashboard_alertsvue)
   - [2.4.2 dashboard_main.vue](#242-dashboard_mainvue)
-  - [2.4.3 dashboard_sideview.vue](#243-dashboard_sideviewvue)
+  - [2.4.3 dashboard_BuildingModal.vue](#243-dashboard_BuildingModalvue)
 - [2.5 Directory](#25-directory)
   - [2.5.1 directoyMain.vue](#251-directorymainvue)
   - [2.5.2 directoryPrivate.vue](#252-directoryprivatevue)
@@ -81,10 +80,10 @@ By default each meter group loads its own "block" which in turn lets us load a t
   - [2.6.3 homeSide.vue](#263-homesidevue)
   - [2.6.4 index.vue](#264-indexvue)
 - [2.7 Map](#27-map)
-  - [2.7.1 map_compareside.vue](#271-map_comarseidevue)
-  - [2.7.2 map_prompt.vue](#272-map_promptvue)
+  - [2.7.1 BuildingCompareModal.vue](#271-BuildingComparevue)
+  - [2.7.2 ComparePrompt.vue](#272-ComparePromptvue)
   - [2.7.3 map.vue](#273-mapvue)
-  - [2.7.4 sideView.vue](#274-sideviewvue)
+  - [2.7.4 BuildingModal.vue](#274-BuildingModalvue)
 - [2.8 Other](#28-other)
   - [2.8.1 navBar.vue](#281-navbarvue)
   - [2.8.2 App.vue](#282-appvue)
@@ -109,15 +108,11 @@ This component is part of the modal that popups when editing a graph. It contain
 
 This is the modal that is displayed when editing a chart. It gives adjustable parameters like setting data and interval. It also contains the featureController.
 
-###### 2.1.5 heropicture.vue
+###### 2.1.5 HeroPicture.vue
 
 This component displays the large banner picture at the top of the account view.
 
-###### 2.1.6 mediapicker.vue
-
-This is a selection type component used to pick pictures. It is used inside of the editStory modal.
-
-###### 2.1.7 navdir.vue
+###### 2.1.7 BuildingPanelNavigation.vue
 
 This component is the small navigation bar underneath the heroPicture. It offers quick routing between stories and groups.
 
@@ -137,15 +132,15 @@ This component is not packaged into the application currently. It will soon be r
 
 These components coordinate parsing data into usable forms for Chart.js.
 
-###### 2.3.1 barchart.vue
+###### 2.3.1 Barchart.vue
 
 This component is used to set default settings for bar charts.
 
-###### 2.3.2 chartController.vue
+###### 2.3.2 ChartController.vue
 
 This component is the main work horse of the charting. All charts use this component to parse the data into the correct format and display the correct chart type.
 
-###### 2.3.4 linechart.vue
+###### 2.3.4 Linechart.vue
 
 This component is used to set default settings for line charts.
 
@@ -161,7 +156,7 @@ This component is used to display and handle the logic for user alerts.
 
 This component is used to unify all personal dashboard components.
 
-###### 2.4.3 dashboard_sideview.vue
+###### 2.4.3 dashboard_BuildingModal.vue
 
 This component is used to handle logic and UI for switching between user panes (currently only alerts and views)
 
@@ -213,11 +208,11 @@ This is the main component of the landing page. It encompasses all other compone
 
 These components are used for the main map page and contain all logic for the small side popups.
 
-###### 2.7.1 map_compareside.vue
+###### 2.7.1 BuildingCompareModal.vue
 
 This component is used for the small quick pop up that offers infomation when comparing buildings in the map view
 
-###### 2.7.2 map_prompt.vue
+###### 2.7.2 ComparePrompt.vue
 
 This component handles UI with the prompt telling you to select building to compare.
 
@@ -225,7 +220,7 @@ This component handles UI with the prompt telling you to select building to comp
 
 This component is used to display the map and polygons of buildings on the map.
 
-###### 2.7.5 sideView.vue
+###### 2.7.5 BuildingModal.vue
 
 This component is the key of the map.
 
