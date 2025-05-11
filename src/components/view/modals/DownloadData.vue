@@ -1,5 +1,5 @@
 <!--
-  Filename: download_data.vue
+  Filename: DownloadData.vue
   Info: This is the modal that allows the user to download data from the server.
   It allows the user to select a date range, interval, and points to download.
 -->
@@ -159,7 +159,7 @@ export default {
   computed: {
     visible: {
       get () {
-        return this.$store.getters['modalController/modalName'] === 'download_data'
+        return this.$store.getters['modalController/modalName'] === 'DownloadData'
       },
 
       set (value) {

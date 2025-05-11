@@ -25,7 +25,7 @@
 <script>
 import BuildingPanel from '@/components/view/BuildingPanel.vue'
 import HeroPicture from '@/components/ui/HeroPicture.vue'
-import BuildingCardEditModal from '@/components/view/modals/edit_card.vue'
+import BuildingCardEditModal from '@/components/view/modals/EditModal.vue'
 import BuildingPanelNavigation from '@/components/view/BuildingPanelNavigation.vue'
 
 export default {
@@ -47,7 +47,7 @@ export default {
   methods: {
     addFeature: function () {
       this.$store.dispatch('modalController/openModal', {
-        name: 'edit_card',
+        name: 'EditModal',
         view: this.buildingOrCompare.path
       })
     }

@@ -1,5 +1,5 @@
 <!--
-  Filename: edit_card.vue
+  Filename: EditModal.vue
   Info: Modal for editing "full-view" chart settings.
 -->
 <template>
@@ -169,7 +169,7 @@ export default {
   computed: {
     visible: {
       get () {
-        return this.$store.getters['modalController/modalName'] === 'edit_card'
+        return this.$store.getters['modalController/modalName'] === 'EditModal'
       },
 
       set (value) {

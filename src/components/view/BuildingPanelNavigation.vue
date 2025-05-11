@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import downloader from '@/components/view/modals/download_data.vue'
+import downloader from '@/components/view/modals/DownloadData.vue'
 
 export default {
   name: 'BuildingPanelNavigation',
@@ -151,7 +151,7 @@ export default {
     },
     download: function () {
       this.$store.dispatch('modalController/openModal', {
-        name: 'download_data',
+        name: 'DownloadData',
         view: this.building.path
       })
     },

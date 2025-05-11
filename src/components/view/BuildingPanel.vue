@@ -221,7 +221,7 @@ export default {
   methods: {
     openModal: function () {
       this.$store.dispatch('modalController/openModal', {
-        name: 'edit_card',
+        name: 'EditModal',
         path: this.path
       })
     },
