@@ -99,21 +99,6 @@ Resources:
           Properties:
             Path: /building
             Method: get
-  BuildingPut:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: building.put
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /building
-            Method: put
   BuildingPutGeoJSON:
     Type: AWS::Serverless::Function
     Properties:
@@ -129,36 +114,6 @@ Resources:
           Properties:
             Path: /buildinggeojson
             Method: put
-  BuildingPost:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: building.post
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /building
-            Method: post
-  BuildingDelete:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: building.delete
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /building
-            Method: delete
   MeterGroupGet:
     Type: AWS::Serverless::Function
     Properties:
@@ -174,51 +129,6 @@ Resources:
           Properties:
             Path: /metergroup
             Method: get
-  MeterGroupPut:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: meter_group.put
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /metergroup
-            Method: put
-  MeterGroupPost:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: meter_group.post
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /metergroup
-            Method: post
-  MeterGroupDelete:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: meter_group.delete
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /metergroup
-            Method: delete
   MeterGet:
     Type: AWS::Serverless::Function
     Properties:
@@ -265,21 +175,6 @@ Resources:
           Properties:
             Path: /multiMeterData
             Method: post
-  MeterPut:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: meter.put
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /meter
-            Method: put
   # For newer meter types
   MeterUpload:
     Type: AWS::Serverless::Function
@@ -314,21 +209,6 @@ Resources:
           Properties:
             Path: /meter
             Method: post
-  MeterDelete:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: meter.delete
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /meter
-            Method: delete
   MeterClasses:
     Type: AWS::Serverless::Function
     Properties:
@@ -344,66 +224,6 @@ Resources:
           Properties:
             Path: /meterclasses
             Method: get
-  AlertGet:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: alert.get
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /alert
-            Method: get
-  AlertPost:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: alert.post
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /alert
-            Method: post
-  AlertPut:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: alert.put
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /alert
-            Method: put
-  AlertDelete:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: alert.delete
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /alert
-            Method: delete
   CampaignGet:
     Type: AWS::Serverless::Function
     Properties:
@@ -434,171 +254,6 @@ Resources:
           Properties:
             Path: /campaigns
             Method: get
-  CampaignPut:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: campaign.put
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /campaign
-            Method: put
-  CampaignPost:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: campaign.post
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /campaign
-            Method: post
-  CampaignDelete:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: campaign.delete
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /campaign
-            Method: delete
-  BlockGet:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: block.get
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /block
-            Method: get
-  BlockPut:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: block.put
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /block
-            Method: put
-  BlockPost:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: block.post
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /block
-            Method: post
-  BlockDelete:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: block.delete
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /block
-            Method: delete
-  ChartGet:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: chart.get
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /chart
-            Method: get
-  ChartPut:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: chart.put
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /chart
-            Method: put
-  ChartPost:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: chart.post
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /chart
-            Method: post
-  ChartDelete:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: chart.delete
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /chart
-            Method: delete
   ImageAll:
     Type: AWS::Serverless::Function
     Properties:
