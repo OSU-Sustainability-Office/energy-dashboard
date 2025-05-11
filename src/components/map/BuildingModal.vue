@@ -226,31 +226,6 @@ export default {
   padding: 1em;
   overflow-x: hidden;
 }
-.rangeButtonParent {
-  padding: 0.2em;
-}
-.rangeButton {
-  background-color: $color-black;
-  color: color.adjust($color-white, $lightness: -30%);
-  border-color: color.adjust($color-white, $lightness: -30%);
-  width: 100%;
-}
-.rangeButton:not(.active):hover {
-  background-color: #000; //color.adjust($color-primary, $lightness: -10%);
-  color: $color-white;
-  border-color: $color-white;
-}
-.rangeButton.active {
-  background-color: $color-primary;
-  color: $color-white;
-  border-color: $color-white;
-}
-.rangeButton.active:hover {
-  background-color: $color-primary;
-  color: $color-white;
-  border-color: $color-white;
-}
-
 .graph {
   width: 100%;
   overflow: hidden;
@@ -263,7 +238,6 @@ export default {
   display: inline-block;
   flex-shrink: 0;
 }
-
 .graphslide {
   position: absolute;
   color: rgba($color-white, 0.4);
@@ -311,8 +285,5 @@ export default {
 }
 .buttonContainer {
   height: 60px; // reduce padding above top buttons (week / 60 days /year)
-}
-.bottomButtons {
-  height: 25px; // might not be needed, div pokes out on inspect element otherwise, but doesn't affect button padding
 }
 </style>

@@ -694,11 +694,6 @@ $sideMenu-width: 250px;
   margin-bottom: 15px;
 }
 
-.sideMenuGroupTitle {
-  font-size: 18px;
-  color: #ffffff;
-  font-weight: bolder;
-}
 .mapContainer {
   position: absolute;
   top: 0;

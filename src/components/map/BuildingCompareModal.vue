@@ -259,31 +259,6 @@ $border-width: 3px;
 .buttons {
   padding: 1em;
 }
-
-.rangeButtonParent {
-  padding: 0.2em;
-}
-.rangeButton {
-  background-color: $color-black;
-  color: color.adjust($color-white, $lightness: -30%);
-  border-color: color.adjust($color-white, $lightness: -30%);
-  width: 100%;
-}
-.rangeButton:not(.active):hover {
-  background-color: #000; //color.adjust($color-primary, $lightness: -10%);
-  color: $color-white;
-  border-color: $color-white;
-}
-.rangeButton.active {
-  background-color: $color-primary;
-  color: $color-white;
-  border-color: $color-white;
-}
-.rangeButton.active:hover {
-  background-color: $color-primary;
-  color: $color-white;
-  border-color: $color-white;
-}
 .bigButton {
   background-color: $color-black;
   color: color.adjust($color-white, $lightness: -30%);

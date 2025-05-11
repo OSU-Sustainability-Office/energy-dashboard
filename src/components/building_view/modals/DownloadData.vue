@@ -429,11 +429,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.stage {
-  position: relative !important;
-  top: 0 !important;
-  height: auto;
-}
 .noBuildingText {
   height: 50px;
   text-align: center;
@@ -468,9 +463,6 @@ export default {
 .footer-buttons {
   display: flex;
   justify-content: flex-end;
-}
-.buildingContainer {
-  width: 100%;
 }
 :deep(.buildingAddSelect .el-select__wrapper.is-filterable),
 :deep(.buildingAddSelect .el-select__input) {

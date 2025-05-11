@@ -220,13 +220,6 @@ export default {
   padding-right: 0.5em;
   padding-left: 0.5em;
 }
-.blankGroups {
-  font-size: 22px;
-  position: relative;
-  top: 1em;
-  width: 100%;
-  text-align: center;
-}
 :deep(.el-icon) {
   color: #d73f09;
   cursor: pointer;

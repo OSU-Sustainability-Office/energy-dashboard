@@ -471,55 +471,6 @@ export default {
 .el-form-item {
   padding: 5px;
 }
-.addFeatured {
-  background-color: $color-black;
-  height: calc(400px + 0.8em);
-  color: $color-primary;
-  margin-top: 0.1em;
-  margin-bottom: 0.1em;
-  border-radius: 5px;
-  text-align: center;
-  font-size: 10em;
-  cursor: pointer;
-}
-.addFeatured .fas {
-  margin-top: 1em;
-}
-.addFeatured:hover {
-  border: solid 1px $color-primary;
-  outline: solid 3px $color-primary;
-  outline-offset: -4px;
-}
-.addFeatured:hover .fas {
-  color: $color-white;
-}
-.hiddenAddChart {
-  display: none;
-  font-size: 0.2em;
-}
-.addFeatured:hover .hiddenAddChart {
-  display: block;
-}
-.addFeatured:hover {
-  color: #c72f09;
-}
-.addFeatured:active {
-  color: #d76740;
-}
-.setlabel {
-  vertical-align: middle;
-  float: left;
-  font-size: 16px;
-  color: #606266;
-  line-height: 40px;
-  padding: 0 12px 0 0;
-  font-family:
-    'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
-  font-weight: 400;
-}
-.pad-bottom {
-  padding: 1em;
-}
 .top {
   text-align: center;
 }
