@@ -21,7 +21,7 @@
 </template>
 <script>
 export default {
-  props: ['height', 'campaign', 'days', 'blocks', 'campaignDateEnd', 'campaignDateStart'],
+  props: ['height', 'campaign', 'days', 'blocks', 'campaignDateEnd', 'campaignDateStart', 'forceUpdate'],
   data () {
     return {
       currentRange: -1
@@ -100,6 +100,9 @@ export default {
           this.$store.commit(block.path + '/intervalUnit', intervalUnit)
           this.$store.commit(block.path + '/dateStart', dateStart)
           this.$store.commit(block.path + '/dateEnd', dateEnd)
+          if (this.forceUpdate) { // used to trigger a refresh for the campaign leaderboard
+            this.$store.dispatch(block.path + '/getData')
+          }
         }
       }
     }

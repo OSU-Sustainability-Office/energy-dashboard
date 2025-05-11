@@ -161,6 +161,13 @@ export default {
     filteredBuildings () {
       return this.$store.getters['map/buildings'].filter(building => building.geoJSON)
     },
+    mapLoaded () {
+      return (
+        this.filteredBuildings.length > 0 && // buildings are loaded
+        this.processedLayers === this.filteredBuildings.length && // all layers are processed
+        !this.$store.getters['map/buildingMap'].size // all geojson layers are loaded
+      )
+    },
     showSide: {
       get () {
         return this.$store.getters['modalController/modalName'] === 'BuildingModal'
@@ -210,9 +217,10 @@ export default {
         'Down Trend'
       ],
       show: false,
-      mapLoaded: false,
+      processedLayers: 0,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
+          this.processedLayers++
           layer.on('click', e => {
             this.building_compare_error = false
             this.polyClick(e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter())
@@ -324,15 +332,6 @@ export default {
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
       }
-    },
-    initBuildingRename () {
-      this.map.on('layeradd', event => {
-        if (event.layer.feature?.geometry?.type === 'Polygon') {
-          event.layer.feature.properties.name = this.$store.getters['map/building'](
-            event.layer.feature.properties.id
-          ).name
-        }
-      })
     },
     removeAllMarkers: function () {
       for (let marker of this.compareMarkers) {
@@ -545,12 +544,9 @@ export default {
     updateMapRef () {
       this.map = this.$refs.map.leafletObject
       this.map.zoomControl.setPosition('topleft')
-      this.initBuildingRename()
     }
   },
   async created () {
-    await this.$store.dispatch('map/loadGeometry')
-    this.mapLoaded = true
     this.message = window.innerWidth > 844
 
     // Event listener for input data

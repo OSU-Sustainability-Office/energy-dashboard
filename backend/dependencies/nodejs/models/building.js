@@ -55,7 +55,8 @@ class Building {
       image: this.image,
       group: this.group,
       name: this.name,
-      hidden: this.hidden
+      hidden: this.hidden,
+      geoJSON: this.geoJSON
     }
   }
 
@@ -95,6 +96,11 @@ class Building {
     return this
   }
 
+  static async updateGeoJSON(id, geoJSON) {
+    await DB.connect()
+    await DB.query('UPDATE buildings SET geojson = ? WHERE id = ?', [JSON.stringify(geoJSON), id])
+  }
+
   async delete(user) {
     await DB.connect()
     if (user.data.privilege > 3) {
@@ -131,13 +137,14 @@ class Building {
     return building
   }
 
-  set(name, group, mapId, image, meterGroups, hidden) {
+  set(name, group, mapId, image, meterGroups, hidden, geoJSON) {
     this.name = name
     this.mapId = mapId
     this.image = image
     this.group = group
     this.meterGroups = meterGroups
     this.hidden = hidden
+    this.geoJSON = geoJSON
   }
 
   static async all() {
@@ -150,6 +157,7 @@ class Building {
               buildings.group, 
               buildings.map_id, 
               buildings.image, 
+              buildings.geojson,
               meter_groups.id as meter_group_id,
               meter_groups.name as meter_group_name,
               meter_groups.default as meter_group_default,
@@ -174,6 +182,7 @@ class Building {
           mapId: row.map_id,
           image: row.image,
           hidden: row.hidden === 1,
+          geoJSON: row.geojson,
           meterGroups: {}
         }
       }
@@ -217,7 +226,8 @@ class Building {
         queryJson[key].mapId,
         queryJson[key].image,
         metergroups,
-        queryJson[key].hidden
+        queryJson[key].hidden,
+        queryJson[key].geoJSON
       )
       buildings.push(building)
     }

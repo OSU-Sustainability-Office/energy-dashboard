@@ -47,7 +47,7 @@ const actions = {
   },
 
   async getData (store, payload) {
-    let start = payload.dateStart - 900
+    let start = payload.dateStart
     let end = payload.dateEnd
     await store.getters.promise
     return this.dispatch('dataStore/getData', {

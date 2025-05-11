@@ -46,6 +46,12 @@ const actions = {
     const chartModifier = ChartModifiers(payload.graphType, point)
     await chartModifier.preGetData(reqPayload, this, store)
 
+    // TEMPORARY FIX: If the point is periodic_real_in, we need to subtract 1 from the start date, otherwise,
+    // the data will be off by one day in the campaign charts. This is because the data is inputed as 11:59 PM
+    // so it's not in the date range when the campaign start date is 12:00 AM.
+    if (reqPayload.point === 'periodic_real_in') {
+      reqPayload.dateStart = reqPayload.dateStart - 1
+    }
     let data = await this.dispatch(store.getters.meterGroupPath + '/getData', reqPayload)
 
     let colorPayload = store.getters.color

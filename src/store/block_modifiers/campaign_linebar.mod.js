@@ -83,8 +83,14 @@ export default class CampaignLineBarModifier {
     const threshold = 7.5
 
     for (let i in current) {
-      // Calculate percentage difference from baseline
-      const percentage = (current[i].y / baseline[i].y) * 100 - 100
+      let percentage = 0
+      try {
+        // Calculate percentage difference from baseline
+        percentage = (current[i].y / baseline[i].y) * 100 - 100
+      } catch (e) {
+        console.error('Error calculating percentage difference:', e)
+        continue
+      }
       this.data.accumulatedPercentage += percentage // update accumulated percentage
 
       // Compute blend factor (0 to 1)

@@ -4,15 +4,6 @@
   a time series (e.g. periodic_real_in). This modifier ensures that the number of
   data points is equal to the number of intervals.
 */
-import { DateTime } from 'luxon'
-
-function getTimezoneOffset (epochSeconds) {
-  // Create a DateTime object in the Pacific Time Zone
-  const dt = DateTime.fromSeconds(epochSeconds, 'America/Los_Angeles')
-
-  // Multiply by 60 to convert to seconds
-  return dt.offset * 60
-}
 
 export default class LineDefaultModifier {
   constructor () {
@@ -50,7 +41,7 @@ export default class LineDefaultModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
-    const { dateStart, dateEnd, intervalUnit, dateInterval, timezoneOffset, point } = payload
+    const { dateStart, dateEnd, intervalUnit, dateInterval, timezoneOffset } = payload
     const currentData = chartData.data
     const result = []
     const startDate = new Date(dateStart * 1000)
@@ -81,11 +72,6 @@ export default class LineDefaultModifier {
       try {
         let timestamp = i + delta
 
-        // Align the timestamp with the data points in the database
-        if (point === 'periodic_real_in' || point === 'periodic_real_out') {
-          timestamp -= getTimezoneOffset(timestamp)
-        }
-
         const curValue = currentData.get(timestamp)
         if (isNaN(curValue)) {
           continue
@@ -103,11 +89,6 @@ export default class LineDefaultModifier {
       } catch (error) {
         console.log(error)
       }
-    }
-
-    // Fill chart for Solar Panel data
-    if (point === 'periodic_real_out') {
-      chartData.fill = true
     }
 
     // Prevent scenarios where there is only one valid data point
@@ -142,7 +123,7 @@ export default class LineDefaultModifier {
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
-    const { intervalUnit, dateInterval, point } = payload
+    const { intervalUnit, dateInterval } = payload
     const SECONDS_PER_DAY = 86400
     const dataDate = new Date(payload.dateStart * 1000)
     let delta = 1
@@ -166,15 +147,7 @@ export default class LineDefaultModifier {
     delta *= dateInterval
 
     // Adjust dateStart to align with data points in the database
-    if (point === 'periodic_real_in' || point === 'periodic_real_out') {
-      // Round down to 23:59:59
-      const adjustedTime = payload.dateStart - delta
-      const dayRemainder = adjustedTime % 86400
-      // Subtract the remainder to get the start of the day, then add 86399 to round up to 23:59:59
-      payload.dateStart = adjustedTime - dayRemainder + 86399
-    } else {
-      // Round down to 15 minute intervals
-      payload.dateStart = payload.dateStart - delta - (payload.dateStart % 900)
-    }
+    // Round down to 15 minute intervals
+    payload.dateStart = payload.dateStart - delta - (payload.dateStart % 900)
   }
 }

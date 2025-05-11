@@ -20,7 +20,7 @@
       <el-main class="graphcontrol">
         <el-col :span="24">
           <el-col :span="24" class="buttonContainer">
-            <TimeRangeSwitcher :blocks="buildingBlocks" ref="timeRangeSwitcher" />
+            <TimeRangeSwitcher :blocks="buildingBlocks" :forceUpdate="false" ref="timeRangeSwitcher" />
           </el-col>
           <el-row class="graphslide">
             <i class="left fas fa-angle-left" @click="prev()" ref="prevArrow"></i>

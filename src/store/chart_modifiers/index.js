@@ -10,6 +10,7 @@ import LineBaselineAvg from './line_bar/avg_accumulated_real.js'
 import LineDefault from './line_bar/default.js'
 import LineTotalBaseline from './line_bar/baseline_total.js'
 import LineTotalPercModifier from './line_bar/baseline_perc_total.js'
+import LinePeriodicReal from './line_bar/periodic_real.js'
 
 export default function (graphType, point) {
   if (graphType === 1 || graphType === 2) {
@@ -29,6 +30,10 @@ export default function (graphType, point) {
         return new LineTotalBaseline()
       case 'baseline_perc_total':
         return new LineTotalPercModifier()
+      case 'periodic_real_in':
+        return new LinePeriodicReal()
+      case 'periodic_real_out':
+        return new LinePeriodicReal()
       default:
         return new LineDefault()
     }

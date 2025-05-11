@@ -100,7 +100,31 @@ export default {
       await callAPI('multiMeterData', JSON.stringify(requestArray), 'post', import.meta.env.VITE_ROOT_API, null, 120000)
     ).data
   },
-  chart: async (data, method) => { // revisit this (might delete)
+  getGeoJSON: async payload => {
+    return (
+      await callAPI(
+        `interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`,
+        null,
+        'get',
+        'https://maps.mail.ru/osm/tools/overpass/api',
+        {
+          Accept: 'text/xml'
+        },
+        72000,
+        false
+      )
+    ).data
+  },
+  user: async () => {
+    return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
+  },
+  edashUser: async () => {
+    return (await callAPI('user')).data
+  },
+  block: async (data, method) => {
+    return (await callAPI('block', data, method)).data
+  },
+  chart: async (data, method) => {
     return (await callAPI('chart', data, method)).data
   },
   campaigns: async () => {

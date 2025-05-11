@@ -33,6 +33,7 @@
                   :days="days"
                   :campaignDateStart="campaignStart"
                   :campaignDateEnd="campaignEnd"
+                  :forceUpdate="true"
                 />
               </el-col>
             </el-row>
