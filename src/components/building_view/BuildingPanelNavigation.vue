@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import downloader from '@/components/view/modals/DownloadData.vue'
+import downloader from '@/components/building_view/modals/DownloadData.vue'
 
 export default {
   name: 'BuildingPanelNavigation',

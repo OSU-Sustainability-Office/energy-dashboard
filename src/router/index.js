@@ -4,7 +4,7 @@
 */
 
 import { createRouter, createWebHashHistory } from 'vue-router'
-import BuildingView from '@/components/view/BuildingView.vue'
+import BuildingView from '@/components/building_view/BuildingView.vue'
 import Map from '@/components/map/Map.vue'
 import CampaignList from '@/components/campaigns/CampaignList.vue'
 import GetStarted from '@/components/get_started/GetStarted.vue'

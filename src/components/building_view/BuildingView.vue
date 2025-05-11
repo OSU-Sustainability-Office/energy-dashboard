@@ -23,10 +23,10 @@
 </template>
 
 <script>
-import BuildingPanel from '@/components/view/BuildingPanel.vue'
+import BuildingPanel from '@/components/building_view/BuildingPanel.vue'
 import HeroPicture from '@/components/ui/HeroPicture.vue'
-import BuildingCardEditModal from '@/components/view/modals/EditModal.vue'
-import BuildingPanelNavigation from '@/components/view/BuildingPanelNavigation.vue'
+import BuildingCardEditModal from '@/components/building_view/modals/EditModal.vue'
+import BuildingPanelNavigation from '@/components/building_view/BuildingPanelNavigation.vue'
 
 export default {
   components: {
