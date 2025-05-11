@@ -1,5 +1,5 @@
 <!--
-  Filename: navdir.vue
+  Filename: BuildingPanelNavigation.vue
   Info: Navigation bar that appears below the hero picture in the full chart page.
   It contains menus to switch between groups and buildings, as well as the share link
   and download buttons.
@@ -67,7 +67,7 @@
 import downloader from '@/components/view/modals/download_data.vue'
 
 export default {
-  name: 'navdir',
+  name: 'BuildingPanelNavigation',
   components: {
     downloader
   },
@@ -118,7 +118,7 @@ export default {
         return this.building.name
       }
     },
-    // This checks if page is in /building path (don't show navdir on comparison pages)
+    // This checks if page is in /building path (don't show BuildingPanelNavigation on comparison pages)
     isBuilding: {
       get () {
         try {

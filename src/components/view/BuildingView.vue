@@ -11,7 +11,7 @@
         :description="buildingOrCompare && buildingOrCompare.description ? buildingOrCompare.description : ''"
         :name="buildingOrCompare && buildingOrCompare.name ? buildingOrCompare.name : ''"
       />
-      <navdir ref="navdir" v-if="navVis"></navdir>
+      <BuildingPanelNavigation ref="BuildingPanelNavigation" v-if="navVis"></BuildingPanelNavigation>
       <el-row>
         <el-col :span="24" class="card_area">
           <BuildingPanel v-for="(card, index) in cards" :key="index + '-' + buildingOrCompare.id" :path="card.path" />
@@ -26,13 +26,13 @@
 import BuildingPanel from '@/components/view/BuildingPanel.vue'
 import HeroPicture from '@/components/ui/HeroPicture.vue'
 import BuildingCardEditModal from '@/components/view/modals/edit_card.vue'
-import navdir from '@/components/view/navdir.vue'
+import BuildingPanelNavigation from '@/components/view/BuildingPanelNavigation.vue'
 
 export default {
   components: {
     BuildingPanel,
     HeroPicture,
-    navdir,
+    BuildingPanelNavigation,
     BuildingCardEditModal
   },
   data () {
@@ -42,7 +42,7 @@ export default {
   },
   async created () {
     await this.$store.dispatch('map/loadMap')
-    this.navVis = this.$route.path.includes('building') // show navdir on individual building pages only
+    this.navVis = this.$route.path.includes('building') // show BuildingPanelNavigation on individual building pages only
   },
   methods: {
     addFeature: function () {
@@ -56,7 +56,7 @@ export default {
     $route: {
       immediate: true,
       handler: async function (to, from) {
-        this.navVis = this.$route.path.includes('building') // show navdir on individual building pages only
+        this.navVis = this.$route.path.includes('building') // show BuildingPanelNavigation on individual building pages only
         if (this.$route.path.includes('building') || this.$route.path.includes('compare')) {
           for (let card of this.cards) {
             this.$store.commit(card.path + '/dateStart', this.dateStart)

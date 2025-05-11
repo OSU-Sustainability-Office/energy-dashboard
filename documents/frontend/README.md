@@ -56,7 +56,7 @@ By default each meter group loads its own "block" which in turn lets us load a t
   - [2.1.3 featureController.vue](#213-featurecontrollervue)
   - [2.1.4 featured.vue](#214-featuredvue)
   - [2.1.5 HeroPicture.vue](#215-HeroPicturevue)
-  - [2.1.7 navdir.vue](#217-navdirvue)
+  - [2.1.7 BuildingPanelNavigation.vue](#217-BuildingPanelNavigationvue)
   - [2.1.8 storyCard.vue](#218-storycardvue)
 - [2.2 Admin](#22-admin)
   - [2.2.1 admin.vue](#221-adminvue)
@@ -112,7 +112,7 @@ This is the modal that is displayed when editing a chart. It gives adjustable pa
 
 This component displays the large banner picture at the top of the account view.
 
-###### 2.1.7 navdir.vue
+###### 2.1.7 BuildingPanelNavigation.vue
 
 This component is the small navigation bar underneath the heroPicture. It offers quick routing between stories and groups.
 
