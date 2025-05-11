@@ -11,11 +11,6 @@ import ModalController from './modal_controller.module.js'
 import DataStore from './data_layer/data_store.js'
 
 const store = createStore({
-  getters: {
-    view: state => {
-      return state['view']
-    }
-  },
   modules: {
     campaigns: Campaigns,
     map: EDMap,

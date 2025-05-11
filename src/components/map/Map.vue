@@ -163,7 +163,7 @@ export default {
     },
     showSide: {
       get () {
-        return this.$store.getters['modalController/modalName'] === 'map_side_view'
+        return this.$store.getters['modalController/modalName'] === 'BuildingModal'
       },
 
       set (value) {
@@ -240,7 +240,7 @@ export default {
     polyClick: function (id, feature, center) {
       if (!this.askingForComparison) {
         this.$store.dispatch('modalController/openModal', {
-          name: 'map_side_view',
+          name: 'BuildingModal',
           id: id
         })
       } else {
