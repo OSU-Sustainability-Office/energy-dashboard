@@ -159,13 +159,14 @@ export default {
     },
     mapLoaded () {
       return (
+        !this.processing && // no logic is being processed
         this.filteredBuildings.length > 0 && // buildings are loaded
         this.processedLayers === this.filteredBuildings.length && // all layers are processed
         !this.$store.getters['map/buildingMap'].size // all geojson layers are loaded
       )
     },
     showSide: {
-      get () {
+      get() {
         return this.$store.getters['modalController/modalName'] === 'map_side_view'
       },
 
@@ -214,6 +215,7 @@ export default {
       ],
       show: false,
       processedLayers: 0,
+      processing: false,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
           this.processedLayers++
@@ -534,7 +536,6 @@ export default {
         const color = this.computedColor(normalizedSlope)
         layer.setStyle({ fillColor: color, color: color })
       } catch (err) {
-        console.error(err)
         layer.setStyle({ fillColor: '#000', color: '#000' })
       }
     },
@@ -584,8 +585,7 @@ export default {
       })
     },
     grouping: {
-      async handler () {
-        this.processedLayers = 0
+      async handler() {
         this.search = ''
         this.rKey++
         this.mapLoaded = false
@@ -602,7 +602,7 @@ export default {
           })
         })
         await Promise.all(promises)
-        this.mapLoaded = true
+        this.processing = false
       }
     },
     search: function (v) {
