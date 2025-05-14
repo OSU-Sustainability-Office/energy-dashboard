@@ -440,6 +440,7 @@ export default {
       return this.selected.includes(v)
     },
     handleSelect: function (string) {
+      this.processedLayers = 0
       if (this.selected.includes(string)) {
         this.selected = this.selected.filter(item => item !== string)
       } else {
@@ -561,6 +562,7 @@ export default {
   },
   watch: {
     selectedOption (energyFilter) {
+      this.processedLayers = 0
       this.rKey++
       this.$nextTick(() => {
         this.map = this.$refs.map.leafletObject
@@ -583,6 +585,7 @@ export default {
     },
     grouping: {
       async handler () {
+        this.processedLayers = 0
         this.search = ''
         this.rKey++
         this.mapLoaded = false
