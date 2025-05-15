@@ -159,14 +159,13 @@ export default {
     },
     mapLoaded () {
       return (
-        !this.processing && // no logic is being processed
         this.filteredBuildings.length > 0 && // buildings are loaded
         this.processedLayers === this.filteredBuildings.length && // all layers are processed
         !this.$store.getters['map/buildingMap'].size // all geojson layers are loaded
       )
     },
     showSide: {
-      get() {
+      get () {
         return this.$store.getters['modalController/modalName'] === 'map_side_view'
       },
 
@@ -215,7 +214,6 @@ export default {
       ],
       show: false,
       processedLayers: 0,
-      processing: false,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
           this.processedLayers++
@@ -442,7 +440,7 @@ export default {
       return this.selected.includes(v)
     },
     handleSelect: function (string) {
-      this.processedLayers = 0
+      this.processedLayers = 0 // reset processed layers
       if (this.selected.includes(string)) {
         this.selected = this.selected.filter(item => item !== string)
       } else {
@@ -585,10 +583,9 @@ export default {
       })
     },
     grouping: {
-      async handler() {
+      async handler () {
         this.search = ''
         this.rKey++
-        this.mapLoaded = false
         await this.$nextTick()
         let promises = []
         this.$refs.geoLayer.forEach(geoJsonComponent => {
@@ -602,7 +599,7 @@ export default {
           })
         })
         await Promise.all(promises)
-        this.processing = false
+        this.processedLayers = this.filteredBuildings.length
       }
     },
     search: function (v) {
