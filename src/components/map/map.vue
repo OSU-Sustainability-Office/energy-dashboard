@@ -440,7 +440,6 @@ export default {
       return this.selected.includes(v)
     },
     handleSelect: function (string) {
-      this.processedLayers = 0 // reset processed layers
       if (this.selected.includes(string)) {
         this.selected = this.selected.filter(item => item !== string)
       } else {
@@ -561,7 +560,7 @@ export default {
   },
   watch: {
     selectedOption (energyFilter) {
-      this.processedLayers = 0
+      this.processedLayers = 0 // show loading indicator while switching filters
       this.rKey++
       this.$nextTick(() => {
         this.map = this.$refs.map.leafletObject
