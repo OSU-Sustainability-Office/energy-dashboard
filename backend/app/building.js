@@ -16,12 +16,6 @@ exports.all = async (event, context) => {
   return response
 }
 
-exports.get = async (event, context) => {
-  let response = new Response(event)
-  response.body = JSON.stringify((await new Building(event.queryStringParameters['id']).get()).data)
-  return response
-}
-
 // This function is used by an external service (automated job)
 // to occasionally update the GeoJSON data for multiple buildings
 exports.putGeoJSON = async event => {

@@ -10,12 +10,6 @@ const MultipartParse = require('/opt/nodejs/node_modules/aws-lambda-multipart-pa
 const ZLib = require('zlib')
 const Compress = require('/opt/nodejs/models/compress.js')
 
-exports.get = async (event, context) => {
-  let response = new Response(event)
-  response.body = JSON.stringify((await new Meter(event.queryStringParameters['id']).get()).data)
-  return response
-}
-
 // Check integral parameters.
 function parseParameters({ id, startDate, endDate }) {
   return {

@@ -32,9 +32,3 @@ exports.all = async (event, context) => {
   response.body = JSON.stringify(campaigns)
   return response
 }
-
-exports.get = async (event, context) => {
-  let response = new Response(event)
-  response.body = JSON.stringify((await new Campaign(event.queryStringParameters['id']).get()).data)
-  return response
-}

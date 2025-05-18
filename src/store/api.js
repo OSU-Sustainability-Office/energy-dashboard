@@ -48,34 +48,6 @@ function callAPI (
 }
 
 export default {
-  boundedFeatures: async payload => {
-    return (
-      await callAPI(
-        `map?bbox=${payload.left},${payload.bottom},${payload.right},${payload.top}`,
-        null,
-        'get',
-        'https://api.openstreetmap.org/api/0.6',
-        {
-          Accept: 'text/xml'
-        }
-      )
-    ).data
-  },
-  buildingFeature: async payload => {
-    return (
-      await callAPI(
-        `interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`,
-        null,
-        'get',
-        'https://maps.mail.ru/osm/tools/overpass/api',
-        {
-          Accept: 'text/xml'
-        },
-        72000,
-        false
-      )
-    ).data
-  },
   buildings: async () => {
     return (await callAPI('allbuildings')).data
   },
@@ -114,18 +86,6 @@ export default {
         false
       )
     ).data
-  },
-  user: async () => {
-    return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
-  },
-  edashUser: async () => {
-    return (await callAPI('user')).data
-  },
-  block: async (data, method) => {
-    return (await callAPI('block', data, method)).data
-  },
-  chart: async (data, method) => {
-    return (await callAPI('chart', data, method)).data
   },
   campaigns: async () => {
     return (await callAPI('campaigns')).data

@@ -22,27 +22,6 @@ class Building {
     this.hidden = false
   }
 
-  async get(expand = true) {
-    await DB.connect()
-    let buildingRow = await DB.query('SELECT * FROM buildings WHERE id = ?', [this.id])
-    if (buildingRow.length <= 0) return this
-    this.mapId = buildingRow[0]['map_id']
-    this.image = buildingRow[0]['image']
-    this.group = buildingRow[0]['group']
-    let meterGroupRows = await DB.query('SELECT id FROM meter_groups where building_id = ?', [this.id])
-    if (expand) {
-      for (let row of meterGroupRows) {
-        this.meterGroups.push(new MeterGroup(row['id']).get())
-      }
-      this.meterGroups = await Promise.all(this.meterGroups)
-    } else {
-      for (let row of meterGroupRows) {
-        this.meterGroups.push(row['id'])
-      }
-    }
-    return this
-  }
-
   get data() {
     let meterGroups = this.meterGroups
     if (meterGroups.length > 0 && meterGroups[0] instanceof MeterGroup) {

@@ -42,18 +42,6 @@ Parameters:
     Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:97
 
 Resources:
-  test:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: test.test
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /test
-            Method: get
   SystemTime:
     Type: AWS::Serverless::Function
     Properties:
@@ -84,21 +72,6 @@ Resources:
           Properties:
             Path: /allbuildings
             Method: get
-  BuildingGet:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: building.get
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /building
-            Method: get
   BuildingPutGeoJSON:
     Type: AWS::Serverless::Function
     Properties:
@@ -114,36 +87,6 @@ Resources:
           Properties:
             Path: /buildinggeojson
             Method: put
-  MeterGroupGet:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: meter_group.get
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /metergroup
-            Method: get
-  MeterGet:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: meter.get
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /meter
-            Method: get
   MeterData:
     Type: AWS::Serverless::Function
     Properties:
@@ -209,36 +152,6 @@ Resources:
           Properties:
             Path: /meter
             Method: post
-  MeterClasses:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: meter.classes
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /meterclasses
-            Method: get
-  CampaignGet:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: campaign.get
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /campaign
-            Method: get
   CampaignGetAll:
     Type: AWS::Serverless::Function
     Properties:
@@ -253,21 +166,6 @@ Resources:
           Type: Api
           Properties:
             Path: /campaigns
-            Method: get
-  ImageAll:
-    Type: AWS::Serverless::Function
-    Properties:
-      MemorySize: 128
-      CodeUri: app/
-      Handler: images.all
-      Layers:
-        - !Ref LambdaCommonLayer
-        - !Ref EnergyModelLayer
-      Events:
-        Building:
-          Type: Api
-          Properties:
-            Path: /images
             Method: get
   ppExclude:
     Type: AWS::Serverless::Function

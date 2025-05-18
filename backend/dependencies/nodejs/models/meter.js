@@ -23,30 +23,6 @@ class Meter {
     this.pacificPowerID = null
   }
 
-  async get() {
-    await DB.connect()
-    let row
-    if (this.address && this.address !== '') {
-      row = await DB.query('SELECT * FROM meters WHERE address = ?', [this.address])
-    } else {
-      row = await DB.query('SELECT * FROM meters WHERE id = ?', [this.id])
-    }
-
-    if (row.length === 0) {
-      let notFoundError = new Error('Meter not found')
-      notFoundError.name = 'MeterNotFound'
-      throw notFoundError
-    }
-
-    this.id = row[0]['id']
-    this.name = row[0]['name']
-    this.address = row[0]['address']
-    this.classInt = row[0]['class']
-    this.pacificPowerID = row[0]['pacific_power_id']
-    this.calcProps()
-    return this
-  }
-
   set(name, classInt, pacificPowerID) {
     this.name = name
     this.classInt = classInt
