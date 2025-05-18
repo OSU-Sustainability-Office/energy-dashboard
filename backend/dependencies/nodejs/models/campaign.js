@@ -43,13 +43,13 @@ class Campaign {
     //   // data by instantiating a Building object.
     //   for (let row of campaignRows) {
     //     // Each instance of the building class is a promise that is resolved async
-    //     this.buildings.push(new Building(row['building_id_2']).get())
+    //     this.buildings.push(new Building(row['building_id']).get())
     //   }
     //   // await all of the building promises
     //   this.buildings = await Promise.all(this.buildings)
     // } else {
     //   // If the user does not wish to expand, just return the building's id
-    //   this.buildings = campaignRows.map(row => row['building_id_2'])
+    //   this.buildings = campaignRows.map(row => row['building_id'])
     // }
     this.meterGroupIDs = campaignRows.map(row => row['group_id'])
     return this

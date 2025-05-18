@@ -73,7 +73,7 @@ class Building {
               meters.class as meter_class,
               meters.pacific_power_id as pacific_power_id
         FROM buildings 
-        LEFT JOIN meter_groups on buildings.id = meter_groups.building_id_2
+        LEFT JOIN meter_groups on buildings.id = meter_groups.building_id
         LEFT JOIN meter_group_relation on meter_groups.id = meter_group_relation.group_id
         LEFT JOIN meters on meters.id = meter_group_relation.meter_id;`
     )
