@@ -69,7 +69,7 @@ export default function (graphType, point) {
 
       // Fallback for unknown point types
       default:
-        console.error('Unknown point type for line/bar chart:', point)
+        console.warn('Unknown point type for line/bar chart:', point)
         return new Default()
     }
   } else {

@@ -13,6 +13,28 @@ function findClosest (array, num) {
   return array.reduce((prev, curr) => (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev))
 }
 
+function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
+  let delta = 1
+  let daysInMonth = 1
+  switch (intervalUnit) {
+    case 'minute':
+      delta = 60
+      break
+    case 'hour':
+      delta = 3600
+      break
+    case 'day':
+      delta = 86400
+      break
+    case 'month':
+      // Use number of days in the current month to calculate delta
+      daysInMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate()
+      delta = 86400 * daysInMonth
+      break
+  }
+  return [delta * dateInterval, daysInMonth]
+}
+
 export default class LineAccumulatedModifier {
   /*
     Description: Called after getData function of chart module.
@@ -46,39 +68,19 @@ export default class LineAccumulatedModifier {
     const currentData = chartData.data
     const returnData = []
     const startDate = new Date(dateStart * 1000)
-    let delta = 1
-    let monthDays = 1
+    let [delta, curDaysInMonth] = getDeltaAndDaysInMonth(intervalUnit, startDate, dateInterval)
 
     // Array that stores keys for the currentData (used for finding nearest valid keys for Weatherford)
     const keysarray = Array.from(currentData.keys())
-
-    // Determine delta based on interval unit
-    switch (intervalUnit) {
-      case 'minute':
-        delta = 60
-        break
-      case 'hour':
-        delta = 3600
-        break
-      case 'day':
-        delta = SECONDS_PER_DAY
-        break
-      case 'month':
-        // Use number of days in the current month to calculate delta
-        monthDays = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate()
-        delta = SECONDS_PER_DAY * monthDays
-        break
-    }
-    delta *= dateInterval
 
     for (let i = dateStart; i <= dateEnd; i += delta) {
       const oldDate = new Date(i * 1000)
 
       // Adjust delta if intervalUnit is 'month' (to account for variable month lengths)
       if (intervalUnit === 'month') {
-        let monthDaysCurrent = new Date(oldDate.getFullYear(), oldDate.getMonth() + 1, 0).getDate()
-        delta += (monthDaysCurrent - monthDays) * SECONDS_PER_DAY
-        monthDays = monthDaysCurrent
+        let updatedDaysInMonth = new Date(oldDate.getFullYear(), oldDate.getMonth() + 1, 0).getDate()
+        delta += (updatedDaysInMonth - curDaysInMonth) * SECONDS_PER_DAY
+        curDaysInMonth = updatedDaysInMonth
       }
       const adjustedDate = new Date((i + delta) * 1000) // x-axis date value for chart
 
@@ -158,26 +160,8 @@ export default class LineAccumulatedModifier {
   */
   async preGetData (payload, store, module) {
     let { intervalUnit, dateInterval } = payload
-    let delta = 1
     const startDateObj = new Date(payload.dateStart * 1000)
-    switch (intervalUnit) {
-      case 'minute':
-        delta = 60
-        break
-      case 'hour':
-        delta = 3600
-        break
-      case 'day':
-        delta = 86400
-        break
-      case 'month':
-        // Use number of days in the current month to calculate delta
-        let monthDays = new Date(startDateObj.getFullYear(), startDateObj.getMonth(), 0).getDate()
-        if (startDateObj.getDate() > monthDays) monthDays = startDateObj.getDate()
-        delta = 86400 * monthDays
-        break
-    }
-    delta *= dateInterval
+    const delta = getDeltaAndDaysInMonth(intervalUnit, startDateObj, dateInterval)[0]
     payload.dateStart = payload.dateStart - delta - (payload.dateStart % 900)
   }
 }

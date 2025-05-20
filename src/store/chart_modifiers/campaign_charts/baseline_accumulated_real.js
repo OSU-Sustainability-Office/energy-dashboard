@@ -7,7 +7,7 @@
 // Returns delta (time between data points) in seconds
 function getDelta (intervalUnit, startDate, dateInterval) {
   let delta = 1
-  let monthDays = 1
+  let daysInMonth = 1
   switch (intervalUnit) {
     case 'minute':
       delta = 60
@@ -20,8 +20,8 @@ function getDelta (intervalUnit, startDate, dateInterval) {
       break
     case 'month':
       // Use number of days in the current month to calculate delta
-      monthDays = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate()
-      delta = 86400 * monthDays
+      daysInMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate()
+      delta = 86400 * daysInMonth
       break
   }
   return delta * dateInterval

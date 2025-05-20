@@ -5,6 +5,28 @@
   any calculations (i.e. crunching data into weekly/monthly data points).
 */
 
+function getDelta (intervalUnit, startDate, dateInterval) {
+  let delta = 1
+  let daysInMonth = 1
+  switch (intervalUnit) {
+    case 'minute':
+      delta = 60
+      break
+    case 'hour':
+      delta = 3600
+      break
+    case 'day':
+      delta = 86400
+      break
+    case 'month':
+      // Use number of days in the current month to calculate delta
+      daysInMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate()
+      delta = 86400 * daysInMonth
+      break
+  }
+  return delta * dateInterval
+}
+
 export default class LineDefaultModifier {
   /*
     Description: Called after getData function of chart module.
@@ -42,27 +64,7 @@ export default class LineDefaultModifier {
     const currentData = chartData.data
     const result = []
     const startDate = new Date(dateStart * 1000)
-    const SECONDS_PER_DAY = 86400
-    let delta = 1
-    let monthDays = 1
-
-    // Determine delta based on interval unit
-    switch (intervalUnit) {
-      case 'minute':
-        delta = 60
-        break
-      case 'hour':
-        delta = 3600
-        break
-      case 'day':
-        delta = SECONDS_PER_DAY
-        break
-      case 'month':
-        monthDays = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate()
-        delta = SECONDS_PER_DAY * monthDays
-        break
-    }
-    delta *= dateInterval
+    const delta = getDelta(intervalUnit, startDate, dateInterval)
 
     // Add the data to result array as-is since it is already a time series
     for (let i = dateStart; i <= dateEnd; i += delta) {
@@ -121,27 +123,8 @@ export default class LineDefaultModifier {
   */
   async preGetData (payload, store, module) {
     const { intervalUnit, dateInterval } = payload
-    const SECONDS_PER_DAY = 86400
     const dataDate = new Date(payload.dateStart * 1000)
-    let delta = 1
-
-    switch (intervalUnit) {
-      case 'minute':
-        delta = 60
-        break
-      case 'hour':
-        delta = 3600
-        break
-      case 'day':
-        delta = SECONDS_PER_DAY
-        break
-      case 'month':
-        let monthDays = new Date(dataDate.getFullYear(), dataDate.getMonth(), 0).getDate()
-        if (dataDate.getDate() > monthDays) monthDays = dataDate.getDate()
-        delta = SECONDS_PER_DAY * monthDays
-        break
-    }
-    delta *= dateInterval
+    const delta = getDelta(intervalUnit, dataDate, dateInterval)
 
     // Adjust dateStart to align with data points in the database
     // Round down to 15 minute intervals
