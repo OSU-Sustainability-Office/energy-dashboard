@@ -4,7 +4,6 @@
   of the buildings as a line chart. Baseline point is displayed on the
   individual building page line chart.
 */
-
 // Returns delta (time between data points) in seconds
 function getDelta (intervalUnit, startDate, dateInterval) {
   let delta = 1
@@ -29,7 +28,7 @@ function getDelta (intervalUnit, startDate, dateInterval) {
 }
 
 // Returns the average data for each day of the week
-function getBaselineData (compareStart, compareEnd, delta, differenceBaseline) {
+function getBaselineAverages (compareStart, compareEnd, delta, differenceBaseline) {
   const SECONDS_PER_DAY = 86400
   const avgBins = Array.from({ length: 7 }, () => []) // one array per day of the week
   const compareStartDay = new Date(compareStart * 1000).getDay()
@@ -121,7 +120,7 @@ export default class BaselineAccumulatedReal {
     }
 
     // Use the baseline data to calculate averages for each day of the week
-    const avgBins = getBaselineData(compareStart, compareEnd, delta, differenceBaseline)
+    const avgBins = getBaselineAverages(compareStart, compareEnd, delta, differenceBaseline)
 
     // Push either the percentage difference or the baseline point to the returnData array
     for (let i = dateStart; i <= dateEnd; i += delta) {
@@ -138,9 +137,9 @@ export default class BaselineAccumulatedReal {
           const percentDifference = changeRatio * 100 - 100 // percentage difference from baseline
 
           // do not add data point to graph if datapoint is -100% (issue with Weatherford for campaign 8, near the end)
-          if (percentDifference !== -100 && this.point === 'baseline_percentage') {
+          if (percentDifference !== -100 && this.point === 'accumulated_real_baseline_percentage') {
             returnData.push({ x: timestamp, y: percentDifference })
-          } else if (this.point === 'avg_accumulated_real') {
+          } else if (this.point === 'accumulated_real_baseline_point') {
             returnData.push({ x: timestamp, y: baselinePoint })
           }
         }
@@ -179,8 +178,8 @@ export default class BaselineAccumulatedReal {
     if (payload.intervalUnit === 'day' && payload.dateInterval > 1) {
       throw new Error('Time difference interval to large to work correctly')
     }
-    // Set the dateStart to the start of the interval
     const delta = getDelta(payload.intervalUnit, payload.dateStart, payload.dateInterval)
+    // Align the start date to the nearest 15 minute interval
     payload.dateStart = payload.dateStart - delta - (payload.dateStart % 900)
     this.point = payload.point
 

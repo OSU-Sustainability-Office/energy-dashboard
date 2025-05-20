@@ -256,7 +256,7 @@ export default {
         apparent_a: 'Apparent Power, Phase A (VA)',
         apparent_b: 'Apparent Power, Phase B (VA)',
         apparent_c: 'Apparent Power, Phase C (VA)',
-        baseline_percentage: 'Percentage (%)'
+        accumulated_real_baseline_percentage: 'Percentage (%)'
       }
       let promises = []
       for (let point of this.form.points) {

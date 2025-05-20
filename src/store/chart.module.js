@@ -273,8 +273,8 @@ const getters = {
         apparent_a: 'Apparent Power, Phase A (VA)',
         apparent_b: 'Apparent Power, Phase B (VA)',
         apparent_c: 'Apparent Power, Phase C (VA)',
-        baseline_percentage: 'Percentage (%)',
-        baseline_perc_total: 'Percentage (%)',
+        accumulated_real_baseline_percentage: 'Percentage (%)',
+        periodic_real_baseline_percentage: 'Percentage (%)',
         periodic_real_in: 'Net Energy Usage (kWh)',
         periodic_real_out: 'Energy Produced (kWh)'
       }
@@ -318,8 +318,8 @@ const getters = {
       apparent_a: 'VA',
       apparent_b: 'VA',
       apparent_c: 'VA',
-      baseline_percentage: '%',
-      baseline_perc_total: '%',
+      accumulated_real_baseline_percentage: '%',
+      periodic_real_baseline_percentage: '%',
       periodic_real_in: 'kWh',
       periodic_real_out: 'kWh'
     }

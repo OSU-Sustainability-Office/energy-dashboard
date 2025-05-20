@@ -63,9 +63,9 @@ export default class BaselinePeriodicReal {
       const avg = count > 0 ? weekdaySums[weekday] / count : -1
 
       let resultValue = 0
-      if (this.point === 'baseline_perc_total') {
+      if (this.point === 'periodic_real_baseline_percentage') {
         resultValue = ((value - avg) / avg) * 100 // Percentage difference
-      } else if (this.point === 'baseline_total') {
+      } else if (this.point === 'periodic_real_baseline_point') {
         resultValue = avg // Baseline point
       }
       result.push({

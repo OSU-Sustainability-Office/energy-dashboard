@@ -50,16 +50,16 @@ export default class CampaignLineBarModifier {
 
   /*
     Function to get the meter point based on the meter class.
-    For Pacific Power meters, the point is baseline_total.
-    For all other meters, the point is avg_accumulated_real.
+    For Pacific Power meters, the point is periodic_real_baseline_point.
+    For all other meters, the point is accumulated_real_baseline_point.
   */
   getMeterPoint (store, moduleVuex) {
-    let point = 'avg_accumulated_real'
+    let point = 'accumulated_real_baseline_point'
     const chart = moduleVuex.getters.charts[0]
     const meterGroupPath = chart.meterGroupPath
     const meterClass = store.getters[meterGroupPath + '/meters'][0].classInt
     if (meterClass === 9990002) {
-      point = 'baseline_total'
+      point = 'periodic_real_baseline_point'
     }
     return point
   }

@@ -182,7 +182,7 @@ const actions = {
   /*
     Function to get the meter point based on the meter class.
     For Pacific Power meters, the point is periodic_real_in.
-    For all other meters, the point is avg_accumulated_real.
+    For all other meters, the point is accumulated_real_baseline_point.
     This function is used to determine the point to be used for
     the baseline percentage calculation.
   */

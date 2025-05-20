@@ -59,12 +59,12 @@ export default function (graphType, point) {
         return new AverageModifier()
 
       // Campaign charts
-      case 'baseline_percentage':
-      case 'avg_accumulated_real':
+      case 'accumulated_real_baseline_percentage':
+      case 'accumulated_real_baseline_point':
         return new BaselineAccumulatedReal()
 
-      case 'baseline_total':
-      case 'baseline_perc_total':
+      case 'periodic_real_baseline_percentage':
+      case 'periodic_real_baseline_point':
         return new BaselinePeriodicReal()
 
       // Fallback for unknown point types
