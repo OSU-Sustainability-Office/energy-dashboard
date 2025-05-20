@@ -28,22 +28,19 @@ function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
 }
 
 export default class LineAverageModifier {
-  // Calculate average values for the specified time interval
   async postGetData (chartData, payload, store, module) {
     const { dateStart, dateEnd, intervalUnit, dateInterval } = payload
     const SECONDS_PER_DAY = 86400
     const currentData = chartData.data
     const returnData = []
     const startDate = new Date(dateStart * 1000)
-
-    // Determine delta (time between data points)
     let [delta, curDaysInMonth] = getDeltaAndDaysInMonth(intervalUnit, startDate, dateInterval)
 
     let accumulatedVal = 0
     let curDate = new Date((dateStart + delta) * 1000)
     let accumulatedTime = 0
     for (let i = dateStart; i <= dateEnd; i += 900) {
-      // Reset accumulated time if it exceeds the delta
+      // Reset accumulated time and push results when the interval is reached
       if (accumulatedTime >= delta) {
         returnData.push({ x: curDate, y: accumulatedVal / (accumulatedTime / 900) })
         accumulatedTime = 0
@@ -69,7 +66,6 @@ export default class LineAverageModifier {
     if (returnData.filter(o => !isNaN(o.y) && o.y > -1).length > 1) {
       chartData.data = returnData
     } else {
-      // Shows "No Data" on the campaign buildings sidebar
       chartData.data = []
     }
   }
@@ -78,8 +74,6 @@ export default class LineAverageModifier {
   async preGetData (payload, store, module) {
     let { intervalUnit, dateInterval } = payload
     const startDateObj = new Date(payload.dateStart * 1000)
-
-    // Determine delta (time between data points)
     const delta = getDeltaAndDaysInMonth(intervalUnit, startDateObj, dateInterval)[0]
 
     // Adjust dateStart to align with data points in the database

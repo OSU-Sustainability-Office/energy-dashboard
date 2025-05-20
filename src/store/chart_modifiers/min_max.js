@@ -1,8 +1,7 @@
 /**
   Filename: min_max.js
   Description: Chart modifier that calculates the minimum or maximum
-  value of a specified data point over a given time interval. Currently,
-  only used for Acquisuite so it assumes 15 minute intervals.
+  value of a specified data point over a given time interval.
 */
 
 function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
@@ -27,8 +26,16 @@ function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
   return [delta * dateInterval, daysInMonth]
 }
 
-export default class LineMinMaxModifier {
-  // Calculate min/max values for the specified time interval
+function getStartingValue (pointType) {
+  if (pointType === 'Max') {
+    return -Infinity
+  } else if (pointType === 'Min') {
+    return Infinity
+  }
+  return 0
+}
+
+export default class MinMaxModifier {
   async postGetData (chartData, payload, store, module) {
     const { dateStart, dateEnd, intervalUnit, dateInterval, point } = payload
     const SECONDS_PER_DAY = 86400
@@ -60,19 +67,17 @@ export default class LineMinMaxModifier {
       'pf_c': 'Min',
       'minimum': 'Min'
     }
-
-    // Determine delta (time between data points)
     let [delta, curDaysInMonth] = getDeltaAndDaysInMonth(intervalUnit, startDate, dateInterval)
 
-    let bestVal = 0
+    let bestVal = getStartingValue(pointMap[point])
     let curDate = new Date((dateStart + delta) * 1000)
     let accumulatedTime = 0
     for (let i = dateStart; i <= dateEnd; i += 900) {
-      // Reset accumulated time if it exceeds the delta
+      // Reset accumulated time and push results when the interval is reached
       if (accumulatedTime >= delta) {
         returnData.push({ x: curDate, y: bestVal })
         accumulatedTime = 0
-        bestVal = 0
+        bestVal = getStartingValue(pointMap[point])
 
         // Adjust date for the next interval
         const oldDate = new Date(i * 1000)
@@ -92,14 +97,12 @@ export default class LineMinMaxModifier {
         bestVal = Math.min(bestVal, Math.abs(curVal))
       }
 
-      // Update accumulated time
       accumulatedTime += 900
     }
     // Prevent scenarios where there is only one valid data point
     if (returnData.filter(o => !isNaN(o.y) && o.y > -1).length > 1) {
       chartData.data = returnData
     } else {
-      // Shows "No Data" on the campaign buildings sidebar
       chartData.data = []
     }
   }
@@ -107,8 +110,6 @@ export default class LineMinMaxModifier {
   async preGetData (payload, store, module) {
     let { intervalUnit, dateInterval } = payload
     const startDateObj = new Date(payload.dateStart * 1000)
-
-    // Determine delta (time between data points)
     const delta = getDeltaAndDaysInMonth(intervalUnit, startDateObj, dateInterval)[0]
 
     // Adjust dateStart to align with data points in the database
