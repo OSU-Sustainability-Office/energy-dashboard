@@ -83,7 +83,7 @@ export default class LineAccumulatedModifier {
         delta += (monthDaysCurrent - monthDays) * SECONDS_PER_DAY
         monthDays = monthDaysCurrent
       }
-      const dataDate = new Date((i + delta) * 1000) // x-axis date value for chart
+      const adjustedDate = new Date((i + delta) * 1000) // x-axis date value for chart
 
       let startKey, endKey
 
@@ -128,12 +128,19 @@ export default class LineAccumulatedModifier {
         // While some readings are negative for offset purposes, we should
         // still display them as positive readings since negative electricity
         // isn't really what our meters should detect.
-        returnData.push({ x: dataDate, y: Math.abs(difference) })
+        returnData.push({ x: adjustedDate, y: Math.abs(difference) })
       } catch (error) {
         console.log(error)
       }
     }
-    chartData.data = returnData
+
+    // Prevent scenarios where there is only one valid data point
+    if (returnData.filter(o => !isNaN(o.y) && o.y > -1).length > 1) {
+      chartData.data = returnData
+    } else {
+      // Shows "No Data" on the campaign buildings sidebar
+      chartData.data = []
+    }
   }
 
   /*
