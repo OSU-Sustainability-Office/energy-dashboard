@@ -70,8 +70,8 @@ export default class LineAccumulatedModifier {
     const startDate = new Date(dateStart * 1000)
     let [delta, curDaysInMonth] = getDeltaAndDaysInMonth(intervalUnit, startDate, dateInterval)
 
-    // Array that stores keys for the currentData (used for finding nearest valid keys for Weatherford)
-    const keysarray = Array.from(currentData.keys())
+    // Stores date keys for currentData (used for finding nearest valid keys for Weatherford)
+    const dateKeysArray = Array.from(currentData.keys())
 
     for (let i = dateStart; i <= dateEnd; i += delta) {
       const oldDate = new Date(i * 1000)
@@ -87,37 +87,31 @@ export default class LineAccumulatedModifier {
       let startKey, endKey
 
       // If array is empty, don't use the nearest valid index algorithm (needed for past 6 hours / past day on Weatherford)
-      if (keysarray.length === 0) {
+      if (dateKeysArray.length === 0) {
         startKey = delta + i
         endKey = i
       } else {
         // If delta + i is out of range, don't use the nearest valid index algorithm (e.g. make sure May 2 data isn't included if campaign ends May 1)
         if (delta + i < dateEnd) {
-          startKey = findClosest(keysarray, delta + i)
+          startKey = findClosest(dateKeysArray, delta + i)
         } else {
           startKey = delta + i
         }
-        endKey = findClosest(keysarray, i)
+        endKey = findClosest(dateKeysArray, i)
       }
 
       try {
-        // Get the values for the start and end keys
         const startValue = currentData.get(startKey)
         const endValue = currentData.get(endKey)
-
-        // Skip if values are NaN
         if (isNaN(startValue) || isNaN(endValue)) {
           continue
         }
-        // Skip if ending value is unexpectedly lower than starting value
         if (Math.abs(startValue) < Math.abs(endValue)) {
           continue
         }
-        // Skip if either value is zero
         if (startValue === 0 || endValue === 0) {
           continue
         }
-        // Compute the difference between the two values
         let difference = startValue - endValue
 
         if (point === 'total') {
