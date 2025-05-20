@@ -1,8 +1,8 @@
 /**
   Filename: default.js
-  Description: Default class for line/bar chart modifiers. Assumes data is already
-  a time series (e.g. periodic_real_in). This modifier ensures that the number of
-  data points is equal to the number of intervals.
+  Description: Default class for line/bar chart modifiers. This modifier
+  is used as a fallback, but should not be relied on as it doesn't perform
+  any calculations (i.e. crunching data into weekly/monthly data points).
 */
 
 export default class LineDefaultModifier {
