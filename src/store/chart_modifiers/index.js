@@ -9,9 +9,8 @@ import Default from './default.js'
 import PeriodicReal from './periodic_real.js'
 import MinMaxModifier from './min_max.js'
 import AverageModifier from './average.js'
-import BaselinePerc from './campaign_charts/baseline_perc.js'
-import BaselineAvg from './campaign_charts/avg_accumulated_real.js'
-import PeriodicRealBaseline from './campaign_charts/periodic_real_baseline.js'
+import BaselineAccumulatedReal from './campaign_charts/baseline_accumulated_real.js'
+import BaselinePeriodicReal from './campaign_charts/baseline_periodic_real.js'
 
 export default function (graphType, point) {
   // 1 = Line, 2 = bar
@@ -61,13 +60,14 @@ export default function (graphType, point) {
 
       // Campaign charts
       case 'baseline_percentage':
-        return new BaselinePerc()
       case 'avg_accumulated_real':
-        return new BaselineAvg()
+        return new BaselineAccumulatedReal()
+
       case 'baseline_total':
       case 'baseline_perc_total':
-        return new PeriodicRealBaseline()
+        return new BaselinePeriodicReal()
 
+      // Fallback for unknown point types
       default:
         console.error('Unknown point type for line/bar chart:', point)
         return new Default()

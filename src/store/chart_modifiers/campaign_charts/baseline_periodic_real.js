@@ -1,11 +1,11 @@
 /**
-  Filename: periodic_real_baseline.js
+  Filename: baseline_periodic_real.js
   Description: Percentage difference is displayed on main campaign page with all
-  of the buildings as a line chart. Baseline value is displayed on the
+  of the buildings as a line chart. Baseline point is displayed on the
   individual building page line chart.
 */
 import { DateTime } from 'luxon'
-export default class PeriodicRealBaseline {
+export default class BaselinePeriodicReal {
   constructor () {
     this.point = null
   }
@@ -66,7 +66,7 @@ export default class PeriodicRealBaseline {
       if (this.point === 'baseline_perc_total') {
         resultValue = ((value - avg) / avg) * 100 // Percentage difference
       } else if (this.point === 'baseline_total') {
-        resultValue = avg // Baseline value as a whole
+        resultValue = avg // Baseline point
       }
       result.push({
         x: startOfDay.toJSDate(),
