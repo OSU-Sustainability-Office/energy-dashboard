@@ -5,8 +5,8 @@
   only used for Acquisuite so it assumes 15 minute intervals.
 */
 
-// Use intervalUnit and dateInterval to determine delta (time between data points)
-// and monthDays (number of days in the current month) for the start date
+// Returns delta (time between data points) in seconds
+// and monthDays (number of days in the current month)
 function getDelta (intervalUnit, startDate, dateInterval) {
   let delta = 1
   let monthDays = 1
