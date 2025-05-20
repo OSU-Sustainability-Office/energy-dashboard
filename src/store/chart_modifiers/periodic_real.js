@@ -47,7 +47,7 @@ function getMonthBucketKey (currentDate, startDate) {
   return Math.floor(bucketStart.toSeconds())
 }
 
-export default class LinePeriodicRealModifier {
+export default class PeriodicRealModifier {
   /*
     Description: Called after getData function of chart module. Handles
     calculations for data that is collected on a day-to-day basis.
@@ -89,8 +89,6 @@ export default class LinePeriodicRealModifier {
     // Aggregate data into buckets based on the specified interval
     for (const [epoch, val] of currentData.entries()) {
       const currentDate = DateTime.fromSeconds(epoch, { zone: TIMEZONE })
-
-      // Get the bucket key based on the interval unit
       let bucketKey
       switch (intervalUnit) {
         case 'minute':
@@ -124,13 +122,12 @@ export default class LinePeriodicRealModifier {
       })
     }
 
-    // Fill chart for Solar Panel data
+    // Fill chart for Solar Panel data only
     if (point === 'periodic_real_out') {
       chartData.fill = true
     }
 
     // Prevent scenarios where there is only one valid data point
-    // Shows "No Data" on the campaign buildings sidebar
     if (result.filter(o => !isNaN(o.y) && o.y > -1).length > 1) {
       chartData.data = result
     } else {
