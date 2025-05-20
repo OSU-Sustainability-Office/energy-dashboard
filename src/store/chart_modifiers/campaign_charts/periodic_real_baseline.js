@@ -1,13 +1,14 @@
 /**
-  Filename: baseline_perc_total.js
-  Description: Chart modifier for processing and formatting the baseline for
-  total data (e.g. periodic_real_in) as a percentage. This is displayed
-  on the main campaign page with all of the buildings as a line chart.
-  Note: Logic is nearly identical to baseline_total.js, but this gets
-  a percentage difference from the baseline instead of a kWh difference.
+  Filename: periodic_real_baseline.js
+  Description: Percentage difference is displayed on main campaign page with all
+  of the buildings as a line chart. Baseline value is displayed on the
+  individual building page line chart.
 */
 import { DateTime } from 'luxon'
-export default class LineTotalPercModifier {
+export default class PeriodicRealBaseline {
+  constructor () {
+    this.point = null
+  }
   /*
     Description: Called after getData function of chart module.
 
@@ -31,19 +32,17 @@ export default class LineTotalPercModifier {
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')
           dateInterval: count of interval units to group data points by (integer)
         }
-      - store (vuex store)
-      - module: (vuex module) module dispatching this function call
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
     const { baselineData } = payload
-    const rawData = chartData.data
+    const currentData = chartData.data
     const result = []
     const weekdaySums = Array(7).fill(0)
     const weekdayCounts = Array(7).fill(0)
 
-    // Calculate sum and count for each weekday
+    // Calculate sum and count for each day of the week as baseline
     for (const [timestamp, value] of baselineData.entries()) {
       const dt = DateTime.fromSeconds(timestamp, { zone: 'America/Los_Angeles' })
       const weekday = dt.weekday % 7  // 0 = Sunday, 6 = Saturday
@@ -53,22 +52,25 @@ export default class LineTotalPercModifier {
       }
     }
 
-    // Calculate the average for each day of the week
-    for (const [currentTimestamp, currentValue] of rawData.entries()) {
-      const currentDate = DateTime.fromSeconds(currentTimestamp, { zone: 'America/Los_Angeles' })
+    // Compute the difference between the current data and the baseline
+    for (const [timestamp, value] of currentData.entries()) {
+      const currentDate = DateTime.fromSeconds(timestamp, { zone: 'America/Los_Angeles' })
+      const startOfDay = currentDate.startOf('day').plus({ days: 1 })
 
-      // Get the average value for the current date's weekday
+      // Baseline value is based on current date's day of the week
       const weekday = currentDate.weekday % 7
       const count = weekdayCounts[weekday]
       const avg = count > 0 ? weekdaySums[weekday] / count : -1
 
-      // Calculate the percentage difference
-      const percentageDifference = ((currentValue - avg) / avg) * 100
-
-      const startOfDay = currentDate.startOf('day').plus({ days: 1 })
+      let resultValue = 0
+      if (this.point === 'baseline_perc_total') {
+        resultValue = ((value - avg) / avg) * 100 // Percentage difference
+      } else if (this.point === 'baseline_total') {
+        resultValue = avg // Baseline value as a whole
+      }
       result.push({
         x: startOfDay.toJSDate(),
-        y: percentageDifference
+        y: resultValue
       })
     }
 
@@ -94,13 +96,12 @@ export default class LineTotalPercModifier {
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')
           dateInterval: count of interval units to group data points by (integer)
         }
-      - store (vuex store)
-      - module: (vuex module) module dispatching this function call
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
     const meterGroupPath = module.getters.meterGroupPath
+    this.point = payload.point
     payload.point = 'periodic_real_in'
     const baselinePayload = {
       ...payload,

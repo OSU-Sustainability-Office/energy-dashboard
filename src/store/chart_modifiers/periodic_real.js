@@ -79,6 +79,7 @@ export default class LinePeriodicRealModifier {
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
+    console.log(chartData)
     const { dateStart, dateEnd, dateInterval, intervalUnit, point } = payload
     const TIMEZONE = 'America/Los_Angeles'
     const currentData = chartData.data
