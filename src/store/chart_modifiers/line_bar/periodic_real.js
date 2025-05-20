@@ -5,13 +5,6 @@
 */
 import { DateTime } from 'luxon'
 
-// periodic_real meters currently don't have data for the minute or hour,
-// so we can just default to the day interval
-function getSmallIntervalKey (currentDate) {
-  const bucketStart = currentDate.startOf('day').plus({ days: 1 })
-  return Math.floor(bucketStart.toSeconds())
-}
-
 // This function is used for calculating bucket keys for day and week intervals.
 // It works by rounding down the current date to the nearest interval boundary
 // relative to the provided start date.
@@ -59,9 +52,8 @@ export default class LinePeriodicRealModifier {
     this.data = {}
   }
   /*
-    Description: Called after getData function of chart module.
-    Since the data is already a time series, this function does not
-    need to do any additional calculations.
+    Description: Called after getData function of chart module. Handles
+    calculations for data that is collected on a day-to-day basis.
 
     Arguments:
       - chartData (object)
@@ -105,11 +97,9 @@ export default class LinePeriodicRealModifier {
       let bucketKey
       switch (intervalUnit) {
         case 'minute':
-          bucketKey = getSmallIntervalKey(currentDate)
-          break
         case 'hour':
-          bucketKey = getSmallIntervalKey(currentDate)
-          break
+          // Skip processing for 'minute' and 'hour' intervals
+          continue
         case 'day':
           bucketKey = getDayBucketKey(currentDate, startDate, dateInterval)
           break
