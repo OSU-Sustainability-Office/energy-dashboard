@@ -35,7 +35,7 @@ function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
   return [delta * dateInterval, daysInMonth]
 }
 
-export default class LineAccumulatedModifier {
+export default class AccumulatedModifier {
   /*
     Description: Called after getData function of chart module.
     Arguments:

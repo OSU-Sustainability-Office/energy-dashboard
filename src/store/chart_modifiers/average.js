@@ -27,7 +27,7 @@ function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
   return [delta * dateInterval, daysInMonth]
 }
 
-export default class LineAverageModifier {
+export default class AverageModifier {
   async postGetData (chartData, payload, store, module) {
     const { dateStart, dateEnd, intervalUnit, dateInterval } = payload
     const SECONDS_PER_DAY = 86400

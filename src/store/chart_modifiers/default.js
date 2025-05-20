@@ -27,7 +27,7 @@ function getDelta (intervalUnit, startDate, dateInterval) {
   return delta * dateInterval
 }
 
-export default class LineDefaultModifier {
+export default class DefaultModifier {
   /*
     Description: Called after getData function of chart module.
     Since the data is already a time series, this function does not
