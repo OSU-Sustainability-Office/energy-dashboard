@@ -6,9 +6,6 @@
 */
 
 export default class LineDefaultModifier {
-  constructor () {
-    this.data = {}
-  }
   /*
     Description: Called after getData function of chart module.
     Since the data is already a time series, this function does not

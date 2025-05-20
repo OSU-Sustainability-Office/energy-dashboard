@@ -14,9 +14,6 @@ function findClosest (array, num) {
 }
 
 export default class LineAccumulatedModifier {
-  constructor () {
-    this.data = {}
-  }
   /*
     Description: Called after getData function of chart module.
     Arguments:

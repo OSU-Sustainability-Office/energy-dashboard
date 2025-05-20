@@ -48,9 +48,6 @@ function getMonthBucketKey (currentDate, startDate) {
 }
 
 export default class LinePeriodicRealModifier {
-  constructor () {
-    this.data = {}
-  }
   /*
     Description: Called after getData function of chart module. Handles
     calculations for data that is collected on a day-to-day basis.
