@@ -1,10 +1,10 @@
 /**
   Filename: baseline_accumulated_real.js
   Description: Percentage difference is displayed on main campaign page with all
-  of the buildings as a line chart. Baseline point is displayed on the
+  of the buildings as a line chart. Baseline points are displayed on the
   individual building page line chart.
 */
-// Returns delta (time between data points) in seconds
+
 function getDelta (intervalUnit, startDate, dateInterval) {
   let delta = 1
   let daysInMonth = 1
@@ -27,7 +27,7 @@ function getDelta (intervalUnit, startDate, dateInterval) {
   return delta * dateInterval
 }
 
-// Returns the average data for each day of the week
+// Returns the average values for each day of the week based on baseline data
 function getBaselineAverages (compareStart, compareEnd, delta, differenceBaseline) {
   const SECONDS_PER_DAY = 86400
   const avgBins = Array.from({ length: 7 }, () => []) // one array per day of the week
@@ -119,10 +119,10 @@ export default class BaselineAccumulatedReal {
       }
     }
 
-    // Use the baseline data to calculate averages for each day of the week
+    // Baseline value is based on current date's day of the week
     const avgBins = getBaselineAverages(compareStart, compareEnd, delta, differenceBaseline)
 
-    // Push either the percentage difference or the baseline point to the returnData array
+    // Set the baseline value for each current data point
     for (let i = dateStart; i <= dateEnd; i += delta) {
       try {
         if (isNaN(currentData.get(delta + i)) || isNaN(currentData.get(i))) {
@@ -152,6 +152,7 @@ export default class BaselineAccumulatedReal {
     if (returnData.filter(o => !isNaN(o.y) && o.y > -1).length > 0) {
       chartData.data = returnData
     } else {
+      // Shows "No Data" on the campaign buildings sidebar
       chartData.data = []
     }
   }

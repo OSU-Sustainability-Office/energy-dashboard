@@ -1,7 +1,7 @@
 /**
   Filename: baseline_periodic_real.js
   Description: Percentage difference is displayed on main campaign page with all
-  of the buildings as a line chart. Baseline point is displayed on the
+  of the buildings as a line chart. Baseline points are displayed on the
   individual building page line chart.
 */
 import { DateTime } from 'luxon'
@@ -42,7 +42,7 @@ export default class BaselinePeriodicReal {
     const weekdaySums = Array(7).fill(0)
     const weekdayCounts = Array(7).fill(0)
 
-    // Calculate sum and count for each day of the week as baseline
+    // Sum the values for each day of the week from the baseline data
     for (const [timestamp, value] of baselineData.entries()) {
       const dt = DateTime.fromSeconds(timestamp, { zone: 'America/Los_Angeles' })
       const weekday = dt.weekday % 7  // 0 = Sunday, 6 = Saturday
@@ -52,12 +52,10 @@ export default class BaselinePeriodicReal {
       }
     }
 
-    // Compute the difference between the current data and the baseline
+    // Baseline value is based on current date's day of the week
     for (const [timestamp, value] of currentData.entries()) {
       const currentDate = DateTime.fromSeconds(timestamp, { zone: 'America/Los_Angeles' })
       const startOfDay = currentDate.startOf('day').plus({ days: 1 })
-
-      // Baseline value is based on current date's day of the week
       const weekday = currentDate.weekday % 7
       const count = weekdayCounts[weekday]
       const avg = count > 0 ? weekdaySums[weekday] / count : -1
@@ -103,6 +101,8 @@ export default class BaselinePeriodicReal {
     const meterGroupPath = module.getters.meterGroupPath
     this.point = payload.point
     payload.point = 'periodic_real_in'
+
+    // Fetch the baseline data
     const baselinePayload = {
       ...payload,
       dateStart: payload.compareStart,
