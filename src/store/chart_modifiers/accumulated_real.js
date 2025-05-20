@@ -114,10 +114,9 @@ export default class AccumulatedModifier {
         }
         let difference = startValue - endValue
 
-        if (point === 'total') {
-          // Steam meters report in 100s of lbs
-          difference *= 100
-        }
+        // Steam meters report in 100s of lbs
+        if (point === 'total') difference *= 100
+
         // While some readings are negative for offset purposes, we should
         // still display them as positive readings since negative electricity
         // isn't really what our meters should detect.
@@ -131,7 +130,6 @@ export default class AccumulatedModifier {
     if (returnData.filter(o => !isNaN(o.y) && o.y > -1).length > 1) {
       chartData.data = returnData
     } else {
-      // Shows "No Data" on the campaign buildings sidebar
       chartData.data = []
     }
   }
