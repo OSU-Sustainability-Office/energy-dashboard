@@ -14,7 +14,7 @@
         <el-col v-if="loaded" :class="[modelValue === block.path ? 'buildingCol selected' : 'buildingCol']" :span="24">
           <div :class="[modelValue === block.path ? 'outerClip selected' : 'outerClip']">
             <div
-              v-if="!isNaN(accumulatedPercentage(block.path))"
+              v-if="!isNaN(getBaselinePercentage(block.path))"
               :class="[modelValue === block.path ? 'innerClip selected' : 'innerClip']"
               :style="`background-color:${computedColor(block.path)};`"
               @click="buildingClick(block.path)"
@@ -26,8 +26,8 @@
               >
               {{ block.name }}
               {{
-                (accumulatedPercentage(block.path) > 0 ? '+' : '') +
-                (Math.round(100 * accumulatedPercentage(block.path)) / 100).toString() +
+                (getBaselinePercentage(block.path) > 0 ? '+' : '') +
+                (Math.round(100 * getBaselinePercentage(block.path)) / 100).toString() +
                 '%'
               }}
             </div>
@@ -72,8 +72,8 @@ export default {
 
         // Sort the blocks based on accumulated percentage
         return [...blockCopy].sort((a, b) => {
-          const pA = this.accumulatedPercentage(a.path)
-          const pB = this.accumulatedPercentage(b.path)
+          const pA = this.getBaselinePercentage(a.path)
+          const pB = this.getBaselinePercentage(b.path)
           if (isNaN(pA) && !isNaN(pB)) return 1
           if (!isNaN(pA) && isNaN(pB)) return -1
           return pA - pB
@@ -89,9 +89,9 @@ export default {
         this.$emit('update:modelValue', building)
       }
     },
-    accumulatedPercentage: function (path) {
+    getBaselinePercentage: function (path) {
       if (this.$store.getters[path + '/modifierData']) {
-        return this.$store.getters[path + '/modifierData']('campaign_linebar').accumulatedPercentage
+        return this.$store.getters[path + '/modifierData']('campaign_linebar').baselinePercentage
       }
       return undefined
     },
@@ -102,7 +102,7 @@ export default {
       if (!this.$store.getters[path + '/modifierData']('campaign_linebar')) {
         return
       }
-      const percentage = this.accumulatedPercentage(path)
+      const percentage = this.getBaselinePercentage(path)
       // #d62326 - Bottom Red
       // #19a23a - Top Green
       const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]

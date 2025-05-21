@@ -120,7 +120,7 @@ const actions = {
                 await this.dispatch(block.path + '/getData')
                 sortList.push({
                   path: block.path,
-                  value: this.getters[block.path + '/modifierData']('campaign_linebar').accumulatedPercentage
+                  value: this.getters[block.path + '/modifierData']('campaign_linebar').baselinePercentage
                 })
                 resolve()
               })

@@ -11,7 +11,7 @@ export default class CampaignLineBarModifier {
   constructor (store, module) {
     this.promise = null
     this.data = {
-      accumulatedPercentage: 0, // Used to display the percentage on the leaderboard
+      baselinePercentage: 0, // Used to display the percentage on the leaderboard
       rank: -1, // Used to display the rank on the leaderboard
       compareStart: 0,
       compareEnd: 0
@@ -72,7 +72,7 @@ export default class CampaignLineBarModifier {
    */
   getColors (current, baseline, data) {
     const colors = []
-    this.data.accumulatedPercentage = 0
+    this.data.baselinePercentage = 0
 
     // RGB values for the color extremes
     const redRGB = [214, 35, 38] // Red for large positive deviations (> 7.5%)
@@ -91,7 +91,7 @@ export default class CampaignLineBarModifier {
         console.error('Error calculating percentage difference:', e)
         continue
       }
-      this.data.accumulatedPercentage += percentage // update accumulated percentage
+      this.data.baselinePercentage += percentage // update accumulated percentage
 
       // Compute blend factor (0 to 1)
       const blendFactor = Math.min(Math.abs(percentage) / threshold, 1)
@@ -123,7 +123,7 @@ export default class CampaignLineBarModifier {
     }
 
     // Set the average accumulated percentage in-place
-    this.data.accumulatedPercentage /= current.length
+    this.data.baselinePercentage /= current.length
 
     return colors
   }
