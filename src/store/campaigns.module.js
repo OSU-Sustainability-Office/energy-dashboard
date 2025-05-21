@@ -30,14 +30,8 @@ const actions = {
             store.commit(campaign + '/meterGroupIds', c.meterGroupIDs)
             store.commit(campaign + '/path', campaignPath)
             store.commit(campaign + '/id', c.id)
-            store.commit(
-              campaign + '/dateStart',
-              new Date(c.dateStart).getTime()
-            )
-            store.commit(
-              campaign + '/dateEnd',
-              new Date(c.dateEnd).getTime()
-            )
+            store.commit(campaign + '/dateStart', new Date(c.dateStart).getTime())
+            store.commit(campaign + '/dateEnd', new Date(c.dateEnd).getTime())
             store.commit(campaign + '/compareStart', new Date(c.compareStart).getTime())
             store.commit(campaign + '/compareEnd', new Date(c.compareEnd).getTime())
             store.commit(campaign + '/media', c.media)

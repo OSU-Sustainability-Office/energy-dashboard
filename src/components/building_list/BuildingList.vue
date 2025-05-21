@@ -105,7 +105,13 @@ export default {
 
         // Create a new object with 'All' first, then the rest alphabetically
         const sortedGroups = { All: groupedBuildings.All }
+<<<<<<< HEAD
         const groupKeys = Object.keys(groupedBuildings).filter(k => k !== 'All').sort()
+=======
+        const groupKeys = Object.keys(groupedBuildings)
+          .filter(k => k !== 'All')
+          .sort()
+>>>>>>> master
         for (const key of groupKeys) {
           sortedGroups[key] = groupedBuildings[key]
         }

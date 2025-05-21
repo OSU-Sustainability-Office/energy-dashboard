@@ -9,6 +9,7 @@
     <el-col class="main">
       <el-row class="bar">
         <el-col :span="20">
+<<<<<<< HEAD
           <el-menu
             mode="horizontal"
             class="menu"
@@ -16,6 +17,9 @@
             text-color="#1a1a1a"
             :router="true"
           >
+=======
+          <el-menu mode="horizontal" class="menu" background-color="#FFF" text-color="#1a1a1a" :router="true">
+>>>>>>> master
             <!-- Menu for building groups -->
             <el-sub-menu index="1" :router="true">
               <template #title><i class="fas fa-th-large"></i>{{ groupName }}</template>

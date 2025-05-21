@@ -27,7 +27,8 @@ const actions = {
     store.commit(buildingSpace + '/id', payload.id)
     store.commit(buildingSpace + '/hidden', payload.hidden)
     store.commit(buildingSpace + '/geoJSON', JSON.parse(payload.geoJSON))
-    if (!payload.geoJSON && payload.mapId) { // if geoJSON is not provided, we need to fetch it
+    if (!payload.geoJSON && payload.mapId) {
+      // if geoJSON is not provided, we need to fetch it
       store.commit('setBuildingInMap', { mapId: payload.mapId, building: store.state[buildingSpace] })
     }
     let mgPromises = []

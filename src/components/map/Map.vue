@@ -114,7 +114,17 @@
           @hide="showbuildingCompare = false"
           :compareStories="compareStories"
         />
+<<<<<<< HEAD
         <BuildingModal ref="buildingModal" v-if="showSide" key="buildingModal" @hide="showSide = false" @startCompare="startCompare" />
+=======
+        <BuildingModal
+          ref="buildingModal"
+          v-if="showSide"
+          key="buildingModal"
+          @hide="showSide = false"
+          @startCompare="startCompare"
+        />
+>>>>>>> master
       </transition-group>
     </el-col>
   </el-row>
@@ -444,6 +454,7 @@ export default {
       return this.selected.includes(v)
     },
     handleSelect: function (string) {
+      this.processedLayers = 0 // show loading indicator after switching categories
       if (this.selected.includes(string)) {
         this.selected = this.selected.filter(item => item !== string)
       } else {
@@ -537,7 +548,6 @@ export default {
         const color = this.computedColor(normalizedSlope)
         layer.setStyle({ fillColor: color, color: color })
       } catch (err) {
-        console.error(err)
         layer.setStyle({ fillColor: '#000', color: '#000' })
       }
     },
@@ -565,6 +575,7 @@ export default {
   },
   watch: {
     selectedOption (energyFilter) {
+      this.processedLayers = 0 // show loading indicator after switching filters
       this.rKey++
       this.$nextTick(() => {
         this.map = this.$refs.map.leafletObject
@@ -589,7 +600,6 @@ export default {
       async handler () {
         this.search = ''
         this.rKey++
-        this.mapLoaded = false
         await this.$nextTick()
         let promises = []
         this.$refs.geoLayer.forEach(geoJsonComponent => {
@@ -603,7 +613,7 @@ export default {
           })
         })
         await Promise.all(promises)
-        this.mapLoaded = true
+        this.processedLayers = this.filteredBuildings.length
       }
     },
     search: function (v) {

@@ -71,14 +71,13 @@ export default {
         const blockCopy = this.$store.getters[this.path + '/blocks'] || []
 
         // Sort the blocks based on accumulated percentage
-        return [...blockCopy]
-          .sort((a, b) => {
-            const pA = this.accumulatedPercentage(a.path)
-            const pB = this.accumulatedPercentage(b.path)
-            if (isNaN(pA) && !isNaN(pB)) return 1
-            if (!isNaN(pA) && isNaN(pB)) return -1
-            return pA - pB
-          })
+        return [...blockCopy].sort((a, b) => {
+          const pA = this.accumulatedPercentage(a.path)
+          const pB = this.accumulatedPercentage(b.path)
+          if (isNaN(pA) && !isNaN(pB)) return 1
+          if (!isNaN(pA) && isNaN(pB)) return -1
+          return pA - pB
+        })
       }
     }
   },
