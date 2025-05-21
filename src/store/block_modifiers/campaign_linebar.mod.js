@@ -9,17 +9,10 @@ export default class CampaignLineBarModifier {
   static name = 'campaign_linebar'
 
   constructor (store, module) {
-    /*
-      Initialize the modifier here,
-      this is only an example modifier that
-      does nothing. Expect the instance
-      variables to be more descriptive for
-      specific modifiers
-    */
     this.promise = null
     this.data = {
-      accumulatedPercentage: 0,
-      rank: -1,
+      accumulatedPercentage: 0, // Used to display the percentage on the leaderboard
+      rank: -1, // Used to display the rank on the leaderboard
       compareStart: 0,
       compareEnd: 0
     }
@@ -29,13 +22,17 @@ export default class CampaignLineBarModifier {
    * Function is called when a modifier is added to a block.
    * Store is Vuex store, module is block module.
    */
-  async onAdd (store, module) {}
+  async onAdd (store, module) {
+    // Required to load campaign line/bar chart - No additional logic needed
+  }
 
   /*
     Function is called when a modifier is removed from a block.
     Store is Vuex store, module is block module.
   */
-  async onRemove (store, moduleVuex) {}
+  async onRemove (store, moduleVuex) {
+    // Required to unload campaign line/bar chart - No additional logic needed
+  }
 
   /*
    * Function is called when a block updates modifier data.

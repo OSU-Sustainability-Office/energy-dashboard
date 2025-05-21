@@ -98,6 +98,7 @@ const actions = {
   },
 
   async update (store, payload) {
+    // skip if the payload is the same as the current state
     if (
       payload.name === store.getters.name &&
       payload.point === store.getters.point &&
@@ -107,23 +108,6 @@ const actions = {
       payload.multEnd === store.getters.multEnd
     ) {
       return
-    }
-    let viewPath = store.getters.path.split('/')
-    viewPath.pop()
-    viewPath.pop()
-    viewPath = viewPath.join('/')
-    let viewUser = this.getters[viewPath + '/user']
-    if (viewUser && viewUser === this.getters['user/onid']) {
-      await API.chart(
-        {
-          id: store.getters.id,
-          name: payload.name,
-          point: payload.point,
-          meterGroup: this.getters[payload.meter + '/id'],
-          building: this.getters[payload.building + '/id']
-        },
-        'put'
-      )
     }
     store.commit('name', payload.name)
     store.commit('point', payload.point)

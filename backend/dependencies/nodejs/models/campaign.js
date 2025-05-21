@@ -21,33 +21,6 @@ class Campaign {
     this.meterGroupIDs = []
   }
 
-  static async create(name, dateStart, dateEnd, compareStart, compareEnd, media, buildings, user) {
-    if (user.data.privilege <= 3) {
-      throw new Error('User does not have privelege to create campaigns')
-    }
-    await DB.connect()
-    let insertRow = await DB.query(
-      'INSERT INTO campaigns (date_start, date_end, compare_start, compare_end, media, name) VALUES (?, ?, ?, ?, ?, ?)',
-      [dateStart, dateEnd, compareStart, compareEnd, media, name]
-    )
-    let campaign = Campaign(insertRow[0]['insert_id'])
-    campaign.dateStart = dateStart
-    campaign.dateEnd = dateEnd
-    campaign.compareEnd = compareStart
-    campaign.compareStart = compareEnd
-    campaign.name = name
-    campaign.media = media
-    campaign.buildings = buildings
-    let promises = []
-    for (let building of buildings) {
-      promises.push(
-        DB.query('INSERT INTO campaign_groups (building_id, campaign_id) VALUES (?, ?)', [building, this.id])
-      )
-    }
-    await Promise.all(promises)
-    return campaign
-  }
-
   // Queries the database for this campaign's data, and returns the data.
   async get(expand = true) {
     await DB.connect()
@@ -70,51 +43,15 @@ class Campaign {
     //   // data by instantiating a Building object.
     //   for (let row of campaignRows) {
     //     // Each instance of the building class is a promise that is resolved async
-    //     this.buildings.push(new Building(row['building_id_2']).get())
+    //     this.buildings.push(new Building(row['building_id']).get())
     //   }
     //   // await all of the building promises
     //   this.buildings = await Promise.all(this.buildings)
     // } else {
     //   // If the user does not wish to expand, just return the building's id
-    //   this.buildings = campaignRows.map(row => row['building_id_2'])
+    //   this.buildings = campaignRows.map(row => row['building_id'])
     // }
     this.meterGroupIDs = campaignRows.map(row => row['group_id'])
-    return this
-  }
-
-  async delete(user) {
-    if (user.privilege > 3) {
-      await DB.query('DELETE campaigns WHERE id = ?', [this.id])
-    } else {
-      throw new Error('User can not delete campaign')
-    }
-  }
-
-  async update(name, dateStart, dateEnd, compareStart, compareEnd, media, buildings, user) {
-    if (user.data.privilege <= 3) {
-      throw new Error('User does not have privelege to create campaigns')
-    }
-    await DB.connect()
-    this.dateStart = dateStart
-    this.dateEnd = dateEnd
-    this.compareEnd = compareStart
-    this.compareStart = compareEnd
-    this.name = name
-    this.media = media
-    this.buildings = buildings
-    await DB.query('DELETE campaign_groups WHERE campaign_id = ?', [this.id])
-    let promises = [
-      DB.query(
-        'UPDATE campaigns SET date_start = ?, date_end = ?, compare_start = ?, compare_end = ?, name = ?, media = ? WHERE id = ?',
-        [dateStart, dateEnd, compareStart, compareEnd, name, media, this.id]
-      )
-    ]
-    for (let building of buildings) {
-      promises.push(
-        DB.query('INSERT INTO campaign_groups (building_id, campaign_id) VALUES (?, ?)', [building, this.id])
-      )
-    }
-    await Promise.all(promises)
     return this
   }
 

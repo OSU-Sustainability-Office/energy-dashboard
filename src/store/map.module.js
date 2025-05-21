@@ -27,7 +27,8 @@ const actions = {
     store.commit(buildingSpace + '/id', payload.id)
     store.commit(buildingSpace + '/hidden', payload.hidden)
     store.commit(buildingSpace + '/geoJSON', JSON.parse(payload.geoJSON))
-    if (!payload.geoJSON && payload.mapId) { // if geoJSON is not provided, we need to fetch it
+    if (!payload.geoJSON && payload.mapId) {
+      // if geoJSON is not provided, we need to fetch it
       store.commit('setBuildingInMap', { mapId: payload.mapId, building: store.state[buildingSpace] })
     }
     let mgPromises = []
@@ -36,30 +37,6 @@ const actions = {
     }
     await Promise.all(mgPromises)
     await store.dispatch(buildingSpace + '/buildDefaultBlocks')
-  },
-
-  async deleteBuilding (store, payload) {
-    let buildingPath = ['map', 'building_' + payload.id]
-    this.unregisterModule(buildingPath)
-    API.building('delete', payload)
-  },
-
-  async newBuilding (store, payload) {
-    let building = await API.building('post', {
-      image: payload.image,
-      group: payload.group,
-      mapId: payload.mapId,
-      meters: payload.meters
-    })
-    store.dispatch('loadBuilding', { id: building.data.id })
-  },
-
-  async allDevices (store, payload) {
-    return API.devices()
-  },
-
-  async imageList (store) {
-    return API.images()
   },
 
   async loadGeoJSONData (store, missingIds) {

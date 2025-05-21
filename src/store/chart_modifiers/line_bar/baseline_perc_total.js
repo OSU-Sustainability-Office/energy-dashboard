@@ -46,7 +46,7 @@ export default class LineTotalPercModifier {
     // Calculate sum and count for each weekday
     for (const [timestamp, value] of baselineData.entries()) {
       const dt = DateTime.fromSeconds(timestamp, { zone: 'America/Los_Angeles' })
-      const weekday = dt.weekday % 7  // 0 = Sunday, 6 = Saturday
+      const weekday = dt.weekday % 7 // 0 = Sunday, 6 = Saturday
       if (!isNaN(value)) {
         weekdaySums[weekday] += value
         weekdayCounts[weekday] += 1

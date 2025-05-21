@@ -7,7 +7,7 @@
   <el-container class="app">
     <!--Nav bar -->
     <el-header class="header">
-      <navigbar />
+      <NavigationBar />
     </el-header>
     <!--Page Content (handled by vue-router)-->
     <el-main class="main" ref="main">
@@ -17,20 +17,18 @@
 </template>
 
 <script>
-import navigbar from '@/components/navBar.vue'
+import NavigationBar from '@/components/ui/NavigationBar.vue'
 import { h } from 'vue'
 import { ElMessageBox } from 'element-plus'
 
 export default {
   name: 'App',
   components: {
-    navigbar
+    NavigationBar
   },
   async created () {
     // On load, grab building/meter/map information from the API.
     await this.$store.dispatch('map/loadMap')
-    // Also check if user is logged in.
-    this.$store.dispatch('user/user')
   },
   data () {
     return {

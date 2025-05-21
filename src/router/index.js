@@ -4,14 +4,14 @@
 */
 
 import { createRouter, createWebHashHistory } from 'vue-router'
-import view from '@/components/view/view.vue'
-import map from '@/components/map/map.vue'
-import campaigns from '@/components/campaigns/campaign_list.vue'
-import getStarted from '@/components/get_started/getStartedContent.vue'
-import notfound from '@/components/extras/404.vue'
-import contact from '@/components/extras/contact.vue'
-import mainCampaignView from '@/components/campaigns/main_campaign_view.vue'
-import buildingList from '@/components/building_list/building_list.vue'
+import BuildingView from '@/components/building_view/BuildingView.vue'
+import Map from '@/components/map/Map.vue'
+import CampaignList from '@/components/campaigns/CampaignList.vue'
+import GetStarted from '@/components/get_started/GetStarted.vue'
+import NotFound from '@/components/ui/NotFound.vue'
+import Contact from '@/components/ui/Contact.vue'
+import Campaign from '@/components/campaigns/Campaign.vue'
+import BuildingList from '@/components/building_list/BuildingList.vue'
 
 const routes = [
   {
@@ -19,53 +19,45 @@ const routes = [
     redirect: '/map'
   },
   {
-    path: '/dashboard/',
-    component: buildingList
-  },
-  {
     path: '/building/:id/:range',
     name: 'building',
-    component: view
-  },
-  {
-    path: '/view/:id',
-    component: view
+    component: BuildingView
   },
   {
     path: '/compare/:buildings/:range',
-    component: view
+    component: BuildingView
   },
   {
     path: '/map',
-    component: map
+    component: Map
   },
   {
     path: '/campaign/:id',
-    component: mainCampaignView
+    component: Campaign
   },
   {
     path: '/campaigns',
-    component: campaigns
+    component: CampaignList
   },
   {
     path: '/buildings',
-    component: buildingList
+    component: BuildingList
   },
   {
     path: '/buildings/:group',
-    component: buildingList
+    component: BuildingList
   },
   {
     path: '/getstarted',
-    component: getStarted
+    component: GetStarted
   },
   {
     path: '/contact',
-    component: contact
+    component: Contact
   },
   {
     path: '/:pathMatch(.*)*',
-    component: notfound
+    component: NotFound
   }
 ]
 

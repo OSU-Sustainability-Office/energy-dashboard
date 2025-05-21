@@ -65,12 +65,7 @@ DB.beginTransaction(err => {
   gigantic_query_string += `CREATE TABLE meter_groups (
         \`id\` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
         \`name\` TEXT,
-        \`user_id\` INTEGER,
-        \`is_building\` INTEGER,
-        \`affiliation\` TEXT,
-        \`building_id\` TEXT,
-        \`story_id\` INTEGER,
-        \`building_id_2\` INTEGER,
+        \`building_id\` INTEGER,
         \`default\` INTEGER,
         PRIMARY KEY (\`id\`)
     );`

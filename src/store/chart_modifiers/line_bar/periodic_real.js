@@ -33,7 +33,7 @@ function getMonthBucketKey (currentDate, startDate) {
   // If current date is earlier in the month than day of the
   // start date, then it belongs to the previous month’s bucket
   let bucketMonth = currentDate.month
-  let bucketYear  = currentDate.year
+  let bucketYear = currentDate.year
   if (currentDate.day < startDate.day) {
     bucketMonth -= 1
     if (bucketMonth === 0) {

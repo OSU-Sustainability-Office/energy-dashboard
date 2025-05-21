@@ -1,3 +1,7 @@
+/*
+  Filename: api.js
+  Info: API module for handling all API calls to the backend and external APIs.
+*/
 import axios from 'axios'
 axios.defaults.withCredentials = true
 
@@ -44,46 +48,8 @@ function callAPI (
 }
 
 export default {
-  devices: async () => {
-    return (await callAPI('admin/devices')).data
-  },
-
-  users: async () => {
-    return (await callAPI('admin/users')).data
-  },
-  view: async (id, payload = null, method = 'get') => {
-    if (method === 'get') {
-      return (await callAPI('view?id=' + id)).data
-    } else {
-      return (await callAPI('view', payload, method)).data
-    }
-  },
-  images: async () => {
-    return (await callAPI('images')).data
-  },
-  login: async () => {
-    return (
-      await callAPI(
-        'login?returnURI=' + encodeURI('http://localhost:8080'),
-        null,
-        'get',
-        'https://api.sustainability.oregonstate.edu/v2/auth'
-      )
-    ).data
-  },
-  logout: async () => {
-    return (await callAPI('logout', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
-  },
   buildings: async () => {
     return (await callAPI('allbuildings')).data
-  },
-  building: async (method, data) => {
-    let call = await callAPI('building', data, method)
-    return { status: call.status, data: call.data }
-  },
-  getBuildingByID: async id => {
-    let call = await callAPI('building?id=' + id, null, 'GET')
-    return { status: call.status, data: call.data }
   },
   meterGroup: async id => {
     return (await callAPI('metergroup?id=' + id)).data
@@ -120,18 +86,6 @@ export default {
         false
       )
     ).data
-  },
-  user: async () => {
-    return (await callAPI('user', null, 'get', 'https://api.sustainability.oregonstate.edu/v2/auth')).data
-  },
-  edashUser: async () => {
-    return (await callAPI('user')).data
-  },
-  block: async (data, method) => {
-    return (await callAPI('block', data, method)).data
-  },
-  chart: async (data, method) => {
-    return (await callAPI('chart', data, method)).data
   },
   campaigns: async () => {
     return (await callAPI('campaigns')).data

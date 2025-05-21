@@ -23,30 +23,6 @@ class Meter {
     this.pacificPowerID = null
   }
 
-  async get() {
-    await DB.connect()
-    let row
-    if (this.address && this.address !== '') {
-      row = await DB.query('SELECT * FROM meters WHERE address = ?', [this.address])
-    } else {
-      row = await DB.query('SELECT * FROM meters WHERE id = ?', [this.id])
-    }
-
-    if (row.length === 0) {
-      let notFoundError = new Error('Meter not found')
-      notFoundError.name = 'MeterNotFound'
-      throw notFoundError
-    }
-
-    this.id = row[0]['id']
-    this.name = row[0]['name']
-    this.address = row[0]['address']
-    this.classInt = row[0]['class']
-    this.pacificPowerID = row[0]['pacific_power_id']
-    this.calcProps()
-    return this
-  }
-
   set(name, classInt, pacificPowerID) {
     this.name = name
     this.classInt = classInt
@@ -203,15 +179,6 @@ class Meter {
       )
     } else {
       throw new Error('Point is not available for given meter class')
-    }
-  }
-
-  async delete(user) {
-    if (user.data.privilege > 3) {
-      await DB.connect()
-      await DB.query('DELETE meters WHERE id = ?', [this.id])
-    } else {
-      throw new Error('Need escalated privileges')
     }
   }
 
@@ -387,16 +354,6 @@ class Meter {
     }
   }
 
-  async update(name, classInt, user) {
-    if (user.data.privilege <= 3) {
-      throw new Error('Need escalated privileges')
-    }
-    await DB.connect()
-    await DB.query('UPDATE meters SET name = ?, class = ? WHERE id = ?', [name, classInt, this.id])
-    this.name = name
-    this.classInt = classInt
-  }
-
   static async create(name, address, classInt) {
     await DB.connect()
     let returnRow = await DB.query('INSERT INTO meters (name, address, class) values (?, ?, ?)', [
@@ -409,25 +366,6 @@ class Meter {
     meter.address = address
     meter.class = classInt
     return meter
-  }
-
-  static async all(user) {
-    if (user.privilege > 3) {
-      await DB.connect()
-      let meters = await DB.query('SELECT * FROM meters')
-      let r = []
-      for (let meterQ of meters) {
-        let meter = new Meter(meterQ.id)
-        meter.id = meterQ['id']
-        meter.name = meterQ['name']
-        meter.address = meterQ['address']
-        meter.classInt = meterQ['class']
-        meter.pacificPowerID = meterQ['pacific_power_id']
-        meter.calcProps()
-        r.push(meter.data)
-      }
-      return r
-    }
   }
 }
 

@@ -22,27 +22,6 @@ class Building {
     this.hidden = false
   }
 
-  async get(expand = true) {
-    await DB.connect()
-    let buildingRow = await DB.query('SELECT * FROM buildings WHERE id = ?', [this.id])
-    if (buildingRow.length <= 0) return this
-    this.mapId = buildingRow[0]['map_id']
-    this.image = buildingRow[0]['image']
-    this.group = buildingRow[0]['group']
-    let meterGroupRows = await DB.query('SELECT id FROM meter_groups where building_id = ?', [this.id])
-    if (expand) {
-      for (let row of meterGroupRows) {
-        this.meterGroups.push(new MeterGroup(row['id']).get())
-      }
-      this.meterGroups = await Promise.all(this.meterGroups)
-    } else {
-      for (let row of meterGroupRows) {
-        this.meterGroups.push(row['id'])
-      }
-    }
-    return this
-  }
-
   get data() {
     let meterGroups = this.meterGroups
     if (meterGroups.length > 0 && meterGroups[0] instanceof MeterGroup) {
@@ -60,81 +39,9 @@ class Building {
     }
   }
 
-  async update(name, mapId, image, group, meters, user) {
-    await DB.connect()
-    let keepList = []
-    if (user.data.privilege > 3) {
-      await DB.query('UPDATE buildings SET map_id = ?, image = ?, `group` = ?, name = ? WHERE id = ?', [
-        mapId,
-        image,
-        group,
-        name,
-        this.id
-      ])
-      let first = true
-      for (let meter of meters) {
-        let mg
-        try {
-          mg = await new MeterGroup(meter.id).get()
-          mg.update(meter.name, meter.meters, first, user)
-        } catch (e) {
-          mg = await MeterGroup.create(meter.name, meter.meters, first, this.id, user)
-        }
-        first = false
-        keepList.push(mg.id)
-      }
-
-      await MeterGroup.deleteBuildingGroups(this.id, keepList, user)
-    } else {
-      throw new Error('Need escalated permissions')
-    }
-    this.name = name
-    this.mapId = mapId
-    this.image = image
-    this.group = group
-    this.meterGroups = keepList
-    return this
-  }
-
   static async updateGeoJSON(id, geoJSON) {
     await DB.connect()
     await DB.query('UPDATE buildings SET geojson = ? WHERE id = ?', [JSON.stringify(geoJSON), id])
-  }
-
-  async delete(user) {
-    await DB.connect()
-    if (user.data.privilege > 3) {
-      await DB.query('DELETE FROM buildings WHERE id = ?', [this.id])
-    } else {
-      throw new Error('Need escalated permissions')
-    }
-  }
-
-  static async create(name, mapId, image, group, meters, user) {
-    if (user.data.privilege <= 3) {
-      throw new Error('Need escalated permissions')
-    }
-    await DB.connect()
-    let buildingRow = await DB.query('INSERT INTO buildings (map_id, image, `group`, name) VALUES (?, ?, ?, ?)', [
-      mapId,
-      image,
-      group,
-      name
-    ])
-    let meterList = []
-    let first = true
-    for (let meter of meters) {
-      let id = (await MeterGroup.create(meter.name, meter.meters, first, buildingRow['insertId'], user)).id
-      first = false
-      meterList.push(id)
-    }
-    let building = new Building(buildingRow['insertId'])
-    building.name = name
-    building.mapId = mapId
-    building.image = image
-    building.group = group
-    building.meterGroups = meterList
-    return building
   }
 
   set(name, group, mapId, image, meterGroups, hidden, geoJSON) {
@@ -166,7 +73,7 @@ class Building {
               meters.class as meter_class,
               meters.pacific_power_id as pacific_power_id
         FROM buildings 
-        LEFT JOIN meter_groups on buildings.id = meter_groups.building_id_2
+        LEFT JOIN meter_groups on buildings.id = meter_groups.building_id
         LEFT JOIN meter_group_relation on meter_groups.id = meter_group_relation.group_id
         LEFT JOIN meters on meters.id = meter_group_relation.meter_id;`
     )
