@@ -114,9 +114,6 @@
           @hide="showbuildingCompare = false"
           :compareStories="compareStories"
         />
-<<<<<<< HEAD
-        <BuildingModal ref="buildingModal" v-if="showSide" key="buildingModal" @hide="showSide = false" @startCompare="startCompare" />
-=======
         <BuildingModal
           ref="buildingModal"
           v-if="showSide"
@@ -124,7 +121,6 @@
           @hide="showSide = false"
           @startCompare="startCompare"
         />
->>>>>>> master
       </transition-group>
     </el-col>
   </el-row>
