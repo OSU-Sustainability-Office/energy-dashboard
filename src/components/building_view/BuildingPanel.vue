@@ -76,9 +76,7 @@
   <div class="buildingPanel" ref="buildingPanel" v-else>
     <el-row :span="24" class="title" ref="title">
       <el-col :span="20">{{ name }}</el-col>
-      <el-col :span="4" class="right"
-        >&nbsp;<i class="fas fa-sliders-h" @click="openModal()"></i
-      ></el-col>
+      <el-col :span="4" class="right">&nbsp;<i class="fas fa-sliders-h" @click="openModal()"></i></el-col>
     </el-row>
 
     <!--Next/Previous Buttons-->

@@ -237,7 +237,8 @@ export default {
           this.$store.dispatch(blockPath + '/newChart', this.form.sets[index]) // revisit this (might delete)
         }
       }
-      if (this.form.sets.length < charts.length) { // revisit this (might delete)
+      if (this.form.sets.length < charts.length) {
+        // revisit this (might delete)
         for (let index = this.form.sets.length; index < charts.length; index++) {
           console.log('remove chart called')
           this.$store.dispatch(blockPath + '/removeChart', charts[index].path.split('/').pop())

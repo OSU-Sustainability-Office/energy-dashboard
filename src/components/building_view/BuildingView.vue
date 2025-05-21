@@ -113,7 +113,8 @@ export default {
     buildingOrCompare: {
       immediate: true,
       handler: async function (value) {
-        if (this.$route.path.includes('building')) { // building view
+        if (this.$route.path.includes('building')) {
+          // building view
           for (let card of this.cards) {
             if (!card.path) return
             if (card.promise) await card.promise
@@ -128,7 +129,8 @@ export default {
           for (let card of this.cards) {
             await this.$store.dispatch(card.path + '/removeAllModifiers')
           }
-        } else { // compare view
+        } else {
+          // compare view
           for (let card of this.cards) {
             if (!card.path) return
             this.$nextTick(() => {

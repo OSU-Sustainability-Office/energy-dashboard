@@ -114,7 +114,13 @@
           @hide="showbuildingCompare = false"
           :compareStories="compareStories"
         />
-        <BuildingModal ref="buildingModal" v-if="showSide" key="buildingModal" @hide="showSide = false" @startCompare="startCompare" />
+        <BuildingModal
+          ref="buildingModal"
+          v-if="showSide"
+          key="buildingModal"
+          @hide="showSide = false"
+          @startCompare="startCompare"
+        />
       </transition-group>
     </el-col>
   </el-row>

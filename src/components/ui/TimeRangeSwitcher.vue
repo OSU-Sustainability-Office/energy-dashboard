@@ -100,7 +100,8 @@ export default {
           this.$store.commit(block.path + '/intervalUnit', intervalUnit)
           this.$store.commit(block.path + '/dateStart', dateStart)
           this.$store.commit(block.path + '/dateEnd', dateEnd)
-          if (this.forceUpdate) { // used to trigger a refresh for the campaign leaderboard
+          if (this.forceUpdate) {
+            // used to trigger a refresh for the campaign leaderboard
             this.$store.dispatch(block.path + '/getData')
           }
         }
