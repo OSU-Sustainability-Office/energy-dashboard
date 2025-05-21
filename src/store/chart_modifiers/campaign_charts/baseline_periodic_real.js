@@ -45,7 +45,7 @@ export default class BaselinePeriodicReal {
     // Sum the values for each day of the week from the baseline data
     for (const [timestamp, value] of baselineData.entries()) {
       const dt = DateTime.fromSeconds(timestamp, { zone: 'America/Los_Angeles' })
-      const weekday = dt.weekday % 7  // 0 = Sunday, 6 = Saturday
+      const weekday = dt.weekday % 7 // 0 = Sunday, 6 = Saturday
       if (!isNaN(value)) {
         weekdaySums[weekday] += value
         weekdayCounts[weekday] += 1
