@@ -1878,10 +1878,8 @@
 
             "type": "Steam",
             "points": [
-              { "label": "Steam Input", "value": "input" },
-              { "label": "Steam (Lbs)", "value": "total" },
-              { "label": "Minimum", "value": "minimum" },
-              { "label": "Maximum", "value": "maximum" }
+              { "label": "Steam Flow Rate", "value": "input" },
+              { "label": "Steam (Lbs)", "value": "total" }
             ]
           }
         ]
@@ -2300,10 +2298,8 @@
 
             "type": "Steam",
             "points": [
-              { "label": "Steam Input", "value": "input" },
-              { "label": "Steam (Lbs)", "value": "total" },
-              { "label": "Minimum", "value": "minimum" },
-              { "label": "Maximum", "value": "maximum" }
+              { "label": "Steam Flow Rate", "value": "input" },
+              { "label": "Steam (Lbs)", "value": "total" }
             ]
           }
         ]
@@ -2394,10 +2390,8 @@
 
             "type": "Steam",
             "points": [
-              { "label": "Steam Input", "value": "input" },
-              { "label": "Steam (Lbs)", "value": "total" },
-              { "label": "Minimum", "value": "minimum" },
-              { "label": "Maximum", "value": "maximum" }
+              { "label": "Steam Flow Rate", "value": "input" },
+              { "label": "Steam (Lbs)", "value": "total" }
             ]
           }
         ]
@@ -2965,9 +2959,7 @@
             "points": [
               { "label": "Total Natural Gas (CF)", "value": "cubic_feet" },
               { "label": "Natural Gas Rate (CFm)", "value": "rate" },
-              { "label": "Instant", "value": "instant" },
-              { "label": "Minimum", "value": "minimum" },
-              { "label": "Maximum", "value": "maximum" }
+              { "label": "Instant", "value": "instant" }
             ]
           }
         ]
@@ -3928,10 +3920,8 @@
 
             "type": "Steam",
             "points": [
-              { "label": "Steam Input", "value": "input" },
-              { "label": "Steam (Lbs)", "value": "total" },
-              { "label": "Minimum", "value": "minimum" },
-              { "label": "Maximum", "value": "maximum" }
+              { "label": "Steam Flow Rate", "value": "input" },
+              { "label": "Steam (Lbs)", "value": "total" }
             ]
           }
         ]
@@ -4186,10 +4176,8 @@
 
             "type": "Steam",
             "points": [
-              { "label": "Steam Input", "value": "input" },
-              { "label": "Steam (Lbs)", "value": "total" },
-              { "label": "Minimum", "value": "minimum" },
-              { "label": "Maximum", "value": "maximum" }
+              { "label": "Steam Flow Rate", "value": "input" },
+              { "label": "Steam (Lbs)", "value": "total" }
             ]
           }
         ]

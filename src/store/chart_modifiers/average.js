@@ -29,7 +29,7 @@ function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
 
 export default class AverageModifier {
   async postGetData (chartData, payload, store, module) {
-    const { dateStart, dateEnd, intervalUnit, dateInterval } = payload
+    const { dateStart, dateEnd, intervalUnit, dateInterval, point } = payload
     const SECONDS_PER_DAY = 86400
     const currentData = chartData.data
     const returnData = []
@@ -57,7 +57,11 @@ export default class AverageModifier {
       }
 
       // Update accumulated variables
-      const curVal = currentData.get(i) || 0
+      let curVal = currentData.get(i) || 0
+
+      // Negative steam flow rate should be treated as zero
+      if (curVal < 0 && point === 'input') curVal = 0
+
       accumulatedVal += curVal
       accumulatedTime += 900
     }

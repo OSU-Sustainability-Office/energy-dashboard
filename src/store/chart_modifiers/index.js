@@ -40,14 +40,11 @@ export default function (graphType, point) {
       case 'apparent_a':
       case 'apparent_b':
       case 'apparent_c':
-      case 'input':
-      case 'maximum':
       case 'instant':
       case 'rate':
       case 'pf_a':
       case 'pf_b':
       case 'pf_c':
-      case 'minimum':
         return new MinMaxModifier()
 
       case 'vphase_ab':
@@ -56,6 +53,7 @@ export default function (graphType, point) {
       case 'vphase_an':
       case 'vphase_bn':
       case 'vphase_cn':
+      case 'input':
         return new AverageModifier()
 
       // Campaign charts

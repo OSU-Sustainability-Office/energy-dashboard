@@ -58,14 +58,11 @@ export default class MinMaxModifier {
       'apparent_a': 'Max',
       'apparent_b': 'Max',
       'apparent_c': 'Max',
-      'input': 'Max',
-      'maximum': 'Max',
       'instant': 'Max',
       'rate': 'Max',
       'pf_a': 'Min',
       'pf_b': 'Min',
-      'pf_c': 'Min',
-      'minimum': 'Min'
+      'pf_c': 'Min'
     }
     let [delta, curDaysInMonth] = getDeltaAndDaysInMonth(intervalUnit, startDate, dateInterval)
 
