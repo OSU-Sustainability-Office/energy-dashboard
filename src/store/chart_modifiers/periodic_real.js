@@ -5,13 +5,6 @@
 */
 import { DateTime } from 'luxon'
 
-// periodic_real meters currently don't have data for the minute or hour,
-// so we can just default to the day interval
-function getSmallIntervalKey (currentDate) {
-  const bucketStart = currentDate.startOf('day').plus({ days: 1 })
-  return Math.floor(bucketStart.toSeconds())
-}
-
 // This function is used for calculating bucket keys for day and week intervals.
 // It works by rounding down the current date to the nearest interval boundary
 // relative to the provided start date.
@@ -54,14 +47,10 @@ function getMonthBucketKey (currentDate, startDate) {
   return Math.floor(bucketStart.toSeconds())
 }
 
-export default class LinePeriodicRealModifier {
-  constructor () {
-    this.data = {}
-  }
+export default class PeriodicRealModifier {
   /*
-    Description: Called after getData function of chart module.
-    Since the data is already a time series, this function does not
-    need to do any additional calculations.
+    Description: Called after getData function of chart module. Handles
+    calculations for data that is collected on a day-to-day basis.
 
     Arguments:
       - chartData (object)
@@ -100,16 +89,12 @@ export default class LinePeriodicRealModifier {
     // Aggregate data into buckets based on the specified interval
     for (const [epoch, val] of currentData.entries()) {
       const currentDate = DateTime.fromSeconds(epoch, { zone: TIMEZONE })
-
-      // Get the bucket key based on the interval unit
       let bucketKey
       switch (intervalUnit) {
         case 'minute':
-          bucketKey = getSmallIntervalKey(currentDate)
-          break
         case 'hour':
-          bucketKey = getSmallIntervalKey(currentDate)
-          break
+          // Skip processing for 'minute' and 'hour' intervals
+          continue
         case 'day':
           bucketKey = getDayBucketKey(currentDate, startDate, dateInterval)
           break
@@ -137,17 +122,15 @@ export default class LinePeriodicRealModifier {
       })
     }
 
-    // Fill chart for Solar Panel data
+    // Fill chart for Solar Panel data only
     if (point === 'periodic_real_out') {
       chartData.fill = true
     }
 
     // Prevent scenarios where there is only one valid data point
-    // Shows "No Data" on the campaign buildings sidebar
     if (result.filter(o => !isNaN(o.y) && o.y > -1).length > 1) {
       chartData.data = result
     } else {
-      // Shows "No Data" on the campaign buildings sidebar
       chartData.data = []
     }
   }

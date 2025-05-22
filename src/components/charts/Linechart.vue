@@ -76,6 +76,10 @@ export default {
           return val
       }
     },
+    roundYaxisTick: function (val) {
+      // round to 2 decimal places
+      return Math.round(val * 100) / 100
+    },
     getIntervalUnit: function () {
       // if the interval unit is minute and time frame is too large it breaks the chart, so use day instead
       if (this.intervalUnit === 'minute' && this.getChartTimeFrame() > 7) return 'day'
@@ -205,7 +209,7 @@ export default {
             autoSkip: true,
             maxTicksLimit: 10,
             callback: (val, index) => {
-              return val.toString()
+              return this.roundYaxisTick(val)
             }
           },
           grid: {

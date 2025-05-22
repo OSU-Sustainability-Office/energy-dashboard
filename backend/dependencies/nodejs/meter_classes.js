@@ -93,10 +93,10 @@ module.exports = {
   },
   4444: {
     // Red Lion PAXCDC Test
-    4: 'input',
+    4: 'input', // Steam Flow Rate
     5: 'total',
-    6: 'minimum',
-    7: 'maximum'
+    6: 'minimum', // Unused in energy dashboard
+    7: 'maximum' // Unused in energy dashboard
   },
   4025: {
     // Schneider_PM210

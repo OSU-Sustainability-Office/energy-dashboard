@@ -1,18 +1,16 @@
 /**
-  Filename: baseline_total.js
-  Description: Chart modifier for processing and formatting the baseline for
-  total data (e.g. periodic_real_in) as kWh. This is displayed on each
-  of the individual building campaign pages as a line chart.
-  Note: Logic is nearly identical to baseline_total_perc.js, but this gets
-  a kWh difference from the baseline instead of a percentage difference.
+  Filename: baseline_periodic_real.js
+  Description: Percentage difference is displayed on main campaign page with all
+  of the buildings as a line chart. Baseline points are displayed on the
+  individual building page line chart.
 */
 import { DateTime } from 'luxon'
-export default class LineTotalBaseline {
+export default class BaselinePeriodicReal {
+  constructor () {
+    this.point = null
+  }
   /*
     Description: Called after getData function of chart module.
-    Since the data is already a time series, this function does not
-    need to do any additional calculations other than shifting the
-    timestamp by the comparison period to align with the baseline range.
 
     Arguments:
       - chartData (object)
@@ -23,8 +21,7 @@ export default class LineTotalBaseline {
           fill: specifies to fill the chart, colors underneath the line (bool)
           showLine: specifies interpolation or discrete graphing (bool)
           spanGaps: specifies if null/nan data points should show a line break or not (bool)
-          data: contains chart data (Map: time -> value (float))
-                **Note: must be processed to an array of {x: Date, y: number}
+          data: contains chart data (Map: time: value (float)) **Note: this must be processed to type array of object: {x: time (date), y: value (float)}
         }
       - payload (object)
         {
@@ -35,42 +32,43 @@ export default class LineTotalBaseline {
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')
           dateInterval: count of interval units to group data points by (integer)
         }
-      - store (vuex store)
-      - module: (vuex module) module dispatching this function call
 
-    Returns: Nothing (Note: chartData is passed by reference so editing
-    this argument will change the chart in the update sequence)
+    Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async postGetData (chartData, payload, store, module) {
     const { baselineData } = payload
-    const rawData = chartData.data
+    const currentData = chartData.data
     const result = []
     const weekdaySums = Array(7).fill(0)
     const weekdayCounts = Array(7).fill(0)
 
-    // Calculate sum and count for each weekday
-    for (const [currentTimestamp, currentValue] of baselineData.entries()) {
-      const dt = DateTime.fromSeconds(currentTimestamp, { zone: 'America/Los_Angeles' })
+    // Sum the values for each day of the week from the baseline data
+    for (const [timestamp, value] of baselineData.entries()) {
+      const dt = DateTime.fromSeconds(timestamp, { zone: 'America/Los_Angeles' })
       const weekday = dt.weekday % 7 // 0 = Sunday, 6 = Saturday
-      if (!isNaN(currentValue)) {
-        weekdaySums[weekday] += currentValue
+      if (!isNaN(value)) {
+        weekdaySums[weekday] += value
         weekdayCounts[weekday] += 1
       }
     }
 
-    // Calculate the average for each day of the week
-    for (const [currentTimestamp] of rawData.entries()) {
-      const currentDate = DateTime.fromSeconds(currentTimestamp, { zone: 'America/Los_Angeles' })
-
-      // Get the average value for the current date's weekday
+    // Baseline value is based on current date's day of the week
+    for (const [timestamp, value] of currentData.entries()) {
+      const currentDate = DateTime.fromSeconds(timestamp, { zone: 'America/Los_Angeles' })
+      const startOfDay = currentDate.startOf('day').plus({ days: 1 })
       const weekday = currentDate.weekday % 7
       const count = weekdayCounts[weekday]
       const avg = count > 0 ? weekdaySums[weekday] / count : -1
 
-      const startOfDay = currentDate.startOf('day').plus({ days: 1 })
+      let resultValue = 0
+      if (this.point === 'periodic_real_baseline_percentage') {
+        resultValue = ((value - avg) / avg) * 100 // Percentage difference
+      } else if (this.point === 'periodic_real_baseline_point') {
+        resultValue = avg // Baseline point
+      }
       result.push({
         x: startOfDay.toJSDate(),
-        y: avg
+        y: resultValue
       })
     }
 
@@ -85,8 +83,6 @@ export default class LineTotalBaseline {
 
   /*
     Description: Called before getData function of chart module.
-    This function gets the raw data from the store using the
-    compareStart and compareEnd as a date range.
 
     Arguments:
       - payload (object)
@@ -98,15 +94,15 @@ export default class LineTotalBaseline {
           intervalUnit: unit of interval to group data points by (string: 'minute', 'hour', 'day')
           dateInterval: count of interval units to group data points by (integer)
         }
-      - store (vuex store)
-      - module: (vuex module) module dispatching this function call
 
-    Returns: Nothing (Note: payload is passed by reference so editing
-    this argument will change it in the chart update sequence)
+    Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
   async preGetData (payload, store, module) {
     const meterGroupPath = module.getters.meterGroupPath
+    this.point = payload.point
     payload.point = 'periodic_real_in'
+
+    // Fetch the baseline data
     const baselinePayload = {
       ...payload,
       dateStart: payload.compareStart,
