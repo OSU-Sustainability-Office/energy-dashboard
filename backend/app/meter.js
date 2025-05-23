@@ -22,12 +22,6 @@ function verifyParameters({ id, startDate, endDate }) {
   return ![id, startDate, endDate].some(isNaN)
 }
 
-exports.get = async (event, context) => {
-  let response = new Response(event)
-  response.body = JSON.stringify((await new Meter(event.queryStringParameters['id']).get()).data)
-  return response
-}
-
 // Get data for multiple meters => {id -> [{}...], ...}
 /*
   Ok, assume a multiMeter request involves the same point & meter class
