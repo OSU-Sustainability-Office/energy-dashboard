@@ -21,6 +21,7 @@ function parseParameters({ id, startDate, endDate }) {
 function verifyParameters({ id, startDate, endDate }) {
   return ![id, startDate, endDate].some(isNaN)
 }
+
 // Get data for multiple meters => {id -> [{}...], ...}
 /*
   Ok, assume a multiMeter request involves the same point & meter class
