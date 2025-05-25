@@ -4,13 +4,19 @@ import js from '@eslint/js'
 import vue from 'eslint-plugin-vue'
 import strictVue from 'eslint-plugin-strict-vue'
 import importPlugin from 'eslint-plugin-import'
+import vueParser from 'vue-eslint-parser'
 
 export default [
   js.configs.recommended,
 
   {
+    ignores: ['backend/**', 'tests/**'],
+  },
+
+  {
     files: ['*.vue', '**/*.vue'],
     languageOptions: {
+      parser: vueParser,
       ecmaVersion: 'latest',
       sourceType: 'module'
     },
