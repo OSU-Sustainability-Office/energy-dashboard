@@ -1,0 +1,30 @@
+name: Format
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  format-code:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # allow the action to commit changes back to the repository
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.head_ref }}
+      - name: Set-up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run formatter
+        run: |
+            npm ci
+            npm run format
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'Apply code formatting'
+          branch: ${{ github.head_ref }}
