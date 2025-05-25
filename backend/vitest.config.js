@@ -9,7 +9,6 @@ export default defineConfig({
       reporter: ['text', 'json-summary'], // coverage report formats
       reportsDirectory: 'coverage', // output folder
     },
-    reporters: process.env.GITHUB_ACTIONS ? ['dot', 'github-actions'] : ['dot'],
     include: ['**/?(*.)+(spec|test).[tj]s?(x)'],
     setupFiles: ['./tests/setupBackendTests.js'],
     globals: true,
