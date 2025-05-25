@@ -5,7 +5,7 @@
   "description": "",
   "main": "sam_express.js",
   "scripts": {
-    "test": "node ./tests/buildTestDatabase.js && vitest run",
+    "test": "node ./tests/buildTestDatabase.js && vitest run --coverage",
     "test-local": "docker compose build && docker compose run --rm test && docker compose down"
   },
   "author": "",
@@ -21,6 +21,7 @@
     "yaml": "^2.7.1"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^3.1.4",
     "sqlite3": "^5.1.7",
     "sustainability-office-lambda-common-layer": "https://github.com/OSU-Sustainability-Office/lambda-common-layer.git",
     "vitest": "^3.1.4"
