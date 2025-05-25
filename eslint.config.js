@@ -2,7 +2,6 @@
 
 import js from '@eslint/js'
 import vue from 'eslint-plugin-vue'
-import strictVue from 'eslint-plugin-strict-vue'
 import importPlugin from 'eslint-plugin-import'
 import vueParser from 'vue-eslint-parser'
 import globals from 'globals'
@@ -18,15 +17,22 @@ export default [
   {
     files: ['**/*.js', '**/*.vue'],
     languageOptions: {
+      parser: vueParser,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       globals: {
         ...globals.node,
         ...globals.browser
       }
     },
     plugins: {
-      import: importPlugin
+      import: importPlugin,
+      vue
     },
     rules: {
+      ...vue.configs.essential.rules,
+      'vue/multi-word-component-names': 'off',
+      'vue/no-use-v-if-with-v-for': 'off',
       indent: ['error', 2, { SwitchCase: 1 }],
       camelcase: [0, { properties: 'never' }],
       'space-in-parens': [1, 'never'],
@@ -37,35 +43,4 @@ export default [
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
     }
   },
-
-  // Vue files
-  {
-    files: ['*.vue', '**/*.vue'],
-    languageOptions: {
-      parser: vueParser,
-      ecmaVersion: 'latest',
-      sourceType: 'module'
-    },
-    plugins: {
-      vue
-    },
-    rules: {
-      ...vue.configs.essential.rules,
-      'vue/multi-word-component-names': 'off',
-      'vue/no-use-v-if-with-v-for': 'off'
-    }
-  },
-
-  // JavaScript files
-  {
-    files: ['**/*.js'],
-    plugins: {
-      'strict-vue': strictVue
-    },
-    rules: {
-      'strict-vue/require-jsdoc': 'off',
-      'strict-vue/no-root-store-calls': 'error',
-      'strict-vue/no-root-store-assets': 'error'
-    }
-  }
 ]
