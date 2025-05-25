@@ -1,6 +1,6 @@
 /* Filename: models/building.js
-  * Description: Defines Building class and methods to interact with the database.
-*/
+ * Description: Defines Building class and methods to interact with the database.
+ */
 import { connect, query as _query } from '/opt/nodejs/sql-access.js'
 import MeterGroup from '/opt/nodejs/models/meter_group.js'
 import Meter from '/opt/nodejs/models/meter.js'

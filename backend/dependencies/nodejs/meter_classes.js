@@ -1,6 +1,6 @@
 /* Filename: dependencies/nodejs/meter_classes.js
-  * Description: Defines a mapping of meter class IDs to their respective data fields.
-*/
+ * Description: Defines a mapping of meter class IDs to their respective data fields.
+ */
 export default {
   48: {
     // Veris Industries E51C2 Power Meter , Bi-dir, Full Data Set

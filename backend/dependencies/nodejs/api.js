@@ -1,6 +1,6 @@
 /* Filename: dependencies/nodejs/api.js
-  * Description: Fetches an OAuth2 access token from the Oregon State University API.
-*/
+ * Description: Fetches an OAuth2 access token from the Oregon State University API.
+ */
 import { post } from 'axios'
 import dotenv from 'dotenv'
 dotenv.config({ path: '/opt/nodejs/.env.api' })

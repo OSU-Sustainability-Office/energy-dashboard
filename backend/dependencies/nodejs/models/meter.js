@@ -1,6 +1,6 @@
 /* Filename: models/meter.js
-  * Description: Defines Meter class and methods to interact with the database.
-*/
+ * Description: Defines Meter class and methods to interact with the database.
+ */
 import { connect, query } from '/opt/nodejs/sql-access.js'
 import meterClasses from '/opt/nodejs/meter_classes.js'
 
@@ -151,9 +151,7 @@ class Meter {
           )
         } else {
           // pacific power meters, may need to change to else-if if there are going to be more custom classes starting with 999
-          let [{ pacific_power_id: pp_id }] = await query('SELECT pacific_power_id FROM meters WHERE id = ?', [
-            this.id
-          ])
+          let [{ pacific_power_id: pp_id }] = await query('SELECT pacific_power_id FROM meters WHERE id = ?', [this.id])
           return query(
             'SELECT ' +
               point +
@@ -375,11 +373,7 @@ class Meter {
 
   static async create (name, address, classInt) {
     await connect()
-    let returnRow = await query('INSERT INTO meters (name, address, class) values (?, ?, ?)', [
-      name,
-      address,
-      classInt
-    ])
+    let returnRow = await query('INSERT INTO meters (name, address, class) values (?, ?, ?)', [name, address, classInt])
     let meter = new Meter(returnRow.insertId)
     meter.name = name
     meter.address = address

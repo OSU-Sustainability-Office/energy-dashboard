@@ -63,30 +63,32 @@ const actions = {
               name: this.getters[groupModule.building + '/name'],
               meters: group
             })
-            blockPromises.push((async () => {
-              await groupModule.promise
-              const payload = {
-                id: group,
-                group: groupModule
-              }
-              let blockSpace = 'block_' + group.toString()
-              let moduleSpace = store.getters.path + '/' + blockSpace
-              this.registerModule(moduleSpace.split('/'), Block)
-              store.commit(blockSpace + '/path', moduleSpace)
-              await store.dispatch(blockSpace + '/loadDefault', payload)
-              store.commit(blockSpace + '/dateStart', store.getters.dateStart)
-              store.commit(blockSpace + '/dateEnd', store.getters.dateEnd)
-              store.commit(blockSpace + '/graphType', 2)
-              store.commit(blockSpace + '/name', this.getters[groupModule.building + '/name'])
-              await store.dispatch(blockSpace + '/addModifier', 'campaign_linebar')
-              await store.dispatch(blockSpace + '/updateModifier', {
-                name: 'campaign_linebar',
-                data: {
-                  compareStart: store.getters.compareStart,
-                  compareEnd: store.getters.compareEnd
+            blockPromises.push(
+              (async () => {
+                await groupModule.promise
+                const payload = {
+                  id: group,
+                  group: groupModule
                 }
-              })
-            })())
+                let blockSpace = 'block_' + group.toString()
+                let moduleSpace = store.getters.path + '/' + blockSpace
+                this.registerModule(moduleSpace.split('/'), Block)
+                store.commit(blockSpace + '/path', moduleSpace)
+                await store.dispatch(blockSpace + '/loadDefault', payload)
+                store.commit(blockSpace + '/dateStart', store.getters.dateStart)
+                store.commit(blockSpace + '/dateEnd', store.getters.dateEnd)
+                store.commit(blockSpace + '/graphType', 2)
+                store.commit(blockSpace + '/name', this.getters[groupModule.building + '/name'])
+                await store.dispatch(blockSpace + '/addModifier', 'campaign_linebar')
+                await store.dispatch(blockSpace + '/updateModifier', {
+                  name: 'campaign_linebar',
+                  data: {
+                    compareStart: store.getters.compareStart,
+                    compareEnd: store.getters.compareEnd
+                  }
+                })
+              })()
+            )
           }
         }
         await store.dispatch(defaultBlockSpace + '/loadCharts', charts)
@@ -110,13 +112,15 @@ const actions = {
         const sortList = []
         const dataPromise = []
         for (let block of store.getters.blocks) {
-          dataPromise.push((async () => {
-            await this.dispatch(block.path + '/getData')
-            sortList.push({
-              path: block.path,
-              value: this.getters[block.path + '/modifierData']('campaign_linebar').accumulatedPercentage
-            })
-          })())
+          dataPromise.push(
+            (async () => {
+              await this.dispatch(block.path + '/getData')
+              sortList.push({
+                path: block.path,
+                value: this.getters[block.path + '/modifierData']('campaign_linebar').accumulatedPercentage
+              })
+            })()
+          )
         }
         await Promise.all(dataPromise)
       })()

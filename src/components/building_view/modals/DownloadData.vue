@@ -275,13 +275,10 @@ export default {
           let groupPoints = this.$store.getters[this.$store.getters['map/meterGroup'](group).path + '/points']
           let findex = groupPoints.map(o => o.value).indexOf(req.point)
           if (findex >= 0) {
-            promises.push((async () => {
+            promises.push(async () => {
               const chartModifier = ChartModifier(req.graphType, req.point)
               await chartModifier.preGetData(req, this.$store, null)
-              let data = await this.$store.dispatch(
-                this.$store.getters['map/meterGroup'](group).path + '/getData',
-                req
-              )
+              let data = await this.$store.dispatch(this.$store.getters['map/meterGroup'](group).path + '/getData', req)
               // Mimic what the chart modifier expects so there is no issues
               let chartData = {
                 label: '',
@@ -299,7 +296,6 @@ export default {
                 data: chartData.data
               }
             })
-            )
           }
         }
       }

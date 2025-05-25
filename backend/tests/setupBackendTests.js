@@ -1,7 +1,7 @@
 /* Filename: setupBackendTests.js
-  * Description: This script runs before each test suite and mocks all the lambda common layer
-  *              related functions.
-*/
+ * Description: This script runs before each test suite and mocks all the lambda common layer
+ *              related functions.
+ */
 import config from './assertedData/test_config.json' with { type: 'json' }
 const { so_namespace } = config
 import { vi } from 'vitest'
@@ -17,16 +17,8 @@ vi.mock(
 )
 
 // stub un-used requires to prevent errors during tests
-vi.mock(
-  '/opt/nodejs/user.js',
-  () => ({}),
-  { virtual: true }
-)
-vi.mock(
-  '/opt/nodejs/node_modules/aws-lambda-multipart-parser',
-  () => ({}),
-  { virtual: true }
-)
+vi.mock('/opt/nodejs/user.js', () => ({}), { virtual: true })
+vi.mock('/opt/nodejs/node_modules/aws-lambda-multipart-parser', () => ({}), { virtual: true })
 
 // mock the sql-access.js module to use a local MySQL connection
 import { createConnection } from 'mysql'
@@ -72,11 +64,8 @@ for (const fileName of modelMocks) {
   const realPath = `../dependencies/nodejs/${fileName}.js`
 
   // maps the virtual path to the real path
-  vi.doMock(
-    virtualPath,
-    async () => {
-      const mod = await import(realPath)
-      return mod
-    }
-  )
+  vi.doMock(virtualPath, async () => {
+    const mod = await import(realPath)
+    return mod
+  })
 }

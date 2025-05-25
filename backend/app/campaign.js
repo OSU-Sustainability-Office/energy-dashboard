@@ -1,6 +1,6 @@
 /* Filename: app/campaign.js
-  * Description: API endpoints related to campaigns
-*/
+ * Description: API endpoints related to campaigns
+ */
 import Campaign from '/opt/nodejs/models/campaign.js'
 import Response from '/opt/nodejs/response.js'
 import { connect, query } from '/opt/nodejs/sql-access.js'

@@ -1,6 +1,6 @@
 /* Filename: app/building.js
-  * Description: API endpoints related to buildings
-*/
+ * Description: API endpoints related to buildings
+ */
 const { default: Building } = await import('/opt/nodejs/models/building.js')
 import Response from '/opt/nodejs/response.js'
 

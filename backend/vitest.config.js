@@ -7,11 +7,11 @@ export default defineConfig({
       enabled: true,
       provider: 'v8',
       reporter: ['text', 'json-summary'], // coverage report formats
-      reportsDirectory: 'coverage', // output folder
+      reportsDirectory: 'coverage' // output folder
     },
     include: ['**/?(*.)+(spec|test).[tj]s?(x)'],
     setupFiles: ['./tests/setupBackendTests.js'],
     globals: true,
-    environment: 'node',
+    environment: 'node'
   }
 })
