@@ -5,6 +5,7 @@ import vue from 'eslint-plugin-vue'
 import strictVue from 'eslint-plugin-strict-vue'
 import importPlugin from 'eslint-plugin-import'
 import vueParser from 'vue-eslint-parser'
+import globals from 'globals'
 
 export default [
   js.configs.recommended,
@@ -16,6 +17,11 @@ export default [
   // Vue and JavaScript files
   {
     files: ['**/*.js', '**/*.vue'],
+    languageOptions: {
+      globals: {
+        ...globals.node
+      }
+    },
     plugins: {
       import: importPlugin
     },
@@ -24,7 +30,9 @@ export default [
       camelcase: [0, { properties: 'never' }],
       'space-in-parens': [1, 'never'],
       'space-before-function-paren': ['error', 'always'],
-      'import/export': 'error'
+      'import/export': 'error',
+      // allow debugger during development
+      'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
     }
   },
 
@@ -57,8 +65,6 @@ export default [
       'strict-vue/require-jsdoc': 'off',
       'strict-vue/no-root-store-calls': 'error',
       'strict-vue/no-root-store-assets': 'error'
-      // allow debugger during development
-      // 'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     }
   }
 ]
