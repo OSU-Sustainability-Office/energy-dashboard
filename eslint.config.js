@@ -10,9 +10,25 @@ export default [
   js.configs.recommended,
 
   {
-    ignores: ['backend/**', 'tests/**'],
+    ignores: ['backend/**', 'tests/**', '.gitignore']
   },
 
+  // Vue and JavaScript files
+  {
+    files: ['**/*.js', '**/*.vue'],
+    plugins: {
+      import: importPlugin
+    },
+    rules: {
+      indent: ['error', 2, { SwitchCase: 1 }],
+      camelcase: [0, { properties: 'never' }],
+      'space-in-parens': [1, 'never'],
+      'space-before-function-paren': ['error', 'always'],
+      'import/export': 'error'
+    }
+  },
+
+  // Vue files
   {
     files: ['*.vue', '**/*.vue'],
     languageOptions: {
@@ -31,23 +47,18 @@ export default [
     }
   },
 
+  // JavaScript files
   {
     files: ['**/*.js'],
-    ...js.configs.recommended,
     plugins: {
-      'strict-vue': strictVue,
-      'import': importPlugin
+      'strict-vue': strictVue
     },
     rules: {
-      'generator-star-spacing': 'off',
-      camelcase: [0, { properties: 'never' }],
       'strict-vue/require-jsdoc': 'off',
       'strict-vue/no-root-store-calls': 'error',
-      'strict-vue/no-root-store-assets': 'error',
+      'strict-vue/no-root-store-assets': 'error'
       // allow debugger during development
-      'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-      'space-in-parens': [1, 'never'],
-      'import/export': 'error'
+      // 'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     }
   }
 ]

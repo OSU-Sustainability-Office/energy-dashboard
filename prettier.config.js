@@ -6,4 +6,3 @@ export default {
   tabWidth: 2, // matches ESLint's indent rule
   semi: false
 }
-

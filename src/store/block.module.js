@@ -82,7 +82,6 @@ const actions = {
   },
 
   async updateModifier (store, payload) {
-    // eslint-disable-next-line no-proto
     const currentModNames = store.getters.modifiers.map(o => o.__proto__.constructor.name)
     const modIndex = currentModNames.indexOf(payload.name)
     if (modIndex < 0) {
@@ -419,7 +418,6 @@ const getters = {
 
   modifierData: state => modifierName => {
     for (let modifier of state.modifiers) {
-      // eslint-disable-next-line no-proto
       if (modifier.__proto__.constructor.name === modifierName) {
         return modifier.data
       }
