@@ -166,12 +166,13 @@ export default class LineAccumulatedModifier {
       case 'day':
         delta = 86400
         break
-      case 'month':
+      case 'month': {
         // Use number of days in the current month to calculate delta
         let monthDays = new Date(startDateObj.getFullYear(), startDateObj.getMonth(), 0).getDate()
         if (startDateObj.getDate() > monthDays) monthDays = startDateObj.getDate()
         delta = 86400 * monthDays
         break
+      }
     }
     delta *= dateInterval
     payload.dateStart = payload.dateStart - delta - (payload.dateStart % 900)

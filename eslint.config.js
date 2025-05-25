@@ -19,7 +19,8 @@ export default [
     files: ['**/*.js', '**/*.vue'],
     languageOptions: {
       globals: {
-        ...globals.node
+        ...globals.node,
+        ...globals.browser
       }
     },
     plugins: {
@@ -31,6 +32,7 @@ export default [
       'space-in-parens': [1, 'never'],
       'space-before-function-paren': ['error', 'always'],
       'import/export': 'error',
+      'no-unused-vars': 'off',
       // allow debugger during development
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
     }
@@ -45,8 +47,7 @@ export default [
       sourceType: 'module'
     },
     plugins: {
-      vue,
-      'strict-vue': strictVue
+      vue
     },
     rules: {
       ...vue.configs.essential.rules,

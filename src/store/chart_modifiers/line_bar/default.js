@@ -138,11 +138,12 @@ export default class LineDefaultModifier {
       case 'day':
         delta = SECONDS_PER_DAY
         break
-      case 'month':
+      case 'month': {
         let monthDays = new Date(dataDate.getFullYear(), dataDate.getMonth(), 0).getDate()
         if (dataDate.getDate() > monthDays) monthDays = dataDate.getDate()
         delta = SECONDS_PER_DAY * monthDays
         break
+      }
     }
     delta *= dateInterval
 

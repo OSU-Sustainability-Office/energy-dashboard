@@ -166,11 +166,12 @@ export default class LinePercModifier {
       case 'day':
         delta = 86400
         break
-      case 'month':
+      case 'month': {
         let monthDays = new Date(dataDate.getFullYear(), dataDate.getMonth(), 0).getDate()
         if (dataDate.getDate() > monthDays) monthDays = dataDate.getDate()
         delta = 60 * 60 * 24 * monthDays
         break
+      }
     }
     delta *= payload.dateInterval
     payload.dateStart = payload.dateStart - delta - (payload.dateStart % 900)
