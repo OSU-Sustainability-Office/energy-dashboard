@@ -202,71 +202,68 @@ const actions = {
 
   // Default block for buildings
   async loadDefault (store, payload) {
-    store.commit(
-      'promise',
-      new Promise(async (resolve, reject) => {
-        store.commit('shuffleChartColors')
-        let chartSpace = 'chart_' + payload.id.toString()
-        let moduleSpace = store.getters.path + '/' + chartSpace
-        this.registerModule(moduleSpace.split('/'), Chart)
+    const blockPromise = (async () => {
+      await store.commit('shuffleChartColors')
+      let chartSpace = 'chart_' + payload.id.toString()
+      let moduleSpace = store.getters.path + '/' + chartSpace
+      this.registerModule(moduleSpace.split('/'), Chart)
 
-        // Get the building utility type
-        let utilityType = ''
-        const meters = this.getters[payload.group.path + '/meters']
-        if (meters.length > 0) {
-          await meters[0].promise
-          utilityType = this.getters[meters[0].path + '/type']
-        }
+      // Get the building utility type
+      let utilityType = ''
+      const meters = this.getters[payload.group.path + '/meters']
+      if (meters.length > 0) {
+        await meters[0].promise
+        utilityType = this.getters[meters[0].path + '/type']
+      }
 
-        // This defines the "default chart" (e.g. "Total Electricity")
-        // The default chart are the charts shown when user clicks on a building
-        store.commit(chartSpace + '/name', 'Total ' + utilityType)
-        const pointMap = {
-          Electricity: 'accumulated_real',
-          Gas: 'cubic_feet',
-          Steam: 'total',
-          'Daily Electricity': 'periodic_real_in',
-          'Solar Panel': 'periodic_real_out'
-        }
-        let point = pointMap[utilityType]
+      // This defines the "default chart" (e.g. "Total Electricity")
+      // The default chart are the charts shown when user clicks on a building
+      store.commit(chartSpace + '/name', 'Total ' + utilityType)
+      const pointMap = {
+        Electricity: 'accumulated_real',
+        Gas: 'cubic_feet',
+        Steam: 'total',
+        'Daily Electricity': 'periodic_real_in',
+        'Solar Panel': 'periodic_real_out'
+      }
+      let point = pointMap[utilityType]
 
-        // Determine if electricity meter is Acquisuite or Pacific Power
-        if (utilityType === 'Electricity') {
-          point = await store.dispatch('getMeterPoint', meters)
-        }
+      // Determine if electricity meter is Acquisuite or Pacific Power
+      if (utilityType === 'Electricity') {
+        point = await store.dispatch('getMeterPoint', meters)
+      }
 
-        store.commit(chartSpace + '/path', moduleSpace)
-        if (utilityType !== '') {
-          store.commit(chartSpace + '/point', point)
-        } else {
-          store.commit(chartSpace + '/point', '')
-        }
-        store.commit(
-          chartSpace + '/color',
-          store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length]
-        )
-        let buildingPath = store.getters.path.split('/')
-        buildingPath.pop()
-        buildingPath = buildingPath.join('/')
-        store.commit(chartSpace + '/building', buildingPath)
-        store.commit(chartSpace + '/meterGroupPath', payload.group.path)
+      store.commit(chartSpace + '/path', moduleSpace)
+      if (utilityType !== '') {
+        store.commit(chartSpace + '/point', point)
+      } else {
+        store.commit(chartSpace + '/point', '')
+      }
+      store.commit(
+        chartSpace + '/color',
+        store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length]
+      )
+      let buildingPath = store.getters.path.split('/')
+      buildingPath.pop()
+      buildingPath = buildingPath.join('/')
+      store.commit(chartSpace + '/building', buildingPath)
+      store.commit(chartSpace + '/meterGroupPath', payload.group.path)
 
-        store.commit('name', utilityType)
+      store.commit('name', utilityType)
 
-        // default chart settings
-        store.commit('dateInterval', 1)
-        store.commit('graphType', 1)
-        store.commit('intervalUnit', 'day')
+      // default chart settings
+      store.commit('dateInterval', 1)
+      store.commit('graphType', 1)
+      store.commit('intervalUnit', 'day')
 
-        let currentEpoch = new Date().getTime()
-        currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
+      let currentEpoch = new Date().getTime()
+      currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
 
-        store.commit('dateStart', currentEpoch - 900 * 96 * 60 * 1000) // 15 minutes, 96 times a day, 30 days
-        store.commit('dateEnd', currentEpoch)
-        resolve()
-      })
-    )
-    return store.getters.promise
+      store.commit('dateStart', currentEpoch - 900 * 96 * 60 * 1000) // 15 minutes, 96 times a day, 30 days
+      store.commit('dateEnd', currentEpoch)
+    })()
+    store.commit('promise', blockPromise)
+    return blockPromise
   },
 
   async getData (store) {

@@ -17,29 +17,26 @@ const actions = {
   // Retrieves campaign information for all campaigns from the API and controls the global campaigns promise
   async loadCampaigns (store) {
     if (store.getters.promise === null) {
-      store.commit(
-        'promise',
-        new Promise(async (resolve, reject) => {
-          // Attempt to retrieve campaigns from the api
-          let campaigns = await API.campaigns()
-          campaigns.forEach(c => {
-            const campaign = 'campaign_' + c.id.toString()
-            const campaignPath = store.getters.path + '/' + campaign
+      const campaignPromise = (async () => {
+        // Attempt to retrieve campaigns from the api
+        let campaigns = await API.campaigns()
+        campaigns.forEach(c => {
+          const campaign = 'campaign_' + c.id.toString()
+          const campaignPath = store.getters.path + '/' + campaign
 
-            this.registerModule(campaignPath.split('/'), Campaign)
-            store.commit(campaign + '/meterGroupIds', c.meterGroupIDs)
-            store.commit(campaign + '/path', campaignPath)
-            store.commit(campaign + '/id', c.id)
-            store.commit(campaign + '/dateStart', new Date(c.dateStart).getTime())
-            store.commit(campaign + '/dateEnd', new Date(c.dateEnd).getTime())
-            store.commit(campaign + '/compareStart', new Date(c.compareStart).getTime())
-            store.commit(campaign + '/compareEnd', new Date(c.compareEnd).getTime())
-            store.commit(campaign + '/media', c.media)
-            store.commit(campaign + '/name', c.name)
-          })
-          resolve()
+          this.registerModule(campaignPath.split('/'), Campaign)
+          store.commit(campaign + '/meterGroupIds', c.meterGroupIDs)
+          store.commit(campaign + '/path', campaignPath)
+          store.commit(campaign + '/id', c.id)
+          store.commit(campaign + '/dateStart', new Date(c.dateStart).getTime())
+          store.commit(campaign + '/dateEnd', new Date(c.dateEnd).getTime())
+          store.commit(campaign + '/compareStart', new Date(c.compareStart).getTime())
+          store.commit(campaign + '/compareEnd', new Date(c.compareEnd).getTime())
+          store.commit(campaign + '/media', c.media)
+          store.commit(campaign + '/name', c.name)
         })
-      )
+      })()
+      store.commit('promise', campaignPromise)
     }
     return store.getters.promise
   }

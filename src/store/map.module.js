@@ -84,27 +84,23 @@ const actions = {
 
   async loadMap (store) {
     if (store.getters.promise === null) {
-      store.commit(
-        'promise',
-        new Promise(async (resolve, reject) => {
-          let buildingsResolved = await API.buildings()
-          let buildingPromises = []
-          for (let building of buildingsResolved) {
-            buildingPromises.push(store.dispatch('loadBuilding', building))
-          }
-          await Promise.all(buildingPromises)
+      const mapPromise = (async () => {
+        let buildingsResolved = await API.buildings()
+        let buildingPromises = []
+        for (let building of buildingsResolved) {
+          buildingPromises.push(store.dispatch('loadBuilding', building))
+        }
+        await Promise.all(buildingPromises)
 
-          // fetch missing geoJSON data (if any)
-          const buildingMap = store.getters.buildingMap
-          const missingIds = Array.from(buildingMap.keys()).join(',')
-          if (missingIds.length > 0) {
-            await store.dispatch('loadGeoJSONData', missingIds)
-            buildingMap.clear() // clear the map to indicate that all missing geoJSON has been loaded
-          }
-
-          resolve()
-        })
-      )
+        // fetch missing geoJSON data (if any)
+        const buildingMap = store.getters.buildingMap
+        const missingIds = Array.from(buildingMap.keys()).join(',')
+        if (missingIds.length > 0) {
+          await store.dispatch('loadGeoJSONData', missingIds)
+          buildingMap.clear() // clear the map to indicate that all missing geoJSON has been loaded
+        }
+      })()
+      store.commit('promise', mapPromise)
     }
     return store.getters.promise
   }
