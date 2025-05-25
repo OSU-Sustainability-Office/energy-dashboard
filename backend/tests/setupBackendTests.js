@@ -8,11 +8,11 @@
 
 import config from './assertedData/test_config.json' assert { type: 'json' }
 const { so_namespace } = config
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 
 /* Lambda Common Layer mocks */
 const mockResponse = await import(`${so_namespace}/response.js`)
-jest.mock(
+vi.mock(
   '/opt/nodejs/response.js',
   () => {
     return mockResponse
@@ -21,14 +21,14 @@ jest.mock(
 )
 
 // stub un-used requires
-jest.mock(
+vi.mock(
   '/opt/nodejs/user.js',
   () => {
     null
   },
   { virtual: true }
 )
-jest.mock(
+vi.mock(
   '/opt/nodejs/node_modules/aws-lambda-multipart-parser',
   () => {
     null
@@ -62,7 +62,7 @@ const mockDB = {
   }
 }
 
-jest.mock(
+vi.mock(
   '/opt/nodejs/sql-access.js',
   () => {
     return mockDB
@@ -81,7 +81,7 @@ const modelMocks = [
 ]
 for (const modelMock of modelMocks) {
   const mock = await import(`../dependencies/nodejs/${modelMock}`)
-  jest.mock(
+  vi.mock(
     `/opt/nodejs/${modelMock}`,
     () => {
       return mock

@@ -9,10 +9,6 @@ import globals from 'globals'
 export default [
   js.configs.recommended,
 
-  {
-    ignores: ['backend/**', 'tests/**', '.gitignore']
-  },
-
   // Vue and JavaScript files
   {
     files: ['**/*.js', '**/*.vue'],
@@ -22,7 +18,8 @@ export default [
       sourceType: 'module',
       globals: {
         ...globals.node,
-        ...globals.browser
+        ...globals.browser,
+        ...globals.jest
       }
     },
     plugins: {
@@ -38,6 +35,7 @@ export default [
       'space-in-parens': [1, 'never'],
       'space-before-function-paren': ['error', 'always'],
       'import/export': 'error',
+      'import/no-commonjs': 'error',
       'no-unused-vars': 'off',
       // allow debugger during development
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
