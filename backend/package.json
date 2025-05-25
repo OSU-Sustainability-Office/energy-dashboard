@@ -5,7 +5,7 @@
   "description": "",
   "main": "sam_express.js",
   "scripts": {
-    "test": "node ./tests/buildTestDatabase.js && vitest run --coverage",
+    "test": "node ./tests/buildTestDatabase.js && vitest run",
     "test-local": "docker compose build && docker compose run --rm test && docker compose down"
   },
   "author": "",
