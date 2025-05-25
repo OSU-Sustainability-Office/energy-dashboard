@@ -1,10 +1,10 @@
 // Lambda Compression for API Responses from https://www.npmjs.com/package/lambda-compression
 
-const zlib = require('zlib')
+import { brotliCompressSync, gzipSync, deflateSync } from 'zlib'
 
-function compress(event, response) {
+function compress (event, response) {
   if (!response.body) {
-    return result
+    return response
   }
 
   const encodingHeader = event.headers['Accept-Encoding']
@@ -21,25 +21,25 @@ function compress(event, response) {
   if (encodings.has('br')) {
     response.headers['Content-Encoding'] = 'br'
     response.isBase64Encoded = true
-    response.body = zlib.brotliCompressSync(response.body).toString('base64')
+    response.body = brotliCompressSync(response.body).toString('base64')
     return response
   }
 
   if (encodings.has('gzip')) {
     response.headers['Content-Encoding'] = 'gzip'
     response.isBase64Encoded = true
-    response.body = zlib.gzipSync(response.body).toString('base64')
+    response.body = gzipSync(response.body).toString('base64')
     return response
   }
 
   if (encodings.has('deflate')) {
     response.headers['Content-Encoding'] = 'deflate'
     response.isBase64Encoded = true
-    response.body = zlib.deflateSync(response.body).toString('base64')
+    response.body = deflateSync(response.body).toString('base64')
     return response
   }
 
   return response
 }
 
-module.exports = compress
+export default compress

@@ -7,20 +7,20 @@
  */
 
 class MeterGroup {
-  constructor(id) {
+  constructor (id) {
     this.meters = []
     this.name = ''
     this.default = false
     this.id = id
   }
 
-  set(meters, name, default2) {
+  set (meters, name, default2) {
     this.meters = meters
     this.name = name
     this.default = default2
   }
 
-  get data() {
+  get data () {
     let meters = this.meters
     if (meters.length > 0 && meters[0] instanceof Promise) {
       meters = meters.map(o => o.data)
@@ -34,4 +34,4 @@ class MeterGroup {
   }
 }
 
-module.exports = MeterGroup
+export default MeterGroup

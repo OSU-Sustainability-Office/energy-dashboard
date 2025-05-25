@@ -1,8 +1,8 @@
-const DB = require('/opt/nodejs/sql-access.js')
+import { connect, query } from '/opt/nodejs/sql-access.js'
 
 class PacificPowerRecent {
-  async get() {
-    await DB.connect()
+  async get () {
+    await connect()
 
     // see automated-jobs/SEC/readSEC.js for original function
     // Automatically detects the timezone difference of US Pacific vs GMT-0 (7 or 8 depending on daylight savings)
@@ -38,7 +38,7 @@ class PacificPowerRecent {
 
     const timestamp7DaysAgo = Math.floor(dateObjUnix.getTime() / 1000) // Convert milliseconds to seconds
 
-    return DB.query(
+    return query(
       `SELECT MAX(time) as time, MAX(time_seconds) as time_seconds, pacific_power_meter_id 
       FROM pacific_power_data
       WHERE time_seconds >= ?
@@ -49,4 +49,4 @@ class PacificPowerRecent {
   }
 }
 
-module.exports = PacificPowerRecent
+export default PacificPowerRecent

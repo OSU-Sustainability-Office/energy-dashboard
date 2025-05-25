@@ -6,19 +6,19 @@
  * @Copyright:  (c) Oregon State University 2019
  */
 
-const Building = require('/opt/nodejs/models/building.js')
-const Response = require('/opt/nodejs/response.js')
+import { all as getAllBuildings, updateGeoJSON } from '/opt/nodejs/models/building.js'
+import Response from '/opt/nodejs/response.js'
 
-exports.all = async (event, context) => {
+export async function all (event, context) {
   let response = new Response(event)
-  response.body = JSON.stringify((await Building.all()).map(o => o.data))
+  response.body = JSON.stringify((await getAllBuildings()).map(o => o.data))
   response.headers['Content-Type'] = 'application/json'
   return response
 }
 
 // This function is used by an external service (automated job)
 // to occasionally update the GeoJSON data for multiple buildings
-exports.putGeoJSON = async event => {
+export async function putGeoJSON (event) {
   const response = new Response(event)
   try {
     const payload = JSON.parse(event.body)
@@ -36,7 +36,7 @@ exports.putGeoJSON = async event => {
     // Update each building's GeoJSON
     await Promise.all(
       buildings.map(({ buildingId, buildingGeoJSON }) => {
-        return Building.updateGeoJSON(buildingId, buildingGeoJSON)
+        return updateGeoJSON(buildingId, buildingGeoJSON)
       })
     )
     response.body = JSON.stringify({ message: 'GeoJSON updated successfully' })

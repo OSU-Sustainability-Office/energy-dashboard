@@ -6,7 +6,7 @@
  * @Copyright: Oregon State University 2019
  */
 
-module.exports = {
+export default {
   48: {
     // Veris Industries E51C2 Power Meter , Bi-dir, Full Data Set
     4: 'accumulated_real',

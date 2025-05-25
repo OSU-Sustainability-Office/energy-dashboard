@@ -6,11 +6,11 @@
  * @Copyright:  Oregon State University 2019
  */
 
-const DB = require('/opt/nodejs/sql-access.js')
-const meterClasses = require('/opt/nodejs/meter_classes.js')
+import { connect, query } from '/opt/nodejs/sql-access.js'
+import meterClasses from '/opt/nodejs/meter_classes.js'
 
 class Meter {
-  constructor(id, address = '') {
+  constructor (id, address = '') {
     if (!id && address === '') {
       throw new Error('Meter needs id or address')
     }
@@ -23,14 +23,14 @@ class Meter {
     this.pacificPowerID = null
   }
 
-  set(name, classInt, pacificPowerID) {
+  set (name, classInt, pacificPowerID) {
     this.name = name
     this.classInt = classInt
     this.pacificPowerID = pacificPowerID
     this.calcProps()
   }
 
-  calcProps() {
+  calcProps () {
     if (this.classInt === null) {
       return
     }
@@ -100,7 +100,7 @@ class Meter {
     return this
   }
 
-  get data() {
+  get data () {
     return {
       id: this.id,
       name: this.name,
@@ -112,13 +112,13 @@ class Meter {
     }
   }
 
-  async get() {
-    await DB.connect()
+  async get () {
+    await connect()
     let row
     if (this.address && this.address !== '') {
-      row = await DB.query('SELECT * FROM meters WHERE address = ?', [this.address])
+      row = await query('SELECT * FROM meters WHERE address = ?', [this.address])
     } else {
-      row = await DB.query('SELECT * FROM meters WHERE id = ?', [this.id])
+      row = await query('SELECT * FROM meters WHERE id = ?', [this.id])
     }
 
     if (row.length === 0) {
@@ -136,15 +136,15 @@ class Meter {
     return this
   }
 
-  async download(point, startTime, endTime, meterClass) {
-    await DB.connect()
+  async download (point, startTime, endTime, meterClass) {
+    await connect()
     if (Object.values(meterClasses[meterClass]).includes(point)) {
       // Generalized Meter Types
       if (String(meterClass).startsWith('999')) {
         // get table name from meter table
-        let [{ name: meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id])
+        let [{ name: meter_table_name }] = await query('SELECT `name` FROM meters WHERE id = ?', [this.id])
         if (String(meterClass) === '9990001' && meter_table_name === 'Solar_Meters') {
-          return DB.query(
+          return query(
             'SELECT ' +
               point +
               ", time_seconds AS time, '" +
@@ -156,10 +156,10 @@ class Meter {
           )
         } else {
           // pacific power meters, may need to change to else-if if there are going to be more custom classes starting with 999
-          let [{ pacific_power_id: pp_id }] = await DB.query('SELECT pacific_power_id FROM meters WHERE id = ?', [
+          let [{ pacific_power_id: pp_id }] = await query('SELECT pacific_power_id FROM meters WHERE id = ?', [
             this.id
           ])
-          return DB.query(
+          return query(
             'SELECT ' +
               point +
               ', time_seconds AS time FROM pacific_power_data WHERE time_seconds >= ? AND time_seconds <= ? AND pacific_power_meter_id = ? order by time_seconds DESC;',
@@ -168,7 +168,7 @@ class Meter {
         }
       }
       // Aquisuites
-      return DB.query(
+      return query(
         'SELECT ' +
           point +
           ', time_seconds AS time, id FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)',
@@ -180,13 +180,13 @@ class Meter {
   }
 
   // download without explicit point name
-  async sparseDownload(point, startTime, endTime, meterClass) {
-    await DB.connect()
+  async sparseDownload (point, startTime, endTime, meterClass) {
+    await connect()
     if (Object.values(meterClasses[meterClass]).includes(point)) {
       if (String(meterClass).startsWith('999')) {
         // get table name from meter table
-        let [{ name: meter_table_name }] = await DB.query('SELECT `name` FROM meters WHERE id = ?', [this.id])
-        return DB.query(
+        let [{ name: meter_table_name }] = await query('SELECT `name` FROM meters WHERE id = ?', [this.id])
+        return query(
           'SELECT ' +
             point +
             ' as reading, time_seconds AS time FROM ' +
@@ -195,7 +195,7 @@ class Meter {
           [startTime, endTime]
         )
       }
-      return DB.query(
+      return query(
         'SELECT ' +
           point +
           ' as reading, time_seconds AS time FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)',
@@ -206,8 +206,8 @@ class Meter {
     }
   }
 
-  async upload(data) {
-    await DB.connect()
+  async upload (data) {
+    await connect()
     console.log(meterClasses)
     let points = meterClasses[this.classInt]
 
@@ -253,7 +253,7 @@ class Meter {
     let time = data[0].toString().substring(1, 17) + ':00'
     const timeseconds = new Date(time).getTime() / 1000 - new Date().getTimezoneOffset() * 60
     try {
-      await DB.query(
+      await query(
         'INSERT INTO data (meter_id, time, time_seconds, error, accumulated_real, real_power, reactive_power, apparent_power, real_a, real_b, real_c, reactive_a, reactive_b, reactive_c, apparent_a, apparent_b, apparent_c, pf_a, pf_b, pf_c, vphase_ab, vphase_bc, vphase_ac, vphase_an, vphase_bn, vphase_cn, cphase_a, cphase_b, cphase_c, total, input, minimum, maximum, cubic_feet, instant, rate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           this.id,
@@ -297,7 +297,7 @@ class Meter {
     } catch (err) {
       if (err.code === 'ER_DUP_ENTRY' && !parseInt(data[1])) {
         console.log(pointMap)
-        await DB.query(
+        await query(
           `UPDATE data SET 
                         error = ?, 
                         accumulated_real = ?, 
@@ -378,9 +378,9 @@ class Meter {
     }
   }
 
-  static async create(name, address, classInt) {
-    await DB.connect()
-    let returnRow = await DB.query('INSERT INTO meters (name, address, class) values (?, ?, ?)', [
+  static async create (name, address, classInt) {
+    await connect()
+    let returnRow = await query('INSERT INTO meters (name, address, class) values (?, ?, ?)', [
       name,
       address,
       classInt
@@ -393,4 +393,4 @@ class Meter {
   }
 }
 
-module.exports = Meter
+export default Meter

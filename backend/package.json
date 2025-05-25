@@ -1,10 +1,11 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "sam_express.js",
   "scripts": {
-    "test": "node ./tests/buildTestDatabase.js && jest --ci --detectOpenHandles --runInBand --forceExit",
+    "test": "node ./tests/buildTestDatabase.js && vitest run",
     "test-local": "docker compose build && docker compose run --rm test && docker compose down"
   },
   "author": "",
@@ -20,8 +21,8 @@
     "yaml": "^2.7.1"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
     "sqlite3": "^5.1.7",
-    "sustainability-office-lambda-common-layer": "https://github.com/OSU-Sustainability-Office/lambda-common-layer.git"
+    "sustainability-office-lambda-common-layer": "https://github.com/OSU-Sustainability-Office/lambda-common-layer.git",
+    "vitest": "^3.1.4"
   }
 }

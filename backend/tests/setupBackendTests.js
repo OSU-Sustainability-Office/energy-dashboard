@@ -6,10 +6,12 @@
  *               related functions.
  */
 
-const testConfig = require('./assertedData/test_config.json')
+import config from './assertedData/test_config.json' assert { type: 'json' }
+const { so_namespace } = config
+import { jest } from '@jest/globals'
 
 /* Lambda Common Layer mocks */
-const mockResponse = require(`${testConfig.so_namespace}/response.js`)
+const mockResponse = await import(`${so_namespace}/response.js`)
 jest.mock(
   '/opt/nodejs/response.js',
   () => {
@@ -37,8 +39,8 @@ jest.mock(
 /**
     Mock MySQL Database
 **/
-const mysql = require('mysql')
-const DB = mysql.createConnection({
+import { createConnection } from 'mysql'
+const DB = createConnection({
   host: process.env.MYSQL_HOST,
   user: 'root',
   password: 'password',
@@ -77,8 +79,8 @@ const modelMocks = [
   'models/campaign.js',
   'models/compress.js'
 ]
-for (modelMock of modelMocks) {
-  const mock = require(`../dependencies/nodejs/${modelMock}`)
+for (const modelMock of modelMocks) {
+  const mock = await import(`../dependencies/nodejs/${modelMock}`)
   jest.mock(
     `/opt/nodejs/${modelMock}`,
     () => {
