@@ -34,7 +34,7 @@ describe('Testing campaigns.module.js related API endpoints...', () => {
       expect(isNaN(id)).not.toBe(true)
     }
     // compare time stamps
-    expect(Date.parse(jsonData['dateStart'])).toBe(NaN)
+    expect(Date.parse(jsonData['dateStart'])).not.toBe(NaN)
     expect(Date.parse(jsonData['dateEnd'])).not.toBe(NaN)
     expect(Date.parse(jsonData['compareStart'])).not.toBe(NaN)
     expect(Date.parse(jsonData['compareEnd'])).not.toBe(NaN)
