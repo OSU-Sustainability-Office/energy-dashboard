@@ -1,17 +1,13 @@
-/*
- * @Author: Brogan
- * @Date:   Tuesday May 14th 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Tuesday May 14th 2019
- * @Copyright:  (c) Oregon State University 2019
- */
+/* Filename: app/building.js
+  * Description: API endpoints related to buildings
+*/
 
-import { all as getAllBuildings, updateGeoJSON } from '/opt/nodejs/models/building.js'
+const { default: Building } = await import('/opt/nodejs/models/building.js')
 import Response from '/opt/nodejs/response.js'
 
 export async function all (event, context) {
   let response = new Response(event)
-  response.body = JSON.stringify((await getAllBuildings()).map(o => o.data))
+  response.body = JSON.stringify((await Building.all()).map(o => o.data))
   response.headers['Content-Type'] = 'application/json'
   return response
 }
@@ -36,7 +32,7 @@ export async function putGeoJSON (event) {
     // Update each building's GeoJSON
     await Promise.all(
       buildings.map(({ buildingId, buildingGeoJSON }) => {
-        return updateGeoJSON(buildingId, buildingGeoJSON)
+        return Building.updateGeoJSON(buildingId, buildingGeoJSON)
       })
     )
     response.body = JSON.stringify({ message: 'GeoJSON updated successfully' })
