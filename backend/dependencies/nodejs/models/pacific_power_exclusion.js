@@ -1,3 +1,6 @@
+/* Filename: models/pacific_power_exclusion.js
+  * Description: Defines PacificPowerExclusion class and methods to interact with the database.
+*/
 import { connect, query } from '/opt/nodejs/sql-access.js'
 
 class PacificPowerExclusion {

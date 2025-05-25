@@ -1,8 +1,6 @@
-/*
-  Filename: meter.js
-  Description: API Endpoint logic for meter data upload & retrieval
- */
-
+/* Filename: app/meter.js
+  * Description: API endpoints related to meter data
+*/
 import { connect, query as _query } from '/opt/nodejs/sql-access.js'
 import Meter, { create } from '/opt/nodejs/models/meter.js'
 import Response from '/opt/nodejs/response.js'

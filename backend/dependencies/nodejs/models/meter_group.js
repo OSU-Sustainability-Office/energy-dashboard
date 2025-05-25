@@ -1,11 +1,6 @@
-/*
- * @Author: Brogan
- * @Date:   Saturday June 15th 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday June 15th 2019
- * @Copyright:  Oregon State University 2019
- */
-
+/* Filename: models/meter_group.js
+  * Description: Defines MeterGroup class and methods to interact with the database.
+*/
 class MeterGroup {
   constructor (id) {
     this.meters = []

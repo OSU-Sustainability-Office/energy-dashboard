@@ -1,3 +1,6 @@
+/* Filename: app/pacific_power_exclusion.js
+  * Description: API endpoints used to manage Pacific Power exclusions (for webscraper)
+*/
 import Response from '/opt/nodejs/response.js'
 import PacificPowerExclusion from '/opt/nodejs/models/pacific_power_exclusion.js'
 

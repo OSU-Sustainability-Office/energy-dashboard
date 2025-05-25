@@ -1,11 +1,6 @@
-/*
- * @Author: Brogan
- * @Date:   Saturday June 15th 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday June 15th 2019
- * @Copyright:  Oregon State University 2019
- */
-
+/* Filename: models/meter.js
+  * Description: Defines Meter class and methods to interact with the database.
+*/
 import { connect, query } from '/opt/nodejs/sql-access.js'
 import meterClasses from '/opt/nodejs/meter_classes.js'
 

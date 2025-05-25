@@ -1,3 +1,6 @@
+/* Filename: app/pacific_power_recent.js
+  * Description: API endpoints used to manage Pacific Power recent data (for webscraper)
+*/
 import Response from '/opt/nodejs/response.js'
 import PacificPowerRecent from '/opt/nodejs/models/pacific_power_recent.js'
 

@@ -1,11 +1,6 @@
-/*
- * @Author: Brogan & Jack Woods
- * @Date:   Tuesday January 28 2020
- * @Last Modified By:  Jack Woods
- * @Last Modified Time:  Tuesday January 28 2020
- * @Copyright:  (c) Oregon State University 2020
- */
-
+/* Filename: app/campaign.js
+  * Description: API endpoints related to campaigns
+*/
 import Campaign from '/opt/nodejs/models/campaign.js'
 import Response from '/opt/nodejs/response.js'
 import { connect, query } from '/opt/nodejs/sql-access.js'
