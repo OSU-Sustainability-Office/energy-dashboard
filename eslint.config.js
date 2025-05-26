@@ -1,13 +1,15 @@
 // eslint.config.js
 
 import js from '@eslint/js'
-import vue from 'eslint-plugin-vue'
+import vuePlugin from 'eslint-plugin-vue'
 import importPlugin from 'eslint-plugin-import'
+import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import vueParser from 'vue-eslint-parser'
 import globals from 'globals'
 
 export default [
   js.configs.recommended,
+  eslintConfigPrettier, // prevent conflicts with Prettier
 
   // Vue and JavaScript files
   {
@@ -24,15 +26,13 @@ export default [
     },
     plugins: {
       import: importPlugin,
-      vue
+      vue: vuePlugin
     },
     rules: {
-      ...vue.configs.essential.rules,
+      ...vuePlugin.configs.essential.rules,
       'vue/multi-word-component-names': 'off',
       'vue/no-use-v-if-with-v-for': 'off',
-      indent: ['error', 2, { SwitchCase: 1 }],
       camelcase: [0, { properties: 'never' }],
-      'space-in-parens': [1, 'never'],
       'space-before-function-paren': ['error', 'always'],
       'import/export': 'error',
       'import/no-commonjs': 'error',
