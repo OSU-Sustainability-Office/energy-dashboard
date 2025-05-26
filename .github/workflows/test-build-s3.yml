@@ -28,13 +28,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Cache npm
-        uses: actions/cache@v4
-        with:
-            path: ~/.npm # npm cache directory
-            key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: |
-              ${{ runner.os }}-npm-
       - name: AWS Creds
         uses: aws-actions/configure-aws-credentials@v4
         with:
