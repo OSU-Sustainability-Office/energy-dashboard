@@ -26,7 +26,7 @@ const state = () => {
   This function is used to determine the point to be used for
   the baseline percentage calculation.
 */
-function getMeterPoint (store, groupModule) {
+function getMeterPoint(store, groupModule) {
   let point = 'accumulated_real_baseline_percentage'
 
   // find Pacific Power meters
@@ -42,7 +42,7 @@ function getMeterPoint (store, groupModule) {
 }
 
 const actions = {
-  async buildBlocks (store) {
+  async buildBlocks(store) {
     if (store.getters.promise === null) {
       const blockBuildPromise = (async () => {
         await this.getters['map/promise'] // Make sure building promises have been queued

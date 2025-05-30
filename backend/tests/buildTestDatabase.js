@@ -14,7 +14,7 @@ const DB = createConnection({
 })
 
 import { readFileSync } from 'fs'
-function formatInserts (filename, tablename) {
+function formatInserts(filename, tablename) {
   let text = readFileSync(filename, 'utf-8')
   return text
     .split('\n')

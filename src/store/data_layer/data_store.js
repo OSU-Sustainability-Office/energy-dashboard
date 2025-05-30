@@ -31,7 +31,7 @@ const RESPONSE_MAX_SIZE = 0x350000 // Use smaller value for reduced risk of exce
 
 const actions = {
   // Copies "cache" object to indexedDB for persistent storage
-  async addCacheToIndexedDB (store) {
+  async addCacheToIndexedDB(store) {
     // double-check current store state
     const db = this.getters['dataStore/DB']
     if (db === undefined) throw new Error('indexedDB not instantiated')
@@ -54,7 +54,7 @@ const actions = {
   },
 
   // Copies chunked "cache" object to indexedDB for persistent storage
-  async addChunkToIndexedDB (store) {
+  async addChunkToIndexedDB(store) {
     // double-check current store state
     const db = this.getters['dataStore/DB']
     if (db === undefined) throw new Error('indexedDB not instantiated')
@@ -79,7 +79,7 @@ const actions = {
 
   // Loads IndexedDB data into Vuex store for persistent caching.
   // Stores meter readings as { meterId: { uom: { timestamp: value } } }.
-  async loadIndexedDB (store) {
+  async loadIndexedDB(store) {
     if (this.getters['dataStore/DB'] !== undefined) return
 
     // connect to indexedDB instance
@@ -140,7 +140,7 @@ const actions = {
 
   // Identifies missing time intervals between start and end for a given meter
   // Returns an array of missing intervals [[start, end]]
-  findMissingIntervals (store, payload) {
+  findMissingIntervals(store, payload) {
     const { meterId, uom, start, end } = payload
     const meterData = this.getters['dataStore/cache'][meterId]?.[uom]
 
@@ -200,7 +200,7 @@ const actions = {
     Designed to handle buildings with multiple meters efficiently.
     Assumes each request has the same meterClass and point type.
   */
-  async getMultiMeterData (store, payload) {
+  async getMultiMeterData(store, payload) {
     await this.dispatch('dataStore/loadIndexedDB')
     const requestPoint = payload[0].uom
     const meterClass = payload[0].classInt
@@ -355,7 +355,7 @@ const actions = {
   },
 
   // Requests data in chunks to avoid exceeding the AWS lambda response body size limit
-  async getChunkData (store, payload) {
+  async getChunkData(store, payload) {
     const { meterId, start, end, uom, classInt } = payload
     await this.dispatch('dataStore/loadIndexedDB')
 
@@ -444,7 +444,7 @@ const actions = {
    * uom: the unit of measure/metering point to request data for
    * classInt: An integer that corresponds to the type of meter we are reading from
    */
-  async getData (store, payload) {
+  async getData(store, payload) {
     const { meterId, start, end, uom, classInt } = payload
     // Find missing data intervals
     let missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
@@ -595,13 +595,13 @@ const mutations = {
 }
 
 const getters = {
-  cache (state) {
+  cache(state) {
     return state.cache
   },
-  DB (state) {
+  DB(state) {
     return state.indexedDBInstance
   },
-  requestStore (state) {
+  requestStore(state) {
     return state.requestStore
   },
 

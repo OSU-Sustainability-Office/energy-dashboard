@@ -15,7 +15,7 @@ const state = () => {
 }
 
 const actions = {
-  async loadBuilding (store, payload) {
+  async loadBuilding(store, payload) {
     let buildingSpace = 'building_' + payload.id.toString()
     let moduleSpace = store.getters.path + '/' + buildingSpace
     this.registerModule(moduleSpace.split('/'), Building)
@@ -39,7 +39,7 @@ const actions = {
     await store.dispatch(buildingSpace + '/buildDefaultBlocks')
   },
 
-  async loadGeoJSONData (store, missingIds) {
+  async loadGeoJSONData(store, missingIds) {
     // fetch and parse the GeoJSON data
     const osmXML = await API.getGeoJSON(missingIds)
     const xmlDoc = new DOMParser().parseFromString(osmXML, 'text/xml')
@@ -82,7 +82,7 @@ const actions = {
     }
   },
 
-  async loadMap (store) {
+  async loadMap(store) {
     if (store.getters.promise === null) {
       const mapPromise = (async () => {
         let buildingsResolved = await API.buildings()
@@ -107,20 +107,20 @@ const actions = {
 }
 
 const mutations = {
-  promise (state, promise) {
+  promise(state, promise) {
     state.promise = promise
   },
-  setBuildingInMap (state, { mapId, building }) {
+  setBuildingInMap(state, { mapId, building }) {
     state.buildingMap.set(mapId, building)
   }
 }
 
 const getters = {
-  path (state) {
+  path(state) {
     return state.path
   },
 
-  promise (state) {
+  promise(state) {
     return state.promise
   },
 
@@ -178,7 +178,7 @@ const getters = {
     return meterGroups[id]
   },
 
-  buildingMap (state) {
+  buildingMap(state) {
     return state.buildingMap
   }
 }

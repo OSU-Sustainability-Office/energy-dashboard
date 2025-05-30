@@ -35,12 +35,12 @@ export default {
     BuildingPanelNavigation,
     BuildingCardEditModal
   },
-  data () {
+  data() {
     return {
       navVis: false
     }
   },
-  async created () {
+  async created() {
     await this.$store.dispatch('map/loadMap')
     this.navVis = this.$route.path.includes('building') // show BuildingPanelNavigation on individual building pages only
   },
@@ -158,7 +158,7 @@ export default {
   computed: {
     // Get the building data for comparison
     compareBuildings: {
-      get () {
+      get() {
         if (!this.$route.path.includes('compare')) return null
         return JSON.parse(decodeURI(this.$route.params.buildings)).map(id => this.$store.getters['map/building'](id))
       }
@@ -166,7 +166,7 @@ export default {
 
     // Determine which view (Building or Compare) to show based on the route
     buildingOrCompare: {
-      get () {
+      get() {
         // If the route is for a building, get the building data
         if (this.$route.path.includes('building')) {
           return this.$store.getters['map/building'](this.$route.params.id)
@@ -196,7 +196,7 @@ export default {
     },
 
     cards: {
-      get () {
+      get() {
         if (this.$route.path.includes('compare')) {
           if (!this.compareBuildings || this.compareBuildings.length === 0 || !this.compareBuildings[0]) {
             return []
@@ -222,7 +222,7 @@ export default {
       }
     },
     dateStart: {
-      get () {
+      get() {
         let startModifier = 7 * 24 * 60 * 60 * 1000
         switch (parseInt(this.$route.params.range)) {
           case 1:
@@ -242,13 +242,13 @@ export default {
       }
     },
     dateEnd: {
-      get () {
+      get() {
         let d = new Date()
         return d.getTime()
       }
     },
     intervalUnit: {
-      get () {
+      get() {
         switch (parseInt(this.$route.params.range)) {
           case 1:
             return 'hour'
@@ -262,7 +262,7 @@ export default {
       }
     },
     dateInterval: {
-      get () {
+      get() {
         switch (parseInt(this.$route.params.range)) {
           case 1:
             return 1

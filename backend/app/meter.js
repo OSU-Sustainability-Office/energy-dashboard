@@ -9,14 +9,14 @@ import { unzip } from 'zlib'
 import Compress from '/opt/nodejs/models/compress.js'
 
 // Check integral parameters.
-function parseParameters ({ id, startDate, endDate }) {
+function parseParameters({ id, startDate, endDate }) {
   return {
     id: parseInt(id, 10),
     startDate: parseInt(startDate, 10),
     endDate: parseInt(endDate, 10)
   }
 }
-function verifyParameters ({ id, startDate, endDate }) {
+function verifyParameters({ id, startDate, endDate }) {
   return ![id, startDate, endDate].some(isNaN)
 }
 
@@ -33,7 +33,7 @@ function verifyParameters ({ id, startDate, endDate }) {
     }]
   }
 */
-export async function multiMeterData (event, context) {
+export async function multiMeterData(event, context) {
   const request = JSON.parse(event.body)
   const meterList = request.datasets.map(parseParameters).filter(verifyParameters)
   const { point, meterClass } = request
@@ -51,7 +51,7 @@ export async function multiMeterData (event, context) {
 }
 
 // GET data for single meter
-export async function data (event, context) {
+export async function data(event, context) {
   let response = new Response(event)
   response.body = JSON.stringify(
     await new Meter(event.queryStringParameters['id']).download(
@@ -65,7 +65,7 @@ export async function data (event, context) {
 }
 
 // Meter Data Upload Route (currently only for solar panels)
-export async function upload (event, context) {
+export async function upload(event, context) {
   let response = new Response(event)
 
   const payload = JSON.parse(event.body)
@@ -130,7 +130,7 @@ export async function upload (event, context) {
 /*
   This endpoint handles data uploads from Aquisuites
 */
-export async function post (event, context) {
+export async function post(event, context) {
   let response = new Response(event)
 
   event.body = Buffer.from(event.body, 'base64').toString('binary')

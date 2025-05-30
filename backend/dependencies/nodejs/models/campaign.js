@@ -4,7 +4,7 @@
 import { connect, query } from '/opt/nodejs/sql-access.js'
 
 class Campaign {
-  constructor (id) {
+  constructor(id) {
     this.id = id
     this.buildings = []
     this.dateStart = ''
@@ -17,7 +17,7 @@ class Campaign {
   }
 
   // Queries the database for this campaign's data, and returns the data.
-  async get (expand = true) {
+  async get(expand = true) {
     await connect()
     // Query for this particular campaign, groups, and buildings
     let campaignRows = await query(
@@ -50,7 +50,7 @@ class Campaign {
     return this
   }
 
-  get data () {
+  get data() {
     return {
       id: this.id,
       // buildings: this.buildings,

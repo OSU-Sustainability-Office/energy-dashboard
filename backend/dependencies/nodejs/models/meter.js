@@ -5,7 +5,7 @@ import { connect, query } from '/opt/nodejs/sql-access.js'
 import meterClasses from '/opt/nodejs/meter_classes.js'
 
 class Meter {
-  constructor (id, address = '') {
+  constructor(id, address = '') {
     if (!id && address === '') {
       throw new Error('Meter needs id or address')
     }
@@ -18,14 +18,14 @@ class Meter {
     this.pacificPowerID = null
   }
 
-  set (name, classInt, pacificPowerID) {
+  set(name, classInt, pacificPowerID) {
     this.name = name
     this.classInt = classInt
     this.pacificPowerID = pacificPowerID
     this.calcProps()
   }
 
-  calcProps () {
+  calcProps() {
     if (this.classInt === null) {
       return
     }
@@ -84,7 +84,7 @@ class Meter {
     return this
   }
 
-  get data () {
+  get data() {
     return {
       id: this.id,
       name: this.name,
@@ -96,7 +96,7 @@ class Meter {
     }
   }
 
-  async get () {
+  async get() {
     await connect()
     let row
     if (this.address && this.address !== '') {
@@ -120,7 +120,7 @@ class Meter {
     return this
   }
 
-  async download (point, startTime, endTime, meterClass) {
+  async download(point, startTime, endTime, meterClass) {
     await connect()
     if (Object.values(meterClasses[meterClass]).includes(point)) {
       // Generalized Meter Types
@@ -162,7 +162,7 @@ class Meter {
   }
 
   // download without explicit point name
-  async sparseDownload (point, startTime, endTime, meterClass) {
+  async sparseDownload(point, startTime, endTime, meterClass) {
     await connect()
     if (Object.values(meterClasses[meterClass]).includes(point)) {
       if (String(meterClass).startsWith('999')) {
@@ -188,7 +188,7 @@ class Meter {
     }
   }
 
-  async upload (data) {
+  async upload(data) {
     await connect()
     console.log(meterClasses)
     let points = meterClasses[this.classInt]
@@ -352,7 +352,7 @@ class Meter {
     }
   }
 
-  static async create (name, address, classInt) {
+  static async create(name, address, classInt) {
     await connect()
     let returnRow = await query('INSERT INTO meters (name, address, class) values (?, ?, ?)', [name, address, classInt])
     let meter = new Meter(returnRow.insertId)

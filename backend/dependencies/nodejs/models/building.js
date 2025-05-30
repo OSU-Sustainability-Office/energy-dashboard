@@ -6,7 +6,7 @@ import MeterGroup from '/opt/nodejs/models/meter_group.js'
 import Meter from '/opt/nodejs/models/meter.js'
 
 class Building {
-  constructor (id) {
+  constructor(id) {
     this.id = id
     this.mapId = ''
     this.image = ''
@@ -17,7 +17,7 @@ class Building {
     this.hidden = false
   }
 
-  get data () {
+  get data() {
     let meterGroups = this.meterGroups
     if (meterGroups.length > 0 && meterGroups[0] instanceof MeterGroup) {
       meterGroups = meterGroups.map(o => o.data)
@@ -34,12 +34,12 @@ class Building {
     }
   }
 
-  static async updateGeoJSON (id, geoJSON) {
+  static async updateGeoJSON(id, geoJSON) {
     await connect()
     await _query('UPDATE buildings SET geojson = ? WHERE id = ?', [JSON.stringify(geoJSON), id])
   }
 
-  set (name, group, mapId, image, meterGroups, hidden, geoJSON) {
+  set(name, group, mapId, image, meterGroups, hidden, geoJSON) {
     this.name = name
     this.mapId = mapId
     this.image = image
@@ -49,7 +49,7 @@ class Building {
     this.geoJSON = geoJSON
   }
 
-  static async all () {
+  static async all() {
     await connect()
     let queryJson = {}
     let query = await _query(

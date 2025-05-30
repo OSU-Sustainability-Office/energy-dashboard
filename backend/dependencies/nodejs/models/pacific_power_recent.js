@@ -4,7 +4,7 @@
 import { connect, query } from '/opt/nodejs/sql-access.js'
 
 class PacificPowerRecent {
-  async get () {
+  async get() {
     await connect()
 
     // see automated-jobs/SEC/readSEC.js for original function

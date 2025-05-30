@@ -5,7 +5,7 @@
   only used for Acquisuite so it assumes 15 minute intervals.
 */
 
-function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
+function getDeltaAndDaysInMonth(intervalUnit, startDate, dateInterval) {
   let delta = 1
   let daysInMonth = 1
   switch (intervalUnit) {
@@ -28,7 +28,7 @@ function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
 }
 
 export default class AverageModifier {
-  async postGetData (chartData, payload, store, module) {
+  async postGetData(chartData, payload, store, module) {
     const { dateStart, dateEnd, intervalUnit, dateInterval, point } = payload
     const SECONDS_PER_DAY = 86400
     const currentData = chartData.data
@@ -75,7 +75,7 @@ export default class AverageModifier {
   }
 
   // Before requesting data, align the start date with the database
-  async preGetData (payload, store, module) {
+  async preGetData(payload, store, module) {
     let { intervalUnit, dateInterval } = payload
     const startDateObj = new Date(payload.dateStart * 1000)
     const delta = getDeltaAndDaysInMonth(intervalUnit, startDateObj, dateInterval)[0]

@@ -32,13 +32,13 @@ export default {
   components: {
     svgLogo
   },
-  data () {
+  data() {
     return {
       showMobileMenu: false
     }
   },
   methods: {
-    showMenu () {
+    showMenu() {
       this.showMobileMenu = !this.showMobileMenu
     }
   }

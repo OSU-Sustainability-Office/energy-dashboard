@@ -33,7 +33,6 @@ export default [
       'vue/multi-word-component-names': 'off',
       'vue/no-use-v-if-with-v-for': 'off',
       camelcase: [0, { properties: 'never' }],
-      'space-before-function-paren': ['error', 'always'],
       'import/export': 'error',
       'import/no-commonjs': 'error',
       'no-unused-vars': 'off',

@@ -68,13 +68,13 @@ export default {
   computed: {
     // Returns current building object
     building: {
-      get () {
+      get() {
         return this.$store.getters['map/building'](this.$route.params.id)
       }
     },
     // Returns all building groups
     buildingGroups: {
-      get () {
+      get() {
         let groups = this.$store.getters['map/buildingGroups']
         let rValue = []
 
@@ -86,7 +86,7 @@ export default {
     },
     // Returns all buildings in the current group
     buildingsForGroup: {
-      get () {
+      get() {
         if (!this.building) return
         let buildings = this.$store.getters['map/buildingsForGroup'](this.building.group)
         let rValue = []
@@ -100,21 +100,21 @@ export default {
     },
     // Returns current building group
     groupName: {
-      get () {
+      get() {
         if (!this.building) return
         return this.building.group
       }
     },
     // Returns current building name
     buildingName: {
-      get () {
+      get() {
         if (!this.building) return
         return this.building.name
       }
     },
     // This checks if page is in /building path (don't show BuildingPanelNavigation on comparison pages)
     isBuilding: {
-      get () {
+      get() {
         try {
           if (this.$store.getters['map/building'](this.$route.params.id).path) {
             return true

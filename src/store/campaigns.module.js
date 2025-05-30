@@ -15,7 +15,7 @@ const state = () => {
 
 const actions = {
   // Retrieves campaign information for all campaigns from the API and controls the global campaigns promise
-  async loadCampaigns (store) {
+  async loadCampaigns(store) {
     if (store.getters.promise === null) {
       const campaignPromise = (async () => {
         // Attempt to retrieve campaigns from the api
@@ -43,7 +43,7 @@ const actions = {
 }
 
 const mutations = {
-  promise (state, promise) {
+  promise(state, promise) {
     state.promise = promise
   }
 }

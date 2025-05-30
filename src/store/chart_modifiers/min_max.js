@@ -4,7 +4,7 @@
   value of a specified data point over a given time interval.
 */
 
-function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
+function getDeltaAndDaysInMonth(intervalUnit, startDate, dateInterval) {
   let delta = 1
   let daysInMonth = 1
   switch (intervalUnit) {
@@ -26,7 +26,7 @@ function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
   return [delta * dateInterval, daysInMonth]
 }
 
-function getStartingValue (pointType) {
+function getStartingValue(pointType) {
   if (pointType === 'Max') {
     return -Infinity
   } else if (pointType === 'Min') {
@@ -36,7 +36,7 @@ function getStartingValue (pointType) {
 }
 
 export default class MinMaxModifier {
-  async postGetData (chartData, payload, store, module) {
+  async postGetData(chartData, payload, store, module) {
     const { dateStart, dateEnd, intervalUnit, dateInterval, point } = payload
     const SECONDS_PER_DAY = 86400
     const currentData = chartData.data
@@ -104,7 +104,7 @@ export default class MinMaxModifier {
     }
   }
 
-  async preGetData (payload, store, module) {
+  async preGetData(payload, store, module) {
     let { intervalUnit, dateInterval } = payload
     const startDateObj = new Date(payload.dateStart * 1000)
     const delta = getDeltaAndDaysInMonth(intervalUnit, startDateObj, dateInterval)[0]

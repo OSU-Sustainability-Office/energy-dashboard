@@ -2,7 +2,7 @@
 
 import { brotliCompressSync, gzipSync, deflateSync } from 'zlib'
 
-function compress (event, response) {
+function compress(event, response) {
   if (!response.body) {
     return response
   }

@@ -3,7 +3,7 @@
  */
 import Response from '/opt/nodejs/response.js'
 
-export async function systemtime (event, context) {
+export async function systemtime(event, context) {
   let TimeResponse = new Response(event)
   TimeResponse.body = Date.now().toString()
   return TimeResponse

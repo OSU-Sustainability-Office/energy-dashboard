@@ -23,7 +23,7 @@
         1. that request occurs over https (ssh keys assumed valid)
         2. that client & server origin are accurate and use default port for ssh
 */
-export function VerifyCORSResponse (response, clientOrigin, serverOrigin) {
+export function VerifyCORSResponse(response, clientOrigin, serverOrigin) {
   if (clientOrigin.scheme !== serverOrigin.scheme) {
     return {
       result: false,

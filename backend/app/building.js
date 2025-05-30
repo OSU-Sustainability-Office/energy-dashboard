@@ -4,7 +4,7 @@
 const { default: Building } = await import('/opt/nodejs/models/building.js')
 import Response from '/opt/nodejs/response.js'
 
-export async function all (event, context) {
+export async function all(event, context) {
   let response = new Response(event)
   response.body = JSON.stringify((await Building.all()).map(o => o.data))
   response.headers['Content-Type'] = 'application/json'
@@ -13,7 +13,7 @@ export async function all (event, context) {
 
 // This function is used by an external service (automated job)
 // to occasionally update the GeoJSON data for multiple buildings
-export async function putGeoJSON (event) {
+export async function putGeoJSON(event) {
   const response = new Response(event)
   try {
     const payload = JSON.parse(event.body)

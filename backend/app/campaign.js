@@ -6,7 +6,7 @@ import Response from '/opt/nodejs/response.js'
 import { connect, query } from '/opt/nodejs/sql-access.js'
 
 // Retrieves a listing of all campaigns from the database, constructs an array of database class instances, and returns the array.
-export async function all (event, context) {
+export async function all(event, context) {
   // Create the response object
   let response = new Response(event)
 

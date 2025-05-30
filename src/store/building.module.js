@@ -22,7 +22,7 @@ const state = () => {
 }
 
 const actions = {
-  async loadMeterGroup (store, payload) {
+  async loadMeterGroup(store, payload) {
     let meterGroupSpace = 'meterGroup_' + payload.id.toString()
     let moduleSpace = store.getters.path + '/' + meterGroupSpace
     this.registerModule(moduleSpace.split('/'), MeterGroup)
@@ -40,13 +40,13 @@ const actions = {
     await Promise.all(meterPromises)
   },
 
-  async removeAllMeterGroups (store) {
+  async removeAllMeterGroups(store) {
     for (let meterGroup of store.getters.meterGroups) {
       this.unregisterModule(meterGroup.path.split('/'))
     }
   },
 
-  async update (store, payload) {
+  async update(store, payload) {
     let reqPayload = {
       ...payload,
       id: store.getters.id
@@ -85,7 +85,7 @@ const actions = {
     }
   },
 
-  async buildDefaultBlocks (store, payload) {
+  async buildDefaultBlocks(store, payload) {
     for (let group of store.getters.meterGroups) {
       await group.promise
       if (group.default) {
@@ -103,43 +103,43 @@ const actions = {
 }
 
 const mutations = {
-  promise (state, promise) {
+  promise(state, promise) {
     state.promise = promise
   },
 
-  hidden (state, hide) {
+  hidden(state, hide) {
     state.hidden = hide
   },
 
-  mapId (state, mapId) {
+  mapId(state, mapId) {
     state.mapId = mapId
   },
 
-  name (state, name) {
+  name(state, name) {
     state.name = name
   },
 
-  group (state, group) {
+  group(state, group) {
     state.group = group
   },
 
-  image (state, image) {
+  image(state, image) {
     state.image = image
   },
 
-  geoJSON (state, geoJSON) {
+  geoJSON(state, geoJSON) {
     state.geoJSON = geoJSON
   },
 
-  id (state, id) {
+  id(state, id) {
     state.id = id
   },
 
-  path (state, path) {
+  path(state, path) {
     state.path = path
   },
 
-  addType (state, type) {
+  addType(state, type) {
     if (state.description.search(new RegExp(`${type}`, 'gi')) < 0) {
       if (state.description === '') {
         state.description += type
@@ -151,45 +151,45 @@ const mutations = {
 }
 
 const getters = {
-  promise (state) {
+  promise(state) {
     return state.promise
   },
-  hidden (state) {
+  hidden(state) {
     return state.hidden
   },
 
-  mapId (state) {
+  mapId(state) {
     return state.mapId
   },
-  name (state) {
+  name(state) {
     return state.name
   },
 
-  group (state) {
+  group(state) {
     return state.group
   },
 
-  image (state) {
+  image(state) {
     return state.image
   },
 
-  geoJSON (state) {
+  geoJSON(state) {
     return state.geoJSON
   },
 
-  id (state) {
+  id(state) {
     return state.id
   },
 
-  description (state) {
+  description(state) {
     return state.description
   },
 
-  path (state) {
+  path(state) {
     return state.path
   },
 
-  meterGroups (state) {
+  meterGroups(state) {
     let r = []
     for (let key of Object.keys(state)) {
       if (key.search(/meterGroup_[0-9]+/) >= 0) {
@@ -199,7 +199,7 @@ const getters = {
     return r
   },
 
-  blocks (state) {
+  blocks(state) {
     let r = []
     for (let key of Object.keys(state)) {
       if (key.search(/block_[0-9]+/) >= 0) {

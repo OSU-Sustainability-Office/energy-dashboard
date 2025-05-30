@@ -135,7 +135,7 @@ import ChartModifier from '@/store/chart_modifiers/index'
 import JSZip from 'jszip'
 
 export default {
-  data () {
+  data() {
     return {
       currentIndex: 0,
       addBuildingId: 0,
@@ -158,18 +158,18 @@ export default {
   },
   computed: {
     visible: {
-      get () {
+      get() {
         return this.$store.getters['modalController/modalName'] === 'DownloadData'
       },
 
-      set (value) {
+      set(value) {
         if (value === false) {
           this.$store.dispatch('modalController/closeModal')
         }
       }
     },
     meterPoints: {
-      get () {
+      get() {
         let points = []
         for (let building of this.form.buildings) {
           for (let group of building.groups) {
@@ -186,7 +186,7 @@ export default {
       }
     },
     buildingsFiltered: {
-      get () {
+      get() {
         if (!this.buildings) return []
         let buildingsCopy = [...this.buildings]
         let buildingIds = buildingsCopy.map(o => parseInt(o.id))
@@ -201,7 +201,7 @@ export default {
     },
 
     buildings: {
-      get () {
+      get() {
         return this.$store.getters['map/buildings']
       }
     }
