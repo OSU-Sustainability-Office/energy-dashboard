@@ -26,11 +26,11 @@ export default {
   components: {
     NavigationBar
   },
-  async created () {
+  async created() {
     // On load, grab building/meter/map information from the API.
     await this.$store.dispatch('map/loadMap')
   },
-  data () {
+  data() {
     return {
       transitionName: 'pageTo'
     }
@@ -43,7 +43,7 @@ export default {
       this.$refs.main.$el.style.overflow = 'auto'
     }
   },
-  mounted () {
+  mounted() {
     // This is the first-timer pop-up window
     if (!document.cookie.split(';').some(cookieString => cookieString.includes('firstTimer'))) {
       ElMessageBox({

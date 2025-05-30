@@ -22,12 +22,12 @@
 <script>
 export default {
   props: ['height', 'campaign', 'days', 'blocks', 'campaignDateEnd', 'campaignDateStart', 'forceUpdate'],
-  data () {
+  data() {
     return {
       currentRange: -1
     }
   },
-  mounted () {},
+  mounted() {},
   computed: {},
   watch: {
     blocks: {

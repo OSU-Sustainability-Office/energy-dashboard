@@ -1,16 +1,14 @@
-/*
- * @Author: Milan Donhowe
- * @Date Created:   5/3/2021
- * @Copyright:  Oregon State University 2021
- * @Description: This script runs before each test suite and mocks all the lambda common layer
- *               related functions.
+/* Filename: setupBackendTests.js
+ * Description: This script runs before each test suite and mocks all the lambda common layer
+ *              related functions.
  */
+import config from './assertedData/test_config.json' with { type: 'json' }
+const { so_namespace } = config
+import { vi } from 'vitest'
 
-const testConfig = require('./assertedData/test_config.json')
-
-/* Lambda Common Layer mocks */
-const mockResponse = require(`${testConfig.so_namespace}/response.js`)
-jest.mock(
+// Lambda Common Layer
+const mockResponse = await import(`${so_namespace}/response.js`)
+vi.mock(
   '/opt/nodejs/response.js',
   () => {
     return mockResponse
@@ -18,34 +16,19 @@ jest.mock(
   { virtual: true }
 )
 
-// stub un-used requires
-jest.mock(
-  '/opt/nodejs/user.js',
-  () => {
-    null
-  },
-  { virtual: true }
-)
-jest.mock(
-  '/opt/nodejs/node_modules/aws-lambda-multipart-parser',
-  () => {
-    null
-  },
-  { virtual: true }
-)
+// stub un-used requires to prevent errors during tests
+vi.mock('/opt/nodejs/user.js', () => ({}), { virtual: true })
+vi.mock('/opt/nodejs/node_modules/aws-lambda-multipart-parser', () => ({}), { virtual: true })
 
-/**
-    Mock MySQL Database
-**/
-const mysql = require('mysql')
-const DB = mysql.createConnection({
+// mock the sql-access.js module to use a local MySQL connection
+import { createConnection } from 'mysql'
+const DB = createConnection({
   host: process.env.MYSQL_HOST,
   user: 'root',
   password: 'password',
   database: 'energy',
   multipleStatements: false // it's disabled by default in common layer db class
 })
-
 const mockDB = {
   connect: () => {
     return Promise.resolve()
@@ -59,8 +42,7 @@ const mockDB = {
     })
   }
 }
-
-jest.mock(
+vi.mock(
   '/opt/nodejs/sql-access.js',
   () => {
     return mockDB
@@ -68,22 +50,22 @@ jest.mock(
   { virtual: true }
 )
 
-// Mock dashboard specific dependencies
+// mock dashboard specific dependencies
 const modelMocks = [
-  'meter_classes.js',
-  'models/meter.js',
-  'models/meter_group.js',
-  'models/building.js',
-  'models/campaign.js',
-  'models/compress.js'
+  'meter_classes',
+  'models/meter',
+  'models/meter_group',
+  'models/building',
+  'models/campaign',
+  'models/compress'
 ]
-for (modelMock of modelMocks) {
-  const mock = require(`../dependencies/nodejs/${modelMock}`)
-  jest.mock(
-    `/opt/nodejs/${modelMock}`,
-    () => {
-      return mock
-    },
-    { virtual: true }
-  )
+for (const fileName of modelMocks) {
+  const virtualPath = `/opt/nodejs/${fileName}.js`
+  const realPath = `../dependencies/nodejs/${fileName}.js`
+
+  // maps the virtual path to the real path
+  vi.doMock(virtualPath, async () => {
+    const mod = await import(realPath)
+    return mod
+  })
 }

@@ -93,7 +93,7 @@ export default {
     Linechart,
     Barchart
   },
-  mounted () {
+  mounted() {
     console.log(this.$route.path)
   },
   watch: {
@@ -101,7 +101,7 @@ export default {
       this.updateChart()
     }
   },
-  data () {
+  data() {
     return {
       chartRenderKey: 0,
       unsubscribe: null,
@@ -111,7 +111,7 @@ export default {
       colors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4']
     }
   },
-  created () {
+  created() {
     if (parseInt(this.randomColors) === 1) {
       // DurstenFeld Shuffle
       for (var i = this.colors.length - 1; i > 0; i--) {
@@ -149,7 +149,7 @@ export default {
     })
   },
   computed: {
-    iframeClass () {
+    iframeClass() {
       if (this.$route.path.startsWith('/map')) {
         return 'scaled-iframe'
       } else {
@@ -157,22 +157,22 @@ export default {
       }
     },
     promise: {
-      get () {
+      get() {
         return this.$store.getters[this.path + '/promise']
       }
     },
     dateStart: {
-      get () {
+      get() {
         return this.$store.getters[this.path + '/dateStart']
       }
     },
     dateEnd: {
-      get () {
+      get() {
         return this.$store.getters[this.path + '/dateEnd']
       }
     },
     graphType: {
-      get () {
+      get() {
         if (this.chartData) {
           let noData = true
           for (let set of this.chartData.datasets) {
@@ -189,7 +189,7 @@ export default {
       }
     },
     chart: {
-      get () {
+      get() {
         switch (this.graphType) {
           case 1:
             return this.$refs.Linechart
@@ -201,7 +201,7 @@ export default {
       }
     }
   },
-  beforeUnmount () {
+  beforeUnmount() {
     if (this.unsubscribe) {
       this.unsubscribe()
     }
@@ -377,7 +377,7 @@ export default {
     },
     // this is called when there are multiple time period charts, it returns an array of all the
     // chart dates for that index so that they can be displayed on multiple lines
-    buildXaxisTick (index) {
+    buildXaxisTick(index) {
       const interval = this.$store.getters[this.path + '/intervalUnit']
 
       if (this.chartData.datasets) {

@@ -1,8 +1,11 @@
-const Response = require('/opt/nodejs/response.js')
-const PacificPowerRecent = require('/opt/nodejs/models/pacific_power_recent.js')
+/* Filename: app/pacific_power_recent.js
+ * Description: API endpoints used to manage Pacific Power recent data (for webscraper)
+ */
+import Response from '/opt/nodejs/response.js'
+import PacificPowerRecent from '/opt/nodejs/models/pacific_power_recent.js'
 
 // Get most recent Unix Timestamp and Pacific Power Meter ID for each Pacific Power Meter, within last 7 days
-exports.get = async (event, context) => {
+export async function get(event, context) {
   let response = new Response(event)
   response.body = JSON.stringify(await new PacificPowerRecent().get())
   return response

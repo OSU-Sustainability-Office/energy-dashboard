@@ -1,14 +1,12 @@
-/*
-  Filename: meter.js
-  Description: API Endpoint logic for meter data upload & retrieval
+/* Filename: app/meter.js
+ * Description: API endpoints related to meter data
  */
-
-const DB = require('/opt/nodejs/sql-access.js')
-const Meter = require('/opt/nodejs/models/meter.js')
-const Response = require('/opt/nodejs/response.js')
-const MultipartParse = require('/opt/nodejs/node_modules/aws-lambda-multipart-parser')
-const ZLib = require('zlib')
-const Compress = require('/opt/nodejs/models/compress.js')
+import { connect, query as _query } from '/opt/nodejs/sql-access.js'
+import Meter, { create } from '/opt/nodejs/models/meter.js'
+import Response from '/opt/nodejs/response.js'
+import { parse } from '/opt/nodejs/node_modules/aws-lambda-multipart-parser'
+import { unzip } from 'zlib'
+import Compress from '/opt/nodejs/models/compress.js'
 
 // Check integral parameters.
 function parseParameters({ id, startDate, endDate }) {
@@ -35,7 +33,7 @@ function verifyParameters({ id, startDate, endDate }) {
     }]
   }
 */
-exports.multiMeterData = async (event, context) => {
+export async function multiMeterData(event, context) {
   const request = JSON.parse(event.body)
   const meterList = request.datasets.map(parseParameters).filter(verifyParameters)
   const { point, meterClass } = request
@@ -53,7 +51,7 @@ exports.multiMeterData = async (event, context) => {
 }
 
 // GET data for single meter
-exports.data = async (event, context) => {
+export async function data(event, context) {
   let response = new Response(event)
   response.body = JSON.stringify(
     await new Meter(event.queryStringParameters['id']).download(
@@ -67,7 +65,7 @@ exports.data = async (event, context) => {
 }
 
 // Meter Data Upload Route (currently only for solar panels)
-exports.upload = async (event, context) => {
+export async function upload(event, context) {
   let response = new Response(event)
 
   const payload = JSON.parse(event.body)
@@ -81,9 +79,9 @@ exports.upload = async (event, context) => {
     return response
   }
 
-  await DB.connect()
+  await connect()
   try {
-    await DB.query(`SHOW TABLES LIKE ?;`, [meter_id]) // Check if table exists
+    await _query(`SHOW TABLES LIKE ?;`, [meter_id]) // Check if table exists
   } catch {
     response.statusCode = 400
     return response
@@ -92,7 +90,7 @@ exports.upload = async (event, context) => {
   let query_string = ''
 
   if (meter_type === 'solar') {
-    let final_redundant_check = await DB.query('SELECT * FROM Solar_Meters WHERE MeterID = ? AND time_seconds = ?;', [
+    let final_redundant_check = await _query('SELECT * FROM Solar_Meters WHERE MeterID = ? AND time_seconds = ?;', [
       meter_data.meterID,
       meter_data.time_seconds
     ])
@@ -104,7 +102,7 @@ exports.upload = async (event, context) => {
       return response
     }
   } else if (meter_type === 'pacific_power') {
-    let final_redundant_check = await DB.query(
+    let final_redundant_check = await _query(
       'SELECT * FROM pacific_power_data WHERE pacific_power_meter_id = ? AND time_seconds = ?',
       [meter_data.pp_meter_id, meter_data.time_seconds]
     )
@@ -118,7 +116,7 @@ exports.upload = async (event, context) => {
   }
 
   try {
-    await DB.query(query_string)
+    await _query(query_string)
   } catch (err) {
     if (err.code !== 'ER_DUP_ENTRY') {
       response.statusCode = 400
@@ -132,11 +130,11 @@ exports.upload = async (event, context) => {
 /*
   This endpoint handles data uploads from Aquisuites
 */
-exports.post = async (event, context) => {
+export async function post(event, context) {
   let response = new Response(event)
 
   event.body = Buffer.from(event.body, 'base64').toString('binary')
-  const body = await MultipartParse.parse(event, false)
+  const body = await parse(event, false)
 
   response.headers = {
     ...response.headers,
@@ -154,11 +152,7 @@ exports.post = async (event, context) => {
       meter = await new Meter(null, body.SERIALNUMBER + '_' + body.MODBUSDEVICE).get()
     } catch (err) {
       if (err.name === 'MeterNotFound') {
-        meter = await Meter.create(
-          body.MODBUSDEVICENAME,
-          body.SERIALNUMBER + '_' + body.MODBUSDEVICE,
-          body.MODBUSDEVICECLASS
-        )
+        meter = await create(body.MODBUSDEVICENAME, body.SERIALNUMBER + '_' + body.MODBUSDEVICE, body.MODBUSDEVICECLASS)
       } else {
         console.log(err)
         response.body = '<pre>\nFAILURE\n</pre>'
@@ -175,7 +169,7 @@ exports.post = async (event, context) => {
           }
         }
         if (!file) reject(new Error('File not found in request'))
-        ZLib.unzip(Buffer.from(file.content, 'binary'), (error, result) => {
+        unzip(Buffer.from(file.content, 'binary'), (error, result) => {
           if (error) {
             reject(error)
           } else {

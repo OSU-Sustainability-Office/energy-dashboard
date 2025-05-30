@@ -1,12 +1,7 @@
-/*
- * @Author: Brogan
- * @Date:   Saturday June 15th 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Saturday June 15th 2019
- * @Copyright:  Oregon State University 2019
+/* Filename: models/campaign.js
+ * Description: Defines Campaign class and methods to interact with the database.
  */
-const DB = require('/opt/nodejs/sql-access.js')
-// const Building = require('/opt/nodejs/models/building.js')
+import { connect, query } from '/opt/nodejs/sql-access.js'
 
 class Campaign {
   constructor(id) {
@@ -23,9 +18,9 @@ class Campaign {
 
   // Queries the database for this campaign's data, and returns the data.
   async get(expand = true) {
-    await DB.connect()
+    await connect()
     // Query for this particular campaign, groups, and buildings
-    let campaignRows = await DB.query(
+    let campaignRows = await query(
       'SELECT campaigns.media, campaigns.id, campaigns.name, campaigns.date_start, campaigns.date_end, campaigns.compare_start, campaigns.compare_end, campaign_groups.group_id FROM campaigns LEFT JOIN campaign_groups ON campaigns.id = campaign_groups.campaign_id WHERE campaigns.id = ?',
       [this.id]
     )
@@ -70,4 +65,4 @@ class Campaign {
   }
 }
 
-module.exports = Campaign
+export default Campaign

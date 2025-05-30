@@ -1,13 +1,16 @@
-const Response = require('/opt/nodejs/response.js')
-const PacificPowerExclusion = require('/opt/nodejs/models/pacific_power_exclusion.js')
+/* Filename: app/pacific_power_exclusion.js
+ * Description: API endpoints used to manage Pacific Power exclusions (for webscraper)
+ */
+import Response from '/opt/nodejs/response.js'
+import PacificPowerExclusion from '/opt/nodejs/models/pacific_power_exclusion.js'
 
-exports.get = async (event, context) => {
+export async function get(event, context) {
   let response = new Response(event)
   response.body = JSON.stringify(await new PacificPowerExclusion().get())
   return response
 }
 
-exports.post = async (event, context) => {
+export async function post(event, context) {
   let response = new Response(event)
 
   const payload = JSON.parse(event.body)
