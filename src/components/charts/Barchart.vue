@@ -22,7 +22,7 @@ export default {
     buildLabel: Function,
     intervalUnit: String
   },
-  data() {
+  data () {
     return {
       chartKey: 0
     }

@@ -164,10 +164,10 @@ export default {
     CloseIcon
   },
   computed: {
-    filteredBuildings() {
+    filteredBuildings () {
       return this.$store.getters['map/buildings'].filter(building => building.geoJSON)
     },
-    mapLoaded() {
+    mapLoaded () {
       return (
         this.filteredBuildings.length > 0 && // buildings are loaded
         this.processedLayers === this.filteredBuildings.length && // all layers are processed
@@ -175,25 +175,25 @@ export default {
       )
     },
     showSide: {
-      get() {
+      get () {
         return this.$store.getters['modalController/modalName'] === 'BuildingModal'
       },
 
-      set(value) {
+      set (value) {
         this.$store.dispatch('modalController/closeModal')
       }
     },
     showbuildingCompare: {
-      get() {
+      get () {
         return this.$store.getters['modalController/modalName'] === 'BuildingCompareModal'
       },
 
-      set(value) {
+      set (value) {
         this.$store.dispatch('modalController/closeModal')
       }
     }
   },
-  data() {
+  data () {
     return {
       selectedOption: 'All',
       searchGroup: [],
@@ -286,13 +286,13 @@ export default {
         }
       }
     },
-    resetMap() {
+    resetMap () {
       this.map.setView(L.latLng(DEFAULT_LAT, DEFAULT_LON), DEFAULT_ZOOM)
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
       }
     },
-    getResult(searchResult) {
+    getResult (searchResult) {
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
       }
@@ -333,7 +333,7 @@ export default {
         this.compareStories.splice(this.compareStories.indexOf(searchResult.feature.properties.id), 1)
       }
     },
-    resetSearchInput() {
+    resetSearchInput () {
       this.search = ''
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
@@ -498,11 +498,11 @@ export default {
           return '#000'
       }
     },
-    updateLayerCategoryStyle(layer) {
+    updateLayerCategoryStyle (layer) {
       const color = this.getCategoryColor(layer.feature.properties.group)
       layer.setStyle({ fillColor: color, color: color })
     },
-    async updateEnergySlopeColor(layer) {
+    async updateEnergySlopeColor (layer) {
       try {
         // Retrieves building object from store using leaflet property id
         await this.$store.getters['map/promise']
@@ -547,12 +547,12 @@ export default {
         layer.setStyle({ fillColor: '#000', color: '#000' })
       }
     },
-    updateMapRef() {
+    updateMapRef () {
       this.map = this.$refs.map.leafletObject
       this.map.zoomControl.setPosition('topleft')
     }
   },
-  async created() {
+  async created () {
     this.message = window.innerWidth > 844
 
     // Event listener for input data
@@ -561,16 +561,16 @@ export default {
     }
     emitter.on('inputData', this.handleInputData)
   },
-  mounted() {
+  mounted () {
     this.$nextTick(() => {
       this.map = this.$refs.map.leafletObject
     })
   },
-  beforeUnmount() {
+  beforeUnmount () {
     emitter.off('inputData', this.handleInputData)
   },
   watch: {
-    selectedOption(energyFilter) {
+    selectedOption (energyFilter) {
       this.processedLayers = 0 // show loading indicator after switching filters
       this.rKey++
       this.$nextTick(() => {
@@ -593,7 +593,7 @@ export default {
       })
     },
     grouping: {
-      async handler() {
+      async handler () {
         this.search = ''
         this.rKey++
         await this.$nextTick()

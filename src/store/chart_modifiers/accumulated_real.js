@@ -9,11 +9,11 @@
  * manual meter uploads, e.g., Weatherford).
  * Other buildings with automatic meter upload should have the same keys after this function is run.
  */
-function findClosest(array, num) {
+function findClosest (array, num) {
   return array.reduce((prev, curr) => (Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev))
 }
 
-function getDeltaAndDaysInMonth(intervalUnit, startDate, dateInterval) {
+function getDeltaAndDaysInMonth (intervalUnit, startDate, dateInterval) {
   let delta = 1
   let daysInMonth = 1
   switch (intervalUnit) {
@@ -62,7 +62,7 @@ export default class AccumulatedModifier {
       - module: (vuex module) module dispatching this function call
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData(chartData, payload, store, module) {
+  async postGetData (chartData, payload, store, module) {
     const { dateStart, dateEnd, intervalUnit, dateInterval, point } = payload
     const SECONDS_PER_DAY = 86400
     const currentData = chartData.data
@@ -150,7 +150,7 @@ export default class AccumulatedModifier {
       - module: (vuex module) module dispatching this function call
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData(payload, store, module) {
+  async preGetData (payload, store, module) {
     let { intervalUnit, dateInterval } = payload
     const startDateObj = new Date(payload.dateStart * 1000)
     const delta = getDeltaAndDaysInMonth(intervalUnit, startDateObj, dateInterval)[0]

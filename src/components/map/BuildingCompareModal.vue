@@ -73,25 +73,25 @@ export default {
     TimeRangeSwitcher
   },
   props: [],
-  data() {
+  data () {
     return {
       api: import.meta.env.VITE_ROOT_API
     }
   },
   computed: {
     path: {
-      get() {
+      get () {
         return this.$store.getters['modalController/data'].path
       }
     },
     block: {
-      get() {
+      get () {
         let mgId = this.$store.getters[this.path + '/primaryGroup']('Electricity').id
         return this.$store.getters[this.path + '/block'](mgId)
       }
     },
     name: {
-      get() {
+      get () {
         if (!this.buildings) return
         let names = this.buildings.map(building => this.$store.getters[building.path + '/name'])
         let r = ''
@@ -105,14 +105,14 @@ export default {
       }
     },
     buildings: {
-      get() {
+      get () {
         if (!this.block) return
         let buildingIds = this.$store.getters[this.block.path + '/modifierData']('building_compare').buildingIds
         return buildingIds.map(id => this.$store.getters['map/building'](id))
       }
     },
     buildingBlocks: {
-      get() {
+      get () {
         let buildingBlockArray = []
         for (let building of this.buildings) {
           // Use spread syntax (...) to create an array of objects, instead of 2d array
@@ -122,7 +122,7 @@ export default {
       }
     },
     mediaArray: {
-      get() {
+      get () {
         if (!this.buildings) return
         let buildingImages = this.buildings.map(building => this.$store.getters[building.path + '/image'])
         while (buildingImages.length > 4) buildingImages.pop()

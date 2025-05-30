@@ -1,20 +1,25 @@
-/* Filename: app/campaign.js
- * Description: API endpoints related to campaigns
+/*
+ * @Author: Brogan & Jack Woods
+ * @Date:   Tuesday January 28 2020
+ * @Last Modified By:  Jack Woods
+ * @Last Modified Time:  Tuesday January 28 2020
+ * @Copyright:  (c) Oregon State University 2020
  */
-import Campaign from '/opt/nodejs/models/campaign.js'
-import Response from '/opt/nodejs/response.js'
-import { connect, query } from '/opt/nodejs/sql-access.js'
+
+const Campaign = require('/opt/nodejs/models/campaign.js')
+const Response = require('/opt/nodejs/response.js')
+const DB = require('/opt/nodejs/sql-access.js')
 
 // Retrieves a listing of all campaigns from the database, constructs an array of database class instances, and returns the array.
-export async function all(event, context) {
+exports.all = async (event, context) => {
   // Create the response object
   let response = new Response(event)
 
   // Connect to the database
-  await connect()
+  await DB.connect()
 
   // Construct a list of campaign IDs
-  let campaignIDList = await query('SELECT id FROM campaigns')
+  let campaignIDList = await DB.query('SELECT id FROM campaigns')
 
   // Construct an array of campaigns using the campaign class
   let campaigns = []

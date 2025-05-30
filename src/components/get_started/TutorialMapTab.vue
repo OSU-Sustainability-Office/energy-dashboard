@@ -69,7 +69,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       mapTutorialTab: 'first',
       mapCategoryDemo: 'https://energy-dashboard.s3-us-west-2.amazonaws.com/images/mapCategoryDemo.mp4',

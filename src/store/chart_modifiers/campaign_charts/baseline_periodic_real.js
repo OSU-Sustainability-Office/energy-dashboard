@@ -6,7 +6,7 @@
 */
 import { DateTime } from 'luxon'
 export default class BaselinePeriodicReal {
-  constructor() {
+  constructor () {
     this.point = null
   }
   /*
@@ -35,7 +35,7 @@ export default class BaselinePeriodicReal {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData(chartData, payload, store, module) {
+  async postGetData (chartData, payload, store, module) {
     const { baselineData } = payload
     const currentData = chartData.data
     const result = []
@@ -97,7 +97,7 @@ export default class BaselinePeriodicReal {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData(payload, store, module) {
+  async preGetData (payload, store, module) {
     const meterGroupPath = module.getters.meterGroupPath
     this.point = payload.point
     payload.point = 'periodic_real_in'
