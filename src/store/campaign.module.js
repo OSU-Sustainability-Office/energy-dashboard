@@ -21,19 +21,19 @@ const state = () => {
 
 /*
   Function to get the meter point based on the meter class.
-  For Pacific Power meters, the point is baseline_perc_total.
-  For all other meters, the point is baseline_percentage.
+  For Pacific Power meters, the point is periodic_real_baseline_percentage.
+  For all other meters, the point is accumulated_real_baseline_percentage.
   This function is used to determine the point to be used for
   the baseline percentage calculation.
 */
 function getMeterPoint (store, groupModule) {
-  let point = 'baseline_percentage'
+  let point = 'accumulated_real_baseline_percentage'
 
   // find Pacific Power meters
   for (const key in groupModule) {
     if (groupModule[key] && typeof groupModule[key] === 'object' && 'classInt' in groupModule[key]) {
       if (groupModule[key].classInt === 9990002) {
-        point = 'baseline_perc_total'
+        point = 'periodic_real_baseline_percentage'
       }
     }
   }
@@ -117,7 +117,7 @@ const actions = {
               await this.dispatch(block.path + '/getData')
               sortList.push({
                 path: block.path,
-                value: this.getters[block.path + '/modifierData']('campaign_linebar').accumulatedPercentage
+                value: this.getters[block.path + '/modifierData']('campaign_linebar').baselinePercentage
               })
             })()
           )

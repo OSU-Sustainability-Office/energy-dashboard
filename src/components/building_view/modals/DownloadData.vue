@@ -248,15 +248,13 @@ export default {
         cphase_c: 'Current, Phase C (A)',
         cubic_feet: 'Total Natural Gas (CF)',
         instant: 'Instant',
-        maximum: 'Maximum',
-        minimum: 'Minimum',
         rate: 'Natural Gas Rate (CFm)',
         total: 'Steam (Lbs)',
-        input: 'Steam Input',
+        input: 'Steam Flow Rate',
         apparent_a: 'Apparent Power, Phase A (VA)',
         apparent_b: 'Apparent Power, Phase B (VA)',
         apparent_c: 'Apparent Power, Phase C (VA)',
-        baseline_percentage: 'Percentage (%)'
+        accumulated_real_baseline_percentage: 'Percentage (%)'
       }
       let promises = []
       for (let point of this.form.points) {

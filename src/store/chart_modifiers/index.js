@@ -4,38 +4,71 @@
                for different ChartJS types.
 */
 
-import LineAccumulatedReal from './line_bar/accumulated_real.js'
-import LineBaselinePerc from './line_bar/baseline_perc.js'
-import LineBaselineAvg from './line_bar/avg_accumulated_real.js'
-import LineDefault from './line_bar/default.js'
-import LineTotalBaseline from './line_bar/baseline_total.js'
-import LineTotalPercModifier from './line_bar/baseline_perc_total.js'
-import LinePeriodicReal from './line_bar/periodic_real.js'
+import AccumulatedReal from './accumulated_real.js'
+import Default from './default.js'
+import PeriodicReal from './periodic_real.js'
+import MinMaxModifier from './min_max.js'
+import AverageModifier from './average.js'
+import BaselineAccumulatedReal from './campaign_charts/baseline_accumulated_real.js'
+import BaselinePeriodicReal from './campaign_charts/baseline_periodic_real.js'
 
 export default function (graphType, point) {
+  // 1 = Line, 2 = bar
   if (graphType === 1 || graphType === 2) {
-    // Line or Bar
     switch (point) {
       case 'accumulated_real':
-        return new LineAccumulatedReal()
       case 'total':
-        return new LineAccumulatedReal()
       case 'cubic_feet':
-        return new LineAccumulatedReal()
-      case 'baseline_percentage':
-        return new LineBaselinePerc()
-      case 'avg_accumulated_real':
-        return new LineBaselineAvg()
-      case 'baseline_total':
-        return new LineTotalBaseline()
-      case 'baseline_perc_total':
-        return new LineTotalPercModifier()
+        return new AccumulatedReal()
+
       case 'periodic_real_in':
-        return new LinePeriodicReal()
       case 'periodic_real_out':
-        return new LinePeriodicReal()
+        return new PeriodicReal()
+
+      case 'real_power':
+      case 'reactive_power':
+      case 'apparent_power':
+      case 'real_a':
+      case 'real_b':
+      case 'real_c':
+      case 'reactive_a':
+      case 'reactive_b':
+      case 'reactive_c':
+      case 'cphase_a':
+      case 'cphase_b':
+      case 'cphase_c':
+      case 'apparent_a':
+      case 'apparent_b':
+      case 'apparent_c':
+      case 'instant':
+      case 'rate':
+      case 'pf_a':
+      case 'pf_b':
+      case 'pf_c':
+        return new MinMaxModifier()
+
+      case 'vphase_ab':
+      case 'vphase_ac':
+      case 'vphase_bc':
+      case 'vphase_an':
+      case 'vphase_bn':
+      case 'vphase_cn':
+      case 'input':
+        return new AverageModifier()
+
+      // Campaign charts
+      case 'accumulated_real_baseline_percentage':
+      case 'accumulated_real_baseline_point':
+        return new BaselineAccumulatedReal()
+
+      case 'periodic_real_baseline_percentage':
+      case 'periodic_real_baseline_point':
+        return new BaselinePeriodicReal()
+
+      // Fallback for unknown point types
       default:
-        return new LineDefault()
+        console.warn('Unknown point type for line/bar chart:', point)
+        return new Default()
     }
   } else {
     throw new Error('Unknown chart type')

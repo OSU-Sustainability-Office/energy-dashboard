@@ -29,17 +29,6 @@ class Meter {
     if (this.classInt === null) {
       return
     }
-    // switch (this.classInt) {
-    //   case 17:
-    //     this.type = 'Gas'
-    //     break
-    //   case 4444:
-    //     this.type = 'Steam'
-    //     break
-    //   default:
-    //     this.type = 'Electricity'
-    //     break
-    // }
 
     const map = {
       accumulated_real: 'Net Energy Usage (kWh)',
@@ -66,22 +55,22 @@ class Meter {
       cphase_c: 'Current, Phase C (A)',
       cubic_feet: 'Total Natural Gas (CF)',
       instant: 'Instant',
-      maximum: 'Maximum',
-      minimum: 'Minimum',
       rate: 'Natural Gas Rate (CFm)',
       total: 'Steam (Lbs)',
-      input: 'Steam Input',
+      input: 'Steam Flow Rate',
       apparent_a: 'Apparent Power, Phase A (VA)',
       apparent_b: 'Apparent Power, Phase B (VA)',
       apparent_c: 'Apparent Power, Phase C (VA)',
-      baseline_percentage: 'Percentage (%)',
-      baseline_perc_total: 'Percentage (%)',
+      accumulated_real_baseline_percentage: 'Percentage (%)',
+      periodic_real_baseline_percentage: 'Percentage (%)',
       periodic_real_in: 'Net Energy Usage (kWh)',
       periodic_real_out: 'Energy Produced (kWh)'
     }
     const points = Object.values(meterClasses[this.classInt])
     for (let point of points) {
-      this.points.push({ label: map[point], value: point })
+      if (map[point]) {
+        this.points.push({ label: map[point], value: point })
+      }
     }
     if (points.indexOf('total') >= 0) {
       this.type = 'Steam'
@@ -232,8 +221,6 @@ class Meter {
       cphase_c: null,
       total: null,
       input: null,
-      minimum: null,
-      maximum: null,
       cubic_feet: null,
       instant: null,
       rate: null,
@@ -280,8 +267,6 @@ class Meter {
           pointMap.cphase_c,
           pointMap.total,
           pointMap.input,
-          pointMap.minimum,
-          pointMap.maximum,
           pointMap.cubic_feet,
           pointMap.instant,
           pointMap.rate
@@ -320,8 +305,6 @@ class Meter {
                         cphase_c = ?, 
                         total = ?, 
                         input = ?, 
-                        minimum = ?, 
-                        maximum = ?, 
                         cubic_feet = ?, 
                         instant = ?, 
                         rate = ?
@@ -355,8 +338,6 @@ class Meter {
             pointMap.cphase_c,
             pointMap.total,
             pointMap.input,
-            pointMap.minimum,
-            pointMap.maximum,
             pointMap.cubic_feet,
             pointMap.instant,
             pointMap.rate,

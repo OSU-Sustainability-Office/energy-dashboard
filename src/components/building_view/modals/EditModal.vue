@@ -78,11 +78,7 @@
         v-if="currentIndex < form.sets.length && (compareOneBuildingView || !compareView)"
         prop="meter"
         label="Meter: "
-        :rules="{
-          required: true,
-          message: 'A meter is required',
-          trigger: 'blur'
-        }"
+        :rules="{ validator: validateMeter, trigger: 'blur' }"
       >
         <el-select
           ref="submeters"
@@ -96,11 +92,7 @@
       <!-- Measurement -->
       <el-form-item
         v-if="currentIndex < form.sets.length && (compareOneBuildingView || !compareView)"
-        :rules="{
-          required: true,
-          message: 'A measurement is required',
-          trigger: 'blur'
-        }"
+        :rules="{ validator: validatePoint, trigger: 'blur' }"
         prop="point"
         label="Measurement: "
       >
@@ -438,7 +430,24 @@ export default {
       this.form.sets[index].point = this.meterPoints[0].value
       let energyType = this.$store.getters[this.form.sets[index].meter + '/meters'][0].type
       this.form.name = energyType
+    },
+    validateMeter (rule, value, callback) {
+      const meter = this.form.sets[this.currentIndex]?.meter
+      if (!meter) {
+        callback(new Error('A meter is required'))
+      } else {
+        callback()
+      }
+    },
+    validatePoint (rule, value, callback) {
+      const point = this.form.sets[this.currentIndex]?.point
+      if (!point) {
+        callback(new Error('A measurement is required'))
+      } else {
+        callback()
+      }
     }
+
   },
   watch: {
     $route: {
