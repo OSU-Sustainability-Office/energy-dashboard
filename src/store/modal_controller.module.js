@@ -12,37 +12,37 @@ const state = () => {
 }
 
 const actions = {
-  openModal(store, payload) {
+  openModal (store, payload) {
     store.commit('clearData')
     store.commit('data', payload)
     store.commit('modalName', payload['name'])
   },
 
-  closeModal(store) {
+  closeModal (store) {
     store.commit('modalName', '')
   }
 }
 
 const mutations = {
-  modalName(state, name) {
+  modalName (state, name) {
     state.modalName = name
   },
 
-  clearData(state) {
+  clearData (state) {
     state.data = {}
   },
 
-  data(state, data) {
+  data (state, data) {
     state.data = JSON.parse(JSON.stringify(data))
   }
 }
 
 const getters = {
-  modalName(state) {
+  modalName (state) {
     return state.modalName
   },
 
-  data(state) {
+  data (state) {
     return state.data
   }
 }

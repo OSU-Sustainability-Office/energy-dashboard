@@ -20,7 +20,7 @@
 <script>
 export default {
   props: ['titles', 'modelValue'],
-  data() {
+  data () {
     return {
       currentRange: -1
     }

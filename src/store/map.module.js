@@ -15,7 +15,7 @@ const state = () => {
 }
 
 const actions = {
-  async loadBuilding(store, payload) {
+  async loadBuilding (store, payload) {
     let buildingSpace = 'building_' + payload.id.toString()
     let moduleSpace = store.getters.path + '/' + buildingSpace
     this.registerModule(moduleSpace.split('/'), Building)
@@ -39,7 +39,7 @@ const actions = {
     await store.dispatch(buildingSpace + '/buildDefaultBlocks')
   },
 
-  async loadGeoJSONData(store, missingIds) {
+  async loadGeoJSONData (store, missingIds) {
     // fetch and parse the GeoJSON data
     const osmXML = await API.getGeoJSON(missingIds)
     const xmlDoc = new DOMParser().parseFromString(osmXML, 'text/xml')
@@ -82,45 +82,49 @@ const actions = {
     }
   },
 
-  async loadMap(store) {
+  async loadMap (store) {
     if (store.getters.promise === null) {
-      const mapPromise = (async () => {
-        let buildingsResolved = await API.buildings()
-        let buildingPromises = []
-        for (let building of buildingsResolved) {
-          buildingPromises.push(store.dispatch('loadBuilding', building))
-        }
-        await Promise.all(buildingPromises)
+      store.commit(
+        'promise',
+        new Promise(async (resolve, reject) => {
+          let buildingsResolved = await API.buildings()
+          let buildingPromises = []
+          for (let building of buildingsResolved) {
+            buildingPromises.push(store.dispatch('loadBuilding', building))
+          }
+          await Promise.all(buildingPromises)
 
-        // fetch missing geoJSON data (if any)
-        const buildingMap = store.getters.buildingMap
-        const missingIds = Array.from(buildingMap.keys()).join(',')
-        if (missingIds.length > 0) {
-          await store.dispatch('loadGeoJSONData', missingIds)
-          buildingMap.clear() // clear the map to indicate that all missing geoJSON has been loaded
-        }
-      })()
-      store.commit('promise', mapPromise)
+          // fetch missing geoJSON data (if any)
+          const buildingMap = store.getters.buildingMap
+          const missingIds = Array.from(buildingMap.keys()).join(',')
+          if (missingIds.length > 0) {
+            await store.dispatch('loadGeoJSONData', missingIds)
+            buildingMap.clear() // clear the map to indicate that all missing geoJSON has been loaded
+          }
+
+          resolve()
+        })
+      )
     }
     return store.getters.promise
   }
 }
 
 const mutations = {
-  promise(state, promise) {
+  promise (state, promise) {
     state.promise = promise
   },
-  setBuildingInMap(state, { mapId, building }) {
+  setBuildingInMap (state, { mapId, building }) {
     state.buildingMap.set(mapId, building)
   }
 }
 
 const getters = {
-  path(state) {
+  path (state) {
     return state.path
   },
 
-  promise(state) {
+  promise (state) {
     return state.promise
   },
 
@@ -178,7 +182,7 @@ const getters = {
     return meterGroups[id]
   },
 
-  buildingMap(state) {
+  buildingMap (state) {
     return state.buildingMap
   }
 }

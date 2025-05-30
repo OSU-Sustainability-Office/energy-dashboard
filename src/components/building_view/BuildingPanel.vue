@@ -126,7 +126,7 @@ export default {
   components: {
     ChartController
   },
-  data() {
+  data () {
     return {
       editcard: false,
       tempName: '',
@@ -149,7 +149,7 @@ export default {
   },
   computed: {
     name: {
-      get() {
+      get () {
         let name = this.$store.getters[this.path + '/name']
         if (name && name !== '') {
           return name

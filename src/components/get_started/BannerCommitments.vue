@@ -12,7 +12,7 @@
 <script>
 export default {
   name: 'BannerCommitments',
-  data() {
+  data () {
     return {
       i: 0,
       keyValue: false,
@@ -31,7 +31,7 @@ export default {
       ]
     }
   },
-  mounted() {
+  mounted () {
     var timeout = 100
     var i = 0
     while (i < this.commitments.length - 1) {
@@ -44,7 +44,7 @@ export default {
     }
   },
   methods: {
-    capatilize(val) {
+    capatilize (val) {
       return val.toUpperCase()
     }
   }

@@ -28,9 +28,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: npm ci
+      - name: npm install
         run: |
-          npm ci
+          npm install
       - name: npm build frontend
         env:
           NODE_OPTIONS: --openssl-legacy-provider

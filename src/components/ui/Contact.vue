@@ -29,13 +29,13 @@
 export default {
   name: 'contact',
   props: [],
-  data() {
+  data () {
     return {
       contactDemo: 'https://energy-dashboard.s3-us-west-2.amazonaws.com/images/contactImage.png'
     }
   },
   watch: {},
-  mounted() {},
+  mounted () {},
   methods: {}
 }
 </script>

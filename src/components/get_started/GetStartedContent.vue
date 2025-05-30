@@ -26,7 +26,7 @@ export default {
     TutorialMapTab,
     TutorialBuildingTab
   },
-  data() {
+  data () {
     return {
       pic1: '/images/solar.jpg'
     }
