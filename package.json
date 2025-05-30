@@ -15,7 +15,10 @@
     "backend-badge": "make-coverage-badge --report-path './backend/coverage/coverage-summary.json' --output-path './backend/coverage/badge.svg'",
     "make-badges": "npm run frontend-badge && npm run backend-badge",
     "prettier": "prettier --write \"**/*.{js,json,html,md,css,scss,vue}\"",
-    "format": "npm-run-all --continue-on-error prettier lint"
+    "format": "npm-run-all --continue-on-error prettier lint",
+    "format:check": "npm-run-all prettier:check lint:check",
+    "prettier:check": "prettier --check \"**/*.{js,json,html,md,css,scss,vue}\"",
+    "lint:check": "eslint src backend --max-warnings=0"
   },
   "dependencies": {
     "@vue-leaflet/vue-leaflet": "^0.10.1",
