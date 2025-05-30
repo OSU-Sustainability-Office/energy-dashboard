@@ -43,26 +43,26 @@ export default class MinMaxModifier {
     const returnData = []
     const startDate = new Date(dateStart * 1000)
     const pointMap = {
-      'real_power': 'Max',
-      'reactive_power': 'Max',
-      'apparent_power': 'Max',
-      'real_a': 'Max',
-      'real_b': 'Max',
-      'real_c': 'Max',
-      'reactive_a': 'Max',
-      'reactive_b': 'Max',
-      'reactive_c': 'Max',
-      'cphase_a': 'Max',
-      'cphase_b': 'Max',
-      'cphase_c': 'Max',
-      'apparent_a': 'Max',
-      'apparent_b': 'Max',
-      'apparent_c': 'Max',
-      'instant': 'Max',
-      'rate': 'Max',
-      'pf_a': 'Min',
-      'pf_b': 'Min',
-      'pf_c': 'Min'
+      real_power: 'Max',
+      reactive_power: 'Max',
+      apparent_power: 'Max',
+      real_a: 'Max',
+      real_b: 'Max',
+      real_c: 'Max',
+      reactive_a: 'Max',
+      reactive_b: 'Max',
+      reactive_c: 'Max',
+      cphase_a: 'Max',
+      cphase_b: 'Max',
+      cphase_c: 'Max',
+      apparent_a: 'Max',
+      apparent_b: 'Max',
+      apparent_c: 'Max',
+      instant: 'Max',
+      rate: 'Max',
+      pf_a: 'Min',
+      pf_b: 'Min',
+      pf_c: 'Min'
     }
     let [delta, curDaysInMonth] = getDeltaAndDaysInMonth(intervalUnit, startDate, dateInterval)
 

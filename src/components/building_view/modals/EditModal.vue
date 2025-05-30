@@ -447,7 +447,6 @@ export default {
         callback()
       }
     }
-
   },
   watch: {
     $route: {
