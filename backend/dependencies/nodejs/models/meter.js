@@ -34,10 +34,6 @@ class Meter {
     if (this.classInt === null) {
       return
     }
-    if (!meterClasses[this.classInt]) {
-      console.warn('Meter class not found for classInt:', this.classInt, 'in meter:', this.id)
-      return
-    }
 
     const map = {
       accumulated_real: 'Net Energy Usage (kWh)',
@@ -80,17 +76,17 @@ class Meter {
       if (map[point]) {
         this.points.push({ label: map[point], value: point })
       }
-      if (points.indexOf('total') >= 0) {
-        this.type = 'Steam'
-      } else if (points.indexOf('cubic_feet') >= 0) {
-        this.type = 'Gas'
-      } else if (points.indexOf('accumulated_real') >= 0 || points.indexOf('periodic_real_in') >= 0) {
-        this.type = 'Electricity'
-      } else if (points.indexOf('periodic_real_out') >= 0) {
-        this.type = 'Solar Panel'
-      }
-      return this
     }
+    if (points.indexOf('total') >= 0) {
+      this.type = 'Steam'
+    } else if (points.indexOf('cubic_feet') >= 0) {
+      this.type = 'Gas'
+    } else if (points.indexOf('accumulated_real') >= 0 || points.indexOf('periodic_real_in') >= 0) {
+      this.type = 'Electricity'
+    } else if (points.indexOf('periodic_real_out') >= 0) {
+      this.type = 'Solar Panel'
+    }
+    return this
   }
 
   get data() {
@@ -201,6 +197,7 @@ class Meter {
 
   async upload(data) {
     await DB.connect()
+    console.log(meterClasses)
     let points = meterClasses[this.classInt]
 
     const pointMap = {
@@ -238,12 +235,8 @@ class Meter {
       rate: null,
       default: null
     }
-    if(parseInt(this.id) > 200) {
-      console.log('Data to upload for meter:', this.id, 'with data:', data)
-      for (let key of Object.keys(points)) {
-        pointMap[points[key]] = data[parseInt(key)]
-        console.log('Setting pointMap[' + key + '] / ' + points[key] + ' to: ', data[parseInt(key)])
-      }
+    for (let key of Object.keys(points)) {
+      pointMap[points[key]] = data[parseInt(key)]
     }
 
     let time = data[0].toString().substring(1, 17) + ':00'
