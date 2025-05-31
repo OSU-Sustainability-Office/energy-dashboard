@@ -71,22 +71,27 @@ class Meter {
       periodic_real_in: 'Net Energy Usage (kWh)',
       periodic_real_out: 'Energy Produced (kWh)'
     }
-    const points = Object.values(meterClasses[this.classInt])
-    for (let point of points) {
-      if (map[point]) {
-        this.points.push({ label: map[point], value: point })
+    try {
+      const points = Object.values(meterClasses[this.classInt])
+      for (let point of points) {
+        if (map[point]) {
+          this.points.push({ label: map[point], value: point })
+        }
       }
+      if (points.indexOf('total') >= 0) {
+        this.type = 'Steam'
+      } else if (points.indexOf('cubic_feet') >= 0) {
+        this.type = 'Gas'
+      } else if (points.indexOf('accumulated_real') >= 0 || points.indexOf('periodic_real_in') >= 0) {
+        this.type = 'Electricity'
+      } else if (points.indexOf('periodic_real_out') >= 0) {
+        this.type = 'Solar Panel'
+      }
+      return this
+    } catch (err) {
+      console.error('Object values' + JSON.stringify(Object.values(meterClasses[this.classInt])))
+      throw new Error('Failed to calculate meter properties')
     }
-    if (points.indexOf('total') >= 0) {
-      this.type = 'Steam'
-    } else if (points.indexOf('cubic_feet') >= 0) {
-      this.type = 'Gas'
-    } else if (points.indexOf('accumulated_real') >= 0 || points.indexOf('periodic_real_in') >= 0) {
-      this.type = 'Electricity'
-    } else if (points.indexOf('periodic_real_out') >= 0) {
-      this.type = 'Solar Panel'
-    }
-    return this
   }
 
   get data() {
@@ -197,7 +202,6 @@ class Meter {
 
   async upload(data) {
     await DB.connect()
-    console.log('Meter ID: ' + this.id + ' is attempting to upload data: ' + data)
     let points = meterClasses[this.classInt]
 
     const pointMap = {
