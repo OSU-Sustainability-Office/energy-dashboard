@@ -35,7 +35,7 @@ class Meter {
       return
     }
     if (!meterClasses[this.classInt]) {
-      console.warn('Meter class not found for classInt:', this.classInt)
+      console.warn('Meter class not found for classInt:', this.classInt, 'in meter:', this.id)
       return
     }
 
