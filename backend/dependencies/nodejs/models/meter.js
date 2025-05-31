@@ -238,10 +238,12 @@ class Meter {
       rate: null,
       default: null
     }
-    console.log('Data to upload for meter:', this.id, 'with data:', data)
-    for (let key of Object.keys(points)) {
-      pointMap[points[key]] = data[parseInt(key)]
-      console.log('Setting pointMap[' + key + '] / ' + points[key] + ' to:', data[parseInt(key)])
+    if(parseInt(this.id) > 200) {
+      console.log('Data to upload for meter:', this.id, 'with data:', data)
+      for (let key of Object.keys(points)) {
+        pointMap[points[key]] = data[parseInt(key)]
+        console.log('Setting pointMap[' + key + '] / ' + points[key] + ' to:', data[parseInt(key)])
+      }
     }
 
     let time = data[0].toString().substring(1, 17) + ':00'
