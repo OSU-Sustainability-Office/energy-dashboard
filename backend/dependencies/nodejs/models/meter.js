@@ -71,12 +71,11 @@ class Meter {
       periodic_real_in: 'Net Energy Usage (kWh)',
       periodic_real_out: 'Energy Produced (kWh)'
     }
-    try {
-      const points = Object.values(meterClasses[this.classInt])
-      for (let point of points) {
-        if (map[point]) {
-          this.points.push({ label: map[point], value: point })
-        }
+    console.log('Object values: ' + JSON.stringify(Object.values(meterClasses[this.classInt])))
+    const points = Object.values(meterClasses[this.classInt])
+    for (let point of points) {
+      if (map[point]) {
+        this.points.push({ label: map[point], value: point })
       }
       if (points.indexOf('total') >= 0) {
         this.type = 'Steam'
