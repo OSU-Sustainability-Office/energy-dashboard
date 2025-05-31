@@ -34,6 +34,10 @@ class Meter {
     if (this.classInt === null) {
       return
     }
+    if (!meterClasses[this.classInt]) {
+      console.warn('Meter class not found for classInt:', this.classInt)
+      return
+    }
 
     const map = {
       accumulated_real: 'Net Energy Usage (kWh)',
@@ -71,7 +75,6 @@ class Meter {
       periodic_real_in: 'Net Energy Usage (kWh)',
       periodic_real_out: 'Energy Produced (kWh)'
     }
-    console.log('Object values: ' + JSON.stringify(Object.values(meterClasses[this.classInt])))
     const points = Object.values(meterClasses[this.classInt])
     for (let point of points) {
       if (map[point]) {
