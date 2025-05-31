@@ -238,6 +238,7 @@ class Meter {
       rate: null,
       default: null
     }
+    console.log('Data to upload:', data)
     for (let key of Object.keys(points)) {
       pointMap[points[key]] = data[parseInt(key)]
     }
