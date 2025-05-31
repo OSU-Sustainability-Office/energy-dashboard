@@ -60,6 +60,8 @@ class Meter {
       cphase_c: 'Current, Phase C (A)',
       cubic_feet: 'Total Natural Gas (CF)',
       instant: 'Instant',
+      minimum: 'Minimum',
+      maximum: 'Maximum',
       rate: 'Natural Gas Rate (CFm)',
       total: 'Steam (Lbs)',
       input: 'Steam Flow Rate',
