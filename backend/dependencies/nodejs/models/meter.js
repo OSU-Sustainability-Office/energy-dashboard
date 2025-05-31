@@ -197,7 +197,9 @@ class Meter {
 
   async upload(data) {
     await DB.connect()
-    console.log(meterClasses)
+    if (this.id > 190) {
+      console.log('Meter ID: ' + this.id + ' is attempting to upload data: ' + data)
+    }
     let points = meterClasses[this.classInt]
 
     const pointMap = {
