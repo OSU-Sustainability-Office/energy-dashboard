@@ -11,6 +11,7 @@ const mockResponse = await import(`${so_namespace}/response.js`)
 vi.mock(
   '/opt/nodejs/response.js',
   () => {
+    console.log('Mocking response module')
     return mockResponse
   },
   { virtual: true }
@@ -20,7 +21,7 @@ vi.mock(
 vi.mock('/opt/nodejs/node_modules/aws-lambda-multipart-parser', () => ({}), { virtual: true })
 
 // mock the sql-access.js module to use a local MySQL connection
-import { createConnection } from 'mysql'
+import { createConnection } from 'mysql2'
 const DB = createConnection({
   host: process.env.MYSQL_HOST,
   user: 'root',

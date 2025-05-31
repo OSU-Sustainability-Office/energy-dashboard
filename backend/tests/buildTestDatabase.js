@@ -4,7 +4,7 @@
  *                the database with some mock-data.
  */
 
-import { createConnection } from 'mysql'
+import { createConnection } from 'mysql2'
 const DB = createConnection({
   host: process.env.MYSQL_HOST,
   user: 'root',
