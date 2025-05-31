@@ -87,9 +87,6 @@ class Meter {
         this.type = 'Solar Panel'
       }
       return this
-    } catch (err) {
-      console.error('Object values' + JSON.stringify(Object.values(meterClasses[this.classInt])))
-      throw new Error('Failed to calculate meter properties')
     }
   }
 
