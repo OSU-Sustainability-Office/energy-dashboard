@@ -135,16 +135,8 @@ exports.upload = async (event, context) => {
 exports.post = async (event, context) => {
   let response = new Response(event)
 
-  // Print the raw event body (base64 encoded)
-  console.log('Raw event.body (base64):', event.body)
-
   event.body = Buffer.from(event.body, 'base64').toString('binary')
-  // Print the decoded event body (binary string)
-  console.log('Decoded event.body (binary):', event.body)
-
   const body = await MultipartParse.parse(event, false)
-  // Print the parsed multipart body
-  console.log('Parsed multipart body:', body)
 
   response.headers = {
     ...response.headers,
@@ -191,8 +183,6 @@ exports.post = async (event, context) => {
           }
         })
       })
-      // Print the decompressed table data
-      console.log('Decompressed table data:', table)
       for (let entry of table) {
         let cols = entry.split(',')
 
