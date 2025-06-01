@@ -39,7 +39,7 @@ Globals:
 Parameters:
   LambdaCommonLayer:
     Type: String
-    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:97
+    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:106
 
 Resources:
   SystemTime:

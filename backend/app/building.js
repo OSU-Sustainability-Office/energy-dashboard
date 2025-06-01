@@ -8,6 +8,11 @@ export async function all(event, context) {
   let response = new Response(event)
   response.body = JSON.stringify((await Building.all()).map(o => o.data))
   response.headers['Content-Type'] = 'application/json'
+  console.log('event', event)
+  console.log('---------- ')
+  console.log('response', response)
+  console.log('---------- ')
+  console.log('response.data', response.data)
   return response
 }
 
