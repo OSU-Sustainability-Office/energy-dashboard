@@ -15,7 +15,7 @@ Globals:
     Cors:
       AllowMethods: "'POST, GET, PUT'"
       AllowHeaders: "'X-Forwarded-For'"
-      AllowOrigin: "'oregonstate.edu'"
+      AllowOrigin: "'https://dashboard.sustainability.oregonstate.edu'"
       MaxAge: "'600'"
       AllowCredentials: True
     BinaryMediaTypes:
