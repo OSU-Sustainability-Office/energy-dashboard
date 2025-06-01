@@ -11,7 +11,6 @@ const mockResponse = await import(`${so_namespace}/response.js`)
 vi.mock(
   '/opt/nodejs/response.js',
   () => {
-    console.log('Mocking response module')
     return mockResponse
   },
   { virtual: true }

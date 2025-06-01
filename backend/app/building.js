@@ -3,7 +3,6 @@
  */
 const { default: Building } = await import('/opt/nodejs/models/building.js')
 import Response from '/opt/nodejs/response.js'
-console.log('Response:', Response)
 
 export async function all(event, context) {
   let response = new Response(event)
