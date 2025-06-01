@@ -4,7 +4,7 @@
 import { connect, query as _query } from '/opt/nodejs/sql-access.js'
 import Meter, { create } from '/opt/nodejs/models/meter.js'
 import Response from '/opt/nodejs/response.js'
-import { parse } from '/opt/nodejs/node_modules/aws-lambda-multipart-parser'
+import { parse } from 'aws-lambda-multipart-parser'
 import { unzip } from 'zlib'
 import Compress from '/opt/nodejs/models/compress.js'
 
