@@ -8,7 +8,7 @@ import { DateTime } from 'luxon'
 // This function is used for calculating bucket keys for day and week intervals.
 // It works by rounding down the current date to the nearest interval boundary
 // relative to the provided start date.
-function getDayBucketKey (currentDate, startDate, dateInterval) {
+function getDayBucketKey(currentDate, startDate, dateInterval) {
   // Compute the different in days between the start date and the current date in the loop
   const dayDifference = Math.floor(currentDate.diff(startDate, 'days').days)
 
@@ -22,7 +22,7 @@ function getDayBucketKey (currentDate, startDate, dateInterval) {
 // Monthly increments are calculated by starting from the first day of the month
 // that corresponds to the start date. Data is then accumulated until the same
 // day in the following month.
-function getMonthBucketKey (currentDate, startDate) {
+function getMonthBucketKey(currentDate, startDate) {
   // If current date is earlier in the month than day of the
   // start date, then it belongs to the previous month’s bucket
   let bucketMonth = currentDate.month
@@ -78,7 +78,7 @@ export default class PeriodicRealModifier {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData (chartData, payload, store, module) {
+  async postGetData(chartData, payload, store, module) {
     const { dateStart, dateEnd, dateInterval, intervalUnit, point } = payload
     const TIMEZONE = 'America/Los_Angeles'
     const currentData = chartData.data
@@ -156,7 +156,7 @@ export default class PeriodicRealModifier {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData (payload, store, module) {
+  async preGetData(payload, store, module) {
     // No preprocessing needed for periodic_real data
   }
 }

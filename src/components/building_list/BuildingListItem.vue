@@ -12,12 +12,12 @@
 <script>
 export default {
   props: ['id', 'building', 'plus'],
-  data () {
+  data() {
     return {
       api: import.meta.env.VITE_ROOT_API
     }
   },
-  mounted () {
+  mounted() {
     if (this.media) {
       this.$refs.card.style.background =
         'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' +
@@ -30,22 +30,22 @@ export default {
 
   computed: {
     buildingData: {
-      get () {
+      get() {
         return this.$store.getters['map/building'](this.id)
       }
     },
     media: {
-      get () {
+      get() {
         return this.buildingData.image
       }
     },
     name: {
-      get () {
+      get() {
         return this.buildingData.name
       }
     },
     description: {
-      get () {
+      get() {
         return this.buildingData.description
       }
     }

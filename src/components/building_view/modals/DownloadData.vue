@@ -135,7 +135,7 @@ import ChartModifier from '@/store/chart_modifiers/index'
 import JSZip from 'jszip'
 
 export default {
-  data () {
+  data() {
     return {
       currentIndex: 0,
       addBuildingId: 0,
@@ -158,18 +158,18 @@ export default {
   },
   computed: {
     visible: {
-      get () {
+      get() {
         return this.$store.getters['modalController/modalName'] === 'DownloadData'
       },
 
-      set (value) {
+      set(value) {
         if (value === false) {
           this.$store.dispatch('modalController/closeModal')
         }
       }
     },
     meterPoints: {
-      get () {
+      get() {
         let points = []
         for (let building of this.form.buildings) {
           for (let group of building.groups) {
@@ -186,7 +186,7 @@ export default {
       }
     },
     buildingsFiltered: {
-      get () {
+      get() {
         if (!this.buildings) return []
         let buildingsCopy = [...this.buildings]
         let buildingIds = buildingsCopy.map(o => parseInt(o.id))
@@ -201,7 +201,7 @@ export default {
     },
 
     buildings: {
-      get () {
+      get() {
         return this.$store.getters['map/buildings']
       }
     }
@@ -273,33 +273,27 @@ export default {
           let groupPoints = this.$store.getters[this.$store.getters['map/meterGroup'](group).path + '/points']
           let findex = groupPoints.map(o => o.value).indexOf(req.point)
           if (findex >= 0) {
-            promises.push(
-              new Promise(async (resolve, reject) => {
-                const chartModifier = ChartModifier(req.graphType, req.point)
-                await chartModifier.preGetData(req, this.$store, null)
-                let data = await this.$store.dispatch(
-                  this.$store.getters['map/meterGroup'](group).path + '/getData',
-                  req
-                )
-                // Mimic what the chart modifier expects so there is no issues
-                let chartData = {
-                  label: '',
-                  backgroundColor: '',
-                  borderColor: '',
-                  fill: false,
-                  showLine: true,
-                  spanGaps: false,
-                  data: data
-                }
-
-                await chartModifier.postGetData(chartData, req, this.$store, null)
-                resolve({
-                  point: map[point],
-                  group: this.$store.getters['map/meterGroup'](group).name,
-                  data: chartData.data
-                })
-              })
-            )
+            promises.push(async () => {
+              const chartModifier = ChartModifier(req.graphType, req.point)
+              await chartModifier.preGetData(req, this.$store, null)
+              let data = await this.$store.dispatch(this.$store.getters['map/meterGroup'](group).path + '/getData', req)
+              // Mimic what the chart modifier expects so there is no issues
+              let chartData = {
+                label: '',
+                backgroundColor: '',
+                borderColor: '',
+                fill: false,
+                showLine: true,
+                spanGaps: false,
+                data: data
+              }
+              await chartModifier.postGetData(chartData, req, this.$store, null)
+              return {
+                point: map[point],
+                group: this.$store.getters['map/meterGroup'](group).name,
+                data: chartData.data
+              }
+            })
           }
         }
       }

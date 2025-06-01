@@ -33,7 +33,7 @@
 </template>
 <script>
 export default {
-  data () {
+  data() {
     return {
       hoverShow: null,
       tips: [
@@ -81,11 +81,11 @@ export default {
     }
   },
   methods: {
-    getImageSrc (iconName) {
+    getImageSrc(iconName) {
       return new URL(`../../assets/icons/${iconName}.svg`, import.meta.url).href
     }
   },
-  created () {}
+  created() {}
 }
 </script>
 <style scoped lang="scss">

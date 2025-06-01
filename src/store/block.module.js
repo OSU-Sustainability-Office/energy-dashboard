@@ -25,7 +25,7 @@ const state = () => {
 }
 
 const actions = {
-  loadChart (store, id) {
+  loadChart(store, id) {
     let chartSpace = 'chart_' + id.toString()
     let moduleSpace = store.getters.path + '/' + chartSpace
     this.registerModule(moduleSpace.split('/'), Chart)
@@ -37,7 +37,7 @@ const actions = {
     store.dispatch(chartSpace + '/changeChart', id)
   },
 
-  async addModifier (store, modifierName) {
+  async addModifier(store, modifierName) {
     const currentModNames = store.getters.modifiers.map(o => o.name)
 
     if (currentModNames.indexOf(modifierName) < 0) {
@@ -53,7 +53,7 @@ const actions = {
     }
   },
 
-  async removeModifier (store, modifierName) {
+  async removeModifier(store, modifierName) {
     const currentModNames = store.getters.modifiers.map(o => o.name)
     const modIndex = currentModNames.indexOf(modifierName)
     if (modIndex < 0) {
@@ -65,11 +65,11 @@ const actions = {
     }
   },
 
-  async resetDefault (store) {
+  async resetDefault(store) {
     await store.dispatch('removeAllModifiers')
   },
 
-  async removeAllModifiers (store) {
+  async removeAllModifiers(store) {
     for (let modIndex in store.getters.modifiers) {
       if (modIndex < 0) {
         throw new Error('Modifier not found on block')
@@ -81,8 +81,7 @@ const actions = {
     }
   },
 
-  async updateModifier (store, payload) {
-    // eslint-disable-next-line no-proto
+  async updateModifier(store, payload) {
     const currentModNames = store.getters.modifiers.map(o => o.__proto__.constructor.name)
     const modIndex = currentModNames.indexOf(payload.name)
     if (modIndex < 0) {
@@ -93,12 +92,12 @@ const actions = {
     }
   },
 
-  async unloadChart (store, chartId) {
+  async unloadChart(store, chartId) {
     let chart = store.getters.chart(chartId)
     this.unregisterModule(chart.path.split('/'))
   },
 
-  async loadCharts (store, charts) {
+  async loadCharts(store, charts) {
     for (let chart of charts) {
       let chartSpace = 'chart_' + chart.id
       let moduleSpace = store.getters.path + '/' + chartSpace
@@ -120,7 +119,7 @@ const actions = {
     }
   },
 
-  async update (store, payload) {
+  async update(store, payload) {
     // skip if the payload is the same as the current state
     if (
       payload.name === store.getters.name &&
@@ -140,7 +139,7 @@ const actions = {
     store.commit('dateEnd', payload.dateEnd)
   },
 
-  async newChart (store, payload) {
+  async newChart(store, payload) {
     let id = (
       await API.chart(
         {
@@ -167,7 +166,7 @@ const actions = {
     store.commit(chartSpace + '/meterGroupPath', payload.meter)
   },
 
-  async removeChart (store, name) {
+  async removeChart(store, name) {
     for (let chart of store.getters.charts) {
       let chartKey = chart.path.split('/').pop()
       if (chartKey === name) {
@@ -186,7 +185,7 @@ const actions = {
     This function is used to determine the point to be used for
     the baseline percentage calculation.
   */
-  async getMeterPoint (store, meters) {
+  async getMeterPoint(store, meters) {
     let point = 'accumulated_real' // default to Aqcuisuite meters
     // find Pacific Power meters
     for (const key in meters) {
@@ -202,75 +201,72 @@ const actions = {
   },
 
   // Default block for buildings
-  async loadDefault (store, payload) {
-    store.commit(
-      'promise',
-      new Promise(async (resolve, reject) => {
-        store.commit('shuffleChartColors')
-        let chartSpace = 'chart_' + payload.id.toString()
-        let moduleSpace = store.getters.path + '/' + chartSpace
-        this.registerModule(moduleSpace.split('/'), Chart)
+  async loadDefault(store, payload) {
+    const blockPromise = (async () => {
+      await store.commit('shuffleChartColors')
+      let chartSpace = 'chart_' + payload.id.toString()
+      let moduleSpace = store.getters.path + '/' + chartSpace
+      this.registerModule(moduleSpace.split('/'), Chart)
 
-        // Get the building utility type
-        let utilityType = ''
-        const meters = this.getters[payload.group.path + '/meters']
-        if (meters.length > 0) {
-          await meters[0].promise
-          utilityType = this.getters[meters[0].path + '/type']
-        }
+      // Get the building utility type
+      let utilityType = ''
+      const meters = this.getters[payload.group.path + '/meters']
+      if (meters.length > 0) {
+        await meters[0].promise
+        utilityType = this.getters[meters[0].path + '/type']
+      }
 
-        // This defines the "default chart" (e.g. "Total Electricity")
-        // The default chart are the charts shown when user clicks on a building
-        store.commit(chartSpace + '/name', 'Total ' + utilityType)
-        const pointMap = {
-          Electricity: 'accumulated_real',
-          Gas: 'cubic_feet',
-          Steam: 'total',
-          'Daily Electricity': 'periodic_real_in',
-          'Solar Panel': 'periodic_real_out'
-        }
-        let point = pointMap[utilityType]
+      // This defines the "default chart" (e.g. "Total Electricity")
+      // The default chart are the charts shown when user clicks on a building
+      store.commit(chartSpace + '/name', 'Total ' + utilityType)
+      const pointMap = {
+        Electricity: 'accumulated_real',
+        Gas: 'cubic_feet',
+        Steam: 'total',
+        'Daily Electricity': 'periodic_real_in',
+        'Solar Panel': 'periodic_real_out'
+      }
+      let point = pointMap[utilityType]
 
-        // Determine if electricity meter is Acquisuite or Pacific Power
-        if (utilityType === 'Electricity') {
-          point = await store.dispatch('getMeterPoint', meters)
-        }
+      // Determine if electricity meter is Acquisuite or Pacific Power
+      if (utilityType === 'Electricity') {
+        point = await store.dispatch('getMeterPoint', meters)
+      }
 
-        store.commit(chartSpace + '/path', moduleSpace)
-        if (utilityType !== '') {
-          store.commit(chartSpace + '/point', point)
-        } else {
-          store.commit(chartSpace + '/point', '')
-        }
-        store.commit(
-          chartSpace + '/color',
-          store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length]
-        )
-        let buildingPath = store.getters.path.split('/')
-        buildingPath.pop()
-        buildingPath = buildingPath.join('/')
-        store.commit(chartSpace + '/building', buildingPath)
-        store.commit(chartSpace + '/meterGroupPath', payload.group.path)
+      store.commit(chartSpace + '/path', moduleSpace)
+      if (utilityType !== '') {
+        store.commit(chartSpace + '/point', point)
+      } else {
+        store.commit(chartSpace + '/point', '')
+      }
+      store.commit(
+        chartSpace + '/color',
+        store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length]
+      )
+      let buildingPath = store.getters.path.split('/')
+      buildingPath.pop()
+      buildingPath = buildingPath.join('/')
+      store.commit(chartSpace + '/building', buildingPath)
+      store.commit(chartSpace + '/meterGroupPath', payload.group.path)
 
-        store.commit('name', utilityType)
+      store.commit('name', utilityType)
 
-        // default chart settings
-        store.commit('dateInterval', 1)
-        store.commit('graphType', 1)
-        store.commit('intervalUnit', 'day')
+      // default chart settings
+      store.commit('dateInterval', 1)
+      store.commit('graphType', 1)
+      store.commit('intervalUnit', 'day')
 
-        let currentEpoch = new Date().getTime()
-        currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
+      let currentEpoch = new Date().getTime()
+      currentEpoch = currentEpoch - (currentEpoch % (900 * 1000))
 
-        store.commit('dateStart', currentEpoch - 900 * 96 * 60 * 1000) // 15 minutes, 96 times a day, 30 days
-        store.commit('dateEnd', currentEpoch)
-        resolve()
-      })
-    )
-    return store.getters.promise
+      store.commit('dateStart', currentEpoch - 900 * 96 * 60 * 1000) // 15 minutes, 96 times a day, 30 days
+      store.commit('dateEnd', currentEpoch)
+    })()
+    store.commit('promise', blockPromise)
+    return blockPromise
   },
 
-  async getData (store) {
+  async getData(store) {
     let chartDataPromises = []
     let data = {
       labels: [],
@@ -333,15 +329,15 @@ const actions = {
 }
 
 const mutations = {
-  path (state, path) {
+  path(state, path) {
     state.path = path
   },
   // seconds to add from starting time_seconds in dateStart
-  timeZoneOffset (state, offset) {
+  timeZoneOffset(state, offset) {
     state.timeZoneOffset = offset
   },
 
-  shuffleChartColors (state) {
+  shuffleChartColors(state) {
     for (var i = state.chartColors.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1))
       var temp = state.chartColors[i]
@@ -350,36 +346,36 @@ const mutations = {
     }
   },
 
-  addMod (state, mod) {
+  addMod(state, mod) {
     state.modifiers.push(mod)
   },
 
-  removeMod (state, mod) {
+  removeMod(state, mod) {
     const modIndex = state.modifiers.map(o => o.name).indexOf(mod.nam)
     state.modifiers.splice(modIndex, 1)
   },
 
-  promise (state, promise) {
+  promise(state, promise) {
     state.promise = promise
   },
 
-  name (state, name) {
+  name(state, name) {
     state.name = name
   },
 
-  dateInterval (state, dateInterval) {
+  dateInterval(state, dateInterval) {
     state.dateInterval = dateInterval
   },
 
-  intervalUnit (state, intervalUnit) {
+  intervalUnit(state, intervalUnit) {
     state.intervalUnit = intervalUnit
   },
 
-  graphType (state, graphType) {
+  graphType(state, graphType) {
     state.graphType = graphType
   },
 
-  dateStart (state, dateStart) {
+  dateStart(state, dateStart) {
     if (typeof dateStart === 'string') {
       state.dateStart = new Date(dateStart).getTime()
     } else if (typeof dateStart === 'number') {
@@ -391,7 +387,7 @@ const mutations = {
     }
   },
 
-  dateEnd (state, dateEnd) {
+  dateEnd(state, dateEnd) {
     if (typeof dateEnd === 'string') {
       state.dateEnd = new Date(dateEnd).getTime()
     } else if (typeof dateEnd === 'number') {
@@ -403,7 +399,7 @@ const mutations = {
     }
   },
 
-  id (state, id) {
+  id(state, id) {
     state.id = id
   }
 }
@@ -419,7 +415,6 @@ const getters = {
 
   modifierData: state => modifierName => {
     for (let modifier of state.modifiers) {
-      // eslint-disable-next-line no-proto
       if (modifier.__proto__.constructor.name === modifierName) {
         return modifier.data
       }

@@ -5,8 +5,8 @@
  */
 
 // CORS testing utility requires
-const testConfig = require('./assertedData/test_config.json')
-const CORSUtil = require('./utility/cors_test_utility.js')
+import testConfig from './assertedData/test_config.json'
+import { VerifyCORSResponse } from './utility/cors_test_utility.js'
 const server = testConfig['serverOrigin']
 const client = testConfig['clientOrigin']
 // const solarData = require('./assertedData/mock_solar_data.json')
@@ -26,20 +26,20 @@ const MOCK_REQUEST_EVENT = {
 }
 
 // Lambda functions
-const RemoteSystemNow = require('../app/now.js')
-const MeterData = require('../app/meter.js')
+import { systemtime } from '../app/now.js'
+import { data, multiMeterData } from '../app/meter.js'
 
 // The unit tests
 describe('Testing data_layer related API endpoints...', () => {
   let response
 
   it('/systemtime should return valid timestamp (number)', async () => {
-    response = await RemoteSystemNow.systemtime(MOCK_REQUEST_EVENT)
+    response = await systemtime(MOCK_REQUEST_EVENT)
     expect(isNaN(response.body)).toBe(false)
   })
 
   it('/systemtime should return proper CORS headers', () => {
-    const corsResult = CORSUtil.VerifyCORSResponse(response, client, server)
+    const corsResult = VerifyCORSResponse(response, client, server)
     try {
       expect(corsResult.result).toBe(true)
     } catch {
@@ -48,13 +48,13 @@ describe('Testing data_layer related API endpoints...', () => {
   })
 
   it('/data should return data...', async () => {
-    response = await MeterData.data(MOCK_REQUEST_EVENT)
+    response = await data(MOCK_REQUEST_EVENT)
     const jsonData = JSON.parse(response.body)
     expect(jsonData.length).toBeGreaterThan(5)
   })
 
   it('/data should return CORS headers...', async () => {
-    const corsResult = CORSUtil.VerifyCORSResponse(response, client, server)
+    const corsResult = VerifyCORSResponse(response, client, server)
     try {
       expect(corsResult.result).toBe(true)
     } catch {
@@ -88,7 +88,7 @@ describe('Testing data_layer related API endpoints...', () => {
         ]
       })
     }
-    response = await MeterData.multiMeterData(multiMeterRequests)
+    response = await multiMeterData(multiMeterRequests)
     const jsonData = JSON.parse(response.body)
     // Response should be of type:
     /*

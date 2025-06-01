@@ -61,7 +61,7 @@ export default {
     SearchIcon,
     CloseIcon
   },
-  data () {
+  data() {
     return {
       search: '',
       openName: '',
@@ -69,7 +69,7 @@ export default {
       loading: true
     }
   },
-  async mounted () {
+  async mounted() {
     await this.$store.getters['map/promise']
     if (this.$route.params.group && this.groups[this.$route.params.group]) {
       this.openName = this.$route.params.group
@@ -80,13 +80,13 @@ export default {
   },
   computed: {
     buildingList: {
-      get () {
+      get() {
         return this.$route.path.includes('buildings')
       }
     },
 
     groups: {
-      get () {
+      get() {
         const groupedBuildings = { All: [] }
         const buildings = this.$store.getters['map/buildings']
 
@@ -156,7 +156,7 @@ export default {
     }
   },
   methods: {
-    resetSearchInput () {
+    resetSearchInput() {
       this.search = ''
     }
   }

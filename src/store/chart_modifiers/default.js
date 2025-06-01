@@ -5,7 +5,7 @@
   any calculations (i.e. crunching data into weekly/monthly data points).
 */
 
-function getDelta (intervalUnit, startDate, dateInterval) {
+function getDelta(intervalUnit, startDate, dateInterval) {
   let delta = 1
   let daysInMonth = 1
   switch (intervalUnit) {
@@ -59,7 +59,7 @@ export default class DefaultModifier {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData (chartData, payload, store, module) {
+  async postGetData(chartData, payload, store, module) {
     const { dateStart, dateEnd, intervalUnit, dateInterval, timezoneOffset } = payload
     const currentData = chartData.data
     const result = []
@@ -119,7 +119,7 @@ export default class DefaultModifier {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData (payload, store, module) {
+  async preGetData(payload, store, module) {
     const { intervalUnit, dateInterval } = payload
     const dataDate = new Date(payload.dateStart * 1000)
     const delta = getDelta(intervalUnit, dataDate, dateInterval)

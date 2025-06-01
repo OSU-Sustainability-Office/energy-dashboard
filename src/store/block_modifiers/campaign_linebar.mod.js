@@ -8,7 +8,7 @@
 export default class CampaignLineBarModifier {
   static name = 'campaign_linebar'
 
-  constructor (store, module) {
+  constructor(store, module) {
     this.promise = null
     this.data = {
       baselinePercentage: 0, // Used to display the percentage on the leaderboard
@@ -22,7 +22,7 @@ export default class CampaignLineBarModifier {
    * Function is called when a modifier is added to a block.
    * Store is Vuex store, module is block module.
    */
-  async onAdd (store, module) {
+  async onAdd(store, module) {
     // Required to load campaign line/bar chart - No additional logic needed
   }
 
@@ -30,7 +30,7 @@ export default class CampaignLineBarModifier {
     Function is called when a modifier is removed from a block.
     Store is Vuex store, module is block module.
   */
-  async onRemove (store, moduleVuex) {
+  async onRemove(store, moduleVuex) {
     // Required to unload campaign line/bar chart - No additional logic needed
   }
 
@@ -38,7 +38,7 @@ export default class CampaignLineBarModifier {
    * Function is called when a block updates modifier data.
    * Store is Vuex store, module is block module, data is new incoming data.
    */
-  async updateData (store, moduleVuex, data) {
+  async updateData(store, moduleVuex, data) {
     if (data.compareEnd && data.compareStart) {
       this.data.compareEnd = data.compareEnd
       this.data.compareStart = data.compareStart
@@ -53,7 +53,7 @@ export default class CampaignLineBarModifier {
     For Pacific Power meters, the point is periodic_real_baseline_point.
     For all other meters, the point is accumulated_real_baseline_point.
   */
-  getMeterPoint (store, moduleVuex) {
+  getMeterPoint(store, moduleVuex) {
     let point = 'accumulated_real_baseline_point'
     const chart = moduleVuex.getters.charts[0]
     const meterGroupPath = chart.meterGroupPath
@@ -70,7 +70,7 @@ export default class CampaignLineBarModifier {
    * returns an array of RGB strings. The function also updates the average accumulated
    * percentage for the current data.
    */
-  getColors (current, baseline, data) {
+  getColors(current, baseline, data) {
     const colors = []
     this.data.baselinePercentage = 0
 
@@ -132,7 +132,7 @@ export default class CampaignLineBarModifier {
    * Function is called when a block updates modifier data.
    * Store is Vuex store, module is block module, data is new incoming data.
    */
-  async preData (store, moduleVuex) {
+  async preData(store, moduleVuex) {
     if (moduleVuex.getters.charts.length > 1) {
       throw new Error('This block modifier expects only one chart')
     }
@@ -154,7 +154,7 @@ export default class CampaignLineBarModifier {
    * Function is called when a block updates modifier data.
    * Store is Vuex store, module is block module, data is new incoming data.
    */
-  async postData (store, moduleVuex, data) {
+  async postData(store, moduleVuex, data) {
     if (!data) return
     const dlData = (await this.promise).data
     data.datasets.splice(0, 0, {
