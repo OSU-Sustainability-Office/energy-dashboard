@@ -1,13 +1,14 @@
-/* Filename: app/meter.js
- * Description: API endpoints related to meter data
+/*
+  Filename: meter.js
+  Description: API Endpoint logic for meter data upload & retrieval
  */
-import { connect, query as _query } from '/opt/nodejs/sql-access.js'
-import Meter from '/opt/nodejs/models/meter.js'
-import Response from '/opt/nodejs/response.js'
-import multipartParser from 'aws-lambda-multipart-parser'
-const { parse } = multipartParser
-import { unzip } from 'zlib'
-import Compress from '/opt/nodejs/models/compress.js'
+
+const DB = require('/opt/nodejs/sql-access.js')
+const Meter = require('/opt/nodejs/models/meter.js')
+const Response = require('/opt/nodejs/response.js')
+const MultipartParse = require('/opt/nodejs/node_modules/aws-lambda-multipart-parser')
+const ZLib = require('zlib')
+const Compress = require('/opt/nodejs/models/compress.js')
 
 // Check integral parameters.
 function parseParameters({ id, startDate, endDate }) {
@@ -34,7 +35,7 @@ function verifyParameters({ id, startDate, endDate }) {
     }]
   }
 */
-export async function multiMeterData(event, context) {
+exports.multiMeterData = async (event, context) => {
   const request = JSON.parse(event.body)
   const meterList = request.datasets.map(parseParameters).filter(verifyParameters)
   const { point, meterClass } = request
@@ -52,7 +53,7 @@ export async function multiMeterData(event, context) {
 }
 
 // GET data for single meter
-export async function data(event, context) {
+exports.data = async (event, context) => {
   let response = new Response(event)
   response.body = JSON.stringify(
     await new Meter(event.queryStringParameters['id']).download(
@@ -66,7 +67,7 @@ export async function data(event, context) {
 }
 
 // Meter Data Upload Route (currently only for solar panels)
-export async function upload(event, context) {
+exports.upload = async (event, context) => {
   let response = new Response(event)
 
   const payload = JSON.parse(event.body)
@@ -80,9 +81,9 @@ export async function upload(event, context) {
     return response
   }
 
-  await connect()
+  await DB.connect()
   try {
-    await _query(`SHOW TABLES LIKE ?;`, [meter_id]) // Check if table exists
+    await DB.query(`SHOW TABLES LIKE ?;`, [meter_id]) // Check if table exists
   } catch {
     response.statusCode = 400
     return response
@@ -91,7 +92,7 @@ export async function upload(event, context) {
   let query_string = ''
 
   if (meter_type === 'solar') {
-    let final_redundant_check = await _query('SELECT * FROM Solar_Meters WHERE MeterID = ? AND time_seconds = ?;', [
+    let final_redundant_check = await DB.query('SELECT * FROM Solar_Meters WHERE MeterID = ? AND time_seconds = ?;', [
       meter_data.meterID,
       meter_data.time_seconds
     ])
@@ -103,7 +104,7 @@ export async function upload(event, context) {
       return response
     }
   } else if (meter_type === 'pacific_power') {
-    let final_redundant_check = await _query(
+    let final_redundant_check = await DB.query(
       'SELECT * FROM pacific_power_data WHERE pacific_power_meter_id = ? AND time_seconds = ?',
       [meter_data.pp_meter_id, meter_data.time_seconds]
     )
@@ -117,7 +118,7 @@ export async function upload(event, context) {
   }
 
   try {
-    await _query(query_string)
+    await DB.query(query_string)
   } catch (err) {
     if (err.code !== 'ER_DUP_ENTRY') {
       response.statusCode = 400
@@ -131,11 +132,11 @@ export async function upload(event, context) {
 /*
   This endpoint handles data uploads from Aquisuites
 */
-export async function post(event, context) {
+exports.post = async (event, context) => {
   let response = new Response(event)
 
   event.body = Buffer.from(event.body, 'base64').toString('binary')
-  const body = await parse(event, false)
+  const body = await MultipartParse.parse(event, false)
 
   response.headers = {
     ...response.headers,
@@ -174,7 +175,7 @@ export async function post(event, context) {
           }
         }
         if (!file) reject(new Error('File not found in request'))
-        unzip(Buffer.from(file.content, 'binary'), (error, result) => {
+        ZLib.unzip(Buffer.from(file.content, 'binary'), (error, result) => {
           if (error) {
             reject(error)
           } else {

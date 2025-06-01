@@ -1,9 +1,14 @@
-/* Filename: models/building.js
- * Description: Defines Building class and methods to interact with the database.
+/*
+ * @Author: Brogan
+ * @Date:   Saturday June 15th 2019
+ * @Last Modified By:  Brogan
+ * @Last Modified Time:  Saturday June 15th 2019
+ * @Copyright:  Oregon State University 2019
  */
-import { connect, query as _query } from '/opt/nodejs/sql-access.js'
-import MeterGroup from '/opt/nodejs/models/meter_group.js'
-import Meter from '/opt/nodejs/models/meter.js'
+
+const DB = require('/opt/nodejs/sql-access.js')
+const MeterGroup = require('/opt/nodejs/models/meter_group.js')
+const Meter = require('/opt/nodejs/models/meter.js')
 
 class Building {
   constructor(id) {
@@ -35,8 +40,8 @@ class Building {
   }
 
   static async updateGeoJSON(id, geoJSON) {
-    await connect()
-    await _query('UPDATE buildings SET geojson = ? WHERE id = ?', [JSON.stringify(geoJSON), id])
+    await DB.connect()
+    await DB.query('UPDATE buildings SET geojson = ? WHERE id = ?', [JSON.stringify(geoJSON), id])
   }
 
   set(name, group, mapId, image, meterGroups, hidden, geoJSON) {
@@ -50,9 +55,9 @@ class Building {
   }
 
   static async all() {
-    await connect()
+    await DB.connect()
     let queryJson = {}
-    let query = await _query(
+    let query = await DB.query(
       `SELECT buildings.name,
               buildings.hidden, 
               buildings.id, 
@@ -137,4 +142,4 @@ class Building {
   }
 }
 
-export default Building
+module.exports = Building

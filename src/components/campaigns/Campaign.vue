@@ -86,7 +86,7 @@ export default {
     CampaignReductionTips,
     TimeRangeSwitcher
   },
-  data() {
+  data () {
     return {
       blockPath: '',
       loaded: false, // Toggles the spinning circle loading animation on the graph and building list
@@ -98,7 +98,7 @@ export default {
   },
   computed: {
     days: {
-      get() {
+      get () {
         if (!this.campaignPath) return ''
         let start = this.campaignStart
         let end = this.campaignEnd
@@ -107,13 +107,13 @@ export default {
       }
     },
     campaignStart: {
-      get() {
+      get () {
         if (!this.campaignPath) return ''
         return this.$store.getters[this.campaignPath + '/dateStart']
       }
     },
     campaignEnd: {
-      get() {
+      get () {
         if (!this.campaignPath) return ''
         let end = this.$store.getters[this.campaignPath + '/dateEnd']
         let current = new Date().getTime()
@@ -126,7 +126,7 @@ export default {
       }
     },
     blocks: {
-      get() {
+      get () {
         if (!this.campaignPath) return []
         // We need to copy this or adding the default block will change the return value of
         // the store
@@ -136,7 +136,7 @@ export default {
       }
     },
     campaignPath: {
-      get() {
+      get () {
         if (!this.$store.getters['campaigns/campaign'](this.$route.params.id)) {
           return null
         }
@@ -144,19 +144,19 @@ export default {
       }
     },
     media: {
-      get() {
+      get () {
         if (!this.campaignPath) return ''
         return this.$store.getters[this.campaignPath + '/media']
       }
     },
     name: {
-      get() {
+      get () {
         if (!this.campaignPath) return ''
         return this.$store.getters[this.campaignPath + '/name']
       }
     }
   },
-  async mounted() {
+  async mounted () {
     this.loaded = false
     await this.$store.dispatch('campaigns/loadCampaigns')
     await this.$store.dispatch(this.campaignPath + '/buildBlocks')

@@ -23,7 +23,7 @@
         1. that request occurs over https (ssh keys assumed valid)
         2. that client & server origin are accurate and use default port for ssh
 */
-export function VerifyCORSResponse(response, clientOrigin, serverOrigin) {
+exports.VerifyCORSResponse = (response, clientOrigin, serverOrigin) => {
   if (clientOrigin.scheme !== serverOrigin.scheme) {
     return {
       result: false,
@@ -82,7 +82,7 @@ export function VerifyCORSResponse(response, clientOrigin, serverOrigin) {
     // Make sure we're not returning bad method names.
     if (allowedMethods) {
       const validMethods = 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH'.split(', ')
-      for (const method of allowedMethods.split(', ')) {
+      for (method of allowedMethods.split(', ')) {
         if (!validMethods.includes(method)) {
           return {
             result: false,
@@ -92,7 +92,7 @@ export function VerifyCORSResponse(response, clientOrigin, serverOrigin) {
       }
     }
 
-    return { result: true, reason: 'no error detected' }
+    return { result: true, resason: 'no error detected' }
   }
   return {
     result: false,

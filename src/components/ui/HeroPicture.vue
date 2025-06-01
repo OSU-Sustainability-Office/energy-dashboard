@@ -50,7 +50,7 @@
 export default {
   name: 'HeroPicture',
   props: ['media', 'name', 'description'],
-  data() {
+  data () {
     return {
       arrayType: false,
       api: import.meta.env.VITE_ROOT_API
@@ -58,7 +58,7 @@ export default {
   },
   computed: {
     mediaArray: {
-      get() {
+      get () {
         if (this.media[0].length <= 1) return
         return this.media
       }
