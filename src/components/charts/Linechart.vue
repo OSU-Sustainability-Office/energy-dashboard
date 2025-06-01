@@ -26,7 +26,7 @@ export default {
     buildLabel: Function,
     intervalUnit: String
   },
-  data() {
+  data () {
     return {
       chartKey: 0
     }
@@ -187,7 +187,7 @@ export default {
     },
     getHoverOptions: function () {
       return {
-        onHover(event, chartElement) {
+        onHover (event, chartElement) {
           if (chartElement.length) {
             event.native.target.style.cursor = 'pointer'
           } else {

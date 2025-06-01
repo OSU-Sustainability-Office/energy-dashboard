@@ -5,7 +5,7 @@
   individual building page line chart.
 */
 
-function getDelta(intervalUnit, startDate, dateInterval) {
+function getDelta (intervalUnit, startDate, dateInterval) {
   let delta = 1
   let daysInMonth = 1
   switch (intervalUnit) {
@@ -28,7 +28,7 @@ function getDelta(intervalUnit, startDate, dateInterval) {
 }
 
 // Returns the average values for each day of the week based on baseline data
-function getBaselineAverages(compareStart, compareEnd, delta, differenceBaseline) {
+function getBaselineAverages (compareStart, compareEnd, delta, differenceBaseline) {
   const SECONDS_PER_DAY = 86400
   const avgBins = Array.from({ length: 7 }, () => []) // one array per day of the week
   const compareStartDay = new Date(compareStart * 1000).getDay()
@@ -67,7 +67,7 @@ function getBaselineAverages(compareStart, compareEnd, delta, differenceBaseline
 }
 
 export default class BaselineAccumulatedReal {
-  constructor() {
+  constructor () {
     this.point = null
   }
   /*
@@ -98,7 +98,7 @@ export default class BaselineAccumulatedReal {
 
     Returns: Nothing (Note: chartData is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async postGetData(chartData, payload, store, module) {
+  async postGetData (chartData, payload, store, module) {
     const { dateStart, dateEnd, compareStart, compareEnd, intervalUnit, dateInterval, baselineData } = payload
     const SECONDS_PER_DAY = 86400
     const currentData = chartData.data
@@ -175,7 +175,7 @@ export default class BaselineAccumulatedReal {
 
     Returns: Nothing (Note: payload is passed by reference so editiing this argument will change it in the chart update sequence)
   */
-  async preGetData(payload, store, module) {
+  async preGetData (payload, store, module) {
     if (payload.intervalUnit === 'day' && payload.dateInterval > 1) {
       throw new Error('Time difference interval to large to work correctly')
     }

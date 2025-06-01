@@ -4,8 +4,8 @@
  *                the database with some mock-data.
  */
 
-import { createConnection } from 'mysql2'
-const DB = createConnection({
+const mysql = require('mysql')
+const DB = mysql.createConnection({
   host: process.env.MYSQL_HOST,
   user: 'root',
   password: 'password',
@@ -13,9 +13,9 @@ const DB = createConnection({
   multipleStatements: true
 })
 
-import { readFileSync } from 'fs'
+const fs = require('fs')
 function formatInserts(filename, tablename) {
-  let text = readFileSync(filename, 'utf-8')
+  let text = fs.readFileSync(filename, 'utf-8')
   return text
     .split('\n')
     .map(ln => ln.replace('``', tablename))

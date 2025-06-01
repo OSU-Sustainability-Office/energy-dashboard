@@ -7,7 +7,7 @@
 export default class CompareModifier {
   static name = 'building_compare'
 
-  constructor(store, module) {
+  constructor (store, module) {
     this.data = {
       buildingIds: [], // Array of building IDs to compare
       dataPromises: []
@@ -19,7 +19,7 @@ export default class CompareModifier {
     is added to a block. Store is Vuex store
     module is block module.
   */
-  async onAdd(store, module) {
+  async onAdd (store, module) {
     // Required to load comparison chart - No additional logic needed
   }
 
@@ -28,7 +28,7 @@ export default class CompareModifier {
     is removed from a block. Store is Vuex store
     module is block module.
   */
-  async onRemove(store, module) {
+  async onRemove (store, module) {
     await this.removeOldCharts(store, module, this.data.buildingIds)
   }
 
@@ -38,7 +38,7 @@ export default class CompareModifier {
     module is block module, data is new incoming
     data.
   */
-  async updateData(store, mod, data) {
+  async updateData (store, mod, data) {
     if (data.buildingIds) {
       await this.removeOldCharts(store, mod, this.data.buildingIds)
       this.data.buildingIds = data.buildingIds
@@ -47,7 +47,7 @@ export default class CompareModifier {
   }
 
   // Helper function to remove old charts from the store
-  async removeOldCharts(store, mod, ids) {
+  async removeOldCharts (store, mod, ids) {
     for (let i in ids) {
       if (parseInt(i) !== 0) {
         let id = ids[i]
@@ -57,7 +57,7 @@ export default class CompareModifier {
   }
 
   // Helper function to add new charts to the store
-  async addCharts(store, mod, ids) {
+  async addCharts (store, mod, ids) {
     let charts = []
     for (let i in ids) {
       // they ignore index of 0 here due to loadDefault function in block.module.js ("Total Electricity" default block),
@@ -82,11 +82,11 @@ export default class CompareModifier {
     module is block module, data is new incoming
     data.
   */
-  async preData(store, module, data) {
+  async preData (store, module, data) {
     // Required to load comparison chart - No additional logic needed
   }
 
-  buildingName(store, id) {
+  buildingName (store, id) {
     return store.getters[store.getters['map/building'](id).path + '/name']
   }
 
@@ -96,7 +96,7 @@ export default class CompareModifier {
     module is block module, data is new incoming
     data.
   */
-  async postData(store, module, data) {
+  async postData (store, module, data) {
     if (this.data.buildingIds[0]) {
       data.datasets[0].label = this.buildingName(store, this.data.buildingIds[0])
     }

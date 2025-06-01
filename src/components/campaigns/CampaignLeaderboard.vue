@@ -54,19 +54,19 @@
 <script>
 export default {
   props: ['path', 'loaded', 'modelValue'],
-  data() {
+  data () {
     return {
       activePath: null
     }
   },
-  mounted() {
+  mounted () {
     if (this.path) {
       this.$emit('input', this.path + '/block_default')
     }
   },
   computed: {
     blocks: {
-      get() {
+      get () {
         // Create a copy of the blocks array to trigger reactivity
         const blockCopy = this.$store.getters[this.path + '/blocks'] || []
 

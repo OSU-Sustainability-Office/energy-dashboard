@@ -7,8 +7,8 @@
  * @Description: Unit tests for API endpoints associated with
  *               the frontend campaigns VueX module
  */
-import testConfig from './assertedData/test_config.json'
-import { VerifyCORSResponse } from './utility/cors_test_utility.js'
+const testConfig = require('./assertedData/test_config.json')
+const CORSUtil = require('./utility/cors_test_utility.js')
 const server = testConfig['serverOrigin']
 const client = testConfig['clientOrigin']
 
@@ -19,13 +19,13 @@ const MOCK_REQUEST_EVENT = {
 }
 
 // Lambda function
-import { all } from '../app/campaign.js'
+const CampaignGetAll = require('../app/campaign.js')
 
 describe('Testing campaigns.module.js related API endpoints...', () => {
   let response
 
   it('/campaigns returns valid data...', async () => {
-    response = await all(MOCK_REQUEST_EVENT)
+    response = await CampaignGetAll.all(MOCK_REQUEST_EVENT)
     const jsonData = JSON.parse(response.body)[0]
     // id should be number
     expect(isNaN(jsonData['id'])).not.toBe(true)
@@ -41,7 +41,7 @@ describe('Testing campaigns.module.js related API endpoints...', () => {
   })
 
   it('/campaigns returns CORS headers...', async () => {
-    const corsResult = VerifyCORSResponse(response, client, server)
+    const corsResult = CORSUtil.VerifyCORSResponse(response, client, server)
     try {
       expect(corsResult.result).toBe(true)
     } catch {

@@ -1,10 +1,15 @@
-/* Filename: app/building.js
- * Description: API endpoints related to buildings
+/*
+ * @Author: Brogan
+ * @Date:   Tuesday May 14th 2019
+ * @Last Modified By:  Brogan
+ * @Last Modified Time:  Tuesday May 14th 2019
+ * @Copyright:  (c) Oregon State University 2019
  */
-const { default: Building } = await import('/opt/nodejs/models/building.js')
-import Response from '/opt/nodejs/response.js'
 
-export async function all(event, context) {
+const Building = require('/opt/nodejs/models/building.js')
+const Response = require('/opt/nodejs/response.js')
+
+exports.all = async (event, context) => {
   let response = new Response(event)
   response.body = JSON.stringify((await Building.all()).map(o => o.data))
   response.headers['Content-Type'] = 'application/json'
@@ -13,7 +18,7 @@ export async function all(event, context) {
 
 // This function is used by an external service (automated job)
 // to occasionally update the GeoJSON data for multiple buildings
-export async function putGeoJSON(event) {
+exports.putGeoJSON = async event => {
   const response = new Response(event)
   try {
     const payload = JSON.parse(event.body)
