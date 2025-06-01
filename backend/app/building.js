@@ -11,7 +11,7 @@ export async function all(event, context) {
     response.headers['Content-Type'] = 'application/json'
   } catch (err) {
     response.body = JSON.stringify({
-      message: 'Internal server error while fetching buildings',
+      message: 'Internal server error while fetching buildings'
     })
     response.statusCode = 500
   }

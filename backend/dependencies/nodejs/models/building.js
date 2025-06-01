@@ -136,7 +136,7 @@ class Building {
       }
       return buildings
     } catch (err) {
-      console.error(JSON.stringify({ event:'building_query_failed', error: err }))
+      console.error(JSON.stringify({ event: 'building_query_failed', error: err }))
       throw new Error('Failed to fetch buildings from the database')
     }
   }

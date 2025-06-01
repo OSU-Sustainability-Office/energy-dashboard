@@ -152,7 +152,11 @@ export async function post(event, context) {
       meter = await new Meter(null, body.SERIALNUMBER + '_' + body.MODBUSDEVICE).get()
     } catch (err) {
       if (err.name === 'MeterNotFound') {
-        meter = await Meter.create(body.MODBUSDEVICENAME, body.SERIALNUMBER + '_' + body.MODBUSDEVICE, body.MODBUSDEVICECLASS)
+        meter = await Meter.create(
+          body.MODBUSDEVICENAME,
+          body.SERIALNUMBER + '_' + body.MODBUSDEVICE,
+          body.MODBUSDEVICECLASS
+        )
       } else {
         console.log(err)
         response.body = '<pre>\nFAILURE\n</pre>'
