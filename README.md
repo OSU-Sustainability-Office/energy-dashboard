@@ -28,7 +28,7 @@ To backend Jest tests locally:
 
 ### Formatting
 
-Run both in order
+Run both in order:
 
 - `npm run prettier`
 - `npm run lint --fix`
