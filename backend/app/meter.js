@@ -4,8 +4,8 @@
 import { connect, query as _query } from '/opt/nodejs/sql-access.js'
 import Meter from '/opt/nodejs/models/meter.js'
 import Response from '/opt/nodejs/response.js'
-import multipartParser from 'aws-lambda-multipart-parser';
-const { parse } = multipartParser; 
+import multipartParser from 'aws-lambda-multipart-parser'
+const { parse } = multipartParser
 import { unzip } from 'zlib'
 import Compress from '/opt/nodejs/models/compress.js'
 
@@ -153,7 +153,11 @@ export async function post(event, context) {
       meter = await new Meter(null, body.SERIALNUMBER + '_' + body.MODBUSDEVICE).get()
     } catch (err) {
       if (err.name === 'MeterNotFound') {
-        meter = await Meter.create(body.MODBUSDEVICENAME, body.SERIALNUMBER + '_' + body.MODBUSDEVICE, body.MODBUSDEVICECLASS)
+        meter = await Meter.create(
+          body.MODBUSDEVICENAME,
+          body.SERIALNUMBER + '_' + body.MODBUSDEVICE,
+          body.MODBUSDEVICECLASS
+        )
       } else {
         console.log(err)
         response.body = '<pre>\nFAILURE\n</pre>'
