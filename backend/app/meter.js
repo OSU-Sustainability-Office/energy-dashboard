@@ -2,7 +2,7 @@
  * Description: API endpoints related to meter data
  */
 import { connect, query as _query } from '/opt/nodejs/sql-access.js'
-import Meter, { create } from '/opt/nodejs/models/meter.js'
+import Meter from '/opt/nodejs/models/meter.js'
 import Response from '/opt/nodejs/response.js'
 import { parse } from 'aws-lambda-multipart-parser'
 import { unzip } from 'zlib'
@@ -152,7 +152,7 @@ export async function post(event, context) {
       meter = await new Meter(null, body.SERIALNUMBER + '_' + body.MODBUSDEVICE).get()
     } catch (err) {
       if (err.name === 'MeterNotFound') {
-        meter = await create(body.MODBUSDEVICENAME, body.SERIALNUMBER + '_' + body.MODBUSDEVICE, body.MODBUSDEVICECLASS)
+        meter = await Meter.create(body.MODBUSDEVICENAME, body.SERIALNUMBER + '_' + body.MODBUSDEVICE, body.MODBUSDEVICECLASS)
       } else {
         console.log(err)
         response.body = '<pre>\nFAILURE\n</pre>'
