@@ -50,10 +50,11 @@ class Building {
   }
 
   static async all() {
-    await connect()
-    let queryJson = {}
-    let query = await _query(
-      `SELECT buildings.name,
+    try {
+      await connect()
+      let queryJson = {}
+      let query = await _query(
+        `SELECT buildings.name,
               buildings.hidden, 
               buildings.id, 
               buildings.group, 
@@ -71,69 +72,73 @@ class Building {
         LEFT JOIN meter_groups on buildings.id = meter_groups.building_id
         LEFT JOIN meter_group_relation on meter_groups.id = meter_group_relation.group_id
         LEFT JOIN meters on meters.id = meter_group_relation.meter_id;`
-    )
-    /*
+      )
+      /*
       Should probably change this to not be converted to json then models but
       directly to models.
     */
-    for (let row of query) {
-      if (!queryJson[row.id]) {
-        queryJson[row.id] = {
-          name: row.name,
-          group: row.group,
-          mapId: row.map_id,
-          image: row.image,
-          hidden: row.hidden === 1,
-          geoJSON: row.geojson,
-          meterGroups: {}
+      for (let row of query) {
+        if (!queryJson[row.id]) {
+          queryJson[row.id] = {
+            name: row.name,
+            group: row.group,
+            mapId: row.map_id,
+            image: row.image,
+            hidden: row.hidden === 1,
+            geoJSON: row.geojson,
+            meterGroups: {}
+          }
+        }
+
+        if (!queryJson[row.id].meterGroups[row.meter_group_id]) {
+          queryJson[row.id].meterGroups[row.meter_group_id] = {
+            name: row.meter_group_name,
+            default: row.meter_group_default === 1,
+            meters: {}
+          }
+        }
+
+        queryJson[row.id].meterGroups[row.meter_group_id].meters[row.meter_id] = {
+          name: row.meter_name,
+          classInt: row.meter_class,
+          pacificPowerId: row.pacific_power_id
         }
       }
 
-      if (!queryJson[row.id].meterGroups[row.meter_group_id]) {
-        queryJson[row.id].meterGroups[row.meter_group_id] = {
-          name: row.meter_group_name,
-          default: row.meter_group_default === 1,
-          meters: {}
-        }
-      }
+      let buildings = []
+      for (let key of Object.keys(queryJson)) {
+        let metergroups = []
+        for (let groupKey of Object.keys(queryJson[key].meterGroups)) {
+          let meters = []
+          for (let meterKey of Object.keys(queryJson[key].meterGroups[groupKey].meters)) {
+            let meterJson = queryJson[key].meterGroups[groupKey].meters[meterKey]
+            let meter = new Meter(meterKey)
+            meter.set(meterJson.name, meterJson.classInt, meterJson.pacificPowerId)
+            meters.push(meter)
+          }
 
-      queryJson[row.id].meterGroups[row.meter_group_id].meters[row.meter_id] = {
-        name: row.meter_name,
-        classInt: row.meter_class,
-        pacificPowerId: row.pacific_power_id
+          let groupJson = queryJson[key].meterGroups[groupKey]
+          let group = new MeterGroup(groupKey)
+          group.set(meters, groupJson.name, groupJson.default)
+          metergroups.push(group)
+        }
+        let building = new Building(key)
+        building.set(
+          queryJson[key].name,
+          queryJson[key].group,
+          queryJson[key].mapId,
+          queryJson[key].image,
+          metergroups,
+          queryJson[key].hidden,
+          queryJson[key].geoJSON
+        )
+        buildings.push(building)
       }
+      return buildings
+    } catch (err) {
+      console.error(JSON.stringify({ event:'building_query_failed', error: err }))
+      throw new Error('Failed to fetch buildings from the database')
     }
-
-    let buildings = []
-    for (let key of Object.keys(queryJson)) {
-      let metergroups = []
-      for (let groupKey of Object.keys(queryJson[key].meterGroups)) {
-        let meters = []
-        for (let meterKey of Object.keys(queryJson[key].meterGroups[groupKey].meters)) {
-          let meterJson = queryJson[key].meterGroups[groupKey].meters[meterKey]
-          let meter = new Meter(meterKey)
-          meter.set(meterJson.name, meterJson.classInt, meterJson.pacificPowerId)
-          meters.push(meter)
-        }
-
-        let groupJson = queryJson[key].meterGroups[groupKey]
-        let group = new MeterGroup(groupKey)
-        group.set(meters, groupJson.name, groupJson.default)
-        metergroups.push(group)
-      }
-      let building = new Building(key)
-      building.set(
-        queryJson[key].name,
-        queryJson[key].group,
-        queryJson[key].mapId,
-        queryJson[key].image,
-        metergroups,
-        queryJson[key].hidden,
-        queryJson[key].geoJSON
-      )
-      buildings.push(building)
-    }
-    return buildings
   }
 }
 
