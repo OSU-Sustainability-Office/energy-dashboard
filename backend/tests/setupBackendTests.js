@@ -17,7 +17,11 @@ vi.mock(
 )
 
 // stub un-used requires to prevent errors during tests
-vi.mock('/opt/nodejs/node_modules/aws-lambda-multipart-parser', () => ({}), { virtual: true })
+vi.mock('aws-lambda-multipart-parser', () => ({
+  default: {
+    parse: vi.fn(() => ({ mockKey: 'mockValue' }))
+  }
+}))
 
 // mock the sql-access.js module to use a local MySQL connection
 import { createConnection } from 'mysql2'
