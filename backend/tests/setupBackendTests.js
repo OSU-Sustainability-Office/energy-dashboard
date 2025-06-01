@@ -16,7 +16,7 @@ vi.mock(
   { virtual: true }
 )
 
-// stub un-used requires to prevent errors during tests
+// mock multipart parser
 vi.mock('aws-lambda-multipart-parser', () => ({
   default: {
     parse: vi.fn(() => ({ mockKey: 'mockValue' }))
