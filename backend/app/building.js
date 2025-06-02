@@ -6,15 +6,8 @@ import Response from '/opt/nodejs/response.js'
 
 export async function all(event, context) {
   let response = new Response(event)
-  try {
-    response.body = JSON.stringify((await Building.all()).map(o => o.data))
-    response.headers['Content-Type'] = 'application/json'
-  } catch (err) {
-    response.body = JSON.stringify({
-      message: 'Internal server error while fetching buildings'
-    })
-    response.statusCode = 500
-  }
+  response.body = JSON.stringify((await Building.all()).map(o => o.data))
+  response.headers['Content-Type'] = 'application/json'
   return response
 }
 
