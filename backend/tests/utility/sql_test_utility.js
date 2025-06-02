@@ -7,7 +7,7 @@
 
 // Super hacky function to bypass sqlite3's keyword restrictions
 // by replacing each instance of a keyword with a prefixed alternative
-exports.fixSQLKeywords = function (line) {
+export function fixSQLKeywords(line) {
   const keywords = ['group', 'default']
   for (let keyword of keywords) {
     const searchRegex = new RegExp(`(?<!_)${keyword}(?!_)`, 'g')

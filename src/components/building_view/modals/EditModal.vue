@@ -142,7 +142,7 @@ export default {
   components: {
     Close
   },
-  data () {
+  data() {
     return {
       currentIndex: 0,
       form: {
@@ -160,11 +160,11 @@ export default {
   },
   computed: {
     visible: {
-      get () {
+      get() {
         return this.$store.getters['modalController/modalName'] === 'EditModal'
       },
 
-      set (value) {
+      set(value) {
         if (value === false) {
           this.$store.dispatch('modalController/closeModal')
           this.cancelTimeSave()
@@ -172,25 +172,25 @@ export default {
       }
     },
     compareView: {
-      get () {
+      get() {
         return this.$route.path.includes('compare')
       }
     },
     // Check only one building is in comparison, e.g. for "save time period" button
     compareOneBuildingView: {
-      get () {
+      get() {
         return this.$route.path.includes('compare') && JSON.parse(JSON.stringify(this.form.sets)).length === 1
       }
     },
     // Get the meter groups for the selected building (used for meter dropdown)
     meters: {
-      get () {
+      get() {
         return this.$store.getters[this.form.sets[this.currentIndex].building + '/meterGroups']
       }
     },
     // Get the meter points for the selected meter (used for measurement dropdown)
     meterPoints: {
-      get () {
+      get() {
         return this.$store.getters[this.form.sets[this.currentIndex].meter + '/points']
       }
     }
@@ -431,7 +431,7 @@ export default {
       let energyType = this.$store.getters[this.form.sets[index].meter + '/meters'][0].type
       this.form.name = energyType
     },
-    validateMeter (rule, value, callback) {
+    validateMeter(rule, value, callback) {
       const meter = this.form.sets[this.currentIndex]?.meter
       if (!meter) {
         callback(new Error('A meter is required'))
@@ -439,7 +439,7 @@ export default {
         callback()
       }
     },
-    validatePoint (rule, value, callback) {
+    validatePoint(rule, value, callback) {
       const point = this.form.sets[this.currentIndex]?.point
       if (!point) {
         callback(new Error('A measurement is required'))
@@ -447,7 +447,6 @@ export default {
         callback()
       }
     }
-
   },
   watch: {
     $route: {
