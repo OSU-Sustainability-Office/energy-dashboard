@@ -37,6 +37,8 @@ Globals:
       MaxAge: 600
       AllowCredentials: True
 Parameters:
+  # Lambda Common layer ARN to use for energy dashboard functions (this is only used for test builds)
+  # Production builds automatically use the latest version of the layer
   LambdaCommonLayer:
     Type: String
     Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:107
