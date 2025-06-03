@@ -190,7 +190,7 @@ class Meter {
 
   async upload(data) {
     await connect()
-    console.log(meterClasses)
+    console.log('Uploading data for meter', this.id, 'with classInt', this.classInt, 'and data', data)
     let points = meterClasses[this.classInt]
 
     const pointMap = {
