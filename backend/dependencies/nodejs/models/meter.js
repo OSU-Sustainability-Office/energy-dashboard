@@ -287,7 +287,6 @@ class Meter {
       )
     } catch (err) {
       if (err.code === 'ER_DUP_ENTRY' && !parseInt(data[1])) {
-        console.log(pointMap)
         await query(
           `UPDATE data SET 
                         error = ?, 
