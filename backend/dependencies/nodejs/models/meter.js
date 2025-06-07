@@ -66,20 +66,24 @@ class Meter {
       periodic_real_in: 'Net Energy Usage (kWh)',
       periodic_real_out: 'Energy Produced (kWh)'
     }
-    const points = Object.values(meterClasses[this.classInt])
-    for (let point of points) {
-      if (map[point]) {
-        this.points.push({ label: map[point], value: point })
+    try {
+      const points = Object.values(meterClasses[this.classInt])
+      for (let point of points) {
+        if (map[point]) {
+          this.points.push({ label: map[point], value: point })
+        }
       }
-    }
-    if (points.indexOf('total') >= 0) {
-      this.type = 'Steam'
-    } else if (points.indexOf('cubic_feet') >= 0) {
-      this.type = 'Gas'
-    } else if (points.indexOf('accumulated_real') >= 0 || points.indexOf('periodic_real_in') >= 0) {
-      this.type = 'Electricity'
-    } else if (points.indexOf('periodic_real_out') >= 0) {
-      this.type = 'Solar Panel'
+      if (points.indexOf('total') >= 0) {
+        this.type = 'Steam'
+      } else if (points.indexOf('cubic_feet') >= 0) {
+        this.type = 'Gas'
+      } else if (points.indexOf('accumulated_real') >= 0 || points.indexOf('periodic_real_in') >= 0) {
+        this.type = 'Electricity'
+      } else if (points.indexOf('periodic_real_out') >= 0) {
+        this.type = 'Solar Panel'
+      }
+    } catch (err) {
+      console.error('Error calculating meter properties for meter class:', this.classInt, 'with id:', this.id, err)
     }
     return this
   }
