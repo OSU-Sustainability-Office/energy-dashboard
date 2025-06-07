@@ -83,7 +83,7 @@ class Meter {
         this.type = 'Solar Panel'
       }
     } catch (err) {
-      throw('Error calculating meter properties for meter class:', this.classInt, 'with id:', this.id, err)
+      throw new Error(`Error calculating meter properties for meter class: ${this.classInt} with id: ${this.id}. Error: ${err}`);
     }
     return this
   }
