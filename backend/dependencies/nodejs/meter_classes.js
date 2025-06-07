@@ -149,6 +149,33 @@ export default {
     5: 'cphase_b',
     6: 'cphase_c'
   },
+  112: {
+    4: 'average_current',
+    5: 'cphase_a',
+    6: 'cphase_b',
+    7: 'cphase_c',
+    9: 'vphase_an',
+    10: 'vphase_bn',
+    11: 'vphase_cn',
+    13: 'vphase_ab',
+    14: 'vphase_bc',
+    15: 'vphase_ac',
+    18: 'real_a',
+    19: 'real_b',
+    20: 'real_c',
+    21: 'apparent_power',
+    22: 'apparent_a',
+    23: 'apparent_b',
+    24: 'apparent_c',
+    25: 'reactive_power',
+    26: 'reactive_a',
+    27: 'reactive_b',
+    28: 'reactive_c',
+    30: 'pf_a',
+    31: 'pf_b',
+    32: 'pf_c',
+    37: 'accumulated_real'
+  },
   9990001: {
     // Solar Panels (SEC, OSU Operations, deprecated Tesla panels)
     2: 'periodic_real_out'

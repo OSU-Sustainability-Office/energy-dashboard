@@ -50,6 +50,7 @@ class Meter {
       vphase_an: 'Voltage, Phase A-N (V)',
       vphase_bn: 'Voltage, Phase B-N (V)',
       vphase_cn: 'Voltage, Phase C-N (V)',
+      average_current: 'Average Current (A)',
       cphase_a: 'Current, Phase A (A)',
       cphase_b: 'Current, Phase B (A)',
       cphase_c: 'Current, Phase C (A)',
@@ -66,20 +67,26 @@ class Meter {
       periodic_real_in: 'Net Energy Usage (kWh)',
       periodic_real_out: 'Energy Produced (kWh)'
     }
-    const points = Object.values(meterClasses[this.classInt])
-    for (let point of points) {
-      if (map[point]) {
-        this.points.push({ label: map[point], value: point })
+    try {
+      const points = Object.values(meterClasses[this.classInt])
+      for (let point of points) {
+        if (map[point]) {
+          this.points.push({ label: map[point], value: point })
+        }
       }
-    }
-    if (points.indexOf('total') >= 0) {
-      this.type = 'Steam'
-    } else if (points.indexOf('cubic_feet') >= 0) {
-      this.type = 'Gas'
-    } else if (points.indexOf('accumulated_real') >= 0 || points.indexOf('periodic_real_in') >= 0) {
-      this.type = 'Electricity'
-    } else if (points.indexOf('periodic_real_out') >= 0) {
-      this.type = 'Solar Panel'
+      if (points.indexOf('total') >= 0) {
+        this.type = 'Steam'
+      } else if (points.indexOf('cubic_feet') >= 0) {
+        this.type = 'Gas'
+      } else if (points.indexOf('accumulated_real') >= 0 || points.indexOf('periodic_real_in') >= 0) {
+        this.type = 'Electricity'
+      } else if (points.indexOf('periodic_real_out') >= 0) {
+        this.type = 'Solar Panel'
+      }
+    } catch (err) {
+      throw new Error(
+        `Error calculating meter properties for meter class: ${this.classInt} with id: ${this.id}. Error: ${err}`
+      )
     }
     return this
   }
@@ -190,7 +197,7 @@ class Meter {
 
   async upload(data) {
     await connect()
-    console.log(meterClasses)
+    console.log('Uploading data for meter', this.id, 'with classInt', this.classInt, 'and data', data)
     let points = meterClasses[this.classInt]
 
     const pointMap = {
@@ -216,6 +223,7 @@ class Meter {
       vphase_an: null,
       vphase_bn: null,
       vphase_cn: null,
+      average_current: null,
       cphase_a: null,
       cphase_b: null,
       cphase_c: null,
@@ -236,7 +244,7 @@ class Meter {
     const timeseconds = new Date(time).getTime() / 1000 - new Date().getTimezoneOffset() * 60
     try {
       await query(
-        'INSERT INTO data (meter_id, time, time_seconds, error, accumulated_real, real_power, reactive_power, apparent_power, real_a, real_b, real_c, reactive_a, reactive_b, reactive_c, apparent_a, apparent_b, apparent_c, pf_a, pf_b, pf_c, vphase_ab, vphase_bc, vphase_ac, vphase_an, vphase_bn, vphase_cn, cphase_a, cphase_b, cphase_c, total, input, minimum, maximum, cubic_feet, instant, rate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO data (meter_id, time, time_seconds, error, accumulated_real, real_power, reactive_power, apparent_power, real_a, real_b, real_c, reactive_a, reactive_b, reactive_c, apparent_a, apparent_b, apparent_c, pf_a, pf_b, pf_c, vphase_ab, vphase_bc, vphase_ac, vphase_an, vphase_bn, vphase_cn, average_current, cphase_a, cphase_b, cphase_c, total, input, minimum, maximum, cubic_feet, instant, rate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           this.id,
           time,
@@ -264,6 +272,7 @@ class Meter {
           pointMap.vphase_an,
           pointMap.vphase_bn,
           pointMap.vphase_cn,
+          pointMap.average_current,
           pointMap.cphase_a,
           pointMap.cphase_b,
           pointMap.cphase_c,
@@ -278,7 +287,6 @@ class Meter {
       )
     } catch (err) {
       if (err.code === 'ER_DUP_ENTRY' && !parseInt(data[1])) {
-        console.log(pointMap)
         await query(
           `UPDATE data SET 
                         error = ?, 
@@ -304,6 +312,7 @@ class Meter {
                         vphase_an = ?, 
                         vphase_bn = ?, 
                         vphase_cn = ?, 
+                        average_current = ?,
                         cphase_a = ?, 
                         cphase_b = ?, 
                         cphase_c = ?, 
@@ -339,6 +348,7 @@ class Meter {
             pointMap.vphase_an,
             pointMap.vphase_bn,
             pointMap.vphase_cn,
+            pointMap.average_current,
             pointMap.cphase_a,
             pointMap.cphase_b,
             pointMap.cphase_c,

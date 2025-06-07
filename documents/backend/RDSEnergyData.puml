@@ -75,6 +75,7 @@ entity "Data" as data {
   vphase_an: float
   vphase_bn: float
   vphase_cn: float
+  average_current: float
   cphase_a: float
   cphase_b: float
   cphase_c: float
