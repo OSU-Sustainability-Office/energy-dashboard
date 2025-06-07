@@ -243,6 +243,7 @@ export default {
         vphase_an: 'Voltage, Phase A-N (V)',
         vphase_bn: 'Voltage, Phase B-N (V)',
         vphase_cn: 'Voltage, Phase C-N (V)',
+        average_current: 'Average Current (A)',
         cphase_a: 'Current, Phase A (A)',
         cphase_b: 'Current, Phase B (A)',
         cphase_c: 'Current, Phase C (A)',

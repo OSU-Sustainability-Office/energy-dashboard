@@ -47,6 +47,7 @@ export default function (graphType, point) {
       case 'pf_c':
         return new MinMaxModifier()
 
+      case 'average_current':
       case 'vphase_ab':
       case 'vphase_ac':
       case 'vphase_bc':
