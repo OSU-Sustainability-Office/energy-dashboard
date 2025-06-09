@@ -1,8 +1,6 @@
 /*
- * @Author: Milan Donhowe
- * @Date:   4/23/2021
- * @Copyright:  Oregon State University 2021
- * @Description: Unit tests for API endpoints associated with
+ * Filename: map.spec.js
+ * Description: Unit tests for API endpoints associated with
  *               the frontend Map VueX module
  */
 import testConfig from './assertedData/test_config.json'

@@ -1,9 +1,7 @@
 /*
- * @Author: Brogan
- * @Date:   Friday September 6th 2019
- * @Last Modified By:  Brogan
- * @Last Modified Time:  Friday September 6th 2019
- * @Copyright:  Oregon State University 2019
+ * Filename: sam_express.js
+ * Description: This script sets up an Express server that mimics the behavior of AWS Lambda functions.
+ *              Used for local development and testing.
  */
 ;(async () => {
   const Module = require('module')
