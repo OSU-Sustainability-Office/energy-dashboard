@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: setupBackendTests.js
  * Description: This script runs before each test suite and mocks all the lambda common layer
  *              related functions.

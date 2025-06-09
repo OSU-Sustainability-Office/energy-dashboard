@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: app/building.js
  * Description: API endpoints related to buildings
  */

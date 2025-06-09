@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: app/pacific_power_recent.js
  * Description: API endpoints used to manage Pacific Power recent data (for webscraper)
  */

@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: app/pacific_power_exclusion.js
  * Description: API endpoints used to manage Pacific Power exclusions (for webscraper)
  */

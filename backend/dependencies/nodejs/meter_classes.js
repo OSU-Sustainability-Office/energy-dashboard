@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: dependencies/nodejs/meter_classes.js
  * Description: Defines a mapping of meter class IDs to their respective data fields.
  */

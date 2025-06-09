@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: models/building.js
  * Description: Defines Building class and methods to interact with the database.
  */

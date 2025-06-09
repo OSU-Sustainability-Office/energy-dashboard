@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: models/pacific_power_exclusion.js
  * Description: Defines PacificPowerExclusion class and methods to interact with the database.
  */

@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: app/campaign.js
  * Description: API endpoints related to campaigns
  */

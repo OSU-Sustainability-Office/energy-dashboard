@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: dependencies/nodejs/api.js
  * Description: Fetches an OAuth2 access token from the Oregon State University API.
  */

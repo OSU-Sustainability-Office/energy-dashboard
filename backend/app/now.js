@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: app/now.js
  * Description: API endpoint to return the current system time
  */

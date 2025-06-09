@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: models/meter.js
  * Description: Defines Meter class and methods to interact with the database.
  */

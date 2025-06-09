@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: app/meter.js
  * Description: API endpoints related to meter data
  */

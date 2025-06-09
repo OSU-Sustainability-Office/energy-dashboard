@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: models/meter_group.js
  * Description: Defines MeterGroup class and methods to interact with the database.
  */

@@ -1,4 +1,4 @@
-/* 
+/*
  * Filename: models/pacific_power_recent.js
  * Description: Defines PacificPowerRecent class and methods to interact with the database.
  */
