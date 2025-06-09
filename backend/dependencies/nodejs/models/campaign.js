@@ -1,4 +1,5 @@
-/* Filename: models/campaign.js
+/*
+ * Filename: models/campaign.js
  * Description: Defines Campaign class and methods to interact with the database.
  */
 import { connect, query } from '/opt/nodejs/sql-access.js'

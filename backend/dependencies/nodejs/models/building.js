@@ -1,4 +1,5 @@
-/* Filename: models/building.js
+/*
+ * Filename: models/building.js
  * Description: Defines Building class and methods to interact with the database.
  */
 import { connect, query as _query } from '/opt/nodejs/sql-access.js'

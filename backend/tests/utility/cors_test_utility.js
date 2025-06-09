@@ -1,10 +1,6 @@
 /*
- * @Author: Milan Donhowe
- * @Date:   4/15/2021
- * @Last Modified By:  Milan Donhowe
- * @Last Modified Time:  4/15/2021
- * @Copyright:  Oregon State University 2021
- * @Description: Defines utility functions & classes to provide some light-weight
+ * Filename: cors_test_utility.js
+ * Description: Defines utility functions & classes to provide some light-weight
  *               CORS request testing.
  *               See the following resources for details on common CORS errors & the spec:
  *               >> https://fetch.spec.whatwg.org/#http-cors-protocol

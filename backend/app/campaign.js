@@ -1,4 +1,5 @@
-/* Filename: app/campaign.js
+/*
+ * Filename: app/campaign.js
  * Description: API endpoints related to campaigns
  */
 import Campaign from '/opt/nodejs/models/campaign.js'

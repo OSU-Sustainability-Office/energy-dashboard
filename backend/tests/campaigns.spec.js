@@ -1,10 +1,6 @@
 /*
- * @Author: Milan Donhowe
- * @Date:   4/25/2021
- * @Last Modified By:  Milan Donhowe
- * @Last Modified Time:  4/25/2021
- * @Copyright:  Oregon State University 2021
- * @Description: Unit tests for API endpoints associated with
+ * Filename: campaigns.spec.js
+ * Description: Unit tests for API endpoints associated with
  *               the frontend campaigns VueX module
  */
 import testConfig from './assertedData/test_config.json'
