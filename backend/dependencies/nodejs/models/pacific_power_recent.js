@@ -1,4 +1,5 @@
-/* Filename: models/pacific_power_recent.js
+/* 
+ * Filename: models/pacific_power_recent.js
  * Description: Defines PacificPowerRecent class and methods to interact with the database.
  */
 import { connect, query } from '/opt/nodejs/sql-access.js'
