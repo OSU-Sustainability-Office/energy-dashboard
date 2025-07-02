@@ -298,7 +298,7 @@ export default {
           }
         }
       }
-      let dlData = await Promise.all(promises)
+      let dlData = await Promise.all(promises.map(func => func()))
       for (let dl of dlData) {
         let organizedData = [`Time,${dl.point}`]
         for (let d of dl.data) {
