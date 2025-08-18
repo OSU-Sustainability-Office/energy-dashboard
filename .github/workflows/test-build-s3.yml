@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: unit tests
         working-directory: backend
         run: |
@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set-up Node
         uses: actions/setup-node@v4
         with:
@@ -50,7 +50,7 @@ jobs:
     name: Validate Serverless API
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with: 
         token: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/setup-python@v5
