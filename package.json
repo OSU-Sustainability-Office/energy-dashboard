@@ -47,7 +47,7 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-vue": "^10.5.0",
     "fake-indexeddb": "^6.2.2",
-    "jest": "^24.9.0",
+    "jest": "^30.2.0",
     "json-loader": "^0.5.7",
     "lodash": "^4.17.21",
     "make-coverage-badge": "^1.2.0",
