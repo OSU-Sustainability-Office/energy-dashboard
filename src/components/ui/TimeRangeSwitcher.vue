@@ -20,6 +20,25 @@
   </el-row>
 </template>
 <script>
+// constants
+const DAY_IN_MS = 24 * 60 * 60 * 1000; // 1 day in ms
+const HOUR_IN_MS = 60 * 60 * 1000; // 1 hour in ms
+const FIFTEEN_MIN_IN_MS = 15 * 60 * 1000; // 15 minutes in ms
+const floorTo = (t, ms) => t - (t % ms);
+
+// per-mode presets for each range button
+const TIME_RANGE_PRESETS = {
+  noCampaign: {
+    0: { unit: 'hour', interval: 6, startMs: 7 * DAY_IN_MS }, // past week
+    1: { unit: 'day', interval: 1, startMs: 60 * DAY_IN_MS }, // past 60 days
+    2: { unit: 'day', interval: 15, startMs: 365 * DAY_IN_MS }, // past year
+  },
+  campaign: {
+    0: { unit: 'minute', interval: 15, startMs: 6 * HOUR_IN_MS }, // past 6 hours
+    1: { unit: 'hour', interval: 2, startMs: DAY_IN_MS }, // past day
+    2: { unit: 'day', interval: 1, startMs: null }, // special case: full campaign date range
+  },
+};
 export default {
   props: ['height', 'campaign', 'days', 'blocks', 'campaignDateEnd', 'campaignDateStart', 'forceUpdate'],
   data() {
@@ -45,53 +64,15 @@ export default {
       immediate: true,
       handler: async function (value) {
         if (value < 0) return
-        let intervalUnit = 'minute'
-        let dateInterval = 15
-        let time = new Date().getTime()
-        let dateEnd = time - (time % (900 * 1000))
-        let startModifier = 7 * 24 * 60 * 60 * 1000
-        if (!this.campaign) {
-          if (value === 0) {
-            intervalUnit = 'hour'
-            dateInterval = 6
-            startModifier = 7 * 24 * 60 * 60 * 1000
-          } else if (value === 1) {
-            // start 60 days ago
-            startModifier = 60 * 24 * 60 * 60 * 1000
-            if (this.blocks[0].name === 'Solar Panel') {
-              intervalUnit = 'hour'
-              dateInterval = 1
-              // We push it back 1 day since solar data is day older than regular meter data
-              dateEnd -= 24 * 60 * 60 * 1000
-            } else {
-              intervalUnit = 'day'
-              dateInterval = 1
-              startModifier = 60 * 24 * 60 * 60 * 1000
-            }
-          } else {
-            intervalUnit = 'day'
-            dateInterval = 15
-            startModifier = 365 * 24 * 60 * 60 * 1000
-          }
-        } else {
-          dateEnd = this.campaignDateEnd
-          if (value === 0) {
-            intervalUnit = 'minute'
-            dateInterval = 15
-            startModifier = 6 * 60 * 60 * 1000
-          } else if (value === 1) {
-            intervalUnit = 'hour'
-            dateInterval = 2
-            startModifier = 24 * 60 * 60 * 1000
-          } else {
-            intervalUnit = 'day'
-            dateInterval = 1
-          }
-        }
-        let dateStart = new Date(dateEnd).getTime() - startModifier
-        if (this.campaign && value === 2) {
-          dateStart = this.campaignDateStart
-        }
+        const mode = this.campaign ? 'campaign' : 'noCampaign';
+        const preset = TIME_RANGE_PRESETS[mode][value];
+
+        const dateEnd = this.campaign ? this.campaignDateEnd : floorTo(Date.now(), FIFTEEN_MIN_IN_MS);
+        const intervalUnit = preset.unit;
+        const dateInterval = preset.interval;
+        const dateStart = (this.campaign && value === 2)
+          ? this.campaignDateStart // full campaign range
+          : dateEnd - preset.startMs; // adjusted start time
 
         for (let block of this.blocks) {
           // if (!block.promise) continue
