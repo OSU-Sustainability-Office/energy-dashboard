@@ -38,15 +38,15 @@
     "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
+    "@eslint/js": "^9.38.0",
     "@types/luxon": "^3.7.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "autoprefixer": "^10.4.21",
-    "eslint": "^9.36.0",
+    "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-vue": "^10.5.0",
-    "fake-indexeddb": "^6.2.2",
+    "fake-indexeddb": "^6.2.4",
     "jest": "^24.9.0",
     "json-loader": "^0.5.7",
     "lodash": "^4.17.21",
@@ -55,7 +55,7 @@
     "prettier": "^3.6.2",
     "raw-loader": "^4.0.2",
     "sass": "^1.93.2",
-    "vite": "^7.1.7",
+    "vite": "^7.1.10",
     "vite-svg-loader": "^5.1.0",
     "vue-eslint-parser": "^10.2.0"
   },
