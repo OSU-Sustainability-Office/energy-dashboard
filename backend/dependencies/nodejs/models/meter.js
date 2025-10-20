@@ -140,7 +140,9 @@ class Meter {
             'SELECT ' +
               point +
               ', time_seconds AS time, ' +
-              "'" + this.id + "' as id " +
+              "'" +
+              this.id +
+              "' as id " +
               'FROM Solar_Meters ' +
               'WHERE time_seconds >= ? ' +
               '  AND time_seconds <= ? ' +
