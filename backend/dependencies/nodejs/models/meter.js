@@ -134,19 +134,21 @@ class Meter {
       // Generalized Meter Types
       if (String(meterClass).startsWith('999')) {
         // get table name from meter table
-        let [{ name: meter_table_name }] = await query('SELECT `name` FROM meters WHERE id = ?', [this.id])
-        if (String(meterClass) === '9990001' && meter_table_name === 'Solar_Meters') {
+        if (String(meterClass) === '9990001') {
+          // solar meters
           return query(
             'SELECT ' +
               point +
-              ", time_seconds AS time, '" +
-              this.id +
-              "' as id FROM " +
-              meter_table_name +
-              ' WHERE time_seconds >= ? AND time_seconds <= ? AND MeterID = ? order by time_seconds DESC',
+              ', time_seconds AS time, ' +
+              "'" + this.id + "' as id " +
+              'FROM Solar_Meters ' +
+              'WHERE time_seconds >= ? ' +
+              '  AND time_seconds <= ? ' +
+              '  AND MeterID = ? ' +
+              'ORDER BY time_seconds DESC',
             [startTime, endTime, this.id]
           )
-        } else {
+        } else if (String(meterClass) === '9990002') {
           // pacific power meters, may need to change to else-if if there are going to be more custom classes starting with 999
           let [{ pacific_power_id: pp_id }] = await query('SELECT pacific_power_id FROM meters WHERE id = ?', [this.id])
           return query(
