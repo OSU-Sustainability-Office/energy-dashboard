@@ -24,6 +24,6 @@
     "@vitest/coverage-v8": "^3.2.4",
     "sqlite3": "^5.1.7",
     "sustainability-office-lambda-common-layer": "https://github.com/OSU-Sustainability-Office/lambda-common-layer.git",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.3"
   }
 }
