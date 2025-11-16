@@ -16,15 +16,15 @@ export async function post(event, context) {
 
   const payload = JSON.parse(event.body)
   const pwd = payload['pwd']
-  const meterID = payload['id']
+  const pacificPowerMeterID = payload['id']
 
-  if (pwd !== process.env.ACQUISUITE_PASS || !meterID) {
+  if (pwd !== process.env.ACQUISUITE_PASS || !pacificPowerMeterID) {
     response.statusCode = 400
     return response
   }
 
   try {
-    response.body = JSON.stringify(await new PacificPowerExclusion().add(meterID))
+    response.body = JSON.stringify(await new PacificPowerExclusion().add(pacificPowerMeterID))
   } catch (error) {
     response.body = error.message
     response.statusCode = 400
