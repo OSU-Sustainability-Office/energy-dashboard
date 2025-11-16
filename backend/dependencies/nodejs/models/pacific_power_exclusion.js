@@ -12,11 +12,10 @@ class PacificPowerExclusion {
 
   async add(pacificPowerMeterID) {
     await connect()
-    return query(`INSERT INTO pacific_power_meter_group (pacific_power_meter_id, status, date_added) VALUES (?, ?, ?)`, [
-      pacificPowerMeterID,
-      'new',
-      new Date().toISOString()
-    ])
+    return query(
+      `INSERT INTO pacific_power_meter_group (pacific_power_meter_id, status, date_added) VALUES (?, ?, ?)`,
+      [pacificPowerMeterID, 'new', new Date().toISOString()]
+    )
   }
 }
 
