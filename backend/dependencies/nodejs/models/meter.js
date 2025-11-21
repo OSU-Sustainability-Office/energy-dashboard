@@ -151,14 +151,18 @@ class Meter {
             [startTime, endTime, this.id]
           )
         } else if (String(meterClass) === '9990002') {
-          // pacific power meters, may need to change to else-if if there are going to be more custom classes starting with 999
-          let [{ pacific_power_id: pp_id }] = await query('SELECT pacific_power_id FROM meters WHERE id = ?', [this.id])
-          return query(
-            'SELECT ' +
-              point +
-              ', time_seconds AS time FROM pacific_power_data WHERE time_seconds >= ? AND time_seconds <= ? AND pacific_power_meter_id = ? order by time_seconds DESC;',
-            [startTime, endTime, pp_id]
-          )
+          const q = `
+            SELECT data.${point},
+              data.time_seconds AS time
+            FROM pacific_power_data data
+            JOIN pacific_power_meter_group pp_group
+                ON data.pacific_power_meter_id = pp_group.pacific_power_meter_id
+            WHERE data.time_seconds >= ? AND 
+              data.time_seconds <= ? AND
+              pp_group.meter_id = ?
+            ORDER BY data.time_seconds DESC;
+          `
+          return query(q, [startTime, endTime, this.id])
         }
       }
       // Aquisuites
