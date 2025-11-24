@@ -142,7 +142,7 @@ const actions = {
   // Returns an array of missing intervals [[start, end]]
   findMissingIntervals(store, payload) {
     const { meterId, uom, start, end } = payload
-    const cachedIntervals = this.getters['dataStore/requestStore'][uom]?.[meterId] || []
+    const cachedIntervals = this.getters['dataStore/requestStore'][meterId]?.[uom] || []
 
     // No cached intervals for meter/uom -> whole interval is missing
     if (cachedIntervals.length === 0) {
@@ -503,6 +503,35 @@ const actions = {
   }
 }
 
+// Merges a new interval into a list of existing intervals while maintaining sorted order
+function mergeIntervals(intervals, newInterval) {
+  const res = [];
+  const n = intervals.length;
+  let i = 0;
+
+  // Add all intervals that end before newInterval starts
+  while (i < n && intervals[i][1] < newInterval[0]) {
+    res.push(intervals[i]);
+    i++;
+  }
+
+  // Merge all overlapping intervals into newInterval
+  while (i < n && intervals[i][0] <= newInterval[1]) {
+    newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+    newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+    i++;
+  }
+  res.push(newInterval);
+  
+  // Add rest of intervals that start after newInterval ends
+  while (i < n) {
+    res.push(intervals[i]);
+    i++;
+  }
+
+  return res;
+}
+
 const mutations = {
   // Adds one datetime & value pair to the cache
   // cacheEntry contains:
@@ -521,50 +550,36 @@ const mutations = {
   /*
       This function adds an element to the request store & merges overlapping ranges.
 
-      Basically we use a "range-set" to keep track of which meter data ranges we've already
+      Basically we use a nested structure to keep track of which meter data ranges we've already
       queried during a user's session.  This makes it so we minimize redundant requests for data
       that won't exist in the database.  We don't persist this data since it's concievable that
       our database will acquire the data at some point, but it's unlikely it will occur during a
       single user session.
 
-      The range set works by storing a sorted array of tuples containing a start and end date for data
+      The nested structure works by storing a sorted array of tuples containing a start and end date for data
       of form (start time, end time)
 
       Like for meterID = 15 and the unit of measurement of `accumulated_real`: [(143500, 134560), (134590, 145000)]
 
-      When we add another range to the data, we push that tuple into our range-set and perform a reduction
+      When we add another range to the data, we push that tuple into our nested structure and perform a reduction
       to merge overlapping ranges:
 
       E.g. [(143500, 143600), (143560, 143555)] -> [(143500, 143600)]
   */
   addToRequestStore: (state, { meterId, uom, start, end }) => {
-    if (state.requestStore[uom] === undefined) state.requestStore[uom] = []
-
-    if (!Object.keys(state.requestStore[uom]).includes(meterId)) {
-      state.requestStore[uom][meterId] = [[start, end]]
-    } else {
-      state.requestStore[uom][meterId].unshift([start, end])
-      // Reduce range sets if possible
-      state.requestStore[uom][meterId].sort((a, b) => a[0] - b[0])
-      let reductionComplete = false
-      while (!reductionComplete) {
-        reductionComplete = true
-        const reducedRangeSet = []
-        for (let i = 0; i < state.requestStore[uom][meterId].length - 1; i++) {
-          const thisRange = state.requestStore[uom][meterId][i]
-          const nextRange = state.requestStore[uom][meterId][i + 1]
-          if (thisRange[1] > nextRange[1]) {
-            reducedRangeSet.push([thisRange[0], thisRange[1]])
-            i++ // increase i to skip merged range
-            reductionComplete = false
-          } else {
-            reducedRangeSet.push(thisRange)
-          }
-        }
-        // write new, possibly reduced request store
-        state.requestStore[uom][meterId] = reducedRangeSet
-      }
+    // Initialize request store for (meterId, uom) if it doesn't exist
+    if (!state.requestStore[meterId]) {
+      state.requestStore[meterId] = {}
     }
+    if (!state.requestStore[meterId][uom]) {
+      state.requestStore[meterId][uom] = [[start, end]]
+      return
+    }
+
+    // Merge new range into existing ranges
+    const existingIntervals = state.requestStore[meterId][uom]
+    const newInterval = [start, end]
+    state.requestStore[meterId][uom] = mergeIntervals(existingIntervals, newInterval)
   },
 
   // Sets DBInstance property to an initialized indexedDB instance.
