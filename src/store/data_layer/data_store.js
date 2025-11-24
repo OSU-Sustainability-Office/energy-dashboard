@@ -589,20 +589,6 @@ const getters = {
     return state.requestStore
   },
 
-  // checks if we have already queried this date range for the given unit of measurement (uom)
-  inRangeSet:
-    (state, getters) =>
-    ({ uom, id, start, end }) => {
-      if (getters.requestStore[uom] === undefined) return false
-      if (getters.requestStore[uom][id] === undefined) return false
-      for (let i = 0; i < getters.requestStore[uom][id].length; i++) {
-        if (getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end) {
-          return true
-        }
-      }
-      return false
-    },
-
   // calculates data set size, assuming there's a data-point every 15 minutes.
   // (this assumption may not hold for some meter-types), it is unlikely any
   // meter will have more frequent data reporting.
