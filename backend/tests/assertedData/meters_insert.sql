@@ -51,7 +51,7 @@ INSERT INTO `` (`id`,`name`,`type`,`class`) VALUES (50,'CH2MHill Alumni Center E
 INSERT INTO `` (`id`,`name`,`type`,`class`) VALUES (51,'CH2MHill Alumni Center Electricity New','e',2);
 INSERT INTO `` (`id`,`name`,`type`,`class`) VALUES (52,'CH2MHill Alumni Center Modhopper','g',17);
 INSERT INTO `` (`id`,`name`,`type`,`class`) VALUES (53,'Buxton Electricity','e',48);
-INSERT INTO `` (`id`,`name`,`type`,`class`) VALUES (54,NULL,NULL,NULL,null);
+INSERT INTO `` (`id`,`name`,`type`,`class`) VALUES (54,NULL,NULL,NULL);
 INSERT INTO `` (`id`,`name`,`type`,`class`) VALUES (55,'Main Johnson Hall','e',48);
 INSERT INTO `` (`id`,`name`,`type`,`class`) VALUES (56,'X-7','e',48);
 INSERT INTO `` (`id`,`name`,`type`,`class`) VALUES (57,'X-9','e',48);
