@@ -66,8 +66,7 @@ class Building {
               meter_groups.default as meter_group_default,
               meters.name as meter_name,
               meters.id as meter_id,
-              meters.class as meter_class,
-              meters.pacific_power_id as pacific_power_id
+              meters.class as meter_class
         FROM buildings 
         LEFT JOIN meter_groups on buildings.id = meter_groups.building_id
         LEFT JOIN meter_group_relation on meter_groups.id = meter_group_relation.group_id
@@ -100,8 +99,7 @@ class Building {
 
       queryJson[row.id].meterGroups[row.meter_group_id].meters[row.meter_id] = {
         name: row.meter_name,
-        classInt: row.meter_class,
-        pacificPowerId: row.pacific_power_id
+        classInt: row.meter_class
       }
     }
 
@@ -113,7 +111,7 @@ class Building {
         for (let meterKey of Object.keys(queryJson[key].meterGroups[groupKey].meters)) {
           let meterJson = queryJson[key].meterGroups[groupKey].meters[meterKey]
           let meter = new Meter(meterKey)
-          meter.set(meterJson.name, meterJson.classInt, meterJson.pacificPowerId)
+          meter.set(meterJson.name, meterJson.classInt)
           meters.push(meter)
         }
 
