@@ -142,55 +142,39 @@ const actions = {
   // Returns an array of missing intervals [[start, end]]
   findMissingIntervals(store, payload) {
     const { meterId, uom, start, end } = payload
-    const meterData = this.getters['dataStore/cache'][meterId]?.[uom]
+    const cachedIntervals = this.getters['dataStore/requestStore'][meterId]?.[uom] || []
 
-    // If no data exists for this meter/unit, return the entire interval
-    if (!meterData) return [[start, end]]
-
-    // If the entire interval is in the cache, return an empty array
-    if (
-      this.getters['dataStore/inRangeSet']({
-        uom: uom,
-        id: meterId,
-        start: start,
-        end: end
-      })
-    ) {
-      return []
+    // No cached intervals for meter/uom -> whole interval is missing
+    if (cachedIntervals.length === 0) {
+      return [[start, end]]
     }
 
-    // Filter timestamps to keep:
-    //  - the first timestamp
-    //  - timestamps with gaps > 15 minutes
-    //  - the last timestamp
-    let timestamps = Object.keys(meterData)
-      .filter(key => parseInt(key) >= start && parseInt(key) <= end)
-      .sort((a, b) => parseInt(a) - parseInt(b))
-      .filter((key, index, array) => {
-        return (
-          index === 0 ||
-          index === array.length - 1 ||
-          Math.abs(key - array[index - 1]) > 900 ||
-          Math.abs(key - array[index + 1]) > 900
-        )
+    // Process cached intervals to find missing segments
+    const ranges = cachedIntervals
+      .map(([rangeStart, rangeEnd]) => [Math.max(rangeStart, start), Math.min(rangeEnd, end)]) // clip to [start, end]
+      .filter(([rangeStart, rangeEnd]) => rangeStart < rangeEnd) // filter out non-overlapping ranges
+      .sort((rangeA, rangeB) => {
+        // sort by start time
+        if (rangeA[0] !== rangeB[0]) return rangeA[0] - rangeB[0]
+        // tie-breaker is end time
+        return rangeA[1] - rangeB[1]
       })
-      .map(ts => parseInt(ts, 10))
 
-    // If no data points exist in range, return the entire interval
-    if (timestamps.length === 0) return [[start, end]]
-
-    // Find gaps between timestamps and return missing intervals
-    let missingIntervals = [] // Array of interval pairs: [[start, end]]
-
-    // Add missing interval at the beginning
-    if (timestamps[0] > start) missingIntervals.push([start, timestamps[0]])
-
-    for (let index = 1; index < timestamps.length; index += 2) {
-      if (timestamps[index + 1]) {
-        missingIntervals.push([timestamps[index], timestamps[index + 1]])
-      } else if (timestamps[index] < end) {
-        missingIntervals.push([timestamps[index], end])
+    const missingIntervals = []
+    let cursor = start
+    // Add missing intervals between cached ranges
+    for (const [rangeStart, rangeEnd] of ranges) {
+      // Anything between cursor and the next requested segment is missing
+      if (rangeStart > cursor) {
+        missingIntervals.push([cursor, rangeStart])
       }
+      // Move cursor forward to the end of the requested segment
+      cursor = Math.max(cursor, rangeEnd)
+    }
+
+    // Trailing tail after the last requested segment
+    if (cursor < end) {
+      missingIntervals.push([cursor, end])
     }
 
     return missingIntervals
@@ -519,6 +503,35 @@ const actions = {
   }
 }
 
+// Merges a new interval into a list of existing intervals while maintaining sorted order
+function mergeIntervals(intervals, newInterval) {
+  const res = []
+  const n = intervals.length
+  let i = 0
+
+  // Add all intervals that end before newInterval starts
+  while (i < n && intervals[i][1] < newInterval[0]) {
+    res.push(intervals[i])
+    i++
+  }
+
+  // Merge all overlapping intervals into newInterval
+  while (i < n && intervals[i][0] <= newInterval[1]) {
+    newInterval[0] = Math.min(newInterval[0], intervals[i][0])
+    newInterval[1] = Math.max(newInterval[1], intervals[i][1])
+    i++
+  }
+  res.push(newInterval)
+
+  // Add rest of intervals that start after newInterval ends
+  while (i < n) {
+    res.push(intervals[i])
+    i++
+  }
+
+  return res
+}
+
 const mutations = {
   // Adds one datetime & value pair to the cache
   // cacheEntry contains:
@@ -537,50 +550,36 @@ const mutations = {
   /*
       This function adds an element to the request store & merges overlapping ranges.
 
-      Basically we use a "range-set" to keep track of which meter data ranges we've already
+      Basically we use a nested structure to keep track of which meter data ranges we've already
       queried during a user's session.  This makes it so we minimize redundant requests for data
       that won't exist in the database.  We don't persist this data since it's concievable that
       our database will acquire the data at some point, but it's unlikely it will occur during a
       single user session.
 
-      The range set works by storing a sorted array of tuples containing a start and end date for data
+      The nested structure works by storing a sorted array of tuples containing a start and end date for data
       of form (start time, end time)
 
       Like for meterID = 15 and the unit of measurement of `accumulated_real`: [(143500, 134560), (134590, 145000)]
 
-      When we add another range to the data, we push that tuple into our range-set and perform a reduction
+      When we add another range to the data, we push that tuple into our nested structure and perform a reduction
       to merge overlapping ranges:
 
       E.g. [(143500, 143600), (143560, 143555)] -> [(143500, 143600)]
   */
   addToRequestStore: (state, { meterId, uom, start, end }) => {
-    if (state.requestStore[uom] === undefined) state.requestStore[uom] = []
-
-    if (!Object.keys(state.requestStore[uom]).includes(meterId)) {
-      state.requestStore[uom][meterId] = [[start, end]]
-    } else {
-      state.requestStore[uom][meterId].unshift([start, end])
-      // Reduce range sets if possible
-      state.requestStore[uom][meterId].sort((a, b) => a[0] - b[0])
-      let reductionComplete = false
-      while (!reductionComplete) {
-        reductionComplete = true
-        const reducedRangeSet = []
-        for (let i = 0; i < state.requestStore[uom][meterId].length - 1; i++) {
-          const thisRange = state.requestStore[uom][meterId][i]
-          const nextRange = state.requestStore[uom][meterId][i + 1]
-          if (thisRange[1] > nextRange[1]) {
-            reducedRangeSet.push([thisRange[0], thisRange[1]])
-            i++ // increase i to skip merged range
-            reductionComplete = false
-          } else {
-            reducedRangeSet.push(thisRange)
-          }
-        }
-        // write new, possibly reduced request store
-        state.requestStore[uom][meterId] = reducedRangeSet
-      }
+    // Initialize request store for (meterId, uom) if it doesn't exist
+    if (!state.requestStore[meterId]) {
+      state.requestStore[meterId] = {}
     }
+    if (!state.requestStore[meterId][uom]) {
+      state.requestStore[meterId][uom] = [[start, end]]
+      return
+    }
+
+    // Merge new range into existing ranges
+    const existingIntervals = state.requestStore[meterId][uom]
+    const newInterval = [start, end]
+    state.requestStore[meterId][uom] = mergeIntervals(existingIntervals, newInterval)
   },
 
   // Sets DBInstance property to an initialized indexedDB instance.
@@ -604,20 +603,6 @@ const getters = {
   requestStore(state) {
     return state.requestStore
   },
-
-  // checks if we have already queried this date range for the given unit of measurement (uom)
-  inRangeSet:
-    (state, getters) =>
-    ({ uom, id, start, end }) => {
-      if (getters.requestStore[uom] === undefined) return false
-      if (getters.requestStore[uom][id] === undefined) return false
-      for (let i = 0; i < getters.requestStore[uom][id].length; i++) {
-        if (getters.requestStore[uom][id][i][0] <= start && getters.requestStore[uom][id][i][1] >= end) {
-          return true
-        }
-      }
-      return false
-    },
 
   // calculates data set size, assuming there's a data-point every 15 minutes.
   // (this assumption may not hold for some meter-types), it is unlikely any
