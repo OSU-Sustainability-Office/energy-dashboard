@@ -505,31 +505,31 @@ const actions = {
 
 // Merges a new interval into a list of existing intervals while maintaining sorted order
 function mergeIntervals(intervals, newInterval) {
-  const res = [];
-  const n = intervals.length;
-  let i = 0;
+  const res = []
+  const n = intervals.length
+  let i = 0
 
   // Add all intervals that end before newInterval starts
   while (i < n && intervals[i][1] < newInterval[0]) {
-    res.push(intervals[i]);
-    i++;
+    res.push(intervals[i])
+    i++
   }
 
   // Merge all overlapping intervals into newInterval
   while (i < n && intervals[i][0] <= newInterval[1]) {
-    newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
-    newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
-    i++;
+    newInterval[0] = Math.min(newInterval[0], intervals[i][0])
+    newInterval[1] = Math.max(newInterval[1], intervals[i][1])
+    i++
   }
-  res.push(newInterval);
-  
+  res.push(newInterval)
+
   // Add rest of intervals that start after newInterval ends
   while (i < n) {
-    res.push(intervals[i]);
-    i++;
+    res.push(intervals[i])
+    i++
   }
 
-  return res;
+  return res
 }
 
 const mutations = {
