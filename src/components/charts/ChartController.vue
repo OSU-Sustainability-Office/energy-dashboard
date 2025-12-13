@@ -6,6 +6,11 @@
   <div
     v-loading="loading || !chartData"
     element-loading-background="rgba(0, 0, 0, 0.8)"
+    :element-loading-text="
+      batchStatus.active
+        ? `Loading batch ${batchStatus.current} of ${batchStatus.total}…`
+        : 'Loading…'
+    "
     :style="`height: ${height}px; border-radius: 5px; overflow: hidden;`"
   >
     <Linechart
@@ -198,6 +203,11 @@ export default {
           default:
             return null
         }
+      }
+    },
+    batchStatus: {
+      get() {
+        return this.$store.getters['dataStore/batchStatus']
       }
     }
   },

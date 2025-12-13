@@ -20,7 +20,13 @@ const state = () => {
   return {
     cache: {}, // Stores time-series data by meterId and unit of measure (uom)
     requestStore: {}, // Tracks queried data ranges to prevent redundant requests
-    indexedDBInstance: undefined // IndexedDB instance for persistent storage
+    indexedDBInstance: undefined, // IndexedDB instance for persistent storage
+    // Tracks the status of batch requests to inform the user while loading large datasets
+    batchStatus: {
+      active: false,
+      current: 0,
+      total: 0
+    }
   }
 }
 
@@ -354,6 +360,9 @@ const actions = {
       requests.push([meterId, startDate, endDate, uom, classInt])
     }
 
+    // Set the initial batch status before making requests
+    this.commit('dataStore/setBatchStatus', { active: true, total: numberOfBatches, current: 1 })
+
     // Request data in batches
     const meterDataArray = []
     for (const request of requests) {
@@ -363,7 +372,13 @@ const actions = {
       if (meterData && Array.isArray(meterData) && meterData.length > 0) {
         meterDataArray.push(meterData)
       }
+
+      // After each request, update the batch status
+      this.commit('dataStore/incrementBatch')
     }
+
+    // Reset the batch status after all requests are complete
+    this.commit('dataStore/clearBatchStatus')
 
     if (meterDataArray.length > 0) {
       for (const dataset of meterDataArray) {
@@ -545,6 +560,22 @@ const mutations = {
     state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] = cacheEntry.value
   },
 
+  setBatchStatus(state, { active, current, total}) {
+    state.batchStatus.active = active
+    state.batchStatus.current = current
+    state.batchStatus.total = total
+  },
+
+  incrementBatch(state) {
+    state.batchStatus.current++
+  },
+
+  clearBatchStatus(state) {
+    state.batchStatus.active = false
+    state.batchStatus.current = 0
+    state.batchStatus.total = 0
+  },
+
   /*
       This function adds an element to the request store & merges overlapping ranges.
 
@@ -624,6 +655,10 @@ const getters = {
   // determines if size exceeds the lambda API response limit
   requestSizeException: (state, getters) => requests => {
     return getters.requestSize(requests) >= RESPONSE_MAX_SIZE
+  },
+
+  batchStatus(state) {
+    return state.batchStatus
   }
 }
 
