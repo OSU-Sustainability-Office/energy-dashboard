@@ -27,7 +27,7 @@ const state = () => {
 // AWS Lambda has a 6MB response body limit; ensure requests stay within this limit.
 const RESPONSE_HEADER_SIZE = 1000 // Overestimated; actual header is ~222 bytes.
 const DATA_ITEM_SIZE = 51 // (32 + 2 + 2 + 4 + 11)=51, an over-estimate for each item.
-const RESPONSE_MAX_SIZE = 0x350000 // Use smaller value for reduced risk of exceeding the limit.
+const RESPONSE_MAX_SIZE = 0x250000 // Use smaller value for reduced risk of exceeding the limit.
 
 const actions = {
   // Copies "cache" object to indexedDB for persistent storage
@@ -131,7 +131,6 @@ const actions = {
           newCacheObject[db_entry['meterId']] = db_entry['meterData']
         }
         this.commit('dataStore/overwriteCache', { newCache: newCacheObject })
-        console.log('data loaded from persistent cache')
       })
       .catch(err => {
         console.log(err)
@@ -358,7 +357,6 @@ const actions = {
     // Request data in batches
     const meterDataArray = []
     for (const request of requests) {
-      console.log('Requesting batch data for:', ...request)
       const meterData = await API.data(...request).catch(err => {
         console.log(`Error for batch [${request}]:`, err)
       })
