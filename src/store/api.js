@@ -12,7 +12,8 @@ function callAPI(
     base = import.meta.env.VITE_ROOT_API,
     headers = undefined,
     timeoutMS = 72000,
-    allowCredentials = true
+    allowCredentials = true,
+    signal = undefined
   } = {}
 ) {
   /* This if-clause for "allowCredentials" deserves an explanation:
@@ -32,13 +33,20 @@ function callAPI(
     timeoutMS = timeoutMS * 4
   }
 
-  return axios(base + '/' + route, {
+  const axiosConfig = {
     method: method,
     data: data,
     headers: headers,
     timeout: timeoutMS,
-    withCredentials: allowCredentials,
-  })
+    withCredentials: allowCredentials
+  }
+
+  // only add signal if it's provided
+  if (signal !== undefined) {
+    axiosConfig.signal = signal
+  }
+
+  return axios(`${base}/${route}`, axiosConfig)
 }
 
 export default {
@@ -51,39 +59,36 @@ export default {
   meter: async id => {
     return (await callAPI('meter?id=' + id)).data
   },
-  data: async (id, start, end, point, classInt) => {
+  data: async (id, start, end, point, classInt, signal) => {
     return (
       await callAPI(
-        'data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point + '&meterClass=' + classInt
+        'data?id=' + id + '&startDate=' + start + '&endDate=' + end + '&point=' + point + '&meterClass=' + classInt,
+        null,
+        {
+          signal: signal
+        }
       )
     ).data
   },
-  multiMeterData: async requestArray => {
+  multiMeterData: async (requestArray, signal) => {
     // Why a POST request? Most browsers disallow GET requests to have payloads (i.e., a body field).
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
     // We're also increasing the timeeout to 2 minutes to account for really slow requests (e.g. LINC 1 year data)
     return (
-      await callAPI(
-        'multiMeterData', 
-        JSON.stringify(requestArray), 
-        {
-          method: 'post',
-          timeoutMS: 120000,
-        }
-      )
+      await callAPI('multiMeterData', JSON.stringify(requestArray), {
+        method: 'post',
+        timeoutMS: 120000,
+        signal: signal
+      })
     ).data
   },
   getGeoJSON: async payload => {
     return (
-      await callAPI(
-        `interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`,
-        null,
-        {
-          base: 'https://maps.mail.ru/osm/tools/overpass/api',
-          headers: { Accept: 'text/xml' },
-          allowCredentials: false,
-        }
-      )
+      await callAPI(`interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`, null, {
+        base: 'https://maps.mail.ru/osm/tools/overpass/api',
+        headers: { Accept: 'text/xml' },
+        allowCredentials: false
+      })
     ).data
   },
   campaigns: async () => {
