@@ -281,7 +281,6 @@ export default {
           this.chartData = {
             datasets: []
           }
-          alert('Error loading data. Please try again later.')
         }
       } finally {
         if (!signal.aborted) {
