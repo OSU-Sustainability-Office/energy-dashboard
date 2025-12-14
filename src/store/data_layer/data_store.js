@@ -255,7 +255,9 @@ const actions = {
       }
 
       // hit API
-      const meterDataArray = await Promise.all(apiRequests.map(reqObj => API.multiMeterData(reqObj))).catch(err => {
+      const meterDataArray = await Promise.all(
+        apiRequests.map(reqObj => API.multiMeterData(reqObj, payload.signal))
+      ).catch(err => {
         console.log('Error accessing multiMeterData api route:', err)
       })
 
@@ -345,7 +347,7 @@ const actions = {
 
   // Requests data in chunks to avoid exceeding the AWS lambda response body size limit
   async getChunkData(store, payload) {
-    const { meterId, start, end, uom, classInt } = payload
+    const { meterId, start, end, uom, classInt, signal } = payload
     await this.dispatch('dataStore/loadIndexedDB')
 
     const requests = []
@@ -366,16 +368,29 @@ const actions = {
     // Request data in batches
     const meterDataArray = []
     for (const request of requests) {
-      const meterData = await API.data(...request).catch(err => {
-        console.log(`Error for batch [${request}]:`, err)
-      })
-      if (meterData && Array.isArray(meterData) && meterData.length > 0) {
-        meterDataArray.push(meterData)
+      try {
+        const meterData = await API.data(...request, signal)
+        if (meterData && Array.isArray(meterData) && meterData.length > 0) {
+          meterDataArray.push(meterData)
+        }
+      } catch (err) {
+        // Log request details if the request was not aborted
+        if (!signal?.aborted) {
+          console.error(`Error with chunked request. Request Details: 
+            meterId: ${request[0]},
+            start: ${request[1]},
+            end: ${request[2]},
+            uom: ${request[3]},
+            classInt: ${request[4]}`)
+        }
+        // Clear the batch status and rethrow the error to stop processing
+        this.commit('dataStore/clearBatchStatus')
+        throw err
       }
 
       // After each request, update the batch status
       this.commit('dataStore/incrementBatch')
-    }
+    } 
 
     // Reset the batch status after all requests are complete
     this.commit('dataStore/clearBatchStatus')
@@ -442,7 +457,7 @@ const actions = {
    * classInt: An integer that corresponds to the type of meter we are reading from
    */
   async getData(store, payload) {
-    const { meterId, start, end, uom, classInt } = payload
+    const { meterId, start, end, uom, classInt, signal } = payload
     // Find missing data intervals
     let missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
       meterId: meterId,
@@ -469,7 +484,7 @@ const actions = {
         if (interval.length === 0) {
           interval.push(Math.round(new Date().getTime() / 1000))
         }
-        return API.data(meterId, interval[0], interval[1], uom, classInt)
+        return API.data(meterId, interval[0], interval[1], uom, classInt, signal)
       })
 
       // Prevent redundant requests during this session
@@ -481,21 +496,17 @@ const actions = {
       })
 
       // Fetch missing data from API and add it to the cache
-      try {
-        const responses = await Promise.all(promises)
-        responses.forEach(datumArray => {
-          datumArray.forEach(datum => {
-            this.commit('dataStore/addToCache', {
-              datetime: datum.time,
-              meterId: meterId,
-              uom: uom,
-              value: datum[uom]
-            })
+      const responses = await Promise.all(promises)
+      responses.forEach(datumArray => {
+        datumArray.forEach(datum => {
+          this.commit('dataStore/addToCache', {
+            datetime: datum.time,
+            meterId: meterId,
+            uom: uom,
+            value: datum[uom]
           })
         })
-      } catch (error) {
-        console.error('Error fetching data from API:', error)
-      }
+      })
     }
 
     // Retrieve the data from the cache
@@ -560,7 +571,7 @@ const mutations = {
     state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] = cacheEntry.value
   },
 
-  setBatchStatus(state, { active, current, total}) {
+  setBatchStatus(state, { active, current, total }) {
     state.batchStatus.active = active
     state.batchStatus.current = current
     state.batchStatus.total = total
