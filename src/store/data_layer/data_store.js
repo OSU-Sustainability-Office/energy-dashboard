@@ -663,11 +663,6 @@ const getters = {
     return totalSize
   },
 
-  // determines if size exceeds the lambda API response limit
-  requestSizeException: (state, getters) => requests => {
-    return getters.requestSize(requests) >= RESPONSE_MAX_SIZE
-  },
-
   batchStatus(state) {
     return state.batchStatus
   }
