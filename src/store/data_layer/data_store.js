@@ -390,7 +390,7 @@ const actions = {
 
       // After each request, update the batch status
       this.commit('dataStore/incrementBatch')
-    } 
+    }
 
     // Reset the batch status after all requests are complete
     this.commit('dataStore/clearBatchStatus')
