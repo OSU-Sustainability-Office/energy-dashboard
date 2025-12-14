@@ -118,7 +118,8 @@ const actions = {
           start: payload.dateStart,
           end: payload.dateEnd,
           uom: payload.point,
-          classInt: this.getters[meter.path + '/classInt']
+          classInt: this.getters[meter.path + '/classInt'],
+          signal: payload.signal
         })
       }
 

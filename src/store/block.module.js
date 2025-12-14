@@ -266,7 +266,7 @@ const actions = {
     return blockPromise
   },
 
-  async getData(store) {
+  async getData(store, payload) {
     let chartDataPromises = []
     let data = {
       labels: [],
@@ -278,7 +278,8 @@ const actions = {
       intervalUnit: store.getters.intervalUnit,
       dateInterval: store.getters.dateInterval,
       graphType: store.getters.graphType,
-      timeZoneOffset: store.getters.timeZoneOffset
+      timeZoneOffset: store.getters.timeZoneOffset,
+      signal: payload.signal
     }
 
     for (let mod of store.getters.modifiers) {
@@ -298,7 +299,8 @@ const actions = {
             graphType: store.getters.graphType,
             timeZoneOffset: store.getters.timeZoneOffset,
             // See chart.module.js file for rest of color stuff
-            color: store.getters.chartColors[parseInt(i) + 1]
+            color: store.getters.chartColors[parseInt(i) + 1],
+            signal: payload.signal
           }
           chartDataPromises.push(this.dispatch(chart.path + '/getData', reqPayload))
         }
