@@ -3,16 +3,17 @@
   Info: API module for handling all API calls to the backend and external APIs.
 */
 import axios from 'axios'
-axios.defaults.withCredentials = true
 
 function callAPI(
   route,
   data = null,
-  method = 'get',
-  base = import.meta.env.VITE_ROOT_API,
-  headers = null,
-  timeoutMS = 72000,
-  allowCredentials = true
+  {
+    method = 'get',
+    base = import.meta.env.VITE_ROOT_API,
+    headers = undefined,
+    timeoutMS = 72000,
+    allowCredentials = true
+  } = {}
 ) {
   /* This if-clause for "allowCredentials" deserves an explanation:
      Locally, when using "sam local start-api" the response class in the lambda common layer
@@ -25,25 +26,18 @@ function callAPI(
      NOTE: In production we do want to set withCredentials to true so we can use HTTPS & cookies
      for the user login session.
   */
-  if (import.meta.env.VITE_ROOT_API === 'http://localhost:3000') {
+  if (base === 'http://localhost:3000') {
     allowCredentials = false
     // increase timeout since it's slow locally testing.
     timeoutMS = timeoutMS * 4
   }
-  if (headers) {
-    return axios(base + '/' + route, {
-      method: method,
-      data: data,
-      withCredentials: allowCredentials,
-      timeout: timeoutMS,
-      headers: headers
-    })
-  }
+
   return axios(base + '/' + route, {
     method: method,
     data: data,
+    headers: headers,
+    timeout: timeoutMS,
     withCredentials: allowCredentials,
-    timeout: timeoutMS
   })
 }
 
@@ -69,7 +63,14 @@ export default {
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
     // We're also increasing the timeeout to 2 minutes to account for really slow requests (e.g. LINC 1 year data)
     return (
-      await callAPI('multiMeterData', JSON.stringify(requestArray), 'post', import.meta.env.VITE_ROOT_API, null, 120000)
+      await callAPI(
+        'multiMeterData', 
+        JSON.stringify(requestArray), 
+        {
+          method: 'post',
+          timeoutMS: 120000,
+        }
+      )
     ).data
   },
   getGeoJSON: async payload => {
@@ -77,13 +78,11 @@ export default {
       await callAPI(
         `interpreter?data=[out:xml];way(id:${payload});(._;>;);out;`,
         null,
-        'get',
-        'https://maps.mail.ru/osm/tools/overpass/api',
         {
-          Accept: 'text/xml'
-        },
-        72000,
-        false
+          base: 'https://maps.mail.ru/osm/tools/overpass/api',
+          headers: { Accept: 'text/xml' },
+          allowCredentials: false,
+        }
       )
     ).data
   },
