@@ -277,11 +277,11 @@ export default {
       } catch (err) {
         if (!signal.aborted) {
           console.error('Error loading data:', err)
-          alert('Error loading data. Please try again later.')
           // Show "Data Unavailable" message
           this.chartData = {
             datasets: []
           }
+          alert('Error loading data. Please try again later.')
         }
       } finally {
         if (!signal.aborted) {
