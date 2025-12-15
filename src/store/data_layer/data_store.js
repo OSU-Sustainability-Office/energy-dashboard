@@ -237,7 +237,7 @@ const actions = {
       */
       if (requestSize >= RESPONSE_MAX_SIZE) {
         // Divide the requests up by time.
-        const batchSize = Math.ceil(requestSize / RESPONSE_MAX_SIZE)
+        const batchSize = this.getters['dataStore/numberOfBatches'](requestSize)
 
         // Initialize divided request objects
         for (let _ = 0; _ < batchSize; _++) {
@@ -354,16 +354,13 @@ const actions = {
 
     // Break up the request into batches
     const totalRequestSize = this.getters['dataStore/requestSize']([{ id: meterId, startDate: start, endDate: end }])
-    const numberOfBatches = Math.ceil(totalRequestSize / RESPONSE_MAX_SIZE)
+    const numberOfBatches = this.getters['dataStore/numberOfBatches'](totalRequestSize)
     const batchSize = Math.ceil((end - start) / numberOfBatches)
     for (let i = 0; i < numberOfBatches; i++) {
       const startDate = start + i * batchSize
       const endDate = Math.min(start + (i + 1) * batchSize, end)
       requests.push([meterId, startDate, endDate, uom, classInt])
     }
-
-    // Set the initial batch status before making requests
-    this.commit('dataStore/setBatchStatus', { active: true, total: numberOfBatches, current: 1 })
 
     // Request data in batches
     const meterDataArray = []
@@ -383,17 +380,14 @@ const actions = {
             uom: ${request[3]},
             classInt: ${request[4]}`)
         }
-        // Clear the batch status and rethrow the error to stop processing
-        this.commit('dataStore/clearBatchStatus')
-        throw err
+        throw err // rethrow the error to be handled by the caller
       }
 
-      // After each request, update the batch status
-      this.commit('dataStore/incrementBatch')
+      // After each request, update the batch status if there are more batches to process
+      if (this.getters['dataStore/batchStatus'].current < this.getters['dataStore/batchStatus'].total) {
+        this.commit('dataStore/incrementBatch')
+      }
     }
-
-    // Reset the batch status after all requests are complete
-    this.commit('dataStore/clearBatchStatus')
 
     if (meterDataArray.length > 0) {
       for (const dataset of meterDataArray) {
@@ -661,6 +655,11 @@ const getters = {
       totalSize += getters.dataSetSize(dataset)
     }
     return totalSize
+  },
+
+  // Calculates the number of batches needed for a given request size
+  numberOfBatches: (state, getters) => requestSize => {
+    return Math.max(1, Math.ceil(requestSize / RESPONSE_MAX_SIZE))
   },
 
   batchStatus(state) {
