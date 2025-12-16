@@ -272,7 +272,6 @@ export default {
             this.chart.options.scales.y.ticks.maxTicksLimit = (this.height / 200) * 8 - dif
           }
           this.chartRenderKey++
-          console.log(this.path)
         })
       } catch (err) {
         if (!signal.aborted) {
