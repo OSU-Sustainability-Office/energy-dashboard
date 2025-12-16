@@ -373,12 +373,9 @@ const actions = {
       } catch (err) {
         // Log request details if the request was not aborted
         if (!signal?.aborted) {
-          console.error(`Error with chunked request. Request Details: 
-            meterId: ${request[0]},
-            start: ${request[1]},
-            end: ${request[2]},
-            uom: ${request[3]},
-            classInt: ${request[4]}`)
+          console.error(
+            `Error with chunked request. Request Details: meterId: ${request[0]}, start: ${request[1]}, end: ${request[2]}, uom: ${request[3]}, classInt: ${request[4]}`
+          )
         }
         throw err // rethrow the error to be handled by the caller
       }
