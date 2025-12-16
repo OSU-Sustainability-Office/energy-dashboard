@@ -214,6 +214,7 @@ export default {
     // Cancel any ongoing requests
     if (this.abortController) {
       this.abortController.abort()
+      this.abortController = null
     }
 
     if (this.unsubscribe) {
