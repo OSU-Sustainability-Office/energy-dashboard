@@ -384,7 +384,8 @@ const actions = {
       }
 
       // After each request, update the batch status if there are more batches to process
-      if (this.getters['dataStore/batchStatus'].current < this.getters['dataStore/batchStatus'].total) {
+      const batchStatus = this.getters['dataStore/batchStatus']
+      if (batchStatus.active && batchStatus.current < batchStatus.total) {
         this.commit('dataStore/incrementBatch')
       }
     }
