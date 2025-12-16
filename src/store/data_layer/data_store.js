@@ -657,7 +657,7 @@ const getters = {
 
   // Calculates the number of batches needed for a given request size
   numberOfBatches: (state, getters) => requestSize => {
-    return Math.max(1, Math.ceil(requestSize / RESPONSE_MAX_SIZE))
+    return Math.max(1, Math.ceil(requestSize / RESPONSE_MAX_SIZE)) // Set lower limit to 1 since we can't have 0 batches
   },
 
   batchStatus(state) {
