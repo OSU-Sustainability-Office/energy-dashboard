@@ -266,7 +266,7 @@ const actions = {
     return blockPromise
   },
 
-  async getData(store, payload) {
+  async getData(store, payload = {}) {
     let chartDataPromises = []
     let data = {
       labels: [],
