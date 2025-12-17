@@ -75,11 +75,6 @@
               Usage
             </div>
           </el-col>
-          <!-- <el-tooltip content="Click to toggle visibility" placement="right">
-            <el-menu-item index='Down Trend' :class="[(isDisplayed('Down Trend') ? 'active' : 'notactive')]"><span class='down swatch'></span>Down Trend</el-menu-item>
-          </el-tooltip>
-          <el-menu-item index='Stable Trend' :class="[(isDisplayed('Stable Trend') ? 'active' : 'notactive')]"><span class='stable swatch'></span>Stable Trend</el-menu-item>
-          <el-menu-item index='Up Trend' :class="[(isDisplayed('Up Trend') ? 'active' : 'notactive')]"><span class='up swatch'></span>Up Trend</el-menu-item> -->
         </el-menu-item-group>
       </el-menu>
 
