@@ -128,14 +128,14 @@ const actions = {
         */
         throw new Error('Can not add together non-total metering points')
       }
-  
+
       let promiseObject = {}
       // Still need to call a meter function to setup the payload
       // console.log("Meters requested: ", store.getters.meters)
-  
+
       // if we're requesting data for multiple meters, make a multiMeter request.
       let multiMeterRequests = store.getters.meters.length > 5
-  
+
       if (multiMeterRequests) {
         const dataLayerPayload = []
         for (let meter of store.getters.meters) {
@@ -148,7 +148,7 @@ const actions = {
             signal: payload.signal
           })
         }
-  
+
         // Hit the data-layer with a multiMeter request
         const multiMeterData = await this.dispatch('dataStore/getMultiMeterData', dataLayerPayload).catch(err => {
           console.log('The DataLayer threw an exception for our payload array, error message: ', err)
@@ -171,15 +171,15 @@ const actions = {
           promiseObject[meter.id] = promise
         }
       }
-  
+
       for (const meter of store.getters.meters) {
         const data = await promiseObject[meter.id]
-  
+
         // Skip invalid or empty data arrays
         if (!Array.isArray(data) || data.length === 0) {
           continue
         }
-  
+
         // Sum values for the same timestamp across multiple meters
         for (const dataPoint of data) {
           const timestamp = dataPoint.time
