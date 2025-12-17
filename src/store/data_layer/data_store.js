@@ -20,14 +20,20 @@ const state = () => {
   return {
     cache: {}, // Stores time-series data by meterId and unit of measure (uom)
     requestStore: {}, // Tracks queried data ranges to prevent redundant requests
-    indexedDBInstance: undefined // IndexedDB instance for persistent storage
+    indexedDBInstance: undefined, // IndexedDB instance for persistent storage
+    // Tracks the status of batch requests to inform the user while loading large datasets
+    batchStatus: {
+      active: false,
+      current: 0,
+      total: 0
+    }
   }
 }
 
 // AWS Lambda has a 6MB response body limit; ensure requests stay within this limit.
 const RESPONSE_HEADER_SIZE = 1000 // Overestimated; actual header is ~222 bytes.
 const DATA_ITEM_SIZE = 51 // (32 + 2 + 2 + 4 + 11)=51, an over-estimate for each item.
-const RESPONSE_MAX_SIZE = 0x350000 // Use smaller value for reduced risk of exceeding the limit.
+const RESPONSE_MAX_SIZE = 0x250000 // Use smaller value for reduced risk of exceeding the limit.
 
 const actions = {
   // Copies "cache" object to indexedDB for persistent storage
@@ -131,7 +137,6 @@ const actions = {
           newCacheObject[db_entry['meterId']] = db_entry['meterData']
         }
         this.commit('dataStore/overwriteCache', { newCache: newCacheObject })
-        console.log('data loaded from persistent cache')
       })
       .catch(err => {
         console.log(err)
@@ -232,7 +237,7 @@ const actions = {
       */
       if (requestSize >= RESPONSE_MAX_SIZE) {
         // Divide the requests up by time.
-        const batchSize = Math.ceil(requestSize / RESPONSE_MAX_SIZE)
+        const batchSize = this.getters['dataStore/numberOfBatches'](requestSize)
 
         // Initialize divided request objects
         for (let _ = 0; _ < batchSize; _++) {
@@ -250,7 +255,9 @@ const actions = {
       }
 
       // hit API
-      const meterDataArray = await Promise.all(apiRequests.map(reqObj => API.multiMeterData(reqObj))).catch(err => {
+      const meterDataArray = await Promise.all(
+        apiRequests.map(reqObj => API.multiMeterData(reqObj, payload.signal))
+      ).catch(err => {
         console.log('Error accessing multiMeterData api route:', err)
       })
 
@@ -340,14 +347,14 @@ const actions = {
 
   // Requests data in chunks to avoid exceeding the AWS lambda response body size limit
   async getChunkData(store, payload) {
-    const { meterId, start, end, uom, classInt } = payload
+    const { meterId, start, end, uom, classInt, signal } = payload
     await this.dispatch('dataStore/loadIndexedDB')
 
     const requests = []
 
     // Break up the request into batches
     const totalRequestSize = this.getters['dataStore/requestSize']([{ id: meterId, startDate: start, endDate: end }])
-    const numberOfBatches = Math.ceil(totalRequestSize / RESPONSE_MAX_SIZE)
+    const numberOfBatches = this.getters['dataStore/numberOfBatches'](totalRequestSize)
     const batchSize = Math.ceil((end - start) / numberOfBatches)
     for (let i = 0; i < numberOfBatches; i++) {
       const startDate = start + i * batchSize
@@ -358,12 +365,25 @@ const actions = {
     // Request data in batches
     const meterDataArray = []
     for (const request of requests) {
-      console.log('Requesting batch data for:', ...request)
-      const meterData = await API.data(...request).catch(err => {
-        console.log(`Error for batch [${request}]:`, err)
-      })
-      if (meterData && Array.isArray(meterData) && meterData.length > 0) {
-        meterDataArray.push(meterData)
+      try {
+        const meterData = await API.data(...request, signal)
+        if (meterData && Array.isArray(meterData) && meterData.length > 0) {
+          meterDataArray.push(meterData)
+        }
+      } catch (err) {
+        // Log request details if the request was not aborted
+        if (!signal?.aborted) {
+          console.error(
+            `Error with chunked request. Request Details: meterId: ${request[0]}, start: ${request[1]}, end: ${request[2]}, uom: ${request[3]}, classInt: ${request[4]}`
+          )
+        }
+        throw err // rethrow the error to be handled by the caller
+      }
+
+      // After each request, update the batch status if there are more batches to process
+      const batchStatus = this.getters['dataStore/batchStatus']
+      if (batchStatus.active && batchStatus.current < batchStatus.total) {
+        this.commit('dataStore/incrementBatch')
       }
     }
 
@@ -429,7 +449,7 @@ const actions = {
    * classInt: An integer that corresponds to the type of meter we are reading from
    */
   async getData(store, payload) {
-    const { meterId, start, end, uom, classInt } = payload
+    const { meterId, start, end, uom, classInt, signal } = payload
     // Find missing data intervals
     let missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
       meterId: meterId,
@@ -456,7 +476,7 @@ const actions = {
         if (interval.length === 0) {
           interval.push(Math.round(new Date().getTime() / 1000))
         }
-        return API.data(meterId, interval[0], interval[1], uom, classInt)
+        return API.data(meterId, interval[0], interval[1], uom, classInt, signal)
       })
 
       // Prevent redundant requests during this session
@@ -468,21 +488,17 @@ const actions = {
       })
 
       // Fetch missing data from API and add it to the cache
-      try {
-        const responses = await Promise.all(promises)
-        responses.forEach(datumArray => {
-          datumArray.forEach(datum => {
-            this.commit('dataStore/addToCache', {
-              datetime: datum.time,
-              meterId: meterId,
-              uom: uom,
-              value: datum[uom]
-            })
+      const responses = await Promise.all(promises)
+      responses.forEach(datumArray => {
+        datumArray.forEach(datum => {
+          this.commit('dataStore/addToCache', {
+            datetime: datum.time,
+            meterId: meterId,
+            uom: uom,
+            value: datum[uom]
           })
         })
-      } catch (error) {
-        console.error('Error fetching data from API:', error)
-      }
+      })
     }
 
     // Retrieve the data from the cache
@@ -545,6 +561,22 @@ const mutations = {
       state.cache[cacheEntry.meterId][cacheEntry.uom] = {}
     }
     state.cache[cacheEntry.meterId][cacheEntry.uom][cacheEntry.datetime] = cacheEntry.value
+  },
+
+  setBatchStatus(state, { active, current, total }) {
+    state.batchStatus.active = active
+    state.batchStatus.current = current
+    state.batchStatus.total = total
+  },
+
+  incrementBatch(state) {
+    state.batchStatus.current++
+  },
+
+  clearBatchStatus(state) {
+    state.batchStatus.active = false
+    state.batchStatus.current = 0
+    state.batchStatus.total = 0
   },
 
   /*
@@ -623,9 +655,13 @@ const getters = {
     return totalSize
   },
 
-  // determines if size exceeds the lambda API response limit
-  requestSizeException: (state, getters) => requests => {
-    return getters.requestSize(requests) >= RESPONSE_MAX_SIZE
+  // Calculates the number of batches needed for a given request size
+  numberOfBatches: (state, getters) => requestSize => {
+    return Math.max(1, Math.ceil(requestSize / RESPONSE_MAX_SIZE)) // Set lower limit to 1 since we can't have 0 batches
+  },
+
+  batchStatus(state) {
+    return state.batchStatus
   }
 }
 

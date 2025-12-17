@@ -6,6 +6,9 @@
   <div
     v-loading="loading || !chartData"
     element-loading-background="rgba(0, 0, 0, 0.8)"
+    :element-loading-text="
+      batchStatus.active ? `Loading batch ${batchStatus.current} of ${batchStatus.total}…` : 'Loading…'
+    "
     :style="`height: ${height}px; border-radius: 5px; overflow: hidden;`"
   >
     <Linechart
@@ -106,6 +109,7 @@ export default {
       chartRenderKey: 0,
       unsubscribe: null,
       loading: true,
+      abortController: null, // used to abort ongoing requests
       chartData: null,
       watchTimeout: null,
       colors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4']
@@ -199,63 +203,90 @@ export default {
             return null
         }
       }
+    },
+    batchStatus: {
+      get() {
+        return this.$store.getters['dataStore/batchStatus']
+      }
     }
   },
   beforeUnmount() {
+    // Cancel any ongoing requests
+    if (this.abortController) {
+      this.abortController.abort()
+      this.abortController = null
+    }
+
     if (this.unsubscribe) {
       this.unsubscribe()
     }
   },
   methods: {
-    updateChart: function () {
+    async updateChart() {
       if (!this.path) return
-      this.loading = true
-      this.$store
-        .dispatch(this.path + '/getData')
-        .then(data => {
-          // Set the unit (metric type) for each dataset
-          data.datasets.forEach((dataset, index) => {
-            dataset.unit = this.unit(index)
-          })
-          // Set the chart data
-          this.chartData = data
-          // Set the chart options
-          this.$nextTick(() => {
-            if (
-              this.chart &&
-              (this.graphType === 1 || this.graphType === 2) &&
-              data.datasets.length >= 1 &&
-              data.datasets[0].data.length >= 1
-            ) {
-              // format charts if there are multiple time periods
-              if (this.multipleTimePeriods(data.datasets)) {
-                this.formatMultipleTimePeriods(data.datasets)
-              }
 
-              let timeDif =
-                new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x).getTime() -
-                new Date(data.datasets[0].data[0].x).getTime()
-              let dif = 0
-              if (timeDif <= 24 * 60 * 60 * 1000) {
-                dif = 2
-                this.chart.options.scales.x.time.unit = 'minute'
-              } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
-                dif = 1
-                this.chart.options.scales.x.time.unit = 'hour'
-              } else {
-                this.chart.options.scales.x.time.unit = 'day'
-              }
-              this.chart.options.scales.y.ticks.maxTicksLimit = (this.height / 200) * 8 - dif
+      // Cancel any ongoing requests
+      if (this.abortController) {
+        this.abortController.abort()
+      }
+
+      // Create a new abort controller and signal for the new request
+      this.abortController = new AbortController()
+      const signal = this.abortController.signal
+
+      this.loading = true
+
+      try {
+        const data = await this.$store.dispatch(this.path + '/getData', { signal })
+        // Set the unit (metric type) for each dataset
+        data.datasets.forEach((dataset, index) => {
+          dataset.unit = this.unit(index)
+        })
+        // Set the chart data
+        this.chartData = data
+        // Set the chart options
+        this.$nextTick(() => {
+          if (
+            this.chart &&
+            (this.graphType === 1 || this.graphType === 2) &&
+            data.datasets.length >= 1 &&
+            data.datasets[0].data.length >= 1
+          ) {
+            // format charts if there are multiple time periods
+            if (this.multipleTimePeriods(data.datasets)) {
+              this.formatMultipleTimePeriods(data.datasets)
             }
-            console.log(this.path)
-            this.chartRenderKey++
-            this.loading = false
-          })
+
+            let timeDif =
+              new Date(data.datasets[0].data[data.datasets[0].data.length - 1].x).getTime() -
+              new Date(data.datasets[0].data[0].x).getTime()
+            let dif = 0
+            if (timeDif <= 24 * 60 * 60 * 1000) {
+              dif = 2
+              this.chart.options.scales.x.time.unit = 'minute'
+            } else if (timeDif <= 7 * 24 * 60 * 60 * 1000) {
+              dif = 1
+              this.chart.options.scales.x.time.unit = 'hour'
+            } else {
+              this.chart.options.scales.x.time.unit = 'day'
+            }
+            this.chart.options.scales.y.ticks.maxTicksLimit = (this.height / 200) * 8 - dif
+          }
+          this.chartRenderKey++
         })
-        .catch(err => {
-          console.log('could not load data', err)
-          this.loading = true
-        })
+      } catch (err) {
+        if (!signal.aborted) {
+          console.error('Error loading data:', err)
+          // Show "Data Unavailable" message
+          this.chartData = {
+            datasets: []
+          }
+        }
+      } finally {
+        if (!signal.aborted) {
+          this.loading = false
+        }
+      }
     },
     unit: function (index) {
       const charts = this.$store.getters[this.path + '/charts']

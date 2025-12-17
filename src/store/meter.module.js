@@ -55,7 +55,8 @@ const actions = {
       start: start,
       end: end,
       uom: payload.point,
-      classInt: store.getters.classInt
+      classInt: store.getters.classInt,
+      signal: payload.signal
     })
   }
 }

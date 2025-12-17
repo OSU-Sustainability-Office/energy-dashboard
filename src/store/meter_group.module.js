@@ -67,97 +67,129 @@ const actions = {
   async getData(store, payload) {
     let resultDataObject = new Map()
 
+    // Calculate the total number of batches required for all meters
+    let totalBatches = 0
+    for (const meter of store.getters.meters) {
+      const requestSize = this.getters['dataStore/requestSize']([
+        {
+          id: this.getters[meter.path + '/id'],
+          startDate: payload.dateStart,
+          endDate: payload.dateEnd
+        }
+      ])
+      totalBatches += this.getters['dataStore/numberOfBatches'](requestSize)
+    }
+
+    // Set the initial batch status before making requests if there are multiple batches
+    if (totalBatches > store.getters.meters.length) {
+      this.commit('dataStore/setBatchStatus', { active: true, total: totalBatches, current: 1 })
+    }
+
     // Solar Panel Data Support
     if (store.getters.type === 'Solar Panel') {
-      let promiseObject = {}
-      for (let meter of store.getters.meters) {
-        let promise = this.dispatch(meter.path + '/getData', payload)
-        promiseObject[meter.id] = promise
+      const promiseObject = {}
+      for (const meter of store.getters.meters) {
+        promiseObject[meter.id] = this.dispatch(meter.path + '/getData', payload)
       }
-      for (let meter of store.getters.meters) {
-        let data = await promiseObject[meter.id]
-        // For some reason if the array is empty it sometimes forgets it is an array
-        if (!Array.isArray(data) || data.length === 0) {
-          continue
+
+      try {
+        for (const meter of store.getters.meters) {
+          const data = await promiseObject[meter.id]
+
+          // Skip invalid or empty data arrays
+          if (!Array.isArray(data) || data.length === 0) {
+            continue
+          }
+
+          // Transform data points into map entries (time -> value)
+          for (const dataPoint of data) {
+            resultDataObject.set(dataPoint.time, dataPoint[payload.point])
+          }
         }
-        // move object -> map
-        for (let dataPoint of data) {
-          resultDataObject.set(dataPoint['time'], dataPoint[payload.point])
-        }
+      } finally {
+        this.commit('dataStore/clearBatchStatus')
       }
+
       return resultDataObject
     }
 
-    if (
-      payload.point !== 'accumulated_real' &&
-      payload.point !== 'total' &&
-      payload.point !== 'cubic_feet' &&
-      payload.point !== 'periodic_real_in' &&
-      payload.point !== 'periodic_real_out' &&
-      store.getters.meters.length > 1
-    ) {
-      // && store.getters.meters.length > 1) {
-      /*
-        To decide if this should allow more points later, but there are a lot that do not make sense or can not be directly added together
-      */
-      throw new Error('Can not add together non-total metering points')
-    }
-
-    let promiseObject = {}
-    // Still need to call a meter function to setup the payload
-    // console.log("Meters requested: ", store.getters.meters)
-
-    // if we're requesting data for multiple meters, make a multiMeter request.
-    let multiMeterRequests = store.getters.meters.length > 5
-
-    if (multiMeterRequests) {
-      const dataLayerPayload = []
-      for (let meter of store.getters.meters) {
-        dataLayerPayload.push({
-          meterId: this.getters[meter.path + '/id'],
-          start: payload.dateStart,
-          end: payload.dateEnd,
-          uom: payload.point,
-          classInt: this.getters[meter.path + '/classInt']
-        })
+    try {
+      if (
+        payload.point !== 'accumulated_real' &&
+        payload.point !== 'total' &&
+        payload.point !== 'cubic_feet' &&
+        payload.point !== 'periodic_real_in' &&
+        payload.point !== 'periodic_real_out' &&
+        store.getters.meters.length > 1
+      ) {
+        // && store.getters.meters.length > 1) {
+        /*
+          To decide if this should allow more points later, but there are a lot that do not make sense or can not be directly added together
+        */
+        throw new Error('Can not add together non-total metering points')
       }
 
-      // Hit the data-layer with a multiMeter request
-      const multiMeterData = await this.dispatch('dataStore/getMultiMeterData', dataLayerPayload).catch(err => {
-        console.log('The DataLayer threw an exception for our payload array, error message: ', err)
-        console.log('Falling back to 1:1 requests...')
-        multiMeterRequests = false
-      })
+      let promiseObject = {}
+      // Still need to call a meter function to setup the payload
+      // console.log("Meters requested: ", store.getters.meters)
+
+      // if we're requesting data for multiple meters, make a multiMeter request.
+      let multiMeterRequests = store.getters.meters.length > 5
+
       if (multiMeterRequests) {
-        // push the return'd data to the promiseObject
+        const dataLayerPayload = []
         for (let meter of store.getters.meters) {
-          promiseObject[meter.id] = new Promise((resolve, reject) => {
-            resolve(multiMeterData[meter.id])
+          dataLayerPayload.push({
+            meterId: this.getters[meter.path + '/id'],
+            start: payload.dateStart,
+            end: payload.dateEnd,
+            uom: payload.point,
+            classInt: this.getters[meter.path + '/classInt'],
+            signal: payload.signal
           })
         }
-      }
-    }
-    // request data per-meter, 1 request per meter.
-    if (!multiMeterRequests) {
-      for (let meter of store.getters.meters) {
-        let promise = this.dispatch(meter.path + '/getData', payload)
-        promiseObject[meter.id] = promise
-      }
-    }
 
-    for (let meter of store.getters.meters) {
-      let data = await promiseObject[meter.id]
-      // For some reason if the array is empty it sometimes forgets it is an array
-      if (!Array.isArray(data) || data.length === 0) {
-        continue
-      }
-      for (let dataPoint of data) {
-        if (resultDataObject.get(dataPoint['time'])) {
-          resultDataObject.set(dataPoint['time'], resultDataObject.get(dataPoint['time']) + dataPoint[payload.point])
-        } else {
-          resultDataObject.set(dataPoint['time'], dataPoint[payload.point])
+        // Hit the data-layer with a multiMeter request
+        const multiMeterData = await this.dispatch('dataStore/getMultiMeterData', dataLayerPayload).catch(err => {
+          console.log('The DataLayer threw an exception for our payload array, error message: ', err)
+          console.log('Falling back to 1:1 requests...')
+          multiMeterRequests = false
+        })
+        if (multiMeterRequests) {
+          // push the return'd data to the promiseObject
+          for (let meter of store.getters.meters) {
+            promiseObject[meter.id] = new Promise((resolve, reject) => {
+              resolve(multiMeterData[meter.id])
+            })
+          }
         }
       }
+      // request data per-meter, 1 request per meter.
+      if (!multiMeterRequests) {
+        for (let meter of store.getters.meters) {
+          let promise = this.dispatch(meter.path + '/getData', payload)
+          promiseObject[meter.id] = promise
+        }
+      }
+
+      for (const meter of store.getters.meters) {
+        const data = await promiseObject[meter.id]
+
+        // Skip invalid or empty data arrays
+        if (!Array.isArray(data) || data.length === 0) {
+          continue
+        }
+
+        // Sum values for the same timestamp across multiple meters
+        for (const dataPoint of data) {
+          const timestamp = dataPoint.time
+          const value = dataPoint[payload.point]
+          const existingValue = resultDataObject.get(timestamp) || 0
+          resultDataObject.set(timestamp, existingValue + value)
+        }
+      }
+    } finally {
+      this.commit('dataStore/clearBatchStatus')
     }
 
     return resultDataObject
