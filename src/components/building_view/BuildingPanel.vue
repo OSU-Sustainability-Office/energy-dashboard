@@ -87,9 +87,8 @@
           type="primary"
           class="moveButtons"
           @click="previousInterval"
-          icon="el-icon-d-arrow-left"
         >
-          Previous
+          <i class="el-icon-d-arrow-left"></i> Previous
         </el-button>
       </el-col>
       <el-col :span="12">
