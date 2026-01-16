@@ -82,14 +82,7 @@
     <!--Next/Previous Buttons-->
     <el-row :span="24">
       <el-col :span="12" class="buttonDisplay">
-        <el-button
-          size="small"
-          type="primary"
-          class="moveButtons"
-          @click="previousInterval"
-        >
-          Previous
-        </el-button>
+        <el-button size="small" type="primary" class="moveButtons" @click="previousInterval"> Previous </el-button>
       </el-col>
       <el-col :span="12">
         <el-row type="flex" justify="end">
