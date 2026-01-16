@@ -82,19 +82,12 @@
     <!--Next/Previous Buttons-->
     <el-row :span="24">
       <el-col :span="12" class="buttonDisplay">
-        <el-button
-          size="small"
-          type="primary"
-          class="moveButtons"
-          @click="previousInterval"
-        >
-          <i class="el-icon-d-arrow-left"></i> Previous
-        </el-button>
+        <el-button size="small" type="primary" class="moveButtons" @click="previousInterval"> Previous </el-button>
       </el-col>
       <el-col :span="12">
         <el-row type="flex" justify="end">
           <el-button size="small" type="primary" class="moveButtons" @click="nextInterval" :disabled="!nextExists">
-            Next <i class="el-icon-d-arrow-right"></i>
+            Next
           </el-button>
         </el-row>
       </el-col>
@@ -283,5 +276,8 @@ $chart-height: 430px;
 .moveButtons {
   height: 3em;
   width: 10em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
