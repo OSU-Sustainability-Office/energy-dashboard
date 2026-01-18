@@ -30,7 +30,4 @@ packaged.yaml
 # sqlite testing database
 *.db
 
-# Nix
-shell.nix
-.envrc
-.direnv/
+
