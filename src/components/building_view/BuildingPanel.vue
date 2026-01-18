@@ -276,8 +276,5 @@ $chart-height: 430px;
 .moveButtons {
   height: 3em;
   width: 10em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 </style>
