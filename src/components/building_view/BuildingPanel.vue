@@ -17,7 +17,6 @@
     <el-row :span="24" class="title" ref="title">
       <el-col :span="20">{{ name }}</el-col>
     </el-row>
-
     <!--Chart Below-->
     <el-row style="overflow: hidden" :span="24">
       <el-col :span="24">
@@ -78,211 +77,18 @@
       <el-col :span="20">{{ name }}</el-col>
       <el-col :span="4" class="right">&nbsp;<i class="fas fa-sliders-h" @click="openModal()"></i></el-col>
     </el-row>
-
     <!--Next/Previous Buttons-->
     <el-row :span="24">
       <el-col :span="12" class="buttonDisplay">
-        <el-button
-          size="small"
-          type="primary"
-          class="moveButtons"
-          @click="previousInterval"
-          icon="el-icon-d-arrow-left"
-        >
-          Previous
-        </el-button>
+        <el-button size="small" type="primary" class="moveButtons" @click="previousInterval"> Previous </el-button>
       </el-col>
       <el-col :span="12">
         <el-row type="flex" justify="end">
           <el-button size="small" type="primary" class="moveButtons" @click="nextInterval" :disabled="!nextExists">
-            Next <i class="el-icon-d-arrow-right"></i>
+            Next
           </el-button>
         </el-row>
       </el-col>
     </el-row>
-    <!--Chart Below-->
-    <el-row style="overflow: hidden" :span="24">
-      <el-col :span="24">
-        <!--If you change the "height" attribute here, remember to also change the chart-height variable in the scss-->
-        <ChartController
-          :randomColors="1"
-          :path="path"
-          ref="ChartController"
-          class="chart"
-          :styleC="style"
-          :height="430"
-        />
-      </el-col>
-    </el-row>
   </div>
 </template>
-
-<script>
-import ChartController from '@/components/charts/ChartController.vue'
-
-export default {
-  name: 'BuildingPanel',
-  props: ['path'],
-  components: {
-    ChartController
-  },
-  data() {
-    return {
-      editcard: false,
-      tempName: '',
-      interval: 15,
-      interval_unit: 'minute',
-      date_start: '',
-      date_end: '',
-      graphtype: 1,
-      style: {
-        display: 'inline-block',
-        width: 'calc(100% - 3em)',
-        height: '400px',
-        'margin-right': '0.5em',
-        'margin-left': '0.5em',
-        'padding-right': '1em',
-        'padding-left': '1em',
-        'padding-top': '1em'
-      }
-    }
-  },
-  computed: {
-    name: {
-      get() {
-        let name = this.$store.getters[this.path + '/name']
-        if (name && name !== '') {
-          return name
-        } else {
-          return '\xa0'
-        }
-      }
-    },
-    intunit: {
-      get: function () {
-        if (this.interval === 15 && this.interval_unit === 'minute') {
-          return 1 // 15 minutes
-        } else if (this.interval === 1 && this.interval_unit === 'hour') {
-          return 2 // 1 hour
-        } else if (this.interval === 1 && this.interval_unit === 'day') {
-          return 3 // 1 day
-        } else if (this.interval === 7 && this.interval_unit === 'day') {
-          return 4 // 1 week
-        } else if (this.interval === 1 && this.interval_unit === 'month') {
-          return 5 // 1 month
-        } else {
-          return 1 // default to 15 minutes
-        }
-      },
-      set: function (v) {
-        switch (v) {
-          case 1:
-            this.interval = 15
-            this.interval_unit = 'minute'
-            break
-          case 2:
-            this.interval = 1
-            this.interval_unit = 'hour'
-            break
-          case 3:
-            this.interval = 1
-            this.interval_unit = 'day'
-            break
-          case 4:
-            this.interval = 7
-            this.interval_unit = 'day'
-            break
-          case 5:
-            this.interval = 1
-            this.interval_unit = 'month'
-            break
-        }
-      }
-    },
-    // returns the current time interval from an end date to start date
-    currentTimeInterval: function () {
-      return this.$store.getters[this.path + '/dateEnd'] - this.$store.getters[this.path + '/dateStart']
-    },
-    // returns boolean for if next interval exists in program.
-    nextExists: function () {
-      return this.nextEndpoint < Date.now()
-    },
-    // holds next possible interval start
-    nextStartpoint: function () {
-      return this.$store.getters[this.path + '/dateStart'] - this.currentTimeInterval
-    },
-    // holds next possible interval end
-    nextEndpoint: function () {
-      return this.$store.getters[this.path + '/dateEnd'] + this.currentTimeInterval
-    }
-  },
-  methods: {
-    openModal: function () {
-      this.$store.dispatch('modalController/openModal', {
-        name: 'EditModal',
-        path: this.path
-      })
-    },
-    // Moves chart data to its previously occuring interval
-    previousInterval: function () {
-      let currentStartPoint = this.$store.getters[this.path + '/dateStart']
-      this.$store.commit(this.path + '/dateStart', this.nextStartpoint)
-      this.$store.commit(this.path + '/dateEnd', currentStartPoint)
-    },
-    // Moves chart data to its next occuring interval
-    nextInterval: function () {
-      let currentEndPoint = this.$store.getters[this.path + '/dateEnd']
-      this.$store.commit(this.path + '/dateEnd', this.nextEndpoint)
-      this.$store.commit(this.path + '/dateStart', currentEndPoint)
-    }
-  }
-}
-</script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-$chart-height: 430px;
-
-.buildingPanel {
-  background-color: $color-white;
-  padding: 2em;
-  padding-bottom: 5em;
-  height: calc(400px + 8em);
-  color: $color-primary;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  border-radius: 5px;
-  box-shadow: 0px 0px 3px $color-black;
-}
-
-.buildingPanel-tesla-iframe {
-  background-color: $color-white;
-  padding: 2em;
-  padding-bottom: 5em;
-  height: calc(520px + 8em);
-  color: $color-primary;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  border-radius: 5px;
-  box-shadow: 0px 0px 3px $color-black;
-}
-.title {
-  font-family: 'StratumNO2';
-  font-size: 2em;
-  padding-bottom: 0.35em;
-}
-.title .fas {
-  transition: color 0.2s ease;
-  cursor: pointer;
-}
-.title .fas:hover {
-  color: $color-black;
-}
-.right {
-  text-align: right;
-}
-.moveButtons {
-  height: 3em;
-  width: 10em;
-}
-</style>
