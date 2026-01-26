@@ -169,30 +169,31 @@ export default {
 .el-sub-menu.is-opened > .el-sub-menu__title {
   color: $color-white !important;
   background-color: $color-black !important;
-  .el-menu--popup.el-menu--popup-bottom-start {
-    max-height: 300px;
-    overflow-y: auto;
+}
 
-    // Firefox
-    scrollbar-width: thin;
-    scrollbar-color: #888 #f1f1f1;
+.el-menu--popup.el-menu--popup-bottom-start {
+  max-height: 300px;
+  overflow-y: auto;
 
-    // Chromium/Safari
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
+  // Firefox
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
 
-    &::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
+  // Chromium/Safari
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
 
-    &::-webkit-scrollbar-thumb {
-      background: #888;
-      border-radius: 3px;
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
 
-      &:hover {
-        background: #555;
-      }
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+
+    &:hover {
+      background: #555;
     }
   }
 }
