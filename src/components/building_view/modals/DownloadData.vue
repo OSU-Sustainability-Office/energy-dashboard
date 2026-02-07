@@ -26,6 +26,7 @@
           type="datetime"
           format="MM/DD/YYYY hh:mm a"
           :picker-options="{ format: 'hh:mm a' }"
+          :disabledDate="disableFutureDates"
           style="width: 100%"
         >
         </el-date-picker>
@@ -47,6 +48,7 @@
           type="datetime"
           format="MM/DD/YYYY hh:mm a"
           :picker-options="{ format: 'hh:mm a' }"
+          :disabledDate="disableFutureDates"
           style="width: 100%"
         >
         </el-date-picker>
@@ -208,6 +210,10 @@ export default {
   },
 
   methods: {
+    disableFutureDates(date) {
+      // Disable any date in the future
+      return date.getTime() > Date.now()
+    },
     addBuilding: function () {
       const building = {
         id: this.addBuildingId,
@@ -367,6 +373,8 @@ export default {
     dateValidator: function (rule, value, callback) {
       if (!value) {
         callback(new Error(rule.message))
+      } else if (new Date(value).getTime() > Date.now()) {
+        callback(new Error('Date cannot be in the future. Only historical data is available.'))
       } else {
         callback()
       }
