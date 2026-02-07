@@ -4,7 +4,7 @@
 -->
 <template>
   <div>
-    <button @click="toggleFlag" class="toggleButton">{{ buttonText }}</button>
+    <button @click.stop="toggleFlag" @dblclick.stop.prevent class="toggleButton">{{ buttonText }}</button>
   </div>
 </template>
 

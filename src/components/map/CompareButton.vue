@@ -4,7 +4,7 @@
   the map. It is used to trigger the building comparison process.
 -->
 <template>
-  <button class="bigButton" @click="$emit('startCompare')">Compare Buildings</button>
+  <button class="bigButton" @click.stop="$emit('startCompare')" @dblclick.stop.prevent>Compare Buildings</button>
 </template>
 
 <script>
