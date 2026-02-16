@@ -10,12 +10,14 @@ const state = () => {
   return {
     path: 'map',
     promise: null,
-    buildingMap: new Map() // buildings with missing geoJSON (key: mapId, value: building)
+    allBuildingPromise: null,
+    buildingMap: new Map(), // buildings with missing geoJSON (key: mapId, value: buildingId)
+    buildingSeeds: {} // payload fragments used for deferred building hydration
   }
 }
 
 const actions = {
-  async loadBuilding(store, payload) {
+  loadBuildingBase(store, payload) {
     let buildingSpace = 'building_' + payload.id.toString()
     let moduleSpace = store.getters.path + '/' + buildingSpace
     this.registerModule(moduleSpace.split('/'), Building)
@@ -26,17 +28,101 @@ const actions = {
     store.commit(buildingSpace + '/image', payload.image)
     store.commit(buildingSpace + '/id', payload.id)
     store.commit(buildingSpace + '/hidden', payload.hidden)
-    store.commit(buildingSpace + '/geoJSON', JSON.parse(payload.geoJSON))
+    store.commit(buildingSpace + '/hydrated', false)
+
+    // Build a lightweight description from the seed payload so filtering works before hydration.
+    const utilityTypes = new Set()
+    for (let meterGroup of payload.meterGroups || []) {
+      if (meterGroup.meters && meterGroup.meters.length > 0 && meterGroup.meters[0].type) {
+        utilityTypes.add(meterGroup.meters[0].type)
+      }
+    }
+    for (let utilityType of utilityTypes) {
+      store.commit(buildingSpace + '/addType', utilityType)
+    }
+
+    if (payload.geoJSON) {
+      let parsedGeoJSON = payload.geoJSON
+      if (typeof payload.geoJSON === 'string') {
+        try {
+          parsedGeoJSON = JSON.parse(payload.geoJSON)
+        } catch (err) {
+          parsedGeoJSON = null
+        }
+      }
+      if (parsedGeoJSON) {
+        store.commit(buildingSpace + '/geoJSON', parsedGeoJSON)
+      }
+    }
+
+    store.commit('buildingSeed', {
+      id: payload.id,
+      meterGroups: payload.meterGroups || []
+    })
+
     if (!payload.geoJSON && payload.mapId) {
       // if geoJSON is not provided, we need to fetch it
-      store.commit('setBuildingInMap', { mapId: payload.mapId, building: store.state[buildingSpace] })
+      store.commit('setBuildingInMap', { mapId: payload.mapId, buildingId: payload.id })
     }
-    let mgPromises = []
-    for (let meterGroup of payload.meterGroups) {
-      mgPromises.push(store.dispatch(buildingSpace + '/loadMeterGroup', meterGroup))
+  },
+
+  async hydrateBuilding(store, buildingId) {
+    const building = store.getters.building(buildingId)
+    if (!building) {
+      return null
     }
-    await Promise.all(mgPromises)
-    await store.dispatch(buildingSpace + '/buildDefaultBlocks')
+
+    if (building.hydrated) {
+      return building
+    }
+
+    if (building.hydratePromise) {
+      await building.hydratePromise
+      return store.getters.building(buildingId)
+    }
+
+    const buildingSpace = 'building_' + buildingId.toString()
+    const meterGroups = store.getters.buildingSeed(buildingId)
+
+    const hydratePromise = (async () => {
+      let mgPromises = []
+      for (let meterGroup of meterGroups) {
+        mgPromises.push(store.dispatch(buildingSpace + '/loadMeterGroup', meterGroup))
+      }
+      await Promise.all(mgPromises)
+      await store.dispatch(buildingSpace + '/buildDefaultBlocks')
+      store.commit(buildingSpace + '/hydrated', true)
+    })()
+
+    store.commit(buildingSpace + '/promise', hydratePromise)
+    store.commit(buildingSpace + '/hydratePromise', hydratePromise)
+
+    try {
+      await hydratePromise
+    } catch (err) {
+      store.commit(buildingSpace + '/hydratePromise', null)
+      store.commit(buildingSpace + '/promise', null)
+      throw err
+    }
+
+    return store.getters.building(buildingId)
+  },
+
+  async hydrateAllBuildings(store) {
+    if (store.getters.allBuildingPromise === null) {
+      const allBuildingPromise = (async () => {
+        await store.dispatch('loadMap')
+        const buildingIds = store.getters.buildings.map(building => building.id)
+        await Promise.all(buildingIds.map(id => store.dispatch('hydrateBuilding', id)))
+      })()
+      store.commit('allBuildingPromise', allBuildingPromise)
+    }
+    try {
+      return await store.getters.allBuildingPromise
+    } catch (err) {
+      store.commit('allBuildingPromise', null)
+      throw err
+    }
   },
 
   async loadGeoJSONData(store, missingIds) {
@@ -54,7 +140,8 @@ const actions = {
         }
 
         const wayId = String(feature.id.split('/')[1])
-        const building = buildingMap.get(wayId)
+        const buildingId = buildingMap.get(wayId)
+        const building = store.getters.building(buildingId)
 
         if (building) {
           // some buildings are Polygons by definition, but are returned as LineStrings
@@ -86,11 +173,9 @@ const actions = {
     if (store.getters.promise === null) {
       const mapPromise = (async () => {
         let buildingsResolved = await API.buildings()
-        let buildingPromises = []
         for (let building of buildingsResolved) {
-          buildingPromises.push(store.dispatch('loadBuilding', building))
+          await store.dispatch('loadBuildingBase', building)
         }
-        await Promise.all(buildingPromises)
 
         // fetch missing geoJSON data (if any)
         const buildingMap = store.getters.buildingMap
@@ -102,7 +187,12 @@ const actions = {
       })()
       store.commit('promise', mapPromise)
     }
-    return store.getters.promise
+    try {
+      return await store.getters.promise
+    } catch (err) {
+      store.commit('promise', null)
+      throw err
+    }
   }
 }
 
@@ -110,8 +200,14 @@ const mutations = {
   promise(state, promise) {
     state.promise = promise
   },
-  setBuildingInMap(state, { mapId, building }) {
-    state.buildingMap.set(mapId, building)
+  allBuildingPromise(state, promise) {
+    state.allBuildingPromise = promise
+  },
+  setBuildingInMap(state, { mapId, buildingId }) {
+    state.buildingMap.set(mapId, buildingId)
+  },
+  buildingSeed(state, { id, meterGroups }) {
+    state.buildingSeeds[id] = meterGroups
   }
 }
 
@@ -122,6 +218,14 @@ const getters = {
 
   promise(state) {
     return state.promise
+  },
+
+  allBuildingPromise(state) {
+    return state.allBuildingPromise
+  },
+
+  buildingSeed: state => id => {
+    return state.buildingSeeds[id] || []
   },
 
   building: state => id => {
@@ -169,7 +273,7 @@ const getters = {
     for (let key of Object.keys(state)) {
       if (key.search(/building_/) >= 0) {
         for (let buildingKey of Object.keys(state[key])) {
-          if (buildingKey.search(/meterGroup_/ >= 0)) {
+          if (buildingKey.search(/meterGroup_/) >= 0) {
             meterGroups[buildingKey.replace('meterGroup_', '')] = state[key][buildingKey]
           }
         }
