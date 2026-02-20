@@ -30,6 +30,7 @@
           type="datetime"
           format="MM/DD/YYYY hh:mm A"
           :picker-options="{ format: 'hh:mm A' }"
+          :disabledDate="disableFutureDates"
           style="width: 100%"
         >
         </el-date-picker>
@@ -51,6 +52,7 @@
           type="datetime"
           format="MM/DD/YYYY hh:mm A"
           :picker-options="{ format: 'hh:mm A' }"
+          :disabledDate="disableFutureDates"
           style="width: 100%"
         >
         </el-date-picker>
@@ -197,6 +199,10 @@ export default {
   },
 
   methods: {
+    disableFutureDates(date) {
+      // Disable any date in the future
+      return date.getTime() > Date.now()
+    },
     cardSave: async function () {
       let blockPath = this.$store.getters['modalController/data'].path
       if (blockPath) {
@@ -339,6 +345,8 @@ export default {
     dateValidator: function (rule, value, callback) {
       if (!value) {
         callback(new Error(rule.message))
+      } else if (new Date(value).getTime() > Date.now()) {
+        callback(new Error('Date cannot be in the future. Only historical data is available.'))
       } else {
         callback()
       }
