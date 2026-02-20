@@ -78,7 +78,7 @@
         </el-menu-item-group>
       </el-menu>
 
-      <div class="mapContainer" ref="mapContainer" v-loading="!mapLoaded">
+      <div class="mapContainer" ref="mapContainer">
         <l-map style="height: 100%; width: 100%" :zoom="zoom" :center="center" ref="map" @ready="updateMapRef">
           <button class="resetMapButton" @click="resetMap()">Reset Map</button>
           <compareButton @startCompare="startCompare"></compareButton>
@@ -87,8 +87,8 @@
           </div>
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <l-geo-json
-            v-for="building of filteredBuildings"
-            :key="building.id * rKey"
+            v-for="building of displayedBuildings"
+            :key="building.id"
             :geojson="building.geoJSON"
             :options="buildingOptions"
             ref="geoLayer"
@@ -136,6 +136,7 @@ import { Search as SearchIcon, Close as CloseIcon } from '@element-plus/icons-vu
 const DEFAULT_LAT = 44.56335
 const DEFAULT_LON = -123.2858
 const DEFAULT_ZOOM = 15.5
+const BUILDING_BATCH_SIZE = 40
 
 export default {
   name: 'featured',
@@ -159,21 +160,28 @@ export default {
     CloseIcon
   },
   computed: {
-    filteredBuildings() {
+    allBuildings() {
       return this.$store.getters['map/buildings'].filter(building => building.geoJSON)
     },
-    mapLoaded() {
-      return (
-        this.filteredBuildings.length > 0 && // buildings are loaded
-        this.processedLayers === this.filteredBuildings.length && // all layers are processed
-        !this.$store.getters['map/buildingMap'].size // all geojson layers are loaded
-      )
+    filteredBuildings() {
+      return this.allBuildings.filter(building => {
+        if (this.grouping === 'Category' && !this.selected.includes(building.group)) {
+          return false
+        }
+        if (this.selectedOption === 'All') {
+          return true
+        }
+        const description = building.description || ''
+        return description.split(', ').some(type => this.selectedOption.includes(type))
+      })
+    },
+    displayedBuildings() {
+      return this.filteredBuildings.slice(0, this.visibleBuildingCount)
     },
     showSide: {
       get() {
         return this.$store.getters['modalController/modalName'] === 'BuildingModal'
       },
-
       set(value) {
         this.$store.dispatch('modalController/closeModal')
       }
@@ -182,7 +190,6 @@ export default {
       get() {
         return this.$store.getters['modalController/modalName'] === 'BuildingCompareModal'
       },
-
       set(value) {
         this.$store.dispatch('modalController/closeModal')
       }
@@ -204,24 +211,16 @@ export default {
       grouping: 'Category',
       ele: [],
       compareMarkers: [],
-      rKey: 1,
       message: this.message,
       askingForComparison: false,
       building_compare_error: false,
-      selected: [
-        'Academics',
-        'Events & Engagement',
-        'Admin & Operations',
-        'Residential Life',
-        'Stable Trend',
-        'Up Trend',
-        'Down Trend'
-      ],
+      selected: ['Academics', 'Events & Engagement', 'Admin & Operations', 'Residential Life'],
       show: false,
-      processedLayers: 0,
+      visibleBuildingCount: 0,
+      buildingBatchSize: BUILDING_BATCH_SIZE,
+      buildingRenderTimer: null,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
-          this.processedLayers++
           layer.on('click', e => {
             this.building_compare_error = false
             this.polyClick(e.target.feature.properties.id, e.target.feature, layer.getBounds().getCenter())
@@ -239,46 +238,73 @@ export default {
             if (!e.target.setStyle) return
             e.target.setStyle({ ...e.target.oldStyle })
           })
-          const color = this.getCategoryColor(feature.properties.group)
-          layer.setStyle({ fillColor: color, color: color, opacity: 1, fillOpacity: 0.7, weight: 2 })
+          if (this.grouping === 'Category') {
+            const color = this.getCategoryColor(feature.properties.group)
+            layer.setStyle({ fillColor: color, color: color, opacity: 1, fillOpacity: 0.7, weight: 2 })
+          } else {
+            this.updateEnergySlopeColor(layer)
+          }
         }
       }
     }
   },
   methods: {
-    polyClick: function (id, feature, center) {
+    getGeoLayerRefs() {
+      if (!this.$refs.geoLayer) {
+        return []
+      }
+      return Array.isArray(this.$refs.geoLayer) ? this.$refs.geoLayer : [this.$refs.geoLayer]
+    },
+    resetVisibleBuildings() {
+      if (this.buildingRenderTimer) {
+        clearTimeout(this.buildingRenderTimer)
+      }
+      this.visibleBuildingCount = Math.min(this.buildingBatchSize, this.filteredBuildings.length)
+      if (this.visibleBuildingCount < this.filteredBuildings.length) {
+        const loadNextBatch = () => {
+          this.visibleBuildingCount = Math.min(
+            this.visibleBuildingCount + this.buildingBatchSize,
+            this.filteredBuildings.length
+          )
+          if (this.visibleBuildingCount < this.filteredBuildings.length) {
+            this.buildingRenderTimer = window.setTimeout(loadNextBatch, 0)
+          }
+        }
+        this.buildingRenderTimer = window.setTimeout(loadNextBatch, 0)
+      }
+    },
+    async polyClick(id, feature, center) {
       if (!this.askingForComparison) {
+        await this.$store.dispatch('map/hydrateBuilding', id)
         this.$store.dispatch('modalController/openModal', {
           name: 'BuildingModal',
           id: id
         })
-      } else {
-        if (this.askingForComparison && this.compareStories.indexOf(id) < 0) {
-          const data =
-            "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/><path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"
-          const formed = encodeURI('data:image/svg+xml,' + data).replace(/#/g, '%23')
-          const checkIcon = L.icon({
-            iconUrl: formed,
-            iconSize: [20, 20],
-            shadowUrl: ''
-          })
-          const marker = L.marker(center, {
-            icon: checkIcon,
-            bubblingMouseEvents: true,
-            interactive: false
-          }).addTo(this.map)
-          marker.buildingId = id
-          this.compareMarkers.push(marker)
-          this.compareStories.push(id)
-        } else if (this.askingForComparison) {
-          const removingMarkerIndex = this.compareMarkers.findIndex(e => e.buildingId === id)
-          if (removingMarkerIndex === -1) {
-            return
-          }
-          const marker = this.compareMarkers.splice(removingMarkerIndex, 1)[0]
-          this.map.removeLayer(marker)
-          this.compareStories.splice(this.compareStories.indexOf(id), 1)
+      } else if (this.askingForComparison && this.compareStories.indexOf(id) < 0) {
+        const data =
+          "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='246' fill='#D73F09' stroke='#FFF' stroke-width='20'/><path transform='scale(0.7 0.7) translate(76.8 86.8)' fill='#FFF' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z'></path></svg>"
+        const formed = encodeURI('data:image/svg+xml,' + data).replace(/#/g, '%23')
+        const checkIcon = L.icon({
+          iconUrl: formed,
+          iconSize: [20, 20],
+          shadowUrl: ''
+        })
+        const marker = L.marker(center, {
+          icon: checkIcon,
+          bubblingMouseEvents: true,
+          interactive: false
+        }).addTo(this.map)
+        marker.buildingId = id
+        this.compareMarkers.push(marker)
+        this.compareStories.push(id)
+      } else if (this.askingForComparison) {
+        const removingMarkerIndex = this.compareMarkers.findIndex(e => e.buildingId === id)
+        if (removingMarkerIndex === -1) {
+          return
         }
+        const marker = this.compareMarkers.splice(removingMarkerIndex, 1)[0]
+        this.map.removeLayer(marker)
+        this.compareStories.splice(this.compareStories.indexOf(id), 1)
       }
     },
     resetMap() {
@@ -288,6 +314,9 @@ export default {
       }
     },
     getResult(searchResult) {
+      if (!this.map) {
+        return
+      }
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
       }
@@ -330,11 +359,18 @@ export default {
     },
     resetSearchInput() {
       this.search = ''
+      if (!this.map) {
+        return
+      }
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
       }
     },
     removeAllMarkers: function () {
+      if (!this.map) {
+        this.compareMarkers = []
+        return
+      }
       for (let marker of this.compareMarkers) {
         this.map.removeLayer(marker)
       }
@@ -353,14 +389,22 @@ export default {
 
       try {
         if (this.building_compare_error === false) {
+          await Promise.all(this.compareStories.map(id => this.$store.dispatch('map/hydrateBuilding', id)))
           let path = this.$store.getters['map/building'](this.compareStories[0]).path
           if (target !== 'q' && this.compareStories.length === 1) {
             this.$router.push({
               path: `/compare/${encodeURI(JSON.stringify(this.compareStories))}/2`
             })
           }
-          let mgId = this.$store.getters[path + '/primaryGroup']('Electricity').id
-          let blockSpace = this.$store.getters[path + '/block'](mgId).path
+          const primaryGroup = this.$store.getters[path + '/primaryGroup']('Electricity')
+          if (!primaryGroup) {
+            throw new Error('Could not find primary electricity group for comparison')
+          }
+          const compareBlock = this.$store.getters[path + '/block'](primaryGroup.id)
+          if (!compareBlock) {
+            throw new Error('Could not find block for comparison')
+          }
+          let blockSpace = compareBlock.path
           await this.$store.dispatch(blockSpace + '/removeAllModifiers')
           await this.$store.dispatch(blockSpace + '/addModifier', 'building_compare')
           await this.$store.dispatch(blockSpace + '/updateModifier', {
@@ -382,8 +426,6 @@ export default {
           }
         }
       } catch (err) {
-        // uncomment this to see exact errors in debug
-        // console.error(err)
         this.showSide = false
         this.building_compare_error = true
         this.compareStories.shift()
@@ -396,6 +438,9 @@ export default {
       this.compareStories = []
       if (buildingId !== undefined) {
         this.compareStories.push(buildingId)
+      }
+      if (!this.map) {
+        return
       }
 
       const data =
@@ -445,7 +490,6 @@ export default {
       return this.selected.includes(v)
     },
     handleSelect: function (string) {
-      this.processedLayers = 0 // show loading indicator after switching categories
       if (this.selected.includes(string)) {
         this.selected = this.selected.filter(item => item !== string)
       } else {
@@ -453,8 +497,6 @@ export default {
       }
     },
     computedColor: function (percentage) {
-      // #d62326 - Bottom Red
-      // #19a23a - Top Green
       const redInt = [parseInt('0xd6', 16), parseInt('0x23', 16), parseInt('0x26', 16)]
       const greenInt = [parseInt('0x19', 16), parseInt('0xa2', 16), parseInt('0x3a', 16)]
       const typicalColor = [redInt[0] - greenInt[0], greenInt[1] - redInt[1], greenInt[2] - redInt[2]]
@@ -499,18 +541,26 @@ export default {
     },
     async updateEnergySlopeColor(layer) {
       try {
-        // Retrieves building object from store using leaflet property id
-        await this.$store.getters['map/promise']
+        await this.$store.dispatch('map/hydrateBuilding', layer.feature.properties.id)
         const building = this.$store.getters['map/building'](layer.feature.properties.id)
-        await this.$store.getters[building.path + '/promise']
+        if (!building) {
+          throw new Error('building not found')
+        }
 
-        // Retrieves primary energy group from store
         const mg = this.$store.getters[building.path + '/primaryGroup']('Electricity')
+        if (!mg) {
+          throw new Error('primary electricity group missing')
+        }
         const defaultBlock = this.$store.getters[building.path + '/block'](mg.id)
+        if (!defaultBlock) {
+          throw new Error('default block missing')
+        }
         await this.$store.getters[defaultBlock.path + '/promise']
         const defaultChart = this.$store.getters[defaultBlock.path + '/charts'][0]
+        if (!defaultChart) {
+          throw new Error('default chart missing')
+        }
 
-        // Gets current date and date 60 days ago
         const currentDate = new Date()
         const minus60 = new Date(currentDate.getTime() - 60 * 24 * 60 * 60 * 1000)
         const reqPayload = {
@@ -522,10 +572,9 @@ export default {
         }
         const data = await this.$store.dispatch(defaultChart.path + '/getData', reqPayload)
 
-        // Compute slope (least squares algorithm)
         const series = data.data
         let meanY = series.reduce((acc, cur) => acc + cur.y, 0) / series.length
-        let meanX = series.length / 2 // No need to use date can just use index
+        let meanX = series.length / 2
         let accmxx = 0
         let accmxxyy = 0
         series.forEach((point, idx) => {
@@ -535,7 +584,6 @@ export default {
         const slope = accmxxyy / accmxx
         const normalizedSlope = slope / meanY
 
-        // Convert slope to color
         const color = this.computedColor(normalizedSlope)
         layer.setStyle({ fillColor: color, color: color })
       } catch (err) {
@@ -549,8 +597,9 @@ export default {
   },
   async created() {
     this.message = window.innerWidth > 844
+    await this.$store.dispatch('map/loadMap')
+    this.resetVisibleBuildings()
 
-    // Event listener for input data
     this.handleInputData = inputWord => {
       this.message = inputWord
     }
@@ -562,38 +611,28 @@ export default {
     })
   },
   beforeUnmount() {
+    if (this.buildingRenderTimer) {
+      clearTimeout(this.buildingRenderTimer)
+    }
     emitter.off('inputData', this.handleInputData)
   },
   watch: {
-    selectedOption(energyFilter) {
-      this.processedLayers = 0 // show loading indicator after switching filters
-      this.rKey++
-      this.$nextTick(() => {
-        this.map = this.$refs.map.leafletObject
-        for (var layerKey of Object.keys(this.map._layers)) {
-          let layer = this.map._layers[layerKey]
-          if (layer.feature && energyFilter !== 'All') {
-            let descArray = this.$store.getters['map/building'](layer.feature.properties.id).description.split(', ')
-            let descLength = 0
-            for (let i = 0; i < descArray.length; i++) {
-              if (energyFilter.includes(descArray[i])) {
-                descLength += 1
-              }
-            }
-            if (descLength === 0) {
-              this.map.removeLayer(layer)
-            }
-          }
-        }
-      })
+    filteredBuildings: {
+      immediate: true,
+      handler() {
+        this.resetVisibleBuildings()
+      }
+    },
+    selectedOption() {
+      this.search = ''
+      this.resetVisibleBuildings()
     },
     grouping: {
       async handler() {
         this.search = ''
-        this.rKey++
         await this.$nextTick()
         let promises = []
-        this.$refs.geoLayer.forEach(geoJsonComponent => {
+        this.getGeoLayerRefs().forEach(geoJsonComponent => {
           const geoJsonLayer = geoJsonComponent.leafletObject
           geoJsonLayer.eachLayer(async layer => {
             if (this.grouping === 'Category') {
@@ -604,11 +643,10 @@ export default {
           })
         })
         await Promise.all(promises)
-        this.processedLayers = this.filteredBuildings.length
       }
     },
     search: function (v) {
-      if (v === '') {
+      if (v === '' || !this.map) {
         this.searchGroup = []
         return
       }
@@ -624,19 +662,9 @@ export default {
       }
       this.searchGroup = searchGroup
     },
-    selected: function (val) {
-      this.rKey++
-      this.$nextTick(() => {
-        this.map = this.$refs.map.leafletObject
-        for (var layerKey of Object.keys(this.map._layers)) {
-          let layer = this.map._layers[layerKey]
-          if (layer.feature) {
-            if (!val.includes(layer.feature.properties.group) && this.grouping === 'Category') {
-              this.map.removeLayer(layer)
-            }
-          }
-        }
-      })
+    selected: function () {
+      this.search = ''
+      this.resetVisibleBuildings()
     }
   }
 }

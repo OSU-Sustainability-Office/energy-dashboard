@@ -70,7 +70,7 @@ export default {
     }
   },
   async mounted() {
-    await this.$store.getters['map/promise']
+    await this.$store.dispatch('map/loadMap')
     if (this.$route.params.group && this.groups[this.$route.params.group]) {
       this.openName = this.$route.params.group
     } else {

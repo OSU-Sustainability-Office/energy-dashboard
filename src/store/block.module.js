@@ -111,8 +111,8 @@ const actions = {
         chartSpace + '/color',
         store.getters.chartColors[(store.getters.charts.length - 1) % store.getters.chartColors.length]
       )
-      await this.getters['map/promise']
-      await this.getters['map/allBuildingPromise']
+      await this.dispatch('map/loadMap')
+      await this.dispatch('map/hydrateAllBuildings')
       store.commit(chartSpace + '/building', this.getters['map/meterGroup'](chart.meters).building)
       store.commit(chartSpace + '/meterGroupPath', this.getters['map/meterGroup'](chart.meters).path)
       store.commit(chartSpace + '/promise', Promise.resolve())

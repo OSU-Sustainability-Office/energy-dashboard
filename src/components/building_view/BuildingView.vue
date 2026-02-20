@@ -42,9 +42,37 @@ export default {
   },
   async created() {
     await this.$store.dispatch('map/loadMap')
+    await this.hydrateRouteBuildings(this.$route)
     this.navVis = this.$route.path.includes('building') // show BuildingPanelNavigation on individual building pages only
   },
   methods: {
+    hydrateRouteBuildings: async function (route) {
+      if (route.path.includes('building')) {
+        const buildingId = parseInt(route.params.id)
+        if (!Number.isNaN(buildingId)) {
+          await this.$store.dispatch('map/hydrateBuilding', buildingId)
+        }
+        return
+      }
+
+      if (route.path.includes('compare')) {
+        let compareIds = []
+        try {
+          compareIds = JSON.parse(decodeURI(route.params.buildings))
+        } catch (err) {
+          compareIds = []
+        }
+        await Promise.all(
+          compareIds.map(id => {
+            const parsedId = parseInt(id)
+            if (Number.isNaN(parsedId)) {
+              return Promise.resolve()
+            }
+            return this.$store.dispatch('map/hydrateBuilding', parsedId)
+          })
+        )
+      }
+    },
     addFeature: function () {
       this.$store.dispatch('modalController/openModal', {
         name: 'EditModal',
@@ -56,6 +84,8 @@ export default {
     $route: {
       immediate: true,
       handler: async function (to, from) {
+        await this.$store.dispatch('map/loadMap')
+        await this.hydrateRouteBuildings(to)
         this.navVis = this.$route.path.includes('building') // show BuildingPanelNavigation on individual building pages only
         if (this.$route.path.includes('building') || this.$route.path.includes('compare')) {
           for (let card of this.cards) {
@@ -205,6 +235,7 @@ export default {
             let building = this.$store.getters['map/building'](this.compareBuildings[0].id)
             if (!building) return []
             let group = this.$store.getters[building.path + '/primaryGroup']('Electricity')
+            if (!group) return []
             let block = this.$store.getters[building.path + '/block'](group.id)
             if (!block) return []
             // Load only one (electricity) card for multiple buildings, one time period comparison
