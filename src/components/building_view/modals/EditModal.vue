@@ -68,11 +68,9 @@
         prop="intUnit"
       >
         <el-select v-model="form.intUnit" style="width: 100%">
-          <el-option :value="1" label="15 Minutes"></el-option>
-          <el-option :value="2" label="1 Hour"></el-option>
-          <el-option :value="3" label="1 Day"></el-option>
-          <el-option :value="4" label="1 Week"></el-option>
-          <el-option :value="5" label="1 Month"></el-option>
+          <el-option :value="1" label="1 Day"></el-option>
+          <el-option :value="2" label="1 Week"></el-option>
+          <el-option :value="3" label="1 Month"></el-option>
         </el-select>
       </el-form-item>
       <!-- Meter -->
@@ -354,48 +352,37 @@ export default {
     interval: function (intUnit) {
       switch (intUnit) {
         case 1:
-          return 'minute'
+          return 'day'
         case 2:
-          return 'hour'
+          return 'day'
         case 3:
-          return 'day'
-        case 4:
-          return 'day'
-        case 5:
           return 'month'
         default:
-          return 'minute'
+          return 'day'
       }
     },
     date: function (intUnit) {
       switch (intUnit) {
         case 1:
-          return 15
-        case 2:
           return 1
+        case 2:
+          return 7
         case 3:
           return 1
-        case 4:
-          return 7
-        case 5:
-          return 1
         default:
-          return 15
+          return 1
       }
     },
 
     intUnit: function (intervalUnit, dateInterval) {
-      if (dateInterval === 15 && intervalUnit === 'minute') {
+      if (dateInterval === 1 && intervalUnit === 'day') {
         return 1
-      } else if (dateInterval === 1 && intervalUnit === 'hour') {
-        return 2
-      } else if (dateInterval === 1 && intervalUnit === 'day') {
-        return 3
       } else if (dateInterval === 7 && intervalUnit === 'day') {
-        return 4
+        return 2
       } else if (dateInterval === 1 && intervalUnit === 'month') {
-        return 5
+        return 3
       }
+      return 1
     },
 
     buttonVariant: function (index) {

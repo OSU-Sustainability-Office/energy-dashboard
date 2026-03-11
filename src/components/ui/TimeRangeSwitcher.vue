@@ -6,11 +6,11 @@
 <template>
   <el-row class="buttons">
     <el-col :span="8" class="rangeButtonParent" v-bind:class="{ active: currentRange == 0 }">
-      <el-button class="rangeButton" @click="currentRange = 0">{{ campaign ? 'Past 6 Hours' : 'Week' }}</el-button>
+      <el-button class="rangeButton" @click="currentRange = 0">{{ campaign ? 'Past 7 Days' : 'Week' }}</el-button>
     </el-col>
-    <el-col :span="8" class="rangeButtonParent" v-bind:class="{ active: currentRange == 1 || currentRange == 3 }">
+    <el-col :span="8" class="rangeButtonParent" v-bind:class="{ active: currentRange == 1 }">
       <!--Change default interval for Solar Panels-->
-      <el-button class="rangeButton" @click="currentRange = 1">{{ campaign ? 'Past Day' : '60 Days' }}</el-button>
+      <el-button class="rangeButton" @click="currentRange = 1">{{ campaign ? 'Past 30 Days' : '60 Days' }}</el-button>
     </el-col>
     <el-col :span="8" class="rangeButtonParent" v-bind:class="{ active: currentRange == 2 }">
       <el-button class="rangeButton" @click="currentRange = 2">{{
@@ -22,20 +22,17 @@
 <script>
 // constants
 const DAY_IN_MS = 24 * 60 * 60 * 1000 // 1 day in ms
-const HOUR_IN_MS = 60 * 60 * 1000 // 1 hour in ms
-const FIFTEEN_MIN_IN_MS = 15 * 60 * 1000 // 15 minutes in ms
-const floorTo = (t, ms) => t - (t % ms)
 
 // per-mode presets for each range button
 const TIME_RANGE_PRESETS = {
   noCampaign: {
-    0: { unit: 'hour', interval: 6, startMs: 7 * DAY_IN_MS }, // past week
+    0: { unit: 'day', interval: 1, startMs: 7 * DAY_IN_MS }, // past week
     1: { unit: 'day', interval: 1, startMs: 60 * DAY_IN_MS }, // past 60 days
     2: { unit: 'day', interval: 15, startMs: 365 * DAY_IN_MS } // past year
   },
   campaign: {
-    0: { unit: 'minute', interval: 15, startMs: 6 * HOUR_IN_MS }, // past 6 hours
-    1: { unit: 'hour', interval: 2, startMs: DAY_IN_MS }, // past day
+    0: { unit: 'day', interval: 1, startMs: 7 * DAY_IN_MS }, // past 7 days
+    1: { unit: 'day', interval: 1, startMs: 30 * DAY_IN_MS }, // past 30 days
     2: { unit: 'day', interval: 1, startMs: null } // special case: full campaign date range
   }
 }
@@ -67,7 +64,7 @@ export default {
         const mode = this.campaign ? 'campaign' : 'noCampaign'
         const preset = TIME_RANGE_PRESETS[mode][value]
 
-        const dateEnd = this.campaign ? this.campaignDateEnd : floorTo(Date.now(), FIFTEEN_MIN_IN_MS)
+        const dateEnd = this.campaign ? this.campaignDateEnd : Date.now()
         const intervalUnit = preset.unit
         const dateInterval = preset.interval
         const dateStart =

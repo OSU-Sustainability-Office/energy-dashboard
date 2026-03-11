@@ -122,8 +122,8 @@ export default {
     return {
       editcard: false,
       tempName: '',
-      interval: 15,
-      interval_unit: 'minute',
+      interval: 1,
+      interval_unit: 'day',
       date_start: '',
       date_end: '',
       graphtype: 1,
@@ -152,39 +152,27 @@ export default {
     },
     intunit: {
       get: function () {
-        if (this.interval === 15 && this.interval_unit === 'minute') {
-          return 1 // 15 minutes
-        } else if (this.interval === 1 && this.interval_unit === 'hour') {
-          return 2 // 1 hour
-        } else if (this.interval === 1 && this.interval_unit === 'day') {
-          return 3 // 1 day
+        if (this.interval === 1 && this.interval_unit === 'day') {
+          return 1 // 1 day
         } else if (this.interval === 7 && this.interval_unit === 'day') {
-          return 4 // 1 week
+          return 2 // 1 week
         } else if (this.interval === 1 && this.interval_unit === 'month') {
-          return 5 // 1 month
+          return 3 // 1 month
         } else {
-          return 1 // default to 15 minutes
+          return 1 // default to 1 day
         }
       },
       set: function (v) {
         switch (v) {
           case 1:
-            this.interval = 15
-            this.interval_unit = 'minute'
-            break
-          case 2:
-            this.interval = 1
-            this.interval_unit = 'hour'
-            break
-          case 3:
             this.interval = 1
             this.interval_unit = 'day'
             break
-          case 4:
+          case 2:
             this.interval = 7
             this.interval_unit = 'day'
             break
-          case 5:
+          case 3:
             this.interval = 1
             this.interval_unit = 'month'
             break
