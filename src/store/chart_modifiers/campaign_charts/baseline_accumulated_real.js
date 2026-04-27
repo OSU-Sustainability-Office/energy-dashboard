@@ -113,6 +113,8 @@ export default class BaselineAccumulatedReal {
         if (isNaN(baselineData.get(baselineTimestamp)) || isNaN(baselineData.get(i))) {
           continue
         }
+        // Use absolute accumulated deltas here to stay consistent with the full
+        // accumulated chart view, which normalizes negative offsets into positive usage.
         differenceBaseline.set(baselineTimestamp, Math.abs(baselineData.get(baselineTimestamp) - baselineData.get(i)))
       } catch (error) {
         console.log(error)
