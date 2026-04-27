@@ -113,7 +113,7 @@ export default class BaselineAccumulatedReal {
         if (isNaN(baselineData.get(baselineTimestamp)) || isNaN(baselineData.get(i))) {
           continue
         }
-        differenceBaseline.set(baselineTimestamp, baselineData.get(baselineTimestamp) - baselineData.get(i))
+        differenceBaseline.set(baselineTimestamp, Math.abs(baselineData.get(baselineTimestamp) - baselineData.get(i)))
       } catch (error) {
         console.log(error)
       }
@@ -132,7 +132,7 @@ export default class BaselineAccumulatedReal {
         const timeBinIndex = Math.floor(((delta + i) % SECONDS_PER_DAY) / delta) // gets time slot within the day
         const baselinePoint = avgBins[timestamp.getDay()][timeBinIndex]
         if (baselinePoint !== -1 && baselinePoint !== 0) {
-          const currentPoint = currentData.get(delta + i) - currentData.get(i)
+          const currentPoint = Math.abs(currentData.get(delta + i) - currentData.get(i))
           const changeRatio = currentPoint / baselinePoint // ratio of current point to baseline point
           const percentDifference = changeRatio * 100 - 100 // percentage difference from baseline
 
@@ -149,7 +149,7 @@ export default class BaselineAccumulatedReal {
     }
 
     // Prevent corrupted data from getting returned
-    if (returnData.filter(o => !isNaN(o.y) && o.y > -1).length > 0) {
+    if (returnData.filter(o => Number.isFinite(o.y)).length > 0) {
       chartData.data = returnData
     } else {
       // Shows "No Data" on the campaign buildings sidebar
