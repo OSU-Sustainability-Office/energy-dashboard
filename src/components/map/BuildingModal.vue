@@ -196,7 +196,8 @@ export default {
 .main {
   padding: 0;
   border-radius: 5px;
-  overflow: hidden;
+  height: 100%;
+  overflow-y: auto;
   background-color: rgb(26, 26, 26);
   box-shadow: -1px 1px 6px rgba(0, 0, 0, 0.6);
 }

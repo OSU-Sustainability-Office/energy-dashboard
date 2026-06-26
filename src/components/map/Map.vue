@@ -668,7 +668,8 @@ $sideMenu-width: 250px;
   padding: 0;
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - #{$nav-height});
+  overflow: hidden;
 }
 
 .el-menu-item {
@@ -684,6 +685,8 @@ $sideMenu-width: 250px;
   width: $sideMenu-width - 10px;
   padding-top: 0.5em;
   top: 175px;
+  max-height: calc(100vh - #{$nav-height} - 175px);
+  overflow-y: auto;
 }
 
 :deep(.el-menu-item-group__title) {
