@@ -100,6 +100,11 @@ export default class AccumulatedModifier {
         endKey = findClosest(dateKeysArray, i)
       }
 
+      // If both keys resolve to the same timestamp, no real data spans this interval
+      // (e.g. the entire bucket falls before the meter's first reading). Skip it
+      // rather than pushing a synthetic 0 to the chart.
+      if (startKey === endKey) continue
+
       try {
         const startValue = currentData.get(startKey)
         const endValue = currentData.get(endKey)

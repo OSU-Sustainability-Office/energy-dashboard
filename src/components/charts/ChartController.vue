@@ -3,14 +3,23 @@
   Description: Handles the display logic for the meter-data charts on the dashboard (both for the map-interface and building-list).
 -->
 <template>
-  <div
-    v-loading="loading || !chartData"
-    element-loading-background="rgba(0, 0, 0, 0.8)"
-    :element-loading-text="
-      batchStatus.active ? `Loading batch ${batchStatus.current} of ${batchStatus.total}…` : 'Loading…'
-    "
-    :style="`height: ${height}px; border-radius: 5px; overflow: hidden;`"
-  >
+  <div>
+    <el-alert
+      v-if="clampedStartDate"
+      :title="`No data available before ${clampedStartDate}. Showing from earliest available reading.`"
+      type="info"
+      :closable="true"
+      show-icon
+      class="data-clamp-alert"
+    />
+    <div
+      v-loading="loading || !chartData"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
+      :element-loading-text="
+        batchStatus.active ? `Loading batch ${batchStatus.current} of ${batchStatus.total}…` : 'Loading…'
+      "
+      :style="`height: ${height}px; border-radius: 5px; overflow: hidden;`"
+    >
     <Linechart
       v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'"
       ref="Linechart"
@@ -77,6 +86,7 @@
     <el-col :span="24" class="NoData" :style="`height:${height}px;line-height:${height}px;`" v-if="graphType == 100"
       >Data Unavailable</el-col
     >
+    </div>
   </div>
 </template>
 <script>
@@ -208,6 +218,14 @@ export default {
       get() {
         return this.$store.getters['dataStore/batchStatus']
       }
+    },
+    clampedStartDate() {
+      if (!this.chartData?.datasets) return null
+      const firstDataset = this.chartData.datasets.find(d => d.data?.length > 0)
+      if (!firstDataset) return null
+      const actualStart = new Date(firstDataset.data[0].x)
+      if (actualStart > new Date(this.dateStart)) return actualStart.toDateString()
+      return null
     }
   },
   beforeUnmount() {
@@ -358,13 +376,11 @@ export default {
           return ' '
         }
 
-        const date1 = new Date(this.dateStart)
-        const date2 = new Date(this.dateEnd)
-        if (date1 && date2) {
-          return date1.toDateString() + ' to ' + date2.toDateString()
-        } else {
-          return ' '
-        }
+        const firstDataset = this.chartData?.datasets?.find(d => d.data?.length > 0)
+        if (!firstDataset) return ' '
+        const date1 = new Date(firstDataset.data[0].x)
+        const date2 = new Date(firstDataset.data[firstDataset.data.length - 1].x)
+        return date1.toDateString() + ' to ' + date2.toDateString()
       }
     },
     multipleTimePeriods: function (charts) {
@@ -457,6 +473,10 @@ export default {
   color: $color-black;
   font-weight: 800;
   font-size: 22px;
+}
+.data-clamp-alert {
+  margin-top: 16px;
+  margin-bottom: 8px;
 }
 .scaled-iframe {
   transform: scale(0.4);
