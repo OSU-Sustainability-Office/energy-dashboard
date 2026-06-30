@@ -29,3 +29,6 @@ packaged.yaml
 
 # sqlite testing database
 *.db
+
+# Claude Code
+CLAUDE.md

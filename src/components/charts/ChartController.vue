@@ -20,72 +20,72 @@
       "
       :style="`height: ${height}px; border-radius: 5px; overflow: hidden;`"
     >
-    <Linechart
-      v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'"
-      ref="Linechart"
-      :key="chartRenderKey"
-      :chartData="chartData"
-      :style="styleC"
-      :height="height"
-      :invertColors="invertColors"
-      :isMultipleTimePeriods="multipleTimePeriods(chartData.datasets)"
-      :buildXaxisTick="buildXaxisTick"
-      :buildLabel="buildLabel"
-      :intervalUnit="$store.getters[path + '/intervalUnit']"
-    />
-    <Barchart
-      v-if="graphType === 2 && chartData"
-      ref="Barchart"
-      :chartData="chartData"
-      :style="styleC"
-      :height="height"
-      :invertColors="invertColors"
-      :buildLabel="buildLabel"
-      :intervalUnit="$store.getters[path + '/intervalUnit']"
-    />
-    <iframe
-      v-if="this.path === 'map/building_35/block_175'"
-      :class="iframeClass"
-      src="https://mysolarcity.com/Share/007c9349-72ba-450c-aa1f-4e5a77b68f79#/monitoring/historical/month"
-      height="600"
-      width="1000"
-      title="35th Street Solar Array"
-    ></iframe>
-    <iframe
-      v-if="this.path === 'map/building_36/block_176'"
-      :class="iframeClass"
-      src="https://mysolarcity.com/share/9D5EB0D2-E376-44A1-9B8C-8DFCDD7507A5#/monitoring/historical/month"
-      height="600"
-      width="1000"
-      title="53rd Street Solar Array"
-    ></iframe>
-    <iframe
-      v-if="this.path === 'map/building_37/block_177'"
-      :class="iframeClass"
-      src="https://mysolarcity.com/Share/38954c21-8669-47b6-8376-835cc24f908c#/monitoring/historical/month"
-      height="600"
-      width="1000"
-      title="Hermiston Solar Array"
-    ></iframe>
-    <iframe
-      v-if="this.path === 'map/building_38/block_178'"
-      :class="iframeClass"
-      src="https://mysolarcity.com/Share/47cf089a-5b93-4200-8566-e030cb4f8574#/monitoring/historical/month"
-      height="600"
-      width="1000"
-      title="NWREC Data Solar Array"
-    ></iframe>
-    <iframe
-      v-if="this.path === 'map/building_85/block_264'"
-      :class="iframeClass"
-      src="https://mysolarcity.com/share/BB1ABBE8-1FB9-4C17-BB0A-A1DE9339DB1C#/monitoring/historical/month"
-      height="600"
-      width="1000"
-      title="Aquatic Animal Health Lab Solar Array"
-    ></iframe>
-    <el-col :span="24" class="NoData" :style="`height:${height}px;line-height:${height}px;`" v-if="graphType == 100"
-      >Data Unavailable</el-col
-    >
+      <Linechart
+        v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'"
+        ref="Linechart"
+        :key="chartRenderKey"
+        :chartData="chartData"
+        :style="styleC"
+        :height="height"
+        :invertColors="invertColors"
+        :isMultipleTimePeriods="multipleTimePeriods(chartData.datasets)"
+        :buildXaxisTick="buildXaxisTick"
+        :buildLabel="buildLabel"
+        :intervalUnit="$store.getters[path + '/intervalUnit']"
+      />
+      <Barchart
+        v-if="graphType === 2 && chartData"
+        ref="Barchart"
+        :chartData="chartData"
+        :style="styleC"
+        :height="height"
+        :invertColors="invertColors"
+        :buildLabel="buildLabel"
+        :intervalUnit="$store.getters[path + '/intervalUnit']"
+      />
+      <iframe
+        v-if="this.path === 'map/building_35/block_175'"
+        :class="iframeClass"
+        src="https://mysolarcity.com/Share/007c9349-72ba-450c-aa1f-4e5a77b68f79#/monitoring/historical/month"
+        height="600"
+        width="1000"
+        title="35th Street Solar Array"
+      ></iframe>
+      <iframe
+        v-if="this.path === 'map/building_36/block_176'"
+        :class="iframeClass"
+        src="https://mysolarcity.com/share/9D5EB0D2-E376-44A1-9B8C-8DFCDD7507A5#/monitoring/historical/month"
+        height="600"
+        width="1000"
+        title="53rd Street Solar Array"
+      ></iframe>
+      <iframe
+        v-if="this.path === 'map/building_37/block_177'"
+        :class="iframeClass"
+        src="https://mysolarcity.com/Share/38954c21-8669-47b6-8376-835cc24f908c#/monitoring/historical/month"
+        height="600"
+        width="1000"
+        title="Hermiston Solar Array"
+      ></iframe>
+      <iframe
+        v-if="this.path === 'map/building_38/block_178'"
+        :class="iframeClass"
+        src="https://mysolarcity.com/Share/47cf089a-5b93-4200-8566-e030cb4f8574#/monitoring/historical/month"
+        height="600"
+        width="1000"
+        title="NWREC Data Solar Array"
+      ></iframe>
+      <iframe
+        v-if="this.path === 'map/building_85/block_264'"
+        :class="iframeClass"
+        src="https://mysolarcity.com/share/BB1ABBE8-1FB9-4C17-BB0A-A1DE9339DB1C#/monitoring/historical/month"
+        height="600"
+        width="1000"
+        title="Aquatic Animal Health Lab Solar Array"
+      ></iframe>
+      <el-col :span="24" class="NoData" :style="`height:${height}px;line-height:${height}px;`" v-if="graphType == 100"
+        >Data Unavailable</el-col
+      >
     </div>
   </div>
 </template>
