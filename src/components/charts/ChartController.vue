@@ -3,80 +3,90 @@
   Description: Handles the display logic for the meter-data charts on the dashboard (both for the map-interface and building-list).
 -->
 <template>
-  <div
-    v-loading="loading || !chartData"
-    element-loading-background="rgba(0, 0, 0, 0.8)"
-    :element-loading-text="
-      batchStatus.active ? `Loading batch ${batchStatus.current} of ${batchStatus.total}…` : 'Loading…'
-    "
-    :style="`height: ${height}px; border-radius: 5px; overflow: hidden;`"
-  >
-    <Linechart
-      v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'"
-      ref="Linechart"
-      :key="chartRenderKey"
-      :chartData="chartData"
-      :style="styleC"
-      :height="height"
-      :invertColors="invertColors"
-      :isMultipleTimePeriods="multipleTimePeriods(chartData.datasets)"
-      :buildXaxisTick="buildXaxisTick"
-      :buildLabel="buildLabel"
-      :intervalUnit="$store.getters[path + '/intervalUnit']"
+  <div>
+    <el-alert
+      v-if="clampedStartDate"
+      :title="`No data available before ${clampedStartDate}. Showing from earliest available reading.`"
+      type="info"
+      :closable="true"
+      show-icon
+      class="data-clamp-alert"
     />
-    <Barchart
-      v-if="graphType === 2 && chartData"
-      ref="Barchart"
-      :chartData="chartData"
-      :style="styleC"
-      :height="height"
-      :invertColors="invertColors"
-      :buildLabel="buildLabel"
-      :intervalUnit="$store.getters[path + '/intervalUnit']"
-    />
-    <iframe
-      v-if="this.path === 'map/building_35/block_175'"
-      :class="iframeClass"
-      src="https://mysolarcity.com/Share/007c9349-72ba-450c-aa1f-4e5a77b68f79#/monitoring/historical/month"
-      height="600"
-      width="1000"
-      title="35th Street Solar Array"
-    ></iframe>
-    <iframe
-      v-if="this.path === 'map/building_36/block_176'"
-      :class="iframeClass"
-      src="https://mysolarcity.com/share/9D5EB0D2-E376-44A1-9B8C-8DFCDD7507A5#/monitoring/historical/month"
-      height="600"
-      width="1000"
-      title="53rd Street Solar Array"
-    ></iframe>
-    <iframe
-      v-if="this.path === 'map/building_37/block_177'"
-      :class="iframeClass"
-      src="https://mysolarcity.com/Share/38954c21-8669-47b6-8376-835cc24f908c#/monitoring/historical/month"
-      height="600"
-      width="1000"
-      title="Hermiston Solar Array"
-    ></iframe>
-    <iframe
-      v-if="this.path === 'map/building_38/block_178'"
-      :class="iframeClass"
-      src="https://mysolarcity.com/Share/47cf089a-5b93-4200-8566-e030cb4f8574#/monitoring/historical/month"
-      height="600"
-      width="1000"
-      title="NWREC Data Solar Array"
-    ></iframe>
-    <iframe
-      v-if="this.path === 'map/building_85/block_264'"
-      :class="iframeClass"
-      src="https://mysolarcity.com/share/BB1ABBE8-1FB9-4C17-BB0A-A1DE9339DB1C#/monitoring/historical/month"
-      height="600"
-      width="1000"
-      title="Aquatic Animal Health Lab Solar Array"
-    ></iframe>
-    <el-col :span="24" class="NoData" :style="`height:${height}px;line-height:${height}px;`" v-if="graphType == 100"
-      >Data Unavailable</el-col
+    <div
+      v-loading="loading || !chartData"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
+      :element-loading-text="
+        batchStatus.active ? `Loading batch ${batchStatus.current} of ${batchStatus.total}…` : 'Loading…'
+      "
+      :style="`height: ${height}px; border-radius: 5px; overflow: hidden;`"
     >
+      <Linechart
+        v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'"
+        ref="Linechart"
+        :key="chartRenderKey"
+        :chartData="chartData"
+        :style="styleC"
+        :height="height"
+        :invertColors="invertColors"
+        :isMultipleTimePeriods="multipleTimePeriods(chartData.datasets)"
+        :buildXaxisTick="buildXaxisTick"
+        :buildLabel="buildLabel"
+        :intervalUnit="$store.getters[path + '/intervalUnit']"
+      />
+      <Barchart
+        v-if="graphType === 2 && chartData"
+        ref="Barchart"
+        :chartData="chartData"
+        :style="styleC"
+        :height="height"
+        :invertColors="invertColors"
+        :buildLabel="buildLabel"
+        :intervalUnit="$store.getters[path + '/intervalUnit']"
+      />
+      <iframe
+        v-if="this.path === 'map/building_35/block_175'"
+        :class="iframeClass"
+        src="https://mysolarcity.com/Share/007c9349-72ba-450c-aa1f-4e5a77b68f79#/monitoring/historical/month"
+        height="600"
+        width="1000"
+        title="35th Street Solar Array"
+      ></iframe>
+      <iframe
+        v-if="this.path === 'map/building_36/block_176'"
+        :class="iframeClass"
+        src="https://mysolarcity.com/share/9D5EB0D2-E376-44A1-9B8C-8DFCDD7507A5#/monitoring/historical/month"
+        height="600"
+        width="1000"
+        title="53rd Street Solar Array"
+      ></iframe>
+      <iframe
+        v-if="this.path === 'map/building_37/block_177'"
+        :class="iframeClass"
+        src="https://mysolarcity.com/Share/38954c21-8669-47b6-8376-835cc24f908c#/monitoring/historical/month"
+        height="600"
+        width="1000"
+        title="Hermiston Solar Array"
+      ></iframe>
+      <iframe
+        v-if="this.path === 'map/building_38/block_178'"
+        :class="iframeClass"
+        src="https://mysolarcity.com/Share/47cf089a-5b93-4200-8566-e030cb4f8574#/monitoring/historical/month"
+        height="600"
+        width="1000"
+        title="NWREC Data Solar Array"
+      ></iframe>
+      <iframe
+        v-if="this.path === 'map/building_85/block_264'"
+        :class="iframeClass"
+        src="https://mysolarcity.com/share/BB1ABBE8-1FB9-4C17-BB0A-A1DE9339DB1C#/monitoring/historical/month"
+        height="600"
+        width="1000"
+        title="Aquatic Animal Health Lab Solar Array"
+      ></iframe>
+      <el-col :span="24" class="NoData" :style="`height:${height}px;line-height:${height}px;`" v-if="graphType == 100"
+        >Data Unavailable</el-col
+      >
+    </div>
   </div>
 </template>
 <script>
@@ -208,6 +218,14 @@ export default {
       get() {
         return this.$store.getters['dataStore/batchStatus']
       }
+    },
+    clampedStartDate() {
+      if (!this.chartData?.datasets) return null
+      const firstDataset = this.chartData.datasets.find(d => d.data?.length > 0)
+      if (!firstDataset) return null
+      const actualStart = new Date(firstDataset.data[0].x)
+      if (actualStart > new Date(this.dateStart)) return actualStart.toDateString()
+      return null
     }
   },
   beforeUnmount() {
@@ -358,13 +376,11 @@ export default {
           return ' '
         }
 
-        const date1 = new Date(this.dateStart)
-        const date2 = new Date(this.dateEnd)
-        if (date1 && date2) {
-          return date1.toDateString() + ' to ' + date2.toDateString()
-        } else {
-          return ' '
-        }
+        const firstDataset = this.chartData?.datasets?.find(d => d.data?.length > 0)
+        if (!firstDataset) return ' '
+        const date1 = new Date(firstDataset.data[0].x)
+        const date2 = new Date(firstDataset.data[firstDataset.data.length - 1].x)
+        return date1.toDateString() + ' to ' + date2.toDateString()
       }
     },
     multipleTimePeriods: function (charts) {
@@ -457,6 +473,10 @@ export default {
   color: $color-black;
   font-weight: 800;
   font-size: 22px;
+}
+.data-clamp-alert {
+  margin-top: 16px;
+  margin-bottom: 8px;
 }
 .scaled-iframe {
   transform: scale(0.4);
