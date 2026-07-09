@@ -214,6 +214,21 @@ Resources:
           Properties:
             Path: /pprecent
             Method: get
+  solarRecent:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 128
+      CodeUri: app/
+      Handler: solar_recent.get
+      Layers:
+        - !Ref LambdaCommonLayer
+        - !Ref EnergyModelLayer
+      Events:
+        Building:
+          Type: Api
+          Properties:
+            Path: /solarrecent
+            Method: get
   EnergyModelLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
