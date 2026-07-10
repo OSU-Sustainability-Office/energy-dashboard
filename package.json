@@ -6,11 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test:unit": "vue-cli-service test:unit",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
     "lint": "eslint --fix src backend",
     "build-stage": "vite build --mode staging",
     "start": "bash start_service.sh",
-    "test": "vue-cli-service test:unit --ci --detectOpenHandles",
+    "test": "vitest run",
     "prettier": "prettier --write \"**/*.{js,json,html,md,css,scss,vue}\"",
     "format": "npm-run-all --continue-on-error prettier lint",
     "format:check": "npm-run-all prettier:check lint:check",
@@ -38,43 +40,23 @@
     "@eslint/js": "^9.38.0",
     "@types/luxon": "^3.7.1",
     "@vitejs/plugin-vue": "^6.0.3",
+    "@vitest/coverage-v8": "^4.1.10",
+    "@vue/test-utils": "^2.4.11",
     "autoprefixer": "^10.4.22",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-vue": "^10.6.2",
     "fake-indexeddb": "^6.2.5",
-    "jest": "^24.9.0",
+    "jsdom": "^29.1.1",
     "lodash": "^4.17.21",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.7.4",
     "sass": "^1.93.2",
     "vite": "^7.2.7",
     "vite-svg-loader": "^5.1.0",
+    "vitest": "^4.1.10",
     "vue-eslint-parser": "^10.2.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "rules": {},
-    "parserOptions": {},
-    "overrides": [
-      {
-        "files": [
-          "**/__tests__/*.{j,t}s?(x)",
-          "**/tests/unit/**/*.spec.{j,t}s?(x)"
-        ],
-        "env": {
-          "jest": true
-        }
-      }
-    ]
   },
   "postcss": {
     "plugins": {
