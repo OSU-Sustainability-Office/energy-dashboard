@@ -90,6 +90,7 @@
   </div>
 </template>
 <script>
+import { DateTime } from 'luxon'
 import Linechart from '@/components/charts/Linechart.vue'
 import Barchart from '@/components/charts/Barchart.vue'
 
@@ -219,12 +220,45 @@ export default {
         return this.$store.getters['dataStore/batchStatus']
       }
     },
+    intervalUnit: {
+      get() {
+        return this.$store.getters[this.path + '/intervalUnit']
+      }
+    },
+    dateInterval: {
+      get() {
+        return this.$store.getters[this.path + '/dateInterval']
+      }
+    },
+    // Metering point of the first chart in this block (e.g. 'periodic_real_in')
+    point: {
+      get() {
+        const charts = this.$store.getters[this.path + '/charts']
+        if (!charts?.length) return null
+        return this.$store.getters[charts[0].path + '/point']
+      }
+    },
+    // Date the first plotted point starts covering, or null if the data reaches
+    // back to the requested start date.
+    //
+    // The chart modifiers stamp a point with the END of the interval it covers
+    // (e.g. a day of usage is stamped with the following midnight), so the first
+    // point's x-value sits one interval after the data it represents. Comparing
+    // that x-value directly against dateStart would report a gap on every chart.
+    // Monthly periodic_real points are the exception: they are already stamped
+    // with the start of the month they cover.
     clampedStartDate() {
       if (!this.chartData?.datasets) return null
       const firstDataset = this.chartData.datasets.find(d => d.data?.length > 0)
       if (!firstDataset) return null
-      const actualStart = new Date(firstDataset.data[0].x)
-      if (actualStart > new Date(this.dateStart)) return actualStart.toDateString()
+
+      const firstPoint = DateTime.fromJSDate(new Date(firstDataset.data[0].x))
+      const stampedAtIntervalStart = this.intervalUnit === 'month' && this.point?.startsWith('periodic_real')
+      const dataStart = stampedAtIntervalStart
+        ? firstPoint
+        : firstPoint.minus({ [`${this.intervalUnit}s`]: this.dateInterval })
+
+      if (dataStart.toMillis() > this.dateStart) return dataStart.toJSDate().toDateString()
       return null
     }
   },
