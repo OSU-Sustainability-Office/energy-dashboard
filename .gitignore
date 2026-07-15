@@ -2,6 +2,9 @@
 node_modules
 /dist
 
+# test coverage output
+/coverage
+
 # local env files
 .env
 .env.api

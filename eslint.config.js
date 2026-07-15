@@ -21,6 +21,8 @@ export default [
       globals: {
         ...globals.node,
         ...globals.browser,
+        // Vitest exposes the same describe/it/expect globals as Jest; the
+        // `globals` package has no dedicated `vitest` set, so reuse this.
         ...globals.jest
       }
     },

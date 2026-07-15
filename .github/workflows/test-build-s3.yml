@@ -17,7 +17,24 @@ jobs:
           docker compose build
           docker compose run --rm test
           docker compose down
-          
+
+  frontend-unit-tests:
+    name: Frontend Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Set-up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+      - name: npm ci
+        run: |
+          npm ci
+      - name: run vitest
+        run: |
+          npm run test:unit
+
   build-deploy-s3:
     name: Build / Deploy to S3 Test Build
     runs-on: ubuntu-latest
