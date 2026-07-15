@@ -122,6 +122,7 @@ export default {
       loading: true,
       abortController: null, // used to abort ongoing requests
       chartData: null,
+      loadedQuery: null, // request parameters the current chartData was fetched with
       watchTimeout: null,
       colors: ['#4A773C', '#00859B', '#FFB500', '#AA9D2E', '#D3832B', '#0D5257', '#7A6855', '#C4D6A4']
     }
@@ -220,26 +221,13 @@ export default {
         return this.$store.getters['dataStore/batchStatus']
       }
     },
-    intervalUnit: {
-      get() {
-        return this.$store.getters[this.path + '/intervalUnit']
-      }
-    },
-    dateInterval: {
-      get() {
-        return this.$store.getters[this.path + '/dateInterval']
-      }
-    },
-    // Metering point of the first chart in this block (e.g. 'periodic_real_in')
-    point: {
-      get() {
-        const charts = this.$store.getters[this.path + '/charts']
-        if (!charts?.length) return null
-        return this.$store.getters[charts[0].path + '/point']
-      }
-    },
     // Date the first plotted point starts covering, or null if the data reaches
     // back to the requested start date.
+    //
+    // Reads the request parameters from loadedQuery (snapshotted when the fetch
+    // was dispatched) rather than the live store getters, so the alert always
+    // reflects the chart currently on screen. Comparing stale chartData against
+    // an already-updated dateStart would flash the alert while a new range loads.
     //
     // The chart modifiers stamp a point with the END of the interval it covers
     // (e.g. a day of usage is stamped with the following midnight), so the first
@@ -248,17 +236,16 @@ export default {
     // Monthly periodic_real points are the exception: they are already stamped
     // with the start of the month they cover.
     clampedStartDate() {
-      if (!this.chartData?.datasets) return null
+      if (!this.loadedQuery || !this.chartData?.datasets) return null
       const firstDataset = this.chartData.datasets.find(d => d.data?.length > 0)
       if (!firstDataset) return null
 
+      const { dateStart, dateInterval, intervalUnit, point } = this.loadedQuery
       const firstPoint = DateTime.fromJSDate(new Date(firstDataset.data[0].x))
-      const stampedAtIntervalStart = this.intervalUnit === 'month' && this.point?.startsWith('periodic_real')
-      const dataStart = stampedAtIntervalStart
-        ? firstPoint
-        : firstPoint.minus({ [`${this.intervalUnit}s`]: this.dateInterval })
+      const stampedAtIntervalStart = intervalUnit === 'month' && point?.startsWith('periodic_real')
+      const dataStart = stampedAtIntervalStart ? firstPoint : firstPoint.minus({ [`${intervalUnit}s`]: dateInterval })
 
-      if (dataStart.toMillis() > this.dateStart) return dataStart.toJSDate().toDateString()
+      if (dataStart.toMillis() > dateStart) return dataStart.toJSDate().toDateString()
       return null
     }
   },
@@ -288,6 +275,18 @@ export default {
 
       this.loading = true
 
+      // Snapshot the request parameters now so clampedStartDate can compare the
+      // fetched data against the range it was requested for, not whatever the
+      // store holds by the time it recomputes
+      const charts = this.$store.getters[this.path + '/charts']
+      const query = {
+        dateStart: this.dateStart,
+        dateInterval: this.$store.getters[this.path + '/dateInterval'],
+        intervalUnit: this.$store.getters[this.path + '/intervalUnit'],
+        // Metering point of the first chart in this block (e.g. 'periodic_real_in')
+        point: charts?.length ? this.$store.getters[charts[0].path + '/point'] : null
+      }
+
       try {
         const data = await this.$store.dispatch(this.path + '/getData', { signal })
         // Set the unit (metric type) for each dataset
@@ -296,6 +295,7 @@ export default {
         })
         // Set the chart data
         this.chartData = data
+        this.loadedQuery = query
         // Set the chart options
         this.$nextTick(() => {
           if (
@@ -333,6 +333,7 @@ export default {
           this.chartData = {
             datasets: []
           }
+          this.loadedQuery = null
         }
       } finally {
         if (!signal.aborted) {
