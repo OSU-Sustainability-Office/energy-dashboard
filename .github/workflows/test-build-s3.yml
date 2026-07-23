@@ -81,6 +81,26 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
+    - name: Resolve latest LambdaCommonLayer
+      id: layer
+      run: |
+        # --no-paginate is required: the CLI otherwise auto-paginates and applies
+        # --query per page, emitting one ARN per page instead of just the latest.
+        LATEST=$(aws lambda list-layer-versions \
+          --layer-name LambdaCommonLayer --region us-west-2 --no-paginate \
+          --query 'LayerVersions[0].LayerVersionArn' --output text | head -1)
+        if [ -z "$LATEST" ] || [ "$LATEST" = "None" ]; then
+          echo "::error::Could not resolve latest LambdaCommonLayer version"
+          exit 1
+        fi
+        echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+    - name: Check pinned layer is current
+      working-directory: backend
+      run: |
+        PINNED=$(grep -oE 'arn:aws:lambda:[a-z0-9-]+:[0-9]+:layer:LambdaCommonLayer:[0-9]+' template.yaml | head -1)
+        if [ "$PINNED" != "${{ steps.layer.outputs.latest }}" ]; then
+          echo "::warning file=backend/template.yaml::LambdaCommonLayer pins $PINNED but latest is ${{ steps.layer.outputs.latest }}. The layer-bump workflow opens a PR for this."
+        fi
     - name: Validate
       working-directory: backend
       run: |
