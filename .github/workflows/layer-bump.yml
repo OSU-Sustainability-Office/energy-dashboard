@@ -1,0 +1,73 @@
+name: Bump LambdaCommonLayer
+on:
+  schedule:
+    # Mondays at 09:00 UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  bump-layer:
+    name: Open PR bumping LambdaCommonLayer
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+    - uses: actions/checkout@v6
+    - uses: aws-actions/configure-aws-credentials@v5
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+    - name: Resolve latest LambdaCommonLayer
+      id: layer
+      run: |
+        # --no-paginate is required: the CLI otherwise auto-paginates and applies
+        # --query per page, emitting one ARN per page instead of just the latest.
+        LATEST=$(aws lambda list-layer-versions \
+          --layer-name LambdaCommonLayer --region us-west-2 --no-paginate \
+          --query 'LayerVersions[0].LayerVersionArn' --output text | head -1)
+        if [ -z "$LATEST" ] || [ "$LATEST" = "None" ]; then
+          echo "::error::Could not resolve latest LambdaCommonLayer version"
+          exit 1
+        fi
+        echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+    - name: Update pinned layer in template.yaml
+      id: bump
+      run: |
+        PINNED=$(grep -oE 'arn:aws:lambda:[a-z0-9-]+:[0-9]+:layer:LambdaCommonLayer:[0-9]+' backend/template.yaml | head -1)
+        LATEST="${{ steps.layer.outputs.latest }}"
+        if [ "$PINNED" = "$LATEST" ]; then
+          echo "Already on the latest layer ($PINNED); nothing to do."
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        sed -i -E "s|arn:aws:lambda:[a-z0-9-]+:[0-9]+:layer:LambdaCommonLayer:[0-9]+|$LATEST|" backend/template.yaml
+        echo "changed=true" >> "$GITHUB_OUTPUT"
+        echo "pinned=$PINNED" >> "$GITHUB_OUTPUT"
+        echo "version=${LATEST##*:}" >> "$GITHUB_OUTPUT"
+    - name: Open pull request
+      if: steps.bump.outputs.changed == 'true'
+      uses: peter-evans/create-pull-request@v7
+      with:
+        # NOTE: PRs opened with the default GITHUB_TOKEN do not trigger other
+        # workflows, so "S3 Test Build" will not run on this PR automatically.
+        # Close and reopen the PR to kick CI, or add a LAYER_BUMP_TOKEN secret
+        # (a PAT with repo scope) and CI will run on its own.
+        token: ${{ secrets.LAYER_BUMP_TOKEN || secrets.GITHUB_TOKEN }}
+        # Fixed branch name so repeated runs update this PR instead of stacking duplicates.
+        branch: chore/bump-lambda-common-layer
+        base: master
+        commit-message: 'Bump LambdaCommonLayer to version ${{ steps.bump.outputs.version }}'
+        title: 'Bump LambdaCommonLayer to version ${{ steps.bump.outputs.version }}'
+        body: |
+          A newer version of the shared Lambda layer is available.
+
+          - Pinned: `${{ steps.bump.outputs.pinned }}`
+          - Latest: `${{ steps.layer.outputs.latest }}`
+
+          This default applies to freshly created stacks (test builds). The production
+          `energy` stack keeps its existing parameter value across deploys, so merging
+          this does not by itself move production onto the new layer.
+
+          Opened automatically by `.github/workflows/layer-bump.yml`.

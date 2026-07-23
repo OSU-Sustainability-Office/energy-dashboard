@@ -37,8 +37,11 @@ Globals:
       MaxAge: 600
       AllowCredentials: True
 Parameters:
-  # Lambda Common layer ARN to use for energy dashboard functions (this is only used for test builds)
-  # Production builds automatically use the latest version of the layer
+  # Lambda Common layer ARN to use for energy dashboard functions.
+  # This default only applies to stacks created fresh (test builds) and to local `sam` runs.
+  # The production `energy` stack keeps whatever value it already has: API-deploy.yml runs
+  # `sam deploy` with no --parameter-overrides, so SAM sends UsePreviousValue for this parameter.
+  # The layer-bump workflow opens a PR when a newer version is published.
   LambdaCommonLayer:
     Type: String
     Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:107
