@@ -44,7 +44,7 @@ Parameters:
   # The layer-bump workflow opens a PR when a newer version is published.
   LambdaCommonLayer:
     Type: String
-    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:107
+    Default: arn:aws:lambda:us-west-2:005937143026:layer:LambdaCommonLayer:110
 
 Resources:
   SystemTime:
