@@ -37,7 +37,7 @@ jobs:
         run: |
           npm run build
       - name: deploy frontend to gh pages
-        uses: crazy-max/ghaction-github-pages@v4     # https://github.com/crazy-max/ghaction-github-pages
+        uses: crazy-max/ghaction-github-pages@v5     # https://github.com/crazy-max/ghaction-github-pages
         with:
           target_branch: gh-pages
           build_dir: dist
