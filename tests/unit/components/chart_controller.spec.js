@@ -152,3 +152,50 @@ describe('ChartController "no data available" alert', () => {
     expect(alert.text()).toContain('No data available before Wed Apr 15 2026')
   })
 })
+
+/**
+ * Consumers drop ChartController into fixed-height containers (BuildingModal's
+ * carousel is a hard 250px with overflow: hidden), so the alert must never add
+ * height on top of the chart -- it has to come out of the same box. jsdom has no
+ * layout engine, so these lock the DOM contract that makes that work rather than
+ * measuring pixels; the visual result needs a browser.
+ */
+describe('ChartController layout footprint', () => {
+  const withAlert = () =>
+    createTestStore({
+      dateStart: localDate(2026, 3, 27),
+      data: dailyBuckets(localDate(2026, 4, 12), 30)
+    })
+
+  const withoutAlert = () =>
+    createTestStore({
+      dateStart: localDate(2026, 4, 12, 22, 45),
+      data: dailyBuckets(localDate(2026, 4, 12), 30)
+    })
+
+  it('pins the root to the full height prop whether or not the alert shows', async () => {
+    for (const store of [withAlert(), withoutAlert()]) {
+      const wrapper = await mountController(store)
+
+      // mountController passes height: 400
+      expect(wrapper.element.style.height).toBe('400px')
+    }
+  })
+
+  it('never puts the fixed height on the chart box, so it can flex', async () => {
+    const wrapper = await mountController(withAlert())
+
+    // The height belongs to the root only; a fixed height here would push the
+    // chart past the container and reintroduce the clipping.
+    expect(wrapper.find('.chart-box').element.style.height).toBe('')
+  })
+
+  it('keeps the alert and the chart box as siblings inside the root', async () => {
+    const wrapper = await mountController(withAlert())
+
+    const children = Array.from(wrapper.element.children)
+    expect(children).toHaveLength(2)
+    expect(children[0].classList.contains('data-clamp-alert')).toBe(true)
+    expect(children[1].classList.contains('chart-box')).toBe(true)
+  })
+})

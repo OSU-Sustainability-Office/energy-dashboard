@@ -130,7 +130,11 @@ export default {
       style: {
         display: 'inline-block',
         width: 'calc(100% - 3em)',
-        height: '400px',
+        // 100% rather than a fixed height so the canvas shrinks with its box when
+        // ChartController shows the data-availability alert. border-box keeps the
+        // padding below inside that 100% (there is no global box-sizing reset).
+        height: '100%',
+        'box-sizing': 'border-box',
         'margin-right': '0.5em',
         'margin-left': '0.5em',
         'padding-right': '1em',
