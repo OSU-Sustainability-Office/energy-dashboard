@@ -4,14 +4,15 @@
 */
 
 import { createRouter, createWebHashHistory } from 'vue-router'
-import BuildingView from '@/components/building_view/BuildingView.vue'
-import Map from '@/components/map/Map.vue'
-import CampaignList from '@/components/campaigns/CampaignList.vue'
-import GetStarted from '@/components/get_started/GetStarted.vue'
-import NotFound from '@/components/ui/NotFound.vue'
-import Contact from '@/components/ui/Contact.vue'
-import Campaign from '@/components/campaigns/Campaign.vue'
-import BuildingList from '@/components/building_list/BuildingList.vue'
+
+const BuildingView = () => import('@/components/building_view/BuildingView.vue')
+const Map = () => import('@/components/map/Map.vue')
+const CampaignList = () => import('@/components/campaigns/CampaignList.vue')
+const GetStarted = () => import('@/components/get_started/GetStarted.vue')
+const NotFound = () => import('@/components/ui/NotFound.vue')
+const Contact = () => import('@/components/ui/Contact.vue')
+const Campaign = () => import('@/components/campaigns/Campaign.vue')
+const BuildingList = () => import('@/components/building_list/BuildingList.vue')
 
 const routes = [
   {

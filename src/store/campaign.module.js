@@ -45,8 +45,8 @@ const actions = {
   async buildBlocks(store) {
     if (store.getters.promise === null) {
       const blockBuildPromise = (async () => {
-        await this.getters['map/promise'] // Make sure building promises have been queued
-        await this.getters['map/allBuildingPromise'] // Make sure buildings exist, this loads all MGs
+        await this.dispatch('map/loadMap')
+        await this.dispatch('map/hydrateAllBuildings')
         let defaultBlockSpace = 'block_default'
         let defaultModuleSpace = store.getters.path + '/' + defaultBlockSpace
         this.registerModule(defaultModuleSpace.split('/'), Block)

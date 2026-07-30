@@ -26,10 +26,6 @@ export default {
   components: {
     NavigationBar
   },
-  async created() {
-    // On load, grab building/meter/map information from the API.
-    await this.$store.dispatch('map/loadMap')
-  },
   data() {
     return {
       transitionName: 'pageTo'
@@ -87,7 +83,6 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 @font-face {
   font-family: 'StratumNo2';
   src:
@@ -97,6 +92,7 @@ export default {
     url('/fonts/StratumNo2-Bold.svg#StratumNo2-Bold') format('svg');
   font-weight: bold;
   font-style: normal;
+  font-display: swap;
 }
 body {
   font-family: 'Open Sans', sans-serif;

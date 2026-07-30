@@ -9,6 +9,8 @@ import API from './api.js'
 const state = () => {
   return {
     promise: null,
+    hydratePromise: null,
+    hydrated: false,
     path: null,
     name: null,
     group: null,
@@ -107,6 +109,14 @@ const mutations = {
     state.promise = promise
   },
 
+  hydratePromise(state, promise) {
+    state.hydratePromise = promise
+  },
+
+  hydrated(state, hydrated) {
+    state.hydrated = hydrated
+  },
+
   hidden(state, hide) {
     state.hidden = hide
   },
@@ -154,6 +164,15 @@ const getters = {
   promise(state) {
     return state.promise
   },
+
+  hydratePromise(state) {
+    return state.hydratePromise
+  },
+
+  hydrated(state) {
+    return state.hydrated
+  },
+
   hidden(state) {
     return state.hidden
   },
