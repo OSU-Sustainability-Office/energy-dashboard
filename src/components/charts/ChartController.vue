@@ -3,7 +3,7 @@
   Description: Handles the display logic for the meter-data charts on the dashboard (both for the map-interface and building-list).
 -->
 <template>
-  <div>
+  <div class="chart-controller" :style="`height: ${height}px;`">
     <el-alert
       v-if="clampedStartDate"
       :title="`No data available before ${clampedStartDate}. Showing from earliest available reading.`"
@@ -13,12 +13,13 @@
       class="data-clamp-alert"
     />
     <div
+      class="chart-box"
       v-loading="loading || !chartData"
       element-loading-background="rgba(0, 0, 0, 0.8)"
       :element-loading-text="
         batchStatus.active ? `Loading batch ${batchStatus.current} of ${batchStatus.total}…` : 'Loading…'
       "
-      :style="`height: ${height}px; border-radius: 5px; overflow: hidden;`"
+      style="border-radius: 5px; overflow: hidden"
     >
       <Linechart
         v-if="graphType === 1 && chartData && this.path !== 'map/building_35/block_175'"
@@ -503,6 +504,26 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+// The root is pinned to the full `height` prop (inline, in the template) so this
+// component's footprint never changes, whether or not the alert is showing.
+// Consumers drop it into fixed-height containers -- BuildingModal's carousel is a
+// hard 250px with overflow: hidden -- so an alert that added its own height on top
+// would push the chart out of the container and get its x-axis clipped. Instead the
+// alert takes its natural height here and .chart-box flexes into what is left.
+//
+// Keep this a single root element: consumers pass class="chart", which Vue can only
+// auto-inherit onto a single-root component.
+.chart-controller {
+  display: flex;
+  flex-direction: column;
+}
+// min-height: 0 is required. Flex items default to min-height: auto, which refuses
+// to shrink below the content's intrinsic size, so without it the chart keeps its
+// full height and overflows the container again.
+.chart-box {
+  flex: 1 1 auto;
+  min-height: 0;
+}
 .NoData {
   text-align: center;
   color: $color-black;

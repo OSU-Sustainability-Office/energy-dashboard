@@ -44,7 +44,8 @@
               :styleC="{
                 display: 'inline-block',
                 width: '98%',
-                height: '340px',
+                height: '100%',
+                'box-sizing': 'border-box',
                 'padding-right': '0.5em',
                 'padding-left': '0.5em',
                 'padding-top': '1em'
