@@ -10,6 +10,11 @@ Globals:
     Timeout: 15
     Runtime: nodejs18.x
   Api:
+    # Gzip responses over 1 KB when the client sends Accept-Encoding. /allbuildings
+    # is ~260 KB of JSON that was going out uncompressed on every page load; it
+    # compresses to ~25 KB. Applies to every route, so the large /data and
+    # /multiMeterData payloads benefit too.
+    MinimumCompressionSize: 1024
     # enable CORS; to make more specific, change the origin wildcard
     # to a particular domain name, e.g. "'www.example.com'"
     Cors:
