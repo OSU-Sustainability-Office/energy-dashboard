@@ -70,13 +70,24 @@ export default {
     }
   },
   async mounted() {
-    await this.$store.getters['map/promise']
-    if (this.$route.params.group && this.groups[this.$route.params.group]) {
-      this.openName = this.$route.params.group
-    } else {
-      this.openName = Object.keys(this.groups)[0]
+    try {
+      // dispatch rather than awaiting the map/promise getter directly: the getter is
+      // null until something else kicks the load off, and awaiting null resolves
+      // instantly onto an empty building list.
+      await this.$store.dispatch('map/loadMap')
+      if (this.$route.params.group && this.groups[this.$route.params.group]) {
+        this.openName = this.$route.params.group
+      } else {
+        this.openName = Object.keys(this.groups)[0]
+      }
+    } catch (err) {
+      // The groups watcher still populates the tabs if the data arrives later.
+      console.error('Could not load the building list:', err)
+    } finally {
+      // Always clear the spinner. Leaving it set on failure is what made the tab
+      // appear to hang indefinitely.
+      this.loading = false
     }
-    this.loading = false
   },
   computed: {
     buildingList: {

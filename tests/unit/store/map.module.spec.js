@@ -16,6 +16,34 @@ import mockAllBuildings from '../../assertedData/mock_allbuildings.json'
 // single callable that every API helper flows through.
 vi.mock('axios', () => ({ default: vi.fn() }))
 
+const emptyGeoJSON = () => JSON.stringify({ type: 'FeatureCollection', features: [] })
+
+// The map/buildings getter omits hidden buildings, so that is the count to expect.
+const visibleBuildingCount = mockAllBuildings.filter(building => !building.hidden).length
+
+// A fresh store per test — loadMap memoises into state.promise, so a shared store
+// would let one test's result leak into the next.
+const freshStore = () => createStore({ modules: { map: cloneDeep(EDMap) } })
+
+// Routes the single axios mock by URL: /allbuildings vs the Overpass interpreter
+// call that backfills geometry for buildings whose geoJSON is not inlined.
+function mockApi({ buildings, overpass }) {
+  axios.mockImplementation(url => {
+    if (String(url).includes('interpreter')) {
+      return overpass ? overpass() : Promise.resolve({ data: '<osm></osm>' })
+    }
+    return buildings ? buildings() : Promise.resolve({ data: [] })
+  })
+}
+
+// One building deliberately has no geoJSON but does have a mapId, which is what
+// pushes it into buildingMap and triggers the Overpass fetch.
+function buildingsWithOneMissingGeometry() {
+  return mockAllBuildings.map((building, index) =>
+    index === 0 ? { ...building, geoJSON: null, mapId: '92994899' } : { ...building, geoJSON: emptyGeoJSON() }
+  )
+}
+
 describe('Testing Map Module...', () => {
   // Build a fresh, isolated store from just the map module.
   const localStore = createStore({
@@ -68,5 +96,81 @@ describe('Testing Map Module...', () => {
         }
       }
     }
+  })
+})
+
+/**
+ * The buildings tab (BuildingList) and the campaign/block modules all await
+ * map/promise, but none of them render geometry — they only need building and
+ * meter-group metadata. Geometry for the handful of buildings whose geoJSON is not
+ * inlined in /allbuildings is fetched from a third-party Overpass mirror, which in
+ * practice varies from under a second to several seconds and can fail outright.
+ *
+ * Awaiting that fetch inside map/promise made every one of those consumers hostage
+ * to it: the buildings tab sat on a spinner until campus polygons arrived, and a
+ * failure left it spinning permanently.
+ */
+describe('Map module load does not block on geometry', () => {
+  it('resolves even when the Overpass geometry fetch fails', async () => {
+    const store = freshStore()
+    mockApi({
+      buildings: () => Promise.resolve({ data: buildingsWithOneMissingGeometry() }),
+      overpass: () => Promise.reject(new Error('Overpass mirror unreachable'))
+    })
+
+    // loadMap resolves to undefined, so assert on completion rather than a value.
+    let error = null
+    try {
+      await store.dispatch('map/loadMap')
+    } catch (err) {
+      error = err
+    }
+    expect(error).toBeNull()
+  })
+
+  it('exposes building metadata even when the geometry fetch fails', async () => {
+    const store = freshStore()
+    mockApi({
+      buildings: () => Promise.resolve({ data: buildingsWithOneMissingGeometry() }),
+      overpass: () => Promise.reject(new Error('Overpass mirror unreachable'))
+    })
+
+    await store.dispatch('map/loadMap')
+
+    // This is all the buildings tab needs to render.
+    expect(store.getters['map/buildings'].length).toBe(visibleBuildingCount)
+    expect(store.getters[`map/building_${mockAllBuildings[0].id}/name`]).toBe(mockAllBuildings[0].name)
+  })
+
+  it('does not block on a slow geometry fetch that never settles', async () => {
+    const store = freshStore()
+    mockApi({
+      buildings: () => Promise.resolve({ data: buildingsWithOneMissingGeometry() }),
+      // Mirrors the real hazard: axios is configured with a 72 second timeout, so a
+      // hung mirror stalls anything awaiting it for over a minute.
+      overpass: () => new Promise(() => {})
+    })
+
+    const settled = await Promise.race([
+      store.dispatch('map/loadMap').then(() => 'loaded'),
+      new Promise(resolve => setTimeout(() => resolve('still waiting'), 500))
+    ])
+
+    expect(settled).toBe('loaded')
+  })
+
+  it('clears the cached promise when the load fails so a retry can succeed', async () => {
+    const store = freshStore()
+    mockApi({ buildings: () => Promise.reject(new Error('/allbuildings unavailable')) })
+
+    await expect(store.dispatch('map/loadMap')).rejects.toThrow()
+
+    // A rejected promise left in state is returned to every future caller, so the
+    // app can never recover without a full page reload.
+    expect(store.getters['map/promise']).toBe(null)
+
+    mockApi({ buildings: () => Promise.resolve({ data: buildingsWithOneMissingGeometry() }) })
+    await store.dispatch('map/loadMap')
+    expect(store.getters['map/buildings'].length).toBe(visibleBuildingCount)
   })
 })
