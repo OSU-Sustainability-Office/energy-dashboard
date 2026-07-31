@@ -92,17 +92,47 @@ const actions = {
         }
         await Promise.all(buildingPromises)
 
-        // fetch missing geoJSON data (if any)
-        const buildingMap = store.getters.buildingMap
-        const missingIds = Array.from(buildingMap.keys()).join(',')
-        if (missingIds.length > 0) {
-          await store.dispatch('loadGeoJSONData', missingIds)
-          buildingMap.clear() // clear the map to indicate that all missing geoJSON has been loaded
-        }
+        // Deliberately not awaited. Everything that awaits map/promise -- the
+        // buildings tab, the block and campaign modules, updateEnergySlopeColor --
+        // needs building and meter-group metadata, not geometry. The backfill below
+        // hits a third-party Overpass mirror whose latency swings from under a
+        // second to several, and axios allows it 72 seconds before giving up, so
+        // awaiting it here held the buildings tab on a spinner until campus polygons
+        // arrived and left it spinning for good if the mirror failed. The map picks
+        // the geometry up reactively as it lands.
+        store.dispatch('backfillGeoJSON')
       })()
       store.commit('promise', mapPromise)
     }
-    return store.getters.promise
+    try {
+      return await store.getters.promise
+    } catch (err) {
+      // Without this the rejected promise stays in state and is handed to every
+      // future caller, so nothing can recover without a full page reload.
+      store.commit('promise', null)
+      throw err
+    }
+  },
+
+  // Fills in geometry for the buildings whose geoJSON is not inlined in
+  // /allbuildings. Resolves rather than rejects: a missing polygon should degrade
+  // the map, not break the callers waiting on the rest of the map module.
+  async backfillGeoJSON(store) {
+    const buildingMap = store.getters.buildingMap
+    const missingIds = Array.from(buildingMap.keys()).join(',')
+    if (missingIds.length === 0) {
+      return
+    }
+    try {
+      await store.dispatch('loadGeoJSONData', missingIds)
+    } catch (err) {
+      console.error('Could not backfill building geometry from OSM:', err)
+    } finally {
+      // Cleared even on failure. Map.vue treats a non-empty buildingMap as "geometry
+      // still loading", so leaving entries behind would spin its indicator forever;
+      // better to draw the map without those few polygons.
+      buildingMap.clear()
+    }
   }
 }
 
