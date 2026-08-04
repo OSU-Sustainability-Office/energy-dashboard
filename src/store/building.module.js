@@ -2,8 +2,9 @@
   Filename: building.module.js
   Info: Vuex module for handling and storing buildings.
 */
-import MeterGroup from './meter_group.module.js'
+import MeterGroup, { withMeters } from './meter_group.module.js'
 import Block from './block.module.js'
+import Chart from './chart.module.js'
 import API from './api.js'
 
 const state = () => {
@@ -25,7 +26,11 @@ const actions = {
   async loadMeterGroup(store, payload) {
     let meterGroupSpace = 'meterGroup_' + payload.id.toString()
     let moduleSpace = store.getters.path + '/' + meterGroupSpace
-    this.registerModule(moduleSpace.split('/'), MeterGroup)
+    // Already present when the group came in as part of a pre-built subtree
+    // (see withMeterGroups); re-registering would pay another full getter rebuild.
+    if (!this.hasModule(moduleSpace.split('/'))) {
+      this.registerModule(moduleSpace.split('/'), withMeters(payload))
+    }
     store.commit(meterGroupSpace + '/path', moduleSpace)
     store.commit(meterGroupSpace + '/building', store.getters.path)
     store.commit(meterGroupSpace + '/name', payload.name)
@@ -91,7 +96,14 @@ const actions = {
       if (group.default) {
         let blockSpace = 'block_' + group.id.toString()
         let moduleSpace = store.getters.path + '/' + blockSpace
-        this.registerModule(moduleSpace.split('/'), Block)
+        // Normally already present, attached to the building by withMeterGroups.
+        // Still registered here for groups that became default after load.
+        if (!this.hasModule(moduleSpace.split('/'))) {
+          this.registerModule(moduleSpace.split('/'), {
+            ...Block,
+            modules: { ['chart_' + group.id.toString()]: Chart }
+          })
+        }
         store.commit(blockSpace + '/path', moduleSpace)
         store.dispatch(blockSpace + '/loadDefault', {
           group: group,
@@ -229,7 +241,7 @@ const getters = {
 */
 const modules = {}
 
-export default {
+const Building = {
   namespaced: true,
   state,
   actions,
@@ -237,3 +249,23 @@ export default {
   getters,
   modules
 }
+
+/*
+  Returns a building module with everything startup will need already attached --
+  its meter groups, their meters, and the default block plus chart each default
+  group gets (see buildDefaultBlocks) -- so one registerModule call covers the
+  whole building. See withMeters for why this matters.
+*/
+export function withMeterGroups(building) {
+  const children = {}
+  for (const meterGroup of building.meterGroups || []) {
+    const groupId = meterGroup.id.toString()
+    children['meterGroup_' + groupId] = withMeters(meterGroup)
+    if (meterGroup.default) {
+      children['block_' + groupId] = { ...Block, modules: { ['chart_' + groupId]: Chart } }
+    }
+  }
+  return { ...Building, modules: children }
+}
+
+export default Building

@@ -51,4 +51,26 @@ describe('Testing Building List Component', () => {
       expect(text).toContain(building.name)
     }
   })
+
+  it('does not fetch card thumbnails until their cards are scrolled into view', async () => {
+    const wrapper = mount(BuildingList, {
+      global: {
+        plugins: [createTestStore(), ElementPlus],
+        mocks: {
+          $route: { path: '/buildings', params: { group: undefined } },
+          $router: { push: () => {} }
+        }
+      }
+    })
+
+    await flushPromises()
+
+    // Every tab pane renders up front, so without v-lazy-bg this would kick off
+    // one S3 request per card -- over 13MB in production.
+    const cards = wrapper.findAll('.card')
+    expect(cards.length).toBeGreaterThan(0)
+    for (const card of cards) {
+      expect(card.element.style.backgroundImage).toBe('')
+    }
+  })
 })

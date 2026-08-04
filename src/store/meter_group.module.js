@@ -54,7 +54,11 @@ const actions = {
   async loadMeter(store, meter) {
     let meterSpace = 'meter_' + meter.id.toString()
     let moduleSpace = store.getters.path + '/' + meterSpace
-    this.registerModule(moduleSpace.split('/'), Meter)
+    // Already present when the meter came in as part of a pre-built subtree
+    // (see withMeters); registering again would pay another full getter rebuild.
+    if (!this.hasModule(moduleSpace.split('/'))) {
+      this.registerModule(moduleSpace.split('/'), Meter)
+    }
     store.commit(meterSpace + '/path', moduleSpace)
     store.commit(meterSpace + '/id', meter.id)
     store.commit(meterSpace + '/name', meter.name)
@@ -283,7 +287,7 @@ const getters = {
 
 const modules = {}
 
-export default {
+const MeterGroup = {
   namespaced: true,
   state,
   actions,
@@ -291,3 +295,21 @@ export default {
   getters,
   modules
 }
+
+/*
+  Returns a meter group module with a child module per meter already attached, so
+  the group and all of its meters can be handed to a single registerModule call.
+  Vuex rebuilds every getter in the store on each registerModule (resetStoreState),
+  so registering these one at a time is quadratic in the number of modules.
+*/
+export function withMeters(meterGroup) {
+  const meters = {}
+  // `update` re-dispatches loadMeterGroup with only an id; those meters get
+  // registered individually by loadMeter instead.
+  for (const meter of meterGroup.meters || []) {
+    meters['meter_' + meter.id.toString()] = Meter
+  }
+  return { ...MeterGroup, modules: meters }
+}
+
+export default MeterGroup

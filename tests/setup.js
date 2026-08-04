@@ -16,3 +16,14 @@ if (!globalThis.ResizeObserver) {
     disconnect() {}
   }
 }
+
+// jsdom has no IntersectionObserver either; the v-lazy-bg directive constructs
+// one. Nothing ever intersects under this stub, which is what we want for
+// component tests -- specs that need it to fire stub it themselves.
+if (!globalThis.IntersectionObserver) {
+  globalThis.IntersectionObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+}

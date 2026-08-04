@@ -3,32 +3,50 @@
   Info: The individual building cards that are displayed in the building list.
 -->
 <template>
-  <div class="card" ref="card" @click="clicked($event)" @mouseover="hover(true)" @mouseleave="hover(false)">
+  <div
+    class="card"
+    ref="card"
+    v-lazy-bg="thumbnailBackground"
+    @click="clicked($event)"
+    @mouseover="hover(true)"
+    @mouseleave="hover(false)"
+  >
     <span class="name" v-if="!plus">{{ name }}</span>
     <span class="description" v-if="!plus">{{ description }}</span>
   </div>
 </template>
 
 <script>
+import lazyBg from '@/directives/lazy_background.js'
+
 export default {
   props: ['id', 'building', 'plus'],
+  directives: {
+    lazyBg
+  },
   data() {
     return {
       api: import.meta.env.VITE_ROOT_API
     }
   },
-  mounted() {
-    if (this.media) {
-      this.$refs.card.style.background =
-        'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9),  rgba(0, 0, 0, 0.2)),url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/' +
-        this.media +
-        '") center/cover no-repeat'
-    } else {
-      this.$refs.card.style.backgroundColor = 'rgb(26,26,26)'
-    }
-  },
 
   computed: {
+    // Handed to v-lazy-bg rather than applied on mount: the buildings tab renders
+    // every card up front, and fetching all of their thumbnails at once costs
+    // over 13MB for images the user mostly never scrolls to. Null when the
+    // building has no image, which leaves the card's base colour showing.
+    thumbnailBackground: {
+      get() {
+        if (!this.media) {
+          return null
+        }
+        return (
+          'linear-gradient(to bottom right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.2)), ' +
+          `url("https://osu-energy-images.s3-us-west-2.amazonaws.com/thumbnails/${this.media}")`
+        )
+      }
+    },
+
     buildingData: {
       get() {
         return this.$store.getters['map/building'](this.id)
@@ -108,6 +126,12 @@ export default {
 .card {
   color: $color-white;
   position: relative;
+  /* Base for the lazily-applied thumbnail: shown while the image is still
+     pending, and left in place for buildings with no image at all. */
+  background-color: rgb(26, 26, 26);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   border: 2.5px solid rgb(0, 0, 0);
   padding: 1em;
   height: 150px;

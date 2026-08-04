@@ -40,8 +40,6 @@
                     ref="card"
                   />
                 </el-col>
-                <!-- Add some extra padding for proper alignment, this kind of an estimated number. -->
-                <el-col v-for="n in 10" :key="key + n" class="blankSlate"> &nbsp; </el-col>
               </el-row>
             </el-tab-pane>
           </el-tabs>
@@ -213,25 +211,21 @@ export default {
   }
 }
 
-/*--- Flex Box   ---*/
+/*--- Card grid ---*/
+/* A grid rather than a flex row: flex-grow stretched a short final row across
+   the full width, which is what the ten filler columns used to absorb. Those
+   fillers were themselves laid out as cards, leaving up to ~250px of dead space
+   below every tab. auto-fill keeps the column width consistent and lets a short
+   last row align left on its own. */
 .card_flex {
-  flex-wrap: wrap !important;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   overflow-x: hidden;
-}
-.card_flex > * {
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 0;
-  min-width: 300px;
 }
 
 /*--- Cards   ---*/
 .card_container {
   padding: 0.5em;
-}
-.blankSlate {
-  padding-right: 0.5em;
-  padding-left: 0.5em;
 }
 :deep(.el-icon) {
   color: #d73f09;
