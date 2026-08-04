@@ -3,7 +3,7 @@
   Info: "Map" module handles map-geometry data and dynamically loads all the building modules.
 */
 import API from './api.js'
-import Building from './building.module.js'
+import { withMeterGroups } from './building.module.js'
 import Geo from 'osmtogeojson'
 
 const state = () => {
@@ -18,7 +18,10 @@ const actions = {
   async loadBuilding(store, payload) {
     let buildingSpace = 'building_' + payload.id.toString()
     let moduleSpace = store.getters.path + '/' + buildingSpace
-    this.registerModule(moduleSpace.split('/'), Building)
+    // Register the building together with its meter groups and meters in one
+    // call: Vuex rebuilds every getter in the store per registerModule, so doing
+    // this per entity made startup quadratic (~600 calls, seconds of blocking).
+    this.registerModule(moduleSpace.split('/'), withMeterGroups(payload))
     store.commit(buildingSpace + '/path', moduleSpace)
     store.commit(buildingSpace + '/mapId', payload.mapId)
     store.commit(buildingSpace + '/name', payload.name)

@@ -206,7 +206,11 @@ const actions = {
       await store.commit('shuffleChartColors')
       let chartSpace = 'chart_' + payload.id.toString()
       let moduleSpace = store.getters.path + '/' + chartSpace
-      this.registerModule(moduleSpace.split('/'), Chart)
+      // Already present when the block was registered with its chart attached
+      // (see buildDefaultBlocks); re-registering would pay another getter rebuild.
+      if (!this.hasModule(moduleSpace.split('/'))) {
+        this.registerModule(moduleSpace.split('/'), Chart)
+      }
 
       // Get the building utility type
       let utilityType = ''
