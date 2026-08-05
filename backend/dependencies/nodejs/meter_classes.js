@@ -87,6 +87,44 @@ export default {
     25: 'cphase_b',
     26: 'cphase_c'
   },
+  8955: {
+    // Dixon Rec Center replacement electric meters (Acquisuite 001EC60565DF).
+    //
+    // Register layout is identical to class 48 (Veris E51C2, bi-directional,
+    // full data set). Verified column-by-column against both devices' own log
+    // exports: 76 columns, every position matching class 48.
+    //
+    // Index 58 ('Reactive Power, Phase A') is deliberately left UNMAPPED. Both
+    // meters report a stuck value there (~16.9k on one, ~49k on the other)
+    // while phases B and C read single digits and index 23 agrees with
+    // B + C + a plausible A. That register is misconfigured on the device
+    // profile, so mapping it would only chart garbage. Add `58: 'reactive_a'`
+    // once the Acquisuite profile is corrected.
+    4: 'accumulated_real',
+    22: 'real_power',
+    23: 'reactive_power',
+    24: 'apparent_power',
+    55: 'real_a',
+    56: 'real_b',
+    57: 'real_c',
+    59: 'reactive_b',
+    60: 'reactive_c',
+    61: 'apparent_a',
+    62: 'apparent_b',
+    63: 'apparent_c',
+    64: 'pf_a',
+    65: 'pf_b',
+    66: 'pf_c',
+    67: 'vphase_ab',
+    68: 'vphase_bc',
+    69: 'vphase_ac',
+    70: 'vphase_an',
+    71: 'vphase_bn',
+    72: 'vphase_cn',
+    73: 'cphase_a',
+    74: 'cphase_b',
+    75: 'cphase_c'
+  },
   4444: {
     // Red Lion PAXCDC Test
     4: 'input', // Steam Flow Rate
