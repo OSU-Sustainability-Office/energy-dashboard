@@ -42,15 +42,19 @@ const actions = {
     const db = this.getters['dataStore/DB']
     if (db === undefined) throw new Error('indexedDB not instantiated')
     const cache = this.getters['dataStore/cache']
-    if (cache.length === 0) throw new Error('cache object is empty')
+    const requestStore = this.getters['dataStore/requestStore']
+    if (Object.keys(cache).length === 0) throw new Error('cache object is empty')
 
     // Wrapping each callback into promise so async works on indexedDB api calls
     for (let meterId of Object.keys(cache)) {
       await new Promise((resolve, reject) => {
-        let request = db
-          .transaction('MeterReadings', 'readwrite')
-          .objectStore('MeterReadings')
-          .put({ meterId: meterId, meterData: { ...cache[meterId] } })
+        const sanitizedData = JSON.parse(JSON.stringify(cache[meterId] || {}))
+        const sanitizedIntervals = JSON.parse(JSON.stringify(requestStore[meterId] || {}))
+        let request = db.transaction('MeterReadings', 'readwrite').objectStore('MeterReadings').put({
+          meterId: meterId,
+          meterData: sanitizedData,
+          requestedIntervals: sanitizedIntervals
+        })
         request.onerror = event => reject(event)
         request.onsuccess = event => resolve(event)
       }).catch(err => {
@@ -65,16 +69,20 @@ const actions = {
     const db = this.getters['dataStore/DB']
     if (db === undefined) throw new Error('indexedDB not instantiated')
     const cache = this.getters['dataStore/cache']
-    if (Object.keys(cache).length === 0) throw new Error('cache object is empty')
+    const requestStore = this.getters['dataStore/requestStore']
+    const persistentKeys = [...new Set([...Object.keys(cache), ...Object.keys(requestStore)])]
+    if (persistentKeys.length === 0) throw new Error('cache object is empty')
 
     // Wrapping each callback into promise so async works on indexedDB api calls
-    for (let meterId of Object.keys(cache)) {
+    for (let meterId of persistentKeys) {
       await new Promise((resolve, reject) => {
-        const sanitizedData = JSON.parse(JSON.stringify(cache[meterId])) // ensure data is serializable
-        let request = db
-          .transaction('MeterReadings', 'readwrite')
-          .objectStore('MeterReadings')
-          .put({ meterId: meterId, meterData: sanitizedData })
+        const sanitizedData = JSON.parse(JSON.stringify(cache[meterId] || {})) // ensure data is serializable
+        const sanitizedIntervals = JSON.parse(JSON.stringify(requestStore[meterId] || {}))
+        let request = db.transaction('MeterReadings', 'readwrite').objectStore('MeterReadings').put({
+          meterId: meterId,
+          meterData: sanitizedData,
+          requestedIntervals: sanitizedIntervals
+        })
         request.onerror = event => reject(event)
         request.onsuccess = event => resolve(event)
       }).catch(err => {
@@ -122,6 +130,7 @@ const actions = {
 
     // Then, load indexedDB into the dataStore's cache object
     let newCacheObject = {}
+    let newRequestStoreObject = {}
     await new Promise((resolve, reject) => {
       let dataRequest = this.getters['dataStore/DB']
         .transaction('MeterReadings', 'readonly')
@@ -134,9 +143,15 @@ const actions = {
         // transform from indexedDB representation to cache-friendly variant
         for (let meterIndex = 0; meterIndex < event.target.result.length; meterIndex++) {
           let db_entry = event.target.result[meterIndex]
-          newCacheObject[db_entry['meterId']] = db_entry['meterData']
+          newCacheObject[db_entry['meterId']] = db_entry['meterData'] || {}
+          if (db_entry['requestedIntervals'] !== undefined) {
+            newRequestStoreObject[db_entry['meterId']] = db_entry['requestedIntervals']
+          }
         }
         this.commit('dataStore/overwriteCache', { newCache: newCacheObject })
+        this.commit('dataStore/overwriteRequestStore', {
+          newRequestStore: newRequestStoreObject
+        })
       })
       .catch(err => {
         console.log(err)
@@ -350,16 +365,29 @@ const actions = {
     const { meterId, start, end, uom, classInt, signal } = payload
     await this.dispatch('dataStore/loadIndexedDB')
 
+    const missingIntervals = await this.dispatch('dataStore/findMissingIntervals', {
+      meterId: meterId,
+      start: start,
+      end: end,
+      uom: uom
+    })
+
     const requests = []
 
-    // Break up the request into batches
-    const totalRequestSize = this.getters['dataStore/requestSize']([{ id: meterId, startDate: start, endDate: end }])
-    const numberOfBatches = this.getters['dataStore/numberOfBatches'](totalRequestSize)
-    const batchSize = Math.ceil((end - start) / numberOfBatches)
-    for (let i = 0; i < numberOfBatches; i++) {
-      const startDate = start + i * batchSize
-      const endDate = Math.min(start + (i + 1) * batchSize, end)
-      requests.push([meterId, startDate, endDate, uom, classInt])
+    // Break up each missing interval into appropriately sized batches.
+    for (const [intervalStart, intervalEnd] of missingIntervals) {
+      if (intervalStart >= intervalEnd) continue
+      const totalRequestSize = this.getters['dataStore/requestSize']([
+        { id: meterId, startDate: intervalStart, endDate: intervalEnd }
+      ])
+      const numberOfBatches = this.getters['dataStore/numberOfBatches'](totalRequestSize)
+      const batchSize = Math.ceil((intervalEnd - intervalStart) / numberOfBatches)
+
+      for (let i = 0; i < numberOfBatches; i++) {
+        const startDate = intervalStart + i * batchSize
+        const endDate = Math.min(intervalStart + (i + 1) * batchSize, intervalEnd)
+        requests.push([meterId, startDate, endDate, uom, classInt])
+      }
     }
 
     // Request data in batches
@@ -367,8 +395,18 @@ const actions = {
     for (const request of requests) {
       try {
         const meterData = await API.data(...request, signal)
-        if (meterData && Array.isArray(meterData) && meterData.length > 0) {
-          meterDataArray.push(meterData)
+        if (meterData && Array.isArray(meterData)) {
+          // Mark interval as fetched, even when the API returns an empty dataset.
+          this.commit('dataStore/addToRequestStore', {
+            meterId: meterId,
+            start: request[1],
+            end: request[2],
+            uom: uom
+          })
+
+          if (meterData.length > 0) {
+            meterDataArray.push(meterData)
+          }
         }
       } catch (err) {
         // Log request details if the request was not aborted
@@ -389,37 +427,26 @@ const actions = {
 
     if (meterDataArray.length > 0) {
       for (const dataset of meterDataArray) {
-        if (dataset.length > 0) {
-          // Write to request store
-          this.commit('dataStore/addToRequestStore', {
+        // Write to cache
+        dataset.forEach(datum => {
+          this.commit('dataStore/addToCache', {
+            datetime: datum.time,
             meterId: meterId,
-            start: dataset[dataset.length - 1].time,
-            end: dataset[0].time,
-            uom: uom
+            uom: uom,
+            value: datum[uom]
           })
-
-          // Write to cache
-          dataset.forEach(datum => {
-            this.commit('dataStore/addToCache', {
-              datetime: datum.time,
-              meterId: meterId,
-              uom: uom,
-              value: datum[uom]
-            })
-          })
-
-          // Write to persistent cache
-          try {
-            // Add all cached instances to the indexedDB
-            await this.dispatch('dataStore/addChunkToIndexedDB')
-          } catch (e) {
-            console.log(e)
-            console.log('Failed to write new datums to the persistent cache.')
-          }
-        }
+        })
       }
-    } else {
-      console.log('Catastrophic error occured with API')
+    }
+
+    // Persist updated request ranges and cached data.
+    if (requests.length > 0) {
+      try {
+        await this.dispatch('dataStore/addChunkToIndexedDB')
+      } catch (e) {
+        console.log(e)
+        console.log('Failed to write new datums to the persistent cache.')
+      }
     }
 
     // Retrieve the data from the cache
@@ -584,9 +611,9 @@ const mutations = {
 
       Basically we use a nested structure to keep track of which meter data ranges we've already
       queried during a user's session.  This makes it so we minimize redundant requests for data
-      that won't exist in the database.  We don't persist this data since it's concievable that
-      our database will acquire the data at some point, but it's unlikely it will occur during a
-      single user session.
+      that won't exist in the database. For chunked requests, we persist this data alongside the
+      meter cache in indexedDB so repeated large requests after a browser refresh can be served
+      locally.
 
       The nested structure works by storing a sorted array of tuples containing a start and end date for data
       of form (start time, end time)
@@ -622,6 +649,11 @@ const mutations = {
   // Overwrites cache with new data from indexedDB.
   overwriteCache: (state, { newCache }) => {
     state.cache = newCache
+  },
+
+  // Overwrites in-memory request interval store with data from indexedDB.
+  overwriteRequestStore: (state, { newRequestStore }) => {
+    state.requestStore = newRequestStore
   }
 }
 
