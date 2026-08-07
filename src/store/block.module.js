@@ -214,15 +214,26 @@ const actions = {
 
       // Get the building utility type
       let utilityType = ''
+      let meterClass = null
       const meters = this.getters[payload.group.path + '/meters']
       if (meters.length > 0) {
         await meters[0].promise
         utilityType = this.getters[meters[0].path + '/type']
+        meterClass = this.getters[meters[0].path + '/classInt']
       }
 
-      // This defines the "default chart" (e.g. "Total Electricity")
+      // This defines the "default chart" (e.g. "Purchased Electricity (Pacific Power)")
       // The default chart are the charts shown when user clicks on a building
-      store.commit(chartSpace + '/name', 'Total ' + utilityType)
+      //
+      // Titled by meter class rather than utility type. A Pacific Power meter and
+      // an Acquisuite meter are both type 'Electricity', but only the former is
+      // bought from the grid, and solar is measured separately at the inverter.
+
+      const classLabels = {
+        9990001: 'Solar Generation',
+        9990002: 'Purchased Electricity (Pacific Power)'
+      }
+      store.commit(chartSpace + '/name', classLabels[meterClass] || 'Total ' + utilityType)
       const pointMap = {
         Electricity: 'accumulated_real',
         Gas: 'cubic_feet',
