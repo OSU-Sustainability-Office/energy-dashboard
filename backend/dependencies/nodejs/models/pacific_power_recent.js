@@ -32,15 +32,19 @@ class PacificPowerRecent {
       return result
     }
 
-    // Get Unix TimeStamp for 11:59:59 PM GMT of 7 days ago
+    // Get Unix TimeStamp for 11:59:59 PM GMT of 30 days ago.
+    // Must stay in sync with CONFIG.MAX_PREV_DAY_COUNT in automated-jobs/PacificPower/readPP.js:
+    // the scraper uses this list to tell which days are already stored, so a narrower window
+    // here makes it re-POST every older day it walks (all of which the /upload handler rejects
+    // as redundant).
     const dateObjUnix = new Date(
       // (days * hours * minutes * seconds * ms)
-      new Date().getTime() - (7 * 24 * 60 * 60 * 1000 + getOffset('US/Pacific') * 60 * 1000)
+      new Date().getTime() - (30 * 24 * 60 * 60 * 1000 + getOffset('US/Pacific') * 60 * 1000)
     )
 
     dateObjUnix.setUTCHours(23, 59, 59, 0)
 
-    const timestamp7DaysAgo = Math.floor(dateObjUnix.getTime() / 1000) // Convert milliseconds to seconds
+    const timestamp30DaysAgo = Math.floor(dateObjUnix.getTime() / 1000) // Convert milliseconds to seconds
 
     return query(
       `SELECT MAX(time) as time, MAX(time_seconds) as time_seconds, pacific_power_meter_id 
@@ -48,7 +52,7 @@ class PacificPowerRecent {
       WHERE time_seconds >= ?
       GROUP BY pacific_power_meter_id, DATE(FROM_UNIXTIME(time_seconds))
       ORDER BY pacific_power_meter_id, time_seconds ASC;`,
-      [timestamp7DaysAgo]
+      [timestamp30DaysAgo]
     )
   }
 }
