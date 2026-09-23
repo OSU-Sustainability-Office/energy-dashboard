@@ -4,6 +4,7 @@
 */
 import API from './api.js'
 import { withMeterGroups } from './building.module.js'
+import { DEFAULT_CAMPUS } from './campus.module.js'
 import Geo from 'osmtogeojson'
 
 const state = () => {
@@ -26,6 +27,10 @@ const actions = {
     store.commit(buildingSpace + '/mapId', payload.mapId)
     store.commit(buildingSpace + '/name', payload.name)
     store.commit(buildingSpace + '/group', payload.group)
+    // Defaulted here rather than at every read: buildings predating the Cascades
+    // work have no campus, and so does the payload if the frontend is deployed
+    // ahead of the backend.
+    store.commit(buildingSpace + '/campus', payload.campus || DEFAULT_CAMPUS)
     store.commit(buildingSpace + '/image', payload.image)
     store.commit(buildingSpace + '/id', payload.id)
     store.commit(buildingSpace + '/hidden', payload.hidden)
@@ -161,10 +166,25 @@ const getters = {
     return state['building_' + id.toString()]
   },
 
-  buildingGroups: state => {
+  /*
+    The three getters below are scoped to the active campus. Corvallis and
+    OSU-Cascades are ~155 km apart, so a list spanning both is never what a
+    viewer wants -- and on the map the other campus is simply off-screen.
+
+    They are the only place campus filtering happens: Map.vue, BuildingList.vue,
+    DownloadData.vue and BuildingPanelNavigation all read through here. The
+    per-id `building` getter above is deliberately NOT filtered, so a direct link
+    to a building keeps working whichever campus is selected.
+
+    The active campus is read defensively: if the campus module were ever
+    missing, falling back to every Corvallis building is a far better
+    failure than returning none.
+  */
+  buildingGroups: (state, getters, rootState, rootGetters) => {
+    const campus = rootGetters['campus/active'] || DEFAULT_CAMPUS
     let groups = new Set()
     for (let key of Object.keys(state)) {
-      if (key.search(/building_/) >= 0) {
+      if (key.search(/building_/) >= 0 && state[key].campus === campus) {
         if (state[key].group) {
           groups.add(state[key].group)
         }
@@ -173,10 +193,11 @@ const getters = {
     return groups
   },
 
-  buildingsForGroup: state => group => {
+  buildingsForGroup: (state, getters, rootState, rootGetters) => group => {
+    const campus = rootGetters['campus/active'] || DEFAULT_CAMPUS
     let buildings = []
     for (let key of Object.keys(state)) {
-      if (key.search(/building_/) >= 0 && state[key].group === group) {
+      if (key.search(/building_/) >= 0 && state[key].group === group && state[key].campus === campus) {
         if (!state[key].hidden) {
           buildings.push(state[key])
         }
@@ -185,10 +206,11 @@ const getters = {
     return buildings
   },
 
-  buildings: state => {
+  buildings: (state, getters, rootState, rootGetters) => {
+    const campus = rootGetters['campus/active'] || DEFAULT_CAMPUS
     let buildings = []
     for (let key of Object.keys(state)) {
-      if (key.search(/building_/) >= 0) {
+      if (key.search(/building_/) >= 0 && state[key].campus === campus) {
         if (!state[key].hidden) {
           buildings.push(state[key])
         }

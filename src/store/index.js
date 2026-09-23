@@ -6,6 +6,7 @@
 */
 import { createStore } from 'vuex'
 import Campaigns from './campaigns.module.js'
+import Campus from './campus.module.js'
 import EDMap from './map.module.js'
 import ModalController from './modal_controller.module.js'
 import DataStore from './data_layer/data_store.js'
@@ -13,6 +14,7 @@ import DataStore from './data_layer/data_store.js'
 const store = createStore({
   modules: {
     campaigns: Campaigns,
+    campus: Campus,
     map: EDMap,
     modalController: ModalController,
     dataStore: DataStore

@@ -133,9 +133,19 @@ import L from 'leaflet'
 import emitter from '../../event-bus'
 import { Search as SearchIcon, Close as CloseIcon } from '@element-plus/icons-vue'
 
-const DEFAULT_LAT = 44.56335
-const DEFAULT_LON = -123.2858
-const DEFAULT_ZOOM = 15.5
+/*
+  Where the map opens for each campus.
+
+  Fixed per campus rather than fitted to whatever is on screen: building 72
+  "Dawes House" currently carries geometry for a building in Washington DC, and an
+  auto-fit would drag the Corvallis view 3,800 km east. Cascades is centred on the
+  extent of its seven mapped buildings, which frames the main Chandler Ave cluster
+  plus the Graduate & Research Center ~700 m to the east.
+*/
+const CAMPUS_VIEW = {
+  corvallis: { lat: 44.56335, lon: -123.2858, zoom: 15.5 },
+  cascades: { lat: 44.04367, lon: -121.32931, zoom: 16 }
+}
 
 export default {
   name: 'featured',
@@ -159,6 +169,14 @@ export default {
     CloseIcon
   },
   computed: {
+    activeCampus() {
+      return this.$store.getters['campus/active']
+    },
+    campusView() {
+      return CAMPUS_VIEW[this.activeCampus] || CAMPUS_VIEW.corvallis
+    },
+    // map/buildings is already scoped to the active campus, so this needs no
+    // campus predicate of its own -- it only drops buildings without geometry.
     filteredBuildings() {
       return this.$store.getters['map/buildings'].filter(building => building.geoJSON)
     },
@@ -189,12 +207,15 @@ export default {
     }
   },
   data() {
+    // Opening view for the campus restored from localStorage, so a returning
+    // visitor lands on their campus rather than panning to it after first paint.
+    const view = CAMPUS_VIEW[this.$store.getters['campus/active']] || CAMPUS_VIEW.corvallis
     return {
       selectedOption: 'All',
       searchGroup: [],
       search: '',
-      zoom: DEFAULT_ZOOM,
-      center: L.latLng(DEFAULT_LAT, DEFAULT_LON),
+      zoom: view.zoom,
+      center: L.latLng(view.lat, view.lon),
       url: 'https://api.mapbox.com/styles/v1/jack-woods/cjmi2qpp13u4o2spgb66d07ci/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFjay13b29kcyIsImEiOiJjamg2aWpjMnYwMjF0Mnd0ZmFkaWs0YzN0In0.qyiDXCvvSj3O4XvPsSiBkA',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       map: null,
@@ -282,9 +303,37 @@ export default {
       }
     },
     resetMap() {
-      this.map.setView(L.latLng(DEFAULT_LAT, DEFAULT_LON), DEFAULT_ZOOM)
+      this.map.setView(L.latLng(this.campusView.lat, this.campusView.lon), this.campusView.zoom)
       for (let layer of Object.values(this.map._layers)) {
         layer.unbindTooltip()
+      }
+    },
+    /*
+      Re-applies the category legend and the energy-type filter to freshly created
+      layers. Bumping rKey re-creates every layer from scratch, so anything the
+      user had filtered out would otherwise silently reappear.
+    */
+    applyLayerFilters() {
+      if (!this.$refs.map) {
+        return
+      }
+      this.map = this.$refs.map.leafletObject
+      for (const layerKey of Object.keys(this.map._layers)) {
+        const layer = this.map._layers[layerKey]
+        if (!layer.feature) {
+          continue
+        }
+        if (this.grouping === 'Category' && !this.selected.includes(layer.feature.properties.group)) {
+          this.map.removeLayer(layer)
+          continue
+        }
+        if (this.selectedOption !== 'All') {
+          const building = this.$store.getters['map/building'](layer.feature.properties.id)
+          const types = building ? building.description.split(', ') : []
+          if (!types.some(type => this.selectedOption.includes(type))) {
+            this.map.removeLayer(layer)
+          }
+        }
       }
     },
     getResult(searchResult) {
@@ -293,7 +342,7 @@ export default {
       }
       let searchLatLng = searchResult.getBounds().getCenter()
       searchLatLng.lng = searchLatLng.lng - 0.003
-      this.map.setView(L.latLng(searchLatLng), DEFAULT_ZOOM)
+      this.map.setView(L.latLng(searchLatLng), this.campusView.zoom)
       searchResult
         .bindTooltip(searchResult.feature.properties.name, { permanent: true, fillColor: '#000', color: '#000' })
         .openTooltip()
@@ -565,6 +614,19 @@ export default {
     emitter.off('inputData', this.handleInputData)
   },
   watch: {
+    activeCampus() {
+      // Close anything pinned to a building on the campus being left behind.
+      this.$store.dispatch('modalController/closeModal')
+      this.search = ''
+      this.processedLayers = 0 // show the loading indicator while layers rebuild
+      this.rKey++
+      this.$nextTick(() => {
+        if (this.map) {
+          this.map.setView(L.latLng(this.campusView.lat, this.campusView.lon), this.campusView.zoom)
+        }
+        this.applyLayerFilters()
+      })
+    },
     selectedOption(energyFilter) {
       this.processedLayers = 0 // show loading indicator after switching filters
       this.rKey++

@@ -56,6 +56,7 @@ DB.beginTransaction(err => {
         \`map_id\` text,
         \`image\` text,
         \`group\` text,
+        \`campus\` varchar(32) NOT NULL DEFAULT 'corvallis',
         \`name\` text,
         hidden int,
         geojson json,
