@@ -182,7 +182,7 @@ export default {
     },
     mapLoaded() {
       return (
-        this.filteredBuildings.length > 0 && // buildings are loaded
+        this.buildingsLoaded && // /allbuildings has come back
         this.processedLayers === this.filteredBuildings.length && // all layers are processed
         !this.$store.getters['map/buildingMap'].size // all geojson layers are loaded
       )
@@ -239,6 +239,10 @@ export default {
         'Down Trend'
       ],
       show: false,
+      // A non-empty building list used to stand in for "loaded". Campus filtering
+      // makes an empty list a legitimate steady state, so that proxy left an empty
+      // campus spinning forever. Track the fetch itself instead.
+      buildingsLoaded: false,
       processedLayers: 0,
       buildingOptions: {
         onEachFeature: (feature, layer) => {
@@ -604,6 +608,17 @@ export default {
       this.message = inputWord
     }
     emitter.on('inputData', this.handleInputData)
+
+    try {
+      // Memoised in the store, so this is the same promise App.vue already awaits.
+      await this.$store.dispatch('map/loadMap')
+    } catch (err) {
+      console.error('Map could not load buildings:', err)
+    } finally {
+      // Settled either way. Holding the spinner up after a failure tells the
+      // viewer nothing; an empty map at least reflects what is known.
+      this.buildingsLoaded = true
+    }
   },
   mounted() {
     this.$nextTick(() => {
