@@ -11,20 +11,15 @@
   <el-dialog
     v-model="visible"
     class="campus-dialog"
-    width="460px"
+    width="500px"
     align-center
     :show-close="false"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
   >
     <template #header>
-      <div class="campus-dialog__title">Choose a campus</div>
+      <div class="campus-dialog__title">Which campus would you like to see?</div>
     </template>
-
-    <p class="campus-dialog__blurb">
-      Corvallis and OSU-Cascades are about 100 miles apart, so the dashboard shows one campus at a time. You can switch
-      whenever you like from the bar at the top.
-    </p>
 
     <div class="campus-dialog__choices">
       <button
@@ -103,15 +98,10 @@ export default {
 
 .campus-dialog__title {
   font-family: 'StratumNo2', sans-serif;
-  font-size: 26px;
+  /* Smaller than the 26px the other modal titles use: this one is a full
+     question rather than a label, and 26px wrapped it onto two lines. */
+  font-size: 22px;
   color: $color-white;
-}
-
-.campus-dialog__blurb {
-  margin: 0 0 18px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.85);
 }
 
 .campus-dialog__choices {
