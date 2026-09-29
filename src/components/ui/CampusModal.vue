@@ -3,9 +3,10 @@
   Info: First-visit campus picker. Built on el-dialog rather than a hand-rolled
         overlay so the scrim, focus trap and body-scroll lock come for free.
 
-  Styling follows the app's other dialogs (DownloadData, EditModal): a light
-  el-dialog with real el-buttons, rather than the dark floating panel used by
-  BuildingModal, which is a map overlay and not a dialog.
+  The orange StratumNo2 title bar is the app's own idiom (BuildingModal,
+  BuildingCompareModal, the nav), sitting on a light dialog body like the app's
+  other dialogs. The buttons are real el-buttons, kept `plain` so the header
+  stays the one block of solid colour.
 
   It cannot be dismissed without choosing: every view behind it is scoped to one
   campus, so there is no sensible "no answer" state. The choice is remembered,
@@ -15,7 +16,7 @@
   <el-dialog
     v-model="visible"
     class="campus-dialog"
-    width="500px"
+    width="420px"
     align-center
     :show-close="false"
     :close-on-click-modal="false"
@@ -26,7 +27,7 @@
     </template>
 
     <div class="campus-dialog__choices">
-      <el-button v-for="campus in campuses" :key="campus.id" type="primary" size="large" @click="choose(campus.id)">
+      <el-button v-for="campus in campuses" :key="campus.id" type="primary" plain @click="choose(campus.id)">
         {{ campus.label }}
       </el-button>
     </div>
@@ -62,33 +63,72 @@ export default {
   match it. Every selector is namespaced under .campus-dialog instead.
 -->
 <style lang="scss">
-.campus-dialog__title {
-  /* The display face every heading on the site uses. 22px rather than the 26px
-     of the map panels: this title is a full question, and 26px wrapped it. */
-  font-family: 'StratumNo2', sans-serif;
-  font-size: 22px;
-  color: $color-black;
+/* Two classes deliberately: Element Plus styles .el-dialog at the same
+   specificity and is loaded after this, so a lone .campus-dialog loses. */
+.el-dialog.campus-dialog {
+  border-radius: 5px;
+  /* Clips the orange bar to the rounded corners. */
+  overflow: hidden;
+  padding: 0;
 }
 
+.campus-dialog .el-dialog__header {
+  margin: 0;
+  padding: 16px 22px;
+  background-color: $color-primary;
+}
+
+.campus-dialog__title {
+  font-family: 'StratumNo2', sans-serif;
+  /* 18px keeps the question on one line at this width; wrapping it made the
+     header top-heavy. */
+  font-size: 18px;
+  line-height: 1.2;
+  color: $color-white;
+}
+
+.campus-dialog .el-dialog__body {
+  padding: 24px;
+}
+
+/* Stacked, not side by side: two wide buttons in a row left the dialog a 3:1
+   letterbox. Full-width rows give it a card shape and a bigger target each. */
 .campus-dialog__choices {
   display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
 .campus-dialog__choices .el-button {
-  flex: 1;
+  width: 100%;
   height: 56px;
+  font-family: 'StratumNo2', sans-serif;
   font-size: 18px;
-  /* Element Plus spaces adjacent buttons itself; the flex gap already does. */
+  /* Its `plain` variant tints the fill and fades the border to a pale pink,
+     which reads as disabled beside the solid header. Full-strength brand
+     colour on white instead, inverting on hover. */
+  background-color: $color-white;
+  border: solid 2px $color-primary;
+  color: $color-primary;
+}
+
+/* Element Plus indents every button that follows another. The flex gap already
+   spaces these, and with width:100% that indent pushed the second one out of
+   alignment and over the edge. Needs the adjacent selector to outrank it. */
+.campus-dialog__choices .el-button + .el-button {
   margin-left: 0;
+}
+
+.campus-dialog__choices .el-button:hover,
+.campus-dialog__choices .el-button:focus-visible {
+  background-color: $color-primary;
+  border-color: $color-primary;
+  color: $color-white;
 }
 
 @media only screen and (max-width: 520px) {
   .el-dialog.campus-dialog {
     width: calc(100% - 32px) !important;
-  }
-  .campus-dialog__choices {
-    flex-direction: column;
   }
 }
 </style>
