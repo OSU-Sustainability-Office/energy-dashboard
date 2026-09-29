@@ -13,26 +13,40 @@
     <el-main class="main" ref="main">
       <router-view />
     </el-main>
+    <!--Blocks on first visit until a campus is chosen; silent on every visit after-->
+    <CampusModal />
   </el-container>
 </template>
 
 <script>
 import NavigationBar from '@/components/ui/NavigationBar.vue'
+import CampusModal from '@/components/ui/CampusModal.vue'
 import { h } from 'vue'
 import { ElMessageBox } from 'element-plus'
 
 export default {
   name: 'App',
   components: {
-    NavigationBar
+    NavigationBar,
+    CampusModal
   },
   async created() {
+    // Restore the remembered campus first. It is synchronous, so the map and the
+    // buildings list render the right campus immediately instead of flashing the
+    // default, and the picker only opens for someone who has never chosen.
+    this.$store.dispatch('campus/restore')
     // On load, grab building/meter/map information from the API.
     await this.$store.dispatch('map/loadMap')
   },
   data() {
     return {
-      transitionName: 'pageTo'
+      transitionName: 'pageTo',
+      firstTimerShown: false
+    }
+  },
+  computed: {
+    campusChosen() {
+      return this.$store.getters['campus/chosen']
     }
   },
   methods: {
@@ -41,11 +55,15 @@ export default {
     },
     enableScroll: function () {
       this.$refs.main.$el.style.overflow = 'auto'
-    }
-  },
-  mounted() {
-    // This is the first-timer pop-up window
-    if (!document.cookie.split(';').some(cookieString => cookieString.includes('firstTimer'))) {
+    },
+    showFirstTimerPrompt: function () {
+      if (this.firstTimerShown) {
+        return
+      }
+      if (document.cookie.split(';').some(cookieString => cookieString.includes('firstTimer'))) {
+        return
+      }
+      this.firstTimerShown = true
       ElMessageBox({
         title: 'First Timer?',
         message: () =>
@@ -72,7 +90,20 @@ export default {
       })
     }
   },
+  mounted() {
+    // The campus picker takes precedence. Stacking both on a first visit buries
+    // one behind the other for exactly the newcomer they are both aimed at, so
+    // this waits for a campus and the watcher below picks it up.
+    if (this.campusChosen) {
+      this.showFirstTimerPrompt()
+    }
+  },
   watch: {
+    campusChosen: function (chosen) {
+      if (chosen) {
+        this.showFirstTimerPrompt()
+      }
+    },
     $route: function (to, from) {
       // transition in
       if (to.path.length > from.path.length) {

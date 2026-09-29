@@ -20,6 +20,7 @@
           </li>
           <li class="navLi"><router-link to="/contact" class="navLink">Contact</router-link></li>
         </ul>
+        <CampusToggle class="nav-campus" />
       </div>
     </div>
   </div>
@@ -27,10 +28,12 @@
 
 <script>
 import svgLogo from '/src/assets/icons/logo.svg'
+import CampusToggle from '@/components/ui/CampusToggle.vue'
 
 export default {
   components: {
-    svgLogo
+    svgLogo,
+    CampusToggle
   },
   data() {
     return {
@@ -96,5 +99,13 @@ i {
 .logo {
   padding-top: 10px;
   cursor: pointer;
+}
+/*
+  Pushed to the far right of the flex row. .nav-content sets `align-items: left`,
+  which is not a valid value and so resolves to stretch -- the toggle sets its own
+  align-self rather than change a rule the rest of the bar depends on.
+*/
+.nav-campus {
+  margin-left: auto;
 }
 </style>

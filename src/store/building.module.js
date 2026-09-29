@@ -13,6 +13,7 @@ const state = () => {
     path: null,
     name: null,
     group: null,
+    campus: null,
     image: null,
     geoJSON: null,
     description: '',
@@ -135,6 +136,10 @@ const mutations = {
     state.group = group
   },
 
+  campus(state, campus) {
+    state.campus = campus
+  },
+
   image(state, image) {
     state.image = image
   },
@@ -179,6 +184,10 @@ const getters = {
 
   group(state) {
     return state.group
+  },
+
+  campus(state) {
+    return state.campus
   },
 
   image(state) {
