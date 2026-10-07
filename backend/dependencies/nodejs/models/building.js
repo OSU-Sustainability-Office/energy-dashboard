@@ -13,6 +13,7 @@ class Building {
     this.image = ''
     this.meterGroups = []
     this.group = ''
+    this.campus = ''
     this.geoJSON = ''
     this.name = ''
     this.hidden = false
@@ -29,6 +30,7 @@ class Building {
       mapId: this.mapId,
       image: this.image,
       group: this.group,
+      campus: this.campus,
       name: this.name,
       hidden: this.hidden,
       geoJSON: this.geoJSON
@@ -40,7 +42,9 @@ class Building {
     await _query('UPDATE buildings SET geojson = ? WHERE id = ?', [JSON.stringify(geoJSON), id])
   }
 
-  set(name, group, mapId, image, meterGroups, hidden, geoJSON) {
+  // Positional, and now eight wide. There is exactly one caller (all() below);
+  // if a ninth is ever needed, take an object instead.
+  set(name, group, mapId, image, meterGroups, hidden, geoJSON, campus) {
     this.name = name
     this.mapId = mapId
     this.image = image
@@ -48,6 +52,7 @@ class Building {
     this.meterGroups = meterGroups
     this.hidden = hidden
     this.geoJSON = geoJSON
+    this.campus = campus
   }
 
   static async all() {
@@ -57,8 +62,9 @@ class Building {
       `SELECT buildings.name,
               buildings.hidden, 
               buildings.id, 
-              buildings.group, 
-              buildings.map_id, 
+              buildings.group,
+              buildings.campus,
+              buildings.map_id,
               buildings.image, 
               buildings.geojson,
               meter_groups.id as meter_group_id,
@@ -81,6 +87,7 @@ class Building {
         queryJson[row.id] = {
           name: row.name,
           group: row.group,
+          campus: row.campus,
           mapId: row.map_id,
           image: row.image,
           hidden: row.hidden === 1,
@@ -128,7 +135,8 @@ class Building {
         queryJson[key].image,
         metergroups,
         queryJson[key].hidden,
-        queryJson[key].geoJSON
+        queryJson[key].geoJSON,
+        queryJson[key].campus
       )
       buildings.push(building)
     }
