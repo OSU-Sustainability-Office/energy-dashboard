@@ -13,7 +13,7 @@
     <el-main class="main" ref="main">
       <router-view />
     </el-main>
-    <!--Blocks on first visit until a campus is chosen; silent on every visit after-->
+    <!--Blocks on every visit until a campus is chosen-->
     <CampusModal />
   </el-container>
 </template>
@@ -31,10 +31,6 @@ export default {
     CampusModal
   },
   async created() {
-    // Restore the remembered campus first. It is synchronous, so the map and the
-    // buildings list render the right campus immediately instead of flashing the
-    // default, and the picker only opens for someone who has never chosen.
-    this.$store.dispatch('campus/restore')
     // On load, grab building/meter/map information from the API.
     await this.$store.dispatch('map/loadMap')
   },
@@ -91,9 +87,8 @@ export default {
     }
   },
   mounted() {
-    // The campus picker takes precedence. Stacking both on a first visit buries
-    // one behind the other for exactly the newcomer they are both aimed at, so
-    // this waits for a campus and the watcher below picks it up.
+    // The campus picker takes precedence. Stacking both buries one behind the
+    // other, so this waits for a campus and the watcher below picks it up.
     if (this.campusChosen) {
       this.showFirstTimerPrompt()
     }
