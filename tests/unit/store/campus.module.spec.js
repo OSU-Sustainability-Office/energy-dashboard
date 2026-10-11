@@ -3,12 +3,14 @@
  *               scoping it applies to the map module's list getters.
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createStore } from 'vuex'
 import { cloneDeep } from 'lodash'
 
 import Campus, { DEFAULT_CAMPUS } from '@/store/campus.module.js'
 import EDMap from '@/store/map.module.js'
+
+const STORAGE_KEY = 'osu-energy.campus'
 
 const freshStore = () => createStore({ modules: { campus: cloneDeep(Campus), map: cloneDeep(EDMap) } })
 
@@ -27,6 +29,14 @@ const building = (id, campus, group = 'Academics') => ({
 })
 
 describe('Campus module', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('offers both campuses and answers Corvallis before a choice is made', () => {
     const store = freshStore()
     expect(store.getters['campus/campuses'].map(c => c.id)).toEqual(['corvallis', 'cascades'])
@@ -34,34 +44,59 @@ describe('Campus module', () => {
     expect(store.getters['campus/chosen']).toBe(false)
   })
 
-  it('records a choice and reports it as chosen', () => {
+  it('records a choice, persists it, and reports it as chosen', () => {
     const store = freshStore()
     store.dispatch('campus/choose', 'cascades')
     expect(store.getters['campus/active']).toBe('cascades')
     expect(store.getters['campus/chosen']).toBe(true)
     expect(store.getters['campus/label']).toBe('Cascades')
+    expect(window.localStorage.getItem(STORAGE_KEY)).toBe('cascades')
   })
 
   it('ignores an unrecognised campus', () => {
     const store = freshStore()
     store.dispatch('campus/choose', 'springfield')
     expect(store.getters['campus/chosen']).toBe(false)
+    expect(window.localStorage.getItem(STORAGE_KEY)).toBeNull()
   })
 
-  it('asks again on every load, even after an earlier session chose', () => {
-    // The picker is meant to open on every visit, so nothing may carry a choice
-    // over -- including a value left in localStorage by an older build.
-    window.localStorage.setItem('osu-energy.campus', 'cascades')
-    freshStore().dispatch('campus/choose', 'cascades')
+  it('restores a remembered choice and ignores a corrupted one', () => {
+    window.localStorage.setItem(STORAGE_KEY, 'cascades')
+    const remembered = freshStore()
+    remembered.dispatch('campus/restore')
+    expect(remembered.getters['campus/active']).toBe('cascades')
+    expect(remembered.getters['campus/chosen']).toBe(true)
 
-    const nextVisit = freshStore()
-    expect(nextVisit.getters['campus/chosen']).toBe(false)
-    expect(nextVisit.getters['campus/active']).toBe(DEFAULT_CAMPUS)
-    window.localStorage.clear()
+    window.localStorage.setItem(STORAGE_KEY, 'not-a-campus')
+    const corrupted = freshStore()
+    corrupted.dispatch('campus/restore')
+    expect(corrupted.getters['campus/chosen']).toBe(false)
+  })
+
+  it('keeps working when localStorage throws', () => {
+    // Browsers with site data blocked throw on read and write alike. Remembering
+    // the choice is a convenience; losing it must not break the session.
+    const getItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('access denied')
+    })
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('access denied')
+    })
+
+    const store = freshStore()
+    expect(() => store.dispatch('campus/restore')).not.toThrow()
+    expect(() => store.dispatch('campus/choose', 'cascades')).not.toThrow()
+    expect(store.getters['campus/active']).toBe('cascades')
+    expect(getItem).toHaveBeenCalled()
+    expect(setItem).toHaveBeenCalled()
   })
 })
 
 describe('Campus scoping of the map getters', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
   it('scopes the list getters to the active campus, but never a direct lookup', async () => {
     const store = freshStore()
     await store.dispatch('map/loadBuilding', building(1, 'corvallis'))

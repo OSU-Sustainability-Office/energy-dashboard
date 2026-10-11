@@ -1,6 +1,6 @@
 <!--
   Filename: CampusModal.vue
-  Info: Campus picker, shown on every visit. Built on el-dialog rather than a hand-rolled
+  Info: First-visit campus picker. Built on el-dialog rather than a hand-rolled
         overlay so the scrim, focus trap and body-scroll lock come for free.
 
   The orange StratumNo2 title bar is the app's own idiom (BuildingModal,
@@ -9,8 +9,8 @@
   stays the one block of solid colour.
 
   It cannot be dismissed without choosing: every view behind it is scoped to one
-  campus, so there is no sensible "no answer" state. The choice is deliberately
-  not remembered across visits, so this opens on every page load.
+  campus, so there is no sensible "no answer" state. The choice is remembered,
+  so a returning visitor never sees this.
 -->
 <template>
   <el-dialog
