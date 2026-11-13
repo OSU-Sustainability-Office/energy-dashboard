@@ -55,9 +55,9 @@ export default {
 
 .campus-option {
   font-family: 'StratumNo2', sans-serif;
-  font-size: 14px;
+  font-size: 18px;
   line-height: 1;
-  padding: 7px 14px;
+  padding: 11px 24px;
   border: 0;
   background-color: transparent;
   color: $color-white;
@@ -83,8 +83,8 @@ export default {
 
 @media only screen and (max-width: 700px) {
   .campus-option {
-    padding: 6px 9px;
-    font-size: 13px;
+    padding: 8px 14px;
+    font-size: 15px;
   }
 }
 </style>
