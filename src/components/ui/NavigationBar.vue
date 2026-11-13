@@ -6,7 +6,9 @@
   <div>
     <div class="nav-menu">
       <div class="nav-content">
-        <div class="logo"><svgLogo width="160px" alt="" @click="$router.push({ path: '/map' })" /></div>
+        <div class="logo"><svgLogo width="190px" alt="" @click="$router.push({ path: '/map' })" /></div>
+        <CampusSwitcher class="nav-campus" />
+        <span class="nav-divider" aria-hidden="true"></span>
         <ul class="nav-items">
           <li class="navLi"><router-link to="/map" class="navLink">Map</router-link></li>
           <li class="navLi">
@@ -20,7 +22,6 @@
           </li>
           <li class="navLi"><router-link to="/contact" class="navLink">Contact</router-link></li>
         </ul>
-        <CampusToggle class="nav-campus" />
       </div>
     </div>
   </div>
@@ -28,12 +29,12 @@
 
 <script>
 import svgLogo from '/src/assets/icons/logo.svg'
-import CampusToggle from '@/components/ui/CampusToggle.vue'
+import CampusSwitcher from '@/components/ui/CampusSwitcher.vue'
 
 export default {
   components: {
     svgLogo,
-    CampusToggle
+    CampusSwitcher
   },
   data() {
     return {
@@ -52,27 +53,22 @@ export default {
 .nav-menu {
   background-color: white;
 }
+/* The links don't pad themselves out to the bar's height, so this sets it --
+   from the same variable App.vue and the full-height pages use to clear the bar. */
 .nav-content {
   display: flex;
-  justify-content: start;
+  align-items: center;
+  min-height: $nav-height;
   padding: 0px 20px;
-  align-items: left;
-  padding-top: 0px;
-  left: 10px;
   background-color: $color-primary !important;
 }
 .nav-items {
   display: flex;
-  justify-content: center;
-  align-items: left;
   list-style: none;
   margin: 0;
-  padding-top: 0px;
-  margin-left: -30px;
+  padding: 0;
   li {
-    padding: 25px 0px;
-    padding-right: 10px;
-    padding-left: 10px;
+    padding: 0px 2px;
   }
 }
 i {
@@ -80,32 +76,45 @@ i {
   margin-top: 20px;
   margin-left: 5px;
 }
-.navLi {
-  padding-top: 28px;
-}
+/*
+  Same vocabulary as CampusSwitcher: StratumNo2, 5px pills and a dark hover tint.
+  The current page keeps the bar's original dark fill, just in pill form.
+*/
 .navLink {
-  color: white;
-  margin-top: 10px;
-  font-size: 16px;
+  display: block;
+  font-family: 'StratumNo2', sans-serif;
+  font-size: 18px;
+  line-height: 1;
+  padding: 14px 14px;
+  border-radius: 5px;
+  color: $color-white;
   text-decoration: none;
+  transition: background-color 0.15s ease;
 }
-.router-link-active {
+.navLink:hover:not(.router-link-active) {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+.navLink.router-link-active {
   background-color: rgba(0, 0, 0, 0.3);
-  padding-bottom: 25px;
-  padding-top: 28px;
-  padding-right: 10px;
-  padding-left: 10px;
 }
+.navLink:focus-visible {
+  outline: 2px solid $color-white;
+  outline-offset: -2px;
+}
+/* Flex rather than a top-padding offset: it drops the inline SVG's baseline gap
+   so the logo centres on the bar like the links. */
 .logo {
-  padding-top: 10px;
+  display: flex;
   cursor: pointer;
 }
-/*
-  Pushed to the far right of the flex row. .nav-content sets `align-items: left`,
-  which is not a valid value and so resolves to stretch -- the toggle sets its own
-  align-self rather than change a rule the rest of the bar depends on.
-*/
 .nav-campus {
-  margin-left: auto;
+  margin-left: 14px;
+}
+/* Separates the campus, which scopes every page, from the pages themselves. */
+.nav-divider {
+  width: 1px;
+  height: 28px;
+  margin: 0 10px;
+  background-color: rgba(255, 255, 255, 0.35);
 }
 </style>
