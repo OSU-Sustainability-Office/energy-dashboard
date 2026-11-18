@@ -9,7 +9,7 @@
         <div class="logo"><svgLogo width="190px" alt="" @click="$router.push({ path: '/map' })" /></div>
         <CampusSwitcher class="nav-campus" />
         <span class="nav-divider" aria-hidden="true"></span>
-        <ul class="nav-items">
+        <ul ref="navItems" class="nav-items">
           <li class="navLi"><router-link to="/map" class="navLink">Map</router-link></li>
           <li class="navLi">
             <router-link to="/buildings" class="navLink">Buildings</router-link>
@@ -31,6 +31,9 @@
 import svgLogo from '/src/assets/icons/logo.svg'
 import CampusSwitcher from '@/components/ui/CampusSwitcher.vue'
 
+// Width of the fade on the links' right edge at phone width (see the styles).
+const FADE_WIDTH = 24
+
 export default {
   components: {
     svgLogo,
@@ -41,9 +44,33 @@ export default {
       showMobileMenu: false
     }
   },
+  watch: {
+    $route() {
+      this.$nextTick(this.revealActiveLink)
+    }
+  },
   methods: {
     showMenu() {
       this.showMobileMenu = !this.showMobileMenu
+    },
+    // On a phone the links scroll sideways, so opening e.g. /contact directly
+    // would leave the current page's pill out of view. Scrolls only the link
+    // strip (scrollIntoView would move the page too), and is a no-op when the
+    // links all fit.
+    revealActiveLink() {
+      const items = this.$refs.navItems
+      const active = items?.querySelector('.router-link-active')
+      if (!active) {
+        return
+      }
+      const link = active.getBoundingClientRect()
+      const strip = items.getBoundingClientRect()
+      if (link.right > strip.right) {
+        // Clear the fade too, unless that would push the link's start out of view.
+        items.scrollLeft += Math.min(link.right - strip.right + FADE_WIDTH, link.left - strip.left)
+      } else if (link.left < strip.left) {
+        items.scrollLeft -= strip.left - link.left
+      }
     }
   }
 }
@@ -116,5 +143,45 @@ i {
   height: 28px;
   margin: 0 10px;
   background-color: rgba(255, 255, 255, 0.35);
+}
+.logo,
+.nav-campus {
+  flex-shrink: 0;
+}
+/*
+  The full row is ~860px. Below that it tightens up, and on a phone, where even the
+  tight row doesn't fit, the links scroll sideways inside the bar. Wrapping isn't an
+  option: a second line would make the bar taller than $nav-height and cover the top
+  of every page. The fade on the right edge is the only hint that there is more to
+  swipe to, since the scrollbar is hidden.
+*/
+@media only screen and (max-width: 900px) {
+  .nav-content {
+    padding: 0px 12px;
+  }
+  .logo svg {
+    width: 120px;
+  }
+  .nav-campus {
+    margin-left: 6px;
+  }
+  .nav-divider {
+    display: none;
+  }
+  .nav-items {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  .navLink {
+    font-size: 16px;
+    padding: 12px 10px;
+    white-space: nowrap;
+  }
 }
 </style>

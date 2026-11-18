@@ -119,6 +119,26 @@ export default {
 .campus-trigger.open .campus-caret {
   transform: rotate(180deg);
 }
+
+/* Matches the compact .navLink in NavigationBar.vue. */
+@media only screen and (max-width: 900px) {
+  .campus-trigger {
+    gap: 5px;
+    font-size: 16px;
+    padding: 12px 10px;
+  }
+}
+
+/* On the narrowest phones the pin goes, so the page links keep room for a
+   whole pill; the caret still marks this as a menu. */
+@media only screen and (max-width: 480px) {
+  .campus-trigger {
+    padding: 12px 8px;
+  }
+  .campus-pin {
+    display: none;
+  }
+}
 </style>
 
 <!--
