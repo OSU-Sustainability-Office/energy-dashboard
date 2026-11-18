@@ -207,8 +207,8 @@ export default {
     }
   },
   data() {
-    // Opening view for the campus restored from localStorage, so a returning
-    // visitor lands on their campus rather than panning to it after first paint.
+    // Opening view for the active campus, so a map mounted after a campus was
+    // chosen (e.g. coming from the buildings list) opens on it instead of panning.
     const view = CAMPUS_VIEW[this.$store.getters['campus/active']] || CAMPUS_VIEW.corvallis
     return {
       selectedOption: 'All',

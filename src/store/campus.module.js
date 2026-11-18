@@ -2,11 +2,9 @@
   Filename: campus.module.js
   Info: Tracks which campus the user is looking at. OSU-Cascades is ~155 km from
         Corvallis, so the map and the buildings list only ever show one of them.
-        The choice is remembered across visits; until one is made, the app shows
-        the campus picker.
+        The choice lasts only for the current page load: every visit opens the
+        campus picker, and the nav toggle switches campus after that.
 */
-
-const STORAGE_KEY = 'osu-energy.campus'
 
 export const CAMPUSES = [
   { id: 'corvallis', label: 'Corvallis' },
@@ -20,26 +18,6 @@ export const DEFAULT_CAMPUS = 'corvallis'
 
 const isValid = id => CAMPUSES.some(campus => campus.id === id)
 
-// localStorage throws when site data is blocked and is absent in some test
-// environments, so every access is guarded. Failing to remember the choice is a
-// lost convenience, never a reason to stop the dashboard working.
-const readStored = () => {
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY)
-    return isValid(stored) ? stored : null
-  } catch (err) {
-    return null
-  }
-}
-
-const writeStored = id => {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, id)
-  } catch (err) {
-    /* see above */
-  }
-}
-
 const state = () => {
   return {
     active: null // null until the user picks, which is what opens the picker
@@ -47,19 +25,11 @@ const state = () => {
 }
 
 const actions = {
-  restore(store) {
-    const stored = readStored()
-    if (stored) {
-      store.commit('active', stored)
-    }
-  },
-
   choose(store, campus) {
     if (!isValid(campus)) {
       return
     }
     store.commit('active', campus)
-    writeStored(campus)
   }
 }
 
