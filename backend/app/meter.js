@@ -21,6 +21,20 @@ function verifyParameters({ id, startDate, endDate }) {
   return ![id, startDate, endDate].some(isNaN)
 }
 
+// Longest time span one /data request may ask for. The frontend's size-based batching
+// (src/store/data_layer/data_store.js) never sends more than ~495 days per request.
+const MAX_RANGE_SECONDS = 2 * 366 * 24 * 60 * 60
+
+function verifyRange({ startDate, endDate }) {
+  return startDate <= endDate && endDate - startDate <= MAX_RANGE_SECONDS
+}
+
+// Who is asking, so heavy clients can be identified in CloudWatch.
+function requestSource(event) {
+  const identity = (event.requestContext && event.requestContext.identity) || {}
+  return { sourceIp: identity.sourceIp, userAgent: identity.userAgent }
+}
+
 // Get data for multiple meters => {id -> [{}...], ...}
 /*
   Ok, assume a multiMeter request involves the same point & meter class
@@ -38,6 +52,17 @@ export async function multiMeterData(event, context) {
   const request = JSON.parse(event.body)
   const meterList = request.datasets.map(parseParameters).filter(verifyParameters)
   const { point, meterClass } = request
+  console.log(
+    'multiMeterData request',
+    JSON.stringify({
+      point,
+      meterClass,
+      datasetCount: meterList.length,
+      totalSeconds: meterList.reduce((sum, { startDate, endDate }) => sum + (endDate - startDate), 0),
+      datasets: meterList,
+      ...requestSource(event)
+    })
+  )
   const response = new Response(event)
   response.body = { data: [] }
   // Get data for each Response [inefficient, should switch to transaction eventually]
@@ -54,14 +79,19 @@ export async function multiMeterData(event, context) {
 // GET data for single meter
 export async function data(event, context) {
   let response = new Response(event)
-  response.body = JSON.stringify(
-    await new Meter(event.queryStringParameters['id']).download(
-      event.queryStringParameters['point'],
-      event.queryStringParameters['startDate'],
-      event.queryStringParameters['endDate'],
-      event.queryStringParameters['meterClass']
-    )
-  )
+  const { point, meterClass } = event.queryStringParameters
+  const { id, startDate, endDate } = parseParameters(event.queryStringParameters)
+  console.log('data request', JSON.stringify({ id, startDate, endDate, point, meterClass, ...requestSource(event) }))
+
+  if (!verifyParameters({ id, startDate, endDate }) || !verifyRange({ startDate, endDate })) {
+    response.statusCode = 400
+    response.body = JSON.stringify({
+      error: `id, startDate and endDate must be integers, with startDate <= endDate and a span of at most ${MAX_RANGE_SECONDS} seconds`
+    })
+    return response
+  }
+
+  response.body = JSON.stringify(await new Meter(id).download(point, startDate, endDate, meterClass))
   return response //Compress(event, response)
 }
 

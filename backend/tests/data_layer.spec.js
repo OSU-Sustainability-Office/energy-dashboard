@@ -62,6 +62,24 @@ describe('Testing data_layer related API endpoints...', () => {
     }
   })
 
+  it('/data should reject a range longer than two years', async () => {
+    const tooLong = { ...MOCK_REQUEST_EVENT.queryStringParameters, startDate: 1500000000, endDate: 1600000000 }
+    const res = await data({ ...MOCK_REQUEST_EVENT, queryStringParameters: tooLong })
+    expect(res.statusCode).toBe(400)
+  })
+
+  it('/data should reject startDate after endDate', async () => {
+    const backwards = { ...MOCK_REQUEST_EVENT.queryStringParameters, startDate: 1613618100, endDate: 1603854900 }
+    const res = await data({ ...MOCK_REQUEST_EVENT, queryStringParameters: backwards })
+    expect(res.statusCode).toBe(400)
+  })
+
+  it('/data should reject non-numeric parameters', async () => {
+    const garbage = { ...MOCK_REQUEST_EVENT.queryStringParameters, id: 'abc' }
+    const res = await data({ ...MOCK_REQUEST_EVENT, queryStringParameters: garbage })
+    expect(res.statusCode).toBe(400)
+  })
+
   it('/multiMeterData should return data for multiple metres...', async () => {
     /*
       Ok, assume a batch request involves the same point & meter class

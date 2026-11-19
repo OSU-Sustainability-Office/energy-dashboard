@@ -5,6 +5,11 @@
 import { connect, query } from '/opt/nodejs/sql-access.js'
 import meterClasses from '/opt/nodejs/meter_classes.js'
 
+// Optimizer hints that make MySQL abandon a SELECT once the calling Lambda has timed out
+// (/data: 15s, /multiMeterData: 30s in template.yaml), so dead requests stop using disk I/O.
+const DOWNLOAD_TIME_LIMIT = '/*+ MAX_EXECUTION_TIME(14000) */ '
+const SPARSE_DOWNLOAD_TIME_LIMIT = '/*+ MAX_EXECUTION_TIME(28000) */ '
+
 class Meter {
   constructor(id, address = '') {
     if (!id && address === '') {
@@ -134,6 +139,7 @@ class Meter {
           // solar meters
           return query(
             'SELECT ' +
+              DOWNLOAD_TIME_LIMIT +
               point +
               ', time_seconds AS time, ' +
               "'" +
@@ -148,7 +154,7 @@ class Meter {
           )
         } else if (String(meterClass) === '9990002') {
           const q = `
-            SELECT data.${point},
+            SELECT ${DOWNLOAD_TIME_LIMIT} data.${point},
               data.time_seconds AS time
             FROM pacific_power_data data
             JOIN pacific_power_meter_group pp_group
@@ -164,6 +170,7 @@ class Meter {
       // Aquisuites
       return query(
         'SELECT ' +
+          DOWNLOAD_TIME_LIMIT +
           point +
           ', time_seconds AS time, id FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)',
         [this.id, startTime, endTime]
@@ -182,6 +189,7 @@ class Meter {
         let [{ name: meter_table_name }] = await query('SELECT `name` FROM meters WHERE id = ?', [this.id])
         return query(
           'SELECT ' +
+            SPARSE_DOWNLOAD_TIME_LIMIT +
             point +
             ' as reading, time_seconds AS time FROM ' +
             meter_table_name +
@@ -191,6 +199,7 @@ class Meter {
       }
       return query(
         'SELECT ' +
+          SPARSE_DOWNLOAD_TIME_LIMIT +
           point +
           ' as reading, time_seconds AS time FROM data WHERE meter_id = ? AND time_seconds >= ? AND time_seconds <= ? AND (error = "0" OR error IS NULL)',
         [this.id, startTime, endTime]
