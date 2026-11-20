@@ -4,6 +4,8 @@
  *               the data_layer (or data_store) VueX module
  */
 
+import { vi } from 'vitest'
+
 // CORS testing utility requires
 import testConfig from './assertedData/test_config.json'
 import { VerifyCORSResponse } from './utility/cors_test_utility.js'
@@ -78,6 +80,23 @@ describe('Testing data_layer related API endpoints...', () => {
     const garbage = { ...MOCK_REQUEST_EVENT.queryStringParameters, id: 'abc' }
     const res = await data({ ...MOCK_REQUEST_EVENT, queryStringParameters: garbage })
     expect(res.statusCode).toBe(400)
+  })
+
+  it('/data should log the original client address from X-Forwarded-For', async () => {
+    const log = vi.spyOn(console, 'log')
+    const garbage = { ...MOCK_REQUEST_EVENT.queryStringParameters, id: 'abc' }
+    await data({
+      ...MOCK_REQUEST_EVENT,
+      headers: { ...MOCK_REQUEST_EVENT.headers, 'X-Forwarded-For': '203.0.113.7, 35.90.133.230' },
+      requestContext: { identity: { sourceIp: '35.90.133.230', userAgent: 'test-agent' } },
+      queryStringParameters: garbage
+    })
+    const [, logged] = log.mock.calls.find(([label]) => label === 'data request')
+    expect(JSON.parse(logged)).toMatchObject({
+      sourceIp: '35.90.133.230',
+      forwardedFor: '203.0.113.7, 35.90.133.230',
+      userAgent: 'test-agent'
+    })
   })
 
   it('/multiMeterData should return data for multiple metres...', async () => {

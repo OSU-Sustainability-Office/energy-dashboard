@@ -29,10 +29,13 @@ function verifyRange({ startDate, endDate }) {
   return startDate <= endDate && endDate - startDate <= MAX_RANGE_SECONDS
 }
 
-// Who is asking, so heavy clients can be identified in CloudWatch.
+// Who is asking, so heavy clients can be identified in CloudWatch. sourceIp is only the last hop
+// (the proxy in front of API Gateway); X-Forwarded-For carries the original client address.
 function requestSource(event) {
   const identity = (event.requestContext && event.requestContext.identity) || {}
-  return { sourceIp: identity.sourceIp, userAgent: identity.userAgent }
+  const headers = event.headers || {}
+  const forwardedFor = headers['X-Forwarded-For'] || headers['x-forwarded-for']
+  return { sourceIp: identity.sourceIp, forwardedFor, userAgent: identity.userAgent }
 }
 
 // Get data for multiple meters => {id -> [{}...], ...}
