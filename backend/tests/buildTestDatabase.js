@@ -113,7 +113,8 @@ DB.beginTransaction(err => {
         \`accumulated_real\` int,
         \`time_seconds\` INTEGER,
         \`error\` TEXT,
-        PRIMARY KEY (\`id\`)
+        PRIMARY KEY (\`id\`),
+        KEY \`idx_meter_time\` (\`meter_id\`, \`time_seconds\`)
     );`
 
   /*
